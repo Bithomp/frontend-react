@@ -179,6 +179,34 @@ const MyApp = ({ Component, pageProps }) => {
     setIsOnline(navigator.onLine)
   }, [])
 
+  // WalletConnect can fire a session_update with null namespaces, causing
+  // Object.keys(null) inside their isValidUpdate — suppress it and clear stale storage.
+  useEffect(() => {
+    const handleWalletConnectError = (event) => {
+      const msg = event?.error?.message || event?.message || ''
+      if (!msg.includes('Cannot convert undefined or null to object')) return
+      const stack = event?.error?.stack || ''
+      if (!stack.includes('walletconnect') && !stack.includes('@walletconnect')) return
+      event.preventDefault()
+      const clearWC = (storage) => {
+        if (!storage) return
+        const toRemove = []
+        for (let i = 0; i < storage.length; i++) {
+          const key = storage.key(i)
+          if (key && (key.includes('walletconnect') || key.includes('wc@2') || key.startsWith('wc_'))) {
+            toRemove.push(key)
+          }
+        }
+        toRemove.forEach((key) => storage.removeItem(key))
+      }
+      clearWC(window.localStorage)
+      clearWC(window.sessionStorage)
+      setWcSessions({})
+    }
+    window.addEventListener('error', handleWalletConnectError)
+    return () => window.removeEventListener('error', handleWalletConnectError)
+  }, [])
+
   const router = useRouter()
   const isBot = useIsBot()
 

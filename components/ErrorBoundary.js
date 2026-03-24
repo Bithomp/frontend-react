@@ -23,7 +23,8 @@ class ErrorBoundary extends React.Component {
       'The object can not be found here.',
       "null is not an object (evaluating 'localStorage.getItem')",
       "Cannot read properties of null (reading 'getItem')",
-      "Cannot read properties of null (reading 'createImageData')"
+      "Cannot read properties of null (reading 'createImageData')",
+      'Cannot convert undefined or null to object'
     ]
 
     if (process.env.NODE_ENV === 'development') {
