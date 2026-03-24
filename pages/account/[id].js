@@ -8711,6 +8711,19 @@ export default function Account({
           display: flex;
           flex-direction: column;
           gap: 12px;
+          position: relative;
+          z-index: 1;
+        }
+
+        .info-section:hover,
+        .assets-section:hover,
+        .transactions-section:hover,
+        .orders-section:hover,
+        .info-section:focus-within,
+        .assets-section:focus-within,
+        .transactions-section:focus-within,
+        .orders-section:focus-within {
+          z-index: 60;
         }
 
         .section-header-row {
@@ -9274,20 +9287,6 @@ export default function Account({
           z-index: 30;
         }
 
-        .achievement-badge :global(.tooltiptext.right) {
-          right: unset !important;
-          left: 105% !important;
-          top: 50% !important;
-          transform: translateY(-50%);
-        }
-
-        .achievement-badge :global(.tooltiptext.left) {
-          left: unset !important;
-          right: 105% !important;
-          top: 50% !important;
-          transform: translateY(-50%);
-        }
-
         .achievement-image {
           width: 100%;
           height: 100%;
@@ -9444,11 +9443,6 @@ export default function Account({
         .xaman-data-value {
           min-width: 0;
           word-break: break-word;
-        }
-
-        :global(.tooltiptext.right) {
-          left: 106% !important;
-          right: unset !important;
         }
 
         .did-section {
@@ -9668,11 +9662,18 @@ export default function Account({
           padding: var(--asset-card-padding-y) var(--asset-card-padding-x);
           cursor: pointer;
           transition: all 0.2s ease;
+          position: relative;
+          z-index: 1;
         }
 
         .asset-item:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          z-index: 40;
+        }
+
+        .asset-item:focus-within {
+          z-index: 40;
         }
 
         .get-first-native-wrap {

@@ -726,75 +726,167 @@ table {
     vertical-align: bottom;
   }
 
+  &:hover,
+  &:focus-within {
+    z-index: 5000;
+  }
+
   .tooltiptext {
+    --tooltip-shift-x: -50%;
     font-size: 12px;
-    display: none;
-    top: -5px;
-    right: 120%;
-    padding: 5px 10px;
-    background-color: #333;
+    display: block;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    width: max-content;
+    max-width: min(320px, calc(100vw - 24px));
+    padding: 8px 10px;
+    background: rgba(28, 32, 38, 0.96);
     color: #fff;
     text-align: center;
     position: absolute;
-    z-index: 1;
-    border-radius: 6px;
+    z-index: 5001;
+    border-radius: 8px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
 
     white-space: normal;
     pointer-events: none;
     overflow-wrap: normal;
     word-break: normal;
     hyphens: manual;
-    line-height: 1.25;
+    line-height: 1.35;
+    visibility: hidden;
+    opacity: 0;
+    transform: translate(var(--tooltip-shift-x), 4px);
+    transition:
+      opacity 0.16s ease,
+      transform 0.16s ease,
+      visibility 0.16s ease;
 
     @media (max-width: 768px) {
-      width: max-content;
-      max-width: min(140px, calc(100vw - 24px));
+      --tooltip-shift-x: 0%;
+      left: auto;
+      right: 0;
+      text-align: left;
+      max-width: min(220px, calc(100vw - 24px));
+
+      &:after {
+        left: auto;
+        right: 14px;
+        transform: none;
+      }
     }
 
-    opacity: 1;
-    transition: opacity 0.7s ease;
     &:after {
-      content: "";
+      content: '';
       position: absolute;
-      top: 50%;
-      left: 100%;
-      margin-top: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: transparent transparent transparent #333333;
+      width: 0;
+      height: 0;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid rgba(28, 32, 38, 0.96);
+      border-bottom: 0;
     }
+
     &.right {
-      right: unset;
-      left: 120%;
+      --tooltip-shift-x: 0%;
+      left: 0;
+      right: auto;
+      text-align: left;
+
       &:after {
-        left: unset;
-        right: 100%;
-        border-color: transparent #333333 transparent transparent;
+        left: 18px;
+        transform: none;
+      }
+
+      @media (max-width: 768px) {
+        left: 0;
+        right: auto;
+
+        &:after {
+          left: 14px;
+          right: auto;
+          transform: none;
+        }
       }
     }
+
+    &.left {
+      --tooltip-shift-x: 0%;
+      left: auto;
+      right: 0;
+      text-align: left;
+
+      &:after {
+        left: auto;
+        right: 18px;
+        transform: none;
+      }
+
+      @media (max-width: 768px) {
+        left: auto;
+        right: 0;
+
+        &:after {
+          left: auto;
+          right: 14px;
+          transform: none;
+        }
+      }
+    }
+
     &.small {
-      font-size: 12px;
-      height: 24px;
-      right: 110%;
-      &.right {
-        right: unset;
-        left: 110%;
-      }
+      font-size: 11px;
+      padding: 4px 8px;
+      line-height: 1.2;
+      white-space: nowrap;
+      max-width: calc(100vw - 24px);
+
       &:after {
-        top: 60%;
+        left: 14px;
+        transform: none;
       }
     }
+
+    &.small.left:after {
+      left: auto;
+      right: 14px;
+    }
+
     &.table-large {
-      &:after {
-        top: 15px;
-      }
+      max-width: min(360px, calc(100vw - 24px));
     }
   }
-  &:hover {
+
+  &:hover,
+  &:focus-within {
     .tooltiptext {
-      display: inline-block;
+      visibility: visible;
       opacity: 1;
+      transform: translate(var(--tooltip-shift-x), 0);
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .tooltip .tooltiptext:after {
+    left: auto;
+    right: 14px;
+    transform: none;
+  }
+
+  .tooltip .tooltiptext.right:after {
+    left: 14px;
+    right: auto;
+    transform: none;
+  }
+
+  .tooltip .tooltiptext.left:after {
+    left: auto;
+    right: 14px;
+    transform: none;
   }
 }
 /* tooltip ends */
