@@ -945,7 +945,7 @@ export const amountFormat = (amount, options = {}) => {
     showValue = '+' + showValue
   }
 
-  const amountText = [showValue, valuePrefix, options.noCurrency ? '' : textCurrency].filter(Boolean).join(' ')
+  const amountText = [showValue, valuePrefix].filter(Boolean).join(' ')
 
   if (options.tooltip) {
     return (
@@ -991,11 +991,13 @@ export const amountFormat = (amount, options = {}) => {
     return (
       <span className="no-brake">
         {tokenImage}
-        <StyleAmount>{amountText}</StyleAmount>
+        <StyleAmount>
+          {amountText} {textCurrency}
+        </StyleAmount>
       </span>
     )
   } else {
-    return amountText
+    return amountText + ' ' + textCurrency
   }
 }
 
