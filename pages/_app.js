@@ -210,6 +210,142 @@ const MyApp = ({ Component, pageProps }) => {
   const router = useRouter()
   const isBot = useIsBot()
 
+  // Universal tooltip positioning: on hover, switch every .tooltiptext to
+  // position:fixed with viewport coordinates so it escapes any overflow:hidden
+  // ancestor (table wrappers, content containers, etc.).
+  // Auto-flips below the trigger when there is not enough space above
+  // (e.g. first rows of a table near the sticky header / filter bar).
+  useEffect(() => {
+    const HEADER_H = 115 // conservative height of fixed header + filter bar
+    const TIP_H = 160 // estimated max tooltip height used for threshold
+    const GAP = 10
+    const BASE_HIDDEN_STYLE =
+      'position:fixed!important;top:0!important;left:0!important;right:auto!important;bottom:auto!important;' +
+      'visibility:hidden!important;opacity:0!important;pointer-events:none!important;transition:none!important;'
+
+    let activeTrigger = null
+    let clearTimer = null
+
+    const isTableTooltip = (trigger) => {
+      return !!trigger.closest('table, thead, tbody, tr, td, th')
+    }
+
+    const applyTip = (trigger) => {
+      const tip = trigger.querySelector(':scope > .tooltiptext')
+      if (!tip) return
+
+      if (!isTableTooltip(trigger)) return
+
+      tip.style.cssText = BASE_HIDDEN_STYLE
+
+      const r = trigger.getBoundingClientRect()
+
+      const spaceAbove = r.top - HEADER_H
+      const spaceBelow = window.innerHeight - r.bottom
+      const flipBelow = spaceAbove < TIP_H && spaceBelow > spaceAbove
+
+      const vertPos = flipBelow
+        ? 'top:' + (r.bottom + GAP) + 'px!important;bottom:auto!important;'
+        : 'bottom:' + (window.innerHeight - r.top + GAP) + 'px!important;top:auto!important;'
+
+      const hAlign = tip.classList.contains('right')
+        ? 'left:' + r.left + 'px!important;right:auto!important;transform:none!important;'
+        : tip.classList.contains('left')
+          ? 'right:' + (window.innerWidth - r.right) + 'px!important;left:auto!important;transform:none!important;'
+          : 'left:' + (r.left + r.width / 2) + 'px!important;right:auto!important;transform:translateX(-50%)!important;'
+
+      tip.classList.toggle('tooltip-flip', flipBelow)
+
+      tip.style.cssText =
+        'position:fixed!important;' +
+        vertPos +
+        hAlign +
+        'visibility:visible!important;opacity:0!important;pointer-events:none!important;transition:none!important;'
+
+      void tip.offsetHeight
+
+      requestAnimationFrame(() => {
+        if (tip.style.position === 'fixed') {
+          tip.style.opacity = '1'
+          tip.style.transition = 'opacity 0.12s ease'
+        }
+      })
+    }
+
+    const hideTip = (trigger) => {
+      if (!isTableTooltip(trigger)) return
+      const tip = trigger.querySelector(':scope > .tooltiptext')
+      if (!tip) return
+      tip.style.cssText = BASE_HIDDEN_STYLE
+      tip.classList.remove('tooltip-flip')
+    }
+
+    const positionTip = (trigger) => {
+      // Cancel any pending hide so moving between rows shows no gap/flash
+      if (clearTimer) {
+        clearTimeout(clearTimer)
+        clearTimer = null
+      }
+      // Hide previous trigger immediately (no gap — new one is already showing)
+      if (activeTrigger && activeTrigger !== trigger) hideTip(activeTrigger)
+      activeTrigger = trigger
+      applyTip(trigger)
+    }
+
+    const clearTip = (trigger) => {
+      // Small delay: if mouse enters a new .tooltip before it fires,
+      // positionTip cancels this and there is zero visible flash.
+      clearTimer = setTimeout(() => {
+        clearTimer = null
+        if (activeTrigger === trigger) activeTrigger = null
+        hideTip(trigger)
+      }, 40)
+    }
+
+    const onOver = (e) => {
+      let el = e.target
+      while (el && el !== document.body) {
+        if (el.classList?.contains('tooltip')) {
+          positionTip(el)
+          return
+        }
+        el = el.parentElement
+      }
+    }
+
+    const onOut = (e) => {
+      let el = e.target
+      while (el && el !== document.body) {
+        if (el.classList?.contains('tooltip')) {
+          if (!el.contains(e.relatedTarget)) clearTip(el)
+          return
+        }
+        el = el.parentElement
+      }
+    }
+
+    // Hide on scroll so tooltip doesn't float at a stale position
+    const onScroll = () => {
+      if (clearTimer) {
+        clearTimeout(clearTimer)
+        clearTimer = null
+      }
+      if (activeTrigger) {
+        hideTip(activeTrigger)
+        activeTrigger = null
+      }
+    }
+
+    document.addEventListener('mouseover', onOver)
+    document.addEventListener('mouseout', onOut)
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true })
+    return () => {
+      document.removeEventListener('mouseover', onOver)
+      document.removeEventListener('mouseout', onOut)
+      window.removeEventListener('scroll', onScroll, { capture: true })
+    }
+  }, [])
+
   useEffect(() => {
     if (!GA_ID) return
     if (typeof window === 'undefined') return

@@ -88,10 +88,6 @@ body.dark {
       position: absolute;
       inset: 0 15px auto;
       border-top: 1px solid #ccc;
-
-      @media(min-width: 1300px) {
-        z-index: 3;
-      }
     }
   }
 
