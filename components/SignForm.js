@@ -1350,7 +1350,7 @@ export default function SignForm({
     <>
       {(networkId === 0 || networkId === 1) && (
         <WalletConnect
-          tx={preparedTx}
+          tx={screen === 'walletconnect' ? preparedTx : null}
           signRequest={signRequest}
           setStatus={setStatus}
           afterSubmitExe={afterSubmitExe}
