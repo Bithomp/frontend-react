@@ -330,6 +330,9 @@ export default function MobileMenu({
           <HiOutlineGlobeAlt style={{ marginBottom: '-2px' }} /> {t('menu.network.blockchain')}
         </div>
         <div className="mobile-menu__submenu">
+          <Link href="/dapps" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Dapps
+          </Link>
           {xahauNetwork && (
             <Link href="/governance" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t('menu.network.governance')}
@@ -372,9 +375,6 @@ export default function MobileMenu({
           )}
           <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.genesis')}
-          </Link>
-          <Link href="/dapps" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Dapps
           </Link>
         </div>
 

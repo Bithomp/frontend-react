@@ -511,6 +511,7 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            <Link href="/dapps">Dapps</Link>
             {xahauNetwork && <Link href="/governance">{t('menu.network.governance')}</Link>}
             <Link href="/activations">{t('menu.network.activations')}</Link>
             <Link href="/distribution">{t('menu.network.distribution', { currency: nativeCurrency })}</Link>
@@ -525,7 +526,6 @@ export default function Header({
             {!(xahauNetwork && devNet) && <Link href="/nodes">{t('menu.network.nodes')}</Link>}
             {xahauNetwork && <Link href="/unl-report">{t('menu.network.unl-report')}</Link>}
             <Link href="/genesis">{t('menu.network.genesis')}</Link>
-            <Link href="/dapps">Dapps</Link>
           </MenuDropDown>
 
           <MenuDropDown
