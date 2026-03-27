@@ -42,6 +42,13 @@ const errorHandle = (error) => {
       throw new Error('Signing cancelled on your Ledger device.')
     }
 
+    // INCORRECT_DATA
+    if (statusCode === 0x6a80) {
+      throw new Error(
+        'Ledger rejected this transaction data (0x6a80). Please confirm you selected the correct Ledger account, make sure the transaction Account matches that address, then try again.'
+      )
+    }
+
     if (statusCode === 0x6d07) {
       throw new Error(
         'Ledger app is not installed on your device. Install the ' +
