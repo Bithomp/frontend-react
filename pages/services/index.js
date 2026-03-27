@@ -21,7 +21,7 @@ import {
   RiAddCircleLine
 } from 'react-icons/ri'
 import { MdOutlineFactCheck, MdOutlineLockClock, MdOutlineImage, MdOutlineApi } from 'react-icons/md'
-import { IoWalletOutline, IoSparklesOutline } from 'react-icons/io5'
+import { IoWalletOutline, IoSparklesOutline, IoKeyOutline } from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
 import { LuCoins } from 'react-icons/lu'
 
@@ -116,6 +116,7 @@ export default function ServicesPage() {
       items: [
         ...(xahauNetwork ? [{ href: '/services/reward-auto-claim', title: 'Reward Auto Claim', icon: LuCoins }] : []),
         { href: '/services/account-settings/', title: t('menu.services.account-settings'), icon: IoWalletOutline },
+        { href: '/services/account-control', title: 'Account Control', icon: IoKeyOutline },
         { href: '/services/account-delete', title: 'Account Delete', icon: RiDeleteBin6Line }
       ]
     }
