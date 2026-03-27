@@ -130,6 +130,13 @@ export default function RLUSD() {
               </a>
             </strong>
           </p>
+          <p>
+            <strong>
+              <Link href="/token/rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De/524C555344000000000000000000000000000000">
+                View RLUSD token page on Bithomp
+              </Link>
+            </strong>
+          </p>
           <br />
           <br />
         </article>
