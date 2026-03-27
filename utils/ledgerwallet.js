@@ -389,6 +389,7 @@ const ledgerwalletSign = async ({
   xrpApp,
   address,
   path,
+  publicKey,
   tx,
   signRequest,
   afterSubmitExe,
@@ -399,6 +400,14 @@ const ledgerwalletSign = async ({
   t
 }) => {
   const signRequestData = signRequest.data
+  const parsedAccountIndex = parseInt(/44'\/144'\/(\d+)'/.exec(path || '')?.[1], 10)
+  const walletMetaMap = {
+    [address]: {
+      derivationPath: path || null,
+      publicKey: publicKey || null,
+      accountIndex: Number.isFinite(parsedAccountIndex) ? parsedAccountIndex : null
+    }
+  }
 
   if (signRequestData?.signOnly) {
     setStatus('Sign the transaction in Ledger Wallet.')
@@ -417,7 +426,7 @@ const ledgerwalletSign = async ({
     setAwaiting(true)
 
     if (!tx || tx?.TransactionType === 'SignIn') {
-      onSignIn({ address, wallet, redirectName: signRequest.redirect })
+      onSignIn({ address, wallet, walletMetaMap, redirectName: signRequest.redirect })
       // keep afterSubmitExe here to close the dialog form when signed in
       afterSubmitExe({})
       return
@@ -452,6 +461,7 @@ const ledgerwalletSign = async ({
         afterSubmitExe,
         address,
         wallet,
+        walletMetaMap,
         signRequest,
         tx,
         setAwaiting,
@@ -462,6 +472,23 @@ const ledgerwalletSign = async ({
       setStatus(err.message)
     }
   }
+}
+
+const LEDGER_ADDRESS_SCAN_LIMIT = 10
+
+const findLedgerPathForAddress = async (xrpApp, targetAddress) => {
+  const lowerTarget = String(targetAddress || '').toLowerCase()
+  if (!lowerTarget) return null
+
+  for (let i = 0; i < LEDGER_ADDRESS_SCAN_LIMIT; i++) {
+    const candidatePath = getLedgerDerivationPath(i)
+    const candidate = await getLedgerAddress(xrpApp, candidatePath)
+    if (candidate?.address && candidate.address.toLowerCase() === lowerTarget) {
+      return candidate
+    }
+  }
+
+  return null
 }
 
 export const ledgerwalletTxSend = async ({
@@ -479,9 +506,23 @@ export const ledgerwalletTxSend = async ({
 }) => {
   try {
     const xrpApp = await connectLedgerHID()
-    let path = selectedPath || getLedgerDerivationPath(0)
+    let path = selectedPath || null
     let address = selectedAddress || null
     let publicKey = selectedPublicKey || null
+
+    // Recover legacy records where derivation path is missing in localStorage.
+    if (!path && address) {
+      setStatus('Locating your Ledger account...')
+      const matched = await findLedgerPathForAddress(xrpApp, address)
+      if (matched?.path) {
+        path = matched.path
+        publicKey = publicKey || matched.publicKey || null
+      }
+    }
+
+    if (!path) {
+      path = getLedgerDerivationPath(0)
+    }
 
     if (!address || !publicKey) {
       const resolved = await getLedgerAddress(xrpApp, path)
@@ -498,6 +539,7 @@ export const ledgerwalletTxSend = async ({
       xrpApp,
       address,
       path,
+      publicKey,
       tx,
       signRequest,
       afterSubmitExe,
