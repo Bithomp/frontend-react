@@ -627,17 +627,23 @@ const MyApp = ({ Component, pageProps }) => {
         const normalized = normalizeAccountState(previousAccount)
         const wallets = [...normalized.wallets]
         const existingIndex = wallets.findIndex((walletItem) => walletItem.id === walletId)
+        const existingWallet = existingIndex >= 0 ? wallets[existingIndex] : null
         const nextWallet = {
           id: walletId,
           provider: wallet,
           address,
           username: resolvedUsername || null,
           connectedAt: Date.now(),
-          derivationPath: walletMeta?.derivationPath || null,
-          publicKey: walletMeta?.publicKey || null,
-          accountIndex: Number.isFinite(walletMeta?.accountIndex) ? walletMeta.accountIndex : null,
-          walletConnectWalletId: walletMeta?.walletConnectWalletId || null,
-          walletConnectWalletName: walletMeta?.walletConnectWalletName || null
+          derivationPath: walletMeta?.derivationPath ?? existingWallet?.derivationPath ?? null,
+          publicKey: walletMeta?.publicKey ?? existingWallet?.publicKey ?? null,
+          accountIndex: Number.isFinite(walletMeta?.accountIndex)
+            ? walletMeta.accountIndex
+            : Number.isFinite(existingWallet?.accountIndex)
+              ? existingWallet.accountIndex
+              : null,
+          walletConnectWalletId: walletMeta?.walletConnectWalletId ?? existingWallet?.walletConnectWalletId ?? null,
+          walletConnectWalletName:
+            walletMeta?.walletConnectWalletName ?? existingWallet?.walletConnectWalletName ?? null
         }
 
         if (existingIndex >= 0) {
