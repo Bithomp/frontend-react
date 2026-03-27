@@ -24,7 +24,6 @@ import Link from 'next/link'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import TypeToIcon from '../../../components/Admin/subscriptions/pro/history/TypeToIcon'
-import Image from 'next/image'
 import { CSVLink } from 'react-csv'
 import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
@@ -282,8 +281,8 @@ const processDataForExport = (activities, platform) => {
     platform === 'CoinLedger'
       ? mergeTwoAssetTradesByHash(activities || [], { tradeType: 'Trade' })
       : platform === 'SUMM'
-      ? mergeTwoAssetTradesByHash(activities || [], { tradeType: 'trade' })
-      : activities || []
+        ? mergeTwoAssetTradesByHash(activities || [], { tradeType: 'trade' })
+        : activities || []
 
   // IMPORTANT: SUMM may need additional fee rows for transfer fees (IOU transfer fees).
   // SUMM supports only one fee currency per row, so we never merge fee currencies:
@@ -316,8 +315,8 @@ const processDataForExport = (activities, platform) => {
       processedActivity.type = sending
         ? 'Withdrawal'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
-        ? 'Other Fee'
-        : 'Deposit'
+          ? 'Other Fee'
+          : 'Deposit'
     } else if (platform === 'TaxBit') {
       processedActivity.type = sending ? 'Sell' : 'Buy'
     } else if (platform === 'TokenTax') {
@@ -378,8 +377,8 @@ const processDataForExport = (activities, platform) => {
       processedActivity.type = sending
         ? 'Withdrawal'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
-        ? 'Fee'
-        : 'Deposit'
+          ? 'Fee'
+          : 'Deposit'
       // don't include this fee amount in the fee column for type 'fee'
       if (processedActivity.type === 'Fee') {
         processedActivity.sentAmount = processedActivity.txFeeNumber
@@ -903,7 +902,7 @@ export default function History({
                             <tbody>
                               <tr>
                                 <td style={{ padding: 0 }}>
-                                  <Image alt="avatar" src={avatarServer + address.address} width="40" height="40" />
+                                  <img alt="avatar" src={avatarServer + address.address} width="40" height="40" />
                                 </td>
                                 <td style={{ padding: '0 0 0 5px' }}>
                                   <b className="orange">{address.name}</b> -{' '}

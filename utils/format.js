@@ -2,7 +2,6 @@ import { Buffer } from 'buffer'
 import dayjs from 'dayjs'
 import * as durationPlugin from 'dayjs/plugin/duration'
 import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Trans } from 'next-i18next'
 
@@ -155,7 +154,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
   const iconNode = doubleIcon ? (
     <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
       {/* back coin */}
-      <Image
+      <img
         alt="asset"
         src={assetImageUrl}
         width={22}
@@ -172,7 +171,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
         }}
       />
       {/* front coin */}
-      <Image
+      <img
         alt="asset 2"
         src={asset2ImageUrl}
         width={22}
@@ -191,7 +190,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
       />
     </div>
   ) : (
-    <Image
+    <img
       alt="avatar"
       src={imageUrl}
       width="35"
@@ -357,7 +356,7 @@ export const AddressWithIcon = ({ children, address }) => {
                 lineHeight: 0
               }}
             >
-              <Image
+              <img
                 alt="avatar"
                 src={imageUrl}
                 width="35"

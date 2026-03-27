@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Image from 'next/image'
 import Link from 'next/link'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 
@@ -447,13 +446,12 @@ export default function AccountOld({
 
                         <div className="column-left">
                           <div className="hide-on-small-w800 avatar-div">
-                            <Image
+                            <img
                               alt="avatar"
                               src={avatarSrc(data?.address, refreshPage)}
                               width="200"
                               height="200"
                               className="avatar"
-                              priority
                             />
                           </div>
 

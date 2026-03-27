@@ -575,7 +575,7 @@ export default function Header({
               <>
                 {displayName ? (
                   <>
-                    <Image
+                    <img
                       alt="avatar"
                       src={avatarServer + address}
                       width="24"
@@ -649,7 +649,7 @@ export default function Header({
                                 : () => setActiveWallet(walletItem.id)
                             }
                           >
-                            <Image
+                            <img
                               alt="avatar"
                               src={avatarServer + walletItem.address}
                               width="20"

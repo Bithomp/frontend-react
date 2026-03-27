@@ -12,7 +12,6 @@ import { avatarServer, devNet, encode, useWidth, xahauNetwork } from '../../../u
 import { removeProAddress, activateAddressCrawler, crawlerStatus, updateProAddress } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
 import { addressLink } from '../../../utils/format'
-import Image from 'next/image'
 
 import { MdDelete } from 'react-icons/md'
 import Link from 'next/link'
@@ -308,7 +307,7 @@ export default function Pro({
                                   <tbody>
                                     <tr>
                                       <td style={{ padding: 0 }}>
-                                        <Image
+                                        <img
                                           alt="avatar"
                                           src={avatarServer + a.address + (refreshPage ? '?' + refreshPage : '')}
                                           width="40"
@@ -378,7 +377,7 @@ export default function Pro({
                           {verifiedAddresses.map((a, i) => (
                             <tr key={i}>
                               <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                                <Image alt="avatar" src={avatarServer + a.address} width="30" height="30" />
+                                <img alt="avatar" src={avatarServer + a.address} width="30" height="30" />
                                 <br />
                                 <br />
                                 {i + 1}

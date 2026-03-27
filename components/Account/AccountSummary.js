@@ -1,7 +1,6 @@
 import { i18n } from 'next-i18next'
 import { fullNiceNumber, tokenToFiat, shortNiceNumber, timeFromNow } from '../../utils/format'
 import { avatarSrc, devNet, getCoinsUrl, nativeCurrency } from '../../utils'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { useQRCode } from 'next-qrcode'
@@ -13,12 +12,11 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
 
   return (
     <div className="account-summary">
-      <Image
+      <img
         alt="avatar"
         src={avatarSrc(data?.address, refreshPage)}
         width="60"
         height="60"
-        priority
         className="show-on-small-w800"
       />
       <div className="hide-on-small-w800" style={{ paddingTop: 2, marginBottom: -2 }}>

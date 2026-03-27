@@ -14,7 +14,6 @@ import { MdDelete } from 'react-icons/md'
 import { addressLink, amountFormat, tokenToFiat, nftIdLink, timeFromNow } from '../../utils/format'
 import Link from 'next/link'
 import axios from 'axios'
-import Image from 'next/image'
 import { nftPriceData, nftThumbnail } from '../../utils/nft'
 import { LinkTx } from '../../utils/links'
 
@@ -288,7 +287,7 @@ export default function Watchlist({
                                 <tbody>
                                   <tr>
                                     <td style={{ padding: 0 }}>
-                                      <Image alt="avatar" src={avatarServer + a.entity} width="40" height="40" />
+                                      <img alt="avatar" src={avatarServer + a.entity} width="40" height="40" />
                                     </td>
                                     <td style={{ padding: '0 0 0 10px' }}>
                                       <b className="orange">{a.name}</b>
@@ -330,7 +329,7 @@ export default function Watchlist({
                         {addresses.map((a, i) => (
                           <tr key={i}>
                             <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                              <Image alt="avatar" src={avatarServer + a.entity} width="30" height="30" />
+                              <img alt="avatar" src={avatarServer + a.entity} width="30" height="30" />
                               <br />
                               <br />
                               {i + 1}
