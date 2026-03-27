@@ -563,20 +563,23 @@ table {
 
 .button-action {
   text-decoration: none;
-  display: inline-block;
-  box-sizing: content-box;
-  line-height: 38px;
-  background-color: var(--accent-icon);
-  border: 1px solid var(--accent-icon);
-  color: var(--text-contrast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  background: var(--accent-link);
+  border: 1px solid var(--accent-link);
+  border-radius: 8px;
+  color: #fff;
   height: 40px;
   min-width: 100px;
   cursor: pointer;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 0;
-  padding-bottom: 0;
-  font-size: 16px;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: all 0.16s ease;
 
   .xaman-logo {
     width: 24px;
@@ -591,41 +594,72 @@ table {
   }
 
   &:hover {
-    background-color: var(--background-menu);
-    color: var(--text-contrast) !important;
-    border-color: var(--accent-link);
+    color: #fff !important;
+    opacity: 0.92;
+    transform: translateY(-1px);
+    text-decoration: none;
   }
+
+  .dark & {
+    background: color-mix(in srgb, var(--accent-link) 66%, #000 34%);
+    border-color: color-mix(in srgb, var(--accent-link) 58%, #000 42%);
+    color: #f6fbff;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  }
+
+  .dark &:hover {
+    background: color-mix(in srgb, var(--accent-link) 72%, #000 28%);
+    border-color: color-mix(in srgb, var(--accent-link) 64%, #000 36%);
+    opacity: 1;
+  }
+
   &.thin {
-    height: 29px;
-    line-height: 28px;
+    height: 30px;
+    min-width: 88px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+
     .xaman-logo {
       width: 18px;
       height: 18px;
-      margin-bottom: 2px;
+      margin-bottom: 0;
     }
   }
+
   &.narrow {
     min-width: unset;
   }
+
   &.wide {
-    width: calc(100% - 22px);
+    width: 100%;
   }
+
   &.disabled,
   &:disabled,
   &[disabled] {
-    border: 1px solid #999999;
-    background-color: #cccccc;
-    color: #666666;
-    cursor: default;
+    border: 1px solid #9da6b2;
+    background: #c6ced9;
+    color: #5c6673;
+    cursor: not-allowed;
+    opacity: 0.7;
     pointer-events: none;
+    transform: none;
+    text-shadow: none;
   }
+
   &.warning {
     color: var(--red);
     background: #eeeeee;
     border: 1px solid var(--red);
+
     &:hover:not(:disabled) {
       background: var(--red);
       color: white;
+      opacity: 1;
+      transform: translateY(-1px);
     }
   }
 }

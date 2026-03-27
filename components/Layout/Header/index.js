@@ -645,7 +645,9 @@ export default function Header({
                               isActiveWallet
                                 ? router.asPath.startsWith('/account/' + walletItem.address)
                                   ? undefined
-                                  : () => router.push('/account/' + walletItem.address)
+                                  : router.pathname.startsWith('/services')
+                                    ? undefined
+                                    : () => router.push('/account/' + walletItem.address)
                                 : () => setActiveWallet(walletItem.id)
                             }
                           >
