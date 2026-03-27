@@ -54,7 +54,9 @@ export default function TeaserTopAmendments({ data = [], isLoading = false }) {
             <span className={styles.amendmentVersion}>{amendmentVersion(amendment)}</span>
           </div>
           <div className={styles.metric}>
-            <span className={styles.amendmentDetail}>{amendmentDetail(amendment)}</span>
+            <span className={styles.amendmentDetail} suppressHydrationWarning>
+              {amendmentDetail(amendment)}
+            </span>
           </div>
           <div className={styles.metric}>
             <span
