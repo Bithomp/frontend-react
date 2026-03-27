@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -53,6 +54,13 @@ export default function RLUSD() {
           <p>
             The coin is issued and managed by Ripple, a company long known for building payment solutions and
             infrastructure for the financial sector.
+          </p>
+          <p>
+            You can also view RLUSD details directly on Bithomp:{' '}
+            <Link href="/token/rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De/524C555344000000000000000000000000000000">
+              RLUSD token page
+            </Link>
+            .
           </p>
           <h3>Why RLUSD?</h3>
           <p>
