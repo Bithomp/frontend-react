@@ -23,13 +23,21 @@ const errorHandle = (error) => {
     console.error('Ledger TransportStatusError:', statusCode, error.statusText)
 
     if (statusCode === 0x650f) {
-      throw new Error('Please unlock your Ledger device and open the ' + nativeCurrency + ' app, then try again.')
+      throw new Error(
+        'Ledger connection is not ready. Even if your device is unlocked and the ' +
+          nativeCurrency +
+          ' app is open, the browser session can be stale. Reopen the ' +
+          nativeCurrency +
+          ' app on Ledger, close Ledger Live if open, then try again.'
+      )
     }
 
     // CLA_NOT_SUPPORTED
     if (statusCode === 0x6e00) {
       throw new Error(
-        'Please unlock your Ledger by entering PIN and open the ' + nativeCurrency + ' app, then try again.'
+        'Ledger did not accept this command. Please unlock your Ledger, open the ' +
+          nativeCurrency +
+          ' app, and try again. If it still fails, reconnect the device and retry.'
       )
     }
 
@@ -45,7 +53,7 @@ const errorHandle = (error) => {
     // INCORRECT_DATA
     if (statusCode === 0x6a80) {
       throw new Error(
-        'Ledger rejected this transaction data (0x6a80). Please confirm you selected the correct Ledger account, make sure the transaction Account matches that address, then try again.'
+        'Ledger rejected this transaction data. Please confirm you selected the correct Ledger account, make sure the transaction Account matches that address, then try again.'
       )
     }
 
@@ -394,12 +402,14 @@ const ledgerwalletSign = async ({
 
   if (signRequestData?.signOnly) {
     setStatus('Sign the transaction in Ledger Wallet.')
+    setAwaiting(true)
     try {
       const signature = await signTransactionWithLedger(xrpApp, tx, path)
       tx.TxnSignature = signature
       const blob = encodeTx(tx)
       afterSigning({ signRequestData, blob, address })
     } catch (err) {
+      setAwaiting(false)
       setStatus(err.message)
     }
   } else {
@@ -426,6 +436,7 @@ const ledgerwalletSign = async ({
     }
 
     setStatus('Sign the transaction in Ledger Wallet.')
+    setAwaiting(true)
     try {
       const signature = await signTransactionWithLedger(xrpApp, tx, path)
       tx.TxnSignature = signature
@@ -434,7 +445,6 @@ const ledgerwalletSign = async ({
       const blob = encodeTx(tx)
 
       setStatus('Submitting transaction to the network...')
-      setAwaiting(true)
       broadcastTransaction({
         blob,
         setStatus,
@@ -448,6 +458,7 @@ const ledgerwalletSign = async ({
         t
       })
     } catch (err) {
+      setAwaiting(false)
       setStatus(err.message)
     }
   }

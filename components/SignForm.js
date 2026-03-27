@@ -26,7 +26,7 @@ import {
 import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
 import { gemwalletTxSend } from '../utils/gemwallet'
-import { ledgerwalletTxSend } from '../utils/ledgerwallet'
+import { ledgerwalletTxSend, ledgerwalletForceReset } from '../utils/ledgerwallet'
 import { metamaskTxSend } from '../utils/metamask'
 import { crossmarkTxSend } from '../utils/crossmark'
 import { xyraSignOnly, xyraConnect } from '../utils/xyrawallet'
@@ -662,6 +662,7 @@ export default function SignForm({
       return
     }
 
+    setPreparedTx(tx)
     setStatus(
       'Please, connect your Ledger Wallet and open the ' +
         nativeCurrency +
@@ -1861,6 +1862,21 @@ export default function SignForm({
                           )}
                           {status}
                         </div>
+                        {screen === 'ledgerwallet' && !awaiting && status && preparedTx && (
+                          <div style={{ marginTop: 14 }}>
+                            <button
+                              type="button"
+                              className="button-action"
+                              onClick={async () => {
+                                await ledgerwalletForceReset()
+                                ledgerwalletTxSending(preparedTx)
+                              }}
+                              style={buttonStyle}
+                            >
+                              Try again
+                            </button>
+                          </div>
+                        )}
                       </>
                     )}
                   </>
