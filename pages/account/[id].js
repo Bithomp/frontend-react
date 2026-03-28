@@ -2466,7 +2466,11 @@ export default function Account({
             <div className="avatar-container">
               <div className="avatar-wrapper">
                 <div className={`avatar-image-mask ${accountDisplayUsername ? 'has-username' : ''}`}>
-                  <img src={avatarSrc(data.address, refreshPage)} alt="Avatar" className="account-avatar" />
+                  <img
+                    src={avatarSrc(data.address, refreshPage) + (refreshPage ? '&hashIconZoom=12' : '?hashIconZoom=12')}
+                    alt="Avatar"
+                    className="account-avatar"
+                  />
                 </div>
                 {!data?.blacklist?.blacklisted && achievements.length > 0 && (
                   <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
@@ -9251,8 +9255,6 @@ export default function Account({
           height: 100%;
           object-fit: cover;
           object-position: center;
-          transform: scale(1.12);
-          transform-origin: center;
         }
 
         .achievements-orbit {

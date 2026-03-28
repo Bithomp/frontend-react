@@ -310,13 +310,12 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
           }}
         >
           <img
-            src={avatarServer + address || placeholder}
+            src={avatarServer + address + '?hashIconZoom=12' || placeholder}
             alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
             height={size}
             width={size}
             style={{
-              objectFit: 'cover',
-              transform: !data?.[name?.toLowerCase() + 'Details']?.service ? 'scale(1.25)' : 'scale(1)'
+              objectFit: 'cover'
             }}
             onError={(e) => {
               e.target.onerror = null
@@ -335,11 +334,7 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
 }
 
 export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = avatarServer + address
-  if (!address) {
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  }
-  const shouldZoom = !!address
+  let imageUrl = address ? avatarServer + address + '?hashIconZoom=12' : nativeCurrenciesImages[nativeCurrency]
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
@@ -362,8 +357,7 @@ export const AddressWithIcon = ({ children, address }) => {
                 width="35"
                 height="35"
                 style={{
-                  objectFit: 'cover',
-                  transform: shouldZoom ? 'scale(1.25)' : 'scale(1)'
+                  objectFit: 'cover'
                 }}
               />
             </div>

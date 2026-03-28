@@ -19,10 +19,10 @@ export default function Avatar({ src, alt = 'avatar', size = 35, style = {} }) {
     >
       <Image
         alt={alt}
-        src={src}
+        src={src + (src?.includes('?') ? '&' : '?') + 'hashIconZoom=12'}
         width={size}
         height={size}
-        style={{ verticalAlign: 'middle', transform: 'scale(1.10)' }}
+        style={{ verticalAlign: 'middle' }}
       />
     </span>
   )
