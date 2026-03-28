@@ -51,7 +51,7 @@ export default function MobileMenu({
         <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
           {displayName ? (
             <>
-              <img alt="avatar" src={avatarServer + address} width="18" height="18" style={{ marginRight: '5px' }} />
+              <img alt="avatar" src={avatarServer + address + '?hashIconZoom=12'} width="18" height="18" style={{ marginRight: '5px' }} />
               {displayName}
             </>
           ) : (

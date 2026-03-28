@@ -577,7 +577,7 @@ export default function Header({
                   <>
                     <img
                       alt="avatar"
-                      src={avatarServer + address}
+                      src={avatarServer + address + '?hashIconZoom=12'}
                       width="24"
                       height="24"
                       style={{ marginRight: '5px', borderRadius: '50%' }}
@@ -653,7 +653,7 @@ export default function Header({
                           >
                             <img
                               alt="avatar"
-                              src={avatarServer + walletItem.address}
+                              src={avatarServer + walletItem.address + '?hashIconZoom=12'}
                               width="20"
                               height="20"
                               style={{ borderRadius: '50%' }}
