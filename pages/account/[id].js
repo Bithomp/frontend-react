@@ -511,7 +511,10 @@ export default function Account({
   const showHistoricalDataCard = data?.ledgerInfo?.activated !== false || isDeletedAccount
   const isNotActivatedAccount = data?.ledgerInfo?.activated === false
   const shouldShowGetFirstNativeButton =
-    !!getCoinsUrl && nativeAvailableDrops === 0 && (isNotActivatedAccount || isDeletedAccount)
+    !!getCoinsUrl &&
+    nativeAvailableDrops === 0 &&
+    !data?.blacklist?.blacklisted &&
+    (isNotActivatedAccount || isDeletedAccount)
   const shouldShowAddTokenButton =
     !!setSignRequest &&
     !effectiveLedgerTimestamp &&
@@ -757,6 +760,7 @@ export default function Account({
     hasPositiveNativeAvailableBalance &&
     !devNet &&
     !isBlackholed &&
+    !data?.blacklist?.blacklisted &&
     !isDeletedAccount &&
     !isNotActivatedAccount
   const shouldShowSetAvatarButton = isOwnAccount && !!account?.address && !data?.ledgerInfo?.blackholed && !devNet
