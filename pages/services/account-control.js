@@ -554,6 +554,9 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
               the master key, you can replace or remove it at any time. Use it to keep your master key in cold storage
               while signing day-to-day transactions with a hot wallet.
             </div>
+            <div className="disabled-reason warning" style={{ marginTop: '0.5rem' }}>
+              Bithomp currently does not support signing transactions with a Regular Key.
+            </div>
             <div className="nft-minter-input" style={{ marginTop: '0.75rem' }}>
               <AddressInput
                 title="Set Regular Key"
@@ -602,6 +605,9 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
               Multi-signing lets a group of accounts collectively authorize transactions. Each signer has a weight; a
               transaction is valid when the combined weight of signers reaches the quorum. Useful for shared treasury
               accounts or extra security.
+            </div>
+            <div className="disabled-reason warning" style={{ marginTop: '0.5rem' }}>
+              Bithomp currently does not support signing transactions with Multi-signature.
             </div>
 
             <div style={{ marginTop: '0.75rem' }}>
@@ -747,6 +753,9 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
               {masterKeyDisabled
                 ? `The master key is disabled. You must sign with the regular key or multi-sig. To re-enable it, sign this transaction with the regular key or a signer — not the master key.`
                 : `Disabling the master key means the original account private key can no longer sign transactions. Ensure you have a working Regular Key or Signer List first. Due to the decentralized nature of ${explorerName}, no one can restore access if you lose all other signing methods.`}
+            </div>
+            <div className="disabled-reason warning" style={{ marginTop: '0.5rem' }}>
+              Bithomp does not yet support signing with a Regular Key or a Signer List.
             </div>
             {!masterKeyDisabled && !regularKey && !signerList && (
               <div className="disabled-reason warning">
