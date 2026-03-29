@@ -2804,6 +2804,13 @@ export default function Account({
 
                   {showAccountControlDetails && (
                     <div className="time-machine-panel account-control-panel">
+                      {isBlackholed && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Account status:</span>
+                          <span className="orange bold">blackholed - can not issue more tokens or perform transactions</span>
+                        </div>
+                      )}
+
                       {data?.ledgerInfo?.regularKey && (
                         <div className="detail-row issuer-detail-row">
                           <span>Regular key:</span>
