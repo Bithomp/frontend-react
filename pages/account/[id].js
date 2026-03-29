@@ -38,6 +38,7 @@ const NFT_FETCH_LIMIT = 45
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
 const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
+const SIGNER_ACCOUNTS_FETCH_LIMIT = 200
 const OBJECT_PREVIEW_LIMIT = 5
 const OBJECT_LOAD_MORE_STEP = 5
 
@@ -89,11 +90,63 @@ const setBalancesFunction = (networkInfo, data) => {
   return balanceList
 }
 
+const fetchSignerAccountsServer = async ({ address, req }) => {
+  let marker = null
+  let pagesFetched = 0
+  const signerRows = []
+  const seenAddresses = new Set()
+
+  do {
+    const markerQuery = marker ? `&marker=${encodeURIComponent(marker)}` : ''
+    const signerResponse = await axiosServer({
+      method: 'get',
+      url: 'xrpl/accounts?regularKeyOrSigner=' + address + '&limit=' + SIGNER_ACCOUNTS_FETCH_LIMIT + markerQuery,
+      headers: passHeaders(req)
+    })
+
+    const payload = signerResponse?.data || {}
+    if (payload?.result && payload.result !== 'success') {
+      throw new Error(payload?.message || 'Failed to load signer accounts')
+    }
+
+    const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+    accountRows.forEach((row) => {
+      const rowAddress = row?.account || row?.address || ''
+      if (!rowAddress || seenAddresses.has(rowAddress)) return
+
+      const regularKey = row?.regular_key || row?.regularKey || null
+      const signerList = Array.isArray(row?.signer_list)
+        ? row.signer_list
+        : Array.isArray(row?.signerList)
+          ? row.signerList
+          : []
+
+      const hasRegularKeyMatch = regularKey === address
+      const hasSignerMatch = signerList.includes(address)
+
+      seenAddresses.add(rowAddress)
+      signerRows.push({
+        address: rowAddress,
+        hasRegularKeyMatch,
+        hasSignerMatch
+      })
+    })
+
+    marker = payload?.marker || null
+    pagesFetched += 1
+  } while (marker && pagesFetched < 50)
+
+  return signerRows
+}
+
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let initialData = null
   let networkInfo = {}
   let initialErrorMessage = null
+  let initialSignerAccounts = []
+  let initialSignerAccountsError = null
+  let initialSignerAccountsHydrated = false
   const { id, ledgerIndex, ledgerTimestamp } = query
   const ledgerTimestampValue = Array.isArray(ledgerTimestamp) ? ledgerTimestamp[0] : ledgerTimestamp
   const isHistoricalLedger = !!ledgerIndex || !!ledgerTimestamp
@@ -138,6 +191,8 @@ export async function getServerSideProps(context) {
   }
 
   if (!accountWithTag && !initialErrorMessage) {
+    const fiatRatePromise = getFiatRateServer(req)
+
     try {
       const res = await axiosServer({
         method: 'get',
@@ -154,19 +209,37 @@ export async function getServerSideProps(context) {
         initialErrorMessage = initialData.error
         initialData = null
       } else {
-        const networkData = await axiosServer({
+        const networkPromise = axiosServer({
           method: 'get',
           url: 'v2/server',
           headers: passHeaders(req)
         })
-        networkInfo = networkData?.data
+        const signerPromise = initialData?.address
+          ? fetchSignerAccountsServer({ address: initialData.address, req })
+          : Promise.resolve([])
+
+        const [networkData, signerResult] = await Promise.allSettled([networkPromise, signerPromise])
+
+        if (networkData.status === 'rejected') {
+          throw networkData.reason
+        }
+        networkInfo = networkData?.value?.data
+
+        if (signerResult.status === 'fulfilled') {
+          initialSignerAccounts = signerResult.value || []
+          initialSignerAccountsHydrated = true
+        } else {
+          initialSignerAccounts = []
+          initialSignerAccountsError = signerResult.reason?.message || 'Failed to load signer accounts'
+          initialSignerAccountsHydrated = true
+        }
       }
     } catch (e) {
       initialErrorMessage = e?.message || 'Failed to load account data'
     }
 
     const balanceListServer = setBalancesFunction(networkInfo, initialData)
-    const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
+    const { fiatRateServer, selectedCurrencyServer } = await fiatRatePromise
 
     return {
       props: {
@@ -180,6 +253,9 @@ export async function getServerSideProps(context) {
         isSsrMobile: getIsSsrMobile(context),
         initialData: initialData || {},
         initialErrorMessage: initialErrorMessage || null,
+        initialSignerAccounts,
+        initialSignerAccountsError,
+        initialSignerAccountsHydrated,
         ...(await serverSideTranslations(locale, ['common', 'account']))
       }
     }
@@ -191,6 +267,9 @@ export async function getServerSideProps(context) {
         accountWithTag: accountWithTag || null,
         isSsrMobile: getIsSsrMobile(context),
         initialErrorMessage: initialErrorMessage || null,
+        initialSignerAccounts,
+        initialSignerAccountsError,
+        initialSignerAccountsHydrated,
         ...(await serverSideTranslations(locale, ['common', 'account']))
       }
     }
@@ -265,6 +344,9 @@ const mptId = (node) => node?.MPTokenIssuanceID || node?.mpt_issuance_id || null
 export default function Account({
   initialData,
   initialErrorMessage,
+  initialSignerAccounts,
+  initialSignerAccountsError,
+  initialSignerAccountsHydrated,
   selectedCurrency: selectedCurrencyApp,
   selectedCurrencyServer,
   fiatRate: fiatRateApp,
@@ -390,9 +472,15 @@ export default function Account({
   const [showActivatedAccountsFilters, setShowActivatedAccountsFilters] = useState(false)
   const [activatedAccountsOrder, setActivatedAccountsOrder] = useState('desc')
   const [activatedAccountsReloadKey, setActivatedAccountsReloadKey] = useState(0)
+  const [signerAccounts, setSignerAccounts] = useState(initialSignerAccounts || [])
+  const [signerAccountsLoading, setSignerAccountsLoading] = useState(false)
+  const [signerAccountsError, setSignerAccountsError] = useState(initialSignerAccountsError || null)
+  const [expandedSignerCard, setExpandedSignerCard] = useState(false)
   const nftOffersRequestTokenRef = useRef(0)
   const transactionsRequestTokenRef = useRef(0)
   const activatedAccountsRequestTokenRef = useRef(0)
+  const signerAccountsRequestTokenRef = useRef(0)
+  const signerAccountsInitialHydratedRef = useRef(!!initialSignerAccountsHydrated)
   const refreshPageRef = useRef(refreshPage)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
@@ -997,6 +1085,7 @@ export default function Account({
   const hasHeldMpts = heldMpts.length > 0
   const hasIssuedMpts = issuedMpts.length > 0
   const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
+  const hasSignerAccountsSection = !!data?.address && (!!signerAccountsError || signerAccounts.length > 0)
   const hasActivatedAccountsSection =
     !effectiveLedgerTimestamp &&
     (activatedAccountsLoading ||
@@ -1028,6 +1117,96 @@ export default function Account({
     // Re-run SSR data fetch on successful sign flow updates so balances, offers, and tx lists stay in sync.
     router.replace(router.asPath, undefined, { scroll: false })
   }, [refreshPage, data?.address, router])
+
+  useEffect(() => {
+    if (signerAccountsInitialHydratedRef.current) {
+      signerAccountsInitialHydratedRef.current = false
+      return
+    }
+
+    if (!data?.address) {
+      setSignerAccounts([])
+      setSignerAccountsLoading(false)
+      setSignerAccountsError(null)
+      setExpandedSignerCard(false)
+      return
+    }
+
+    setExpandedSignerCard(false)
+    const requestToken = signerAccountsRequestTokenRef.current + 1
+    signerAccountsRequestTokenRef.current = requestToken
+
+    const fetchSignerAccounts = async () => {
+      setSignerAccountsLoading(true)
+      setSignerAccountsError(null)
+
+      try {
+        let marker = null
+        let pagesFetched = 0
+        const signerRows = []
+        const seenAddresses = new Set()
+
+        do {
+          const markerQuery = marker ? `&marker=${encodeURIComponent(marker)}` : ''
+          const response = await axios.get(
+            `xrpl/accounts?regularKeyOrSigner=${data.address}&limit=${SIGNER_ACCOUNTS_FETCH_LIMIT}${markerQuery}`
+          )
+
+          if (signerAccountsRequestTokenRef.current !== requestToken) return
+
+          const payload = response?.data || {}
+          if (payload?.result && payload.result !== 'success') {
+            throw new Error(payload?.message || 'Failed to load signer accounts')
+          }
+
+          const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+
+          accountRows.forEach((row) => {
+            const address = row?.account || row?.address || ''
+            if (!address || seenAddresses.has(address)) return
+
+            const regularKey = row?.regular_key || row?.regularKey || null
+            const signerList = Array.isArray(row?.signer_list)
+              ? row.signer_list
+              : Array.isArray(row?.signerList)
+                ? row.signerList
+                : []
+
+            const hasRegularKeyMatch = regularKey === data.address
+            const hasSignerMatch = signerList.includes(data.address)
+
+            seenAddresses.add(address)
+            signerRows.push({
+              address,
+              hasRegularKeyMatch,
+              hasSignerMatch
+            })
+          })
+
+          marker = payload?.marker || null
+          pagesFetched += 1
+        } while (marker && pagesFetched < 50)
+
+        if (signerAccountsRequestTokenRef.current !== requestToken) return
+        setSignerAccounts(signerRows)
+      } catch (requestError) {
+        if (signerAccountsRequestTokenRef.current !== requestToken) return
+        setSignerAccounts([])
+        setSignerAccountsError(requestError?.message || 'Failed to load signer accounts')
+      } finally {
+        if (signerAccountsRequestTokenRef.current !== requestToken) return
+        setSignerAccountsLoading(false)
+      }
+    }
+
+    fetchSignerAccounts()
+
+    return () => {
+      if (signerAccountsRequestTokenRef.current === requestToken) {
+        signerAccountsRequestTokenRef.current = requestToken + 1
+      }
+    }
+  }, [data?.address, refreshPage])
 
   useEffect(() => {
     if (!data?.address || effectiveLedgerTimestamp) {
@@ -1356,6 +1535,7 @@ export default function Account({
     setExpandedDidCard(false)
     setExpandedHeldMptKey(null)
     setExpandedIssuedMptKey(null)
+    setExpandedSignerCard(false)
   }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
@@ -2791,6 +2971,78 @@ export default function Account({
             )}
 
             <div className="cards-list info-cards-list">
+              {hasSignerAccountsSection && (
+                <div className="time-machine-card signer-accounts-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${expandedSignerCard ? 'active' : ''}`}
+                    onClick={() => setExpandedSignerCard((prev) => !prev)}
+                  >
+                    Signer
+                    <span className="account-control-collapsed" suppressHydrationWarning>
+                      {signerAccountsError ? (
+                        ' unavailable'
+                      ) : (
+                        <>
+                          {' for '}
+                          <span className="bold">{fullNiceNumber(signerAccounts.length)}</span>{' '}
+                          {signerAccounts.length === 1 ? 'address' : 'addresses'}
+                        </>
+                      )}
+                    </span>
+                  </button>
+
+                  {expandedSignerCard && (
+                    <div className="time-machine-panel">
+                      {signerAccountsLoading ? (
+                        <div className="detail-row">
+                          <span className="tx-inline-load object-load-status-text">
+                            <span>Loading signer addresses</span>
+                            <span className="waiting inline" aria-hidden="true"></span>
+                          </span>
+                        </div>
+                      ) : signerAccountsError ? (
+                        <div className="detail-row">
+                          <span className="red">{signerAccountsError}</span>
+                        </div>
+                      ) : signerAccounts.length === 0 ? (
+                        <div className="detail-row">
+                          <span>No addresses found where this account is a signer.</span>
+                        </div>
+                      ) : (
+                        <div className="signer-rows-container">
+                          {signerAccounts.map((signerAccount, index) => {
+                            const roleLabel = signerAccount.hasRegularKeyMatch
+                              ? signerAccount.hasSignerMatch
+                                ? 'regular key + signer'
+                                : 'regular key'
+                              : 'signer'
+
+                            return (
+                              <div className="signer-row" key={`${signerAccount.address}-${index}`}>
+                                <span className="signer-row-index">{index + 1}</span>
+                                <div className="signer-row-address">
+                                  <AddressWithIconInline
+                                    data={{ address: signerAccount.address }}
+                                    options={{ short: 6, showAddress: true }}
+                                  />
+                                </div>
+                                <span className="signer-row-role">
+                                  <span className="grey">({roleLabel})</span>
+                                </span>
+                                <div className="signer-row-action">
+                                  <CopyButton text={signerAccount.address} />
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {hasAccountControlData && (
                 <div className="time-machine-card account-control-card">
                   <button
@@ -10106,6 +10358,71 @@ export default function Account({
           max-width: none;
           text-align: left;
           word-break: normal;
+        }
+
+        .signer-detail-row {
+          justify-content: flex-start;
+          gap: 8px;
+        }
+
+        .signer-detail-row > span:last-child {
+          max-width: none;
+          text-align: left;
+          word-break: normal;
+          overflow-wrap: normal;
+        }
+
+        .signer-detail-row .copy-inline {
+          justify-content: flex-start;
+          align-items: center;
+          flex-wrap: nowrap;
+          white-space: nowrap;
+        }
+
+        .signer-detail-row .signer-role {
+          white-space: nowrap;
+        }
+
+        .signer-rows-container {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .signer-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 12px 0;
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        .signer-row:last-child {
+          border-bottom: none;
+        }
+
+        .signer-row-index {
+          flex: 0 0 30px;
+          text-align: center;
+          color: var(--text-secondary);
+          font-weight: 500;
+        }
+
+        .signer-row-address {
+          flex: 1 1 auto;
+          min-width: 0;
+        }
+
+        .signer-row-role {
+          flex: 0 0 auto;
+          white-space: nowrap;
+          padding: 0 8px;
+        }
+
+        .signer-row-action {
+          flex: 0 0 auto;
+          display: flex;
+          justify-content: flex-end;
         }
 
         .asset-details {
