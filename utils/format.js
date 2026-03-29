@@ -72,11 +72,21 @@ export const NiceNativeBalance = ({ amount }) => {
 }
 
 export const TokenImage = ({ token }) => {
+  const size = 16
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="8" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+      ;(
+     </text>
+   </svg>`
+  )}`
+
   return (
     <div
       style={{
-        height: 16,
-        width: 16,
+        height: size,
+        width: size,
         display: 'inline-block',
         overflow: 'hidden',
         borderRadius: '50%',
@@ -89,11 +99,10 @@ export const TokenImage = ({ token }) => {
       <img
         src={tokenImageSrc(token)}
         alt="token"
-        height={16}
-        width={16}
+        height={size}
+        width={size}
         style={{
-          objectFit: 'cover',
-          transform: !token?.issuerDetails?.service ? 'scale(1.25)' : 'scale(1)'
+          objectFit: 'cover'
         }}
         onError={(e) => {
           e.target.onerror = null

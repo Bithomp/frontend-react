@@ -679,11 +679,17 @@ export const tokenImageSrc = (token) => {
   if (!token) return ''
   if ((!token.issuer && token.currency === nativeCurrency) || typeof token === 'string')
     return nativeCurrenciesImages[nativeCurrency]
-  return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
+  return (
+    avatarServer.replace('/avatar/', '/issued-token/') +
+    token.issuer +
+    '/' +
+    token.currency +
+    '?hashIconZoom=12'
+  )
 }
 
 export const mptokenImageSrc = (mptid) => {
-  return avatarServer.replace('/avatar/', '/mptoken/') + mptid
+  return avatarServer.replace('/avatar/', '/mptoken/') + mptid + '?hashIconZoom=12'
 }
 
 export const networksIds = {
