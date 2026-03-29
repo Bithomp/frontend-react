@@ -10,6 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import {
   avatarSrc,
+  encode,
   decode,
   devNet,
   errorT,
@@ -202,7 +203,7 @@ import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
-import { NftImage, nftName } from '../../utils/nft'
+import { NftImage, isNftExplicit, nftName, nftUrl } from '../../utils/nft'
 import {
   AddressWithIcon,
   AddressWithIconInline,
@@ -1236,10 +1237,10 @@ export default function Account({
     if (!marker || !data?.address) return
 
     const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
+    let url = ''
 
     try {
       setNftLoadingMore(true)
-      let url = ''
       if (nftTab === 'owned') {
         url = `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
       } else if (nftTab === 'sold') {
@@ -1255,6 +1256,7 @@ export default function Account({
       }
 
       const response = await axios.get(url)
+
       let moreItems = []
       let newMarker = response?.data?.marker || null
 
@@ -1574,11 +1576,13 @@ export default function Account({
         const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
 
         if (!effectiveLedgerTimestamp && (nftIds.length > 0 || xahauNetwork)) {
+          let nftPreviewUrl = ''
           try {
-            const nftPreviewUrl = `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
+            nftPreviewUrl = `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
 
             const nftResponse = await axios.get(nftPreviewUrl)
             const ownedNftsList = Array.isArray(nftResponse?.data?.[nftResource]) ? nftResponse.data[nftResource] : []
+
             setOwnedNfts(ownedNftsList.slice(0, NFT_FETCH_LIMIT))
             setNftMarkers((prev) => ({ ...prev, owned: nftResponse?.data?.marker || null }))
           } catch {
@@ -1684,7 +1688,6 @@ export default function Account({
 
         setTokens(sortedTokens)
       } catch (error) {
-        console.error('Failed to fetch tokens:', error)
         setObjectsError(error?.message || 'Failed to load account objects')
         resetAccountObjectCollections()
         setSoldNftsLoading(false)
@@ -4547,6 +4550,23 @@ export default function Account({
                             if (!nftIsTransferable && !isSignedInNftIssuer) return 'Non-transferable NFT'
                             return ''
                           })()
+                          const nftImageUrl = nftUrl(nftDisplayData, 'image')
+                          const shouldShowOwnerNftActionButtons =
+                            nftTab === 'owned' && !!nftId && !nftDeleted && !!setSignRequest && isSignedInNftOwner
+                          const canListOwnedNft =
+                            shouldShowOwnerNftActionButtons &&
+                            !xahauNetwork &&
+                            (nftIsTransferable || isSignedInNftIssuer)
+                          const disabledOwnerNftActionTooltip = (() => {
+                            if (canListOwnedNft) return ''
+                            if (!nftIsTransferable && !isSignedInNftIssuer) return 'Non-transferable NFT'
+                            return ''
+                          })()
+                          const canSetNftAsAvatar =
+                            shouldShowOwnerNftActionButtons &&
+                            !devNet &&
+                            !isNftExplicit(nftDisplayData) &&
+                            !!nftImageUrl
                           const soldAt = nft?.acceptedAt || nft?.soldAt
                           const mintedAt = nft?.issuedAt
                           const burnedAt = nft?.deletedAt
@@ -4689,49 +4709,168 @@ export default function Account({
                                     </div>
                                   )}
 
-                                  {shouldShowMakeBuyOfferButton && (
-                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                      <span className={disabledBuyOfferTooltip ? 'tooltip' : ''}>
+                                  <div className="nft-expanded-preview" onClick={(event) => event.stopPropagation()}>
+                                    <Link href={`/nft/${nftId}`} className="nft-expanded-preview-link">
+                                      <NftImage
+                                        nft={nftDisplayData}
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                          borderRadius: '10px',
+                                          verticalAlign: 'middle'
+                                        }}
+                                      />
+                                    </Link>
+                                  </div>
+
+                                  <div className="nft-expanded-actions" onClick={(event) => event.stopPropagation()}>
+                                    {shouldShowMakeBuyOfferButton && (
+                                      <div className="card-actions">
+                                        <span className={disabledBuyOfferTooltip ? 'tooltip' : ''}>
+                                          <button
+                                            type="button"
+                                            className={`card-action-btn ${canMakeBuyOffer ? 'redeem' : 'disabled'}`}
+                                            disabled={!canMakeBuyOffer}
+                                            onClick={() => {
+                                              if (!canMakeBuyOffer) return
+                                              setSignRequest({
+                                                request: {
+                                                  TransactionType: 'NFTokenCreateOffer',
+                                                  Account: account.address,
+                                                  NFTokenID: nftId,
+                                                  Owner: nftOwner
+                                                }
+                                              })
+                                            }}
+                                          >
+                                            Make a buy offer
+                                          </button>
+                                          {!!disabledBuyOfferTooltip && (
+                                            <span className="tooltiptext left">{disabledBuyOfferTooltip}</span>
+                                          )}
+                                        </span>
+                                      </div>
+                                    )}
+
+                                    {shouldShowBurnNftButton && !!burnNftRequest && (
+                                      <div className="card-actions">
                                         <button
                                           type="button"
-                                          className={`card-action-btn ${canMakeBuyOffer ? 'redeem' : 'disabled'}`}
-                                          disabled={!canMakeBuyOffer}
+                                          className="card-action-btn cancel"
                                           onClick={() => {
-                                            if (!canMakeBuyOffer) return
                                             setSignRequest({
-                                              request: {
-                                                TransactionType: 'NFTokenCreateOffer',
-                                                Account: account.address,
-                                                NFTokenID: nftId,
-                                                Owner: nftOwner
-                                              }
+                                              request: burnNftRequest
                                             })
                                           }}
                                         >
-                                          Make a buy offer
+                                          Burn
                                         </button>
-                                        {!!disabledBuyOfferTooltip && (
-                                          <span className="tooltiptext left">{disabledBuyOfferTooltip}</span>
-                                        )}
-                                      </span>
-                                    </div>
-                                  )}
+                                      </div>
+                                    )}
 
-                                  {shouldShowBurnNftButton && !!burnNftRequest && (
-                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                      <button
-                                        type="button"
-                                        className="card-action-btn cancel"
-                                        onClick={() => {
-                                          setSignRequest({
-                                            request: burnNftRequest
-                                          })
-                                        }}
-                                      >
-                                        Burn
-                                      </button>
-                                    </div>
-                                  )}
+                                    {shouldShowOwnerNftActionButtons && (
+                                      <div className="card-actions nft-owner-card-actions">
+                                        <span className={disabledOwnerNftActionTooltip ? 'tooltip' : ''}>
+                                          <button
+                                            type="button"
+                                            className={`card-action-btn ${canListOwnedNft ? 'redeem' : 'disabled'}`}
+                                            disabled={!canListOwnedNft}
+                                            onClick={() => {
+                                              if (!canListOwnedNft) return
+                                              setSignRequest({
+                                                request: {
+                                                  TransactionType: 'NFTokenCreateOffer',
+                                                  Account: nftOwner,
+                                                  NFTokenID: nftId,
+                                                  Flags: 1
+                                                }
+                                              })
+                                            }}
+                                          >
+                                            List for sale
+                                          </button>
+                                          {!!disabledOwnerNftActionTooltip && (
+                                            <span className="tooltiptext left">{disabledOwnerNftActionTooltip}</span>
+                                          )}
+                                        </span>
+
+                                        <span className={disabledOwnerNftActionTooltip ? 'tooltip' : ''}>
+                                          <button
+                                            type="button"
+                                            className={`card-action-btn ${canListOwnedNft ? 'redeem' : 'disabled'}`}
+                                            disabled={!canListOwnedNft}
+                                            onClick={() => {
+                                              if (!canListOwnedNft) return
+                                              setSignRequest({
+                                                request: {
+                                                  TransactionType: 'NFTokenCreateOffer',
+                                                  Account: nftOwner,
+                                                  NFTokenID: nftId,
+                                                  Flags: 1
+                                                },
+                                                action: 'nftTransfer'
+                                              })
+                                            }}
+                                          >
+                                            Transfer
+                                          </button>
+                                          {!!disabledOwnerNftActionTooltip && (
+                                            <span className="tooltiptext left">{disabledOwnerNftActionTooltip}</span>
+                                          )}
+                                        </span>
+
+                                        <span className={!canSetNftAsAvatar ? 'tooltip' : ''}>
+                                          <button
+                                            type="button"
+                                            className={`card-action-btn ${canSetNftAsAvatar ? 'redeem' : 'disabled'}`}
+                                            disabled={!canSetNftAsAvatar}
+                                            onClick={() => {
+                                              if (!canSetNftAsAvatar) return
+
+                                              const command = {
+                                                action: 'setAvatar',
+                                                url: nftImageUrl,
+                                                timestamp: new Date().toISOString()
+                                              }
+
+                                              setSignRequest({
+                                                request: {
+                                                  TransactionType: 'AccountSet',
+                                                  Account: nftOwner,
+                                                  Memos: [
+                                                    {
+                                                      Memo: {
+                                                        MemoType: encode('json'),
+                                                        MemoData: encode(JSON.stringify(command))
+                                                      }
+                                                    }
+                                                  ]
+                                                },
+                                                data: {
+                                                  signOnly: true,
+                                                  action: 'set-avatar',
+                                                  redirect: 'account'
+                                                }
+                                              })
+                                            }}
+                                          >
+                                            Set as avatar
+                                          </button>
+                                          {!canSetNftAsAvatar && (
+                                            <span className="tooltiptext left">
+                                              {devNet
+                                                ? 'Not available on devnet'
+                                                : isNftExplicit(nftDisplayData)
+                                                  ? 'Explicit NFT cannot be used as avatar'
+                                                  : !nftImageUrl
+                                                    ? 'Image is missing for this NFT'
+                                                    : ''}
+                                            </span>
+                                          )}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -7963,101 +8102,119 @@ export default function Account({
                                     </div>
                                   )}
 
-                                  {isPrivateNftOfferTab && !xahauNetwork && (
-                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                      <span className={disabledAcceptPrivateNftOfferTooltip ? 'tooltip' : ''}>
-                                        <button
-                                          type="button"
-                                          className={`card-action-btn ${canAcceptPrivateNftOffer ? 'redeem' : 'disabled'}`}
-                                          disabled={!canAcceptPrivateNftOffer}
-                                          onClick={() => {
-                                            if (!canAcceptPrivateNftOffer) return
-                                            setSignRequest({
-                                              offerAmount: offer.amount,
-                                              offerType: 'sell',
-                                              request: {
-                                                TransactionType: 'NFTokenAcceptOffer',
-                                                NFTokenSellOffer: offerIndex
-                                              }
-                                            })
-                                          }}
-                                        >
-                                          {offer.amount === '0' || !offer.amount ? (
-                                            'Accept NFT transfer'
-                                          ) : (
-                                            <>Buy NFT for {amountFormat(offer.amount)}</>
-                                          )}
-                                        </button>
-                                        {!!disabledAcceptPrivateNftOfferTooltip && (
-                                          <span className="tooltiptext left">
-                                            {disabledAcceptPrivateNftOfferTooltip}
-                                          </span>
-                                        )}
-                                      </span>
-                                    </div>
-                                  )}
+                                  <div className="nft-expanded-preview" onClick={(event) => event.stopPropagation()}>
+                                    <Link href={`/nft/${nftId}`} className="nft-expanded-preview-link">
+                                      <NftImage
+                                        nft={nftDisplayData}
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                          borderRadius: '10px',
+                                          verticalAlign: 'middle'
+                                        }}
+                                      />
+                                    </Link>
+                                  </div>
 
-                                  {isCreatedNftOfferTab && !xahauNetwork && (
-                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                      <span className={disabledCancelCreatedNftOfferTooltip ? 'tooltip' : ''}>
-                                        <button
-                                          type="button"
-                                          className={`card-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
-                                          disabled={!canCancelNftOffer}
-                                          onClick={() => {
-                                            if (!canCancelNftOffer) return
-                                            setSignRequest({
-                                              request: {
-                                                TransactionType: 'NFTokenCancelOffer',
-                                                Account: account?.address,
-                                                NFTokenOffers: [offerIndex]
-                                              }
-                                            })
-                                          }}
-                                          title="Cancel"
-                                        >
-                                          <MdMoneyOff /> Cancel
-                                        </button>
-                                        {!!disabledCancelCreatedNftOfferTooltip && (
-                                          <span className="tooltiptext left">
-                                            {disabledCancelCreatedNftOfferTooltip}
-                                          </span>
-                                        )}
-                                      </span>
-                                    </div>
-                                  )}
-
-                                  {isOwnedNftOfferTab && !xahauNetwork && (
-                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                      <span className={disabledAcceptOwnedNftOfferTooltip ? 'tooltip' : ''}>
-                                        <button
-                                          type="button"
-                                          className={`card-action-btn ${canAcceptOwnedNftOffer ? 'redeem' : 'disabled'}`}
-                                          disabled={!canAcceptOwnedNftOffer}
-                                          onClick={() => {
-                                            if (!canAcceptOwnedNftOffer) return
-                                            setSignRequest({
-                                              offerAmount: offer.amount,
-                                              offerType: 'buy',
-                                              request: {
-                                                TransactionType: 'NFTokenAcceptOffer',
-                                                NFTokenBuyOffer: offerIndex
-                                              }
-                                            })
-                                          }}
-                                        >
-                                          {offer.amount === '0' || !offer.amount ? (
-                                            'Accept NFT transfer'
-                                          ) : (
-                                            <>Sell NFT for {amountFormat(offer.amount)}</>
+                                  <div className="nft-expanded-actions" onClick={(event) => event.stopPropagation()}>
+                                    {isPrivateNftOfferTab && !xahauNetwork && (
+                                      <div className="card-actions">
+                                        <span className={disabledAcceptPrivateNftOfferTooltip ? 'tooltip' : ''}>
+                                          <button
+                                            type="button"
+                                            className={`card-action-btn ${canAcceptPrivateNftOffer ? 'redeem' : 'disabled'}`}
+                                            disabled={!canAcceptPrivateNftOffer}
+                                            onClick={() => {
+                                              if (!canAcceptPrivateNftOffer) return
+                                              setSignRequest({
+                                                offerAmount: offer.amount,
+                                                offerType: 'sell',
+                                                request: {
+                                                  TransactionType: 'NFTokenAcceptOffer',
+                                                  NFTokenSellOffer: offerIndex
+                                                }
+                                              })
+                                            }}
+                                          >
+                                            {offer.amount === '0' || !offer.amount ? (
+                                              'Accept NFT transfer'
+                                            ) : (
+                                              <>Buy NFT for {amountFormat(offer.amount)}</>
+                                            )}
+                                          </button>
+                                          {!!disabledAcceptPrivateNftOfferTooltip && (
+                                            <span className="tooltiptext left">
+                                              {disabledAcceptPrivateNftOfferTooltip}
+                                            </span>
                                           )}
-                                        </button>
-                                        {!!disabledAcceptOwnedNftOfferTooltip && (
-                                          <span className="tooltiptext left">{disabledAcceptOwnedNftOfferTooltip}</span>
-                                        )}
-                                      </span>
-                                    </div>
-                                  )}
+                                        </span>
+                                      </div>
+                                    )}
+
+                                    {isCreatedNftOfferTab && !xahauNetwork && (
+                                      <div className="card-actions">
+                                        <span className={disabledCancelCreatedNftOfferTooltip ? 'tooltip' : ''}>
+                                          <button
+                                            type="button"
+                                            className={`card-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
+                                            disabled={!canCancelNftOffer}
+                                            onClick={() => {
+                                              if (!canCancelNftOffer) return
+                                              setSignRequest({
+                                                request: {
+                                                  TransactionType: 'NFTokenCancelOffer',
+                                                  Account: account?.address,
+                                                  NFTokenOffers: [offerIndex]
+                                                }
+                                              })
+                                            }}
+                                            title="Cancel"
+                                          >
+                                            <MdMoneyOff /> Cancel
+                                          </button>
+                                          {!!disabledCancelCreatedNftOfferTooltip && (
+                                            <span className="tooltiptext left">
+                                              {disabledCancelCreatedNftOfferTooltip}
+                                            </span>
+                                          )}
+                                        </span>
+                                      </div>
+                                    )}
+
+                                    {isOwnedNftOfferTab && !xahauNetwork && (
+                                      <div className="card-actions">
+                                        <span className={disabledAcceptOwnedNftOfferTooltip ? 'tooltip' : ''}>
+                                          <button
+                                            type="button"
+                                            className={`card-action-btn ${canAcceptOwnedNftOffer ? 'redeem' : 'disabled'}`}
+                                            disabled={!canAcceptOwnedNftOffer}
+                                            onClick={() => {
+                                              if (!canAcceptOwnedNftOffer) return
+                                              setSignRequest({
+                                                offerAmount: offer.amount,
+                                                offerType: 'buy',
+                                                request: {
+                                                  TransactionType: 'NFTokenAcceptOffer',
+                                                  NFTokenBuyOffer: offerIndex
+                                                }
+                                              })
+                                            }}
+                                          >
+                                            {offer.amount === '0' || !offer.amount ? (
+                                              'Accept NFT transfer'
+                                            ) : (
+                                              <>Sell NFT for {amountFormat(offer.amount)}</>
+                                            )}
+                                          </button>
+                                          {!!disabledAcceptOwnedNftOfferTooltip && (
+                                            <span className="tooltiptext left">
+                                              {disabledAcceptOwnedNftOfferTooltip}
+                                            </span>
+                                          )}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -10095,6 +10252,40 @@ export default function Account({
           margin-top: 0;
         }
 
+        .nft-expanded-preview {
+          margin-top: 12px;
+          margin-bottom: 8px;
+          display: block;
+          clear: both;
+          width: min(100%, 180px);
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .nft-expanded-actions {
+          display: flow-root;
+        }
+
+        .nft-expanded-preview-link {
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          border-radius: 10px;
+          overflow: hidden;
+          line-height: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid color-mix(in srgb, var(--border-color) 76%, var(--text-secondary));
+          background: color-mix(in srgb, var(--background-input) 90%, var(--text-main) 10%);
+        }
+
+        .nft-expanded-preview-link :global(img) {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
         .nft-details {
           margin-top: 10px;
           padding-top: 10px;
@@ -10495,6 +10686,10 @@ export default function Account({
           justify-content: flex-end;
           flex-wrap: wrap;
           float: right;
+        }
+
+        .nft-owner-card-actions {
+          margin-right: 8px;
         }
 
         .card-action-btn {
