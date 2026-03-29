@@ -2807,7 +2807,9 @@ export default function Account({
                       {isBlackholed && (
                         <div className="detail-row issuer-detail-row">
                           <span>Account status:</span>
-                          <span className="orange bold">blackholed - can not issue more tokens or perform transactions</span>
+                          <span className="orange bold">
+                            blackholed - can not issue more tokens or perform transactions
+                          </span>
                         </div>
                       )}
 
