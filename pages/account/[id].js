@@ -569,6 +569,7 @@ export default function Account({
   const hasAccountSettingsRows =
     !!data?.ledgerInfo?.accountIndex ||
     hasNextSequence ||
+    !!data?.ledgerInfo?.emailHash ||
     !!data?.ledgerInfo?.messageKey ||
     !!data?.ledgerInfo?.previousTxnID ||
     !!data?.ledgerInfo?.accountTxnID ||
@@ -3207,6 +3208,26 @@ export default function Account({
                           </span>
                         </div>
                       )}
+
+                      {data?.ledgerInfo?.emailHash && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Email hash:</span>
+                          <span className="copy-inline">
+                            <a
+                              href={`https://gravatar.com/${data.ledgerInfo.emailHash.toLowerCase()}`}
+                              target="_blank"
+                              rel="noopener nofollow"
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              {shortHash(data.ledgerInfo.emailHash)}
+                            </a>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.emailHash} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
                       {data?.ledgerInfo?.messageKey && (
                         <div className="detail-row issuer-detail-row">
                           <span>
