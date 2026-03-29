@@ -39,6 +39,7 @@ import {
   TransactionRowOffer,
   TransactionRowPayment,
   TransactionRowSetRegularKey,
+  TransactionRowSignerListSet,
   TransactionRowTrustSet,
   TransactionRowURIToken,
   TransactionRowRemit,
@@ -614,6 +615,8 @@ export default function AccountTransactions({
                       TransactionRowComponent = TransactionRowPayment
                     } else if (type === 'SetRegularKey') {
                       TransactionRowComponent = TransactionRowSetRegularKey
+                    } else if (type === 'SignerListSet') {
+                      TransactionRowComponent = TransactionRowSignerListSet
                     } else if (type === 'DelegateSet') {
                       TransactionRowComponent = TransactionRowDelegateSet
                     } else if (type === 'TrustSet') {

@@ -3,7 +3,7 @@ import { nativeCurrency, safeClone } from '..'
 import { TData } from '../../components/Table'
 import { add } from '../calc'
 import { decodeJsonMemo } from '../format'
-import { FaKey, FaLink, FaUserShield } from 'react-icons/fa6'
+import { FaLink, FaUserShield } from 'react-icons/fa6'
 import { FaRegHandPaper, FaMoneyCheckAlt } from 'react-icons/fa'
 import {
   MdArrowDownward,
@@ -16,8 +16,8 @@ import {
 } from 'react-icons/md'
 import { BsFillSafeFill } from 'react-icons/bs'
 import { CiSettings } from 'react-icons/ci'
-import { FiDownload } from 'react-icons/fi'
-import { GiPassport } from 'react-icons/gi'
+import { FiDownload, FiKey } from 'react-icons/fi'
+import { GiKeyring, GiPassport } from 'react-icons/gi'
 import { LuFileCheck2 } from 'react-icons/lu'
 import { RiNftFill } from 'react-icons/ri'
 
@@ -173,7 +173,11 @@ export const getAccountTransactionTypeIcon = ({
   }
 
   if (txType === 'SetRegularKey') {
-    return <FaKey style={{ ...iconStyle, color: '#9b59b6' }} title="Set Regular Key" />
+    return <FiKey style={{ ...iconStyle, color: '#9b59b6' }} title="Set Regular Key" />
+  }
+
+  if (txType === 'SignerListSet') {
+    return <GiKeyring style={{ ...iconStyle, color: '#9b59b6' }} title="Signer List Set" />
   }
 
   if (txType === 'DelegateSet') {

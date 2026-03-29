@@ -1,5 +1,5 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { FaKey } from 'react-icons/fa'
+import { FiKey } from 'react-icons/fi'
 
 export const TransactionRowSetRegularKey = ({ data, address, index, selectedCurrency }) => {
   return (
@@ -8,7 +8,7 @@ export const TransactionRowSetRegularKey = ({ data, address, index, selectedCurr
       address={address}
       index={index}
       selectedCurrency={selectedCurrency}
-      icon={<FaKey style={{ color: '#9b59b6', fontSize: 20 }} title="Set Regular Key" />}
+      icon={<FiKey style={{ color: '#9b59b6', fontSize: 20 }} title="Set Regular Key" />}
     >
       {/* Set Regular Key */}
     </TransactionRowCard>
