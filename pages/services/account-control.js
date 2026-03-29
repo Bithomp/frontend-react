@@ -368,10 +368,32 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
   const isSignedIn = !!account?.address
   const actionLockReason = !isSignedIn ? signInTooltip : isProLocked ? proOnlyTooltip : ''
   const isActionLocked = !!actionLockReason
+  const hasRegularKeyConfigured = !!regularKey
+  const hasSignerListConfigured = !!signerList
+
+  let masterKeyUnsupportedReason = ''
+  if (masterKeyDisabled) {
+    if (!hasRegularKeyConfigured && !hasSignerListConfigured) {
+      masterKeyUnsupportedReason = 'Regular Key and Signer List signing are not supported yet.'
+    } else if (hasRegularKeyConfigured && !hasSignerListConfigured) {
+      masterKeyUnsupportedReason = 'Regular Key signing is not supported yet.'
+    } else if (!hasRegularKeyConfigured && hasSignerListConfigured) {
+      masterKeyUnsupportedReason = 'Signer List signing is not supported yet.'
+    } else {
+      masterKeyUnsupportedReason = 'Regular Key and Signer List signing are not supported yet.'
+    }
+  }
+
+  const regularKeyActionLockReason = actionLockReason || masterKeyUnsupportedReason
+  const signerListActionLockReason = actionLockReason || masterKeyUnsupportedReason
+  const isRegularKeyActionLocked = !!regularKeyActionLockReason
+  const isSignerListActionLocked = !!signerListActionLockReason
   const hasAtLeastOneSigner = signerEntries.some((row) => row.account.trim())
 
-  const regularKeyDisabledReason = actionLockReason || (!regularKeyInput.trim() ? 'Enter a Regular Key first.' : '')
-  const signerListDisabledReason = actionLockReason || (!hasAtLeastOneSigner ? 'Add at least one signer first.' : '')
+  const regularKeyDisabledReason =
+    regularKeyActionLockReason || (!regularKeyInput.trim() ? 'Enter a Regular Key first.' : '')
+  const signerListDisabledReason =
+    signerListActionLockReason || (!hasAtLeastOneSigner ? 'Add at least one signer first.' : '')
   const disableMasterDisabledReason =
     actionLockReason || (!regularKey && !signerList ? 'Set a Regular Key or Signer List first.' : '')
   const blackholeDisabledReason =
@@ -517,10 +539,14 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
               </div>
               {regularKey &&
                 withActionTooltip(
-                  <button className="button-action thin" onClick={handleRemoveRegularKey} disabled={isActionLocked}>
+                  <button
+                    className="button-action thin"
+                    onClick={handleRemoveRegularKey}
+                    disabled={isRegularKeyActionLocked}
+                  >
                     Remove
                   </button>,
-                  actionLockReason
+                  regularKeyActionLockReason
                 )}
             </div>
             <div className="flag-description">
@@ -542,7 +568,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                 <button
                   className="button-action thin"
                   onClick={handleSetRegularKey}
-                  disabled={isActionLocked || !regularKeyInput.trim()}
+                  disabled={isRegularKeyActionLocked || !regularKeyInput.trim()}
                   style={{ marginTop: '0.5rem' }}
                 >
                   Set Regular Key
@@ -562,10 +588,14 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
               </div>
               {signerList &&
                 withActionTooltip(
-                  <button className="button-action thin" onClick={handleRemoveSignerList} disabled={isActionLocked}>
+                  <button
+                    className="button-action thin"
+                    onClick={handleRemoveSignerList}
+                    disabled={isSignerListActionLocked}
+                  >
                     Remove
                   </button>,
-                  actionLockReason
+                  signerListActionLockReason
                 )}
             </div>
             <div className="flag-description">
@@ -621,31 +651,27 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                       onChange={(e) => updateSignerRow(idx, 'weight', e.target.value)}
                     />
                     <div className="signer-remove-cell">
-                      {signerEntries.length > 1 &&
-                        withActionTooltip(
-                          <button
-                            onClick={() => removeSignerRow(idx)}
-                            disabled={isActionLocked}
-                            title={isActionLocked ? '' : 'Remove signer'}
-                            aria-label={`Remove signer ${idx + 1}`}
-                            style={{
-                              width: 28,
-                              height: 28,
-                              padding: 0,
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              border: 'none',
-                              background: 'transparent',
-                              color: 'var(--red, #d64949)',
-                              cursor: isActionLocked ? 'not-allowed' : 'pointer',
-                              opacity: isActionLocked ? 0.5 : 1
-                            }}
-                          >
-                            <IoTrashOutline size={16} />
-                          </button>,
-                          actionLockReason
-                        )}
+                      {signerEntries.length > 1 && (
+                        <button
+                          onClick={() => removeSignerRow(idx)}
+                          title="Remove signer"
+                          aria-label={`Remove signer ${idx + 1}`}
+                          style={{
+                            width: 28,
+                            height: 28,
+                            padding: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: 'none',
+                            background: 'transparent',
+                            color: 'var(--red, #d64949)',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <IoTrashOutline size={16} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -685,7 +711,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                   <button
                     className="button-action thin"
                     onClick={handleSetSignerList}
-                    disabled={isActionLocked || !hasAtLeastOneSigner}
+                    disabled={isSignerListActionLocked || !hasAtLeastOneSigner}
                     style={{ marginTop: '0.6rem' }}
                   >
                     {signerList ? 'Update Signer List' : 'Set Signer List'}
