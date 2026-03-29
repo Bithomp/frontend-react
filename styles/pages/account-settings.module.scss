@@ -343,6 +343,10 @@
     justify-content: center;
   }
 
+  .signer-mobile-list {
+    display: none;
+  }
+
   @media (max-width: 1100px) {
     .signer-grid-header,
     .signer-grid-row {
@@ -369,6 +373,43 @@
 
   // Mobile responsive adjustments
   @media (max-width: 600px) {
+    .signer-entry-row {
+      display: none;
+    }
+
+    .signer-mobile-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-top: 0.5rem;
+    }
+
+    .signer-mobile-item {
+      border: 1px solid var(--unaccent-icon);
+      background: var(--background-input);
+      border-radius: 4px;
+      padding: 0.45rem 0.55rem;
+    }
+
+    .signer-mobile-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 0.2rem;
+    }
+
+    .signer-mobile-address {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: monospace;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
     .flag-item {
       padding: 0.75rem;
     }

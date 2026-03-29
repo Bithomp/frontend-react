@@ -468,7 +468,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                   </td>
                 </tr>
                 {signerList?.signerEntries?.map((signer, i) => (
-                  <tr key={i}>
+                  <tr key={i} className="signer-entry-row">
                     <td style={{ paddingLeft: '1.5rem', color: 'var(--text-secondary)', fontSize: 13 }}>
                       Signer #{i + 1} (weight {signer.signerWeight})
                     </td>
@@ -486,6 +486,23 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                 )}
               </tbody>
             </table>
+
+            {signerList?.signerEntries?.length > 0 && (
+              <div className="signer-mobile-list">
+                {signerList.signerEntries.map((signer, i) => (
+                  <div key={i} className="signer-mobile-item">
+                    <div className="signer-mobile-head">
+                      <span>Signer #{i + 1}</span>
+                      <span>Weight {signer.signerWeight}</span>
+                    </div>
+                    <div className="signer-mobile-address">
+                      {signer.account}
+                      <CopyButton text={signer.account} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </>
         )}
 
