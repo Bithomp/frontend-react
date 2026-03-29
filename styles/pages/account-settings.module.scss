@@ -296,6 +296,77 @@
     }
   }
 
+  .signer-grid-header,
+  .signer-grid-row {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 440px) 56px 28px;
+    column-gap: 0.5rem;
+  }
+
+  .signer-grid-header {
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .signer-grid-row {
+    align-items: center;
+  }
+
+  .signer-index-cell {
+    width: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .signer-address-cell {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .signer-weight-input {
+    width: 56px;
+    text-align: center;
+    padding-left: 6px;
+    padding-right: 6px;
+    align-self: end;
+  }
+
+  .signer-remove-cell {
+    width: 28px;
+    padding-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 1100px) {
+    .signer-grid-header,
+    .signer-grid-row {
+      grid-template-columns: 24px minmax(0, 1fr) 56px 28px;
+    }
+
+    .signer-grid-row {
+      align-items: center;
+    }
+
+    .signer-weight-input {
+      align-self: center;
+    }
+
+    .signer-address-cell .form-input {
+      margin-bottom: 0;
+    }
+
+    .signer-index-cell,
+    .signer-remove-cell {
+      align-self: center;
+    }
+  }
+
   // Mobile responsive adjustments
   @media (max-width: 600px) {
     .flag-item {

@@ -572,44 +572,16 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '24px minmax(0, 440px) 56px 28px',
-                    columnGap: '0.5rem',
-                    alignItems: 'center',
-                    fontSize: 12,
-                    color: 'var(--text-secondary)',
-                    fontWeight: 500
-                  }}
-                >
+                <div className="signer-grid-header">
                   <span style={{ width: 24, flexShrink: 0, textAlign: 'center' }}>#</span>
                   <span style={{ flex: 1 }}>Address</span>
                   <span style={{ width: 56, textAlign: 'center' }}>Weight</span>
                   <span style={{ width: 32 }}></span>
                 </div>
                 {signerEntries.map((row, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '24px minmax(0, 440px) 56px 28px',
-                      columnGap: '0.5rem',
-                      alignItems: 'end'
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 24,
-                        flexShrink: 0,
-                        textAlign: 'center',
-                        fontSize: 13,
-                        alignSelf: 'center'
-                      }}
-                    >
-                      {idx + 1}
-                    </span>
-                    <div style={{ minWidth: 0, width: '100%' }}>
+                  <div key={idx} className="signer-grid-row">
+                    <span className="signer-index-cell">{idx + 1}</span>
+                    <div className="signer-address-cell">
                       <AddressInput
                         placeholder="Username or address"
                         setInnerValue={(val) => updateSignerRow(idx, 'account', val)}
@@ -618,7 +590,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                       />
                     </div>
                     <input
-                      className="input-text"
+                      className="input-text signer-weight-input"
                       type="number"
                       name={`signer-weight-${idx}`}
                       autoComplete="off"
@@ -630,9 +602,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                       max="99"
                       value={row.weight}
                       onChange={(e) => updateSignerRow(idx, 'weight', e.target.value)}
-                      style={{ width: 56, textAlign: 'center', paddingLeft: 6, paddingRight: 6 }}
                     />
-                    <div style={{ width: 28, flexShrink: 0, paddingLeft: 10, alignSelf: 'end', marginBottom: '6px' }}>
+                    <div className="signer-remove-cell">
                       {signerEntries.length > 1 &&
                         withActionTooltip(
                           <button
