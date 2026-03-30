@@ -91,16 +91,16 @@ const setBalancesFunction = (networkInfo, data) => {
 }
 
 const fetchSignerAccountsServer = async ({ address, req }) => {
-  let marker = null
-  let pagesFetched = 0
+  let offset = 0
   const signerRows = []
   const seenAddresses = new Set()
+  let hasMore = true
 
-  do {
-    const markerQuery = marker ? `&marker=${encodeURIComponent(marker)}` : ''
+  while (hasMore) {
+    const offsetQuery = offset > 0 ? `&offset=${offset}` : ''
     const signerResponse = await axiosServer({
       method: 'get',
-      url: 'xrpl/accounts?regularKeyOrSigner=' + address + '&limit=' + SIGNER_ACCOUNTS_FETCH_LIMIT + markerQuery,
+      url: 'xrpl/accounts?regularKeyOrSigner=' + address + '&limit=' + SIGNER_ACCOUNTS_FETCH_LIMIT + offsetQuery,
       headers: passHeaders(req)
     })
 
@@ -132,9 +132,12 @@ const fetchSignerAccountsServer = async ({ address, req }) => {
       })
     })
 
-    marker = payload?.marker || null
-    pagesFetched += 1
-  } while (marker && pagesFetched < 50)
+    if (accountRows.length < SIGNER_ACCOUNTS_FETCH_LIMIT) {
+      hasMore = false
+    } else {
+      offset += SIGNER_ACCOUNTS_FETCH_LIMIT
+    }
+  }
 
   return signerRows
 }
@@ -1141,15 +1144,15 @@ export default function Account({
       setSignerAccountsError(null)
 
       try {
-        let marker = null
-        let pagesFetched = 0
+        let offset = 0
         const signerRows = []
         const seenAddresses = new Set()
+        let hasMore = true
 
-        do {
-          const markerQuery = marker ? `&marker=${encodeURIComponent(marker)}` : ''
+        while (hasMore) {
+          const offsetQuery = offset > 0 ? `&offset=${offset}` : ''
           const response = await axios.get(
-            `xrpl/accounts?regularKeyOrSigner=${data.address}&limit=${SIGNER_ACCOUNTS_FETCH_LIMIT}${markerQuery}`
+            `xrpl/accounts?regularKeyOrSigner=${data.address}&limit=${SIGNER_ACCOUNTS_FETCH_LIMIT}${offsetQuery}`
           )
 
           if (signerAccountsRequestTokenRef.current !== requestToken) return
@@ -1183,9 +1186,12 @@ export default function Account({
             })
           })
 
-          marker = payload?.marker || null
-          pagesFetched += 1
-        } while (marker && pagesFetched < 50)
+          if (accountRows.length < SIGNER_ACCOUNTS_FETCH_LIMIT) {
+            hasMore = false
+          } else {
+            offset += SIGNER_ACCOUNTS_FETCH_LIMIT
+          }
+        }
 
         if (signerAccountsRequestTokenRef.current !== requestToken) return
         setSignerAccounts(signerRows)
