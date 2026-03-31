@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 import Link from 'next/link'
@@ -49,7 +49,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
 
   // Multi-sig
   const [signerQuorum, setSignerQuorum] = useState('1')
-  const [signerEntries, setSignerEntries] = useState([{ account: '', weight: '1' }])
+  const signerUidRef = useRef(1)
+  const [signerEntries, setSignerEntries] = useState([{ uid: 0, account: '', weight: '1' }])
 
   // Blackhole
   const [confirmBlackhole, setConfirmBlackhole] = useState(false)
@@ -149,12 +150,13 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
 
   // ── Multi-signature ──────────────────────────────────────────────────────────
 
-  const addSignerRow = () => setSignerEntries((prev) => [...prev, { account: '', weight: '1' }])
+  const addSignerRow = () =>
+    setSignerEntries((prev) => [...prev, { uid: signerUidRef.current++, account: '', weight: '1' }])
 
-  const removeSignerRow = (idx) => setSignerEntries((prev) => prev.filter((_, i) => i !== idx))
+  const removeSignerRow = (uid) => setSignerEntries((prev) => prev.filter((r) => r.uid !== uid))
 
-  const updateSignerRow = (idx, field, val) =>
-    setSignerEntries((prev) => prev.map((row, i) => (i === idx ? { ...row, [field]: val } : row)))
+  const updateSignerRow = (uid, field, val) =>
+    setSignerEntries((prev) => prev.map((row) => (row.uid === uid ? { ...row, [field]: val } : row)))
 
   const handleSetSignerList = async () => {
     setMultiSigErrorMessage('')
@@ -614,39 +616,40 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
             </div>
 
             <div style={{ marginTop: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                <label style={{ fontWeight: 500, minWidth: 80, fontSize: 14 }}>Quorum</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <label style={{ fontWeight: 500, fontSize: 14 }}>Quorum</label>
                 <input
                   className="input-text"
                   type="number"
                   min="1"
                   value={signerQuorum}
                   onChange={(e) => setSignerQuorum(e.target.value)}
-                  style={{ width: 80 }}
+                  style={{ width: 52, textAlign: 'center', paddingLeft: 6, paddingRight: 6 }}
                 />
+                <small style={{ color: 'var(--text-secondary)' }}>
+                  Minimum total weight required to sign a transaction.
+                </small>
               </div>
-              <small style={{ display: 'block', marginBottom: '0.65rem', color: 'var(--text-secondary)' }}>
-                Minimum total weight required to sign a transaction.
-              </small>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '0.5rem' }}>
                 <div className="signer-grid-header">
                   <span style={{ width: 24, flexShrink: 0, textAlign: 'center' }}>#</span>
                   <span style={{ flex: 1 }}>Address</span>
-                  <span style={{ width: 56, textAlign: 'center' }}>Weight</span>
-                  <span style={{ width: 32 }}></span>
+                  <span style={{ textAlign: 'center' }}>Weight</span>
+                  <span style={{ width: 28 }}></span>
                 </div>
                 {signerEntries.map((row, idx) => (
-                  <div key={idx} className="signer-grid-row">
+                  <div key={row.uid} className="signer-grid-row">
                     <span className="signer-index-cell">{idx + 1}</span>
                     <div className="signer-address-cell">
                       <AddressInput
                         placeholder="Username or address"
-                        setInnerValue={(val) => updateSignerRow(idx, 'account', val)}
+                        setInnerValue={(val) => updateSignerRow(row.uid, 'account', val)}
                         hideButton={true}
                         type="address"
                       />
                     </div>
+                    <span className="signer-weight-label">Weight</span>
                     <input
                       className="input-text signer-weight-input"
                       type="number"
@@ -659,54 +662,43 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                       min="1"
                       max="99"
                       value={row.weight}
-                      onChange={(e) => updateSignerRow(idx, 'weight', e.target.value)}
+                      onChange={(e) => updateSignerRow(row.uid, 'weight', e.target.value)}
                     />
-                    <div className="signer-remove-cell">
-                      {signerEntries.length > 1 && (
-                        <button
-                          onClick={() => removeSignerRow(idx)}
-                          title="Remove signer"
-                          aria-label={`Remove signer ${idx + 1}`}
-                          style={{
-                            width: 28,
-                            height: 28,
-                            padding: 0,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            border: 'none',
-                            background: 'transparent',
-                            color: 'var(--red, #d64949)',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <IoTrashOutline size={16} />
-                        </button>
-                      )}
+                    <div
+                      className="signer-remove-cell"
+                      style={signerEntries.length <= 1 ? { visibility: 'hidden' } : {}}
+                    >
+                      <button
+                        className="signer-remove-btn"
+                        onClick={() => removeSignerRow(row.uid)}
+                        title="Remove signer"
+                        aria-label={`Remove signer ${idx + 1}`}
+                      >
+                        <IoTrashOutline size={16} />
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <button
-                type="button"
-                className="link"
-                onClick={addSignerRow}
-                style={{
-                  border: 'none',
-                  background: 'transparent',
-                  padding: 0,
-                  fontWeight: 600,
-                  textDecorationThickness: '2px',
-                  display: 'block',
-                  marginTop: '0.4rem',
-                  marginBottom: '0.5rem'
-                }}
-              >
-                + Add signer
-              </button>
+              <div style={{ marginTop: '0.5rem' }}>
+                <button
+                  type="button"
+                  className="link"
+                  onClick={addSignerRow}
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    padding: 0,
+                    fontWeight: 600,
+                    textDecorationThickness: '2px'
+                  }}
+                >
+                  + Add signer
+                </button>
+              </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
                 {withActionTooltip(
                   <button
                     className="button-action thin"
