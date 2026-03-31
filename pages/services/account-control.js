@@ -453,7 +453,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                 <p style={{ marginBottom: '0.45rem' }}>
                   Account Control is available to logged-in Bithomp Pro subscribers.
                 </p>
-                <div style={{ marginTop: '0.75rem', marginBottom: '0.35rem' }}>
+                <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                   <button className="button-action" onClick={() => openEmailLogin?.()} style={{ padding: '10px 16px' }}>
                     <IoIosRocket style={{ fontSize: 16, marginRight: 6, marginBottom: 1 }} />
                     Log in to Bithomp Pro

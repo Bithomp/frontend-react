@@ -9,16 +9,9 @@
   margin: 10px 0 20px;
 
   .tabs-scroll {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    overflow: visible;
     width: fit-content;
     max-width: 100%;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 
   .tabs-list {
@@ -33,7 +26,6 @@
     border-radius: 14px;
     width: fit-content;
     max-width: 100%;
-    backdrop-filter: blur(8px);
     box-sizing: border-box;
 
     .tab-item {

@@ -9,6 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import { IoLayersOutline, IoDocumentTextOutline, IoSkullOutline, IoPersonOutline } from 'react-icons/io5'
+import { IoIosRocket } from 'react-icons/io'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
 
@@ -599,11 +600,15 @@ export default function TokenIssuerSettings({
             <div className="center orange" style={{ marginBottom: '1rem', fontSize: 14 }}>
               {!sessionToken ? (
                 <>
-                  Token Issuer Settings are available to{' '}
-                  <span className="link" onClick={() => openEmailLogin()}>
-                    logged-in
-                  </span>{' '}
-                  Bithomp Pro subscribers.
+                  <p style={{ marginBottom: '0.45rem' }}>
+                    Token Issuer Settings are available to logged-in Bithomp Pro subscribers.
+                  </p>
+                  <div style={{ marginTop: '0.75rem', marginBottom: '0.35rem' }}>
+                    <button className="button-action" onClick={() => openEmailLogin?.()} style={{ padding: '10px 16px' }}>
+                      <IoIosRocket style={{ fontSize: 16, marginRight: 6, marginBottom: 1 }} />
+                      Log in to Bithomp Pro
+                    </button>
+                  </div>
                 </>
               ) : (
                 <>
