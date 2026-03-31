@@ -9,7 +9,15 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import AddressInput from '../../components/UI/AddressInput'
 import CopyButton from '../../components/UI/CopyButton'
 import CheckBox from '../../components/UI/CheckBox'
-import { IoTrashOutline } from 'react-icons/io5'
+import {
+  IoTrashOutline,
+  IoKeyOutline,
+  IoPeopleOutline,
+  IoShieldOutline,
+  IoSkullOutline,
+  IoInformationCircleOutline,
+  IoPersonOutline
+} from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
 import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
@@ -460,118 +468,90 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
         {errorMessage && <p className="red center">{errorMessage}</p>}
         {successMessage && <p className="green center">{successMessage}</p>}
 
-        {/* ── Status Table ── */}
+        {/* ── Status Card ── */}
         {isSignedIn && accountData && (
-          <>
-            <h4>Current Account Control Status</h4>
-            <table className="table-details">
-              <tbody>
-                <tr>
-                  <td>Master Key</td>
-                  <td className={masterKeyDisabled ? 'orange bold' : 'green'}>
-                    {masterKeyDisabled ? 'Disabled' : 'Enabled'}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Regular Key</td>
-                  <td>
-                    {regularKey ? (
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          fontFamily: 'monospace',
-                          fontSize: 13
-                        }}
-                      >
-                        {regularKey}
-                        <CopyButton text={regularKey} />
-                      </span>
-                    ) : (
-                      <span className="grey">Not set</span>
-                    )}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Multi-signature</td>
-                  <td>
-                    {signerList ? (
-                      <span className="green">
-                        Enabled — quorum: {signerList.signerQuorum}, {signerList.signerEntries?.length || 0} signer
-                        {signerList.signerEntries?.length !== 1 ? 's' : ''}
-                      </span>
-                    ) : (
-                      <span className="grey">Not set</span>
-                    )}
-                  </td>
-                </tr>
-                {signerList?.signerEntries?.map((signer, i) => (
-                  <tr key={i} className="signer-entry-row">
-                    <td style={{ paddingLeft: '1.5rem', color: 'var(--text-secondary)', fontSize: 13 }}>
-                      Signer #{i + 1} (weight {signer.signerWeight})
-                    </td>
-                    <td style={{ fontFamily: 'monospace', fontSize: 13 }}>
-                      {signer.account}
-                      <CopyButton text={signer.account} />
-                    </td>
-                  </tr>
-                ))}
-                {isBlackholed && (
-                  <tr>
-                    <td>Account</td>
-                    <td className="orange bold">Blackholed — no one can sign transactions</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          <div className="status-card">
+            <div className="status-card-header">Current Status</div>
 
-            {signerList?.signerEntries?.length > 0 && (
-              <div className="signer-mobile-list">
-                {signerList.signerEntries.map((signer, i) => (
-                  <div key={i} className="signer-mobile-item">
-                    <div className="signer-mobile-head">
-                      <span>Signer #{i + 1}</span>
-                      <span>Weight {signer.signerWeight}</span>
-                    </div>
-                    <div className="signer-mobile-address">
-                      {signer.account}
-                      <CopyButton text={signer.account} />
-                    </div>
-                  </div>
-                ))}
+            <div className="status-row">
+              <span className="status-label">Master Key</span>
+              <span className="status-value">
+                <span className={`section-badge ${masterKeyDisabled ? 'badge-warn' : 'badge-ok'}`}>
+                  {masterKeyDisabled ? 'Disabled' : 'Enabled'}
+                </span>
+              </span>
+            </div>
+
+            <div className="status-row">
+              <span className="status-label">Regular Key</span>
+              <span className="status-value mono">
+                {regularKey ? (
+                  <>
+                    {regularKey}
+                    <CopyButton text={regularKey} />
+                  </>
+                ) : (
+                  <span className="section-badge badge-off">Not set</span>
+                )}
+              </span>
+            </div>
+
+            <div className="status-row">
+              <span className="status-label">Multi-sig</span>
+              <span className="status-value">
+                {signerList ? (
+                  <span className="section-badge badge-ok">
+                    Quorum {signerList.signerQuorum} &middot; {signerList.signerEntries?.length || 0} signer
+                    {signerList.signerEntries?.length !== 1 ? 's' : ''}
+                  </span>
+                ) : (
+                  <span className="section-badge badge-off">Not set</span>
+                )}
+              </span>
+            </div>
+
+            {signerList?.signerEntries?.map((signer, i) => (
+              <div key={i} className="status-row status-row-sub">
+                <span className="status-label">
+                  Signer #{i + 1} &nbsp;·&nbsp; w:{signer.signerWeight}
+                </span>
+                <span className="status-value mono">
+                  {signer.account}
+                  <CopyButton text={signer.account} />
+                </span>
+              </div>
+            ))}
+
+            {isBlackholed && (
+              <div className="status-row">
+                <span className="status-label">Account</span>
+                <span className="status-value">
+                  <span className="section-badge badge-danger">Blackholed</span>
+                </span>
               </div>
             )}
-          </>
+          </div>
         )}
 
         <>
           {/* ── Regular Key ── */}
-          <h4>Regular Key</h4>
+          <div className="section-header">
+            <span className="section-icon">
+              <IoKeyOutline size={15} />
+            </span>
+            <span className="section-title">Regular Key</span>
+            <span className={`section-badge ${regularKey ? 'badge-ok' : 'badge-off'}`}>
+              {regularKey ? 'Set' : 'Not set'}
+            </span>
+          </div>
           <div className="flag-item">
-            <div className="flag-header">
-              <div className="flag-info">
-                <span className="flag-name">Regular Key</span>
-                <span className="flag-status">{regularKey ? 'Set' : 'Not Set'}</span>
-              </div>
-              {regularKey &&
-                withActionTooltip(
-                  <button
-                    className="button-action thin"
-                    onClick={handleRemoveRegularKey}
-                    disabled={isRegularKeyActionLocked}
-                  >
-                    Remove
-                  </button>,
-                  regularKeyActionLockReason
-                )}
-            </div>
             <div className="flag-description">
               A Regular Key is an alternative address whose private key can sign transactions for your account. Unlike
               the master key, you can replace or remove it at any time. Use it to keep your master key in cold storage
               while signing day-to-day transactions with a hot wallet.
             </div>
-            <div className="disabled-reason warning" style={{ marginTop: '0.5rem' }}>
+            <div className="note-info">
+              <IoInformationCircleOutline size={14} className="note-icon" />
               Bithomp currently does not support signing transactions with a Regular Key.
             </div>
             <div className="nft-minter-input" style={{ marginTop: '0.75rem' }}>
@@ -584,52 +564,58 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
               />
               <small>Enter the address whose private key you want to use to sign transactions.</small>
               <br />
-              {withActionTooltip(
-                <button
-                  className="button-action thin"
-                  onClick={handleSetRegularKey}
-                  disabled={isRegularKeyActionLocked || !regularKeyInput.trim()}
-                  style={{ marginTop: '0.5rem' }}
-                >
-                  Set Regular Key
-                </button>,
-                regularKeyDisabledReason
-              )}
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                {withActionTooltip(
+                  <button
+                    className="button-action thin"
+                    onClick={handleSetRegularKey}
+                    disabled={isRegularKeyActionLocked || !regularKeyInput.trim()}
+                  >
+                    Set Regular Key
+                  </button>,
+                  regularKeyDisabledReason
+                )}
+                {regularKey &&
+                  withActionTooltip(
+                    <button
+                      className="button-action thin"
+                      onClick={handleRemoveRegularKey}
+                      disabled={isRegularKeyActionLocked}
+                    >
+                      Remove
+                    </button>,
+                    regularKeyActionLockReason
+                  )}
+              </div>
             </div>
           </div>
 
           {/* ── Multi-signature ── */}
-          <h4>Multi-signature (Signer List)</h4>
+          <div className="section-header">
+            <span className="section-icon">
+              <IoPeopleOutline size={15} />
+            </span>
+            <span className="section-title">Multi-signature</span>
+            <span className={`section-badge ${signerList ? 'badge-ok' : 'badge-off'}`}>
+              {signerList
+                ? `Quorum ${signerList.signerQuorum} · ${signerList.signerEntries?.length || 0} signer${signerList.signerEntries?.length !== 1 ? 's' : ''}`
+                : 'Not set'}
+            </span>
+          </div>
           <div className="flag-item">
-            <div className="flag-header">
-              <div className="flag-info">
-                <span className="flag-name">Signer List</span>
-                <span className="flag-status">{signerList ? 'Set' : 'Not Set'}</span>
-              </div>
-              {signerList &&
-                withActionTooltip(
-                  <button
-                    className="button-action thin"
-                    onClick={handleRemoveSignerList}
-                    disabled={isSignerListActionLocked}
-                  >
-                    Remove
-                  </button>,
-                  signerListActionLockReason
-                )}
-            </div>
             <div className="flag-description">
               Multi-signing lets a group of accounts collectively authorize transactions. Each signer has a weight; a
               transaction is valid when the combined weight of signers reaches the quorum. Useful for shared treasury
               accounts or extra security.
             </div>
-            <div className="disabled-reason warning" style={{ marginTop: '0.5rem' }}>
+            <div className="note-info">
+              <IoInformationCircleOutline size={14} className="note-icon" />
               Bithomp currently does not support signing transactions with Multi-signature.
             </div>
 
             <div style={{ marginTop: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-                <label style={{ fontWeight: 500, minWidth: 80 }}>Quorum</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                <label style={{ fontWeight: 500, minWidth: 80, fontSize: 14 }}>Quorum</label>
                 <input
                   className="input-text"
                   type="number"
@@ -638,8 +624,10 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                   onChange={(e) => setSignerQuorum(e.target.value)}
                   style={{ width: 80 }}
                 />
-                <small>Minimum total weight required to sign a transaction.</small>
               </div>
+              <small style={{ display: 'block', marginBottom: '0.65rem', color: 'var(--text-secondary)' }}>
+                Minimum total weight required to sign a transaction.
+              </small>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '0.5rem' }}>
                 <div className="signer-grid-header">
@@ -700,115 +688,125 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                 ))}
               </div>
 
-              <div
+              <button
+                type="button"
+                className="link"
+                onClick={addSignerRow}
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  gap: '0.5rem'
+                  border: 'none',
+                  background: 'transparent',
+                  padding: 0,
+                  fontWeight: 600,
+                  textDecorationThickness: '2px',
+                  display: 'block',
+                  marginTop: '0.4rem',
+                  marginBottom: '0.5rem'
                 }}
               >
-                <button
-                  type="button"
-                  className="link"
-                  onClick={addSignerRow}
-                  style={{
-                    border: 'none',
-                    background: 'transparent',
-                    padding: 0,
-                    marginLeft: '0.35rem',
-                    fontWeight: 600,
-                    textDecorationThickness: '2px'
-                  }}
-                >
-                  + Add signer
-                </button>
+                + Add signer
+              </button>
 
-                {multiSigErrorMessage && (
-                  <p className="red" style={{ marginTop: '0.2rem', marginBottom: 0 }}>
-                    {multiSigErrorMessage}
-                  </p>
-                )}
-
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {withActionTooltip(
                   <button
                     className="button-action thin"
                     onClick={handleSetSignerList}
                     disabled={isSignerListActionLocked || !hasAtLeastOneSigner}
-                    style={{ marginTop: '0.6rem' }}
                   >
                     {signerList ? 'Update Signer List' : 'Set Signer List'}
                   </button>,
                   signerListDisabledReason
                 )}
+
+                {signerList &&
+                  withActionTooltip(
+                    <button
+                      className="button-action thin"
+                      onClick={handleRemoveSignerList}
+                      disabled={isSignerListActionLocked}
+                    >
+                      Remove
+                    </button>,
+                    signerListActionLockReason
+                  )}
               </div>
+
+              {multiSigErrorMessage && (
+                <p className="red" style={{ marginTop: '0.5rem', marginBottom: 0 }}>
+                  {multiSigErrorMessage}
+                </p>
+              )}
             </div>
           </div>
 
           {/* ── Master Key ── */}
-          <h4>Master Key</h4>
+          <div className="section-header">
+            <span className="section-icon">
+              <IoShieldOutline size={15} />
+            </span>
+            <span className="section-title">Master Key</span>
+            <span className={`section-badge ${masterKeyDisabled ? 'badge-warn' : 'badge-ok'}`}>
+              {masterKeyDisabled ? 'Disabled' : 'Enabled'}
+            </span>
+          </div>
           <div className="flag-item">
-            <div className="flag-header">
-              <div className="flag-info">
-                <span className="flag-name">Master Key</span>
-                <span className={`flag-status ${masterKeyDisabled ? 'orange' : ''}`}>
-                  {masterKeyDisabled ? 'Disabled' : 'Enabled'}
-                </span>
-              </div>
-              <div className="flag-info-buttons">
-                {masterKeyDisabled
-                  ? withActionTooltip(
-                      <button
-                        className="button-action thin"
-                        onClick={handleEnableMasterKey}
-                        disabled={!!enableMasterKeyLockReason}
-                      >
-                        Enable Master Key
-                      </button>,
-                      enableMasterKeyLockReason
-                    )
-                  : null}
-              </div>
-            </div>
             <div className="flag-description warning">
               {masterKeyDisabled
                 ? `The master key is disabled. You must sign with the regular key or multi-sig. To re-enable it, sign this transaction with the regular key or a signer — not the master key.`
                 : `Disabling the master key means the original account private key can no longer sign transactions. Ensure you have a working Regular Key or Signer List first. Due to the decentralized nature of ${explorerName}, no one can restore access if you lose all other signing methods.`}
             </div>
-            <div className="disabled-reason warning" style={{ marginTop: '0.5rem' }}>
+            <div className="note-info" style={{ marginTop: '0.5rem' }}>
+              <IoInformationCircleOutline size={14} className="note-icon" />
               Bithomp does not yet support signing with a Regular Key or a Signer List.
             </div>
             {!masterKeyDisabled && !regularKey && !signerList && (
-              <div className="disabled-reason warning">
+              <div className="disabled-reason warning" style={{ marginTop: '0.5rem' }}>
                 You must set a Regular Key or a Signer List before disabling the Master Key.
               </div>
             )}
 
-            {!masterKeyDisabled &&
-              withActionTooltip(
-                <button
-                  className="button-action thin"
-                  onClick={handleDisableMasterKey}
-                  disabled={isActionLocked || (!regularKey && !signerList)}
-                  style={{ marginTop: '0.75rem' }}
-                >
-                  Disable Master Key
-                </button>,
-                disableMasterDisabledReason
-              )}
+            <div style={{ marginTop: '0.75rem' }}>
+              {masterKeyDisabled
+                ? withActionTooltip(
+                    <button
+                      className="button-action thin"
+                      onClick={handleEnableMasterKey}
+                      disabled={!!enableMasterKeyLockReason}
+                    >
+                      Enable Master Key
+                    </button>,
+                    enableMasterKeyLockReason
+                  )
+                : withActionTooltip(
+                    <button
+                      className="button-action thin"
+                      onClick={handleDisableMasterKey}
+                      disabled={isActionLocked || (!regularKey && !signerList)}
+                    >
+                      Disable Master Key
+                    </button>,
+                    disableMasterDisabledReason
+                  )}
+            </div>
           </div>
 
           {/* ── Blackhole Account ── */}
-          <h4>Blackhole Account</h4>
+          <div className="section-header">
+            <span className="section-icon">
+              <IoSkullOutline size={15} />
+            </span>
+            <span className="section-title">Blackhole Account</span>
+            {isBlackholed && <span className="section-badge badge-danger">Blackholed</span>}
+          </div>
           <div className="flag-item">
-            <div className="flag-description warning" style={{ marginBottom: '0.75rem' }}>
+            <div className="flag-description warning">
               <strong>⚠ This is irreversible.</strong> Blackholing permanently removes the ability for anyone —
               including you — to sign transactions from this account. The account can still <em>receive</em> funds, but
               they can never be moved out. Used to create provably unspendable accounts (e.g. to lock tokens forever or
               prove an issuer has surrendered control).
             </div>
 
-            <div className="flag-description" style={{ marginBottom: '0.75rem' }}>
+            <div className="flag-description" style={{ marginBottom: '0.25rem', marginTop: '0.75rem' }}>
               <strong>How it works:</strong>
               <ol style={{ marginTop: '0.4rem', paddingLeft: '1.2rem', lineHeight: 1.7 }}>
                 <li>
@@ -817,56 +815,56 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                 </li>
                 <li>Disable the Master Key.</li>
               </ol>
-              After both steps no one can ever sign for this account again.
             </div>
 
             {isBlackholed ? (
-              <p className="orange bold">This account is already blackholed.</p>
+              <p className="orange bold" style={{ marginTop: '0.5rem' }}>
+                This account is already blackholed.
+              </p>
             ) : (
               <>
                 <CheckBox
                   checked={confirmBlackhole}
                   setChecked={setConfirmBlackhole}
-                  style={{ marginBottom: '0.75rem', fontSize: 14 }}
+                  style={{ marginTop: '0.75rem', marginBottom: '0.75rem', fontSize: 14 }}
                 >
-                  <span style={{ marginRight: '0.5rem' }}>
+                  <span>
                     I understand blackholing is <strong>permanent and irreversible</strong>. No one will ever be able to
                     sign transactions from this account again.
                   </span>
                 </CheckBox>
 
-                {/* Step 1 */}
-                <div className="flag-item" style={{ marginTop: '0.5rem' }}>
-                  <div className="flag-header">
-                    <div className="flag-info">
-                      <span className="flag-name">Step 1 — Set Blackhole Regular Key</span>
-                      <span className={`flag-status ${blackholeStep1Done ? 'green' : ''}`}>
-                        {blackholeStep1Done ? 'Done' : 'Pending'}
-                      </span>
-                    </div>
+                <div className="blackhole-steps">
+                  <div className={`step-row${blackholeStep1Done ? ' step-done' : ''}`}>
+                    <span className={`step-number${blackholeStep1Done ? ' done' : ''}`}>1</span>
+                    <span className="step-label">Set Regular Key to blackhole address</span>
+                    <span className={`step-status ${blackholeStep1Done ? 'done' : 'pending'}`}>
+                      {blackholeStep1Done ? 'Done' : 'Pending'}
+                    </span>
                     {withActionTooltip(
                       <button
                         className="button-action thin"
                         onClick={handleSetBlackholeKey}
                         disabled={!!blackholeStep1DisabledReason}
-                        style={{ background: 'var(--red, #dc3545)', color: '#fff', borderColor: 'var(--red, #dc3545)' }}
+                        style={{
+                          background: 'var(--red, #dc3545)',
+                          color: '#fff',
+                          borderColor: 'var(--red, #dc3545)',
+                          marginLeft: '0.5rem',
+                          flexShrink: 0
+                        }}
                       >
-                        {blackholeStep1Done ? 'Re-set Blackhole Key' : 'Set Blackhole Key'}
+                        {blackholeStep1Done ? 'Re-set' : 'Set key'}
                       </button>,
                       blackholeStep1DisabledReason
                     )}
                   </div>
-                </div>
-
-                {/* Step 2 */}
-                <div className="flag-item" style={{ marginTop: '0.5rem' }}>
-                  <div className="flag-header">
-                    <div className="flag-info">
-                      <span className="flag-name">Step 2 — Disable Master Key</span>
-                      <span className={`flag-status ${masterKeyDisabled ? 'orange bold' : ''}`}>
-                        {masterKeyDisabled ? 'Done' : 'Pending'}
-                      </span>
-                    </div>
+                  <div className={`step-row${masterKeyDisabled ? ' step-done' : ''}`}>
+                    <span className={`step-number${masterKeyDisabled ? ' done' : ''}`}>2</span>
+                    <span className="step-label">Disable Master Key</span>
+                    <span className={`step-status ${masterKeyDisabled ? 'done' : 'pending'}`}>
+                      {masterKeyDisabled ? 'Done' : 'Pending'}
+                    </span>
                     {!masterKeyDisabled &&
                       withActionTooltip(
                         <button
@@ -876,10 +874,12 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                           style={{
                             background: 'var(--red, #dc3545)',
                             color: '#fff',
-                            borderColor: 'var(--red, #dc3545)'
+                            borderColor: 'var(--red, #dc3545)',
+                            marginLeft: '0.5rem',
+                            flexShrink: 0
                           }}
                         >
-                          Disable Master Key
+                          Disable
                         </button>,
                         blackholeStep2DisabledReason
                       )}
@@ -889,6 +889,20 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
             )}
           </div>
         </>
+
+        <div className="center" style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+          {account?.address ? (
+            <Link href={`/account/${account.address}`} className="button-action">
+              <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
+              View my account page
+            </Link>
+          ) : (
+            <button className="button-action" onClick={() => setSignRequest({})}>
+              <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
+              Sign in to your account
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

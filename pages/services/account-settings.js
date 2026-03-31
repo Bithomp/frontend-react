@@ -16,8 +16,8 @@ import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
-import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
+import { IoToggleOutline, IoDocumentTextOutline, IoAlertCircleOutline, IoPersonOutline } from 'react-icons/io5'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
 
@@ -64,7 +64,6 @@ export default function AccountSettings({
   const [successMessage, setSuccessMessage] = useState('')
   const [accountData, setAccountData] = useState(null)
   const [flags, setFlags] = useState(null)
-  const [showAdvanced, setShowAdvanced] = useState(false)
   const [nftTokenMinter, setNftTokenMinter] = useState('')
   const [currentNftTokenMinter, setCurrentNftTokenMinter] = useState('')
   const [domainInput, setDomainInput] = useState('')
@@ -216,7 +215,7 @@ export default function AccountSettings({
       'depositAuth'
     ]
 
-    const advancedFlags = ['defaultRipple', 'disableMaster', 'globalFreeze', 'noFreeze']
+    const advancedFlags = ['defaultRipple', 'globalFreeze', 'noFreeze']
 
     if (xahauNetwork) {
       return {
@@ -950,7 +949,13 @@ export default function AccountSettings({
         <div className="flag-header">
           <div className="flag-info">
             <span className="flag-name">{flagData.name}</span>
-            <span className={`flag-status ${isNonDefault ? 'orange' : ''}`}>{flagData.status(currentValue)}</span>
+            <span
+              className={`section-badge ${
+                isHighRisk && isNonDefault ? 'badge-danger' : isNonDefault ? 'badge-warn' : 'badge-off'
+              }`}
+            >
+              {flagData.status(currentValue)}
+            </span>
           </div>
 
           {showButton &&
@@ -1041,13 +1046,22 @@ export default function AccountSettings({
 
           {/* Account Flags Section */}
           <div>
-            <h4>Account Flags</h4>
+            <div className="section-header">
+              <span className="section-icon">
+                <IoToggleOutline size={15} />
+              </span>
+              <span className="section-title">Account Flags</span>
+            </div>
 
             {flagGroups.basic.map((flag) => renderFlagItem(flag))}
 
             {/* Account Fields */}
-            <br />
-            <h4>Account Fields</h4>
+            <div className="section-header" style={{ marginTop: '1.25rem' }}>
+              <span className="section-icon">
+                <IoDocumentTextOutline size={15} />
+              </span>
+              <span className="section-title">Account Fields</span>
+            </div>
             <div>
               <div className="flag-item">
                 <div className="flag-header">
@@ -1433,46 +1447,48 @@ export default function AccountSettings({
 
             {/* Advanced options */}
             <div className="advanced-options">
-              <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-flags">
-                Advanced options (Use with caution)
-                {!sessionToken ? (
-                  <>
-                    {' '}
-                    <span className="orange">
-                      (available to{' '}
+              <div className="section-header">
+                <span className="section-icon">
+                  <IoAlertCircleOutline size={15} />
+                </span>
+                <span className="section-title">Advanced Options</span>
+                <span className="section-badge badge-warn" style={{ fontSize: 10 }}>
+                  Use with caution
+                </span>
+              </div>
+              {!isPro && (
+                <div className="center orange" style={{ marginBottom: '0.5rem', fontSize: 14 }}>
+                  {!sessionToken ? (
+                    <>
+                      Advanced flags available to{' '}
                       <span className="link" onClick={() => openEmailLogin()}>
                         logged-in
                       </span>{' '}
-                      Bithomp Pro subscribers)
-                    </span>
-                  </>
-                ) : (
-                  subscriptionExpired && (
-                    <>
-                      {' '}
-                      <span className="orange">
-                        Your Bithomp Pro subscription has expired.{' '}
-                        <Link href="/admin/subscriptions">Renew your subscription</Link>
-                      </span>
+                      Bithomp Pro subscribers.
                     </>
-                  )
-                )}
-              </CheckBox>
-
-              {showAdvanced && (
-                <div className="advanced-flags">{flagGroups.advanced.map((flag) => renderFlagItem(flag))}</div>
+                  ) : (
+                    <>
+                      Your Bithomp Pro subscription has expired.{' '}
+                      <Link href="/admin/subscriptions">Renew your subscription</Link>
+                    </>
+                  )}
+                </div>
               )}
+              <div className="advanced-flags">{flagGroups.advanced.map((flag) => renderFlagItem(flag))}</div>
             </div>
           </div>
 
-          <br />
-          <div className="center">
+          <div className="center" style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
             {account?.address ? (
-              <Link href={`/account/${account.address}`}>View my account page</Link>
+              <Link href={`/account/${account.address}`} className="button-action">
+                <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
+                View my account page
+              </Link>
             ) : (
-              <span className="link" onClick={() => setSignRequest({})}>
+              <button className="button-action" onClick={() => setSignRequest({})}>
+                <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
                 Sign in to your account
-              </span>
+              </button>
             )}
           </div>
         </div>
