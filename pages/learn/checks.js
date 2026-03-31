@@ -192,7 +192,7 @@ export default function Checks() {
           <h3>Create a check</h3>
 
           <p>
-            You can issue a check <a href="https://bithomp.com/en/services/check">HERE</a>
+            You can issue a check <Link href="/services/check">HERE</Link>
             <br />
           </p>
           <div className="flex justify-center">
