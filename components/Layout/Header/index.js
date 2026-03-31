@@ -580,7 +580,7 @@ export default function Header({
                       src={avatarServer + address + '?hashIconZoom=12'}
                       width="24"
                       height="24"
-                      style={{ marginRight: '5px', borderRadius: '50%' }}
+                      className="menu-avatar"
                     />
                     {displayName}
                   </>
@@ -656,7 +656,7 @@ export default function Header({
                               src={avatarServer + walletItem.address + '?hashIconZoom=12'}
                               width="20"
                               height="20"
-                              style={{ borderRadius: '50%' }}
+                              className="wallet-row-avatar"
                             />
                             <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
                             <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>

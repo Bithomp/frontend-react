@@ -593,6 +593,24 @@ header {
       transform: translateY(-9px) rotate(-45deg);
     }
   }
+
+  .menu-avatar {
+    border-radius: 50%;
+    border: 2px solid var(--accent-link);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 20%, transparent);
+    margin-right: 7px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  .wallet-row-avatar {
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--accent-link) 55%, transparent);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    flex-shrink: 0;
+    display: block;
+  }
 }
 
 .mobile-menu {
