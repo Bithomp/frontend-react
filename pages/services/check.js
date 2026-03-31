@@ -9,7 +9,8 @@ import {
   isIdValid,
   decode,
   encode,
-  addAndRemoveQueryParams
+  addAndRemoveQueryParams,
+  explorerName
 } from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -25,7 +26,6 @@ import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../uti
 import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
 import { errorCodeDescription } from '../../utils/transaction'
-import { explorerName} from '../../utils'
 export default function IssueCheck({
   setSignRequest,
   sessionToken,
