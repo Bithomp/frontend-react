@@ -193,7 +193,7 @@ a, .link {
 input, textarea {
   appearance: none;
   -webkit-appearance: none; // for ios safari
-  border-radius: 0; // remove rounded corners on ios safari
+  border-radius: 10px;
   font-size: 16px; // remove auto zoom on ios safari
   outline: none; // remove default rounded corners on focus
   font-family: inherit;
@@ -206,6 +206,7 @@ input, textarea {
     width: calc(100% - 22px);
     max-width: 738px;
     border: 1px solid var(--unaccent-icon);
+    border-radius: 10px;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 1px; // set for ios safari
@@ -221,10 +222,12 @@ input, textarea {
     }
     &:hover, &:focus {
       transition: border-color 0.5s;
-      box-shadow: 0 0 5px var(--unaccent-icon);
+      border-color: var(--accent-icon);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
     }
     &:focus {
-      box-shadow: 0 0 5px var(--unaccent-icon);
+      border-color: var(--accent-link);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 16%, transparent);
     }
     &:read-only {
       background-color: var(--background-input-readonly);
@@ -236,6 +239,13 @@ input, textarea {
   &.input-text-no-border {
     border: none;
   }
+}
+
+/* Keep react-select text selection rendering consistent with regular inputs */
+.react-select__input,
+.react-select__input-container,
+.react-select__input-container input {
+  border-radius: 0 !important;
 }
 
 textarea {

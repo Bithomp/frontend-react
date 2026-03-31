@@ -12,9 +12,11 @@
     cursor: pointer;
     transition: border 0.2s;
     position: relative;
+    border-radius: 10px;
     &:focus,
     &:hover {
-      box-shadow: 0 0 5px var(--unaccent-icon);
+      border-color: var(--accent-icon);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
     }
   }
 
