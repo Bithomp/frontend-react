@@ -403,22 +403,22 @@ export default function TokenIssuerSettings({
 
   // ── Helpers ──────────────────────────────────────────────────────────────────
 
-  const withTooltip = (tooltipText, child) => {
+  const withTooltip = (tooltipText, child, direction = 'right') => {
     if (!tooltipText) return child
     return (
       <span className="tooltip">
         {child}
-        <span className="tooltiptext left">{tooltipText}</span>
+        <span className={`tooltiptext ${direction}`}>{tooltipText}</span>
       </span>
     )
   }
 
-  const withActionTooltip = (node, tooltipText) => {
+  const withActionTooltip = (node, tooltipText, direction = 'right') => {
     if (!tooltipText) return node
     return (
       <span className="tooltip" style={{ display: 'inline-flex' }}>
         {node}
-        <span className="tooltiptext left">{tooltipText}</span>
+        <span className={`tooltiptext ${direction}`}>{tooltipText}</span>
       </span>
     )
   }
@@ -671,7 +671,8 @@ export default function TokenIssuerSettings({
                         disabled={!account?.address || !isPro}
                       >
                         Set
-                      </button>
+                      </button>,
+                      'left'
                     )}
                   </div>
                 </div>
@@ -718,7 +719,8 @@ export default function TokenIssuerSettings({
                         disabled={!account?.address || !isPro}
                       >
                         Set
-                      </button>
+                      </button>,
+                      'left'
                     )}
                   </div>
                 </div>

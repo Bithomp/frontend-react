@@ -61,12 +61,12 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
     ? 'Log in to Bithomp Pro to enable this function.'
     : 'Subscribe to Bithomp Pro to enable this function.'
   const signInTooltip = 'Sign in to your account to enable this function.'
-  const withActionTooltip = (node, tooltipText) => {
+  const withActionTooltip = (node, tooltipText, direction = 'right') => {
     if (!tooltipText) return node
     return (
       <span className="tooltip" style={{ display: 'inline-flex' }}>
         {node}
-        <span className="tooltiptext left">{tooltipText}</span>
+        <span className={`tooltiptext ${direction}`}>{tooltipText}</span>
       </span>
     )
   }
@@ -586,7 +586,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                     >
                       Remove
                     </button>,
-                    regularKeyActionLockReason
+                    regularKeyActionLockReason,
+                    'left'
                   )}
               </div>
             </div>
@@ -707,7 +708,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                   >
                     {signerList ? 'Update Signer List' : 'Set Signer List'}
                   </button>,
-                  signerListDisabledReason
+                  signerListDisabledReason,
+                  'right'
                 )}
 
                 {signerList &&
@@ -719,7 +721,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                     >
                       Remove
                     </button>,
-                    signerListActionLockReason
+                    signerListActionLockReason,
+                    'left'
                   )}
               </div>
 
