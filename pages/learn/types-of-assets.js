@@ -156,9 +156,13 @@ export default function TypesOfAssets() {
           <p>Examples of {explorerName} stablecoins:</p>
 
           {xahauNetwork ? (
-            <Link href="/token/rDk1xiArDMjDqnrR2yWypwQAKg4mKnQYvs/4555525100000000000000000000000000000000">
-              EURQ issued by Quantoz
-            </Link>
+            <ul>
+              <li>
+                <Link href="/token/rDk1xiArDMjDqnrR2yWypwQAKg4mKnQYvs/4555525100000000000000000000000000000000">
+                  EURQ issued by Quantoz
+                </Link>
+              </li>
+            </ul>
           ) : (
             <ul>
               <li>
