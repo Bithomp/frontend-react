@@ -48,7 +48,9 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
 
   const isPro = sessionToken && !subscriptionExpired
   const isProLocked = !isPro
-  const proOnlyTooltip = 'Subscribe to Bithomp Pro to enable this function.'
+  const proOnlyTooltip = !sessionToken
+    ? 'Log in to Bithomp Pro to enable this function.'
+    : 'Subscribe to Bithomp Pro to enable this function.'
   const signInTooltip = 'Sign in to your account to enable this function.'
   const withActionTooltip = (node, tooltipText) => {
     if (!tooltipText) return node
