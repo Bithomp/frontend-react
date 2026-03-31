@@ -90,34 +90,6 @@ const setBalancesFunction = (networkInfo, data) => {
   return balanceList
 }
 
-const normalizeSignerAccounts = (accountRows, address, seenAddresses = new Set()) => {
-  const signerRows = []
-
-  accountRows.forEach((row) => {
-    const rowAddress = row?.account || row?.address || ''
-    if (!rowAddress || seenAddresses.has(rowAddress)) return
-
-    const regularKey = row?.regular_key || row?.regularKey || null
-    const signerList = Array.isArray(row?.signer_list)
-      ? row.signer_list
-      : Array.isArray(row?.signerList)
-        ? row.signerList
-        : []
-
-    const hasRegularKeyMatch = regularKey === address
-    const hasSignerMatch = signerList.includes(address)
-
-    seenAddresses.add(rowAddress)
-    signerRows.push({
-      address: rowAddress,
-      hasRegularKeyMatch,
-      hasSignerMatch
-    })
-  })
-
-  return signerRows
-}
-
 const fetchSignerAccountsServer = async ({ address, req }) => {
   const signerResponse = await axiosServer({
     method: 'get',
@@ -132,7 +104,69 @@ const fetchSignerAccountsServer = async ({ address, req }) => {
 
   const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
 
-  return normalizeSignerAccounts(accountRows, address)
+  return {
+    rows: accountRows.filter((row) => !!row?.account)
+  }
+}
+
+const fetchActivatedAccountsServer = async ({ address, req, order = 'desc' }) => {
+  const headers = passHeaders(req)
+  const [accountsResult, summaryResult] = await Promise.allSettled([
+    axiosServer({
+      method: 'get',
+      url: `xrpl/accounts?parent=${address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${order}`,
+      headers
+    }),
+    axiosServer({
+      method: 'get',
+      url: `xrpl/accounts/summary?parent=${address}`,
+      headers
+    })
+  ])
+
+  if (accountsResult.status === 'rejected') {
+    throw accountsResult.reason
+  }
+
+  const payload = accountsResult.value?.data || {}
+  if (payload?.result && payload.result !== 'success') {
+    throw new Error(payload?.message || 'Failed to load activated accounts')
+  }
+
+  const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+  const rows = accountRows.filter((child) => !!child?.account)
+  const marker = payload?.marker || null
+
+  let count = Number(payload?.count)
+  let spent = rows.reduce(
+    (sum, child) => sum + (Number.isFinite(Number(child?.initial_balance)) ? Number(child.initial_balance) : 0),
+    0
+  )
+
+  if (summaryResult.status === 'fulfilled') {
+    const summaryData = summaryResult.value?.data || {}
+    const summaryCount = Number(summaryData?.count)
+    const summarySpent = Number(summaryData?.initial_balance)
+
+    if (Number.isFinite(summaryCount) && summaryCount >= 0) {
+      count = summaryCount
+    }
+
+    if (Number.isFinite(summarySpent) && summarySpent >= 0) {
+      spent = summarySpent
+    }
+  }
+
+  if (!Number.isFinite(count) || count < 0) {
+    count = rows.length
+  }
+
+  return {
+    rows,
+    count,
+    spent,
+    marker
+  }
 }
 
 export async function getServerSideProps(context) {
@@ -140,9 +174,8 @@ export async function getServerSideProps(context) {
   let initialData = null
   let networkInfo = {}
   let initialErrorMessage = null
-  let initialSignerAccounts = []
-  let initialSignerAccountsError = null
-  let initialSignerAccountsHydrated = false
+  let initialSignerAccountsData = null
+  let initialActivatedAccountsData = null
   const { id, ledgerIndex, ledgerTimestamp } = query
   const ledgerTimestampValue = Array.isArray(ledgerTimestamp) ? ledgerTimestamp[0] : ledgerTimestamp
   const isHistoricalLedger = !!ledgerIndex || !!ledgerTimestamp
@@ -212,9 +245,17 @@ export async function getServerSideProps(context) {
         })
         const signerPromise = initialData?.address
           ? fetchSignerAccountsServer({ address: initialData.address, req })
-          : Promise.resolve([])
+          : Promise.resolve(null)
+        const activatedAccountsPromise =
+          initialData?.address && !isHistoricalLedger
+            ? fetchActivatedAccountsServer({ address: initialData.address, req })
+            : Promise.resolve(null)
 
-        const [networkData, signerResult] = await Promise.allSettled([networkPromise, signerPromise])
+        const [networkData, signerResult, activatedAccountsResult] = await Promise.allSettled([
+          networkPromise,
+          signerPromise,
+          activatedAccountsPromise
+        ])
 
         if (networkData.status === 'rejected') {
           throw networkData.reason
@@ -222,12 +263,11 @@ export async function getServerSideProps(context) {
         networkInfo = networkData?.value?.data
 
         if (signerResult.status === 'fulfilled') {
-          initialSignerAccounts = signerResult.value || []
-          initialSignerAccountsHydrated = true
-        } else {
-          initialSignerAccounts = []
-          initialSignerAccountsError = signerResult.reason?.message || 'Failed to load signer accounts'
-          initialSignerAccountsHydrated = true
+          initialSignerAccountsData = signerResult.value
+        }
+
+        if (activatedAccountsResult.status === 'fulfilled') {
+          initialActivatedAccountsData = activatedAccountsResult.value
         }
       }
     } catch (e) {
@@ -249,9 +289,8 @@ export async function getServerSideProps(context) {
         isSsrMobile: getIsSsrMobile(context),
         initialData: initialData || {},
         initialErrorMessage: initialErrorMessage || null,
-        initialSignerAccounts,
-        initialSignerAccountsError,
-        initialSignerAccountsHydrated,
+        initialSignerAccountsData,
+        initialActivatedAccountsData,
         ...(await serverSideTranslations(locale, ['common', 'account']))
       }
     }
@@ -263,9 +302,8 @@ export async function getServerSideProps(context) {
         accountWithTag: accountWithTag || null,
         isSsrMobile: getIsSsrMobile(context),
         initialErrorMessage: initialErrorMessage || null,
-        initialSignerAccounts,
-        initialSignerAccountsError,
-        initialSignerAccountsHydrated,
+        initialSignerAccountsData,
+        initialActivatedAccountsData,
         ...(await serverSideTranslations(locale, ['common', 'account']))
       }
     }
@@ -340,9 +378,8 @@ const mptId = (node) => node?.MPTokenIssuanceID || node?.mpt_issuance_id || null
 export default function Account({
   initialData,
   initialErrorMessage,
-  initialSignerAccounts,
-  initialSignerAccountsError,
-  initialSignerAccountsHydrated,
+  initialSignerAccountsData,
+  initialActivatedAccountsData,
   selectedCurrency: selectedCurrencyApp,
   selectedCurrencyServer,
   fiatRate: fiatRateApp,
@@ -458,29 +495,28 @@ export default function Account({
   const [txFromDate, setTxFromDate] = useState('')
   const [txToDate, setTxToDate] = useState('')
   const [txFilterSpam, setTxFilterSpam] = useState(true)
-  const [activatedAccounts, setActivatedAccounts] = useState([])
-  const [activatedAccountsCount, setActivatedAccountsCount] = useState(0)
-  const [activatedAccountsSpent, setActivatedAccountsSpent] = useState(0)
+  const [activatedAccounts, setActivatedAccounts] = useState(initialActivatedAccountsData?.rows || [])
+  const [activatedAccountsCount, setActivatedAccountsCount] = useState(initialActivatedAccountsData?.count || 0)
+  const [activatedAccountsSpent, setActivatedAccountsSpent] = useState(initialActivatedAccountsData?.spent || 0)
   const [activatedAccountsLoading, setActivatedAccountsLoading] = useState(false)
   const [activatedAccountsLoadingMore, setActivatedAccountsLoadingMore] = useState(false)
   const [activatedAccountsError, setActivatedAccountsError] = useState(null)
-  const [activatedAccountsMarker, setActivatedAccountsMarker] = useState(null)
+  const [activatedAccountsMarker, setActivatedAccountsMarker] = useState(initialActivatedAccountsData?.marker || null)
   const [showActivatedAccountsFilters, setShowActivatedAccountsFilters] = useState(false)
   const [activatedAccountsOrder, setActivatedAccountsOrder] = useState('desc')
-  const [activatedAccountsReloadKey, setActivatedAccountsReloadKey] = useState(0)
-  const [signerAccounts, setSignerAccounts] = useState(initialSignerAccounts || [])
+  const [signerAccounts, setSignerAccounts] = useState(initialSignerAccountsData?.rows || [])
   const [hasMoreSignerAccounts, setHasMoreSignerAccounts] = useState(
-    !initialSignerAccountsError && (initialSignerAccounts || []).length === SIGNER_ACCOUNTS_FETCH_LIMIT
+    (initialSignerAccountsData?.rows || []).length === SIGNER_ACCOUNTS_FETCH_LIMIT
   )
   const [signerAccountsLoading, setSignerAccountsLoading] = useState(false)
   const [signerAccountsLoadingMore, setSignerAccountsLoadingMore] = useState(false)
-  const [signerAccountsError, setSignerAccountsError] = useState(initialSignerAccountsError || null)
+  const [signerAccountsError, setSignerAccountsError] = useState(null)
   const [expandedSignerCard, setExpandedSignerCard] = useState(false)
   const nftOffersRequestTokenRef = useRef(0)
   const transactionsRequestTokenRef = useRef(0)
   const activatedAccountsRequestTokenRef = useRef(0)
   const signerAccountsRequestTokenRef = useRef(0)
-  const signerAccountsInitialHydratedRef = useRef(!!initialSignerAccountsHydrated)
+  const activatedAccountsOrderHydratedRef = useRef(false)
   const refreshPageRef = useRef(refreshPage)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
@@ -1099,13 +1135,11 @@ export default function Account({
   const hasHeldMpts = heldMpts.length > 0
   const hasIssuedMpts = issuedMpts.length > 0
   const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
-  const hasSignerAccountsSection =
-    !!data?.address && (signerAccountsLoading || !!signerAccountsError || signerAccounts.length > 0)
+  const hasSignerAccountsSection = !!data?.address && (signerAccountsLoading || signerAccounts.length > 0)
   const hasActivatedAccountsSection =
     !effectiveLedgerTimestamp &&
     (activatedAccountsLoading ||
       activatedAccountsLoadingMore ||
-      !!activatedAccountsError ||
       activatedAccountsCount > 0 ||
       activatedAccounts.length > 0)
   const hasColumn4ObjectSections =
@@ -1161,8 +1195,12 @@ export default function Account({
       }
 
       const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
-      const seenAddresses = new Set(append ? signerAccounts.map((row) => row.address) : [])
-      const nextRows = normalizeSignerAccounts(accountRows, data.address, seenAddresses)
+      const seenAddresses = new Set(append ? signerAccounts.map((row) => row.account) : [])
+      const nextRows = accountRows.filter((row) => {
+        if (!row?.account || seenAddresses.has(row.account)) return false
+        seenAddresses.add(row.account)
+        return true
+      })
 
       setSignerAccounts((prev) => (append ? [...prev, ...nextRows] : nextRows))
       setHasMoreSignerAccounts(accountRows.length === SIGNER_ACCOUNTS_FETCH_LIMIT)
@@ -1184,11 +1222,6 @@ export default function Account({
   }
 
   useEffect(() => {
-    if (signerAccountsInitialHydratedRef.current) {
-      signerAccountsInitialHydratedRef.current = false
-      return
-    }
-
     if (!data?.address) {
       setSignerAccounts([])
       setHasMoreSignerAccounts(false)
@@ -1199,25 +1232,110 @@ export default function Account({
       return
     }
 
+    const initialRows = initialSignerAccountsData?.rows || []
+
+    setSignerAccounts(initialRows)
+    setHasMoreSignerAccounts(initialRows.length === SIGNER_ACCOUNTS_FETCH_LIMIT)
+    setSignerAccountsLoading(false)
+    setSignerAccountsLoadingMore(false)
+    setSignerAccountsError(null)
     setExpandedSignerCard(false)
-    const requestToken = signerAccountsRequestTokenRef.current + 1
-    signerAccountsRequestTokenRef.current = requestToken
-
-    fetchSignerAccountsPage({ requestToken })
-
-    return () => {
-      if (signerAccountsRequestTokenRef.current === requestToken) {
-        signerAccountsRequestTokenRef.current = requestToken + 1
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, refreshPage])
+  }, [data?.address, initialSignerAccountsData, refreshPage])
 
   const loadMoreSignerAccounts = () => {
     if (!data?.address || !hasMoreSignerAccounts || signerAccountsLoading || signerAccountsLoadingMore) return
 
     const requestToken = signerAccountsRequestTokenRef.current
     fetchSignerAccountsPage({ requestToken, append: true })
+  }
+
+  const fetchActivatedAccountsPage = async ({ requestToken, markerValue = null, append = false } = {}) => {
+    if (!data?.address || effectiveLedgerTimestamp) return
+
+    if (append) {
+      setActivatedAccountsLoadingMore(true)
+    } else {
+      setActivatedAccountsLoading(true)
+      setActivatedAccounts([])
+      setActivatedAccountsCount(0)
+      setActivatedAccountsSpent(0)
+      setActivatedAccountsMarker(null)
+    }
+
+    setActivatedAccountsError(null)
+
+    try {
+      const markerQuery = markerValue ? `&marker=${encodeURIComponent(markerValue)}` : ''
+      const response = await axios.get(
+        `xrpl/accounts?parent=${data.address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${activatedAccountsOrder}${markerQuery}`
+      )
+      if (activatedAccountsRequestTokenRef.current !== requestToken) return
+
+      const payload = response?.data || {}
+      if (payload?.result && payload.result !== 'success') {
+        throw new Error(payload?.message || 'Failed to load activated accounts')
+      }
+
+      const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+      const rows = accountRows.filter((child) => !!child?.account)
+
+      if (append) {
+        setActivatedAccounts((prev) => [...prev, ...rows])
+      } else {
+        setActivatedAccounts(rows)
+      }
+
+      setActivatedAccountsMarker(payload?.marker || null)
+
+      if (!append) {
+        let summaryCount = Number(payload?.count)
+        let summarySpent = rows.reduce(
+          (sum, child) => sum + (Number.isFinite(Number(child?.initial_balance)) ? Number(child.initial_balance) : 0),
+          0
+        )
+
+        try {
+          const summaryResponse = await axios.get(`xrpl/accounts/summary?parent=${data.address}`)
+          if (activatedAccountsRequestTokenRef.current !== requestToken) return
+          const summaryData = summaryResponse?.data || {}
+          const summaryCountValue = Number(summaryData?.count)
+          const summarySpentValue = Number(summaryData?.initial_balance)
+
+          if (Number.isFinite(summaryCountValue) && summaryCountValue >= 0) {
+            summaryCount = summaryCountValue
+          }
+
+          if (Number.isFinite(summarySpentValue) && summarySpentValue >= 0) {
+            summarySpent = summarySpentValue
+          }
+        } catch {
+          // Keep first-page summary values when summary endpoint fails.
+        }
+
+        if (!Number.isFinite(summaryCount) || summaryCount < 0) {
+          summaryCount = rows.length
+        }
+
+        setActivatedAccountsCount(summaryCount)
+        setActivatedAccountsSpent(summarySpent)
+      }
+    } catch (requestError) {
+      if (activatedAccountsRequestTokenRef.current !== requestToken) return
+      if (!append) {
+        setActivatedAccounts([])
+        setActivatedAccountsCount(0)
+        setActivatedAccountsSpent(0)
+        setActivatedAccountsMarker(null)
+      }
+      setActivatedAccountsError(requestError?.message || 'Failed to load activated accounts')
+    } finally {
+      if (activatedAccountsRequestTokenRef.current !== requestToken) return
+      if (append) {
+        setActivatedAccountsLoadingMore(false)
+      } else {
+        setActivatedAccountsLoading(false)
+      }
+    }
   }
 
   useEffect(() => {
@@ -1233,126 +1351,15 @@ export default function Account({
       return
     }
 
+    setActivatedAccounts(initialActivatedAccountsData?.rows || [])
+    setActivatedAccountsCount(initialActivatedAccountsData?.count || 0)
+    setActivatedAccountsSpent(initialActivatedAccountsData?.spent || 0)
+    setActivatedAccountsLoading(false)
+    setActivatedAccountsLoadingMore(false)
+    setActivatedAccountsError(null)
+    setActivatedAccountsMarker(initialActivatedAccountsData?.marker || null)
     setExpandedActivatedKey(null)
-    const requestToken = activatedAccountsRequestTokenRef.current + 1
-    activatedAccountsRequestTokenRef.current = requestToken
-
-    const fetchActivatedAccounts = async ({ markerValue = null, append = false } = {}) => {
-      if (append) {
-        setActivatedAccountsLoadingMore(true)
-      } else {
-        setActivatedAccountsLoading(true)
-      }
-
-      if (!append) {
-        setActivatedAccounts([])
-        setActivatedAccountsCount(0)
-        setActivatedAccountsSpent(0)
-        setActivatedAccountsMarker(null)
-      }
-
-      setActivatedAccountsError(null)
-
-      try {
-        const markerQuery = markerValue ? `&marker=${encodeURIComponent(markerValue)}` : ''
-        const orderQuery = `&order=${activatedAccountsOrder}`
-        const response = await axios.get(
-          `xrpl/accounts?parent=${data.address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}${orderQuery}${markerQuery}`
-        )
-        if (activatedAccountsRequestTokenRef.current !== requestToken) return
-
-        const payload = response?.data || {}
-
-        if (payload?.result && payload.result !== 'success') {
-          throw new Error(payload?.message || 'Failed to load activated accounts')
-        }
-
-        const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
-        const nextMarker = payload?.marker || null
-
-        const normalizedRows = accountRows
-          .map((child) => ({
-            address: child?.account || child?.address || '',
-            inception: child?.inception || null,
-            initialBalance: Number(child?.initial_balance ?? child?.initialBalance ?? 0),
-            balance: Number(child?.balance ?? 0),
-            txHash: child?.tx_hash || child?.txHash || null,
-            lastSubmittedAt: child?.last_submitted_at || child?.lastSubmittedAt || null,
-            lastSubmittedLedgerIndex: child?.last_submitted_ledger_index ?? child?.lastSubmittedLedgerIndex ?? null,
-            lastSubmittedTxHash: child?.last_submitted_tx_hash || child?.lastSubmittedTxHash || null,
-            deletedAt: child?.deleted_at || child?.deletedAt || null,
-            deletedLedgerIndex: child?.deleted_ledger_index ?? child?.deletedLedgerIndex ?? null,
-            deletedTxHash: child?.deleted_tx_hash || child?.deletedTxHash || null
-          }))
-          .filter((child) => !!child.address)
-
-        if (append) {
-          setActivatedAccounts((prev) => [...prev, ...normalizedRows])
-        } else {
-          setActivatedAccounts(normalizedRows)
-        }
-
-        setActivatedAccountsMarker(nextMarker)
-
-        if (!append) {
-          let summaryCount = Number(payload?.count)
-          let summarySpent = normalizedRows.reduce(
-            (sum, child) => sum + (Number.isFinite(child.initialBalance) ? child.initialBalance : 0),
-            0
-          )
-
-          try {
-            const summaryResponse = await axios.get(`xrpl/accounts/summary?parent=${data.address}`)
-            if (activatedAccountsRequestTokenRef.current !== requestToken) return
-            const summaryData = summaryResponse?.data || {}
-            const summaryCountValue = Number(summaryData?.count)
-            const summarySpentValue = Number(summaryData?.initial_balance)
-
-            if (Number.isFinite(summaryCountValue) && summaryCountValue >= 0) {
-              summaryCount = summaryCountValue
-            }
-
-            if (Number.isFinite(summarySpentValue) && summarySpentValue >= 0) {
-              summarySpent = summarySpentValue
-            }
-          } catch {
-            // Keep first-page summary values when summary endpoint fails.
-          }
-
-          if (!Number.isFinite(summaryCount) || summaryCount < 0) {
-            summaryCount = normalizedRows.length
-          }
-
-          setActivatedAccountsCount(summaryCount)
-          setActivatedAccountsSpent(summarySpent)
-        }
-      } catch (requestError) {
-        if (activatedAccountsRequestTokenRef.current !== requestToken) return
-        if (!append) {
-          setActivatedAccounts([])
-          setActivatedAccountsCount(0)
-          setActivatedAccountsSpent(0)
-          setActivatedAccountsMarker(null)
-        }
-        setActivatedAccountsError(requestError?.message || 'Failed to load activated accounts')
-      } finally {
-        if (activatedAccountsRequestTokenRef.current !== requestToken) return
-        if (append) {
-          setActivatedAccountsLoadingMore(false)
-        } else {
-          setActivatedAccountsLoading(false)
-        }
-      }
-    }
-
-    fetchActivatedAccounts()
-
-    return () => {
-      if (activatedAccountsRequestTokenRef.current === requestToken) {
-        activatedAccountsRequestTokenRef.current = requestToken + 1
-      }
-    }
-  }, [data?.address, effectiveLedgerTimestamp, activatedAccountsOrder, activatedAccountsReloadKey, refreshPage])
+  }, [data?.address, effectiveLedgerTimestamp, initialActivatedAccountsData, refreshPage])
 
   const loadMoreActivatedAccounts = () => {
     if (
@@ -1384,23 +1391,9 @@ export default function Account({
         }
 
         const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
-        const normalizedRows = accountRows
-          .map((child) => ({
-            address: child?.account || child?.address || '',
-            inception: child?.inception || null,
-            initialBalance: Number(child?.initial_balance ?? child?.initialBalance ?? 0),
-            balance: Number(child?.balance ?? 0),
-            txHash: child?.tx_hash || child?.txHash || null,
-            lastSubmittedAt: child?.last_submitted_at || child?.lastSubmittedAt || null,
-            lastSubmittedLedgerIndex: child?.last_submitted_ledger_index ?? child?.lastSubmittedLedgerIndex ?? null,
-            lastSubmittedTxHash: child?.last_submitted_tx_hash || child?.lastSubmittedTxHash || null,
-            deletedAt: child?.deleted_at || child?.deletedAt || null,
-            deletedLedgerIndex: child?.deleted_ledger_index ?? child?.deletedLedgerIndex ?? null,
-            deletedTxHash: child?.deleted_tx_hash || child?.deletedTxHash || null
-          }))
-          .filter((child) => !!child.address)
+        const rows = accountRows.filter((child) => !!child?.account)
 
-        setActivatedAccounts((prev) => [...prev, ...normalizedRows])
+        setActivatedAccounts((prev) => [...prev, ...rows])
         setActivatedAccountsMarker(payload?.marker || null)
       } catch (requestError) {
         if (activatedAccountsRequestTokenRef.current !== requestToken) return
@@ -1413,6 +1406,30 @@ export default function Account({
 
     fetchMore()
   }
+
+  const reloadActivatedAccounts = () => {
+    if (!data?.address || effectiveLedgerTimestamp || activatedAccountsLoading || activatedAccountsLoadingMore) return
+
+    const requestToken = activatedAccountsRequestTokenRef.current + 1
+    activatedAccountsRequestTokenRef.current = requestToken
+    setExpandedActivatedKey(null)
+    fetchActivatedAccountsPage({ requestToken })
+  }
+
+  useEffect(() => {
+    if (!activatedAccountsOrderHydratedRef.current) {
+      activatedAccountsOrderHydratedRef.current = true
+      return
+    }
+
+    if (!data?.address || effectiveLedgerTimestamp || !hasActivatedAccountsSection) return
+
+    const requestToken = activatedAccountsRequestTokenRef.current + 1
+    activatedAccountsRequestTokenRef.current = requestToken
+    setExpandedActivatedKey(null)
+    fetchActivatedAccountsPage({ requestToken })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activatedAccountsOrder])
 
   const loadMoreNfts = async () => {
     if (nftLoadingMore) return
@@ -3028,18 +3045,22 @@ export default function Account({
                         <>
                           <div className="signer-rows-container">
                             {signerAccounts.map((signerAccount, index) => {
-                              const roleLabel = signerAccount.hasRegularKeyMatch
-                                ? signerAccount.hasSignerMatch
+                              const hasRegularKeyMatch = signerAccount?.regular_key === data.address
+                              const hasSignerMatch = Array.isArray(signerAccount?.signer_list)
+                                ? signerAccount.signer_list.includes(data.address)
+                                : false
+                              const roleLabel = hasRegularKeyMatch
+                                ? hasSignerMatch
                                   ? 'regular key + signer'
                                   : 'regular key'
                                 : 'signer'
 
                               return (
-                                <div className="signer-row" key={`${signerAccount.address}-${index}`}>
+                                <div className="signer-row" key={`${signerAccount.account}-${index}`}>
                                   <span className="signer-row-index">{index + 1}</span>
                                   <div className="signer-row-address">
                                     <AddressWithIconInline
-                                      data={{ address: signerAccount.address }}
+                                      data={{ address: signerAccount.account }}
                                       options={{ short: 6, showAddress: true }}
                                     />
                                   </div>
@@ -3047,7 +3068,7 @@ export default function Account({
                                     <span className="grey">({roleLabel})</span>
                                   </span>
                                   <div className="signer-row-action">
-                                    <CopyButton text={signerAccount.address} />
+                                    <CopyButton text={signerAccount.account} />
                                   </div>
                                 </div>
                               )
@@ -8803,7 +8824,7 @@ export default function Account({
                   <div className="tx-header-actions">
                     <button
                       className="tx-filter-toggle tooltip"
-                      onClick={() => setActivatedAccountsReloadKey((prev) => prev + 1)}
+                      onClick={reloadActivatedAccounts}
                       aria-label="Reload activated accounts"
                       type="button"
                       disabled={!data?.address || activatedAccountsLoading || activatedAccountsLoadingMore}
@@ -8858,12 +8879,14 @@ export default function Account({
                     const renderActivatedAccountsList = () => (
                       <div className="cards-list">
                         {activatedAccounts.map((child, index) => {
-                          const activationKey = `${child?.address || 'activation'}-${child?.inception || index}`
+                          const activationKey = `${child?.account || 'activation'}-${child?.inception || index}`
                           const activationTimeAgo = child?.inception ? timeFromNow(child.inception, i18n) : '-'
                           const activationTimeFull = child?.inception ? fullDateAndTime(child.inception) : '-'
-                          const activationAmount = Number.isFinite(child?.initialBalance) ? child.initialBalance : 0
+                          const activationAmount = Number.isFinite(Number(child?.initial_balance))
+                            ? Number(child.initial_balance)
+                            : 0
                           const activationAmountDrops = Math.round(activationAmount * 1000000)
-                          const currentBalance = Number.isFinite(child?.balance) ? child.balance : null
+                          const currentBalance = Number.isFinite(Number(child?.balance)) ? Number(child.balance) : null
                           const currentBalanceDrops =
                             currentBalance === null ? null : Math.round(currentBalance * 1000000)
                           const currentBalanceFiatText =
@@ -8875,10 +8898,10 @@ export default function Account({
                                   fiatRate: pageFiatRate,
                                   asText: true
                                 })
-                          const lastSubmittedFull = child?.lastSubmittedAt
-                            ? fullDateAndTime(child.lastSubmittedAt)
+                          const lastSubmittedFull = child?.last_submitted_at
+                            ? fullDateAndTime(child.last_submitted_at)
                             : null
-                          const deletedFull = child?.deletedAt ? fullDateAndTime(child.deletedAt) : null
+                          const deletedFull = child?.deleted_at ? fullDateAndTime(child.deleted_at) : null
                           const isExpanded = expandedActivatedKey === activationKey
                           const toggleCard = () => setExpandedActivatedKey(isExpanded ? null : activationKey)
 
@@ -8896,9 +8919,9 @@ export default function Account({
                                     </span>
                                   </div>
                                   <div className="tx-collapsed-meta">
-                                    <AddressWithIcon address={child.address}>
+                                    <AddressWithIcon address={child.account}>
                                       <span className="activated-account-inline-address">
-                                        {shortHash(child.address, 6)}
+                                        {shortHash(child.account, 6)}
                                       </span>
                                     </AddressWithIcon>
                                   </div>
@@ -8922,10 +8945,10 @@ export default function Account({
                                     <span>Address:</span>
                                     <span className="copy-inline">
                                       <AddressWithIconInline
-                                        data={{ address: child.address }}
+                                        data={{ address: child.account }}
                                         options={{ short: 6, showAddress: true }}
                                       />
-                                      <CopyButton text={child.address} />
+                                      <CopyButton text={child.account} />
                                     </span>
                                   </div>
                                   <div className="detail-row">
@@ -8936,21 +8959,21 @@ export default function Account({
                                     <span>Activated:</span>
                                     <span>{activationTimeFull}</span>
                                   </div>
-                                  {child.txHash && (
+                                  {child.tx_hash && (
                                     <div className="detail-row">
                                       <span>Activation tx:</span>
                                       <span className="copy-inline">
                                         <Link
-                                          href={`/transaction/${child.txHash}`}
+                                          href={`/transaction/${child.tx_hash}`}
                                           onClick={(e) => e.stopPropagation()}
                                         >
-                                          {shortHash(child.txHash)}
+                                          {shortHash(child.tx_hash)}
                                         </Link>
-                                        <CopyButton text={child.txHash} />
+                                        <CopyButton text={child.tx_hash} />
                                       </span>
                                     </div>
                                   )}
-                                  {currentBalanceDrops !== null && !child.deletedAt && !child.deletedTxHash && (
+                                  {currentBalanceDrops !== null && !child.deleted_at && !child.deleted_tx_hash && (
                                     <div className="detail-row">
                                       <span>Balance now:</span>
                                       <span className="tx-detail-stacked-amount">
@@ -8963,7 +8986,7 @@ export default function Account({
                                       </span>
                                     </div>
                                   )}
-                                  {(lastSubmittedFull || child.lastSubmittedTxHash) && (
+                                  {(lastSubmittedFull || child.last_submitted_tx_hash) && (
                                     <>
                                       {lastSubmittedFull && (
                                         <div className="detail-row">
@@ -8971,23 +8994,23 @@ export default function Account({
                                           <span title={String(lastSubmittedFull)}>{lastSubmittedFull}</span>
                                         </div>
                                       )}
-                                      {child.lastSubmittedTxHash && (
+                                      {child.last_submitted_tx_hash && (
                                         <div className="detail-row">
                                           <span>Last submitted tx:</span>
                                           <span className="copy-inline">
                                             <Link
-                                              href={`/transaction/${child.lastSubmittedTxHash}`}
+                                              href={`/transaction/${child.last_submitted_tx_hash}`}
                                               onClick={(e) => e.stopPropagation()}
                                             >
-                                              {shortHash(child.lastSubmittedTxHash)}
+                                              {shortHash(child.last_submitted_tx_hash)}
                                             </Link>
-                                            <CopyButton text={child.lastSubmittedTxHash} />
+                                            <CopyButton text={child.last_submitted_tx_hash} />
                                           </span>
                                         </div>
                                       )}
                                     </>
                                   )}
-                                  {(deletedFull || child.deletedTxHash) && (
+                                  {(deletedFull || child.deleted_tx_hash) && (
                                     <>
                                       {deletedFull && (
                                         <div className="detail-row">
@@ -8995,17 +9018,17 @@ export default function Account({
                                           <span title={String(deletedFull)}>{deletedFull}</span>
                                         </div>
                                       )}
-                                      {child.deletedTxHash && (
+                                      {child.deleted_tx_hash && (
                                         <div className="detail-row">
                                           <span>Delete tx:</span>
                                           <span className="copy-inline">
                                             <Link
-                                              href={`/transaction/${child.deletedTxHash}`}
+                                              href={`/transaction/${child.deleted_tx_hash}`}
                                               onClick={(e) => e.stopPropagation()}
                                             >
-                                              {shortHash(child.deletedTxHash)}
+                                              {shortHash(child.deleted_tx_hash)}
                                             </Link>
-                                            <CopyButton text={child.deletedTxHash} />
+                                            <CopyButton text={child.deleted_tx_hash} />
                                           </span>
                                         </div>
                                       )}
@@ -9019,16 +9042,17 @@ export default function Account({
                       </div>
                     )
 
-                    if (isMobile) {
-                      const canLoadMoreActivatedAccounts = !!activatedAccountsMarker
-                      return (
-                        <>
+                    const canLoadMoreActivatedAccounts = !!activatedAccountsMarker
+
+                    return (
+                      <div className="object-cards-wrapper">
+                        <div className="object-cards-details">
                           {renderActivatedAccountsList()}
-                          <div className="tx-mobile-actions">
-                            {canLoadMoreActivatedAccounts ? (
+                          {canLoadMoreActivatedAccounts ? (
+                            <div className="asset-compact-actions">
                               <button
                                 type="button"
-                                className="button-outline"
+                                className={isMobile ? 'button-outline' : 'asset-compact-toggle'}
                                 onClick={loadMoreActivatedAccounts}
                                 disabled={activatedAccountsLoadingMore || activatedAccountsLoading}
                               >
@@ -9041,42 +9065,14 @@ export default function Account({
                                   'Load 20 more activated accounts'
                                 )}
                               </button>
-                            ) : (
+                            </div>
+                          ) : isMobile ? (
+                            <div className="tx-mobile-actions">
                               <span className="tx-mobile-end-label">End of list.</span>
-                            )}
-                          </div>
-                        </>
-                      )
-                    }
-
-                    return (
-                      <InfiniteScrolling
-                        dataLength={activatedAccounts.length}
-                        loadMore={loadMoreActivatedAccounts}
-                        hasMore={!!activatedAccountsMarker}
-                        errorMessage={null}
-                        loadMoreMessage={
-                          activatedAccountsLoadingMore ? (
-                            <button type="button" className="button-outline" disabled>
-                              Loading
-                              <span className="waiting inline" aria-hidden="true"></span>
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              className="button-outline"
-                              onClick={loadMoreActivatedAccounts}
-                              disabled={activatedAccountsLoadingMore || activatedAccountsLoading}
-                            >
-                              Load 20 more activated accounts
-                            </button>
-                          )
-                        }
-                        subscriptionExpired={false}
-                        sessionToken={true}
-                      >
-                        {renderActivatedAccountsList()}
-                      </InfiniteScrolling>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
                     )
                   })()
                 )}
