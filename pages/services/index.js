@@ -116,6 +116,7 @@ export default function ServicesPage() {
       items: [
         ...(xahauNetwork ? [{ href: '/services/reward-auto-claim', title: 'Reward Auto Claim', icon: LuCoins }] : []),
         { href: '/services/account-settings/', title: t('menu.services.account-settings'), icon: IoWalletOutline },
+        { href: '/services/token-issuer-settings', title: 'Token Issuer Settings', icon: IoWalletOutline },
         { href: '/services/account-control', title: 'Account Control', icon: IoKeyOutline },
         { href: '/services/account-delete', title: 'Account Delete', icon: RiDeleteBin6Line }
       ]
