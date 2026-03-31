@@ -67,7 +67,7 @@ $small-screen: 440px; // minimum screen
     width: 32px;
     height: 32px;
     border: 1px solid var(--unaccent-icon);
-    border-radius: 0;
+    border-radius: 10px;
     background-color: var(--background-input); 
     font-size: 16px;
     display: flex;
@@ -83,7 +83,7 @@ $small-screen: 440px; // minimum screen
 
   .react-select__control {
     border-color: var(--unaccent-icon);
-    border-radius: 0;
+    border-radius: 10px;
     background: #fff;
 
     &:hover {
@@ -117,9 +117,10 @@ $small-screen: 440px; // minimum screen
 
   .react-select__menu {
     background: #fff;
-    border-radius: 0;
-    margin-top: 0;
+    border-radius: 10px;
+    margin-top: 4px;
     border: 1px solid var(--accent-link);
+    overflow: hidden;
 
     .dark & {
       background: #000;

@@ -909,7 +909,7 @@ export default function NftVolumes({
       />
 
       <h1 className="center">{t('header', { ns: 'nft-volumes' }) + ' '}</h1>
-      <div className="tabs-inline">
+      <div className="tabs-inline" style={{ marginBottom: 20 }}>
         <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name="list" />
       </div>
 
