@@ -453,10 +453,12 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                 <p style={{ marginBottom: '0.45rem' }}>
                   Account Control is available to logged-in Bithomp Pro subscribers.
                 </p>
-                <button className="button-action" onClick={() => openEmailLogin?.()}>
-                  <IoIosRocket style={{ fontSize: 16, marginRight: 6, marginBottom: 1 }} />
-                  Log in to Bithomp Pro
-                </button>
+                <div style={{ marginTop: '0.75rem', marginBottom: '0.35rem' }}>
+                  <button className="button-action" onClick={() => openEmailLogin?.()} style={{ padding: '10px 16px' }}>
+                    <IoIosRocket style={{ fontSize: 16, marginRight: 6, marginBottom: 1 }} />
+                    Log in to Bithomp Pro
+                  </button>
+                </div>
               </>
             ) : (
               <>
@@ -486,7 +488,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
 
             <div className="status-row">
               <span className="status-label">Regular Key</span>
-              <span className="status-value mono">
+              <span className={`status-value${regularKey ? ' mono' : ''}`}>
                 {regularKey ? (
                   <>
                     {regularKey}
@@ -499,7 +501,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
             </div>
 
             <div className="status-row">
-              <span className="status-label">Multi-sig</span>
+              <span className="status-label">Multsignature</span>
               <span className="status-value">
                 {signerList ? (
                   <span className="section-badge badge-ok">
@@ -598,7 +600,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
             <span className="section-icon">
               <IoPeopleOutline size={15} />
             </span>
-            <span className="section-title">Multi-signature</span>
+            <span className="section-title">Multsignature</span>
             <span className={`section-badge ${signerList ? 'badge-ok' : 'badge-off'}`}>
               {signerList
                 ? `Quorum ${signerList.signerQuorum} · ${signerList.signerEntries?.length || 0} signer${signerList.signerEntries?.length !== 1 ? 's' : ''}`
