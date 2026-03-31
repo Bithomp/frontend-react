@@ -952,17 +952,18 @@ export default function AccountSettings({
             <span className={`flag-status ${isNonDefault ? 'orange' : ''}`}>{flagData.status(currentValue)}</span>
           </div>
 
-          {showButton && withTooltip(
-            buttonTooltip,
-            <button
-              className="button-action thin"
-              onClick={() => handleFlagToggle(flag)}
-              disabled={buttonDisabled || !account?.address}
-              style={{ minWidth: '120px' }}
-            >
-              {flagData.actionText(currentValue)}
-            </button>
-          )}
+          {showButton &&
+            withTooltip(
+              buttonTooltip,
+              <button
+                className="button-action thin"
+                onClick={() => handleFlagToggle(flag)}
+                disabled={buttonDisabled || !account?.address}
+                style={{ minWidth: '120px' }}
+              >
+                {flagData.actionText(currentValue)}
+              </button>
+            )}
 
           {flagData?.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
         </div>
@@ -1054,12 +1055,13 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentDomain && withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : '',
-                      <button className="button-action thin" onClick={handleClearDomain} disabled={!account?.address}>
-                        Clear
-                      </button>
-                    )}
+                    {currentDomain &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button className="button-action thin" onClick={handleClearDomain} disabled={!account?.address}>
+                          Clear
+                        </button>
+                      )}
                     {withTooltip(
                       !account?.address ? 'Sign in to manage settings' : '',
                       <button className="button-action thin" onClick={handleSetDomain} disabled={!account?.address}>
@@ -1090,16 +1092,17 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentEmailHash && withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : '',
-                      <button
-                        className="button-action thin"
-                        onClick={handleClearEmailHash}
-                        disabled={!account?.address}
-                      >
-                        Clear
-                      </button>
-                    )}
+                    {currentEmailHash &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearEmailHash}
+                          disabled={!account?.address}
+                        >
+                          Clear
+                        </button>
+                      )}
                     {withTooltip(
                       !account?.address ? 'Sign in to manage settings' : '',
                       <button className="button-action thin" onClick={handleSetEmailHash} disabled={!account?.address}>
@@ -1128,16 +1131,17 @@ export default function AccountSettings({
                     {account?.address && <span className="flag-status">{currentMessageKey ? 'Set' : 'Not Set'}</span>}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentMessageKey && withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : '',
-                      <button
-                        className="button-action thin"
-                        onClick={handleClearMessageKey}
-                        disabled={!account?.address}
-                      >
-                        Clear
-                      </button>
-                    )}
+                    {currentMessageKey &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearMessageKey}
+                          disabled={!account?.address}
+                        >
+                          Clear
+                        </button>
+                      )}
                     {withTooltip(
                       !account?.address
                         ? 'Sign in to manage settings'
@@ -1203,19 +1207,25 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentTransferRate && currentTransferRate > 0 && withTooltip(
+                    {currentTransferRate &&
+                      currentTransferRate > 0 &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearTransferRate}
+                          disabled={!account?.address}
+                        >
+                          Clear
+                        </button>
+                      )}
+                    {withTooltip(
                       !account?.address ? 'Sign in to manage settings' : '',
                       <button
                         className="button-action thin"
-                        onClick={handleClearTransferRate}
+                        onClick={handleSetTransferRate}
                         disabled={!account?.address}
                       >
-                        Clear
-                      </button>
-                    )}
-                    {withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : '',
-                      <button className="button-action thin" onClick={handleSetTransferRate} disabled={!account?.address}>
                         Set
                       </button>
                     )}
@@ -1302,16 +1312,17 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentWalletLocator && withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : '',
-                      <button
-                        className="button-action thin"
-                        onClick={handleClearWalletLocator}
-                        disabled={!account?.address}
-                      >
-                        Clear
-                      </button>
-                    )}
+                    {currentWalletLocator &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearWalletLocator}
+                          disabled={!account?.address}
+                        >
+                          Clear
+                        </button>
+                      )}
                     {withTooltip(
                       !account?.address
                         ? 'Sign in to manage settings'
@@ -1372,16 +1383,17 @@ export default function AccountSettings({
                       )}
                     </div>
                     <div className="flag-info-buttons">
-                      {currentNftTokenMinter && withTooltip(
-                        !account?.address ? 'Sign in to manage settings' : '',
-                        <button
-                          className="button-action thin"
-                          onClick={handleClearNftTokenMinter}
-                          disabled={!account?.address}
-                        >
-                          Clear
-                        </button>
-                      )}
+                      {currentNftTokenMinter &&
+                        withTooltip(
+                          !account?.address ? 'Sign in to manage settings' : '',
+                          <button
+                            className="button-action thin"
+                            onClick={handleClearNftTokenMinter}
+                            disabled={!account?.address}
+                          >
+                            Clear
+                          </button>
+                        )}
                       {withTooltip(
                         !account?.address
                           ? 'Sign in to manage settings'
