@@ -683,6 +683,13 @@ export default function Account({
     !!data?.ledgerInfo?.flags?.disallowXRP
   const canManageDomain =
     data?.address === account?.address && !!setSignRequest && !effectiveLedgerTimestamp && !!data?.ledgerInfo?.activated
+  const disabledSetDomainTooltip = (() => {
+    if (canManageDomain) return ''
+    if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
+    if (data?.address !== account?.address) return 'Only the viewed account can do it'
+    if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
+    return 'Set domain is unavailable'
+  })()
   const hasAccountSettingsData = hasAccountSettingsRows
   const accountControlCollapsedLabel = isBlackholed
     ? 'Blackholed'
@@ -739,6 +746,13 @@ export default function Account({
   const didCreatedFull = didData?.createdAt ? fullDateAndTime(didData.createdAt) : null
   const didUpdatedFull = didData?.updatedAt ? fullDateAndTime(didData.updatedAt) : null
   const canManageDid = data?.address === account?.address && !effectiveLedgerTimestamp && !!setSignRequest
+  const disabledSetDidTooltip = (() => {
+    if (canManageDid) return ''
+    if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
+    if (data?.address !== account?.address) return 'Only the viewed account can do it'
+    if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
+    return 'Set DID is unavailable'
+  })()
   const flareClaimNode = hasFlareAddress ? (
     <>
       {fullNiceNumber(data.flare.spark * 0.15)} <span className="no-brake">FLR</span>
@@ -3696,46 +3710,68 @@ export default function Account({
                         </div>
                       )}
 
-                      {((!data?.ledgerInfo?.domain && canManageDomain) ||
-                        (!xahauNetwork && !didData && canManageDid)) && (
+                      {((!data?.ledgerInfo?.domain && !isDeletedAccount) || (!xahauNetwork && !didData) || true) && (
                         <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                          {!data?.ledgerInfo?.domain && canManageDomain && (
-                            <button
-                              type="button"
-                              className="card-action-btn"
-                              onClick={() =>
-                                setSignRequest({
-                                  action: 'setDomain',
-                                  redirect: 'account',
-                                  request: {
-                                    TransactionType: 'AccountSet',
-                                    Account: data?.address
-                                  }
-                                })
-                              }
-                              title="Set domain"
-                            >
-                              Set domain
-                            </button>
+                          <button
+                            type="button"
+                            className="card-action-btn"
+                            onClick={() => router.push('/services/account-settings')}
+                            title="Account settings"
+                          >
+                            <FaGear />
+                            Account settings
+                          </button>
+                          {!data?.ledgerInfo?.domain && !isDeletedAccount && (
+                            <span className={disabledSetDomainTooltip ? 'tooltip' : ''}>
+                              <button
+                                type="button"
+                                className={`card-action-btn ${canManageDomain ? 'redeem' : 'disabled'}`}
+                                disabled={!canManageDomain}
+                                onClick={() => {
+                                  if (!canManageDomain) return
+                                  setSignRequest({
+                                    action: 'setDomain',
+                                    redirect: 'account',
+                                    request: {
+                                      TransactionType: 'AccountSet',
+                                      Account: data?.address
+                                    }
+                                  })
+                                }}
+                                title="Set domain"
+                              >
+                                <FaPencil /> Set domain
+                              </button>
+                              {!!disabledSetDomainTooltip && (
+                                <span className="tooltiptext left">{disabledSetDomainTooltip}</span>
+                              )}
+                            </span>
                           )}
-                          {!xahauNetwork && !didData && canManageDid && (
-                            <button
-                              type="button"
-                              className="card-action-btn"
-                              onClick={() =>
-                                setSignRequest({
-                                  action: 'setDid',
-                                  redirect: 'account',
-                                  request: {
-                                    TransactionType: 'DIDSet',
-                                    Account: data?.address
-                                  }
-                                })
-                              }
-                              title="Set DID"
-                            >
-                              Set DID
-                            </button>
+                          {!xahauNetwork && !didData && (
+                            <span className={disabledSetDidTooltip ? 'tooltip' : ''}>
+                              <button
+                                type="button"
+                                className={`card-action-btn ${canManageDid ? 'redeem' : 'disabled'}`}
+                                disabled={!canManageDid}
+                                onClick={() => {
+                                  if (!canManageDid) return
+                                  setSignRequest({
+                                    action: 'setDid',
+                                    redirect: 'account',
+                                    request: {
+                                      TransactionType: 'DIDSet',
+                                      Account: data?.address
+                                    }
+                                  })
+                                }}
+                                title="Set DID"
+                              >
+                                <MdVerified /> Set DID
+                              </button>
+                              {!!disabledSetDidTooltip && (
+                                <span className="tooltiptext left">{disabledSetDidTooltip}</span>
+                              )}
+                            </span>
                           )}
                         </div>
                       )}
