@@ -308,11 +308,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
 
   // ── Blackhole ────────────────────────────────────────────────────────────────
 
-  const handleBlackhole = () => {
-    if (!confirmBlackhole) {
-      setErrorMessage('Please confirm that you understand the consequences of blackholing your account.')
-      return
-    }
+  const handleSetBlackholeKey = () => {
     setSignRequest({
       request: {
         TransactionType: 'SetRegularKey',
@@ -320,32 +316,39 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
         RegularKey: BLACKHOLE_ADDRESS
       },
       callback: () => {
-        setSignRequest({
-          request: {
-            TransactionType: 'AccountSet',
-            Account: account.address,
-            SetFlag: 4
-          },
-          callback: () => {
-            setSuccessMessage(
-              'Account has been blackholed. No one, including you, can ever sign transactions for it again.'
-            )
-            setErrorMessage('')
-            setConfirmBlackhole(false)
-            setAccountData((prev) => {
-              if (!prev?.ledgerInfo) return prev
-              return {
+        setSuccessMessage('Blackhole regular key set. Proceed to Step 2 to disable the master key.')
+        setErrorMessage('')
+        setAccountData((prev) =>
+          prev ? { ...prev, ledgerInfo: { ...prev.ledgerInfo, regularKey: BLACKHOLE_ADDRESS } } : prev
+        )
+      }
+    })
+  }
+
+  const handleBlackholeDisableMaster = () => {
+    setSignRequest({
+      request: {
+        TransactionType: 'AccountSet',
+        Account: account.address,
+        SetFlag: 4
+      },
+      callback: () => {
+        setSuccessMessage(
+          'Account has been blackholed. No one, including you, can ever sign transactions for it again.'
+        )
+        setErrorMessage('')
+        setAccountData((prev) =>
+          prev
+            ? {
                 ...prev,
                 ledgerInfo: {
                   ...prev.ledgerInfo,
-                  regularKey: BLACKHOLE_ADDRESS,
                   blackholed: true,
                   flags: { ...prev.ledgerInfo.flags, disableMaster: true }
                 }
               }
-            })
-          }
-        })
+            : prev
+        )
       }
     })
   }
@@ -390,6 +393,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
 
   const regularKeyActionLockReason = actionLockReason || masterKeyUnsupportedReason
   const signerListActionLockReason = actionLockReason || masterKeyUnsupportedReason
+  const enableMasterKeyLockReason = actionLockReason || masterKeyUnsupportedReason
   const isRegularKeyActionLocked = !!regularKeyActionLockReason
   const isSignerListActionLocked = !!signerListActionLockReason
   const hasAtLeastOneSigner = signerEntries.some((row) => row.account.trim())
@@ -400,8 +404,16 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
     signerListActionLockReason || (!hasAtLeastOneSigner ? 'Add at least one signer first.' : '')
   const disableMasterDisabledReason =
     actionLockReason || (!regularKey && !signerList ? 'Set a Regular Key or Signer List first.' : '')
-  const blackholeDisabledReason =
-    actionLockReason || (!confirmBlackhole ? 'Click the confirmation checkbox first.' : '')
+  const blackholeStep1Done = regularKey === BLACKHOLE_ADDRESS
+  const blackholeStep1DisabledReason =
+    actionLockReason ||
+    masterKeyUnsupportedReason ||
+    (!confirmBlackhole ? 'Confirm the checkbox first.' : '') ||
+    (blackholeStep1Done ? 'Regular Key is already set to the blackhole address.' : '')
+  const blackholeStep2DisabledReason =
+    actionLockReason ||
+    (!blackholeStep1Done ? 'Complete Step 1 first.' : '') ||
+    (!confirmBlackhole ? 'Confirm the checkbox first.' : '')
 
   return (
     <div className={accountSettings}>
@@ -746,10 +758,14 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
               <div className="flag-info-buttons">
                 {masterKeyDisabled
                   ? withActionTooltip(
-                      <button className="button-action thin" onClick={handleEnableMasterKey} disabled={isActionLocked}>
+                      <button
+                        className="button-action thin"
+                        onClick={handleEnableMasterKey}
+                        disabled={!!enableMasterKeyLockReason}
+                      >
                         Enable Master Key
                       </button>,
-                      actionLockReason
+                      enableMasterKeyLockReason
                     )
                   : null}
               </div>
@@ -819,27 +835,56 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                   </span>
                 </CheckBox>
 
-                {withActionTooltip(
-                  <button
-                    className="button-action thin"
-                    onClick={handleBlackhole}
-                    disabled={isActionLocked || !confirmBlackhole}
-                    style={
-                      isActionLocked
-                        ? {
-                            background: 'var(--unaccented, #e3e7ee)',
-                            color: 'var(--text-secondary)',
-                            borderColor: 'var(--unaccented, #e3e7ee)',
-                            cursor: 'not-allowed',
-                            opacity: 0.75
-                          }
-                        : { background: 'var(--red, #dc3545)', color: '#fff', borderColor: 'var(--red, #dc3545)' }
-                    }
-                  >
-                    Blackhole Account
-                  </button>,
-                  blackholeDisabledReason
-                )}
+                {/* Step 1 */}
+                <div className="flag-item" style={{ marginTop: '0.5rem' }}>
+                  <div className="flag-header">
+                    <div className="flag-info">
+                      <span className="flag-name">Step 1 — Set Blackhole Regular Key</span>
+                      <span className={`flag-status ${blackholeStep1Done ? 'green' : ''}`}>
+                        {blackholeStep1Done ? 'Done' : 'Pending'}
+                      </span>
+                    </div>
+                    {withActionTooltip(
+                      <button
+                        className="button-action thin"
+                        onClick={handleSetBlackholeKey}
+                        disabled={!!blackholeStep1DisabledReason}
+                        style={{ background: 'var(--red, #dc3545)', color: '#fff', borderColor: 'var(--red, #dc3545)' }}
+                      >
+                        {blackholeStep1Done ? 'Re-set Blackhole Key' : 'Set Blackhole Key'}
+                      </button>,
+                      blackholeStep1DisabledReason
+                    )}
+                  </div>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flag-item" style={{ marginTop: '0.5rem' }}>
+                  <div className="flag-header">
+                    <div className="flag-info">
+                      <span className="flag-name">Step 2 — Disable Master Key</span>
+                      <span className={`flag-status ${masterKeyDisabled ? 'orange bold' : ''}`}>
+                        {masterKeyDisabled ? 'Done' : 'Pending'}
+                      </span>
+                    </div>
+                    {!masterKeyDisabled &&
+                      withActionTooltip(
+                        <button
+                          className="button-action thin"
+                          onClick={handleBlackholeDisableMaster}
+                          disabled={!!blackholeStep2DisabledReason}
+                          style={{
+                            background: 'var(--red, #dc3545)',
+                            color: '#fff',
+                            borderColor: 'var(--red, #dc3545)'
+                          }}
+                        >
+                          Disable Master Key
+                        </button>,
+                        blackholeStep2DisabledReason
+                      )}
+                  </div>
+                </div>
               </>
             )}
           </div>
