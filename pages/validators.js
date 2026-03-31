@@ -603,7 +603,8 @@ export default function Validators({ amendment, initialData, initialProcessed, i
   }
 
   const checkBoxStyles = {
-    display: 'inline-block',
+    display: 'inline-flex',
+    alignItems: 'center',
     marginTop: windowWidth > 500 ? '-20px' : 0,
     marginBottom: '20px',
     marginRight: '20px',

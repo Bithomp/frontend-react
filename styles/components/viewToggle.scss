@@ -11,6 +11,10 @@ $button-size-mobile: 30px;
     width: fit-content;
     gap: 1px;
     border: 1px solid var(--unaccent-icon);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--background-input);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--text-main) 8%, transparent);
 
     @media (max-width: 1300px) {
       top: 90px;
@@ -18,7 +22,7 @@ $button-size-mobile: 30px;
   }
 
   &__button {
-    transition: background-color 0.3s;
+    transition: background-color 0.25s;
 
     label {
       cursor: pointer;
@@ -30,6 +34,7 @@ $button-size-mobile: 30px;
       color: var(--text-main);
       background-color: var(--background-input);
       font-size: 18px;
+      transition: background-color 0.25s, color 0.25s;
 
       @media(max-width: 440px) {
         width: $button-size-mobile;
@@ -51,7 +56,9 @@ $button-size-mobile: 30px;
     }
 
     &:hover {
-      background-color: var(--background-input-hover);
+      label {
+        background-color: var(--background-input-hover);
+      }
     }
 
     &--is-selected {

@@ -12,14 +12,13 @@ import { axiosServer, passHeaders } from '../../utils/axios'
 import {
   codeHighlight,
   AddressWithIconFilled,
-  shortAddress,
   fullDateAndTime,
   amountFormat,
   showFlags,
   capitalize,
   shortHash
 } from '../../utils/format'
-import { LinkTx, LedgerLink } from '../../utils/links'
+import { LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
 import { network } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
@@ -134,7 +133,7 @@ export default function LedgerObject({
 
   const addressFields = ['Account', 'Owner', 'Destination', 'Issuer', 'RegularKey']
 
-  const amountFields = ['Balance', 'LowLimit', 'HighLimit', 'SendMax']
+  const amountFields = ['Balance', 'LowLimit', 'HighLimit', 'SendMax', 'TakerGets', 'TakerPays']
 
   const txIdFields = ['PreviousTxnID']
   const ledgerSeqFields = ['PreviousTxnLgrSeq']
@@ -169,13 +168,17 @@ export default function LedgerObject({
     const rows = Object.entries(cleanData)
       .filter(([key]) => key !== 'LedgerEntryType') // Exclude LedgerEntryType from regular rows
       .map(([key, value]) => {
+        const isTransactionHashField = txIdFields.includes(key) || /TxnID$|TransactionID$/i.test(key)
+        const isLongHashLikeString =
+          typeof value === 'string' && /^[A-F0-9]+$/i.test(value) && value.length >= 32 && !addressFields.includes(key)
+
         // Link for transaction id
-        if (txIdFields.includes(key) && typeof value === 'string') {
+        if (isTransactionHashField && typeof value === 'string') {
           return (
             <tr key={key}>
               <td>{key}</td>
               <td>
-                <LinkTx tx={value} short={12} />
+                <Link href={`/transaction/${value}`}>{shortHash(value)}</Link> <CopyButton text={value} />
               </td>
             </tr>
           )
@@ -214,6 +217,19 @@ export default function LedgerObject({
             </tr>
           )
         }
+
+        // Long hash-like fields (BookDirectory, RootIndex, etc.)
+        if (isLongHashLikeString) {
+          return (
+            <tr key={key}>
+              <td>{capitalize(key)}</td>
+              <td>
+                {shortHash(value)} <CopyButton text={value} />
+              </td>
+            </tr>
+          )
+        }
+
         if (addressFields.includes(key)) {
           return (
             <tr key={key}>
@@ -477,8 +493,9 @@ export default function LedgerObject({
                               href={`/object/${id}?previousTxHash=${data.node.PreviousTxnID}`}
                               className={previousTxHashQuery === data.node.PreviousTxnID ? 'active' : ''}
                             >
-                              {shortAddress(previousTxHashQuery)}
-                            </Link>
+                              {shortHash(previousTxHashQuery)}
+                            </Link>{' '}
+                            <CopyButton text={previousTxHashQuery} />
                           </td>
                         </tr>
                       )}
@@ -490,8 +507,9 @@ export default function LedgerObject({
                               href={`/object/${id}?previousTxHash=${data.node.PreviousTxnID}`}
                               className={previousTxHashQuery === data.node.PreviousTxnID ? 'active' : ''}
                             >
-                              {shortAddress(data.node.PreviousTxnID)}
-                            </Link>
+                              {shortHash(data.node.PreviousTxnID)}
+                            </Link>{' '}
+                            <CopyButton text={data.node.PreviousTxnID} />
                           </td>
                         </tr>
                       )}

@@ -26,21 +26,8 @@ export const TData = ({ tooltip, className, style, colSpan, children }) => (
         }
       }
       .responsive-tooltip {
-        width: 170px;
+        width: min(220px, calc(100vw - 24px));
         text-align: left !important;
-        &::after {
-          top: 16px !important;
-        }
-        @media (max-width: 800px) {
-          left: -75px;
-          top: 28px !important;
-          &::after {
-            top: 0 !important;
-            left: 77.5px !important;
-            border-color: transparent transparent #333 transparent !important;
-            margin-top: -10px !important;
-          }
-        }
       }
     `}</style>
   </>

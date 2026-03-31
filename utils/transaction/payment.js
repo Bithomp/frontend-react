@@ -10,7 +10,7 @@ export const paymentTypeName = (data) => {
   const { outcome, specification } = data
   let type = 'Payment'
   if (isConvertionTx(specification)) {
-    type = 'Currency exchange'
+    type = 'Swap'
   }
   if (xls14NftValue(outcome?.deliveredAmount?.value)) {
     type = 'NFT transfer (XLS-14)'

@@ -5,8 +5,8 @@ import { IoSearch } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
 import { IoChevronDown } from 'react-icons/io5'
 import axios from 'axios'
-import { nativeCurrency, nativeCurrenciesImages, useWidth, setTabParams, tokenImageSrc } from '../../utils'
-import { niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
+import { nativeCurrency, useWidth, setTabParams } from '../../utils'
+import { CurrencyWithIcon, niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
 import RadioOptions from './RadioOptions'
 import { useRouter } from 'next/router'
 
@@ -251,15 +251,6 @@ export default function TokenSelector({
     setIsOpen(false)
   }
 
-  // Helper to get icon url if available
-  const getTokenIcon = (token) => {
-    let imageUrl = tokenImageSrc(token)
-    if (!token.issuer) {
-      imageUrl = nativeCurrenciesImages[nativeCurrency]
-    }
-    return imageUrl
-  }
-
   // Helper to get token display name
   const getTokenDisplayName = (token) => {
     if (!token || !token.currency) return 'Select Token'
@@ -306,7 +297,7 @@ export default function TokenSelector({
             {/* Icon */}
             {value && value.currency && (
               <div className="token-selector-icon">
-                <img src={getTokenIcon(value)} alt={niceCurrency(value.currency)} />
+                <CurrencyWithIcon token={value} options={{ iconOnly: true }} />
               </div>
             )}
             {/* Text */}
@@ -369,11 +360,7 @@ export default function TokenSelector({
                             >
                               <div className="token-selector-modal-item-content">
                                 <div className="token-selector-modal-item-icon">
-                                  <img
-                                    src={getTokenIcon(token)}
-                                    alt={niceCurrency(token.currency)}
-                                    className="token-selector-modal-icon"
-                                  />
+                                  <CurrencyWithIcon token={token} options={{ iconOnly: true }} />
                                 </div>
                                 <div className="token-selector-modal-item-name">
                                   <span>

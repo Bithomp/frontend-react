@@ -1,5 +1,5 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
+import { AddressWithIconInline, amountFormat, tokenToFiat } from '../../../utils/format'
 import { addressBalanceChanges, isConvertionTx } from '../../../utils/transaction'
 import {
   isIOUpayment,
@@ -19,6 +19,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
   const isConvertion = isConvertionTx(specification)
   const sourceBalanceChangesList = addressBalanceChanges(data, address)
   const iouPayment = isIOUpayment(data)
+  const isInsufFee = outcome?.result === 'tecINSUFF_FEE'
 
   const isMobile = useIsMobile(600)
 
@@ -87,14 +88,14 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                 precise: 'nice',
                 issuerShort: false
               })}
-              {nativeCurrencyToFiat({
+              {tokenToFiat({
                 amount: outcome?.deliveredAmount,
                 selectedCurrency,
                 fiatRate
               })}
             </div>
           )}
-          {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
+          {(isConvertion || iouPayment) && !isInsufFee && sourceBalanceChangesList?.length > 0 && (
             <>
               <div>
                 {balancesTitle}: {sourceBalanceChangesList.length > 1 && <br />}
@@ -109,7 +110,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                         precise: 'nice',
                         issuerShort: false
                       })}
-                      {nativeCurrencyToFiat({
+                      {tokenToFiat({
                         amount: optionalAbsPaymentAmount(change, isConvertion),
                         selectedCurrency,
                         fiatRate

@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 
 import {
   devNet,
+  explorerName,
   xahauNetwork,
   ledgerName,
   nativeCurrency,
@@ -28,27 +29,68 @@ import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
 import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
 import LogoAnimated from '../LogoAnimated'
-import { IoWalletOutline } from 'react-icons/io5'
+import {
+  IoWalletOutline,
+  IoLogOutOutline,
+  IoPersonOutline,
+  IoListOutline,
+  IoPaperPlaneOutline,
+  IoSettingsOutline,
+  IoAtOutline,
+  IoStarOutline,
+  IoCardOutline,
+  IoPeopleOutline,
+  IoLocationOutline,
+  IoKeyOutline,
+  IoCompassOutline,
+  IoAddCircleOutline,
+  IoReceiptOutline,
+  IoAppsOutline,
+  IoCashOutline,
+  IoLayersOutline,
+  IoTrophyOutline,
+  IoLinkOutline,
+  IoDocumentTextOutline,
+  IoBookOutline,
+  IoHelpCircleOutline,
+  IoArrowDownCircleOutline,
+  IoArrowUpCircleOutline,
+  IoCheckboxOutline,
+  IoBuildOutline,
+  IoPricetagOutline,
+  IoTrendingUpOutline,
+  IoStorefrontOutline,
+  IoBarChartOutline,
+  IoTicketOutline,
+  IoStatsChartOutline,
+  IoFlashOutline,
+  IoInformationCircleOutline,
+  IoListCircleOutline,
+  IoGlobeOutline,
+  IoCheckmarkDoneOutline,
+  IoDocumentAttachOutline,
+  IoShieldCheckmarkOutline,
+  IoCodeSlashOutline,
+  IoImagesOutline,
+  IoPersonAddOutline,
+  IoLogoGithub,
+  IoGitBranchOutline,
+  IoRocketOutline
+} from 'react-icons/io5'
+import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
 import { niceNumber } from '../../../utils/format'
+import { serviceUsernameOrAddressText } from '../../../utils/format'
 
-const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
+const HIDE_SEARCH_HEADER = ['/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
 
-const ROUTE_TAB_MAP = [
-  { prefix: '/account/[id]/transactions', tab: 'transactions' },
-  { prefix: '/account/[id]/dex', tab: 'dex' },
-  { prefix: '/account', tab: 'account' },
-  { prefix: '/nft-explorer', tab: 'nfts' },
-  { prefix: '/nfts', tab: 'nfts' },
-  { prefix: '/nft-offers', tab: 'nft-offers' },
-  { prefix: '/nft-offer', tab: 'nft-offer' },
-  { prefix: '/nft-volumes', tab: 'nft-volumes' },
-  { prefix: '/amm', tab: 'amm' },
-  { prefix: '/nft', tab: 'nft' },
-  { prefix: '/object', tab: 'object' },
-  { prefix: '/transaction', tab: 'transaction' }
-]
+const WALLETCONNECT_LOGOS = {
+  joey: 'joey.png',
+  bifrost: 'bifrost.png',
+  girin: 'girin.png',
+  uphodl: 'uphodl.png'
+}
 
 let timeoutIds = {}
 
@@ -118,6 +160,7 @@ export default function Header({
   setSignRequest,
   account,
   signOut,
+  setActiveWallet,
   signOutPro,
   selectedCurrency,
   setSelectedCurrency,
@@ -151,7 +194,7 @@ export default function Header({
     // Collapse only when header likely has a 2nd line (your breakpoints)
     const shouldUseCollapsingHeader = () => {
       const w = window.innerWidth
-      return w <= 1050 || (w >= 1290 && w <= 1670)
+      return w <= 1050 || (w >= 1290 && w <= 1760)
     }
 
     let lastY = window.scrollY
@@ -235,6 +278,75 @@ export default function Header({
   }
 
   const proLoggedIn = proName && sessionToken
+  const wallets = Array.isArray(account?.wallets) ? account.wallets : []
+  const orderedWallets = [...wallets].sort((a, b) => (b?.connectedAt || 0) - (a?.connectedAt || 0))
+  const activeWalletId = account?.activeWalletId || null
+
+  const walletDisplayName = (walletItem) =>
+    serviceUsernameOrAddressText(
+      {
+        address: walletItem?.address,
+        addressDetails: {
+          username: walletItem?.username || null
+        }
+      },
+      'address',
+      { short: true }
+    )
+
+  const renderWalletIcon = (provider, walletItem = null) => {
+    const size = 20
+    const shared = { height: size, width: size, className: 'wallet-logo' }
+    if (provider === 'walletconnect') {
+      const walletConnectWalletId = walletItem?.walletConnectWalletId
+      const walletConnectWalletName = walletItem?.walletConnectWalletName || 'WalletConnect'
+      if (walletConnectWalletId && WALLETCONNECT_LOGOS[walletConnectWalletId]) {
+        return (
+          <Image
+            src={`/images/wallets/square-logos/${WALLETCONNECT_LOGOS[walletConnectWalletId]}`}
+            alt={walletConnectWalletName}
+            {...shared}
+            style={{ borderRadius: '4px' }}
+          />
+        )
+      }
+      return <Image src="/images/wallets/walletconnect.svg" alt="WalletConnect" {...shared} />
+    }
+    if (provider === 'metamask') {
+      return <Image src="/images/wallets/metamask.svg" alt="Metamask" {...shared} />
+    }
+    if (provider === 'gemwallet') {
+      return <Image src="/images/wallets/gemwallet.svg" alt="GemWallet" {...shared} />
+    }
+    if (provider === 'xaman') {
+      return <Image src="/images/wallets/xaman.png" alt="Xaman" {...shared} style={{ borderRadius: '50%' }} />
+    }
+    if (provider === 'ledgerwallet') {
+      return (
+        <Image src="/images/wallets/ledgerwallet.svg" alt="Ledger Wallet" {...shared} style={{ marginBottom: -2 }} />
+      )
+    }
+    if (provider === 'crossmark') {
+      return (
+        <Image src="/images/wallets/crossmark.png" alt="Crossmark Wallet" {...shared} style={{ borderRadius: '50%' }} />
+      )
+    }
+    if (provider === 'xyra') {
+      return <Image src="/images/wallets/xyra.svg" alt="Xyra Wallet" {...shared} />
+    }
+    if (provider === 'dcent') {
+      return (
+        <Image
+          src="/images/wallets/square-logos/dcent.png"
+          alt="D'Cent Wallet"
+          {...shared}
+          style={{ borderRadius: '50%' }}
+        />
+      )
+    }
+
+    return null
+  }
 
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
@@ -332,13 +444,37 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <Link href="/services/send">{t('menu.services.send')}</Link>
-            <Link href="/services/trustline">{t('menu.services.add-token')}</Link>
-            <Link href="/username">{t('menu.services.username')}</Link>
-            <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
-            <Link href="/services/account-settings/">{t('menu.services.account-settings')}</Link>
+            <Link href="/explorer">
+              <IoCompassOutline className="menu-item-icon" />
+              {explorerName} Explorer
+            </Link>
+            <Link href="/services/send">
+              <IoPaperPlaneOutline className="menu-item-icon" />
+              {t('menu.services.send')}
+            </Link>
+            <Link href="/services/trustline">
+              <IoAddCircleOutline className="menu-item-icon" />
+              {t('menu.services.add-token')}
+            </Link>
+            <Link href="/username">
+              <IoAtOutline className="menu-item-icon" />
+              {t('menu.services.username')}
+            </Link>
+            <Link href="/learn/xrp-xah-taxes">
+              <IoReceiptOutline className="menu-item-icon" />
+              {t('menu.services.tax-reports')}
+            </Link>
+            <Link href="/services/account-settings/">
+              <IoSettingsOutline className="menu-item-icon" />
+              {t('menu.services.account-settings')}
+            </Link>
+            <Link href="/faucet">
+              <IoFlashOutline className="menu-item-icon" />
+              {t('menu.developers.faucet')}
+            </Link>
             <hr className="hr" />
             <Link href="/services">
+              <IoAppsOutline className="menu-item-icon" />
               <b>{t('menu.services.view-all-services')}</b>
             </Link>
           </MenuDropDown>
@@ -349,8 +485,16 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <Link href="/tokens">{t('menu.tokens')}</Link>
-            {!xahauNetwork && <Link href="/mpts">Multi-Purpose {t('menu.tokens')}</Link>}
+            <Link href="/tokens">
+              <IoCashOutline className="menu-item-icon" />
+              {t('menu.tokens')}
+            </Link>
+            {!xahauNetwork && (
+              <Link href="/mpts">
+                <IoLayersOutline className="menu-item-icon" />
+                Multi-Purpose {t('menu.tokens')}
+              </Link>
+            )}
             <Link
               href={
                 '/distribution' +
@@ -359,11 +503,21 @@ export default function Header({
                   : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
               }
             >
+              <IoTrophyOutline className="menu-item-icon" />
               TOP Holders
             </Link>
-            <Link href="/services/trustline">Set Trust (Trustline)</Link>
-            <Link href="/learn/issue-a-token">How to Issue a Token</Link>
-            <Link href="/learn/guide-for-token-issuers">Guide for Token Issuers</Link>
+            <Link href="/services/trustline">
+              <IoLinkOutline className="menu-item-icon" />
+              Set Trust (Trustline)
+            </Link>
+            <Link href="/learn/issue-a-token">
+              <IoDocumentTextOutline className="menu-item-icon" />
+              How to Issue a Token
+            </Link>
+            <Link href="/learn/guide-for-token-issuers">
+              <IoBookOutline className="menu-item-icon" />
+              Guide for Token Issuers
+            </Link>
           </MenuDropDown>
 
           {/* Hide AMM for XAHAU */}
@@ -374,21 +528,48 @@ export default function Header({
               setHoverStates={setHoverStates}
               hoverStates={hoverStates}
             >
-              <Link href="/amms">{t('menu.amm.pools')}</Link>
-              <Link href="/learn/amm">What is AMM?</Link>
-              <Link href="/services/amm/deposit">AMM Deposit</Link>
-              <Link href="/services/amm/withdraw">AMM Withdraw</Link>
-              <Link href="/services/amm/vote">AMM Vote</Link>
-              <Link href="/services/amm/create">AMM Create</Link>
-              <Link href="/amm">{t('menu.amm.explorer')}</Link>
+              <Link href="/amms">
+                <IoBarChartOutline className="menu-item-icon" />
+                {t('menu.amm.pools')}
+              </Link>
+              <Link href="/learn/amm">
+                <IoHelpCircleOutline className="menu-item-icon" />
+                What is AMM?
+              </Link>
+              <Link href="/services/amm/deposit">
+                <IoArrowDownCircleOutline className="menu-item-icon" />
+                AMM Deposit
+              </Link>
+              <Link href="/services/amm/withdraw">
+                <IoArrowUpCircleOutline className="menu-item-icon" />
+                AMM Withdraw
+              </Link>
+              <Link href="/services/amm/vote">
+                <IoCheckboxOutline className="menu-item-icon" />
+                AMM Vote
+              </Link>
+              <Link href="/services/amm/create">
+                <IoBuildOutline className="menu-item-icon" />
+                AMM Create
+              </Link>
+              <Link href="/amm">
+                <IoCompassOutline className="menu-item-icon" />
+                {t('menu.amm.explorer')}
+              </Link>
             </MenuDropDown>
           )}
 
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
             {displayName ? (
               <>
-                <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
-                <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
+                <Link href={'/nfts/' + address}>
+                  <IoImagesOutline className="menu-item-icon" />
+                  {t('signin.actions.my-nfts')}
+                </Link>
+                <Link href={'/nft-offers/' + address}>
+                  <IoPricetagOutline className="menu-item-icon" />
+                  {t('signin.actions.my-nft-offers')}
+                </Link>
               </>
             ) : (
               <>
@@ -398,6 +579,7 @@ export default function Header({
                   }}
                   className="link"
                 >
+                  <IoImagesOutline className="menu-item-icon" />
                   {t('signin.actions.my-nfts')}
                 </span>
                 <span
@@ -406,24 +588,60 @@ export default function Header({
                   }}
                   className="link"
                 >
+                  <IoPricetagOutline className="menu-item-icon" />
                   {t('signin.actions.my-nft-offers')}
                 </span>
               </>
             )}
-            <Link href="/nft-explorer">{t('menu.nft.explorer')}</Link>
-            <Link href="/nft-sales">{t('menu.nft.sales')}</Link>
-            <Link href="/nft-volumes?period=week">{t('menu.nft.collections')}</Link>
-            <Link href="/nft-volumes?list=marketplaces&period=week">{t('menu.nft.marketplaces')}</Link>
-            <Link href="/nft-volumes?list=charts&period=week">{t('menu.nft.volumes')}</Link>
+            <Link href="/nft-explorer">
+              <IoCompassOutline className="menu-item-icon" />
+              {t('menu.nft.explorer')}
+            </Link>
+            <Link href="/nft-sales">
+              <IoTrendingUpOutline className="menu-item-icon" />
+              {t('menu.nft.sales')}
+            </Link>
+            <Link href="/nft-volumes?period=week">
+              <IoLayersOutline className="menu-item-icon" />
+              {t('menu.nft.collections')}
+            </Link>
+            <Link href="/nft-volumes?list=marketplaces&period=week">
+              <IoStorefrontOutline className="menu-item-icon" />
+              {t('menu.nft.marketplaces')}
+            </Link>
+            <Link href="/nft-volumes?list=charts&period=week">
+              <IoBarChartOutline className="menu-item-icon" />
+              {t('menu.nft.volumes')}
+            </Link>
 
             {/* Hide NFT menu for XAHAU while they are not ready yet */}
-            {!xahauNetwork && <Link href="/nft-minters">{t('menu.nft.minters')}</Link>}
+            {!xahauNetwork && (
+              <Link href="/nft-minters">
+                <IoPersonAddOutline className="menu-item-icon" />
+                {t('menu.nft.minters')}
+              </Link>
+            )}
 
-            <Link href={'/nfts' + (displayName ? '/' + address : '')}>{t('menu.nft.nfts')}</Link>
-            <Link href={'/nft-offers' + (displayName ? '/' + address : '')}>{t('menu.nft.offers')}</Link>
-            <Link href="/nft-distribution">{t('menu.nft.distribution')}</Link>
-            <Link href="/nft-statistics">{t('menu.nft.statistics')}</Link>
-            <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
+            <Link href={'/nfts' + (displayName ? '/' + address : '')}>
+              <IoImagesOutline className="menu-item-icon" />
+              {t('menu.nft.nfts')}
+            </Link>
+            <Link href={'/nft-offers' + (displayName ? '/' + address : '')}>
+              <IoTicketOutline className="menu-item-icon" />
+              {t('menu.nft.offers')}
+            </Link>
+            <Link href="/nft-distribution">
+              <IoPeopleOutline className="menu-item-icon" />
+              {t('menu.nft.distribution')}
+            </Link>
+            <Link href="/nft-statistics">
+              <IoStatsChartOutline className="menu-item-icon" />
+              {t('menu.nft.statistics')}
+            </Link>
+            <Link href="/services/nft-mint">
+              <IoRocketOutline className="menu-item-icon" />
+              {t('menu.services.nft-mint')}
+            </Link>
           </MenuDropDown>
 
           <MenuDropDown
@@ -432,21 +650,66 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            {xahauNetwork && <Link href="/governance">{t('menu.network.governance')}</Link>}
-            <Link href="/activations">{t('menu.network.activations')}</Link>
-            <Link href="/distribution">{t('menu.network.distribution', { currency: nativeCurrency })}</Link>
-            <Link href="/last-ledger-information">{t('menu.network.last-ledger-information')}</Link>
-            <Link href="/ledger">{t('menu.network.last-ledger-transactions')}</Link>
-            <Link href="/whales">{t('menu.network.top-transfers-24h')}</Link>
+            <Link href="/dapps">
+              <RiPuzzleLine className="menu-item-icon" />
+              Dapps
+            </Link>
+            {xahauNetwork && (
+              <Link href="/governance">
+                <IoCheckmarkDoneOutline className="menu-item-icon" />
+                {t('menu.network.governance')}
+              </Link>
+            )}
+            <Link href="/activations">
+              <IoFlashOutline className="menu-item-icon" />
+              {t('menu.network.activations')}
+            </Link>
+            <Link href="/distribution">
+              <IoStatsChartOutline className="menu-item-icon" />
+              {t('menu.network.distribution', { currency: nativeCurrency })}
+            </Link>
+            <Link href="/last-ledger-information">
+              <IoInformationCircleOutline className="menu-item-icon" />
+              {t('menu.network.last-ledger-information')}
+            </Link>
+            <Link href="/ledger">
+              <IoListCircleOutline className="menu-item-icon" />
+              {t('menu.network.last-ledger-transactions')}
+            </Link>
+            <Link href="/whales">
+              <IoTrendingUpOutline className="menu-item-icon" />
+              {t('menu.network.top-transfers-24h')}
+            </Link>
 
             {/* Hide Verified Domains for XAHAU while they are not ready yet */}
-            <Link href="/domains">{t('menu.network.verified-domains')}</Link>
-            <Link href="/validators">{t('menu.network.validators')}</Link>
-            <Link href="/amendments">{t('menu.network.amendments')}</Link>
-            {!(xahauNetwork && devNet) && <Link href="/nodes">{t('menu.network.nodes')}</Link>}
-            {xahauNetwork && <Link href="/unl-report">{t('menu.network.unl-report')}</Link>}
-            <Link href="/genesis">{t('menu.network.genesis')}</Link>
-            <Link href="/dapps">Dapps</Link>
+            <Link href="/domains">
+              <IoGlobeOutline className="menu-item-icon" />
+              {t('menu.network.verified-domains')}
+            </Link>
+            <Link href="/validators">
+              <IoCheckmarkDoneOutline className="menu-item-icon" />
+              {t('menu.network.validators')}
+            </Link>
+            <Link href="/amendments">
+              <IoBuildOutline className="menu-item-icon" />
+              {t('menu.network.amendments')}
+            </Link>
+            {!(xahauNetwork && devNet) && (
+              <Link href="/nodes">
+                <IoGitBranchOutline className="menu-item-icon" />
+                {t('menu.network.nodes')}
+              </Link>
+            )}
+            {xahauNetwork && (
+              <Link href="/unl-report">
+                <IoDocumentAttachOutline className="menu-item-icon" />
+                {t('menu.network.unl-report')}
+              </Link>
+            )}
+            <Link href="/genesis">
+              <IoKeyOutline className="menu-item-icon" />
+              {t('menu.network.genesis')}
+            </Link>
           </MenuDropDown>
 
           <MenuDropDown
@@ -455,25 +718,58 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
-            <Link href="/learn/image-services">Token/NFT/Address Images</Link>
+            <Link href="/learn/the-bithomp-api">
+              <IoCodeSlashOutline className="menu-item-icon" />
+              {t('menu.developers.api')}
+            </Link>
+            <Link href="/learn/image-services">
+              <IoImagesOutline className="menu-item-icon" />
+              Token/NFT/Address Images
+            </Link>
             {network === 'mainnet' && (
               <>
-                <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'https://test.bithomp.com/' + lang + '/faucet'}>{t('menu.developers.faucet')}</a>
-                <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
+                <a href={'https://test.bithomp.com/create/'}>
+                  <IoPersonAddOutline className="menu-item-icon" />
+                  {t('menu.developers.account-generation')}
+                </a>
+                <a href={'https://test.bithomp.com/' + lang + '/faucet'}>
+                  <IoFlashOutline className="menu-item-icon" />
+                  {t('menu.developers.faucet')}
+                </a>
+                <a href={'https://test.bithomp.com/tools/'}>
+                  <IoBuildOutline className="menu-item-icon" />
+                  Bithomp tools
+                </a>
               </>
             )}
             {devNet && (
               <>
-                <a href={'/create/'}>{t('menu.developers.account-generation')}</a>
-                <Link href="/faucet">{t('menu.developers.faucet')}</Link>
-                <a href={'/tools/'}>Bithomp tools</a>
+                <a href={'/create/'}>
+                  <IoPersonAddOutline className="menu-item-icon" />
+                  {t('menu.developers.account-generation')}
+                </a>
+                <Link href="/faucet">
+                  <IoFlashOutline className="menu-item-icon" />
+                  {t('menu.developers.faucet')}
+                </Link>
+                <a href={'/tools/'}>
+                  <IoBuildOutline className="menu-item-icon" />
+                  Bithomp tools
+                </a>
               </>
             )}
-            <a href="https://github.com/Bithomp">Github</a>
-            <Link href="/eaas">{t('menu.business.eaas')}</Link>
-            <Link href="/build-unl">{t('menu.business.build-unl')}</Link>
+            <a href="https://github.com/Bithomp">
+              <IoLogoGithub className="menu-item-icon" />
+              Github
+            </a>
+            <Link href="/eaas">
+              <IoRocketOutline className="menu-item-icon" />
+              {t('menu.business.eaas')}
+            </Link>
+            <Link href="/build-unl">
+              <IoShieldCheckmarkOutline className="menu-item-icon" />
+              {t('menu.business.build-unl')}
+            </Link>
           </MenuDropDown>
         </div>
 
@@ -482,7 +778,7 @@ export default function Header({
             <SearchBlock
               compact={true}
               //searchPlaceholderText="Search..."
-              tab={ROUTE_TAB_MAP.find((route) => router?.pathname?.startsWith(route.prefix))?.tab}
+              tab="account"
             />
           </div>
         ) : (
@@ -496,12 +792,12 @@ export default function Header({
               <>
                 {displayName ? (
                   <>
-                    <Image
+                    <img
                       alt="avatar"
-                      src={avatarServer + address}
+                      src={avatarServer + address + '?hashIconZoom=12'}
                       width="24"
                       height="24"
-                      style={{ marginRight: '5px' }}
+                      className="menu-avatar"
                     />
                     {displayName}
                   </>
@@ -530,86 +826,98 @@ export default function Header({
             )}
             {displayName && (
               <>
-                <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
-                <Link href={'/account/' + address + '/transactions'}>{t('signin.actions.my-transactions')}</Link>
-                <Link href="/services/send">Send payment</Link>
-                <Link href="/services/account-settings/">Account settings</Link>
-                {!username && <Link href={'/username?address=' + address}>{t('menu.services.username')}</Link>}
-                <span onClick={signOut} className="link">
-                  {account?.wallet === 'walletconnect' && (
-                    <Image
-                      src="/images/wallets/walletconnect.svg"
-                      className="wallet-logo walletconnect-logo"
-                      alt="WalletConnect"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'metamask' && (
-                    <Image
-                      src="/images/wallets/metamask.svg"
-                      className="wallet-logo"
-                      alt="Metamask"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'gemwallet' && (
-                    <Image
-                      src="/images/wallets/gemwallet.svg"
-                      className="wallet-logo"
-                      alt="GemWallet"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'xaman' && (
-                    <Image
-                      src="/images/wallets/xaman.png"
-                      className="wallet-logo xaman-logo"
-                      alt="Xaman"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'ledgerwallet' && (
-                    <Image
-                      src="/images/wallets/ledgerwallet.svg"
-                      className="wallet-logo"
-                      alt="Ledger Wallet"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'trezor' && (
-                    <Image
-                      src="/images/wallets/trezor.svg"
-                      className="wallet-logo"
-                      alt="Trezor Wallet"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'crossmark' && (
-                    <Image
-                      src="/images/wallets/crossmark.png"
-                      className="wallet-logo"
-                      alt="Crossmark Wallet"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'xyra' && (
-                    <Image
-                      src="/images/wallets/xyra.svg"
-                      className="wallet-logo"
-                      alt="Xyra Wallet"
-                      height={24}
-                      width={24}
-                      style={{ marginTop: -4, marginLeft: -2, marginRight: -2 }}
-                    />
-                  )}{' '}
-                  {t('signin.signout')}
+                <Link href={'/account/' + address}>
+                  <IoPersonOutline className="menu-item-icon" />
+                  {t('signin.actions.view')}
+                </Link>
+                <Link href={'/account/' + address + '/transactions'}>
+                  <IoListOutline className="menu-item-icon" />
+                  {t('signin.actions.my-transactions')}
+                </Link>
+                <Link href="/services/send">
+                  <IoPaperPlaneOutline className="menu-item-icon" />
+                  Send payment
+                </Link>
+                <Link href="/services/account-settings/">
+                  <IoSettingsOutline className="menu-item-icon" />
+                  Account settings
+                </Link>
+                {!!wallets.length && (
+                  <>
+                    <hr className="hr" />
+                    <div className="wallets-title center">Connected wallets</div>
+                    {orderedWallets.map((walletItem) => {
+                      const isActiveWallet = walletItem.id === activeWalletId
+
+                      return (
+                        <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
+                          <span
+                            className={
+                              'link wallet-switch' +
+                              (isActiveWallet && router.asPath.startsWith('/account/' + walletItem.address)
+                                ? ' wallet-switch-active'
+                                : '')
+                            }
+                            onClick={
+                              isActiveWallet
+                                ? router.asPath.startsWith('/account/' + walletItem.address)
+                                  ? undefined
+                                  : router.pathname.startsWith('/services')
+                                    ? undefined
+                                    : () => router.push('/account/' + walletItem.address)
+                                : () => setActiveWallet(walletItem.id)
+                            }
+                          >
+                            <img
+                              alt="avatar"
+                              src={avatarServer + walletItem.address + '?hashIconZoom=12'}
+                              width="20"
+                              height="20"
+                              className="wallet-row-avatar"
+                            />
+                            <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
+                            <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>
+                              {isActiveWallet && (
+                                <>
+                                  ●<span className="wallet-active-tooltip">Active</span>
+                                </>
+                              )}
+                            </span>
+                          </span>
+                          <span className="wallet-provider-icon">
+                            {renderWalletIcon(walletItem.provider, walletItem)}
+                          </span>
+                          <span className="link wallet-disconnect" onClick={() => signOut(walletItem.id)}>
+                            <IoLogOutOutline aria-label="Disconnect" />
+                            <span className="wallet-disconnect-tooltip">Disconnect</span>
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </>
+                )}
+                {!username && (
+                  <>
+                    <hr className="hr" />
+                    <Link href={'/username?address=' + address}>
+                      <IoAtOutline className="menu-item-icon" />
+                      {t('menu.services.username')}
+                    </Link>
+                  </>
+                )}
+                <hr className="hr" />
+                <span
+                  onClick={() => {
+                    setSignRequest(
+                      router.pathname.startsWith('/account')
+                        ? { redirect: 'account', connectAnotherWallet: true }
+                        : { connectAnotherWallet: true }
+                    )
+                  }}
+                  className="link"
+                >
+                  <IoWalletOutline className="menu-item-icon" />
+                  Connect another wallet
                 </span>
               </>
             )}
@@ -621,13 +929,32 @@ export default function Header({
             {proLoggedIn && (
               <>
                 <hr />
-                <Link href="/admin">{displayName ? proName : 'Profile'}</Link>
-                <Link href="/admin/watchlist">Watchlist</Link>
-                <Link href="/admin/subscriptions">Subscriptions</Link>
-                <Link href="/admin/referrals">Referrals</Link>
-                <Link href="/admin/pro">My addresses</Link>
-                <Link href="/admin/api">API management</Link>
+                <Link href="/admin">
+                  <IoPersonOutline className="menu-item-icon" />
+                  {displayName ? proName : 'Profile'}
+                </Link>
+                <Link href="/admin/watchlist">
+                  <IoStarOutline className="menu-item-icon" />
+                  Watchlist
+                </Link>
+                <Link href="/admin/subscriptions">
+                  <IoCardOutline className="menu-item-icon" />
+                  Subscriptions
+                </Link>
+                <Link href="/admin/referrals">
+                  <IoPeopleOutline className="menu-item-icon" />
+                  Referrals
+                </Link>
+                <Link href="/admin/pro">
+                  <IoLocationOutline className="menu-item-icon" />
+                  My addresses
+                </Link>
+                <Link href="/admin/api">
+                  <IoKeyOutline className="menu-item-icon" />
+                  API management
+                </Link>
                 <span onClick={signOutPro} className="link">
+                  <IoLogOutOutline className="menu-item-icon" />
                   {t('signin.signout')}
                 </span>
               </>

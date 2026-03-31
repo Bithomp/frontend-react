@@ -30,7 +30,14 @@ const addressName = (details, name) => {
   return ''
 }
 
-export default function Tiles({ nftList, type = 'name', convertCurrency, account, disabled = false }) {
+export default function Tiles({
+  nftList,
+  type = 'name',
+  convertCurrency,
+  account,
+  disabled = false,
+  sortOrder = null
+}) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -53,14 +60,16 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     }
   */
 
-  const saleData = (sellOffers) => {
-    if (!sellOffers) return ''
-    const best = bestNftOffer(sellOffers, account?.address, 'sell')
+  const saleData = (nftOffers, offerType = 'sell') => {
+    if (!nftOffers) return ''
+    // For buy offers (bids) with priceLow sort, show the lowest bid
+    const showLowest = offerType === 'buy' && sortOrder === 'priceLow'
+    const best = bestNftOffer(nftOffers, account?.address, offerType, showLowest)
     if (best) {
       if (mpUrl(best)) {
         return (
           <>
-            {amountFormat(best.amount)}
+            {amountFormat(best.amount, { short: true })}
             {!partnerMarketplaces[best?.destination] && (
               <>
                 <br />
@@ -70,7 +79,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           </>
         )
       } else {
-        return amountFormat(best.amount)
+        return amountFormat(best.amount, { short: true })
       }
     }
     return t('table.text.private-offer') //shouldn't be the case
@@ -86,14 +95,14 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     router.push('/nft/' + nft.nftokenID)
   }
 
-  if (type === 'name' || type === 'onSale') {
+  if (type === 'name' || type === 'onSale' || type === 'bids') {
     return (
       <div className={tiles}>
         <div className="grid">
           <ul className="hexGrid">
             {nftList[0] &&
               nftList.map((nft, i) => (
-                <li className="hex" key={i}>
+                <li className="hex" key={nft.nftokenID || i}>
                   <div className="hexIn">
                     <Link
                       href={needNftAgeCheck(nft) ? '#' : '/nft/' + nft.nftokenID}
@@ -105,7 +114,12 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                       <div className="title"></div>
 
                       <div className="title-text">
-                        {type === 'name' ? nftName(nft, { maxLength: 18 }) : saleData(nft.sellOffers)}
+                        {type === 'name'
+                          ? nftName(nft, { maxLength: 18 })
+                          : saleData(
+                              type === 'bids' ? nft.buyOffers : nft.sellOffers,
+                              type === 'bids' ? 'buy' : 'sell'
+                            )}
                       </div>
                       {!disabled && (
                         <div className="title-full">
@@ -146,7 +160,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           <ul className="hexGrid">
             {nftList?.length > 0 &&
               nftList.map((nft, i) => (
-                <li className="hex" key={i}>
+                <li className="hex" key={nft.nftoken?.nftokenID || i}>
                   <div className="hexIn">
                     <Link
                       href={needNftAgeCheck(nft.nftoken) ? '#' : '/nft/' + nft.nftoken.nftokenID}
@@ -157,7 +171,8 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                       <div className="index">{i + 1}</div>
                       <div className="title"></div>
                       <div className="title-text">
-                        {convertedAmount(nft, convertCurrency, { short: true }) || amountFormat(nft.amount)}
+                        {convertedAmount(nft, convertCurrency, { short: true }) ||
+                          amountFormat(nft.amount, { short: true })}
                         <br />
                         <br />
                         {!disabled && timeOrDate(nft.acceptedAt)}
@@ -173,7 +188,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                           )}
                           {addressName(nft.nftoken?.issuerDetails, t('table.issuer'))}
                           <br />
-                          {t('table.price')}: {amountFormat(nft.amount)}
+                          {t('table.price')}: {amountFormat(nft.amount, { short: true })}
                           {nft.marketplace && (
                             <>
                               <br />

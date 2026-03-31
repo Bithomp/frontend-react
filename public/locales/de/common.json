@@ -1,4 +1,11 @@
 {
+  "common": {
+    "viewAll": "Alle anzeigen",
+    "noData": "Keine Daten verfügbar",
+    "addresses": "Adressen",
+    "holders": "Besitzer",
+    "sales": "Verkäufe"
+  },
   "menu": {
     "tokens": "Token",
     "amm": {
@@ -48,7 +55,7 @@
       "distribution": "{{currency}} Verteilung",
       "last-ledger-information": "Aktuellste Ledger Informationen",
       "last-ledger-transactions": "Aktuellste Ledger Transaktionen",
-      "top-transfers-24h": "Top Überweisungen (24h)",
+      "top-transfers-24h": "Top Überweisungen",
       "verified-domains": "Überprüfte Domains",
       "validators": "Validatoren",
       "amendments": "Änderungen",
@@ -161,12 +168,14 @@
     }
   },
   "home": {
-    "title": "{{explorerName}} Explorer | {{nativeCurrency}} Ledger durchsuchen",
-    "description": "{{nativeCurrency}} Preisdiagramm | {{explorerName}} Statistiken | NFT Explorer | Wallet Adresssuche | {{explorerName}} NFT Volumen | NFT kaufen und verkaufen | {{explorerName}} Services",
+    "title": "{{nativeCurrency}} Ledger Explorer & Tools — {{explorerName}} | Suche {{nativeCurrency}} Transaktionen, Konten, NFTs",
+    "description": "{{explorerName}}: {{nativeCurrency}} Ledger Explorer und Tools. Suche nach Transaktionen, Konten und NFTs. Verfolge Guthaben, validiere Konten, pruefe NFT-Bestaende und analysiere das {{nativeCurrency}} Ledger. Plus: Kursumrechner, Tools, Statistiken und mehr.",
+    "h1": "{{nativeCurrency}} Ledger Explorer und Tools",
     "search-placeholder": "Suche nach Adresse / Transaktion / NFT / Benutzername / PayString / Angebot",
     "search-placeholder-short": "Suche nach Adresse / Transaktion",
     "price": {
-      "header": "{{nativeCurrency}} Live Preis & Konverter"
+      "header": "{{nativeCurrency}} Live Preis & Konverter",
+      "chartHeader": "{{nativeCurrency}} Kursdiagramm"
     },
     "whales": {
       "header": "Die signifikantesten Transaktionen der letzten 24 Stunden"
@@ -195,6 +204,14 @@
       "escrows": "Escrows",
       "amms": "AMM pools",
       "nodes": "Knoten"
+    },
+    "teaser": {
+      "topDapps": "Top Dapps",
+      "topNftCollections": "Top NFT-Sammlungen",
+      "topTokens": "Top Token",
+      "topAmms": "Top AMM-Pools",
+      "topValidators": "Validatoren",
+      "topAmendments": "Letzte Änderungen"
     }
   },
   "last-ledger-information": {
@@ -563,6 +580,7 @@
     "public": "Öffentlich",
     "knownBrokers": "Marktplätze",
     "onSale": "Gelistet",
+    "bids": "Gebote",
     "all-tokens": "Alle Tokens",
     "single-token": "Einzelner Token",
     "mintedNew": "Neuste",

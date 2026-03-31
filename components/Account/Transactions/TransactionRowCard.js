@@ -2,7 +2,7 @@ import {
   amountFormat,
   dateFormat,
   fullDateAndTime,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   shortHash,
   timeFormat,
   timeFromNow
@@ -171,7 +171,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
               ''
             )}
             Fee: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
-            {nativeCurrencyToFiat({
+            {tokenToFiat({
               amount: tx.Fee,
               selectedCurrency,
               fiatRate: pageFiatRate

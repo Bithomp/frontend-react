@@ -138,7 +138,7 @@ export default function Dapps({
 }) {
   const router = useRouter()
   const { t, i18n } = useTranslation()
-  const isMobile = useIsMobile(720)
+  const isMobile = useIsMobile(764)
 
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
@@ -223,7 +223,8 @@ export default function Dapps({
     // Exclude these sourceTags
     const excludeSourceTags = [0, 222, 777, 4004, 555002, 604802567, 446588767]
     const filtered = list.filter((d) => {
-      if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
+      const sourceTag = Number(d?.sourceTag)
+      if (sourceTag < 100 || excludeSourceTags.includes(sourceTag)) return false
       const hasName = dappBySourceTag(d?.sourceTag)
       if (hasName) return true
       return Number(d?.uniqueSourceAddresses) > 3
@@ -278,6 +279,24 @@ export default function Dapps({
     { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` },
     { label: `Volume (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
   ]
+
+  const csvData = useMemo(() => {
+    return (data || []).map((d) => {
+      const successByType = getSuccessByType(d?.transactionTypesResults)
+      const typesText = Object.entries(successByType)
+        .filter(([, count]) => Number(count) > 0)
+        .sort((a, b) => Number(b[1]) - Number(a[1]))
+        .map(([type, count]) => `${type}: ${shortNiceNumber(count, 0)}`)
+        .join(', ')
+
+      return {
+        ...d,
+        dappName: dappBySourceTag(d?.sourceTag) || String(d?.sourceTag || ''),
+        transactionTypes: typesText,
+        successRate: Number(calcSuccessRate(d?.totalTransactions, d?.successTransactions).toFixed(1))
+      }
+    })
+  }, [data])
 
   useEffect(() => {
     if (!router.isReady) return
@@ -336,7 +355,7 @@ export default function Dapps({
         order={order}
         setOrder={setOrder}
         orderList={orderList}
-        data={data}
+        data={csvData}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
         csvHeaders={csvHeaders}
@@ -482,7 +501,7 @@ export default function Dapps({
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
 
-                        <td className="no-brake">
+                        <td>
                           <span style={{ display: 'flex', alignItems: 'center' }}>
                             {logo ? <DappLogo src={logo} /> : null}
                             {dappBySourceTag(d?.sourceTag) || d?.sourceTag}

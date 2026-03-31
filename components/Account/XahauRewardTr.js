@@ -1,5 +1,5 @@
 import { i18n } from 'next-i18next'
-import { amountFormat, fullDateAndTime, nativeCurrencyToFiat, timeFromNow } from '../../utils/format'
+import { amountFormat, fullDateAndTime, tokenToFiat, timeFromNow } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 import { TbPigMoney } from 'react-icons/tb'
 
@@ -26,7 +26,7 @@ export default function XahauRewardTr({ data, setSignRequest, account, mobile, s
       {reward ? (
         <>
           <span className="green">{amountFormat(reward, { maxFractionDigits: 6 })}</span>{' '}
-          {nativeCurrencyToFiat({ amount: reward, selectedCurrency, fiatRate })}
+          {tokenToFiat({ amount: reward, selectedCurrency, fiatRate })}
         </>
       ) : (
         <>0 {nativeCurrency}</>

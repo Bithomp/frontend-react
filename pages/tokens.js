@@ -179,6 +179,7 @@ export default function Tokens({
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
+  const isFetchingRef = useRef(false)
   const router = useRouter()
 
   let selectedCurrency = selectedCurrencyServer
@@ -191,8 +192,7 @@ export default function Tokens({
 
   // States
   const [data, setData] = useState(initialData?.tokens || [])
-  const [rawData, setRawData] = useState(initialData || {})
-  const [marker, setMarker] = useState(initialData?.marker || '')
+  const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(
     t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
@@ -237,95 +237,96 @@ export default function Tokens({
   }
 
   // Fetch tokens
-  const checkApi = async () => {
-    const oldOrder = rawData?.order
-    const oldCurrency = rawData?.currency
-    const oldIssuer = rawData?.issuer
-    const oldSelectedCurrency = rawData?.convertCurrencies?.[0]
-    if (!oldOrder || !order) return
+  const checkApi = async ({ loadMoreRequest = false } = {}) => {
+    if (isFetchingRef.current) return
 
-    const oldCanEscrow = rawData?.canLock
-    let loadMoreRequest =
-      (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
-      (currency ? oldCurrency === currency : !oldCurrency) &&
-      (issuer ? oldIssuer === issuer : !oldIssuer) &&
-      canEscrow === oldCanEscrow &&
-      (selectedCurrency ? oldSelectedCurrency.toLowerCase() === selectedCurrency.toLowerCase() : !oldSelectedCurrency)
+    // do not load more if there is no next marker
+    if (loadMoreRequest && !marker) return
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
       return
     }
 
-    let markerPart = ''
-    if (loadMoreRequest) {
-      if (!rawData?.marker) return
-      markerPart = '&marker=' + rawData?.marker
-    }
+    isFetchingRef.current = true
 
-    if (!markerPart) {
-      setLoading(true)
-    }
-    setRawData({})
+    try {
+      const markerPart = loadMoreRequest ? `&marker=${encodeURIComponent(marker)}` : ''
 
-    let apiUrl =
-      'v2/trustlines/tokens?limit=100&order=' +
-      order +
-      '&currencyDetails=true&statistics=true&convertCurrencies=' +
-      selectedCurrency +
-      markerPart
-    if (issuer) {
-      apiUrl += `&issuer=${encodeURIComponent(issuer)}`
-    }
-    if (currency) {
-      apiUrl += `&currency=${encodeURIComponent(currency)}`
-    }
-    if (canEscrow) {
-      apiUrl += '&canLock=true'
-    }
+      if (!markerPart) {
+        setLoading(true)
+      }
 
-    const response = await axios
-      .get(apiUrl, {
-        signal: controller.signal
-      })
-      .catch((error) => {
-        if (error && error.message !== 'canceled') {
-          setErrorMessage(t('error.' + error.message))
-          setLoading(false)
-        }
-      })
+      let apiUrl =
+        'v2/trustlines/tokens?limit=100&order=' +
+        order +
+        '&currencyDetails=true&statistics=true&convertCurrencies=' +
+        selectedCurrency +
+        markerPart
+      if (issuer) {
+        apiUrl += `&issuer=${encodeURIComponent(issuer)}`
+      }
+      if (currency) {
+        apiUrl += `&currency=${encodeURIComponent(currency)}`
+      }
+      if (canEscrow) {
+        apiUrl += '&canLock=true'
+      }
 
-    const newdata = response?.data
-    if (newdata) {
-      setRawData(newdata)
-      setLoading(false) //keep here for fast tab clickers
-      if (newdata.tokens) {
-        let list = newdata.tokens
-        if (list.length > 0) {
-          setErrorMessage('')
-          setMarker(newdata.marker)
-          if (!loadMoreRequest) {
-            setData(list)
+      const response = await axios
+        .get(apiUrl, {
+          signal: controller.signal
+        })
+        .catch((error) => {
+          if (error && error.message !== 'canceled') {
+            setErrorMessage(t('error.' + error.message))
+            setLoading(false)
+          }
+        })
+
+      const newdata = response?.data
+      if (newdata) {
+        setLoading(false) //keep here for fast tab clickers
+        if (newdata.tokens) {
+          let list = newdata.tokens
+          if (list.length > 0) {
+            setErrorMessage('')
+            setMarker(newdata.marker || null)
+            if (!loadMoreRequest) {
+              setData(list)
+            } else {
+              setData((prev) => [...prev, ...list])
+            }
           } else {
-            setData([...data, ...list])
+            setErrorMessage(t('general.no-data'))
+            if (!loadMoreRequest) {
+              setData([])
+              setMarker(null)
+            }
           }
         } else {
-          setErrorMessage(t('general.no-data'))
+          if (newdata.error) {
+            if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
+              // user logged out...
+              signOutPro()
+            } else {
+              setErrorMessage(t('error-api.' + newdata.error))
+            }
+          } else {
+            setErrorMessage(t('general.no-data'))
+          }
+          if (!loadMoreRequest) {
+            setMarker(null)
+          }
         }
       } else {
-        if (newdata.error) {
-          if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
-            // user logged out...
-            signOutPro()
-          } else {
-            setErrorMessage(t('error-api.' + newdata.error))
-          }
-        } else {
-          setErrorMessage(t('general.no-data'))
+        setErrorMessage(t('general.no-data'))
+        if (!loadMoreRequest) {
+          setMarker(null)
         }
       }
-    } else {
-      setErrorMessage(t('general.no-data'))
+    } finally {
+      isFetchingRef.current = false
     }
   }
 
@@ -335,7 +336,7 @@ export default function Tokens({
       isFirstRender.current = false
       return
     }
-    checkApi()
+    checkApi({ loadMoreRequest: false })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, order, issuer, currency, canEscrow, subscriptionExpired])
 
@@ -618,7 +619,7 @@ export default function Tokens({
         {/* Main content */}
         <InfiniteScrolling
           dataLength={data.length}
-          loadMore={checkApi}
+          loadMore={() => checkApi({ loadMoreRequest: true })}
           hasMore={marker}
           errorMessage={errorMessage}
           subscriptionExpired={subscriptionExpired}

@@ -12,24 +12,29 @@
     cursor: pointer;
     transition: border 0.2s;
     position: relative;
+    border-radius: 10px;
     &:focus,
     &:hover {
-      box-shadow: 0 0 5px var(--unaccent-icon);
+      border-color: var(--accent-icon);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
     }
   }
 
   &-icon {
-    width: 24px;
-    height: 24px;
-    overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-right: 8px;
+    margin-right: 4px;
+
     img {
       width: 24px;
       height: 24px;
-      object-fit: contain;
+    }
+
+    > div { // LP double-icon container
+      width: 24px;
+      height: 24px;
+      transform: scale(#{24 / 35});
+      transform-origin: left center;
     }
   }
 
@@ -171,7 +176,6 @@
       &-content {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
       }
 
       &-name {
@@ -208,14 +212,10 @@
     }
   }
 
-  &-modal-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 6px;
+  &-modal-item-icon {
     display: flex;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    margin-right: 6px;
   }
 
   &-modal-item-limit {

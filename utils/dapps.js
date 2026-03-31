@@ -24,6 +24,13 @@ export const DAPPS_META = [
       x: 'first_ledger',
       logo: 'firstledger.png'
     },
+    79455288: {
+      name: 'QuantZilla Developer Console',
+      url: 'api.quantzilla.online/bp',
+      x: 'QuantZillaCoin',
+      telegram: 'QuantZillaCoinValidation',
+      logo: 'quantzilla.png'
+    },
     20221212: {
       name: 'XPMarket',
       url: 'xpmarket.com',
@@ -73,7 +80,7 @@ export const DAPPS_META = [
     42697468: {
       name: 'Bithomp',
       url: 'bithomp.com',
-      wallets: ['xaman', 'ledger', 'xyra', 'crossmark', 'gemwallet', 'metamask'],
+      wallets: ['xaman', 'ledger', 'dcent', 'xyra', 'crossmark', 'gemwallet', 'metamask'],
       walletconnect: ['joey', 'bifrost', 'girin', 'uphodl'],
       x: 'bithomp',
       discord: 'invite/ZahGJ29WEs',
@@ -228,6 +235,31 @@ export const DAPPS_META = [
       name: 'Ribble Trading Bot',
       url: 't.me/ribble_trading_bot',
       logo: 'ribbletradingbot.png'
+    },
+    101010: {
+      name: 'HEROES-exchange',
+      url: 'heroesxrpl.com',
+      wallets: ['xaman'],
+      x: 'HEROESxrp',
+      telegram: 'memexrpl',
+      logo: 'heroes.png'
+    },
+    589141516: {
+      name: 'DragonKill.online',
+      url: 'dragonkill.online',
+      wallets: ['xaman'],
+      x: 'DKP_DragonKill',
+      logo: 'dragonkill.png'
+    },
+    247645524: {
+      name: 'Frii World',
+      url: 'linktr.ee/friiworld',
+      x: 'FriiWorld',
+      logo: 'friiworld.png'
+    },
+    75856879: {
+      name: 'Kudos Setler',
+      logo: 'kudos.png'
     }
   }
 ]

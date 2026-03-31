@@ -9,7 +9,7 @@ import {
   AddressWithIconFilled,
   amountFormat,
   fullDateAndTime,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   timeFromNow,
   transferRateToPercent
 } from '../../utils/format'
@@ -154,7 +154,7 @@ export default function LedgerData({
   const reservedBalanceNode = (
     <>
       {amountFormat(balances?.reserved?.native, { precise: 'nice' })}
-      {nativeCurrencyToFiat({
+      {tokenToFiat({
         amount: balances.reserved?.native,
         selectedCurrency,
         fiatRate: pageFiatRate
@@ -165,7 +165,7 @@ export default function LedgerData({
   const totalBalanceNode = (
     <>
       {amountFormat(balances?.total?.native, { precise: 'nice' })}
-      {nativeCurrencyToFiat({
+      {tokenToFiat({
         amount: balances.total?.native,
         selectedCurrency,
         fiatRate: pageFiatRate
@@ -176,7 +176,7 @@ export default function LedgerData({
   const availableBalanceNode = (
     <>
       {amountFormat(balances?.available?.native, { precise: 'nice' })}
-      {nativeCurrencyToFiat({
+      {tokenToFiat({
         amount: balances.available?.native,
         selectedCurrency,
         fiatRate: pageFiatRate

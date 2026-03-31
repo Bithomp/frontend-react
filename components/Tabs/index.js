@@ -1,23 +1,22 @@
-export default function Tabs({ tabList, tab, setTab, name = 'radio', style = {} }) {
-  const Changed = (e) => {
-    setTab(e.currentTarget.value)
-  }
-
+export default function Tabs({ tabList = [], tab, setTab, name = 'radio', style = {} }) {
   return (
     <div className="tabs" style={style}>
-      <div className="tabs-list">
-        {tabList?.map((tabItem) => (
-          <input
-            key={tabItem.value}
-            type="radio"
-            name={name}
-            value={tabItem.value}
-            checked={tabItem.value === tab}
-            onChange={Changed}
-            label={tabItem.label}
-            id={tabItem.value}
-          />
-        ))}
+      <div className="tabs-scroll">
+        <div className="tabs-list" role="tablist" aria-label={name}>
+          {tabList.map((tabItem) => (
+            <button
+              type="button"
+              key={tabItem.value}
+              className={tabItem.value === tab ? 'tab-item is-active' : 'tab-item'}
+              onClick={() => setTab(tabItem.value)}
+              role="tab"
+              aria-selected={tabItem.value === tab}
+              aria-current={tabItem.value === tab ? 'page' : undefined}
+            >
+              <span>{tabItem.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   )

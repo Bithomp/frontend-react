@@ -20,9 +20,11 @@
     position: relative;
     background-color: var(--background-input);
     border: 1px solid var(--unaccent-icon);
+    border-radius: 10px;
     text-align: left;
     &:hover {
-      box-shadow: 0 0 5px var(--unaccent-icon);
+      border-color: var(--accent-icon);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
     }
   }
 
@@ -115,6 +117,7 @@
     margin: 3px 3px 3px 0;
     width: 34px;
     background-color: var(--accent-icon);
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;

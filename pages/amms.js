@@ -15,7 +15,7 @@ import {
   timeFromNow,
   amountFormatNode,
   amountFormat,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   AddressWithIcon,
   niceCurrency,
   CurrencyWithIcon
@@ -259,7 +259,7 @@ export default function Amms({
         <br />
         {amount?.issuer
           ? addressUsernameOrServiceLink(amount, 'issuer', { short: true })
-          : fiatRate > 0 && nativeCurrencyToFiat({ amount, selectedCurrency, fiatRate })}
+          : fiatRate > 0 && tokenToFiat({ amount, selectedCurrency, fiatRate })}
       </AddressWithIcon>
     )
   }

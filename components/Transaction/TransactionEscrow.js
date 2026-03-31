@@ -1,5 +1,5 @@
 import { TData } from '../Table'
-import { AddressWithIconFilled, amountFormat, fullDateAndTime, nativeCurrencyToFiat } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, fullDateAndTime, tokenToFiat } from '../../utils/format'
 import { addressBalanceChanges } from '../../utils/transaction'
 
 import { TransactionCard } from './TransactionCard'
@@ -86,7 +86,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
             </span>
 
             {isEscrowFinish &&
-              nativeCurrencyToFiat({
+              tokenToFiat({
                 amount: outcome?.escrowChanges?.amount,
                 selectedCurrency,
                 fiatRate: pageFiatRate
@@ -107,7 +107,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
             {destinationBalanceChangesList.map((change, index) => (
               <div key={index}>
                 {amountFormat(optionalAbsAmount(change), { withIssuer: true, bold: true, color: 'direction' })}
-                {nativeCurrencyToFiat({
+                {tokenToFiat({
                   amount: optionalAbsAmount(change),
                   selectedCurrency,
                   fiatRate: pageFiatRate

@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 
@@ -90,7 +90,7 @@ export default function NftsComponent({
   const [hasMore, setHasMore] = useState('first')
   const [errorMessage, setErrorMessage] = useState('')
   const [activeView, setActiveView] = useState(view)
-  const [listTab, setListTab] = useState(list)
+  const [listTab, setListTab] = useState(xahauNetwork && list === 'bids' ? 'nfts' : list)
   const [saleDestinationTab, setSaleDestinationTab] = useState(saleDestination)
   const [userData, setUserData] = useState({})
   const [issuersList, setIssuersList] = useState([])
@@ -104,7 +104,8 @@ export default function NftsComponent({
   const [burnedPeriod, setBurnedPeriod] = useState(burnedPeriodQuery)
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
-  const [currentOrderList, setCurrentOrderList] = useState(listTab !== 'onSale' ? orderNftsList : orderOnSaleList)
+  const isOfferList = listTab === 'onSale' || listTab === 'bids'
+  const [currentOrderList, setCurrentOrderList] = useState(!isOfferList ? orderNftsList : orderOnSaleList)
   const [order, setOrder] = useState(orderQuery)
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
@@ -119,6 +120,7 @@ export default function NftsComponent({
   )
 
   const [searchError, setSearchError] = useState('')
+  const prevListTabRef = useRef(listTab)
 
   const setInnerSearch = (value) => {
     if (!value || value.length > 2) {
@@ -151,7 +153,8 @@ export default function NftsComponent({
 
   const listTabList = [
     { value: 'nfts', label: t('tabs.all') },
-    { value: 'onSale', label: t('tabs.onSale') }
+    { value: 'onSale', label: t('tabs.onSale') },
+    ...(!xahauNetwork ? [{ value: 'bids', label: t('tabs.bids') }] : [])
   ]
 
   let saleDestinationTabList = []
@@ -171,11 +174,15 @@ export default function NftsComponent({
     ]
   }
 
+  if (listTab === 'bids') {
+    saleDestinationTabList = saleDestinationTabList.filter((option) => option.value !== 'buyNow')
+  }
+
   const checkApi = async (options) => {
-    if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
+    if (nftExplorer && !mintedPeriod && !isOfferList) return
     if (!nftExplorer && !id && !owner) return
     if (!order) return
-    if (listTab === 'onSale') {
+    if (isOfferList) {
       let supportedOrder = false
       for (let index = 0; index < orderOnSaleList.length; index++) {
         if (order === orderOnSaleList[index].value) {
@@ -224,9 +231,9 @@ export default function NftsComponent({
     let hasMediaPart = !includeWithoutMediaData ? '&hasMedia=true' : ''
     let collectionUrlPart = collectionQuery ? '&collection=' + collectionQuery : ''
 
-    if (listTab === 'onSale') {
+    if (isOfferList) {
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all", "buyNow"
-      listUrlPart = '?list=onSale&destination=' + saleDestinationTab
+      listUrlPart = '?list=' + listTab + '&destination=' + saleDestinationTab
       if (selectedToken?.currency) {
         listUrlPart = listUrlPart + '&currency=' + selectedToken.currency
         if (selectedToken.issuer) {
@@ -294,7 +301,7 @@ export default function NftsComponent({
     if (!ownerUrlPart && !issuerTaxonUrlPart && !collectionUrlPart && !searchPart && !serialPart && !mintAndBurnPart) {
       // reverse and show only with meta
       // on the first load when no params
-      if (listTab === 'onSale') {
+      if (isOfferList) {
         orderPart = '&order=offerCreatedNew'
       }
     }
@@ -468,6 +475,7 @@ export default function NftsComponent({
     taxon,
     owner,
     order,
+    listTab,
     saleDestinationTab,
     search,
     includeBurned,
@@ -542,18 +550,19 @@ export default function NftsComponent({
       }
     ]
 
-    if (listTab === 'onSale') {
+    if (isOfferList) {
+      const defaultSaleDestination = listTab === 'bids' ? 'publicAndKnownBrokers' : xahauNetwork ? 'public' : 'buyNow'
       tabsToSet.push({
         tabList: saleDestinationTabList,
         tab: saleDestinationTab,
-        defaultTab: xahauNetwork ? 'public' : 'buyNow',
+        defaultTab: defaultSaleDestination,
         setTab: setSaleDestinationTab,
         paramName: 'saleDestination'
       })
       tabsToSet.push({
         tabList: orderOnSaleList,
         tab: order,
-        defaultTab: 'priceLow',
+        defaultTab: listTab === 'bids' ? 'priceHigh' : 'priceLow',
         setTab: setOrder,
         paramName: 'order'
       })
@@ -613,10 +622,34 @@ export default function NftsComponent({
   }
 
   useEffect(() => {
-    const actualList = listTab !== 'onSale' ? orderNftsList : orderOnSaleList
+    const actualList = !isOfferList ? orderNftsList : orderOnSaleList
     setCurrentOrderList(actualList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listTab])
+
+  useEffect(() => {
+    const prevListTab = prevListTabRef.current
+    const switchedBetweenOfferTabs =
+      (prevListTab === 'onSale' && listTab === 'bids') || (prevListTab === 'bids' && listTab === 'onSale')
+
+    if (switchedBetweenOfferTabs) {
+      const targetOrder = listTab === 'bids' ? 'priceHigh' : 'priceLow'
+      if (order !== targetOrder) {
+        setOrder(targetOrder)
+      }
+    }
+
+    prevListTabRef.current = listTab
+  }, [listTab, order])
+
+  useEffect(() => {
+    if (!router.isReady || !isOfferList || router.query.order) return
+
+    const defaultOrder = listTab === 'bids' ? 'priceHigh' : 'priceLow'
+    if (order !== defaultOrder) {
+      setOrder(defaultOrder)
+    }
+  }, [isOfferList, listTab, order, router])
 
   /*
   {
@@ -667,7 +700,7 @@ export default function NftsComponent({
       burnedPeriod ||
       !includeBurned ||
       !includeWithoutMediaData ||
-      listTab === 'onSale'
+      isOfferList
     )
   }
 
@@ -681,7 +714,7 @@ export default function NftsComponent({
             (isValidTaxon(taxonQuery) ? ' ' + taxonQuery : '') +
             (ownerQuery ? ', ' + t('table.owner') + ': ' + ownerQuery : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-            (listTab === 'onSale' ? ' ' + t('tabs.onSale') : '') +
+            (isOfferList ? ' ' + t('tabs.' + listTab) : '') +
             (listTab === 'onSale' && (saleDestinationTab === 'buyNow' || saleDestinationTab === 'public')
               ? ', ' + t('tabs.buyNow')
               : '') +
@@ -758,14 +791,14 @@ export default function NftsComponent({
                 <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
               </div>
             )}
-            {!burnedPeriod && listTab === 'onSale' && (
+            {!burnedPeriod && isOfferList && (
               <div>
                 <div>
                   {t('table.currency')}
                   <TokenSelector value={selectedToken} onChange={setSelectedToken} currencyQueryName="saleCurrency" />
                 </div>
                 <br />
-                {t('tabs.onSale')}{' '}
+                {t('tabs.' + listTab)}{' '}
                 <SimpleSelect
                   value={saleDestinationTab}
                   setValue={setSaleDestinationTab}
@@ -830,7 +863,7 @@ export default function NftsComponent({
                   textUnder={searchError}
                 />
 
-                {listTab === 'nfts' && (
+                {!isOfferList && (
                   <div>
                     {t('table.mint-period')}
                     <DateAndTimeRange
@@ -857,7 +890,7 @@ export default function NftsComponent({
               </div>
             )}
             <div>
-              {listTab !== 'onSale' && (
+              {!isOfferList && (
                 <>
                   {t('table.text.include-burned-nfts')}
                   <RadioOptions
@@ -932,7 +965,7 @@ export default function NftsComponent({
                           {!isValidTaxon(taxon) && !xahauNetwork && <th className="right">{t('table.taxon')}</th>}
                           {!issuer && <th className="right">{t('table.issuer')}</th>}
                           {!id && !owner && <th className="right">{t('table.owner')}</th>}
-                          {listTab === 'onSale' && <th className="right">{t('table.price')}</th>}
+                          {isOfferList && <th className="right">{t('table.price')}</th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -964,8 +997,16 @@ export default function NftsComponent({
                                   {!id && !owner && (
                                     <td className="right">{nftLink(nft, 'owner', { address: 'short' })}</td>
                                   )}
-                                  {listTab === 'onSale' && (
-                                    <td className="right">{nftPriceData(t, nft.sellOffers, account?.address)}</td>
+                                  {isOfferList && (
+                                    <td className="right">
+                                      {nftPriceData(
+                                        t,
+                                        listTab === 'bids' ? nft.buyOffers : nft.sellOffers,
+                                        account?.address,
+                                        listTab === 'bids' ? 'buy' : 'sell',
+                                        order
+                                      )}
+                                    </td>
                                   )}
                                 </tr>
                               ))
@@ -1033,9 +1074,16 @@ export default function NftsComponent({
                                         <br />
                                       </>
                                     )}
-                                    {listTab === 'onSale' && (
+                                    {isOfferList && (
                                       <>
-                                        {t('table.price')}: {nftPriceData(t, nft.sellOffers, account?.address)}
+                                        {t('table.price')}:{' '}
+                                        {nftPriceData(
+                                          t,
+                                          listTab === 'bids' ? nft.buyOffers : nft.sellOffers,
+                                          account?.address,
+                                          listTab === 'bids' ? 'buy' : 'sell',
+                                          order
+                                        )}
                                         <br />
                                       </>
                                     )}
@@ -1069,7 +1117,12 @@ export default function NftsComponent({
                       {errorMessage ? (
                         <div className="center orange bold">{errorMessage}</div>
                       ) : (
-                        <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} account={account} />
+                        <Tiles
+                          nftList={data}
+                          type={listTab === 'bids' ? 'bids' : listTab === 'onSale' ? 'onSale' : 'name'}
+                          account={account}
+                          sortOrder={order}
+                        />
                       )}
                     </>
                   )}

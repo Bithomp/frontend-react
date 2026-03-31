@@ -1,34 +1,75 @@
 .tabs {
+  --tabs-bg: color-mix(in srgb, var(--bg-elements) 72%, transparent);
+  --tabs-border: color-mix(in srgb, var(--accent-link) 28%, transparent);
+  --tab-text: color-mix(in srgb, var(--text-primary) 88%, var(--accent-link));
+  --tab-active-text: #fff;
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin: 10px;
-  margin-bottom: 20px;
+  position: relative;
+  margin: 10px 0 20px;
+
+  .tabs-scroll {
+    overflow: visible;
+    width: fit-content;
+    max-width: 100%;
+  }
+
   .tabs-list {
-    padding: 1px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 4px;
     position: relative;
-    border: 1px solid var(--accent-link);
-    input {
-      width: auto;
-      height: 100%;
-      -webkit-appearance: none;
-      -moz-appearance: none;
+    background: var(--tabs-bg);
+    border: 1px solid var(--tabs-border);
+    border-radius: 14px;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    .tab-item {
+      flex: 0 1 auto;
       appearance: none;
-      outline: none;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
       cursor: pointer;
-      padding: 4px 8px;
-      color: var(--accent-link);
-      font-size: 14px;
+      padding: 6px 10px;
+      color: var(--tab-text);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
       margin: 0;
-      &:checked {
-        background-color: var(--accent-link);
-        color: #fff;
+      transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      min-width: 0;
+      text-align: center;
+
+      &:hover {
+        background: color-mix(in srgb, var(--accent-link) 11%, transparent);
       }
-      &:before {
-        content: attr(label);
+
+      &:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--accent-link) 55%, transparent);
+        outline-offset: 1px;
+      }
+
+      &.is-active {
+        background: linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--accent-link) 92%, #76c9ff) 0%,
+          color-mix(in srgb, var(--accent-link) 85%, #458dff) 100%
+        );
+        color: var(--tab-active-text);
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--accent-link) 28%, transparent);
+      }
+
+      > span {
         display: inline-block;
-        text-align: center;
-        width: 100%;
+        max-width: min(30vw, 220px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }
@@ -38,6 +79,13 @@
   text-align: center;
   .tabs {
     display: inline-block;
+    margin: 0;
+    width: auto;
+
+    .tabs-list {
+      min-width: 0;
+      width: auto;
+    }
   }
 }
 
@@ -45,5 +93,40 @@
   .tabs {
     margin-left: 0;
     margin-right: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .tabs {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+
+    .tabs-list {
+      flex-wrap: wrap;
+      border-radius: 12px;
+      padding: 6px;
+
+      .tab-item {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 120px;
+        padding: 9px 10px;
+        font-size: 13px;
+
+        > span {
+          max-width: 100%;
+          white-space: normal;
+          overflow: visible;
+          text-overflow: clip;
+        }
+      }
+    }
+  }
+
+  .content-center .tabs,
+  .content-text .tabs {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
