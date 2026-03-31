@@ -6,6 +6,7 @@ export default function AccountServiceTabs({ tab }) {
 
   const tabList = [
     { value: 'account-settings', label: 'Account Settings' },
+    { value: 'token-issuer-settings', label: 'Token Issuer Settings' },
     { value: 'account-control', label: 'Account Control' }
   ]
 

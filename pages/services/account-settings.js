@@ -12,12 +12,11 @@ import {
   md5,
   isHexString
 } from '../../utils'
-import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AddressInput from '../../components/UI/AddressInput'
-import { IoToggleOutline, IoDocumentTextOutline, IoAlertCircleOutline, IoPersonOutline } from 'react-icons/io5'
+import { IoToggleOutline, IoDocumentTextOutline, IoPersonOutline } from 'react-icons/io5'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
 
@@ -51,13 +50,7 @@ const ASF_FLAGS = {
   allowTrustLineLocking: 17
 }
 
-export default function AccountSettings({
-  account,
-  setSignRequest,
-  sessionToken,
-  subscriptionExpired,
-  openEmailLogin
-}) {
+export default function AccountSettings({ account, setSignRequest, sessionToken, subscriptionExpired }) {
   const { t } = useTranslation(['common'])
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -72,8 +65,6 @@ export default function AccountSettings({
   const [currentEmailHash, setCurrentEmailHash] = useState('')
   const [messageKeyInput, setMessageKeyInput] = useState('')
   const [currentMessageKey, setCurrentMessageKey] = useState('')
-  const [transferRateInput, setTransferRateInput] = useState('')
-  const [currentTransferRate, setCurrentTransferRate] = useState(null)
   const [tickSizeInput, setTickSizeInput] = useState('')
   const [currentTickSize, setCurrentTickSize] = useState(null)
   const [walletLocatorInput, setWalletLocatorInput] = useState('')
@@ -207,7 +198,6 @@ export default function AccountSettings({
   const getAvailableAsfFlags = () => {
     const commonFlags = [
       'requireDestTag',
-      'requireAuth',
       'disallowXRP',
       'disallowIncomingCheck',
       'disallowIncomingPayChan',
@@ -215,17 +205,13 @@ export default function AccountSettings({
       'depositAuth'
     ]
 
-    const advancedFlags = ['defaultRipple', 'globalFreeze', 'noFreeze']
-
     if (xahauNetwork) {
       return {
-        basic: [...commonFlags, 'disallowIncomingRemit', 'tshCollect'],
-        advanced: advancedFlags
+        basic: [...commonFlags, 'disallowIncomingRemit', 'tshCollect']
       }
     } else {
       return {
-        basic: [...commonFlags, 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback', 'allowTrustLineLocking'],
-        advanced: advancedFlags
+        basic: [...commonFlags, 'disallowIncomingNFTokenOffer']
       }
     }
   }
@@ -381,19 +367,6 @@ export default function AccountSettings({
         setEmailHashInput(response.data?.ledgerInfo?.emailHash || '')
         setCurrentMessageKey(response.data?.ledgerInfo?.messageKey || '')
         setMessageKeyInput(response.data?.ledgerInfo?.messageKey || '')
-        setCurrentTransferRate(
-          typeof response.data?.ledgerInfo?.transferRate === 'number'
-            ? multiply(response.data.ledgerInfo.transferRate, 1000000000)
-            : null
-        )
-        setTransferRateInput(() => {
-          const tr = response.data?.ledgerInfo?.transferRate
-          if (typeof tr === 'number' && tr > 0) {
-            const percent = multiply(subtract(tr, 1), 100)
-            return String(percent)
-          }
-          return ''
-        })
         setCurrentTickSize(
           typeof response.data?.ledgerInfo?.tickSize === 'number' ? response.data.ledgerInfo.tickSize : null
         )
@@ -405,7 +378,7 @@ export default function AccountSettings({
         setCurrentWalletLocator(response.data?.ledgerInfo?.walletLocator || '')
         setWalletLocatorInput(response.data?.ledgerInfo?.walletLocator || '')
 
-        const allFlags = [...flagGroups.basic, ...flagGroups.advanced]
+        const allFlags = [...flagGroups.basic]
         const ledgerFlags = response.data?.ledgerInfo?.flags || {}
 
         const newFlags = {}
@@ -660,62 +633,6 @@ export default function AccountSettings({
           if (prev && prev.ledgerInfo) {
             const updatedLedgerInfo = { ...prev.ledgerInfo }
             delete updatedLedgerInfo.messageKey
-            return { ...prev, ledgerInfo: updatedLedgerInfo }
-          }
-          return prev
-        })
-      }
-    })
-  }
-
-  const handleSetTransferRate = () => {
-    const percent = Number(transferRateInput)
-    if (isNaN(percent) || percent < 0 || percent > 100) {
-      setErrorMessage('Please enter a valid TransferRate percentage between 0 and 100.')
-      return
-    }
-    const rate = Math.round(1000000000 + percent * 10000000)
-    const tx = {
-      TransactionType: 'AccountSet',
-      Account: account.address,
-      TransferRate: rate
-    }
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setSuccessMessage('TransferRate set successfully.')
-        setErrorMessage('')
-        setCurrentTransferRate(rate)
-        setAccountData((prev) => {
-          if (prev && prev.ledgerInfo) {
-            return {
-              ...prev,
-              ledgerInfo: { ...prev.ledgerInfo, transferRate: rate }
-            }
-          }
-          return prev
-        })
-      }
-    })
-  }
-
-  const handleClearTransferRate = () => {
-    const tx = {
-      TransactionType: 'AccountSet',
-      Account: account.address,
-      TransferRate: 0
-    }
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setSuccessMessage('TransferRate cleared successfully.')
-        setErrorMessage('')
-        setCurrentTransferRate(null)
-        setTransferRateInput('')
-        setAccountData((prev) => {
-          if (prev && prev.ledgerInfo) {
-            const updatedLedgerInfo = { ...prev.ledgerInfo }
-            delete updatedLedgerInfo.transferRate
             return { ...prev, ledgerInfo: updatedLedgerInfo }
           }
           return prev
@@ -1214,57 +1131,6 @@ export default function AccountSettings({
               <div className="flag-item">
                 <div className="flag-header">
                   <div className="flag-info">
-                    <span className="flag-name">TransferRate</span>
-                    {account?.address && (
-                      <span className="flag-status">
-                        {currentTransferRate && currentTransferRate > 0
-                          ? `${Math.round(((currentTransferRate - 1000000000) / 10000000) * 100) / 100}%`
-                          : 'Not Set'}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flag-info-buttons">
-                    {currentTransferRate &&
-                      currentTransferRate > 0 &&
-                      withTooltip(
-                        !account?.address ? 'Sign in to manage settings' : '',
-                        <button
-                          className="button-action thin"
-                          onClick={handleClearTransferRate}
-                          disabled={!account?.address}
-                        >
-                          Clear
-                        </button>
-                      )}
-                    {withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : '',
-                      <button
-                        className="button-action thin"
-                        onClick={handleSetTransferRate}
-                        disabled={!account?.address}
-                      >
-                        Set
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <div className="nft-minter-input">
-                  <input
-                    className="input-text"
-                    placeholder="Percentage 0-100"
-                    value={transferRateInput}
-                    onChange={(e) => setTransferRateInput(e.target.value)}
-                    type="text"
-                    inputMode="decimal"
-                    disabled={!account?.address}
-                  />
-                  <small>Percentage fee issuer charges on transfers of issued tokens.</small>
-                </div>
-              </div>
-
-              <div className="flag-item">
-                <div className="flag-header">
-                  <div className="flag-info">
                     <span className="flag-name">TickSize</span>
                     {account?.address && (
                       <span className="flag-status">{currentTickSize ? currentTickSize : 'Not Set'}</span>
@@ -1443,38 +1309,6 @@ export default function AccountSettings({
                   )}
                 </div>
               )}
-            </div>
-
-            {/* Advanced options */}
-            <div className="advanced-options">
-              <div className="section-header">
-                <span className="section-icon">
-                  <IoAlertCircleOutline size={15} />
-                </span>
-                <span className="section-title">Advanced Options</span>
-                <span className="section-badge badge-warn" style={{ fontSize: 10 }}>
-                  Use with caution
-                </span>
-              </div>
-              {!isPro && (
-                <div className="center orange" style={{ marginBottom: '0.5rem', fontSize: 14 }}>
-                  {!sessionToken ? (
-                    <>
-                      Advanced flags available to{' '}
-                      <span className="link" onClick={() => openEmailLogin()}>
-                        logged-in
-                      </span>{' '}
-                      Bithomp Pro subscribers.
-                    </>
-                  ) : (
-                    <>
-                      Your Bithomp Pro subscription has expired.{' '}
-                      <Link href="/admin/subscriptions">Renew your subscription</Link>
-                    </>
-                  )}
-                </div>
-              )}
-              <div className="advanced-flags">{flagGroups.advanced.map((flag) => renderFlagItem(flag))}</div>
             </div>
           </div>
 
