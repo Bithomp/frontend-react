@@ -282,7 +282,7 @@ export default function Checks() {
           <ul>
             <li>Offering a user-friendly web interface for quick and easy check creation.</li>
             <li>
-              Supporting wallet-based signing (Ledger, Xaman, Gem, MataMask, WalletConnect, CROSSMARK, and others ).
+              Supporting wallet-based signing (Ledger, Xaman, Gem, MetaMask, WalletConnect, CROSSMARK, and others ).
             </li>
             <li>
               Displaying issued and received checks on your account page which can be immediately redeemed or canceled.
