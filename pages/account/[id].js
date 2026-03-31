@@ -7099,9 +7099,15 @@ export default function Account({
                       <span className={isNoFreezeEnabled && 'bold'}>{isNoFreezeEnabled ? 'enabled' : 'not set'}</span>
                     </div>
                     <div className="card-actions issuer-settings-actions">
-                      <Link href="/services/account-settings" className="card-action-btn">
-                        Change settings
-                      </Link>
+                      <button
+                        type="button"
+                        className="card-action-btn"
+                        onClick={() => router.push('/services/account-settings')}
+                        title="Account settings"
+                      >
+                        <FaGear />
+                        Account settings
+                      </button>
                     </div>
                   </div>
                 )}
