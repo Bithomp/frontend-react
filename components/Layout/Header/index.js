@@ -41,8 +41,43 @@ import {
   IoCardOutline,
   IoPeopleOutline,
   IoLocationOutline,
-  IoKeyOutline
+  IoKeyOutline,
+  IoCompassOutline,
+  IoAddCircleOutline,
+  IoReceiptOutline,
+  IoAppsOutline,
+  IoCashOutline,
+  IoLayersOutline,
+  IoTrophyOutline,
+  IoLinkOutline,
+  IoDocumentTextOutline,
+  IoBookOutline,
+  IoHelpCircleOutline,
+  IoArrowDownCircleOutline,
+  IoArrowUpCircleOutline,
+  IoCheckboxOutline,
+  IoBuildOutline,
+  IoPricetagOutline,
+  IoTrendingUpOutline,
+  IoStorefrontOutline,
+  IoBarChartOutline,
+  IoTicketOutline,
+  IoStatsChartOutline,
+  IoFlashOutline,
+  IoInformationCircleOutline,
+  IoListCircleOutline,
+  IoGlobeOutline,
+  IoCheckmarkDoneOutline,
+  IoDocumentAttachOutline,
+  IoShieldCheckmarkOutline,
+  IoCodeSlashOutline,
+  IoImagesOutline,
+  IoPersonAddOutline,
+  IoLogoGithub,
+  IoGitBranchOutline,
+  IoRocketOutline
 } from 'react-icons/io5'
+import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
 import { niceNumber } from '../../../utils/format'
 import { serviceUsernameOrAddressText } from '../../../utils/format'
@@ -409,15 +444,37 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <Link href="/explorer">{explorerName} Explorer</Link>
-            <Link href="/services/send">{t('menu.services.send')}</Link>
-            <Link href="/services/trustline">{t('menu.services.add-token')}</Link>
-            <Link href="/username">{t('menu.services.username')}</Link>
-            <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
-            <Link href="/services/account-settings/">{t('menu.services.account-settings')}</Link>
-            <Link href="/faucet">{t('menu.developers.faucet')}</Link>
+            <Link href="/explorer">
+              <IoCompassOutline className="menu-item-icon" />
+              {explorerName} Explorer
+            </Link>
+            <Link href="/services/send">
+              <IoPaperPlaneOutline className="menu-item-icon" />
+              {t('menu.services.send')}
+            </Link>
+            <Link href="/services/trustline">
+              <IoAddCircleOutline className="menu-item-icon" />
+              {t('menu.services.add-token')}
+            </Link>
+            <Link href="/username">
+              <IoAtOutline className="menu-item-icon" />
+              {t('menu.services.username')}
+            </Link>
+            <Link href="/learn/xrp-xah-taxes">
+              <IoReceiptOutline className="menu-item-icon" />
+              {t('menu.services.tax-reports')}
+            </Link>
+            <Link href="/services/account-settings/">
+              <IoSettingsOutline className="menu-item-icon" />
+              {t('menu.services.account-settings')}
+            </Link>
+            <Link href="/faucet">
+              <IoFlashOutline className="menu-item-icon" />
+              {t('menu.developers.faucet')}
+            </Link>
             <hr className="hr" />
             <Link href="/services">
+              <IoAppsOutline className="menu-item-icon" />
               <b>{t('menu.services.view-all-services')}</b>
             </Link>
           </MenuDropDown>
@@ -428,8 +485,16 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <Link href="/tokens">{t('menu.tokens')}</Link>
-            {!xahauNetwork && <Link href="/mpts">Multi-Purpose {t('menu.tokens')}</Link>}
+            <Link href="/tokens">
+              <IoCashOutline className="menu-item-icon" />
+              {t('menu.tokens')}
+            </Link>
+            {!xahauNetwork && (
+              <Link href="/mpts">
+                <IoLayersOutline className="menu-item-icon" />
+                Multi-Purpose {t('menu.tokens')}
+              </Link>
+            )}
             <Link
               href={
                 '/distribution' +
@@ -438,11 +503,21 @@ export default function Header({
                   : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
               }
             >
+              <IoTrophyOutline className="menu-item-icon" />
               TOP Holders
             </Link>
-            <Link href="/services/trustline">Set Trust (Trustline)</Link>
-            <Link href="/learn/issue-a-token">How to Issue a Token</Link>
-            <Link href="/learn/guide-for-token-issuers">Guide for Token Issuers</Link>
+            <Link href="/services/trustline">
+              <IoLinkOutline className="menu-item-icon" />
+              Set Trust (Trustline)
+            </Link>
+            <Link href="/learn/issue-a-token">
+              <IoDocumentTextOutline className="menu-item-icon" />
+              How to Issue a Token
+            </Link>
+            <Link href="/learn/guide-for-token-issuers">
+              <IoBookOutline className="menu-item-icon" />
+              Guide for Token Issuers
+            </Link>
           </MenuDropDown>
 
           {/* Hide AMM for XAHAU */}
@@ -453,21 +528,48 @@ export default function Header({
               setHoverStates={setHoverStates}
               hoverStates={hoverStates}
             >
-              <Link href="/amms">{t('menu.amm.pools')}</Link>
-              <Link href="/learn/amm">What is AMM?</Link>
-              <Link href="/services/amm/deposit">AMM Deposit</Link>
-              <Link href="/services/amm/withdraw">AMM Withdraw</Link>
-              <Link href="/services/amm/vote">AMM Vote</Link>
-              <Link href="/services/amm/create">AMM Create</Link>
-              <Link href="/amm">{t('menu.amm.explorer')}</Link>
+              <Link href="/amms">
+                <IoBarChartOutline className="menu-item-icon" />
+                {t('menu.amm.pools')}
+              </Link>
+              <Link href="/learn/amm">
+                <IoHelpCircleOutline className="menu-item-icon" />
+                What is AMM?
+              </Link>
+              <Link href="/services/amm/deposit">
+                <IoArrowDownCircleOutline className="menu-item-icon" />
+                AMM Deposit
+              </Link>
+              <Link href="/services/amm/withdraw">
+                <IoArrowUpCircleOutline className="menu-item-icon" />
+                AMM Withdraw
+              </Link>
+              <Link href="/services/amm/vote">
+                <IoCheckboxOutline className="menu-item-icon" />
+                AMM Vote
+              </Link>
+              <Link href="/services/amm/create">
+                <IoBuildOutline className="menu-item-icon" />
+                AMM Create
+              </Link>
+              <Link href="/amm">
+                <IoCompassOutline className="menu-item-icon" />
+                {t('menu.amm.explorer')}
+              </Link>
             </MenuDropDown>
           )}
 
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
             {displayName ? (
               <>
-                <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
-                <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
+                <Link href={'/nfts/' + address}>
+                  <IoImagesOutline className="menu-item-icon" />
+                  {t('signin.actions.my-nfts')}
+                </Link>
+                <Link href={'/nft-offers/' + address}>
+                  <IoPricetagOutline className="menu-item-icon" />
+                  {t('signin.actions.my-nft-offers')}
+                </Link>
               </>
             ) : (
               <>
@@ -477,6 +579,7 @@ export default function Header({
                   }}
                   className="link"
                 >
+                  <IoImagesOutline className="menu-item-icon" />
                   {t('signin.actions.my-nfts')}
                 </span>
                 <span
@@ -485,24 +588,60 @@ export default function Header({
                   }}
                   className="link"
                 >
+                  <IoPricetagOutline className="menu-item-icon" />
                   {t('signin.actions.my-nft-offers')}
                 </span>
               </>
             )}
-            <Link href="/nft-explorer">{t('menu.nft.explorer')}</Link>
-            <Link href="/nft-sales">{t('menu.nft.sales')}</Link>
-            <Link href="/nft-volumes?period=week">{t('menu.nft.collections')}</Link>
-            <Link href="/nft-volumes?list=marketplaces&period=week">{t('menu.nft.marketplaces')}</Link>
-            <Link href="/nft-volumes?list=charts&period=week">{t('menu.nft.volumes')}</Link>
+            <Link href="/nft-explorer">
+              <IoCompassOutline className="menu-item-icon" />
+              {t('menu.nft.explorer')}
+            </Link>
+            <Link href="/nft-sales">
+              <IoTrendingUpOutline className="menu-item-icon" />
+              {t('menu.nft.sales')}
+            </Link>
+            <Link href="/nft-volumes?period=week">
+              <IoLayersOutline className="menu-item-icon" />
+              {t('menu.nft.collections')}
+            </Link>
+            <Link href="/nft-volumes?list=marketplaces&period=week">
+              <IoStorefrontOutline className="menu-item-icon" />
+              {t('menu.nft.marketplaces')}
+            </Link>
+            <Link href="/nft-volumes?list=charts&period=week">
+              <IoBarChartOutline className="menu-item-icon" />
+              {t('menu.nft.volumes')}
+            </Link>
 
             {/* Hide NFT menu for XAHAU while they are not ready yet */}
-            {!xahauNetwork && <Link href="/nft-minters">{t('menu.nft.minters')}</Link>}
+            {!xahauNetwork && (
+              <Link href="/nft-minters">
+                <IoPersonAddOutline className="menu-item-icon" />
+                {t('menu.nft.minters')}
+              </Link>
+            )}
 
-            <Link href={'/nfts' + (displayName ? '/' + address : '')}>{t('menu.nft.nfts')}</Link>
-            <Link href={'/nft-offers' + (displayName ? '/' + address : '')}>{t('menu.nft.offers')}</Link>
-            <Link href="/nft-distribution">{t('menu.nft.distribution')}</Link>
-            <Link href="/nft-statistics">{t('menu.nft.statistics')}</Link>
-            <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
+            <Link href={'/nfts' + (displayName ? '/' + address : '')}>
+              <IoImagesOutline className="menu-item-icon" />
+              {t('menu.nft.nfts')}
+            </Link>
+            <Link href={'/nft-offers' + (displayName ? '/' + address : '')}>
+              <IoTicketOutline className="menu-item-icon" />
+              {t('menu.nft.offers')}
+            </Link>
+            <Link href="/nft-distribution">
+              <IoPeopleOutline className="menu-item-icon" />
+              {t('menu.nft.distribution')}
+            </Link>
+            <Link href="/nft-statistics">
+              <IoStatsChartOutline className="menu-item-icon" />
+              {t('menu.nft.statistics')}
+            </Link>
+            <Link href="/services/nft-mint">
+              <IoRocketOutline className="menu-item-icon" />
+              {t('menu.services.nft-mint')}
+            </Link>
           </MenuDropDown>
 
           <MenuDropDown
@@ -511,21 +650,66 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <Link href="/dapps">Dapps</Link>
-            {xahauNetwork && <Link href="/governance">{t('menu.network.governance')}</Link>}
-            <Link href="/activations">{t('menu.network.activations')}</Link>
-            <Link href="/distribution">{t('menu.network.distribution', { currency: nativeCurrency })}</Link>
-            <Link href="/last-ledger-information">{t('menu.network.last-ledger-information')}</Link>
-            <Link href="/ledger">{t('menu.network.last-ledger-transactions')}</Link>
-            <Link href="/whales">{t('menu.network.top-transfers-24h')}</Link>
+            <Link href="/dapps">
+              <RiPuzzleLine className="menu-item-icon" />
+              Dapps
+            </Link>
+            {xahauNetwork && (
+              <Link href="/governance">
+                <IoCheckmarkDoneOutline className="menu-item-icon" />
+                {t('menu.network.governance')}
+              </Link>
+            )}
+            <Link href="/activations">
+              <IoFlashOutline className="menu-item-icon" />
+              {t('menu.network.activations')}
+            </Link>
+            <Link href="/distribution">
+              <IoStatsChartOutline className="menu-item-icon" />
+              {t('menu.network.distribution', { currency: nativeCurrency })}
+            </Link>
+            <Link href="/last-ledger-information">
+              <IoInformationCircleOutline className="menu-item-icon" />
+              {t('menu.network.last-ledger-information')}
+            </Link>
+            <Link href="/ledger">
+              <IoListCircleOutline className="menu-item-icon" />
+              {t('menu.network.last-ledger-transactions')}
+            </Link>
+            <Link href="/whales">
+              <IoTrendingUpOutline className="menu-item-icon" />
+              {t('menu.network.top-transfers-24h')}
+            </Link>
 
             {/* Hide Verified Domains for XAHAU while they are not ready yet */}
-            <Link href="/domains">{t('menu.network.verified-domains')}</Link>
-            <Link href="/validators">{t('menu.network.validators')}</Link>
-            <Link href="/amendments">{t('menu.network.amendments')}</Link>
-            {!(xahauNetwork && devNet) && <Link href="/nodes">{t('menu.network.nodes')}</Link>}
-            {xahauNetwork && <Link href="/unl-report">{t('menu.network.unl-report')}</Link>}
-            <Link href="/genesis">{t('menu.network.genesis')}</Link>
+            <Link href="/domains">
+              <IoGlobeOutline className="menu-item-icon" />
+              {t('menu.network.verified-domains')}
+            </Link>
+            <Link href="/validators">
+              <IoCheckmarkDoneOutline className="menu-item-icon" />
+              {t('menu.network.validators')}
+            </Link>
+            <Link href="/amendments">
+              <IoBuildOutline className="menu-item-icon" />
+              {t('menu.network.amendments')}
+            </Link>
+            {!(xahauNetwork && devNet) && (
+              <Link href="/nodes">
+                <IoGitBranchOutline className="menu-item-icon" />
+                {t('menu.network.nodes')}
+              </Link>
+            )}
+            {xahauNetwork && (
+              <Link href="/unl-report">
+                <IoDocumentAttachOutline className="menu-item-icon" />
+                {t('menu.network.unl-report')}
+              </Link>
+            )}
+            <Link href="/genesis">
+              <IoKeyOutline className="menu-item-icon" />
+              {t('menu.network.genesis')}
+            </Link>
           </MenuDropDown>
 
           <MenuDropDown
@@ -534,25 +718,58 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
-            <Link href="/learn/image-services">Token/NFT/Address Images</Link>
+            <Link href="/learn/the-bithomp-api">
+              <IoCodeSlashOutline className="menu-item-icon" />
+              {t('menu.developers.api')}
+            </Link>
+            <Link href="/learn/image-services">
+              <IoImagesOutline className="menu-item-icon" />
+              Token/NFT/Address Images
+            </Link>
             {network === 'mainnet' && (
               <>
-                <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'https://test.bithomp.com/' + lang + '/faucet'}>{t('menu.developers.faucet')}</a>
-                <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
+                <a href={'https://test.bithomp.com/create/'}>
+                  <IoPersonAddOutline className="menu-item-icon" />
+                  {t('menu.developers.account-generation')}
+                </a>
+                <a href={'https://test.bithomp.com/' + lang + '/faucet'}>
+                  <IoFlashOutline className="menu-item-icon" />
+                  {t('menu.developers.faucet')}
+                </a>
+                <a href={'https://test.bithomp.com/tools/'}>
+                  <IoBuildOutline className="menu-item-icon" />
+                  Bithomp tools
+                </a>
               </>
             )}
             {devNet && (
               <>
-                <a href={'/create/'}>{t('menu.developers.account-generation')}</a>
-                <Link href="/faucet">{t('menu.developers.faucet')}</Link>
-                <a href={'/tools/'}>Bithomp tools</a>
+                <a href={'/create/'}>
+                  <IoPersonAddOutline className="menu-item-icon" />
+                  {t('menu.developers.account-generation')}
+                </a>
+                <Link href="/faucet">
+                  <IoFlashOutline className="menu-item-icon" />
+                  {t('menu.developers.faucet')}
+                </Link>
+                <a href={'/tools/'}>
+                  <IoBuildOutline className="menu-item-icon" />
+                  Bithomp tools
+                </a>
               </>
             )}
-            <a href="https://github.com/Bithomp">Github</a>
-            <Link href="/eaas">{t('menu.business.eaas')}</Link>
-            <Link href="/build-unl">{t('menu.business.build-unl')}</Link>
+            <a href="https://github.com/Bithomp">
+              <IoLogoGithub className="menu-item-icon" />
+              Github
+            </a>
+            <Link href="/eaas">
+              <IoRocketOutline className="menu-item-icon" />
+              {t('menu.business.eaas')}
+            </Link>
+            <Link href="/build-unl">
+              <IoShieldCheckmarkOutline className="menu-item-icon" />
+              {t('menu.business.build-unl')}
+            </Link>
           </MenuDropDown>
         </div>
 
