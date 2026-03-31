@@ -19,6 +19,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
+import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -1002,6 +1003,7 @@ export default function AccountSettings({
         <SEO title="Account settings" description="Manage your account settings" />
         <div className="content-center">
           <h1 className="center">Account settings</h1>
+          <AccountServiceTabs tab="account-settings" />
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -1018,6 +1020,7 @@ export default function AccountSettings({
         <SEO title="Account settings" description="Manage your account settings." />
         <div className="content-center">
           <h1 className="center">Account settings</h1>
+          <AccountServiceTabs tab="account-settings" />
           <p className="center">
             {account?.address ? (
               `Manage your account settings on the ${explorerName}.`

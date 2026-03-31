@@ -13,6 +13,7 @@ import { IoTrashOutline } from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
 import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
+import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -355,6 +356,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
         <SEO title="Account Control" description="Manage account control settings" />
         <div className="content-center">
           <h1 className="center">Account Control</h1>
+          <AccountServiceTabs tab="account-control" />
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -404,6 +406,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
       <SEO title="Account Control" description="Manage regular key, master key, and account access on the ledger." />
       <div className="content-center">
         <h1 className="center">Account Control</h1>
+        <AccountServiceTabs tab="account-control" />
         <p className="center">
           {isSignedIn
             ? `Manage signing authority for your account on ${explorerName}.`
