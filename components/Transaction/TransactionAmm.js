@@ -6,7 +6,7 @@ import {
   AddressWithIconInline,
   addressUsernameOrServiceLink,
   amountFormat,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   niceCurrency
 } from '../../utils/format'
 import { divide } from '../../utils/calc'
@@ -264,7 +264,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
         amountData?.currency &&
         amountData?.value !== '0' && (
           <span style={{ fontWeight: 'normal' }}>
-            {nativeCurrencyToFiat({
+            {tokenToFiat({
               amount: amountData,
               selectedCurrency,
               fiatRate: pageFiatRate
@@ -349,7 +349,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
                   {targetReceivedList.map((change, idx) => (
                     <div key={idx}>
                       {amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}
-                      {nativeCurrencyToFiat({
+                      {tokenToFiat({
                         amount: change,
                         selectedCurrency,
                         fiatRate: pageFiatRate

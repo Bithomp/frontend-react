@@ -25,13 +25,17 @@ export const getServerSideProps = async (context) => {
     includeWithoutMediaData,
     id
   } = query
+  const requestedList = list || 'nfts'
+  const currentList = xahauNetwork && requestedList === 'bids' ? 'nfts' : requestedList
+  const defaultOrder = currentList === 'bids' ? 'priceHigh' : currentList === 'onSale' ? 'priceLow' : ''
+  const defaultSaleDestination = currentList === 'bids' ? 'publicAndKnownBrokers' : xahauNetwork ? 'public' : 'buyNow'
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
-      orderQuery: order || '',
+      orderQuery: order || defaultOrder,
       view: view || 'tiles',
-      list: list || 'nfts',
-      saleDestination: saleDestination || (xahauNetwork ? 'public' : 'buyNow'),
+      list: currentList,
+      saleDestination: saleDestination || defaultSaleDestination,
       saleCurrency: saleCurrency || '',
       saleCurrencyIssuer: saleCurrencyIssuer || '',
       searchQuery: search || '',

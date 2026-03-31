@@ -477,8 +477,8 @@ export default function Send({
                   {destinationStatus === 1
                     ? 'Spam Alert'
                     : destinationStatus === 2
-                    ? 'Potential Fraud Alert'
-                    : 'Fraud Alert'}
+                      ? 'Potential Fraud Alert'
+                      : 'Fraud Alert'}
                 </strong>
                 <br />
                 {destinationStatus === 1 && (
@@ -789,6 +789,10 @@ export default function Send({
             <>
               <br />
               <div>
+                <div className="grey" style={{ marginBottom: 14 }}>
+                  To mint a token (by sending a payment to a distribution account that already has a trustline to you),
+                  you must be logged in with the issuer address.
+                </div>
                 <h3 className="center">Transaction Successful</h3>
                 <div>
                   <p>
@@ -842,12 +846,6 @@ export default function Send({
               </div>
             </>
           )}
-
-          <br />
-          <div className="grey">
-            To mint a token (by sending a payment to a distribution account that already has a trustline to you), you
-            must be logged in with the issuer address.
-          </div>
         </div>
       </div>
     </>

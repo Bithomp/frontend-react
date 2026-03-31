@@ -57,9 +57,10 @@
       }
     }
     .react-select__menu {
-      border-radius: 0;
-      margin-top: 0;
+      border-radius: 10px;
+      margin-top: 4px;
       z-index: 2;
+      overflow: hidden;
     }
     .react-select__menu-list {
       padding-top: 0;

@@ -11,7 +11,6 @@ import {
   shortHash,
   fullDateAndTime,
   fullNiceNumber,
-  trAmountWithGateway,
   showAmmPercents,
   timeFromNow,
   AddressWithIconFilled,
@@ -160,6 +159,47 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
     </>
   )
 
+  const getAssetAmountValue = (amount) => {
+    if (amount && typeof amount === 'object' && amount.value !== undefined) return amount.value
+    if (amount === null || amount === undefined || amount === '') return 0
+    return Number(amount) / 1000000
+  }
+
+  const isNativeAsset = (amount) => {
+    if (!amount) return true
+    if (typeof amount !== 'object') return true
+    return !amount.issuer
+  }
+
+  const renderAssetRow = (amount, name) => {
+    const nativeAsset = isNativeAsset(amount)
+    const parsedAmount = getAssetAmountValue(amount)
+
+    return (
+      <tr>
+        <td>{name}</td>
+        <td>
+          {nativeAsset ? (
+            <span className="bold no-brake">
+              {fullNiceNumber(parsedAmount)} {nativeCurrency}
+            </span>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <span className="bold no-brake">{fullNiceNumber(parsedAmount)}</span>
+              <CurrencyWithIcon
+                token={{
+                  currency: amount?.currency || nativeCurrency,
+                  issuer: amount?.issuer || null,
+                  issuerDetails: amount?.issuerDetails || null
+                }}
+              />
+            </div>
+          )}
+        </td>
+      </tr>
+    )
+  }
+
   return (
     <>
       <SEO
@@ -300,8 +340,8 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                             </Link>
                           </td>
                         </tr>
-                        {trAmountWithGateway({ amount: data.amount, name: 'Asset 1', icon: true })}
-                        {trAmountWithGateway({ amount: data.amount2, name: 'Asset 2', icon: true })}
+                        {renderAssetRow(data.amount, 'Asset 1')}
+                        {renderAssetRow(data.amount2, 'Asset 2')}
                         <tr>
                           <td>Trading fee</td>
                           <td>

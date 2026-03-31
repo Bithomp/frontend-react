@@ -1,7 +1,6 @@
 import { i18n } from 'next-i18next'
-import { fullNiceNumber, nativeCurrencyToFiat, shortNiceNumber, timeFromNow } from '../../utils/format'
+import { fullNiceNumber, tokenToFiat, shortNiceNumber, timeFromNow } from '../../utils/format'
 import { avatarSrc, devNet, getCoinsUrl, nativeCurrency } from '../../utils'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { useQRCode } from 'next-qrcode'
@@ -13,12 +12,11 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
 
   return (
     <div className="account-summary">
-      <Image
+      <img
         alt="avatar"
         src={avatarSrc(data?.address, refreshPage)}
         width="60"
         height="60"
-        priority
         className="show-on-small-w800"
       />
       <div className="hide-on-small-w800" style={{ paddingTop: 2, marginBottom: -2 }}>
@@ -88,7 +86,11 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
                 {getCoinsUrl && (
                   <>
                     <br />
-                    <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
+                    <a
+                      href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       Get your first {nativeCurrency}
                     </a>
                   </>
@@ -133,7 +135,7 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
         </span>
         <br />
         <span className="grey">
-          {nativeCurrencyToFiat({
+          {tokenToFiat({
             amount: balances.available?.native,
             selectedCurrency,
             fiatRate: pageFiatRate

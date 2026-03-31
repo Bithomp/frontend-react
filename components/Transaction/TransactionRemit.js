@@ -3,7 +3,7 @@ import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   nftIdLink,
   shortHash
 } from '../../utils/format'
@@ -225,7 +225,7 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
             {destinationBalanceChangesList?.map((change, index) => (
               <div key={index}>
                 {amountFormat(optionalAbsAmount(change), { withIssuer: true, color: 'direction', bold: true })}
-                {nativeCurrencyToFiat({
+                {tokenToFiat({
                   amount: optionalAbsAmount(change),
                   selectedCurrency,
                   fiatRate: pageFiatRate

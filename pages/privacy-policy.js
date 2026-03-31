@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: Dec 12, 2025</p>
+        <p>Last updated: Mar 22, 2026</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -162,8 +162,10 @@ export default function PrivacyPolicy() {
         <ul>
           <li>
             <strong>The local storage</strong> The local storage of a browser called "sessionStorage" and "localStorage"
-            is used to store information. "SessionStorage" is automatically deleted when the browser program is closed,
-            to delete the "localStorage" You must delete the browsing history.
+            is used to store information, including wallet connection state and selected account metadata needed to keep
+            You signed in and to restore Your connected wallet addresses between page loads. "SessionStorage" is
+            automatically deleted when the browser program is closed, to delete the "localStorage" You must delete the
+            browsing history.
           </li>
           <li>
             <strong>Cookies or Browser Cookies.</strong> A cookie is a small file placed on Your Device. You can
@@ -305,6 +307,12 @@ export default function PrivacyPolicy() {
           <li>
             <strong>account</strong> - Logged in user data: address, username. (ex.{' '}
             {"{'address': 'rhphEJQoxuquJmuJgtLbGyBW2NK6s6nQSW', 'username': 'Bithomp'}"})
+          </li>
+          <li>
+            <strong>Connected wallet metadata</strong> - wallet connection data saved to restore connected accounts,
+            such as wallet type, public addresses, selected addresses, and non-secret wallet metadata (for example,
+            derivation path, account index, and public key where available). We do not store wallet private keys or seed
+            phrases in local storage.
           </li>
           <li>
             <strong>xamanUserToken</strong> - Xaman user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").

@@ -5,7 +5,7 @@ import {
   nftOfferLink,
   amountFormat,
   addressUsernameOrServiceLink,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   AddressWithIconInline
 } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
@@ -62,15 +62,18 @@ const flagList = (flags) => {
 }
 
 const showAllOfferLinks = (changes) => {
-  const indexes = []
+  // Render each offer link on its own line for compactness
+  const links = []
   for (let i = 0; i < changes.length; i++) {
     for (let j = 0; j < changes[i].nftokenOfferChanges.length; j++) {
-      indexes.push(
-        <React.Fragment key={i + '-' + j}>{nftOfferLink(changes[i].nftokenOfferChanges[j].index)}</React.Fragment>
+      links.push(
+        <div key={i + '-' + j} style={{ display: 'inline-block', marginRight: 8, marginBottom: 2 }}>
+          {nftOfferLink(changes[i].nftokenOfferChanges[j].index)}
+        </div>
       )
     }
   }
-  return indexes
+  return <div style={{ display: 'flex', flexWrap: 'wrap', gap: 0 }}>{links}</div>
 }
 
 export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }) => {
@@ -100,16 +103,16 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           {nftDestination?.address === address
             ? 'received from'
             : nftSource?.address === address
-            ? 'transfer to'
-            : 'transfer by'}
+              ? 'transfer to'
+              : 'transfer by'}
           {isMobile ? ' ' : <br />}
           <AddressWithIconInline
             data={
               nftDestination?.address === address
                 ? nftSource
                 : nftSource?.address === address
-                ? nftDestination
-                : specification.source
+                  ? nftDestination
+                  : specification.source
             }
             options={{ short: 5 }}
           />
@@ -136,7 +139,10 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
       }
     }
   } else if (txType === 'NFTokenCancelOffer') {
-    txTypeSpecial = 'Cancel NFT offer'
+    // Pluralize if more than one offer is canceled
+    const numOffers =
+      outcome?.nftokenOfferChanges?.reduce((acc, change) => acc + (change.nftokenOfferChanges?.length || 0), 0) || 0
+    txTypeSpecial = numOffers > 1 ? 'Cancel NFT offers' : 'Cancel NFT offer'
   } else if (txType === 'NFTokenMint') {
     txTypeSpecial = 'Mint NFT'
   } else if (txType === 'NFTokenBurn') {
@@ -261,7 +267,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
               <span>Amount: </span>
               <span className="bold">{amountFormat(amountChange, { icon: true })}</span>
               <span>
-                {nativeCurrencyToFiat({
+                {tokenToFiat({
                   amount: amountChange,
                   selectedCurrency,
                   fiatRate
@@ -294,7 +300,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>
           <span className="bold">{amountFormat(specification.amount, { tooltip: 'right', icon: true })}</span>
           <span>
-            {nativeCurrencyToFiat({
+            {tokenToFiat({
               amount: specification.amount,
               selectedCurrency,
               fiatRate

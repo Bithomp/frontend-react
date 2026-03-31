@@ -1,4 +1,11 @@
 {
+  "common": {
+    "viewAll": "すべて表示",
+    "noData": "利用可能なデータがありません",
+    "addresses": "アドレス",
+    "holders": "保有者",
+    "sales": "販売"
+  },
   "menu": {
     "tokens": "トークン",
     "amm": {
@@ -48,7 +55,7 @@
       "distribution": "{{currency}}の分布",
       "last-ledger-information": "現在のレジャー情報",
       "last-ledger-transactions": "現在のトランザクション情報",
-      "top-transfers-24h": "最大送金（24時間）",
+      "top-transfers-24h": "最大送金",
       "verified-domains": "検証済みドメイン",
       "validators": "バリデータ",
       "amendments": "修正案",
@@ -161,12 +168,14 @@
     }
   },
   "home": {
-    "title": "{{explorerName}}エクスプローラ | {{nativeCurrency}} Ledgerを検索",
-    "description": "{{nativeCurrency}}価格アラート | {{explorerName}}統計情報 | NFTエクスプローラ | ウォレットアドレス検索 | {{explorerName}} NFT 情報 | NFTのトレード | {{explorerName}}サービス",
+    "title": "{{nativeCurrency}} Ledgerエクスプローラとツール — {{explorerName}} | トランザクション、アカウント、NFTを検索",
+    "description": "{{explorerName}}: {{nativeCurrency}} Ledgerのエクスプローラとツール。トランザクション、アカウント、NFTを検索できます。残高の追跡、アカウントの検証、NFT保有状況の確認、{{nativeCurrency}} Ledgerの分析が可能です。さらに、価格コンバーター、各種ツール、統計情報なども利用できます。",
+    "h1": "{{nativeCurrency}} Ledger エクスプローラと ツール",
     "search-placeholder": "アドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
     "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
     "price": {
-      "header": "{{nativeCurrency}} 価格 & 変換"
+      "header": "{{nativeCurrency}} 価格 & 変換",
+      "chartHeader": "{{nativeCurrency}} 価格チャート"
     },
     "whales": {
       "header": "直近24時間の代表的なトランザクション"
@@ -195,6 +204,14 @@
       "escrows": "エスクロー",
       "amms": "AMMプール",
       "nodes": "ノード" 
+    },
+    "teaser": {
+      "topDapps": "トップDapps",
+      "topNftCollections": "今週のトップNFTコレクション",
+      "topTokens": "トップトークン",
+      "topAmms": "トップAMMプール",
+      "topValidators": "バリデーター",
+      "topAmendments": "最新の修正案"
     }
   },
   "last-ledger-information": {
@@ -563,6 +580,7 @@
     "public": "公開",
     "knownBrokers": "マーケットプレイス",
     "onSale": "販売中です",
+    "bids": "入札",
     "all-tokens": "全トークン",
     "single-token": "単一トークン",
     "mintedNew": "新しい",
@@ -576,7 +594,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}}エクスプローラ",
-      "sub": "{{nativeCurrency}} の取引、アカウント、トークン、NFT をスキャン — 高速かつ信頼できる方法で {{nativeCurrency}} Ledger を探索。",
+      "topNftCollections": "トップNFTコレクション",
       "amm": "AMMプール情報",
       "object": "オブジェクト情報",
       "account": "アカウント情報",

@@ -239,6 +239,8 @@ $width: 340px;
   background: var(--background-input);
   color: var(--text-main);
   border: 1px solid var(--unaccent-icon);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--text-main) 8%, transparent);
 
   font-size: 15px;
   padding: 8px 12px;
@@ -248,8 +250,9 @@ $width: 340px;
   z-index: 1;
 
   &:hover {
-    background: var(--hover-bg, rgba(255,255,255,0.08));
-    border-color: var(--text-main);
+    background: var(--hover-bg, var(--background-input-hover));
+    border-color: var(--accent-icon);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
   }
 
   .filters-icon {

@@ -8,6 +8,7 @@ export const broadcastTransaction = async ({
   afterSubmitExe,
   address,
   wallet,
+  walletMetaMap,
   signRequest,
   tx,
   setAwaiting
@@ -35,7 +36,7 @@ export const broadcastTransaction = async ({
     const txHash = data.id
     if (txHash) {
       const redirectName = signRequest.redirect
-      onSignIn({ address, wallet, redirectName })
+      onSignIn({ address, wallet, walletMetaMap, redirectName })
       afterSubmitExe({
         redirectName,
         broker: signRequest.broker?.name,
@@ -44,11 +45,11 @@ export const broadcastTransaction = async ({
       })
     } else {
       //when failed transaction: onlyLogin, remove redirectName
-      onSignIn({ address, wallet, redirectName: null })
+      onSignIn({ address, wallet, walletMetaMap, redirectName: null })
     }
   } else {
     //when failed transaction: onlyLogin, remove redirectName
-    onSignIn({ address, wallet, redirectName: null })
+    onSignIn({ address, wallet, walletMetaMap, redirectName: null })
   }
 }
 

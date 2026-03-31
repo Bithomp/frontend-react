@@ -26,11 +26,11 @@ import {
 import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
 import { gemwalletTxSend } from '../utils/gemwallet'
-import { ledgerwalletTxSend } from '../utils/ledgerwallet'
-import { trezorTxSend } from '../utils/trezor'
+import { ledgerwalletTxSend, ledgerwalletForceReset } from '../utils/ledgerwallet'
 import { metamaskTxSend } from '../utils/metamask'
 import { crossmarkTxSend } from '../utils/crossmark'
 import { xyraSignOnly, xyraConnect } from '../utils/xyrawallet'
+import { dcentTxSend } from '../utils/dcent'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -40,10 +40,13 @@ import { setAvatar } from '../utils/blobVerifications'
 import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
 import SetDid from './SignForms/SetDid'
+import SetTrustline from './SignForms/SetTrustline'
+import Payment from './SignForms/Payment'
 import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 import { WalletConnect } from './Walletconnect'
 import NFTokenModify from './SignForms/NFTokenModify'
+import AddressSelectionPanel from './SignForms/AddressSelectionPanel'
 import { errorCodeDescription } from '../utils/transaction'
 import { broadcastTransaction, getNextTransactionParams } from '../utils/user'
 
@@ -58,6 +61,8 @@ const askInfoScreens = [
   'setDomain',
   'setDid',
   'setAvatar',
+  'setTrustline',
+  'payment',
   'nftTransfer',
   'NFTokenModify'
 ]
@@ -74,6 +79,8 @@ const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
   if (signRequest.action === 'setDomain') return 'setDomain'
   if (signRequest.action === 'setDid') return 'setDid'
   if (signRequest.action === 'setAvatar') return 'setAvatar'
+  if (signRequest.action === 'setTrustline') return 'setTrustline'
+  if (signRequest.action === 'payment') return 'payment'
   if (signRequest.action && voteTxs.includes(signRequest.action)) return signRequest.action
   return null
 }
@@ -95,9 +102,8 @@ export default function SignForm({
   uuid,
   setRefreshPage,
   saveAddressData,
-  setAccount,
-  wcSession,
-  setWcSession
+  wcSessions,
+  setWcSessions
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -129,8 +135,17 @@ export default function SignForm({
   useEffect(() => {
     if (!signRequest) return
 
+    const connectAnotherWallet = !!signRequest?.connectAnotherWallet
+
     setXyraPreparedTx(null)
     setXyraNeedsClick(false)
+
+    if (connectAnotherWallet) {
+      setScreen('choose-app')
+      setStatus('')
+      setAwaiting(false)
+      return
+    }
 
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile) {
@@ -250,26 +265,35 @@ export default function SignForm({
       setScreen(infoScreen)
       return
     }
-    //when the request is wallet specific it's a priority, logout if not matched
-    //when request is not wallet specific, use the account wallet if loggedin
+    // When request is wallet specific it has priority, but in multi-wallet mode
+    // we no longer clear account state if active wallet differs.
     const forcedWallet = signRequest?.wallet // only if request forces a wallet
-    let wallet = forcedWallet || account?.wallet
+    const connectAnotherWallet = !!signRequest?.connectAnotherWallet
+    let wallet = forcedWallet
+
+    // If user explicitly clicked a wallet in choose-app, that must win.
+    if (!wallet && options?.wallet) {
+      wallet = options.wallet
+      setChoosenWallet(options.wallet)
+    }
+
+    if (!wallet && !connectAnotherWallet) {
+      wallet = account?.wallet
+    }
 
     if (forcedWallet && account?.wallet && account.wallet !== forcedWallet) {
-      // if loggedin, but account wallet is different from the one in the request
-      // loggout from the account
-      setAccount({ ...account, address: null, username: null, wallet: null })
+      const hasForcedProvider = Array.isArray(account?.wallets)
+        ? account.wallets.some((walletItem) => walletItem?.provider === forcedWallet)
+        : false
+
+      if (!hasForcedProvider) {
+        wallet = null
+        setChoosenWallet(forcedWallet)
+      }
     }
 
     if (!wallet) {
-      // when request is not wallet specific and user is not loggedin
-      // check saved wallet from options.wallet on previous steps
       wallet = choosenWallet
-      if (!wallet && options?.wallet) {
-        wallet = options.wallet
-        // when user choosed a wallet in the form 'choose-app', save the wallet in choosenWallet
-        setChoosenWallet(options.wallet)
-      }
     }
 
     if (!wallet) {
@@ -410,14 +434,14 @@ export default function SignForm({
       gemwalletTxSending(tx)
     } else if (wallet === 'ledgerwallet') {
       ledgerwalletTxSending(tx)
-    } else if (wallet === 'trezor') {
-      trezorTxSending(tx)
     } else if (wallet === 'metamask') {
       metamaskTxSending(tx)
     } else if (wallet === 'walletconnect') {
       walletconnectTxSending(tx)
     } else if (wallet === 'crossmark') {
       crossmarkTxSending(tx)
+    } else if (wallet === 'dcent') {
+      dcentTxSending(tx)
     } else if (wallet === 'xyra') {
       setScreen('xyra')
       setXyraPreparedTx(null)
@@ -521,20 +545,39 @@ export default function SignForm({
     }
   }
 
-  const onSignIn = async ({ address, wallet, redirectName }) => {
-    if (address) {
-      await saveAddressData({ address, wallet })
+  const onSignIn = async ({ address, addresses, wallet, walletMetaMap, usernameMap, redirectName, statusSetter }) => {
+    const updateStatus = typeof statusSetter === 'function' ? statusSetter : setStatus
+    const addressList = Array.isArray(addresses) ? addresses.filter(Boolean) : address ? [address] : []
+
+    if (addressList.length) {
+      const deduped = Array.from(new Set(addressList))
+      const activeAddress = deduped[0]
+      const toPersist = deduped.length > 1 ? [...deduped.slice(1), activeAddress] : deduped
+
+      for (const [index, itemAddress] of toPersist.entries()) {
+        if (wallet === 'ledgerwallet' && toPersist.length > 1) {
+          updateStatus(`Connecting selected Ledger addresses... ${index + 1}/${toPersist.length}`)
+        }
+
+        await saveAddressData({
+          address: itemAddress,
+          wallet,
+          walletMeta: walletMetaMap?.[itemAddress] || null,
+          username: usernameMap?.[itemAddress]
+        })
+      }
+
       //if redirect
       if (redirectName) {
         signInCancelAndClose()
         if (redirectName === 'nfts') {
-          router.push('/nfts/' + address)
+          router.push('/nfts/' + activeAddress)
           return
         } else if (redirectName === 'nft-offers') {
-          router.push('/nft-offers/' + address)
+          router.push('/nft-offers/' + activeAddress)
           return
         } else if (redirectName === 'account') {
-          router.push('/account/' + address)
+          router.push('/account/' + activeAddress)
           return
         }
       }
@@ -571,24 +614,73 @@ export default function SignForm({
     setStatus(t('signin.statuses.check-app', { appName: 'Crossmark' }))
   }
 
+  const connectSelectionAddresses = async ({
+    wallet,
+    addresses,
+    address,
+    walletMetaMap,
+    usernameMap,
+    statusSetter
+  }) => {
+    await onSignIn({
+      address,
+      addresses,
+      wallet,
+      walletMetaMap,
+      usernameMap,
+      redirectName: signRequest?.redirect,
+      statusSetter
+    })
+    closeSignInFormAndRefresh()
+  }
+
+  const dcentTxSending = (tx) => {
+    setScreen('dcent')
+    if (!tx || tx.TransactionType === 'SignIn') {
+      setScreen('dcent-addresses')
+      return
+    }
+    setStatus("Please confirm the transaction on your D'Cent device. Make sure D'Cent Bridge is running.")
+    dcentTxSend({
+      tx,
+      signRequest,
+      afterSubmitExe,
+      afterSigning,
+      onSignIn,
+      setStatus,
+      setAwaiting,
+      t,
+      address: account?.address,
+      path: account?.derivationPath
+    })
+  }
+
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
+    if (!tx || tx.TransactionType === 'SignIn') {
+      setScreen('ledgerwallet-addresses')
+      return
+    }
+
+    setPreparedTx(tx)
     setStatus(
       'Please, connect your Ledger Wallet and open the ' +
         nativeCurrency +
         ' app. Note: Nano S does not support some transactions.'
     )
-    ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
-  }
-
-  const trezorTxSending = (tx) => {
-    setScreen('trezor')
-    if (tx.TransactionType !== 'SignIn' && tx.TransactionType !== 'Payment') {
-      setStatus('Unfortunatelly, Trezor supports only XRP Payments, and does not allow other Transaction Types =(')
-      return
-    }
-    setStatus('Please, connect your Trezor Wallet.')
-    trezorTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
+    ledgerwalletTxSend({
+      tx,
+      signRequest,
+      afterSubmitExe,
+      afterSigning,
+      onSignIn,
+      setStatus,
+      setAwaiting,
+      t,
+      path: account?.derivationPath,
+      address: account?.address,
+      publicKey: account?.publicKey
+    })
   }
 
   const metamaskTxSending = async (tx) => {
@@ -755,6 +847,16 @@ export default function SignForm({
   }
 
   const validateTransactionOnLedger = async ({ txid, redirectName, txType, result }) => {
+    const redirectRoute = (() => {
+      if (!redirectName) return null
+      if (isUrlValid(redirectName)) return redirectName
+      if (redirectName === 'account') {
+        const accountAddress = signRequest?.request?.Account || account?.address
+        return accountAddress ? '/account/' + accountAddress : null
+      }
+      return null
+    })()
+
     // if we have result of the transaction, and we don't need check crawler and if we don't need to return transaction results (no callback), no need to validate just redirect
     if (
       result &&
@@ -762,7 +864,11 @@ export default function SignForm({
       !(txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID')) &&
       !signRequest?.callback
     ) {
-      router.push('/tx/' + txid)
+      if (redirectRoute) {
+        router.push(redirectRoute)
+      } else {
+        router.push('/tx/' + txid)
+      }
       closeSignInFormAndRefresh()
       return
     }
@@ -798,13 +904,11 @@ export default function SignForm({
               // if on desktop and there is a callback, call it with the result
               signRequest.callback(response.data || {})
             } else {
-              // For mobile, redirect to transaction page
-              if (redirectName && isUrlValid(redirectName)) {
-                //stay on the same page
-                router.push(redirectName)
-                return
+              if (redirectRoute) {
+                router.push(redirectRoute)
+              } else {
+                router.push('/tx/' + txid)
               }
-              router.push('/tx/' + txid)
             }
             closeSignInFormAndRefresh()
             return
@@ -1126,6 +1230,30 @@ export default function SignForm({
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
+    if (screen === 'payment') {
+      return (
+        <>
+          I understand that blockchain transactions are irreversible, and I confirm that I have verified the recipient
+          address, destination tag if required, and all payment details before sending, as funds can be lost. I also
+          agree to the{' '}
+          <Link href="/terms-and-conditions" target="_blank">
+            Terms and conditions
+          </Link>
+          .
+        </>
+      )
+    }
+    if (screen === 'setTrustline') {
+      return (
+        <>
+          I confirm that I understand trustline risks and I agree to the{' '}
+          <Link href="/terms-and-conditions" target="_blank">
+            Terms and conditions
+          </Link>
+          .
+        </>
+      )
+    }
     if (screen === 'NFTokenCreateOffer' && (signRequest.request.Flags === 1 || xls35Sell)) {
       return t('signin.confirm.nft-create-sell-offer')
     }
@@ -1146,7 +1274,9 @@ export default function SignForm({
     xaman: 'Xaman',
     gemwallet: 'GemWallet',
     ledgerwallet: 'Ledger Wallet',
-    trezor: 'Trezor',
+    'ledgerwallet-addresses': 'Ledger Wallet',
+    dcent: "D'Cent",
+    'dcent-addresses': "D'Cent",
     metamask: 'Metamask',
     walletconnect: 'WalletConnect',
     crossmark: 'Crossmark',
@@ -1155,8 +1285,28 @@ export default function SignForm({
 
   const supportedByCrossmark = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
   const supportedByMetamask = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
-  const supportedByTrezor = !signRequest?.request?.TransactionType || signRequest.request.TransactionType === 'Payment'
-
+  const dcentSupportedTxTypes = [
+    'AccountSet',
+    'AccountDelete',
+    'CheckCancel',
+    'CheckCash',
+    'CheckCreate',
+    'DepositPreauth',
+    'EscrowCancel',
+    'EscrowCreate',
+    'EscrowFinish',
+    'OfferCancel',
+    'OfferCreate',
+    'Payment',
+    'PaymentChannelClaim',
+    'PaymentChannelCreate',
+    'PaymentChannelFund',
+    'SetRegularKey',
+    'SignerListSet',
+    'TrustSet'
+  ]
+  const supportedByDcent =
+    !signRequest?.request?.TransactionType || dcentSupportedTxTypes.includes(signRequest.request.TransactionType)
   const WalletTile = ({ name, alt, src, onClick, disabled, width, height, extraIcons, iconsOnly }) => {
     const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
 
@@ -1200,15 +1350,16 @@ export default function SignForm({
     <>
       {(networkId === 0 || networkId === 1) && (
         <WalletConnect
-          tx={preparedTx}
+          tx={screen === 'walletconnect' ? preparedTx : null}
           signRequest={signRequest}
           setStatus={setStatus}
           afterSubmitExe={afterSubmitExe}
           onSignIn={onSignIn}
           setAwaiting={setAwaiting}
           afterSigning={afterSigning}
-          session={wcSession}
-          setSession={setWcSession}
+          sessions={wcSessions}
+          setSessions={setWcSessions}
+          activeAddress={account?.address}
         />
       )}
       {screen && (
@@ -1232,6 +1383,8 @@ export default function SignForm({
                   {screen === 'setDomain' && t('signin.confirm.set-domain')}
                   {screen === 'setDid' && t('signin.confirm.set-did')}
                   {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
+                  {screen === 'setTrustline' && 'Add a token'}
+                  {screen === 'payment' && 'Send'}
                   {voteTxs.includes(screen) && 'Cast a vote'}
                 </div>
 
@@ -1282,6 +1435,25 @@ export default function SignForm({
                     signRequest={signRequest}
                     setStatus={setStatus}
                     setAgreedToRisks={setAgreedToRisks}
+                  />
+                )}
+
+                {screen === 'setTrustline' && (
+                  <SetTrustline
+                    setSignRequest={setSignRequest}
+                    signRequest={signRequest}
+                    setStatus={setStatus}
+                    setAgreedToRisks={setAgreedToRisks}
+                    setFormError={setFormError}
+                  />
+                )}
+
+                {screen === 'payment' && (
+                  <Payment
+                    setSignRequest={setSignRequest}
+                    signRequest={signRequest}
+                    setStatus={setStatus}
+                    setFormError={setFormError}
                   />
                 )}
 
@@ -1447,7 +1619,7 @@ export default function SignForm({
                 )}
 
                 {!noCheckboxScreens.includes(screen) && (
-                  <div className="terms-checkbox">
+                  <div className={`terms-checkbox ${screen === 'setTrustline' ? 'terms-checkbox-trustline' : ''}`}>
                     <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks}>
                       {checkBoxText(screen, signRequest)}
                     </CheckBox>
@@ -1513,6 +1685,18 @@ export default function SignForm({
 
                       {!isMobile && (
                         <WalletTile
+                          name="D'Cent (Hardware wallet)"
+                          alt="D'Cent"
+                          src="/images/wallets/square-logos/dcent.png"
+                          width={48}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'dcent' })}
+                          disabled={!supportedByDcent}
+                        />
+                      )}
+
+                      {!isMobile && (
+                        <WalletTile
                           name="MetaMask (Browser wallet)"
                           alt="Metamask"
                           src="/images/wallets/metamask.svg"
@@ -1556,20 +1740,24 @@ export default function SignForm({
                         onClick={() => txSend({ wallet: 'xyra' })}
                         disabled={false}
                       />
-
-                      {!isMobile && (
-                        <WalletTile
-                          name="Trezor (Hardware wallet)"
-                          alt="Trezor Wallet"
-                          src="/images/wallets/trezor-large.svg"
-                          width={110}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'trezor' })}
-                          disabled={!supportedByTrezor}
-                        />
-                      )}
                     </div>
                   </>
+                ) : screen === 'ledgerwallet-addresses' ? (
+                  <AddressSelectionPanel
+                    walletType="ledgerwallet"
+                    active={screen === 'ledgerwallet-addresses'}
+                    nativeCurrencyValue={nativeCurrency}
+                    onConnectSelection={connectSelectionAddresses}
+                    buttonStyle={buttonStyle}
+                  />
+                ) : screen === 'dcent-addresses' ? (
+                  <AddressSelectionPanel
+                    walletType="dcent"
+                    active={screen === 'dcent-addresses'}
+                    nativeCurrencyValue={nativeCurrency}
+                    onConnectSelection={connectSelectionAddresses}
+                    buttonStyle={buttonStyle}
+                  />
                 ) : (
                   <>
                     <div className="header">
@@ -1674,6 +1862,21 @@ export default function SignForm({
                           )}
                           {status}
                         </div>
+                        {screen === 'ledgerwallet' && !awaiting && status && preparedTx && (
+                          <div style={{ marginTop: 14 }}>
+                            <button
+                              type="button"
+                              className="button-action"
+                              onClick={async () => {
+                                await ledgerwalletForceReset()
+                                ledgerwalletTxSending(preparedTx)
+                              }}
+                              style={buttonStyle}
+                            >
+                              Try again
+                            </button>
+                          </div>
+                        )}
                       </>
                     )}
                   </>

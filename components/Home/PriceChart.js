@@ -197,6 +197,7 @@ function useBucketedSeries(liveFiatRate, chartPeriod) {
 
 export default function PriceChart({ currency, chartPeriod, setChartPeriod, hideToolbar, liveFiatRate }) {
   const showToolbar = !hideToolbar
+  const chartHeight = hideToolbar ? 283 : 350
   const { i18n } = useTranslation()
   const { theme } = useTheme()
 
@@ -500,32 +501,9 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
 
   return (
     <>
-      <div className="chart-toolbar">
-        {detailedDayAndWeekChartAvailable && (
-          <button onClick={() => setChartPeriod('one_day')} className={chartPeriod === 'one_day' ? 'active' : ''}>
-            1D
-          </button>
-        )}
-        <button onClick={() => setChartPeriod('one_week')} className={chartPeriod === 'one_week' ? 'active' : ''}>
-          1W
-        </button>
-        <button onClick={() => setChartPeriod('one_month')} className={chartPeriod === 'one_month' ? 'active' : ''}>
-          1M
-        </button>
-        <button onClick={() => setChartPeriod('six_months')} className={chartPeriod === 'six_months' ? 'active' : ''}>
-          6M
-        </button>
-        <button onClick={() => setChartPeriod('one_year')} className={chartPeriod === 'one_year' ? 'active' : ''}>
-          1Y
-        </button>
-        <button onClick={() => setChartPeriod('ytd')} className={chartPeriod === 'ytd' ? 'active' : ''}>
-          YTD
-        </button>
-        <button onClick={() => setChartPeriod('all')} className={chartPeriod === 'all' ? 'active' : ''}>
-          ALL
-        </button>
+      <div className="home-price-chart">
+        <Chart type="line" series={series} options={options} height={chartHeight} />
       </div>
-      <Chart type="line" series={series} options={options} />
     </>
   )
 }

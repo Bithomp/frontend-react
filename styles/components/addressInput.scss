@@ -2,4 +2,18 @@
 
 .address-input {
   @include select.react-select;
+
+  .react-select__control {
+    border-radius: 10px !important;
+  }
+
+  .react-select__menu {
+    margin-top: 4px;
+    border-radius: 10px !important;
+    overflow: hidden;
+  }
+
+  .react-select__menu-list {
+    border-radius: 10px;
+  }
 }

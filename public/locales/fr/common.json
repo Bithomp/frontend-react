@@ -1,4 +1,11 @@
 {
+  "common": {
+    "viewAll": "Voir tous",
+    "noData": "Aucune donnée disponible",
+    "addresses": "adresses",
+    "holders": "détenteurs",
+    "sales": "ventes"
+  },
   "menu": {
     "tokens": "Jetons",
     "amm": {
@@ -48,7 +55,7 @@
       "distribution": "Distribution {{currency}}",
       "last-ledger-information": "Dernières informations sur le registre",
       "last-ledger-transactions": "Dernières transactions du registre",
-      "top-transfers-24h": "Top transferts (24h)",
+      "top-transfers-24h": "Top transferts",
       "verified-domains": "Domaines vérifiés",
       "validators": "Validateurs",
       "amendments": "Amendements",
@@ -161,12 +168,14 @@
     }
   },
   "home": {
-    "title": "Explorateur {{explorerName}} | Scanner le registre {{nativeCurrency}}",
-    "description": "Scannez le Registre {{nativeCurrency}}",
+    "title": "Explorateur et Outils du registre {{nativeCurrency}} — {{explorerName}} | Recherchez transactions, comptes et NFT",
+    "description": "{{explorerName}} : explorateur et outils du registre {{nativeCurrency}}. Recherchez des transactions, des comptes et des NFT. Suivez les soldes, validez les comptes, verifiez les avoirs NFT et analysez le registre {{nativeCurrency}}. En plus : convertisseurs de prix, outils, statistiques et plus encore.",
+    "h1": "Explorateur {{nativeCurrency}} Ledger et Outils",
     "search-placeholder": "Rechercher par Adresse / Transaction / NFT / Nom d'utilisateur / PayString / Offre / Hash",
     "search-placeholder-short": "Adresse / Transaction / Nom d'utilisateur",
     "price": {
-      "header": "Prix en direct {{nativeCurrency}} & Convertisseur"
+      "header": "Prix en direct {{nativeCurrency}} & Convertisseur",
+      "chartHeader": "Graphique du prix de {{nativeCurrency}}"
     },
     "whales": {
       "header": "Les transactions les plus significatives des dernières 24 heures"
@@ -195,6 +204,14 @@
       "escrows": "Escrows",
       "amms": "Pools AMM",
       "nodes": "Nœuds"
+    },
+    "teaser": {
+      "topDapps": "Top Dapps",
+      "topNftCollections": "Top Collections NFT cette semaine",
+      "topTokens": "Top Jetons",
+      "topAmms": "Top Pools AMM",
+      "topValidators": "Validateurs",
+      "topAmendments": "Derniers Amendements"
     }
   },
   "last-ledger-information": {
@@ -563,6 +580,7 @@
     "public": "Public",
     "knownBrokers": "Places de marché",
     "onSale": "Sont en vente",
+    "bids": "Offres",
     "all-tokens": "Tous les tokens",
     "single-token": "Token unique",
     "mintedNew": "Derniers",
@@ -576,7 +594,7 @@
   "explorer": {
     "header": {
       "main": "Explorateur {{explorerName}}",
-      "sub": "Scannez les transactions, comptes, jetons et NFTs en {{nativeCurrency}} — le moyen rapide et fiable d’explorer le {{nativeCurrency}} Ledger.",
+      "topNftCollections": "Top Collections NFT",
       "amm": "Informations sur la pools AMM",
       "object": "Informations sur l'objet",
       "account": "Informations sur le compte",

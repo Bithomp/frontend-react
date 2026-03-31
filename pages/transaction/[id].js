@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../../components/SEO'
-import { axiosServer, passHeaders } from '../../utils/axios'
+import { axiosServer, currencyServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import {
@@ -38,13 +38,14 @@ export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let data = null
   const { id } = query
+  const selectedCurrencyServer = currencyServer(req) || 'usd'
 
   let initialErrorMessage = null
 
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v3/transaction/' + id,
+      url: `v3/transaction/${id}?convertCurrencies=${selectedCurrencyServer}`,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -64,25 +65,31 @@ export async function getServerSideProps(context) {
     props: {
       data: data || null,
       initialErrorMessage: initialErrorMessage || null,
+      selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function Transaction({ data, selectedCurrency, initialErrorMessage }) {
+export default function Transaction({ data, selectedCurrency, selectedCurrencyServer, initialErrorMessage }) {
   const { t } = useTranslation()
+  const effectiveSelectedCurrency = selectedCurrency || selectedCurrencyServer
 
   const [pageFiatRate, setPageFiatRate] = useState(0)
 
   useEffect(() => {
-    if (!selectedCurrency || !data?.outcome) return
+    if (!effectiveSelectedCurrency || !data?.outcome) return
     const { ledgerTimestamp } = data?.outcome
     if (!ledgerTimestamp) return
 
-    fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency, setPageFiatRate })
+    fetchHistoricalRate({
+      timestamp: ledgerTimestamp * 1000,
+      selectedCurrency: effectiveSelectedCurrency,
+      setPageFiatRate
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, data])
+  }, [effectiveSelectedCurrency, data])
 
   if (!data || initialErrorMessage)
     return (
@@ -162,7 +169,7 @@ export default function Transaction({ data, selectedCurrency, initialErrorMessag
         title={t('explorer.header.transaction') + ' ' + txHash}
         description={'Transaction details for tx: ' + txHash}
       />
-      <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency} />
+      <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={effectiveSelectedCurrency} />
     </>
   )
 }

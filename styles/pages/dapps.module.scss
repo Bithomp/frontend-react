@@ -16,6 +16,37 @@
     overflow: hidden;
   }
 
+  .table-large.expand.no-hover.border {
+    table-layout: fixed;
+  }
+
+  .table-large.expand.no-hover.border th:nth-child(1),
+  .table-large.expand.no-hover.border td:nth-child(1) { width: 4%; }
+  .table-large.expand.no-hover.border th:nth-child(2),
+  .table-large.expand.no-hover.border td:nth-child(2) { width: 12%; }
+  .table-large.expand.no-hover.border th:nth-child(3),
+  .table-large.expand.no-hover.border td:nth-child(3) { width: 7%; }
+  .table-large.expand.no-hover.border th:nth-child(4),
+  .table-large.expand.no-hover.border td:nth-child(4),
+  .table-large.expand.no-hover.border th:nth-child(5),
+  .table-large.expand.no-hover.border td:nth-child(5),
+  .table-large.expand.no-hover.border th:nth-child(6),
+  .table-large.expand.no-hover.border td:nth-child(6) { width: 6%; }
+  .table-large.expand.no-hover.border th:nth-child(7),
+  .table-large.expand.no-hover.border td:nth-child(7) { width: 49%; }
+  .table-large.expand.no-hover.border th:nth-child(8),
+  .table-large.expand.no-hover.border td:nth-child(8) { width: 10%; }
+
+  .table-large.expand.no-hover.border td:nth-child(7) {
+    min-width: 0;
+  }
+
+  .dapps-activity {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
   body.dark .dapps-activity__bar {
     background: rgba(255, 255, 255, 0.12);
   }
@@ -95,7 +126,9 @@
   /* ---------- Details panel ---------- */
 
   .dapps-activity__details {
-    width: calc(100% - 26px);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     overflow: hidden;
     margin-top: 10px;
     padding: 10px 12px;
@@ -107,7 +140,7 @@
 
   .dapps-activity__detailsGrid {
     display: grid;
-    grid-template-columns: 200px minmax(0, 1fr);
+    grid-template-columns: minmax(130px, 44%) minmax(0, 1fr);
     gap: 12px;
   }
 
@@ -180,6 +213,17 @@
     flex: 0 0 auto;
   }
 
+  @media (max-width: 1512px) {
+    .dapps-activity__detailsGrid {
+      grid-template-columns: minmax(140px, 48%) minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    .dapps-activity__catPct {
+      display: none;
+    }
+  }
+
   .dapps-activity__typesHeader {
     display: flex;
     align-items: baseline;
@@ -247,9 +291,9 @@
   }
 
   .dapps-activity__type {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .dapps-activity__count {
@@ -296,9 +340,9 @@
   .failed-medium { color: #f59e0b; font-weight: 600; }
   .failed-high { color: #ef4444; font-weight: 700; }
 
-  @media (min-width: 1001px) {
+  @media (min-width: 1001px) and (max-width: 1400px) {
     .dapps-activity {
-      min-width: 450px;
+      min-width: 0;
     }
   }
 

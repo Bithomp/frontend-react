@@ -39,6 +39,63 @@ const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true 
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
 const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
 
+const getWalletId = ({ provider, address }) => {
+  if (!provider || !address) return null
+  return `${provider}:${address}`
+}
+
+const getMostRecentlyConnectedWallet = (wallets = []) => {
+  if (!Array.isArray(wallets) || !wallets.length) return null
+  return wallets.reduce((latest, current) => {
+    if (!latest) return current
+    return (current.connectedAt || 0) > (latest.connectedAt || 0) ? current : latest
+  }, null)
+}
+
+const getWalletConnectAddressesFromSession = (session) => {
+  if (!session?.namespaces?.xrpl?.accounts) return []
+  return session.namespaces.xrpl.accounts.map((account) => account?.split(':')?.[2]).filter(Boolean)
+}
+
+const normalizeAccountState = (account) => {
+  const current = account && typeof account === 'object' ? account : {}
+  let wallets = Array.isArray(current.wallets) ? current.wallets.filter((wallet) => wallet?.id) : []
+
+  if (!wallets.length && current.wallet && current.address) {
+    const id = getWalletId({ provider: current.wallet, address: current.address })
+    if (id) {
+      wallets = [
+        {
+          id,
+          provider: current.wallet,
+          address: current.address,
+          username: current.username || null,
+          connectedAt: Date.now()
+        }
+      ]
+    }
+  }
+
+  const activeWalletId =
+    current.activeWalletId && wallets.some((wallet) => wallet.id === current.activeWalletId)
+      ? current.activeWalletId
+      : getMostRecentlyConnectedWallet(wallets)?.id || null
+
+  const activeWallet = wallets.find((wallet) => wallet.id === activeWalletId) || null
+
+  return {
+    ...current,
+    wallets,
+    activeWalletId,
+    address: activeWallet?.address || null,
+    wallet: activeWallet?.provider || null,
+    username: activeWallet?.username || null,
+    derivationPath: activeWallet?.derivationPath || null,
+    publicKey: activeWallet?.publicKey || null,
+    accountIndex: Number.isFinite(activeWallet?.accountIndex) ? activeWallet.accountIndex : null
+  }
+}
+
 function useIsBot() {
   const [isBot, setIsBot] = useState(false)
 
@@ -109,10 +166,11 @@ const MyApp = ({ Component, pageProps }) => {
   )
   const [signRequest, setSignRequest] = useState(false)
   const [refreshPage, setRefreshPage] = useState('')
-  const [wcSession, setWcSession] = useState(null)
+  const [wcSessions, setWcSessions] = useState({})
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [countryCode, setCountryCode] = useState('')
+  const accountSchemaInitializedRef = useRef(false)
 
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
 
@@ -121,8 +179,172 @@ const MyApp = ({ Component, pageProps }) => {
     setIsOnline(navigator.onLine)
   }, [])
 
+  // WalletConnect can fire a session_update with null namespaces, causing
+  // Object.keys(null) inside their isValidUpdate — suppress it and clear stale storage.
+  useEffect(() => {
+    const handleWalletConnectError = (event) => {
+      const msg = event?.error?.message || event?.message || ''
+      if (!msg.includes('Cannot convert undefined or null to object')) return
+      const stack = event?.error?.stack || ''
+      if (!stack.includes('walletconnect') && !stack.includes('@walletconnect')) return
+      event.preventDefault()
+      const clearWC = (storage) => {
+        if (!storage) return
+        const toRemove = []
+        for (let i = 0; i < storage.length; i++) {
+          const key = storage.key(i)
+          if (key && (key.includes('walletconnect') || key.includes('wc@2') || key.startsWith('wc_'))) {
+            toRemove.push(key)
+          }
+        }
+        toRemove.forEach((key) => storage.removeItem(key))
+      }
+      clearWC(window.localStorage)
+      clearWC(window.sessionStorage)
+      setWcSessions({})
+    }
+    window.addEventListener('error', handleWalletConnectError)
+    return () => window.removeEventListener('error', handleWalletConnectError)
+  }, [])
+
   const router = useRouter()
   const isBot = useIsBot()
+
+  // Universal tooltip positioning: on hover, switch every .tooltiptext to
+  // position:fixed with viewport coordinates so it escapes any overflow:hidden
+  // ancestor (table wrappers, content containers, etc.).
+  // Auto-flips below the trigger when there is not enough space above
+  // (e.g. first rows of a table near the sticky header / filter bar).
+  useEffect(() => {
+    const HEADER_H = 115 // conservative height of fixed header + filter bar
+    const TIP_H = 160 // estimated max tooltip height used for threshold
+    const GAP = 10
+    const BASE_HIDDEN_STYLE =
+      'position:fixed!important;top:0!important;left:0!important;right:auto!important;bottom:auto!important;' +
+      'visibility:hidden!important;opacity:0!important;pointer-events:none!important;transition:none!important;'
+
+    let activeTrigger = null
+    let clearTimer = null
+
+    const isTableTooltip = (trigger) => {
+      return !!trigger.closest('table, thead, tbody, tr, td, th')
+    }
+
+    const applyTip = (trigger) => {
+      const tip = trigger.querySelector(':scope > .tooltiptext')
+      if (!tip) return
+
+      if (!isTableTooltip(trigger)) return
+
+      tip.style.cssText = BASE_HIDDEN_STYLE
+
+      const r = trigger.getBoundingClientRect()
+
+      const spaceAbove = r.top - HEADER_H
+      const spaceBelow = window.innerHeight - r.bottom
+      const flipBelow = spaceAbove < TIP_H && spaceBelow > spaceAbove
+
+      const vertPos = flipBelow
+        ? 'top:' + (r.bottom + GAP) + 'px!important;bottom:auto!important;'
+        : 'bottom:' + (window.innerHeight - r.top + GAP) + 'px!important;top:auto!important;'
+
+      const hAlign = tip.classList.contains('right')
+        ? 'left:' + r.left + 'px!important;right:auto!important;transform:none!important;'
+        : tip.classList.contains('left')
+          ? 'right:' + (window.innerWidth - r.right) + 'px!important;left:auto!important;transform:none!important;'
+          : 'left:' + (r.left + r.width / 2) + 'px!important;right:auto!important;transform:translateX(-50%)!important;'
+
+      tip.classList.toggle('tooltip-flip', flipBelow)
+
+      tip.style.cssText =
+        'position:fixed!important;' +
+        vertPos +
+        hAlign +
+        'visibility:visible!important;opacity:0!important;pointer-events:none!important;transition:none!important;'
+
+      void tip.offsetHeight
+
+      requestAnimationFrame(() => {
+        if (tip.style.position === 'fixed') {
+          tip.style.opacity = '1'
+          tip.style.transition = 'opacity 0.12s ease'
+        }
+      })
+    }
+
+    const hideTip = (trigger) => {
+      if (!isTableTooltip(trigger)) return
+      const tip = trigger.querySelector(':scope > .tooltiptext')
+      if (!tip) return
+      tip.style.cssText = BASE_HIDDEN_STYLE
+      tip.classList.remove('tooltip-flip')
+    }
+
+    const positionTip = (trigger) => {
+      // Cancel any pending hide so moving between rows shows no gap/flash
+      if (clearTimer) {
+        clearTimeout(clearTimer)
+        clearTimer = null
+      }
+      // Hide previous trigger immediately (no gap — new one is already showing)
+      if (activeTrigger && activeTrigger !== trigger) hideTip(activeTrigger)
+      activeTrigger = trigger
+      applyTip(trigger)
+    }
+
+    const clearTip = (trigger) => {
+      // Small delay: if mouse enters a new .tooltip before it fires,
+      // positionTip cancels this and there is zero visible flash.
+      clearTimer = setTimeout(() => {
+        clearTimer = null
+        if (activeTrigger === trigger) activeTrigger = null
+        hideTip(trigger)
+      }, 40)
+    }
+
+    const onOver = (e) => {
+      let el = e.target
+      while (el && el !== document.body) {
+        if (el.classList?.contains('tooltip')) {
+          positionTip(el)
+          return
+        }
+        el = el.parentElement
+      }
+    }
+
+    const onOut = (e) => {
+      let el = e.target
+      while (el && el !== document.body) {
+        if (el.classList?.contains('tooltip')) {
+          if (!el.contains(e.relatedTarget)) clearTip(el)
+          return
+        }
+        el = el.parentElement
+      }
+    }
+
+    // Hide on scroll so tooltip doesn't float at a stale position
+    const onScroll = () => {
+      if (clearTimer) {
+        clearTimeout(clearTimer)
+        clearTimer = null
+      }
+      if (activeTrigger) {
+        hideTip(activeTrigger)
+        activeTrigger = null
+      }
+    }
+
+    document.addEventListener('mouseover', onOver)
+    document.addEventListener('mouseout', onOut)
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true })
+    return () => {
+      document.removeEventListener('mouseover', onOver)
+      document.removeEventListener('mouseout', onOut)
+      window.removeEventListener('scroll', onScroll, { capture: true })
+    }
+  }, [])
 
   useEffect(() => {
     if (!GA_ID) return
@@ -279,20 +501,104 @@ const MyApp = ({ Component, pageProps }) => {
     }
   }, [sessionToken])
 
+  useEffect(() => {
+    // Wait for localStorage hydration; null is the pre-hydration placeholder.
+    if (account === null) return
+
+    if (accountSchemaInitializedRef.current) return
+    accountSchemaInitializedRef.current = true
+
+    const normalized = normalizeAccountState(account)
+    if (JSON.stringify(normalized) !== JSON.stringify(account || {})) {
+      setAccount(normalized)
+    }
+  }, [account, setAccount])
+
   const { uuid } = router.query
 
-  const signOut = async () => {
-    localStorage.removeItem('xamanUserToken')
-    if (account?.wallet === 'ledgerwallet') {
+  const setActiveWallet = (walletId) => {
+    const normalizedAccount = normalizeAccountState(account)
+    const activeWallet = normalizedAccount.wallets.find((wallet) => wallet.id === walletId)
+    if (!activeWallet) return
+
+    setAccount((previousAccount) => {
+      const normalized = normalizeAccountState(previousAccount)
+      const nextActiveWallet = normalized.wallets.find((wallet) => wallet.id === walletId)
+      if (!nextActiveWallet) return normalized
+
+      return {
+        ...normalized,
+        activeWalletId: walletId,
+        address: nextActiveWallet.address,
+        wallet: nextActiveWallet.provider,
+        username: nextActiveWallet.username || null,
+        derivationPath: nextActiveWallet.derivationPath || null,
+        publicKey: nextActiveWallet.publicKey || null,
+        accountIndex: Number.isFinite(nextActiveWallet.accountIndex) ? nextActiveWallet.accountIndex : null
+      }
+    })
+
+    if (!router.pathname.startsWith('/services')) {
+      router.push('/account/' + activeWallet.address)
+    }
+  }
+
+  const signOut = async (walletId) => {
+    const normalized = normalizeAccountState(account)
+    const targetWallet = walletId
+      ? normalized.wallets.find((wallet) => wallet.id === walletId)
+      : normalized.wallets.find((wallet) => wallet.id === normalized.activeWalletId)
+
+    if (!targetWallet) return
+
+    if (targetWallet.provider === 'xaman') {
+      localStorage.removeItem('xamanUserToken')
+    }
+    if (targetWallet.provider === 'ledgerwallet') {
       await ledgerwalletDisconnect()
     }
-    setWcSession(null)
-    setAccount({
-      ...account,
-      address: null,
-      username: null,
-      wallet: null
+
+    const remainingWallets = normalized.wallets.filter((wallet) => wallet.id !== targetWallet.id)
+    const nextActiveWallet =
+      remainingWallets.find((wallet) => wallet.id === normalized.activeWalletId) ||
+      getMostRecentlyConnectedWallet(remainingWallets)
+
+    setAccount((previousAccount) => {
+      const currentAccount = normalizeAccountState(previousAccount)
+      const wallets = currentAccount.wallets.filter((wallet) => wallet.id !== targetWallet.id)
+      const nextActiveWallet =
+        wallets.find((wallet) => wallet.id === currentAccount.activeWalletId) || getMostRecentlyConnectedWallet(wallets)
+
+      return {
+        ...currentAccount,
+        wallets,
+        activeWalletId: nextActiveWallet?.id || null,
+        address: nextActiveWallet?.address || null,
+        wallet: nextActiveWallet?.provider || null,
+        username: nextActiveWallet?.username || null,
+        derivationPath: nextActiveWallet?.derivationPath || null,
+        publicKey: nextActiveWallet?.publicKey || null,
+        accountIndex: Number.isFinite(nextActiveWallet?.accountIndex) ? nextActiveWallet.accountIndex : null
+      }
     })
+
+    if (targetWallet.provider === 'walletconnect') {
+      setWcSessions((previousSessions) => {
+        if (!previousSessions || typeof previousSessions !== 'object') return {}
+        const nextSessions = { ...previousSessions }
+        Object.entries(previousSessions).forEach(([topic, session]) => {
+          const addresses = getWalletConnectAddressesFromSession(session)
+          if (addresses.includes(targetWallet.address)) {
+            delete nextSessions[topic]
+          }
+        })
+        return nextSessions
+      })
+    }
+
+    if (nextActiveWallet?.address && !router.pathname.startsWith('/services')) {
+      router.push('/account/' + nextActiveWallet.address)
+    }
   }
 
   const signOutPro = () => {
@@ -304,18 +610,69 @@ const MyApp = ({ Component, pageProps }) => {
     })
   }
 
-  const saveAddressData = async ({ address, wallet }) => {
-    //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
-    const response = await axios('v2/address/' + address + '?username=true')
-    if (response.data) {
-      const { username } = response.data
-      setAccount({ ...account, address, username, wallet })
+  const saveAddressData = async ({ address, wallet, walletMeta = null, username = undefined }) => {
+    let resolvedUsername = username
+
+    if (resolvedUsername === undefined) {
+      //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
+      const response = await axios('v2/address/' + address + '?username=true')
+      if (response.data) {
+        resolvedUsername = response.data.username || null
+      }
+    }
+
+    if (resolvedUsername !== undefined) {
+      const walletId = getWalletId({ provider: wallet, address })
+      if (!walletId) return
+
+      setAccount((previousAccount) => {
+        const normalized = normalizeAccountState(previousAccount)
+        const wallets = [...normalized.wallets]
+        const existingIndex = wallets.findIndex((walletItem) => walletItem.id === walletId)
+        const existingWallet = existingIndex >= 0 ? wallets[existingIndex] : null
+        const nextWallet = {
+          id: walletId,
+          provider: wallet,
+          address,
+          username: resolvedUsername || null,
+          connectedAt: Date.now(),
+          derivationPath: walletMeta?.derivationPath ?? existingWallet?.derivationPath ?? null,
+          publicKey: walletMeta?.publicKey ?? existingWallet?.publicKey ?? null,
+          accountIndex: Number.isFinite(walletMeta?.accountIndex)
+            ? walletMeta.accountIndex
+            : Number.isFinite(existingWallet?.accountIndex)
+              ? existingWallet.accountIndex
+              : null,
+          walletConnectWalletId: walletMeta?.walletConnectWalletId ?? existingWallet?.walletConnectWalletId ?? null,
+          walletConnectWalletName:
+            walletMeta?.walletConnectWalletName ?? existingWallet?.walletConnectWalletName ?? null
+        }
+
+        if (existingIndex >= 0) {
+          wallets[existingIndex] = {
+            ...wallets[existingIndex],
+            ...nextWallet
+          }
+        } else {
+          wallets.push(nextWallet)
+        }
+
+        return {
+          ...normalized,
+          wallets,
+          activeWalletId: walletId,
+          address,
+          wallet,
+          username: resolvedUsername || null,
+          derivationPath: nextWallet.derivationPath,
+          publicKey: nextWallet.publicKey,
+          accountIndex: nextWallet.accountIndex
+        }
+      })
     } else {
-      setAccount({
-        ...account,
-        address: null,
-        username: null,
-        wallet: null
+      setAccount((previousAccount) => {
+        const normalized = normalizeAccountState(previousAccount)
+        return normalized
       })
     }
   }
@@ -368,6 +725,7 @@ const MyApp = ({ Component, pageProps }) => {
                 setSignRequest={setSignRequest}
                 account={account}
                 signOut={signOut}
+                setActiveWallet={setActiveWallet}
                 signOutPro={signOutPro}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
@@ -399,13 +757,12 @@ const MyApp = ({ Component, pageProps }) => {
                 <SignForm
                   setSignRequest={setSignRequest}
                   account={account}
-                  setAccount={setAccount}
                   signRequest={signRequest}
                   uuid={uuid}
                   setRefreshPage={setRefreshPage}
                   saveAddressData={saveAddressData}
-                  wcSession={wcSession}
-                  setWcSession={setWcSession}
+                  wcSessions={wcSessions}
+                  setWcSessions={setWcSessions}
                 />
               )}
               {isEmailLoginOpen && (

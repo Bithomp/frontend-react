@@ -10,6 +10,7 @@ import styles from '../../styles/pages/services.module.scss'
 // Icons
 import { TbSend, TbShieldCheck, TbBell } from 'react-icons/tb'
 import {
+  RiCompassDiscoverLine,
   RiFilePaper2Line,
   RiPriceTag3Line,
   RiDeleteBin6Line,
@@ -19,10 +20,17 @@ import {
   RiCheckboxCircleLine,
   RiAddCircleLine
 } from 'react-icons/ri'
-import { MdOutlineFactCheck, MdOutlineLockClock, MdOutlineImage, MdOutlineApi } from 'react-icons/md'
-import { IoWalletOutline, IoSparklesOutline } from 'react-icons/io5'
+import { MdOutlineFactCheck, MdOutlineLockClock, MdOutlineImage, MdOutlineApi, MdVerified } from 'react-icons/md'
+import {
+  IoWalletOutline,
+  IoSparklesOutline,
+  IoKeyOutline,
+  IoDocumentTextOutline,
+  IoPersonOutline,
+  IoLayersOutline
+} from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
-import { LuCoins } from 'react-icons/lu'
+import { LuCoins, LuFileCheck2 } from 'react-icons/lu'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -64,11 +72,12 @@ export default function ServicesPage() {
       id: 'bithomp-services',
       title: '🦩 Bithomp Services',
       items: [
-        { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: RiFilePaper2Line },
-        { href: '/username', title: t('menu.services.username'), icon: RiPriceTag3Line },
-        { href: '/submit-account-information', title: t('menu.project-registration'), icon: RiFilePaper2Line },
+        { href: '/explorer', title: `${explorerName} Explorer`, icon: RiCompassDiscoverLine },
+        { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: LuFileCheck2 },
+        { href: '/username', title: t('menu.services.username'), icon: IoPersonOutline },
+        { href: '/submit-account-information', title: t('menu.project-registration'), icon: IoDocumentTextOutline },
         !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbBell } : null,
-        !devNet ? { href: '/admin/watchlist', title: 'Watchlist', icon: RiCheckboxCircleLine } : null
+        !devNet ? { href: '/admin/watchlist', title: 'Watchlist', icon: MdVerified } : null
       ].filter(Boolean)
     }
 
@@ -102,7 +111,7 @@ export default function ServicesPage() {
       title: '🏗️ Issuance',
       items: [
         { href: '/learn/issue-a-token', title: 'How to Issue a Token', icon: RiBookOpenLine },
-        { href: '/learn/guide-for-token-issuers', title: 'Guide for Token Issuers', icon: RiBookOpenLine },
+        { href: '/learn/guide-for-token-issuers', title: 'Guide for Token Issuers', icon: IoLayersOutline },
         { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline }
       ]
     }
@@ -114,6 +123,8 @@ export default function ServicesPage() {
       items: [
         ...(xahauNetwork ? [{ href: '/services/reward-auto-claim', title: 'Reward Auto Claim', icon: LuCoins }] : []),
         { href: '/services/account-settings/', title: t('menu.services.account-settings'), icon: IoWalletOutline },
+        { href: '/services/token-issuer-settings', title: 'Token Issuer Settings', icon: RiPriceTag3Line },
+        { href: '/services/account-control', title: 'Account Control', icon: IoKeyOutline },
         { href: '/services/account-delete', title: 'Account Delete', icon: RiDeleteBin6Line }
       ]
     }

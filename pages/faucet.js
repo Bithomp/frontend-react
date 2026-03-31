@@ -4,7 +4,7 @@ import Faucet from '../components/Faucet'
 import SEO from '../components/SEO'
 
 import { getIsSsrMobile } from '../utils/mobile'
-import { devNet, explorerName, ledgerName, nativeCurrency } from '../utils'
+import { devNet, explorerName, ledgerName, nativeCurrency, network } from '../utils'
 import NetworkTabs from '../components/Tabs/NetworkTabs'
 import Ads from '../components/Layout/Ads'
 import { useTranslation } from 'next-i18next'
@@ -45,13 +45,16 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function FaucetPage({ account, showAds, sessionTokenData, countryCode }) {
+export default function FaucetPage({ account, showAds, sessionTokenData, countryCode, setSignRequest }) {
   const { t } = useTranslation()
+  const isRlusdAvailableNetwork = network === 'testnet'
+  const faucetTitle = isRlusdAvailableNetwork ? 'XRP and RLUSD Faucet' : 'Faucet'
+  const faucetFreeText = isRlusdAvailableNetwork ? 'XRP and RLUSD' : nativeCurrency
 
   return (
     <>
       <SEO
-        title={'Faucet. Free ' + nativeCurrency + ' for Developers.'}
+        title={faucetTitle + '. Free ' + faucetFreeText + ' for Developers.'}
         description={
           'Get free ' +
           nativeCurrency +
@@ -67,7 +70,8 @@ export default function FaucetPage({ account, showAds, sessionTokenData, country
       />
       <div className="content-text content-center">
         <h1 className="center">
-          {explorerName} {t('menu.developers.faucet')?.toLowerCase()} — {t('faucet:get-free')} {nativeCurrency}
+          {explorerName} {isRlusdAvailableNetwork ? faucetTitle : t('menu.developers.faucet')?.toLowerCase()} —{' '}
+          {t('faucet:get-free')} {faucetFreeText}
         </h1>
         <NetworkTabs />
         <Faucet
@@ -75,6 +79,7 @@ export default function FaucetPage({ account, showAds, sessionTokenData, country
           type={devNet ? 'faucet' : 'testPayment'}
           sessionTokenData={sessionTokenData}
           countryCode={countryCode}
+          setSignRequest={setSignRequest}
         />
       </div>
       {showAds && <Ads />}

@@ -1,8 +1,10 @@
 .checkbox {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   position: relative;
   margin-top: 20px;
-  padding-left: 28px;
+  padding-left: 0;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -10,12 +12,17 @@
   user-select: none;
 
   .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
+    top: auto;
+    left: auto;
+    flex: 0 0 23px;
+    order: -1;
     height: 23px;
     width: 23px;
-    background-color: #ccc;
+    border-radius: 6px;
+    border: 1px solid var(--unaccent-icon);
+    background-color: var(--background-input);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     &:after {
       content: "";
       position: absolute;
@@ -33,11 +40,10 @@
   }
 
   &--outline {
-    padding-left: 35px;
+    padding-left: 0;
 
     .checkmark {
       background-color: transparent;
-      border: 1px solid #ccc;
     }
   }
 
@@ -46,13 +52,14 @@
     opacity: 0;
     cursor: pointer;
     &:checked ~ .checkmark {
-      background-color: var(--accent-icon);
+      background-color: var(--accent-link);
+      border-color: var(--accent-link);
       &:after {
         display: block;
       }
     }
     &:disabled ~ .checkmark {
-      background-color: #ccc;
+      background-color: var(--background-input-readonly);
       cursor: not-allowed;
     }
   }

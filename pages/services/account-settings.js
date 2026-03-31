@@ -12,13 +12,13 @@ import {
   md5,
   isHexString
 } from '../../utils'
-import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
-import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
+import { IoToggleOutline, IoDocumentTextOutline, IoPersonOutline } from 'react-icons/io5'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
+import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -50,20 +50,13 @@ const ASF_FLAGS = {
   allowTrustLineLocking: 17
 }
 
-export default function AccountSettings({
-  account,
-  setSignRequest,
-  sessionToken,
-  subscriptionExpired,
-  openEmailLogin
-}) {
+export default function AccountSettings({ account, setSignRequest, sessionToken, subscriptionExpired }) {
   const { t } = useTranslation(['common'])
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [accountData, setAccountData] = useState(null)
   const [flags, setFlags] = useState(null)
-  const [showAdvanced, setShowAdvanced] = useState(false)
   const [nftTokenMinter, setNftTokenMinter] = useState('')
   const [currentNftTokenMinter, setCurrentNftTokenMinter] = useState('')
   const [domainInput, setDomainInput] = useState('')
@@ -72,8 +65,6 @@ export default function AccountSettings({
   const [currentEmailHash, setCurrentEmailHash] = useState('')
   const [messageKeyInput, setMessageKeyInput] = useState('')
   const [currentMessageKey, setCurrentMessageKey] = useState('')
-  const [transferRateInput, setTransferRateInput] = useState('')
-  const [currentTransferRate, setCurrentTransferRate] = useState(null)
   const [tickSizeInput, setTickSizeInput] = useState('')
   const [currentTickSize, setCurrentTickSize] = useState(null)
   const [walletLocatorInput, setWalletLocatorInput] = useState('')
@@ -207,7 +198,6 @@ export default function AccountSettings({
   const getAvailableAsfFlags = () => {
     const commonFlags = [
       'requireDestTag',
-      'requireAuth',
       'disallowXRP',
       'disallowIncomingCheck',
       'disallowIncomingPayChan',
@@ -215,17 +205,13 @@ export default function AccountSettings({
       'depositAuth'
     ]
 
-    const advancedFlags = ['defaultRipple', 'disableMaster', 'globalFreeze', 'noFreeze']
-
     if (xahauNetwork) {
       return {
-        basic: [...commonFlags, 'disallowIncomingRemit', 'tshCollect'],
-        advanced: advancedFlags
+        basic: [...commonFlags, 'disallowIncomingRemit', 'tshCollect']
       }
     } else {
       return {
-        basic: [...commonFlags, 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback', 'allowTrustLineLocking'],
-        advanced: advancedFlags
+        basic: [...commonFlags, 'disallowIncomingNFTokenOffer']
       }
     }
   }
@@ -381,19 +367,6 @@ export default function AccountSettings({
         setEmailHashInput(response.data?.ledgerInfo?.emailHash || '')
         setCurrentMessageKey(response.data?.ledgerInfo?.messageKey || '')
         setMessageKeyInput(response.data?.ledgerInfo?.messageKey || '')
-        setCurrentTransferRate(
-          typeof response.data?.ledgerInfo?.transferRate === 'number'
-            ? multiply(response.data.ledgerInfo.transferRate, 1000000000)
-            : null
-        )
-        setTransferRateInput(() => {
-          const tr = response.data?.ledgerInfo?.transferRate
-          if (typeof tr === 'number' && tr > 0) {
-            const percent = multiply(subtract(tr, 1), 100)
-            return String(percent)
-          }
-          return ''
-        })
         setCurrentTickSize(
           typeof response.data?.ledgerInfo?.tickSize === 'number' ? response.data.ledgerInfo.tickSize : null
         )
@@ -405,7 +378,7 @@ export default function AccountSettings({
         setCurrentWalletLocator(response.data?.ledgerInfo?.walletLocator || '')
         setWalletLocatorInput(response.data?.ledgerInfo?.walletLocator || '')
 
-        const allFlags = [...flagGroups.basic, ...flagGroups.advanced]
+        const allFlags = [...flagGroups.basic]
         const ledgerFlags = response.data?.ledgerInfo?.flags || {}
 
         const newFlags = {}
@@ -668,62 +641,6 @@ export default function AccountSettings({
     })
   }
 
-  const handleSetTransferRate = () => {
-    const percent = Number(transferRateInput)
-    if (isNaN(percent) || percent < 0 || percent > 100) {
-      setErrorMessage('Please enter a valid TransferRate percentage between 0 and 100.')
-      return
-    }
-    const rate = Math.round(1000000000 + percent * 10000000)
-    const tx = {
-      TransactionType: 'AccountSet',
-      Account: account.address,
-      TransferRate: rate
-    }
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setSuccessMessage('TransferRate set successfully.')
-        setErrorMessage('')
-        setCurrentTransferRate(rate)
-        setAccountData((prev) => {
-          if (prev && prev.ledgerInfo) {
-            return {
-              ...prev,
-              ledgerInfo: { ...prev.ledgerInfo, transferRate: rate }
-            }
-          }
-          return prev
-        })
-      }
-    })
-  }
-
-  const handleClearTransferRate = () => {
-    const tx = {
-      TransactionType: 'AccountSet',
-      Account: account.address,
-      TransferRate: 0
-    }
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setSuccessMessage('TransferRate cleared successfully.')
-        setErrorMessage('')
-        setCurrentTransferRate(null)
-        setTransferRateInput('')
-        setAccountData((prev) => {
-          if (prev && prev.ledgerInfo) {
-            const updatedLedgerInfo = { ...prev.ledgerInfo }
-            delete updatedLedgerInfo.transferRate
-            return { ...prev, ledgerInfo: updatedLedgerInfo }
-          }
-          return prev
-        })
-      }
-    })
-  }
-
   const handleSetTickSize = () => {
     const value = Number(tickSizeInput)
     if (isNaN(value) || !(value === 0 || (value >= 3 && value <= 15))) {
@@ -892,6 +809,16 @@ export default function AccountSettings({
     })
   }
 
+  const withTooltip = (tooltipText, child) => {
+    if (!tooltipText) return child
+    return (
+      <span className="tooltip">
+        {child}
+        <span className="tooltiptext left">{tooltipText}</span>
+      </span>
+    )
+  }
+
   const renderFlagItem = (flag) => {
     const flagData = flagDetails[flag]
     const currentValue = !!flags?.[flag]
@@ -928,24 +855,38 @@ export default function AccountSettings({
 
     const showButton = !(flagData?.isPermanent && currentValue)
 
+    const buttonTooltip = !account?.address
+      ? 'Sign in to manage settings'
+      : buttonDisabled && disabledReason
+        ? disabledReason
+        : ''
+
     return (
       <div key={flag} className="flag-item">
         <div className="flag-header">
           <div className="flag-info">
             <span className="flag-name">{flagData.name}</span>
-            <span className={`flag-status ${isNonDefault ? 'orange' : ''}`}>{flagData.status(currentValue)}</span>
+            <span
+              className={`section-badge ${
+                isHighRisk && isNonDefault ? 'badge-danger' : isNonDefault ? 'badge-warn' : 'badge-off'
+              }`}
+            >
+              {flagData.status(currentValue)}
+            </span>
           </div>
 
-          {showButton && (
-            <button
-              className="button-action thin"
-              onClick={() => handleFlagToggle(flag)}
-              disabled={buttonDisabled || !account?.address}
-              style={{ minWidth: '120px' }}
-            >
-              {flagData.actionText(currentValue)}
-            </button>
-          )}
+          {showButton &&
+            withTooltip(
+              buttonTooltip,
+              <button
+                className="button-action thin"
+                onClick={() => handleFlagToggle(flag)}
+                disabled={buttonDisabled || !account?.address}
+                style={{ minWidth: '120px' }}
+              >
+                {flagData.actionText(currentValue)}
+              </button>
+            )}
 
           {flagData?.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
         </div>
@@ -984,6 +925,7 @@ export default function AccountSettings({
         <SEO title="Account settings" description="Manage your account settings" />
         <div className="content-center">
           <h1 className="center">Account settings</h1>
+          <AccountServiceTabs tab="account-settings" />
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -1000,6 +942,7 @@ export default function AccountSettings({
         <SEO title="Account settings" description="Manage your account settings." />
         <div className="content-center">
           <h1 className="center">Account settings</h1>
+          <AccountServiceTabs tab="account-settings" />
           <p className="center">
             {account?.address ? (
               `Manage your account settings on the ${explorerName}.`
@@ -1020,13 +963,22 @@ export default function AccountSettings({
 
           {/* Account Flags Section */}
           <div>
-            <h4>Account Flags</h4>
+            <div className="section-header">
+              <span className="section-icon">
+                <IoToggleOutline size={15} />
+              </span>
+              <span className="section-title">Account Flags</span>
+            </div>
 
             {flagGroups.basic.map((flag) => renderFlagItem(flag))}
 
             {/* Account Fields */}
-            <br />
-            <h4>Account Fields</h4>
+            <div className="section-header" style={{ marginTop: '1.25rem' }}>
+              <span className="section-icon">
+                <IoDocumentTextOutline size={15} />
+              </span>
+              <span className="section-title">Account Fields</span>
+            </div>
             <div>
               <div className="flag-item">
                 <div className="flag-header">
@@ -1037,14 +989,19 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentDomain && (
-                      <button className="button-action thin" onClick={handleClearDomain} disabled={!account?.address}>
-                        Clear
+                    {currentDomain &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button className="button-action thin" onClick={handleClearDomain} disabled={!account?.address}>
+                          Clear
+                        </button>
+                      )}
+                    {withTooltip(
+                      !account?.address ? 'Sign in to manage settings' : '',
+                      <button className="button-action thin" onClick={handleSetDomain} disabled={!account?.address}>
+                        Set
                       </button>
                     )}
-                    <button className="button-action thin" onClick={handleSetDomain} disabled={!account?.address}>
-                      Set
-                    </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
@@ -1069,18 +1026,23 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentEmailHash && (
-                      <button
-                        className="button-action thin"
-                        onClick={handleClearEmailHash}
-                        disabled={!account?.address}
-                      >
-                        Clear
+                    {currentEmailHash &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearEmailHash}
+                          disabled={!account?.address}
+                        >
+                          Clear
+                        </button>
+                      )}
+                    {withTooltip(
+                      !account?.address ? 'Sign in to manage settings' : '',
+                      <button className="button-action thin" onClick={handleSetEmailHash} disabled={!account?.address}>
+                        Set
                       </button>
                     )}
-                    <button className="button-action thin" onClick={handleSetEmailHash} disabled={!account?.address}>
-                      Set
-                    </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
@@ -1103,22 +1065,31 @@ export default function AccountSettings({
                     {account?.address && <span className="flag-status">{currentMessageKey ? 'Set' : 'Not Set'}</span>}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentMessageKey && (
+                    {currentMessageKey &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearMessageKey}
+                          disabled={!account?.address}
+                        >
+                          Clear
+                        </button>
+                      )}
+                    {withTooltip(
+                      !account?.address
+                        ? 'Sign in to manage settings'
+                        : messageKeyInput && !messageKeyValidation.isValid
+                          ? messageKeyValidation.message
+                          : '',
                       <button
                         className="button-action thin"
-                        onClick={handleClearMessageKey}
-                        disabled={!account?.address}
+                        onClick={handleSetMessageKey}
+                        disabled={!account?.address || (messageKeyInput && !messageKeyValidation.isValid)}
                       >
-                        Clear
+                        Set
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetMessageKey}
-                      disabled={!account?.address || (messageKeyInput && !messageKeyValidation.isValid)}
-                    >
-                      Set
-                    </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
@@ -1160,60 +1131,26 @@ export default function AccountSettings({
               <div className="flag-item">
                 <div className="flag-header">
                   <div className="flag-info">
-                    <span className="flag-name">TransferRate</span>
-                    {account?.address && (
-                      <span className="flag-status">
-                        {currentTransferRate && currentTransferRate > 0
-                          ? `${Math.round(((currentTransferRate - 1000000000) / 10000000) * 100) / 100}%`
-                          : 'Not Set'}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flag-info-buttons">
-                    {currentTransferRate && currentTransferRate > 0 && (
-                      <button
-                        className="button-action thin"
-                        onClick={handleClearTransferRate}
-                        disabled={!account?.address}
-                      >
-                        Clear
-                      </button>
-                    )}
-                    <button className="button-action thin" onClick={handleSetTransferRate} disabled={!account?.address}>
-                      Set
-                    </button>
-                  </div>
-                </div>
-                <div className="nft-minter-input">
-                  <input
-                    className="input-text"
-                    placeholder="Percentage 0-100"
-                    value={transferRateInput}
-                    onChange={(e) => setTransferRateInput(e.target.value)}
-                    type="text"
-                    inputMode="decimal"
-                    disabled={!account?.address}
-                  />
-                  <small>Percentage fee issuer charges on transfers of issued tokens.</small>
-                </div>
-              </div>
-
-              <div className="flag-item">
-                <div className="flag-header">
-                  <div className="flag-info">
                     <span className="flag-name">TickSize</span>
                     {account?.address && (
                       <span className="flag-status">{currentTickSize ? currentTickSize : 'Not Set'}</span>
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetTickSize}
-                      disabled={!account?.address || (tickSizeInput && !tickSizeValidation.isValid)}
-                    >
-                      Set
-                    </button>
+                    {withTooltip(
+                      !account?.address
+                        ? 'Sign in to manage settings'
+                        : tickSizeInput && !tickSizeValidation.isValid
+                          ? tickSizeValidation.message
+                          : '',
+                      <button
+                        className="button-action thin"
+                        onClick={handleSetTickSize}
+                        disabled={!account?.address || (tickSizeInput && !tickSizeValidation.isValid)}
+                      >
+                        Set
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="nft-minter-input">
@@ -1258,22 +1195,31 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    {currentWalletLocator && (
+                    {currentWalletLocator &&
+                      withTooltip(
+                        !account?.address ? 'Sign in to manage settings' : '',
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearWalletLocator}
+                          disabled={!account?.address}
+                        >
+                          Clear
+                        </button>
+                      )}
+                    {withTooltip(
+                      !account?.address
+                        ? 'Sign in to manage settings'
+                        : walletLocatorInput && !walletLocatorValidation.isValid
+                          ? walletLocatorValidation.message
+                          : '',
                       <button
                         className="button-action thin"
-                        onClick={handleClearWalletLocator}
-                        disabled={!account?.address}
+                        onClick={handleSetWalletLocator}
+                        disabled={!account?.address || (walletLocatorInput && !walletLocatorValidation.isValid)}
                       >
-                        Clear
+                        Set
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetWalletLocator}
-                      disabled={!account?.address || (walletLocatorInput && !walletLocatorValidation.isValid)}
-                    >
-                      Set
-                    </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
@@ -1320,22 +1266,31 @@ export default function AccountSettings({
                       )}
                     </div>
                     <div className="flag-info-buttons">
-                      {currentNftTokenMinter && (
+                      {currentNftTokenMinter &&
+                        withTooltip(
+                          !account?.address ? 'Sign in to manage settings' : '',
+                          <button
+                            className="button-action thin"
+                            onClick={handleClearNftTokenMinter}
+                            disabled={!account?.address}
+                          >
+                            Clear
+                          </button>
+                        )}
+                      {withTooltip(
+                        !account?.address
+                          ? 'Sign in to manage settings'
+                          : !nftTokenMinter.trim()
+                            ? 'Enter an NFTokenMinter address first'
+                            : '',
                         <button
                           className="button-action thin"
-                          onClick={handleClearNftTokenMinter}
-                          disabled={!account?.address}
+                          onClick={handleSetNftTokenMinter}
+                          disabled={!account?.address || !nftTokenMinter.trim()}
                         >
-                          Clear
+                          Set
                         </button>
                       )}
-                      <button
-                        className="button-action thin"
-                        onClick={handleSetNftTokenMinter}
-                        disabled={!account?.address || !nftTokenMinter.trim()}
-                      >
-                        Set
-                      </button>
                     </div>
                   </div>
                   <div className="nft-minter-input">
@@ -1355,49 +1310,19 @@ export default function AccountSettings({
                 </div>
               )}
             </div>
-
-            {/* Advanced options */}
-            <div className="advanced-options">
-              <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-flags">
-                Advanced options (Use with caution)
-                {!sessionToken ? (
-                  <>
-                    {' '}
-                    <span className="orange">
-                      (available to{' '}
-                      <span className="link" onClick={() => openEmailLogin()}>
-                        logged-in
-                      </span>{' '}
-                      Bithomp Pro subscribers)
-                    </span>
-                  </>
-                ) : (
-                  subscriptionExpired && (
-                    <>
-                      {' '}
-                      <span className="orange">
-                        Your Bithomp Pro subscription has expired.{' '}
-                        <Link href="/admin/subscriptions">Renew your subscription</Link>
-                      </span>
-                    </>
-                  )
-                )}
-              </CheckBox>
-
-              {showAdvanced && (
-                <div className="advanced-flags">{flagGroups.advanced.map((flag) => renderFlagItem(flag))}</div>
-              )}
-            </div>
           </div>
 
-          <br />
-          <div className="center">
+          <div className="center" style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
             {account?.address ? (
-              <Link href={`/account/${account.address}`}>View my account page</Link>
+              <Link href={`/account/${account.address}`} className="button-action">
+                <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
+                View my account page
+              </Link>
             ) : (
-              <span className="link" onClick={() => setSignRequest({})}>
+              <button className="button-action" onClick={() => setSignRequest({})}>
+                <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
                 Sign in to your account
-              </span>
+              </button>
             )}
           </div>
         </div>

@@ -2,7 +2,7 @@ import React from 'react'
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, amountFormat, amountToFiat, showFlags } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, tokenToFiat, showFlags } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 
 export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
@@ -74,7 +74,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
                 <TData>Max Amount</TData>
                 <TData style={{ display: 'flex' }}>
                   {amountFormat(maxAmount, { icon: true, presice: 'nice' })}{' '}
-                  {amountToFiat({
+                  {tokenToFiat({
                     amount: maxAmount,
                     selectedCurrency: selectedCurrency,
                     fiatRate: pageFiatRate

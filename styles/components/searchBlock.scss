@@ -1,7 +1,7 @@
 @use "select.scss";
 
 .search-block {
-  height: 164px; //200px with QR code scanner
+  height: 164px;
   background-color: var(--background-block);
   text-align: center;
   transition: background-color .5s;
@@ -113,40 +113,6 @@
         color: white;
         width: 26px;
         height: 26px;
-      }
-    }
-    .search-scan-qr {
-      position: absolute;
-      bottom: -39px;
-      left: 0;
-      .search-scan-qr-icon {
-        display: inline-block;
-        vertical-align: middle;
-        #qr-stroke1,
-        #qr-stroke2 {
-          transition: stroke .5s;
-        }
-        #qr-fill1 {
-          transition: fill .5s;
-        }
-      }
-      &:hover {
-        color: var(--text-contrast);
-        .search-scan-qr-icon {
-          #qr-stroke1,
-          #qr-stroke2 {
-            stroke: var(--text-contrast);
-          }
-          #qr-fill1 {
-            fill: var(--text-contrast);
-          }
-        }
-      }
-      .search-scan-qr-text {
-        display: inline-block;
-        vertical-align: middle;
-        margin-left: 6px;
-        user-select: none;
       }
     }
   }

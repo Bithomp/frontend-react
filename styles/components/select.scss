@@ -1,13 +1,14 @@
 @mixin react-select {
   .react-select__control {
     border-color: var(--unaccent-icon) !important;
-    border-radius: 0;
+    border-radius: 10px;
     height: 40px;
     box-shadow: none;
     background-color: var(--background-input);
-    transition: background-color .5s, border-color 0.5s;
+    transition: background-color .5s, border-color 0.25s, box-shadow 0.25s;
     &:hover {
-      box-shadow: 0 0 5px var(--unaccent-icon);
+      border-color: var(--accent-icon) !important;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
     }
     .react-select__value-container {
       text-align: left;
@@ -36,24 +37,27 @@
   }
 
   .react-select__control--is-focused {
-    box-shadow: 0 0 5px var(--unaccent-icon);
+    border-color: var(--accent-link) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 16%, transparent);
   }
 
   .react-select__menu {
-    border-radius: 0;
-    margin-top: -1px;
+    border-radius: 10px;
+    margin-top: 4px;
     z-index: 2;
-    box-shadow: none;
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--text-main) 14%, transparent);
     background-color: var(--background-secondary);
     box-sizing: border-box !important;
     inset: 100% 0 auto !important;
     border: 1px solid var(--accent-icon);
     word-wrap: break-word;
+    overflow: hidden;
   }
 
   .react-select__menu-list {
     padding-top: 0;
     padding-bottom: 0;
+    border-radius: 10px;
   }
 
   .react-select__option {

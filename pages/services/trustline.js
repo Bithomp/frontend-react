@@ -274,7 +274,7 @@ export default function TrustSet({
   // Sync limit when switching modes
   useEffect(() => {
     if (mode === 'advanced' && tokenSupply) {
-      setLimit(Math.round(tokenSupply * 1000000) / 1000000)
+      setLimit(Math.round(Number(tokenSupply)))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, tokenSupply])
@@ -289,7 +289,7 @@ export default function TrustSet({
 
       if (token && token.supply) {
         setTokenSupply(token.supply)
-        setLimit(Math.round(token.supply * 1000000) / 1000000)
+        setLimit(Math.round(Number(token.supply)))
       } else {
         // Default to 1B if no supply info available
         setTokenSupply('1000000000')
@@ -375,16 +375,19 @@ export default function TrustSet({
       // Add flags - only include flags that are explicitly set or cleared
       let flags = 0
       if (mode === 'advanced') {
-        if (freezeState === 'set') flags |= 0x00100000 // tfSetFreeze
+        if (freezeState === 'set')
+          flags |= 0x00100000 // tfSetFreeze
         else if (freezeState === 'clear') flags |= 0x00200000 // tfClearFreeze
 
-        if (noRippleState === 'set') flags |= 0x00020000 // tfSetNoRipple
+        if (noRippleState === 'set')
+          flags |= 0x00020000 // tfSetNoRipple
         else if (noRippleState === 'clear') flags |= 0x00040000 // tfClearNoRipple
 
         if (authorizedState === 'set') flags |= 0x00010000 // tfSetfAuth
 
         if (!xahauNetwork) {
-          if (deepFreezeState === 'set') flags |= 0x00400000 // tfSetDeepFreeze (XRP only)
+          if (deepFreezeState === 'set')
+            flags |= 0x00400000 // tfSetDeepFreeze (XRP only)
           else if (deepFreezeState === 'clear') flags |= 0x00800000 // tfClearDeepFreeze (XRP only)
         }
       } else {
@@ -478,7 +481,7 @@ export default function TrustSet({
                   <span className="grey">
                     {' '}
                     - the Limit will be set to the total supply:{' '}
-                    {amountFormat({ value: tokenSupply, currency: selectedToken.currency })}
+                    {amountFormat({ value: tokenSupply, currency: selectedToken.currency }, { short: true })}
                   </span>
                 )}
               </span>

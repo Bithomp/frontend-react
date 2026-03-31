@@ -8,6 +8,7 @@ export { TransactionRowNFToken } from './TransactionRowNFToken'
 export { TransactionRowOffer } from './TransactionRowOffer'
 export { TransactionRowPayment } from './TransactionRowPayment'
 export { TransactionRowSetRegularKey } from './TransactionRowSetRegularKey'
+export { TransactionRowSignerListSet } from './TransactionRowSignerListSet'
 export { TransactionRowTrustSet } from './TransactionRowTrustSet'
 export { TransactionRowEnableAmendment } from './TransactionRowEnableAmendment'
 

@@ -5,7 +5,7 @@ import {
   amountFormat,
   capitalize,
   fullDateAndTime,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   niceCurrency,
   timeFromNow
 } from '../../utils/format'
@@ -129,7 +129,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
                     color: 'direction',
                     showPlus: true
                   })}
-                  {nativeCurrencyToFiat({
+                  {tokenToFiat({
                     amount: change,
                     selectedCurrency,
                     fiatRate: pageFiatRate

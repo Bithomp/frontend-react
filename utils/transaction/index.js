@@ -3,6 +3,23 @@ import { nativeCurrency, safeClone } from '..'
 import { TData } from '../../components/Table'
 import { add } from '../calc'
 import { decodeJsonMemo } from '../format'
+import { FaLink, FaUserShield } from 'react-icons/fa6'
+import { FaRegHandPaper, FaMoneyCheckAlt } from 'react-icons/fa'
+import {
+  MdArrowDownward,
+  MdArrowUpward,
+  MdCompareArrows,
+  MdDeleteSweep,
+  MdPool,
+  MdSend,
+  MdSwapVert
+} from 'react-icons/md'
+import { BsFillSafeFill } from 'react-icons/bs'
+import { CiSettings } from 'react-icons/ci'
+import { FiDownload, FiKey } from 'react-icons/fi'
+import { GiKeyring, GiPassport } from 'react-icons/gi'
+import { LuFileCheck2 } from 'react-icons/lu'
+import { RiNftFill } from 'react-icons/ri'
 
 // sourse address and destination address is the same
 // sometimes source tag is added to show the dapp
@@ -58,6 +75,186 @@ export const shortErrorCode = (code) => {
   code = code.slice(3).replace(/_/g, ' ').toLowerCase()
   // make the first letter in the string capital
   return code.charAt(0).toUpperCase() + code.slice(1)
+}
+
+const TRANSACTION_TYPE_LABELS = {
+  Payment: 'Payment',
+  AccountSet: 'Account settings update',
+  AccountDelete: 'Account deletion',
+  DIDSet: 'DID set',
+  DIDDelete: 'DID removal',
+  SetRegularKey: 'Set regular key',
+  SignerListSet: 'Signer list set',
+  TrustSet: 'Trust line set',
+  OfferCreate: 'Offer creation',
+  OfferCancel: 'Offer cancellation',
+  TicketCreate: 'Ticket creation',
+  DepositPreauth: 'Deposit preauthorization',
+
+  EscrowCreate: 'Escrow creation',
+  EscrowFinish: 'Escrow finish',
+  EscrowCancel: 'Escrow cancellation',
+
+  CheckCreate: 'Check creation',
+  CheckCash: 'Check cashing',
+  CheckCancel: 'Check cancellation',
+
+  PaymentChannelCreate: 'Payment channel creation',
+  PaymentChannelFund: 'Payment channel funding',
+  PaymentChannelClaim: 'Payment channel claim',
+
+  NFTokenMint: 'NFT mint',
+  NFTokenBurn: 'NFT burn',
+  NFTokenCreateOffer: 'NFT offer creation',
+  NFTokenCancelOffer: 'NFT offer cancellation',
+  NFTokenAcceptOffer: 'NFT offer acceptance',
+  NFTokenModify: 'NFT modification',
+
+  AMMCreate: 'AMM creation',
+  AMMDeposit: 'AMM deposit',
+  AMMWithdraw: 'AMM withdrawal',
+  AMMVote: 'AMM vote',
+  AMMBid: 'AMM bid',
+  AMMDelete: 'AMM deletion',
+  AMMClawback: 'AMM clawback',
+
+  EnableAmendment: 'Enable amendment',
+  SetFee: 'Set fee',
+  UNLModify: 'UNL modification',
+  Clawback: 'Clawback',
+
+  XChainCreateBridge: 'Cross-chain bridge creation',
+  XChainModifyBridge: 'Cross-chain bridge modification',
+  XChainClaim: 'Cross-chain claim',
+  XChainCommit: 'Cross-chain commit',
+  XChainAddAccountCreateAttestation: 'Cross-chain account-create attestation',
+  XChainAddClaimAttestation: 'Cross-chain claim attestation',
+  XChainAccountCreateCommit: 'Cross-chain account-create commit'
+}
+
+export const getTransactionTypeLabel = (type) => {
+  if (!type) return '-'
+  return TRANSACTION_TYPE_LABELS[type] || type
+}
+
+export const getAccountTransactionTypeIcon = ({
+  txType,
+  isSource,
+  isRipplingPayment,
+  isSelfPayment,
+  isAccountDeleteTx,
+  isAmmTx,
+  nftViewerRole
+}) => {
+  const iconStyle = { fontSize: 16 }
+
+  if (isAccountDeleteTx) {
+    return <MdDeleteSweep style={{ ...iconStyle, color: '#111' }} title="Account removed" />
+  }
+
+  if (isRipplingPayment) {
+    return <MdCompareArrows style={{ ...iconStyle, color: '#9b59b6', transform: 'rotate(90deg)' }} title="Rippling" />
+  }
+
+  if (isSelfPayment) {
+    return <MdSwapVert style={{ ...iconStyle, color: '#2980ef' }} title="Swap" />
+  }
+
+  if (txType === 'Payment') {
+    return isSource ? (
+      <MdArrowUpward style={{ ...iconStyle, color: '#e74c3c' }} title="Sent payment" />
+    ) : (
+      <MdArrowDownward style={{ ...iconStyle, color: '#27ae60' }} title="Received payment" />
+    )
+  }
+
+  if (txType === 'AccountSet') {
+    return <CiSettings style={{ ...iconStyle, color: '#888' }} title="Account settings" />
+  }
+
+  if (txType === 'SetRegularKey') {
+    return <FiKey style={{ ...iconStyle, color: '#9b59b6' }} title="Set Regular Key" />
+  }
+
+  if (txType === 'SignerListSet') {
+    return <GiKeyring style={{ ...iconStyle, color: '#9b59b6' }} title="Signer List Set" />
+  }
+
+  if (txType === 'DelegateSet') {
+    return <FaUserShield style={{ ...iconStyle, color: '#1abc9c' }} title="Delegate Set" />
+  }
+
+  if (txType?.includes('Check')) {
+    return <FaMoneyCheckAlt style={{ ...iconStyle, color: '#27ae60' }} title="Check" />
+  }
+
+  if (txType?.includes('Escrow')) {
+    return <BsFillSafeFill style={{ ...iconStyle, color: '#2980ef' }} title="Escrow" />
+  }
+
+  if (isAmmTx) {
+    const ammColor =
+      txType === 'AMMDeposit'
+        ? '#e74c3c'
+        : txType === 'AMMWithdraw'
+          ? '#27ae60'
+          : txType === 'AMMVote'
+            ? '#9b59b6'
+            : '#2980ef'
+    return <MdPool style={{ ...iconStyle, color: ammColor }} title={txType} />
+  }
+
+  if (txType === 'OfferCancel') {
+    return <FaRegHandPaper style={{ ...iconStyle, color: '#e74c3c' }} title="Offer canceled" />
+  }
+
+  if (txType === 'OfferCreate') {
+    return <MdCompareArrows style={{ ...iconStyle, color: '#2980ef' }} title="Offer" />
+  }
+
+  if (txType?.includes('NFToken')) {
+    const isNftBuyer = nftViewerRole === 'buyer'
+    const isNftSeller = nftViewerRole === 'seller'
+    const nftColor =
+      txType === 'NFTokenBurn'
+        ? '#222'
+        : txType === 'NFTokenAcceptOffer'
+          ? isNftBuyer
+            ? '#27ae60'
+            : isNftSeller
+              ? '#e74c3c'
+              : isSource
+                ? '#e74c3c'
+                : '#27ae60'
+          : txType === 'NFTokenCancelOffer'
+            ? '#ff9800'
+            : '#9b59b6'
+    const nftTitle =
+      txType === 'NFTokenAcceptOffer' ? (isNftBuyer ? 'Received NFT' : isNftSeller ? 'Sent NFT' : 'NFT') : 'NFT'
+    return <RiNftFill style={{ ...iconStyle, color: nftColor }} title={nftTitle} />
+  }
+
+  if (txType?.includes('DID')) {
+    return <GiPassport style={{ ...iconStyle, color: '#2980ef' }} title="DID" />
+  }
+
+  if (txType?.includes('URIToken')) {
+    return <FaLink style={{ ...iconStyle, color: '#2980ef' }} title="URI Token" />
+  }
+
+  if (txType === 'Import') {
+    return <FiDownload style={{ ...iconStyle, color: '#27ae60' }} title="Import" />
+  }
+
+  if (txType === 'Remit') {
+    return <MdSend style={{ ...iconStyle, color: '#e67e22' }} title="Remit" />
+  }
+
+  if (txType === 'EnableAmendment') {
+    return <LuFileCheck2 style={{ ...iconStyle, color: '#2980ef' }} title="Enable Amendment" />
+  }
+
+  return null
 }
 
 export const errorCodeDescription = (code) => {
@@ -309,6 +506,7 @@ export const dappBySourceTag = (sourceTag) => {
   const dapps = {
     16: 'UniversalNFT.dev',
     111: 'Horizon',
+    101010: 'HEROES-exchange',
     589123: 'Katz Wallet',
     999999: 'Loansnap',
     1060223: 'Epic Task',
@@ -358,6 +556,7 @@ export const dappBySourceTag = (sourceTag) => {
     75437338: 'NGNC',
     75856879: 'Kudos Setler',
     77777777: 'Giving Universe',
+    79455288: 'QuantZilla Developer Console',
     80008000: 'Orchestra Finance',
     81818181: 'Cornermarket',
     83788309: 'OpenEden',
@@ -414,72 +613,135 @@ export const dappBySourceTag = (sourceTag) => {
   return dapps[sourceTag] || null
 }
 
-export const memoNode = (memos, type = 'tr') => {
+export const memoNode = (memos, type = 'tr', options = {}) => {
   let output = []
-  if (memos && Array.isArray(memos)) {
-    for (let j = 0; j < memos.length; j++) {
-      const memo = memos[j]
-      let memotype = memo?.type
-      let memopiece = memo?.data
-      let memoformat = memo?.format
+  const showOnlyHiddenMemos = type === 'additional'
+  const renderDetailRow = (key, label, content, alignTop = false) => (
+    <div key={key} className={'detail-row' + (alignTop ? ' tx-detail-change-row' : '')}>
+      <span>{label}</span>
+      <span>{content}</span>
+    </div>
+  )
 
-      const redFlags = ['airdrop', 'claim', 'reward', 'giveaway']
+  const normalizeMemo = (memo) => {
+    let memotype = memo?.type
+    let memopiece = memo?.data
+    let memoformat = memo?.format
+    let hiddenMemoPiece = null
+    const hadMemoPiece = Boolean(memopiece)
 
-      const memop = memopiece?.toString().toLowerCase() || ''
+    const redFlags = ['airdrop', 'claim', 'reward', 'giveaway']
+    const memop = memopiece?.toString().toLowerCase() || ''
 
-      if (redFlags.some((flag) => memop.includes(flag))) {
-        if (type === 'tr') {
-          memopiece = memop.replace(
-            /\b(https?:\/\/\S+|www\.\S+|[a-z0-9-]+\.(com|net|org|io|xyz|site|app|info|biz|ru|de|fr|es|co)(\/\S*)?)\b/gi,
-            '***hidden url***'
-          )
+    if (redFlags.some((flag) => memop.includes(flag))) {
+      if (type === 'tr') {
+        memopiece = memop.replace(
+          /\b(https?:\/\/\S+|www\.\S+|[a-z0-9-]+\.(com|net|org|io|xyz|site|app|info|biz|ru|de|fr|es|co)(\/\S*)?)\b/gi,
+          '***hidden url***'
+        )
+      } else {
+        return { skip: true }
+      }
+    }
+
+    if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
+      memopiece = memoformat
+    }
+
+    let clientname = ''
+
+    if (memopiece) {
+      if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
+        // keep it for testnetworks
+        hiddenMemoPiece = memopiece
+        clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
+        if (memopiece.includes(' faucet')) {
+          clientname = memopiece.replace(' faucet', '/faucet')
+        }
+        memopiece = ''
+      } else if (memopiece.includes('xahauexplorer.com')) {
+        hiddenMemoPiece = memopiece
+        clientname = memopiece
+        if (memopiece.includes(' faucet')) {
+          clientname = memopiece.replace(' faucet', '/faucet')
+        }
+        memopiece = ''
+      } else if (memopiece.includes('initiated via xmagnetic.org')) {
+        hiddenMemoPiece = memopiece
+        clientname = 'xmagnetic.org'
+        memopiece = ''
+      }
+
+      if (memotype) {
+        if (memotype.slice(0, 25) === '[https://xumm.community]-') {
+          memotype = memotype.slice(25)
+          clientname = 'xumm.community'
+        } else if (memotype.slice(0, 24) === '[https://xrpl.services]-') {
+          memotype = memotype.slice(24)
+          clientname = 'xrpl.services'
         } else {
-          continue
+          memotype = memotype.charAt(0).toUpperCase() + memotype.slice(1)
         }
       }
+    }
 
-      if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
-        memopiece = memoformat
+    return { memotype, memopiece, hiddenMemoPiece, clientname, hadMemoPiece, skip: false }
+  }
+
+  const isJwtMemo = (memopiece) =>
+    memopiece?.length > 100 && memopiece.split(' ').length === 1 && memopiece.includes('.')
+
+  const shouldRenderMemoLabel = (normalizedMemo) => {
+    if (!normalizedMemo || normalizedMemo.skip) return false
+    if (showOnlyHiddenMemos) return Boolean(normalizedMemo.hiddenMemoPiece)
+    if (!normalizedMemo.memopiece) return false
+    return !isJwtMemo(normalizedMemo.memopiece)
+  }
+
+  if (memos && Array.isArray(memos)) {
+    const normalizedMemos = memos.map(normalizeMemo)
+    const memoLabelTotal = normalizedMemos.filter(shouldRenderMemoLabel).length
+    let memoLabelIndex = 0
+
+    const getMemoLabel = () => {
+      memoLabelIndex += 1
+      return memoLabelTotal > 1 ? 'Memo ' + memoLabelIndex : 'Memo'
+    }
+
+    for (let j = 0; j < normalizedMemos.length; j++) {
+      const normalizedMemo = normalizedMemos[j]
+      if (normalizedMemo.skip) {
+        continue
       }
 
-      let clientname = ''
+      let { memotype, memopiece, hiddenMemoPiece, clientname, hadMemoPiece } = normalizedMemo
 
-      if (memopiece) {
-        if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
-          // keep it for testnetworks
-          clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
-          if (memopiece.includes(' faucet')) {
-            clientname = memopiece.replace(' faucet', '/faucet')
+      if (hadMemoPiece) {
+        if (showOnlyHiddenMemos) {
+          if (hiddenMemoPiece) {
+            const memoLabel = getMemoLabel()
+            output.push(
+              <tr key={'ah' + j}>
+                <TData>{memoLabel}</TData>
+                <TData>
+                  {memotype && memotype.toLowerCase() !== 'memo' && (
+                    <span className="bold">
+                      {memotype}
+                      <br />
+                    </span>
+                  )}
+                  {hiddenMemoPiece}
+                </TData>
+              </tr>
+            )
           }
-          memopiece = ''
-        } else if (memopiece.includes('xahauexplorer.com')) {
-          clientname = memopiece
-          if (memopiece.includes(' faucet')) {
-            clientname = memopiece.replace(' faucet', '/faucet')
-          }
-          memopiece = ''
-        } else if (memopiece.includes('initiated via xmagnetic.org')) {
-          clientname = 'xmagnetic.org'
-          memopiece = ''
-        }
-
-        if (memotype) {
-          if (memotype.slice(0, 25) === '[https://xumm.community]-') {
-            memotype = memotype.slice(25)
-            clientname = 'xumm.community'
-          } else if (memotype.slice(0, 24) === '[https://xrpl.services]-') {
-            memotype = memotype.slice(24)
-            clientname = 'xrpl.services'
-          } else {
-            memotype = memotype.charAt(0).toUpperCase() + memotype.slice(1)
-          }
-        }
-
-        if (decodeJsonMemo(memopiece)) {
+        } else if (decodeJsonMemo(memopiece)) {
+          const decodedMemo = decodeJsonMemo(memopiece)
+          const memoLabel = getMemoLabel()
           if (type === 'tr') {
             output.push(
               <tr key={'a2' + j}>
-                <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
+                <TData>{memoLabel}</TData>
                 <TData>
                   {memotype && (
                     <>
@@ -487,14 +749,31 @@ export const memoNode = (memos, type = 'tr') => {
                       <br />
                     </>
                   )}
-                  {decodeJsonMemo(memopiece)}
+                  {decodedMemo}
                 </TData>
               </tr>
+            )
+          } else if (type === 'detail') {
+            output.push(
+              renderDetailRow(
+                'a2' + j,
+                memoLabel + ':',
+                <span className="brake">
+                  {memotype && (
+                    <>
+                      <span className="bold">{memotype}</span>
+                      <br />
+                    </>
+                  )}
+                  {decodedMemo}
+                </span>,
+                true
+              )
             )
           } else {
             output.push(
               <React.Fragment key={'a2' + j}>
-                Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:
+                {memoLabel}:
                 <br />
                 {memotype && (
                   <>
@@ -531,6 +810,31 @@ export const memoNode = (memos, type = 'tr') => {
                   </tr>
                 </React.Fragment>
               )
+            } else if (type === 'detail') {
+              output.push(
+                <React.Fragment key={'jwt' + j}>
+                  {renderDetailRow(
+                    'jwt-h-' + j,
+                    'JWT Header:',
+                    <span className="brake">{decodeJsonMemo(pieces[0], { code: 'base64' })}</span>,
+                    true
+                  )}
+                  {renderDetailRow(
+                    'jwt-p-' + j,
+                    'JWT Payload:',
+                    <span className="brake">{decodeJsonMemo(pieces[1], { code: 'base64' })}</span>,
+                    true
+                  )}
+                  {renderDetailRow(
+                    'jwt-s-' + j,
+                    'JWT Signature:',
+                    <span className="brake">
+                      <pre>{pieces[2]}</pre>
+                    </span>,
+                    true
+                  )}
+                </React.Fragment>
+              )
             } else {
               output.push(
                 <React.Fragment key={'jwt' + j}>
@@ -552,9 +856,10 @@ export const memoNode = (memos, type = 'tr') => {
           } else {
             if (memopiece) {
               if (type === 'tr') {
+                const memoLabel = getMemoLabel()
                 output.push(
                   <tr key={'a1' + j}>
-                    <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
+                    <TData>{memoLabel}</TData>
                     <TData>
                       {memotype && memotype.toLowerCase() !== 'memo' && (
                         <span className="bold">
@@ -566,11 +871,29 @@ export const memoNode = (memos, type = 'tr') => {
                     </TData>
                   </tr>
                 )
+              } else if (type === 'detail') {
+                const memoLabel = getMemoLabel()
+                output.push(
+                  renderDetailRow(
+                    'a1' + j,
+                    memoLabel + ':',
+                    <span className="brake">
+                      {memotype && memotype.toLowerCase() !== 'memo' && (
+                        <>
+                          <span className="bold">{memotype}</span>
+                          <br />
+                        </>
+                      )}
+                      {memopiece}
+                    </span>,
+                    true
+                  )
+                )
               } else {
+                const memoLabel = getMemoLabel()
                 output.push(
                   <span key={'a1' + j} className="brake">
-                    Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:{' '}
-                    {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
+                    {memoLabel}: {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
                     {memopiece}
                     <br />
                   </span>
@@ -580,7 +903,7 @@ export const memoNode = (memos, type = 'tr') => {
           }
         }
 
-        if (clientname) {
+        if (clientname && !showOnlyHiddenMemos && options?.includeClientWeb !== false) {
           if (type === 'tr') {
             output.push(
               <tr key="a3">
@@ -591,6 +914,21 @@ export const memoNode = (memos, type = 'tr') => {
                   </a>
                 </TData>
               </tr>
+            )
+          } else if (type === 'detail') {
+            output.push(
+              renderDetailRow(
+                'a3-' + j,
+                'Client web:',
+                <a
+                  href={'https://' + clientname}
+                  rel="nofollow"
+                  onClick={(event) => event.stopPropagation()}
+                  className="blue"
+                >
+                  {clientname}
+                </a>
+              )
             )
           } else {
             output.push(

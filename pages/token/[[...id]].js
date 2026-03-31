@@ -11,7 +11,8 @@ import {
   shortNiceNumber,
   fullNiceNumber,
   AddressWithIconFilled,
-  addressUsernameOrServiceLink
+  addressUsernameOrServiceLink,
+  CurrencyWithIconInline
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -340,6 +341,17 @@ export default function TokenPage({
       {token?.currencyDetails?.currency} issued by {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
     </>
   )
+  const isLpToken = token?.currencyDetails?.type === 'lp_token'
+  const lpAmmId = token?.currencyDetails?.ammID
+  const lpAsset = token?.currencyDetails?.asset
+  const lpAsset2 = token?.currencyDetails?.asset2
+  const renderLpAsset = (asset) => {
+    if (!asset) return ''
+    if (asset?.currency === nativeCurrency) {
+      return <span className="bold">{nativeCurrency}</span>
+    }
+    return <CurrencyWithIconInline token={asset} link={true} showIssuer={true} />
+  }
 
   return (
     <>
@@ -396,6 +408,24 @@ export default function TokenPage({
                   <td>Currency</td>
                   <td>{token?.currencyDetails?.currency}</td>
                 </tr>
+                {isLpToken && (
+                  <tr>
+                    <td>AMM pool</td>
+                    <td>{lpAmmId ? <Link href={`/amm/${lpAmmId}`}>View pool</Link> : '-'}</td>
+                  </tr>
+                )}
+                {isLpToken && (
+                  <tr>
+                    <td>Asset 1</td>
+                    <td>{renderLpAsset(lpAsset)}</td>
+                  </tr>
+                )}
+                {isLpToken && (
+                  <tr>
+                    <td>Asset 2</td>
+                    <td>{renderLpAsset(lpAsset2)}</td>
+                  </tr>
+                )}
                 {token?.name && (
                   <tr>
                     <td>Name</td>

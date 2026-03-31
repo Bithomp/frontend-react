@@ -2,7 +2,6 @@ import { Buffer } from 'buffer'
 import dayjs from 'dayjs'
 import * as durationPlugin from 'dayjs/plugin/duration'
 import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Trans } from 'next-i18next'
 
@@ -12,7 +11,6 @@ import { mpUrl } from './nft'
 import {
   avatarServer,
   devNet,
-  isAmountInNativeCurrency,
   nativeCurrency,
   nativeCurrenciesImages,
   stripText,
@@ -73,12 +71,22 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
-const TokenImage = ({ token }) => {
+export const TokenImage = ({ token }) => {
+  const size = 16
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="8" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+      ;(
+     </text>
+   </svg>`
+  )}`
+
   return (
     <div
       style={{
-        height: 16,
-        width: 16,
+        height: size,
+        width: size,
         display: 'inline-block',
         overflow: 'hidden',
         borderRadius: '50%',
@@ -91,11 +99,10 @@ const TokenImage = ({ token }) => {
       <img
         src={tokenImageSrc(token)}
         alt="token"
-        height={16}
-        width={16}
+        height={size}
+        width={size}
         style={{
-          objectFit: 'cover',
-          transform: !token?.issuerDetails?.service ? 'scale(1.25)' : 'scale(1)'
+          objectFit: 'cover'
         }}
         onError={(e) => {
           e.target.onerror = null
@@ -153,52 +160,71 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
         ? currencyDetails.currency
         : niceCurrency(currency)
 
+  const iconNode = doubleIcon ? (
+    <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
+      {/* back coin */}
+      <img
+        alt="asset"
+        src={assetImageUrl}
+        width={22}
+        height={22}
+        style={{
+          position: 'absolute',
+          top: 1,
+          left: 1,
+          borderRadius: '50%',
+          objectFit: 'cover',
+          backgroundColor: '#fff',
+          border: '1px solid #fff',
+          boxSizing: 'border-box'
+        }}
+      />
+      {/* front coin */}
+      <img
+        alt="asset 2"
+        src={asset2ImageUrl}
+        width={22}
+        height={22}
+        style={{
+          position: 'absolute',
+          bottom: 1,
+          left: 13, // slight shift right to overlap
+          borderRadius: '50%',
+          objectFit: 'cover',
+          zIndex: 2,
+          backgroundColor: '#fff',
+          border: '1px solid #fff',
+          boxSizing: 'border-box'
+        }}
+      />
+    </div>
+  ) : (
+    <img
+      alt="avatar"
+      src={imageUrl}
+      width="35"
+      height="35"
+      style={{
+        borderRadius: '50%',
+        objectFit: 'cover',
+        backgroundColor: '#fff',
+        border: '1px solid #fff',
+        boxSizing: 'border-box',
+        verticalAlign: 'middle'
+      }}
+    />
+  )
+
+  if (options?.iconOnly) {
+    return iconNode
+  }
+
   return (
     <>
       <table style={{ minWidth: 126 }}>
         <tbody>
           <tr className="no-border">
-            <td style={{ padding: 0, width: 35, height: 35 }}>
-              {doubleIcon ? (
-                <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
-                  {/* back coin */}
-                  <Image
-                    alt="asset"
-                    src={assetImageUrl}
-                    width={22}
-                    height={22}
-                    style={{
-                      position: 'absolute',
-                      top: 1,
-                      left: 1,
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      backgroundColor: '#fff',
-                      boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
-                    }}
-                  />
-                  {/* front coin */}
-                  <Image
-                    alt="asset 2"
-                    src={asset2ImageUrl}
-                    width={22}
-                    height={22}
-                    style={{
-                      position: 'absolute',
-                      bottom: 1,
-                      left: 13, // slight shift right to overlap
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      zIndex: 2,
-                      backgroundColor: '#fff',
-                      boxShadow: '0 0 0 1px #fff'
-                    }}
-                  />
-                </div>
-              ) : (
-                <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
-              )}
-            </td>
+            <td style={{ padding: 0, width: 35, height: 35 }}>{iconNode}</td>
             <td className="left" style={{ padding: '0 0 0 5px' }}>
               {disableTokenLink ? <span className="bold">{tokenText}</span> : <LinkToken token={token} />}
               {copy && (
@@ -226,15 +252,35 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
   )
 }
 
-export const CurrencyWithIconInline = ({ token, copy, link }) => {
+export const CurrencyWithIconInline = ({ token, copy, link, linkIcon, showIssuer = false }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
   const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
 
+  if (linkIcon) {
+    const tokenUrl = token.issuer ? `/token/${token.issuer}/${token.currency}` : null
+    return (
+      <>
+        <TokenImage token={token} />
+        <strong>{currencyText}</strong>
+        {showIssuer && token?.issuer && <> ({addressUsernameOrServiceLink(token, 'issuer', { short: 6 })})</>}
+        {tokenUrl && (
+          <Link href={tokenUrl} className="inline-link-icon tooltip" style={{ marginLeft: 3 }}>
+            <LinkIcon />
+            <span className="tooltiptext no-brake">Token page</span>
+          </Link>
+        )}
+      </>
+    )
+  }
+
   return (
     <>
       <TokenImage token={token} />
-      {link && !lp_token ? <LinkToken token={token} /> : currencyText}
+      {link && !lp_token ? <LinkToken token={token} showIssuer={showIssuer} /> : currencyText}
+      {!link && showIssuer && token?.issuer && (
+        <> ({serviceUsernameOrAddressText(token, 'issuer') || shortHash(token.issuer, 6)})</>
+      )}
       {copy && (
         <>
           {' '}
@@ -273,13 +319,12 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
           }}
         >
           <img
-            src={avatarServer + address || placeholder}
+            src={avatarServer + address + '?hashIconZoom=12' || placeholder}
             alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
             height={size}
             width={size}
             style={{
-              objectFit: 'cover',
-              transform: !data?.[name?.toLowerCase() + 'Details']?.service ? 'scale(1.25)' : 'scale(1)'
+              objectFit: 'cover'
             }}
             onError={(e) => {
               e.target.onerror = null
@@ -288,22 +333,43 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
           />
         </div>
       </Link>
-      {addressUsernameOrServiceLink(data, name, options)}
+      {options?.showAddress ? (
+        <Link href={'/account/' + address}>{shortAddress(address, options?.short || 6)}</Link>
+      ) : (
+        addressUsernameOrServiceLink(data, name, options)
+      )}
     </span>
   )
 }
 
 export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = avatarServer + address
-  if (!address) {
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  }
+  let imageUrl = address ? avatarServer + address + '?hashIconZoom=12' : nativeCurrenciesImages[nativeCurrency]
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
         <tr className="no-border">
           <td style={{ padding: 0, width: 35, height: 35 }}>
-            <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+            <div
+              style={{
+                width: 35,
+                height: 35,
+                borderRadius: '50%',
+                overflow: 'hidden',
+                display: 'inline-block',
+                verticalAlign: 'middle',
+                lineHeight: 0
+              }}
+            >
+              <img
+                alt="avatar"
+                src={imageUrl}
+                width="35"
+                height="35"
+                style={{
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
           </td>
           <td style={{ padding: '0 0 0 5px' }}>{children}</td>
         </tr>
@@ -331,39 +397,77 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
   )
 }
 
-export const nativeCurrencyToFiat = (params) => {
-  if (!isAmountInNativeCurrency(params?.amount)) return ''
-  return amountToFiat(params)
-}
-
-export const amountToFiat = (params) => {
+// Universal fiat helper: works for both native currency and IOU/MPT tokens.
+// For token amounts, uses the pre-computed valueInConvertCurrencies embedded in the
+// amount object (provided by the API) when available, or falls back to tokenFiatRate.
+export const tokenToFiat = (params) => {
   if (devNet) return ''
-  const { amount, selectedCurrency, fiatRate } = params
-  if (!amount || amount === '0' || !selectedCurrency || !fiatRate) return ''
+  const { amount, selectedCurrency, fiatRate, tokenFiatRate } = params
+  if (!amount || amount === '0' || !selectedCurrency) return ''
 
+  const currencyKey = selectedCurrency.toLowerCase()
   let currency = ''
   let initialAmount
   let calculatedAmount
+  let effectiveFiatRate
+  let precomputedFiat = null // pre-computed fiat total from API (for tokens)
 
   if (!amount?.currency) {
-    // drops
+    // native currency in drops (string or number)
+    if (!fiatRate) return ''
     initialAmount = amount / 1000000
     currency = nativeCurrency
+    effectiveFiatRate = fiatRate
   } else {
     initialAmount = amount.value
     currency = niceCurrency(amount.currency)
+    if (!amount.issuer && !amount.mpt_issuance_id) {
+      // native currency as an amount object e.g. { currency: 'XRP', value: '1.5' }
+      if (!fiatRate) return ''
+      effectiveFiatRate = fiatRate
+    } else {
+      // LP token details can include token value + native spot price.
+      // Convert token units to native and then apply fiat rate.
+      const amountValue = Number(initialAmount)
+      const priceInNative = Number(amount?.priceNativeCurrencySpot)
+      if (Number.isFinite(amountValue) && Number.isFinite(priceInNative) && fiatRate) {
+        precomputedFiat = amountValue * priceInNative * fiatRate
+        effectiveFiatRate = priceInNative * fiatRate
+      }
+
+      // IOU / MPT token: use the pre-computed value embedded in the amount when available
+      const embedded = precomputedFiat === null ? amount.valueInConvertCurrencies?.[currencyKey] : undefined
+      if (embedded !== undefined) {
+        precomputedFiat = Number(embedded)
+        const absTokenAmount = Math.abs(Number(initialAmount) || 0)
+        // derive per-unit rate for the tooltip
+        effectiveFiatRate = absTokenAmount > 0 ? Math.abs(precomputedFiat) / absTokenAmount : 0
+      } else if (precomputedFiat === null && tokenFiatRate) {
+        effectiveFiatRate = tokenFiatRate
+      } else if (precomputedFiat === null) {
+        return ''
+      } else {
+        const absTokenAmount = Math.abs(Number(initialAmount) || 0)
+        if (!effectiveFiatRate && absTokenAmount > 0) {
+          effectiveFiatRate = Math.abs(precomputedFiat) / absTokenAmount
+        }
+      }
+    }
   }
 
   const absolute = Math.abs(initialAmount)
 
   if (params.absolute) {
     initialAmount = absolute
+    if (precomputedFiat !== null) precomputedFiat = Math.abs(precomputedFiat)
   }
 
+  const fiatAmount = precomputedFiat !== null ? precomputedFiat : initialAmount * effectiveFiatRate
+
   if (absolute > 1) {
-    calculatedAmount = shortNiceNumber(initialAmount * fiatRate, 2, 1, selectedCurrency)
+    calculatedAmount = shortNiceNumber(fiatAmount, 2, 1, selectedCurrency)
   } else {
-    calculatedAmount = niceNumber(initialAmount * fiatRate, null, selectedCurrency, 6)
+    calculatedAmount = niceNumber(fiatAmount, null, selectedCurrency, 6)
   }
 
   if (params.asText) {
@@ -378,7 +482,7 @@ export const amountToFiat = (params) => {
         className={'tooltiptext no-brake' + (params?.tooltipDirection ? ' ' + params.tooltipDirection : '')}
         suppressHydrationWarning
       >
-        1 {currency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
+        1 {currency} = {shortNiceNumber(effectiveFiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>
   )
@@ -777,31 +881,6 @@ export const percentFormat = (small, big) => {
   return '(' + Math.floor(((small * 100) / big) * 100) / 100 + '%)'
 }
 
-export const trAmountWithGateway = ({ amount, name, icon }) => {
-  if (!amount && amount !== 0) return ''
-  return (
-    <tr>
-      <td>{name}</td>
-      <td>
-        {amountFormatNode(amount)}
-        {icon ? (
-          <>
-            {amount?.issuer && <AddressWithIconInline data={amount} name="issuer" options={{ short: true }} />}
-            {amount?.counterparty && (
-              <AddressWithIconInline data={amount} name="counterparty" options={{ short: true }} />
-            )}
-          </>
-        ) : (
-          <>
-            {amount?.issuer && <> ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</>}
-            {amount?.counterparty && <> ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})</>}
-          </>
-        )}
-      </td>
-    </tr>
-  )
-}
-
 export const amountFormat = (amount, options = {}) => {
   if (!amount && amount !== '0' && amount !== 0) {
     return ''
@@ -868,14 +947,14 @@ export const amountFormat = (amount, options = {}) => {
     showValue = '+' + showValue
   }
 
+  const amountText = [showValue, valuePrefix].filter(Boolean).join(' ')
+
   if (options.tooltip) {
     return (
       <span suppressHydrationWarning>
         {tokenImage}
-        <StyleAmount>
-          {showValue} {valuePrefix}{' '}
-        </StyleAmount>
-        {type === nativeCurrency ? (
+        <StyleAmount>{amountText} </StyleAmount>
+        {options.noCurrency ? null : type === nativeCurrency ? (
           <StyleAmount>{textCurrency}</StyleAmount>
         ) : (
           <span className="tooltip">
@@ -891,11 +970,9 @@ export const amountFormat = (amount, options = {}) => {
     return (
       <>
         {tokenImage}
-        <StyleAmount>
-          {showValue} {valuePrefix} {textCurrency}
-        </StyleAmount>
+        <StyleAmount>{amountText}</StyleAmount>
         {issuer ? (
-          <span className="no-inherit">
+          <span className="no-inherit no-brake">
             (
             {amount.currencyDetails?.type === 'lp_token' ? (
               <LinkAmm ammId={issuer} hash={6} style={{ fontWeight: 400 }} />
@@ -916,11 +993,13 @@ export const amountFormat = (amount, options = {}) => {
     return (
       <span className="no-brake">
         {tokenImage}
-        <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
+        <StyleAmount>
+          {amountText} {textCurrency}
+        </StyleAmount>
       </span>
     )
   } else {
-    return showValue + ' ' + valuePrefix + ' ' + textCurrency
+    return amountText + ' ' + textCurrency
   }
 }
 
@@ -1093,6 +1172,8 @@ export const capitalize = (word) => {
 }
 
 export const timeFromNow = (timestamp, i18n, type) => {
+  if (timestamp === null || typeof timestamp === 'undefined' || timestamp === '') return ''
+
   let lang = 'en'
   if (i18n.language === 'default' || i18n.language === 'undefined') {
     lang = 'en'
@@ -1101,11 +1182,30 @@ export const timeFromNow = (timestamp, i18n, type) => {
   }
   dayjs.locale(lang)
 
-  if (type === 'ripple') {
-    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  let parsedTime = null
+
+  if (typeof timestamp === 'number') {
+    let normalizedTimestamp = timestamp
+    if (type === 'ripple') {
+      normalizedTimestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
+    parsedTime = normalizedTimestamp > 1e12 ? dayjs(normalizedTimestamp) : dayjs.unix(normalizedTimestamp)
+  } else if (typeof timestamp === 'string') {
+    const numericTimestamp = Number(timestamp)
+    if (Number.isFinite(numericTimestamp)) {
+      let normalizedTimestamp = numericTimestamp
+      if (type === 'ripple') {
+        normalizedTimestamp += 946684800
+      }
+      parsedTime = normalizedTimestamp > 1e12 ? dayjs(normalizedTimestamp) : dayjs.unix(normalizedTimestamp)
+    } else {
+      parsedTime = dayjs(timestamp)
+    }
+  } else {
+    parsedTime = dayjs(timestamp)
   }
 
-  return <span suppressHydrationWarning>{dayjs(timestamp * 1000, 'unix').fromNow()}</span>
+  return <span suppressHydrationWarning>{parsedTime?.isValid() ? parsedTime.fromNow() : '-'}</span>
 }
 
 export const fullDateAndTime = (timestamp, type = null, options) => {
@@ -1211,7 +1311,94 @@ export const niceNumber = (n, fractionDigits = null, currency = null, maxFractio
       n = Number(n)
     }
   }
+
+  const toSubscript = (value) => {
+    const subscriptDigits = {
+      0: '₀',
+      1: '₁',
+      2: '₂',
+      3: '₃',
+      4: '₄',
+      5: '₅',
+      6: '₆',
+      7: '₇',
+      8: '₈',
+      9: '₉'
+    }
+
+    return String(value)
+      .split('')
+      .map((digit) => subscriptDigits[digit] || digit)
+      .join('')
+  }
+
+  const formatTinyBase = (value, significantDigits = 2) => {
+    if (!Number.isFinite(value) || value === 0) return '0'
+
+    const abs = Math.abs(value)
+    const exponentMatch = abs.toExponential().match(/e-(\d+)$/)
+    const leadingZeroes = exponentMatch ? Math.max(Number(exponentMatch[1]) - 1, 0) : 0
+    if (leadingZeroes <= 0) return null
+
+    const fixedPrecision = Math.min(Math.max(leadingZeroes + significantDigits + 2, 12), 20)
+    const decimalPart = abs.toFixed(fixedPrecision).split('.')[1] || ''
+    let significant = decimalPart.slice(leadingZeroes, leadingZeroes + significantDigits)
+    significant = significant.replace(/^0+/, '').replace(/0+$/, '')
+    if (!significant) significant = '1'
+
+    return `0.0${toSubscript(leadingZeroes)}${significant}`
+  }
+
+  const formatTinyCurrency = (value, currencyCode, tinyBase, digits = 2) => {
+    try {
+      const formatter = new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: currencyCode.toUpperCase(),
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      })
+
+      const parts = formatter.formatToParts(value)
+      let inserted = false
+      const out = parts
+        .map((part) => {
+          if (part.type === 'integer') {
+            if (!inserted) {
+              inserted = true
+              return tinyBase
+            }
+            return ''
+          }
+          if (part.type === 'fraction' || part.type === 'decimal' || part.type === 'group') {
+            return ''
+          }
+          return part.value
+        })
+        .join('')
+
+      return out || `${currencyCode.toUpperCase()} ${tinyBase}`
+    } catch {
+      return `${currencyCode.toUpperCase()} ${tinyBase}`
+    }
+  }
+
   if (n || n === 0 || n === '0') {
+    const num = Number(n)
+    const digits = maxFractionDigits || fractionDigits || 0
+    if (Number.isFinite(num) && num !== 0 && digits > 0) {
+      const factor = Math.pow(10, digits)
+      const roundedDown = Math.floor(Math.abs(num) * factor) / factor
+      if (Math.abs(num) < 1 && roundedDown === 0) {
+        const tinyBase = formatTinyBase(num, Math.max(digits, 2))
+        if (tinyBase) {
+          if (currency) {
+            return formatTinyCurrency(num, currency, tinyBase, digits)
+          }
+          return num < 0 ? `-${tinyBase}` : tinyBase
+        }
+      }
+    }
+
     let options = {
       maximumFractionDigits: maxFractionDigits || fractionDigits || 0,
       minimumFractionDigits: fractionDigits || 0
@@ -1270,22 +1457,131 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
       smallNumberFractionDigits = 3
     }
   }
+
+  const toSubscript = (value) => {
+    const subscriptDigits = {
+      0: '₀',
+      1: '₁',
+      2: '₂',
+      3: '₃',
+      4: '₄',
+      5: '₅',
+      6: '₆',
+      7: '₇',
+      8: '₈',
+      9: '₉'
+    }
+
+    return String(value)
+      .split('')
+      .map((digit) => subscriptDigits[digit] || digit)
+      .join('')
+  }
+
+  const formatTinyNumber = (value, significantDigits = 2) => {
+    if (!Number.isFinite(value) || value <= 0) return null
+
+    const exponentMatch = value.toExponential().match(/e-(\d+)$/)
+    const leadingZeroes = exponentMatch ? Math.max(Number(exponentMatch[1]) - 1, 0) : 0
+    if (leadingZeroes <= 0) return null
+
+    const fixedPrecision = Math.min(Math.max(leadingZeroes + significantDigits + 2, 12), 20)
+    const decimalPart = value.toFixed(fixedPrecision).split('.')[1] || ''
+    let significant = decimalPart.slice(leadingZeroes, leadingZeroes + significantDigits)
+
+    significant = significant.replace(/^0+/, '').replace(/0+$/, '')
+    if (!significant) {
+      significant = '1'
+    }
+
+    return `0.0${toSubscript(leadingZeroes)}${significant}`
+  }
+
+  const formatTinyCurrency = (value, currencyCode, significantDigits = 2) => {
+    const tinyNumber = formatTinyNumber(value, significantDigits)
+    if (!tinyNumber || !currencyCode) return tinyNumber
+
+    try {
+      const formatter = new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: currencyCode.toUpperCase(),
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+
+      const parts = formatter.formatToParts(0)
+      const hasIntegerPart = parts.some((part) => part.type === 'integer')
+      if (!hasIntegerPart) {
+        return `${currencyCode.toUpperCase()} ${tinyNumber}`
+      }
+
+      let numberInserted = false
+      const formatted = parts
+        .map((part) => {
+          if (part.type === 'integer') {
+            if (!numberInserted) {
+              numberInserted = true
+              return tinyNumber
+            }
+            return ''
+          }
+
+          if (part.type === 'fraction' || part.type === 'decimal' || part.type === 'group') {
+            return ''
+          }
+
+          return part.value
+        })
+        .join('')
+
+      return formatted || `${currencyCode.toUpperCase()} ${tinyNumber}`
+    } catch {
+      return `${currencyCode.toUpperCase()} ${tinyNumber}`
+    }
+  }
+
+  const appendMagnitudeSuffix = (formattedValue, magnitudeSuffix, currencyCode) => {
+    if (!formattedValue) return formattedValue
+
+    const code = currencyCode?.toUpperCase?.()
+    if (code) {
+      const trailingCodeRegex = new RegExp(`\\s*${code}$`)
+      if (trailingCodeRegex.test(formattedValue)) {
+        return formattedValue.replace(trailingCodeRegex, `${magnitudeSuffix} ${code}`)
+      }
+    }
+
+    return formattedValue + magnitudeSuffix
+  }
+
   let output = ''
-  if (n > 999999999999) {
-    output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T'
+  if (n > 999999999999999) {
+    // For numbers > 999 trillion, use scientific notation to avoid huge strings
+    output = n.toExponential(2)
+  } else if (n > 999999999999) {
+    output = appendMagnitudeSuffix(niceNumber(n / 1000000000000, largeNumberFractionDigits, currency), 'T', currency)
   } else if (n > 999999999) {
-    output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B'
+    output = appendMagnitudeSuffix(niceNumber(n / 1000000000, largeNumberFractionDigits, currency), 'B', currency)
   } else if (n > 999999) {
-    output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
+    output = appendMagnitudeSuffix(niceNumber(n / 1000000, largeNumberFractionDigits, currency), 'M', currency)
   } else if (n > 9999) {
-    output = niceNumber(n / 1000, largeNumberFractionDigits, currency) + 'K'
+    output = appendMagnitudeSuffix(niceNumber(n / 1000, largeNumberFractionDigits, currency), 'K', currency)
   } else if (n > 999) {
     output = niceNumber(Math.floor(n), 0, currency)
   } else if (n === 0) {
     output = niceNumber(0, 0, currency)
   } else {
     const pow = Math.pow(10, smallNumberFractionDigits)
-    output = niceNumber(Math.floor(n * pow) / pow, smallNumberFractionDigits, currency)
+    const roundedDownValue = Math.floor(n * pow) / pow
+    const shouldUseTinyFormat = n < 1 && roundedDownValue === 0
+
+    if (shouldUseTinyFormat) {
+      output = currency
+        ? formatTinyCurrency(n, currency, Math.max(smallNumberFractionDigits, 2))
+        : formatTinyNumber(n, Math.max(smallNumberFractionDigits, 2))
+    } else {
+      output = niceNumber(roundedDownValue, smallNumberFractionDigits, currency)
+    }
   }
   return beforeNumber + output
 }

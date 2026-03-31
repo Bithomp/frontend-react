@@ -338,7 +338,7 @@ export default function NftVolumes({
             { short: isMobile }
           )}
         </h1>
-        <div className="tabs-inline">
+        <div className="tabs-inline" style={{ marginBottom: 20 }}>
           {windowWidth < 720 && <br />}
           {t('table.period')}
           {windowWidth < 720 && <br />}

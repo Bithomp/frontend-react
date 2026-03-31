@@ -18,3 +18,27 @@ export const fetchHistoricalRate = async ({ timestamp, selectedCurrency, setPage
     setPageFiatRate(response.data[selectedCurrency])
   }
 }
+
+// Fetch the current fiat rate for an IOU/trustline token.
+// setRate receives the rate as a number (how many selectedCurrency per 1 token).
+export const fetchCurrentTokenFiatRate = async ({ issuer, currency, selectedCurrency, setRate }) => {
+  if (devNet || !issuer || !currency || !selectedCurrency) return
+  const response = await axios(
+    `v2/trustlines/token/${issuer}/${encodeURIComponent(currency)}/rate/current?convertCurrencies=${selectedCurrency}`
+  ).catch(() => null)
+  const rate = response?.data?.[selectedCurrency.toLowerCase()]
+  if (rate !== undefined) setRate(Number(rate))
+}
+
+// Fetch the historical fiat rate for an IOU/trustline token at a given point in time.
+// date can be a Unix timestamp in seconds (number) or an ISO string / Date object.
+// setRate receives the rate as a number (how many selectedCurrency per 1 token).
+export const fetchHistoricalTokenFiatRate = async ({ issuer, currency, date, selectedCurrency, setRate }) => {
+  if (devNet || !issuer || !currency || !date || !selectedCurrency) return
+  const timestamp = typeof date === 'number' ? date : Math.floor(new Date(date).getTime() / 1000)
+  const response = await axios(
+    `v2/trustlines/token/${issuer}/${encodeURIComponent(currency)}/rate/history?date=${timestamp}&convertCurrencies=${selectedCurrency}`
+  ).catch(() => null)
+  const rate = response?.data?.[selectedCurrency.toLowerCase()]
+  if (rate !== undefined) setRate(Number(rate))
+}

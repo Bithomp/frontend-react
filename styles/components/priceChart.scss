@@ -1,27 +1,14 @@
-.chart-toolbar {
-  position: relative;
-  margin-bottom: -23px;
-  margin-left: 68px;
-  z-index: 1;
-  button {
-    cursor: pointer;
-    margin-right: 5px;
-    background-color: var(--accent-icon);
-    border: 0px;
-    color: var(--text-contrast);
-    transition: background-color 0.5s;
-    &.active {
-      font-weight: bold;
-      background-color: var(--unaccent-icon);
-    }
-    &:hover {
-      background-color: var(--unaccent-icon);
-    }
-  }
-  @media only screen and (max-width: 650px) {
-    margin-bottom: 20px;
-    margin-left: unset;
-    text-align: center;
+.home-price-chart {
+  margin-top: -20px;
+  margin-left: -12px;
+  margin-bottom: -22px;
+  margin-right: -5px;
+
+  @media (max-width: 767px) {
+    margin-top: -12px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: -14px;
   }
 }
 

@@ -13,12 +13,13 @@ import TokenSelector from '../../components/UI/TokenSelector'
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
   const { period, sale, list, currency, currencyIssuer, sortCurrency, extendedStats } = query
+  const defaultList = list || (xahauNetwork ? 'issuers' : 'collections')
   return {
     props: {
       extendedStatsQuery: extendedStats || true,
       periodQuery: period || 'month',
       sale: sale || 'secondary',
-      list: list || (xahauNetwork ? 'issuers' : 'collections'),
+      list: defaultList,
       currencyQuery: currency || '',
       currencyIssuerQuery: currencyIssuer || '',
       sortCurrency: sortCurrency || '',
@@ -254,9 +255,9 @@ export default function NftVolumes({
       '-volumes-extended?list=' +
       listTab +
       '&convertCurrencies=' +
-      convertCurrency +
-      '&sortCurrency=' +
       convertCurrency
+
+    apiUrl += '&sortCurrency=' + convertCurrency
 
     if ((listTab === 'issuers' || listTab === 'collections') && extendedStats) {
       apiUrl += '&floorPrice=true&statistics=true'
@@ -392,19 +393,6 @@ export default function NftVolumes({
               volumesInConvertCurrencies
             })
           }
-
-          list = list.sort(function (a, b) {
-            if (a.volumesInConvertCurrencies[convertCurrency] === null) return 1
-            if (b.volumesInConvertCurrencies[convertCurrency] === null) return -1
-            if (a.volumesInConvertCurrencies[convertCurrency] === b.volumesInConvertCurrencies[convertCurrency])
-              return 0
-            return parseFloat(a.volumesInConvertCurrencies[convertCurrency]) <
-              parseFloat(b.volumesInConvertCurrencies[convertCurrency])
-              ? 1
-              : -1
-          })
-
-          setData(list)
 
           if (!loadMoreRequest) {
             setData(list)
@@ -921,7 +909,7 @@ export default function NftVolumes({
       />
 
       <h1 className="center">{t('header', { ns: 'nft-volumes' }) + ' '}</h1>
-      <div className="tabs-inline">
+      <div className="tabs-inline" style={{ marginBottom: 20 }}>
         <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name="list" />
       </div>
 

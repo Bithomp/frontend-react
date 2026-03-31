@@ -1,4 +1,11 @@
 {
+  "common": {
+    "viewAll": "Lihat Semua",
+    "noData": "Tidak ada data tersedia",
+    "addresses": "alamat",
+    "holders": "pemegang",
+    "sales": "penjualan"
+  },
   "menu": {
     "tokens": "Token",
     "amm": {
@@ -48,7 +55,7 @@
       "distribution": "Distribusi {{currency}}",
       "last-ledger-information": "Informasi Ledger Terbaru",
       "last-ledger-transactions": "Transaksi Ledger Terbaru",
-      "top-transfers-24h": "Transfer terbesar (24j)",
+      "top-transfers-24h": "Transfer terbesar",
       "verified-domains": "Domain yang Terverifikasi",
       "validators": "Validasi",
       "amendments": "Perubahan",
@@ -161,12 +168,14 @@
     }
   },
   "home": {
-    "title": "Pencarian {{explorerName}} | Telusuri {{nativeCurrency}} Ledger",
-    "description": "Grafik harga {{nativeCurrency}} | Statistik {{explorerName}} | Penjelajah NFT | Pencarian alamat dompet | Volume NFT {{explorerName}} | Beli dan Jual NFT | Layanan {{explorerName}}",
+    "title": "Penjelajah & Alat {{nativeCurrency}} Ledger — {{explorerName}} | Cari transaksi, akun, dan NFT",
+    "description": "{{explorerName}}: penjelajah dan alat untuk {{nativeCurrency}} Ledger. Cari transaksi, akun, dan NFT. Lacak saldo, validasi akun, periksa kepemilikan NFT, dan analisis {{nativeCurrency}} Ledger. Plus: konverter harga, alat, statistik, dan lainnya.",
+    "h1": "Penjelajah {{nativeCurrency}} Ledger dan Alat",
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
     "price": {
-      "header": "Harga {{nativeCurrency}} Langsung & Konverter"
+      "header": "Harga {{nativeCurrency}} Langsung & Konverter",
+      "chartHeader": "Grafik Harga {{nativeCurrency}}"
     },
     "whales": {
       "header": "Transaksi paling signifikan dalam 24 jam terakhir"
@@ -195,6 +204,14 @@
       "escrows": "Escrows",
       "amms": "AMM pools",
       "nodes": "Node"
+    },
+    "teaser": {
+      "topDapps": "Top Dapps",
+      "topNftCollections": "Koleksi NFT Top Minggu Ini",
+      "topTokens": "Top Token",
+      "topAmms": "Top Pool AMM",
+      "topValidators": "Validator",
+      "topAmendments": "Amandemen Terbaru"
     }
   },
   "last-ledger-information": {
@@ -563,6 +580,7 @@
     "public": "Publik",
     "knownBrokers": "Pasar",
     "onSale": "Sedang dijual",
+    "bids": "Bid",
     "all-tokens": "Semua Token",
     "single-token": "Token Tunggal",
     "mintedNew": "Latest",
@@ -576,7 +594,7 @@
   "explorer": {
     "header": {
       "main": "Penjelajah {{explorerName}}",
-      "sub": "Pindai transaksi, akun, token, dan NFT {{nativeCurrency}} — cara cepat dan terpercaya untuk menjelajahi {{nativeCurrency}} Ledger.",
+      "topNftCollections": "Koleksi NFT Teratas",
       "amm": "AMM pool information",
       "object": "Object information",
       "account": "Account information",
