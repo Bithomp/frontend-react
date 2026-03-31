@@ -240,11 +240,11 @@ export default function IssueCheck({
       <div className="content-text content-center">
         <h1 className="center">Issue Check</h1>
         <p className="center">
-  A check lets you send funds that the recipient can claim later.{" "}
-  <Link href="/learn/checks" target="_blank" rel="noreferrer">
-     Learn more about checks on {explorerName}.
-  </Link> 
-</p>
+          A check lets you send funds that the recipient can claim later.{" "}
+          <Link href="/learn/checks" target="_blank" rel="noreferrer">
+            Learn more about checks on {explorerName}.
+          </Link>
+        </p>
         <NetworkTabs />
         <div>
           <AddressInput
