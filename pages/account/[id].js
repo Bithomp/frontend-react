@@ -6102,6 +6102,14 @@ export default function Account({
                         txType === 'EscrowCreate' ? (isSource ? 'Escrow sent to' : 'Escrow received from') : null
                       const checkCreateCollapsedLabel =
                         txType === 'CheckCreate' ? (isSource ? 'Check sent to' : 'Check received from') : null
+                      const setRegularKey = txType === 'SetRegularKey'
+                      const setRegularKeyValue = txdata?.specification?.regularKey || null
+                      const setRegularKeyDetails = txdata?.specification?.regularKeyDetails || null
+                      const setRegularKeyLabel = setRegularKey
+                        ? setRegularKeyValue
+                          ? 'Regular key set'
+                          : 'Regular key removed'
+                        : null
                       const txTypeShortLabel =
                         dexOfferShortLabel ||
                         ammCreateShortLabel ||
@@ -6109,6 +6117,7 @@ export default function Account({
                         (isSelfPayment ? 'Swap' : null) ||
                         (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
                         (isDidTx ? didTxLabel : null) ||
+                        setRegularKeyLabel ||
                         escrowCreateCollapsedLabel ||
                         checkCreateCollapsedLabel ||
                         nftOfferLegacyLabel ||
@@ -6226,7 +6235,21 @@ export default function Account({
                                     />
                                   </span>
                                 )}
+                                {txType === 'SetRegularKey' && (
+                                  <span className="tx-counterparty-inline">
+                                    {setRegularKeyValue && (
+                                      <AddressWithIconInline
+                                        data={{
+                                          address: setRegularKeyValue,
+                                          addressDetails: setRegularKeyDetails || {}
+                                        }}
+                                        options={{ short: 6 }}
+                                      />
+                                    )}
+                                  </span>
+                                )}
                                 {tx?.TransactionType !== 'TrustSet' &&
+                                  txType !== 'SetRegularKey' &&
                                   !isSelfPayment &&
                                   !isRipplingTransaction &&
                                   !isDexOfferTx &&
@@ -6476,6 +6499,30 @@ export default function Account({
                                     <span>{fullNiceNumber(trustSetToken?.value || 0)}</span>
                                   </div>
                                 </>
+                              )}
+
+                              {txType === 'SetRegularKey' && (
+                                <div className="detail-row">
+                                  <span>Regular key:</span>
+                                  {setRegularKeyValue ? (
+                                    <span className="copy-inline">
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <AddressWithIconInline
+                                          data={{
+                                            address: setRegularKeyValue,
+                                            addressDetails: setRegularKeyDetails || {}
+                                          }}
+                                          options={{ short: 6 }}
+                                        />
+                                      </span>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={setRegularKeyValue} />
+                                      </span>
+                                    </span>
+                                  ) : (
+                                    <span className="orange">removed</span>
+                                  )}
+                                </div>
                               )}
 
                               {txType === 'AccountSet' && (
