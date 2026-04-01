@@ -16,7 +16,6 @@ import {
   server
 } from '../../../utils'
 
-import Image from 'next/image'
 import Switch from './Switch'
 import LangTable from './LangTable'
 import CurrencyTable from './CurrencyTable'
@@ -79,18 +78,12 @@ import {
 } from 'react-icons/io5'
 import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
+import WalletProviderIcon from '../../UI/WalletProviderIcon'
 import { niceNumber } from '../../../utils/format'
 import { serviceUsernameOrAddressText } from '../../../utils/format'
 
 const HIDE_SEARCH_HEADER = ['/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
-
-const WALLETCONNECT_LOGOS = {
-  joey: 'joey.png',
-  bifrost: 'bifrost.png',
-  girin: 'girin.png',
-  uphodl: 'uphodl.png'
-}
 
 let timeoutIds = {}
 
@@ -293,60 +286,6 @@ export default function Header({
       'address',
       { short: true }
     )
-
-  const renderWalletIcon = (provider, walletItem = null) => {
-    const size = 20
-    const shared = { height: size, width: size, className: 'wallet-logo' }
-    if (provider === 'walletconnect') {
-      const walletConnectWalletId = walletItem?.walletConnectWalletId
-      const walletConnectWalletName = walletItem?.walletConnectWalletName || 'WalletConnect'
-      if (walletConnectWalletId && WALLETCONNECT_LOGOS[walletConnectWalletId]) {
-        return (
-          <Image
-            src={`/images/wallets/square-logos/${WALLETCONNECT_LOGOS[walletConnectWalletId]}`}
-            alt={walletConnectWalletName}
-            {...shared}
-            style={{ borderRadius: '4px' }}
-          />
-        )
-      }
-      return <Image src="/images/wallets/walletconnect.svg" alt="WalletConnect" {...shared} />
-    }
-    if (provider === 'metamask') {
-      return <Image src="/images/wallets/metamask.svg" alt="Metamask" {...shared} />
-    }
-    if (provider === 'gemwallet') {
-      return <Image src="/images/wallets/gemwallet.svg" alt="GemWallet" {...shared} />
-    }
-    if (provider === 'xaman') {
-      return <Image src="/images/wallets/xaman.png" alt="Xaman" {...shared} style={{ borderRadius: '50%' }} />
-    }
-    if (provider === 'ledgerwallet') {
-      return (
-        <Image src="/images/wallets/ledgerwallet.svg" alt="Ledger Wallet" {...shared} style={{ marginBottom: -2 }} />
-      )
-    }
-    if (provider === 'crossmark') {
-      return (
-        <Image src="/images/wallets/crossmark.png" alt="Crossmark Wallet" {...shared} style={{ borderRadius: '50%' }} />
-      )
-    }
-    if (provider === 'xyra') {
-      return <Image src="/images/wallets/xyra.svg" alt="Xyra Wallet" {...shared} />
-    }
-    if (provider === 'dcent') {
-      return (
-        <Image
-          src="/images/wallets/square-logos/dcent.png"
-          alt="D'Cent Wallet"
-          {...shared}
-          style={{ borderRadius: '50%' }}
-        />
-      )
-    }
-
-    return null
-  }
 
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
@@ -885,7 +824,7 @@ export default function Header({
                             </span>
                           </span>
                           <span className="wallet-provider-icon">
-                            {renderWalletIcon(walletItem.provider, walletItem)}
+                            <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} />
                           </span>
                           <span className="link wallet-disconnect" onClick={() => signOut(walletItem.id)}>
                             <IoLogOutOutline aria-label="Disconnect" />

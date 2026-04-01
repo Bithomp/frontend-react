@@ -1,3 +1,13 @@
+.menu-avatar {
+  border-radius: 50%;
+  border: 2px solid var(--accent-link);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 20%, transparent);
+  margin-right: 7px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
 header {
   position: fixed;
   min-height: 55px;
@@ -594,16 +604,6 @@ header {
     }
   }
 
-  .menu-avatar {
-    border-radius: 50%;
-    border: 2px solid var(--accent-link);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 20%, transparent);
-    margin-right: 7px;
-    vertical-align: middle;
-    flex-shrink: 0;
-    display: inline-block;
-  }
-
   .wallet-row-avatar {
     border-radius: 50%;
     border: 2px solid color-mix(in srgb, var(--accent-link) 55%, transparent);
@@ -656,10 +656,13 @@ header {
 
   .mobile-menu-directory {
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin: 0 40px;
     color: #fff;
     font-size: 18px;
-    padding: 4px 0;
+    padding: 4px 22px 4px 0;
     border-bottom: 1px solid #fff;
     cursor: pointer;
 

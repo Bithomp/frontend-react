@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 
 import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
 
-import Image from 'next/image'
+import WalletProviderIcon from '../../UI/WalletProviderIcon'
 
 import { IoIosRocket } from 'react-icons/io'
 import { FaUserLarge } from 'react-icons/fa6'
@@ -11,6 +11,7 @@ import { GrMoney } from 'react-icons/gr'
 import {
   IoStatsChart,
   IoWallet,
+  IoLogOutOutline,
   IoPersonOutline,
   IoListOutline,
   IoPaperPlaneOutline,
@@ -88,6 +89,9 @@ export default function MobileMenu({
   const iconStyle = { marginRight: '6px', fontSize: '1.1em' }
   const itemIconStyle = { marginRight: 6, fontSize: '1.05em', marginTop: 1, flexShrink: 0 }
   const proLoggedIn = proName && sessionToken
+  const wallets = Array.isArray(account?.wallets) ? account.wallets : []
+  const activeWallet = wallets.find((w) => w?.id === account?.activeWalletId) || wallets[0] || null
+  const activeProvider = activeWallet?.provider || account?.wallet || null
 
   return (
     <div className="mobile-menu" onClick={handleClick}>
@@ -96,7 +100,13 @@ export default function MobileMenu({
         <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
           {displayName ? (
             <>
-              <img alt="avatar" src={avatarServer + address + '?hashIconZoom=12'} width="18" height="18" style={{ marginRight: '5px' }} />
+              <img
+                alt="avatar"
+                src={avatarServer + address + '?hashIconZoom=12'}
+                width="24"
+                height="24"
+                className="menu-avatar"
+              />
               {displayName}
             </>
           ) : (
@@ -135,17 +145,15 @@ export default function MobileMenu({
                 </Link>
               )}
               <span onClick={() => signOut()} className="mobile-menu-item link">
+                <WalletProviderIcon
+                  provider={activeProvider}
+                  walletItem={activeWallet}
+                  style={{ marginRight: 6 }}
+                  showFallback
+                  fallbackStyle={itemIconStyle}
+                />
                 {t('signin.signout')}
-                <span style={{ display: 'inline-block', width: 10 }}></span>
-                {account?.wallet === 'xaman' && (
-                  <Image
-                    src="/images/wallets/xaman.png"
-                    className="wallet-logo xaman-logo"
-                    alt="Xaman"
-                    height={24}
-                    width={24}
-                  />
-                )}
+                <IoLogOutOutline style={{ marginLeft: 'auto', width: 18, height: 18, opacity: 0.9 }} />
               </span>
             </>
           ) : (
