@@ -827,7 +827,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                 >
                   <span>
                     I understand blackholing is <strong>permanent and irreversible</strong>. No one will ever be able to
-                    sign transactions from this account again.
+                    sign transactions from this account again, and any funds sent here will be locked forever with no
+                    way for anyone to access or recover them.
                   </span>
                 </CheckBox>
 
