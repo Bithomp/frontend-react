@@ -795,24 +795,25 @@ export default function TokenIssuerSettings({
                       <span className={`step-status ${blackholeStep1Done ? 'done' : 'pending'}`}>
                         {blackholeStep1Done ? 'Done' : 'Pending'}
                       </span>
-                      {withActionTooltip(
-                        <button
-                          className="button-action thin"
-                          onClick={handleSetBlackholeKey}
-                          disabled={!!blackholeStep1DisabledReason}
-                          style={{
-                            background: 'var(--red, #dc3545)',
-                            color: '#fff',
-                            borderColor: 'var(--red, #dc3545)',
-                            marginLeft: '0.5rem',
-                            flexShrink: 0
-                          }}
-                        >
-                          {blackholeStep1Done ? 'Re-set' : 'Set key'}
-                        </button>,
-                        blackholeStep1DisabledReason,
-                        'left'
-                      )}
+                      {!blackholeStep1Done &&
+                        withActionTooltip(
+                          <button
+                            className="button-action thin"
+                            onClick={handleSetBlackholeKey}
+                            disabled={!!blackholeStep1DisabledReason}
+                            style={{
+                              background: 'var(--red, #dc3545)',
+                              color: '#fff',
+                              borderColor: 'var(--red, #dc3545)',
+                              marginLeft: '0.5rem',
+                              flexShrink: 0
+                            }}
+                          >
+                            Set key
+                          </button>,
+                          blackholeStep1DisabledReason,
+                          'left'
+                        )}
                     </div>
                     <div className={`step-row${masterKeyDisabled ? ' step-done' : ''}`}>
                       <span className={`step-number${masterKeyDisabled ? ' done' : ''}`}>2</span>
