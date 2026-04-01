@@ -572,6 +572,9 @@ table {
 }
 
 .button-action {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -590,6 +593,7 @@ table {
   font-weight: 700;
   line-height: 1.2;
   transition: all 0.16s ease;
+  outline: none;
 
   .xaman-logo {
     width: 24px;
@@ -608,6 +612,15 @@ table {
     opacity: 0.92;
     transform: translateY(-1px);
     text-decoration: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent-link) 35%, #fff 65%);
+    outline-offset: 1px;
   }
 
   .dark & {
@@ -761,6 +774,7 @@ table {
   position: relative;
   display: inline-block;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   &.tooltip-icon {
     vertical-align: bottom;

@@ -810,7 +810,8 @@ export default function TokenIssuerSettings({
                         >
                           {blackholeStep1Done ? 'Re-set' : 'Set key'}
                         </button>,
-                        blackholeStep1DisabledReason
+                        blackholeStep1DisabledReason,
+                        'left'
                       )}
                     </div>
                     <div className={`step-row${masterKeyDisabled ? ' step-done' : ''}`}>
@@ -835,7 +836,8 @@ export default function TokenIssuerSettings({
                           >
                             Disable
                           </button>,
-                          blackholeStep2DisabledReason
+                          blackholeStep2DisabledReason,
+                          'left'
                         )}
                     </div>
                   </div>

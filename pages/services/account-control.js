@@ -772,7 +772,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                     >
                       Enable Master Key
                     </button>,
-                    enableMasterKeyLockReason
+                    enableMasterKeyLockReason,
+                    'left'
                   )
                 : withActionTooltip(
                     <button
@@ -782,7 +783,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                     >
                       Disable Master Key
                     </button>,
-                    disableMasterDisabledReason
+                    disableMasterDisabledReason,
+                    'left'
                   )}
             </div>
           </div>
@@ -854,7 +856,8 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                       >
                         {blackholeStep1Done ? 'Re-set' : 'Set key'}
                       </button>,
-                      blackholeStep1DisabledReason
+                      blackholeStep1DisabledReason,
+                      'left'
                     )}
                   </div>
                   <div className={`step-row${masterKeyDisabled ? ' step-done' : ''}`}>
@@ -876,11 +879,12 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                             marginLeft: '0.5rem',
                             flexShrink: 0
                           }}
-                        >
-                          Disable
-                        </button>,
-                        blackholeStep2DisabledReason
-                      )}
+                          >
+                            Disable
+                          </button>,
+                          blackholeStep2DisabledReason,
+                          'left'
+                        )}
                   </div>
                 </div>
               </>
