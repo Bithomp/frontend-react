@@ -847,6 +847,25 @@ export default function SignForm({
   }
 
   const validateTransactionOnLedger = async ({ txid, redirectName, txType, result }) => {
+    const isServicesFlow =
+      router.pathname === '/services/account-settings' ||
+      router.pathname === '/services/account-control' ||
+      router.pathname === '/services/token-issuer-settings'
+
+    const setServicesTxSuccess = (effectiveTxType) => {
+      if (typeof window === 'undefined') return
+      try {
+        window.sessionStorage.setItem(
+          'services:tx-success',
+          JSON.stringify({
+            txType: effectiveTxType || signRequest?.request?.TransactionType || null,
+            path: router.pathname,
+            ts: Date.now()
+          })
+        )
+      } catch (_e) {}
+    }
+
     const redirectRoute = (() => {
       if (!redirectName) return null
       if (isUrlValid(redirectName)) return redirectName
@@ -864,6 +883,12 @@ export default function SignForm({
       !(txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID')) &&
       !signRequest?.callback
     ) {
+      if (isServicesFlow) {
+        setServicesTxSuccess(txType)
+        closeSignInFormAndRefresh()
+        return
+      }
+
       if (redirectRoute) {
         router.push(redirectRoute)
       } else {
@@ -904,6 +929,12 @@ export default function SignForm({
               // if on desktop and there is a callback, call it with the result
               signRequest.callback(response.data || {})
             } else {
+              if (isServicesFlow) {
+                setServicesTxSuccess(txType || TransactionType)
+                closeSignInFormAndRefresh()
+                return
+              }
+
               if (redirectRoute) {
                 router.push(redirectRoute)
               } else {

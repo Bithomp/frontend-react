@@ -313,6 +313,13 @@
     font-weight: 500;
   }
 
+  .flag-status-text {
+    &.non-default {
+      color: var(--orange, #e8941f);
+      font-weight: 700;
+    }
+  }
+
   .flag-status {
     color: var(--text-secondary);
     font-size: 14px;

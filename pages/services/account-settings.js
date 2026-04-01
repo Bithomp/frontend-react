@@ -15,6 +15,7 @@ import {
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
+import { consumeServicesTxSuccessFlash } from '../../utils/servicesTxFlash'
 import AddressInput from '../../components/UI/AddressInput'
 import { IoToggleOutline, IoDocumentTextOutline, IoPersonOutline } from 'react-icons/io5'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
@@ -69,6 +70,13 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   const [currentTickSize, setCurrentTickSize] = useState(null)
   const [walletLocatorInput, setWalletLocatorInput] = useState('')
   const [currentWalletLocator, setCurrentWalletLocator] = useState('')
+
+  useEffect(() => {
+    consumeServicesTxSuccessFlash({
+      setSuccessMessage,
+      setErrorMessage
+    })
+  }, [])
 
   // Validation states
   const [messageKeyValidation, setMessageKeyValidation] = useState({ isValid: true, message: '' })
@@ -871,7 +879,9 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 isHighRisk && isNonDefault ? 'badge-danger' : isNonDefault ? 'badge-warn' : 'badge-off'
               }`}
             >
-              {flagData.status(currentValue)}
+              <span className={`flag-status-text ${isNonDefault ? 'non-default' : ''}`}>
+                {flagData.status(currentValue)}
+              </span>
             </span>
           </div>
 

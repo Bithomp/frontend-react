@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: Mar 22, 2026</p>
+        <p>Last updated: Apr 1, 2026</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -322,6 +322,14 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             <strong>isOver18</strong> - show or hide explicit content depending on the age
+          </li>
+        </ul>
+        <h4>Session storage</h4>
+        <ul>
+          <li>
+            <strong>services:tx-success</strong> - temporary transaction success flag used to show a success message
+            after returning from a mobile wallet signing flow on Services pages. This value is removed immediately
+            after it is read.
           </li>
         </ul>
         <h3>How to manage Cookies</h3>

@@ -6,6 +6,7 @@ import { explorerName, isAddressValid } from '../../utils'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
+import { consumeServicesTxSuccessFlash } from '../../utils/servicesTxFlash'
 import AddressInput from '../../components/UI/AddressInput'
 import CopyButton from '../../components/UI/CopyButton'
 import CheckBox from '../../components/UI/CheckBox'
@@ -76,6 +77,13 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
   const masterKeyDisabled = !!ledgerInfo?.flags?.disableMaster
   const signerList = ledgerInfo?.signerList || null
   const isBlackholed = !!ledgerInfo?.blackholed
+
+  useEffect(() => {
+    consumeServicesTxSuccessFlash({
+      setSuccessMessage,
+      setErrorMessage
+    })
+  }, [])
 
   useEffect(() => {
     const fetchAccountData = async () => {
