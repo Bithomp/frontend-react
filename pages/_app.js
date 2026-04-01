@@ -226,26 +226,27 @@ const MyApp = ({ Component, pageProps }) => {
     let activeTrigger = null
     let clearTimer = null
 
-    const isTableTooltip = (trigger) => {
-      return !!trigger.closest('table, thead, tbody, tr, td, th')
+    const isManagedTooltip = (trigger) => {
+      return !!trigger.closest('table, thead, tbody, tr, td, th, .top-links')
     }
 
     const applyTip = (trigger) => {
       const tip = trigger.querySelector(':scope > .tooltiptext')
       if (!tip) return
 
-      if (!isTableTooltip(trigger)) return
+      if (!isManagedTooltip(trigger)) return
 
       tip.style.cssText = BASE_HIDDEN_STYLE
 
       const r = trigger.getBoundingClientRect()
+      const isTopLinksTooltip = !!trigger.closest('.top-links')
 
       const spaceAbove = r.top - HEADER_H
       const spaceBelow = window.innerHeight - r.bottom
-      const flipBelow = spaceAbove < TIP_H && spaceBelow > spaceAbove
+      const flipBelow = isTopLinksTooltip ? true : spaceAbove < TIP_H && spaceBelow > spaceAbove
 
       const vertPos = flipBelow
-        ? 'top:' + (r.bottom + GAP) + 'px!important;bottom:auto!important;'
+        ? 'top:' + (r.bottom + (isTopLinksTooltip ? 6 : GAP)) + 'px!important;bottom:auto!important;'
         : 'bottom:' + (window.innerHeight - r.top + GAP) + 'px!important;top:auto!important;'
 
       const hAlign = tip.classList.contains('right')
@@ -273,7 +274,7 @@ const MyApp = ({ Component, pageProps }) => {
     }
 
     const hideTip = (trigger) => {
-      if (!isTableTooltip(trigger)) return
+      if (!isManagedTooltip(trigger)) return
       const tip = trigger.querySelector(':scope > .tooltiptext')
       if (!tip) return
       tip.style.cssText = BASE_HIDDEN_STYLE

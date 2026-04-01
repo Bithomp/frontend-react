@@ -912,6 +912,15 @@ table {
     &.table-large {
       max-width: min(360px, calc(100vw - 24px));
     }
+
+    &.tooltip-flip {
+      &:after {
+        top: auto;
+        bottom: 100%;
+        border-top: 0;
+        border-bottom: 6px solid rgba(28, 32, 38, 0.96);
+      }
+    }
   }
 
   &:hover,
