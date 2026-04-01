@@ -970,7 +970,7 @@ export const amountFormat = (amount, options = {}) => {
     return (
       <>
         {tokenImage}
-        <StyleAmount>{amountText}</StyleAmount>
+        <StyleAmount>{options.noCurrency ? amountText : `${amountText} ${textCurrency}`}</StyleAmount>
         {issuer ? (
           <span className="no-inherit no-brake">
             (
