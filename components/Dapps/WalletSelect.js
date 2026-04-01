@@ -91,11 +91,11 @@ export default function WalletSelect({
         menu: (base) => ({
           ...base,
           backgroundColor: 'var(--background-secondary)',
-          borderRadius: 0,
-          marginTop: 0,
-          border: '1px solid var(--accent-icon)'
+          border: '1px solid var(--accent-icon)',
+          borderRadius: 10,
+          overflow: 'hidden'
         }),
-        menuList: (provided) => ({ ...provided, maxHeight: 260, overflowY: 'auto' }),
+        menuList: (provided) => ({ ...provided, maxHeight: 260, overflowY: 'auto', paddingTop: 0, paddingBottom: 0 }),
         option: (base, state) => ({
           ...base,
           backgroundColor: state.isSelected
