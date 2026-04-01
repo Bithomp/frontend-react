@@ -272,7 +272,11 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
                   Remember me
                 </CheckBox>
                 <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
-                  I agree with the <Link href="/terms-and-conditions">{t('menu.terms-and-conditions')}</Link>.
+                  I agree with the{' '}
+                  <Link href="/terms-and-conditions" onClick={handleClose}>
+                    {t('menu.terms-and-conditions')}
+                  </Link>
+                  .
                 </CheckBox>
               </div>
             </>

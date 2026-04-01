@@ -82,7 +82,8 @@ export default function MobileMenu({
   signOut,
   account,
   //countryCode,
-  sessionToken
+  sessionToken,
+  openEmailLogin
 }) {
   const { t } = useTranslation('common')
 
@@ -167,9 +168,21 @@ export default function MobileMenu({
           <IoIosRocket /> Bithomp Pro
         </div>
         <div className="mobile-menu__submenu">
-          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            <FaUserLarge style={iconStyle} /> {proName || t('signin.signin')}
-          </Link>
+          {proLoggedIn ? (
+            <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <FaUserLarge style={iconStyle} /> {proName}
+            </Link>
+          ) : (
+            <span
+              className="mobile-menu-item link"
+              onClick={() => {
+                mobileMenuToggle()
+                openEmailLogin?.()
+              }}
+            >
+              <FaUserLarge style={iconStyle} /> {t('signin.signin')}
+            </span>
+          )}
 
           {proLoggedIn && (
             <>

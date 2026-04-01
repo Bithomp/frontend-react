@@ -732,6 +732,7 @@ const MyApp = ({ Component, pageProps }) => {
                 countryCode={countryCode}
                 sessionToken={sessionToken}
                 fiatRate={liveFiatRate}
+                openEmailLogin={openEmailLogin}
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}

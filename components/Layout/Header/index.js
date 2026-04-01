@@ -159,7 +159,8 @@ export default function Header({
   setSelectedCurrency,
   countryCode,
   sessionToken,
-  fiatRate
+  fiatRate,
+  openEmailLogin
 }) {
   const { i18n, t } = useTranslation()
 
@@ -967,6 +968,7 @@ export default function Header({
           copyToClipboard={copyToClipboard}
           account={account}
           countryCode={countryCode}
+          openEmailLogin={openEmailLogin}
         />
       )}
     </div>

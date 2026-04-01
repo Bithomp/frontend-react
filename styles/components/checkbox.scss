@@ -11,6 +11,10 @@
   -ms-user-select: none;
   user-select: none;
 
+  .checkbox__label {
+    min-width: 0;
+  }
+
   .checkmark {
     position: relative;
     top: auto;

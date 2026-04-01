@@ -5,7 +5,7 @@ export default function CheckBox({ children, checked, setChecked, name, outline,
 
   return (
     <label className={`checkbox${outline ? ' checkbox--outline' : ''}`} style={style}>
-      {children}
+      <span className="checkbox__label">{children}</span>
       <input
         type="checkbox"
         onChange={handleChange}
