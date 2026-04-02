@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: Apr 1, 2026</p>
+        <p>Last updated: Apr 2, 2026</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -161,11 +161,10 @@ export default function PrivacyPolicy() {
         </p>
         <ul>
           <li>
-            <strong>The local storage</strong> The local storage of a browser called "sessionStorage" and "localStorage"
-            is used to store information, including wallet connection state and selected account metadata needed to keep
-            You signed in and to restore Your connected wallet addresses between page loads. "SessionStorage" is
-            automatically deleted when the browser program is closed, to delete the "localStorage" You must delete the
-            browsing history.
+            <strong>The local storage</strong> Browser local storage ("localStorage") is used to store information,
+            including wallet connection state and selected account metadata needed to keep You signed in and to restore
+            Your connected wallet addresses between page loads. To delete this data, You can clear site data or browsing
+            history in Your browser settings.
           </li>
           <li>
             <strong>Cookies or Browser Cookies.</strong> A cookie is a small file placed on Your Device. You can

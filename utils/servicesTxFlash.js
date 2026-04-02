@@ -14,7 +14,7 @@ export const consumeServicesTxSuccessFlash = ({ setSuccessMessage, setErrorMessa
   if (typeof window === 'undefined') return
 
   try {
-    const raw = window.sessionStorage.getItem(SERVICES_TX_SUCCESS_KEY)
+    const raw = window.localStorage.getItem(SERVICES_TX_SUCCESS_KEY)
     if (!raw) return
 
     const parsed = JSON.parse(raw)
@@ -27,7 +27,23 @@ export const consumeServicesTxSuccessFlash = ({ setSuccessMessage, setErrorMessa
   } catch (_e) {
     // ignore parsing/storage errors
   } finally {
-    window.sessionStorage.removeItem(SERVICES_TX_SUCCESS_KEY)
+    window.localStorage.removeItem(SERVICES_TX_SUCCESS_KEY)
   }
 }
 
+export const setServicesTxSuccessFlash = ({ txType, path }) => {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.localStorage.setItem(
+      SERVICES_TX_SUCCESS_KEY,
+      JSON.stringify({
+        txType: txType || null,
+        path: path || window.location.pathname,
+        ts: Date.now()
+      })
+    )
+  } catch (_e) {
+    return
+  }
+}

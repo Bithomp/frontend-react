@@ -18,6 +18,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import { consumeServicesTxSuccessFlash } from '../../utils/servicesTxFlash'
 import AddressInput from '../../components/UI/AddressInput'
 import { IoToggleOutline, IoDocumentTextOutline, IoPersonOutline } from 'react-icons/io5'
+import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
 
@@ -957,15 +958,18 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
             {account?.address ? (
               `Manage your account settings on the ${explorerName}.`
             ) : (
-              <>
-                Please{' '}
-                <span className="link" onClick={() => setSignRequest({})}>
-                  sign in to your account
-                </span>{' '}
-                to manage your account settings.
-              </>
+              'Sign in to your account to manage your account settings.'
             )}
           </p>
+
+          {!account?.address && (
+            <div className="center" style={{ marginTop: '0.6rem' }}>
+              <button className="button-action" onClick={() => setSignRequest({})}>
+                <FaWallet style={{ fontSize: 14, marginRight: 6 }} />
+                Connect wallet
+              </button>
+            </div>
+          )}
 
           {/* Feedback messages (placed high for mobile visibility) */}
           {errorMessage && <p className="red center">{errorMessage}</p>}

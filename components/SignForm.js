@@ -31,6 +31,7 @@ import { metamaskTxSend } from '../utils/metamask'
 import { crossmarkTxSend } from '../utils/crossmark'
 import { xyraSignOnly, xyraConnect } from '../utils/xyrawallet'
 import { dcentTxSend } from '../utils/dcent'
+import { setServicesTxSuccessFlash } from '../utils/servicesTxFlash'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -853,17 +854,10 @@ export default function SignForm({
       router.pathname === '/services/token-issuer-settings'
 
     const setServicesTxSuccess = (effectiveTxType) => {
-      if (typeof window === 'undefined') return
-      try {
-        window.sessionStorage.setItem(
-          'services:tx-success',
-          JSON.stringify({
-            txType: effectiveTxType || signRequest?.request?.TransactionType || null,
-            path: router.pathname,
-            ts: Date.now()
-          })
-        )
-      } catch (_e) {}
+      setServicesTxSuccessFlash({
+        txType: effectiveTxType || signRequest?.request?.TransactionType || null,
+        path: router.pathname
+      })
     }
 
     const redirectRoute = (() => {

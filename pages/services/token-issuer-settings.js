@@ -11,6 +11,7 @@ import { consumeServicesTxSuccessFlash } from '../../utils/servicesTxFlash'
 import CheckBox from '../../components/UI/CheckBox'
 import { IoLayersOutline, IoDocumentTextOutline, IoSkullOutline, IoPersonOutline } from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
+import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
 
@@ -593,21 +594,24 @@ export default function TokenIssuerSettings({
             {account?.address ? (
               `Configure your token issuance settings on the ${explorerName}.`
             ) : (
-              <>
-                Please{' '}
-                <span className="link" onClick={() => setSignRequest({})}>
-                  sign in to your account
-                </span>{' '}
-                to manage Token Issuer Settings.
-              </>
+              'Sign in to your account to manage Token Issuer Settings.'
             )}
           </p>
+
+          {!account?.address && (
+            <div className="center" style={{ marginTop: '0.6rem' }}>
+              <button className="button-action" onClick={() => setSignRequest({})}>
+                <FaWallet style={{ fontSize: 14, marginRight: 6 }} />
+                Connect wallet
+              </button>
+            </div>
+          )}
 
           {errorMessage && <p className="red center">{errorMessage}</p>}
           {successMessage && <p className="green center">{successMessage}</p>}
 
           {/* Pro subscriber notice */}
-          {!isPro && (
+          {!isPro && account?.address && (
             <div className="center orange" style={{ marginBottom: '1rem', fontSize: 14 }}>
               {!sessionToken ? (
                 <>
