@@ -14,8 +14,7 @@ export default function DappLogo({ src, alt = 'logo', ...props }) {
         background: '#fff',
         marginRight: 8,
         verticalAlign: 'middle',
-        marginTop: '-7px',
-        marginBottom: '-7px',
+        marginTop: 4,
         boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
         objectFit: 'contain'
       }}

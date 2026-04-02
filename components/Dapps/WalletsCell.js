@@ -133,7 +133,7 @@ export default function WalletsCell({ wallets = [], walletconnect = [] }) {
           alt={WALLET_NAMES[w] || w}
           width={18}
           height={18}
-          style={{ borderRadius: 4 }}
+          style={{ borderRadius: 4, marginTop: 2 }}
           draggable={false}
         />
       </span>
@@ -174,8 +174,7 @@ export default function WalletsCell({ wallets = [], walletconnect = [] }) {
             flexDirection: 'column',
             gap: 2,
             alignItems: 'flex-start',
-            maxWidth: 80,
-            marginTop: -4
+            maxWidth: 80
           }}
         >
           {rows.map((row, i) => (

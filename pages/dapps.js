@@ -499,7 +499,9 @@ export default function Dapps({
 
                     return (
                       <tr key={d?.sourceTag ?? idx}>
-                        <td className="center">{idx + 1}</td>
+                        <td className="center">
+                          <span style={{ display: 'inline-block', transform: 'translateY(10px)' }}>{idx + 1}</span>
+                        </td>
 
                         <td>
                           <span style={{ display: 'flex', alignItems: 'center' }}>
