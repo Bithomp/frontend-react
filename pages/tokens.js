@@ -884,21 +884,22 @@ export default function Tokens({
                                   Trustlines: {niceNumber(token.trustlines)}
                                   <br />
                                   <br />
-                                  <button
-                                    className="button-action narrow thin"
-                                    onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                                  >
-                                    Token Page
-                                  </button>
-                                  <span style={{ display: 'inline-block', width: 10 }}></span>
-                                  <button
-                                    className="button-action narrow thin"
-                                    onClick={() => {
-                                      handleSetTrustline(token)
-                                    }}
-                                  >
-                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
-                                  </button>
+                                  <span className="mobile-token-actions">
+                                    <button
+                                      className="button-action narrow thin"
+                                      onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                                    >
+                                      Token Page
+                                    </button>
+                                    <button
+                                      className="button-action narrow thin"
+                                      onClick={() => {
+                                        handleSetTrustline(token)
+                                      }}
+                                    >
+                                      <FaHandshake style={{ fontSize: 16, marginBottom: -3 }} /> Set Trust
+                                    </button>
+                                  </span>
                                 </p>
                               </td>
                             </tr>
@@ -918,6 +919,21 @@ export default function Tokens({
         .issuer-address {
           color: var(--text-muted);
           font-size: 0.9em;
+        }
+
+        .mobile-token-actions {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: nowrap;
+          white-space: nowrap;
+        }
+
+        @media only screen and (max-width: 480px) {
+          .mobile-token-actions :global(.button-action.narrow.thin) {
+            padding: 7px 10px;
+            font-size: 14px;
+          }
         }
       `}</style>
     </>
