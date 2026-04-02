@@ -1,8 +1,7 @@
 .dappsPageClass {:global {
   /* Prevent row-jump */
-  .table-large.expand td,
-  .table-large.expand th {
-    vertical-align: top;
+  .table-large.expand td {
+    vertical-align: middle;
   }
 
   /* ---------- Activity cell ---------- */
