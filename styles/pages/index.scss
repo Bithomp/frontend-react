@@ -41,7 +41,7 @@
 .home-statistics {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 4px;
+  border-radius: 10px;
   box-shadow: var(--card-shadow);
   padding: 16px;
   text-align: left;
@@ -73,7 +73,7 @@
 
   .statistics-top-item {
     border: 1px solid var(--card-border);
-    border-radius: 4px;
+    border-radius: 10px;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -148,5 +148,4 @@
   50%  { background-color: var(--background-contrast); color: var(--text-oposite); }
   100%  { background-color: var(--background-main); color: var(--text-main); }
 }
-
 
