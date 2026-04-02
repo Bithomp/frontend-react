@@ -227,14 +227,29 @@ const MyApp = ({ Component, pageProps }) => {
     let clearTimer = null
 
     const isManagedTooltip = (trigger) => {
-      return !!trigger.closest('table, thead, tbody, tr, td, th, .top-links')
+      return !!trigger.closest('table, thead, tbody, tr, td, th, .top-links, .tx-header-actions')
     }
+
+    // Clear stale inline styles from previously managed tooltips
+    // (important when switching management scopes during hot reloads).
+    document.querySelectorAll('.tooltip .tooltiptext').forEach((tip) => {
+      const trigger = tip.parentElement
+      if (!trigger?.classList?.contains('tooltip')) return
+      if (!isManagedTooltip(trigger)) {
+        tip.style.cssText = ''
+        tip.classList.remove('tooltip-flip')
+      }
+    })
 
     const applyTip = (trigger) => {
       const tip = trigger.querySelector(':scope > .tooltiptext')
       if (!tip) return
 
-      if (!isManagedTooltip(trigger)) return
+      if (!isManagedTooltip(trigger)) {
+        tip.style.cssText = ''
+        tip.classList.remove('tooltip-flip')
+        return
+      }
 
       tip.style.cssText = BASE_HIDDEN_STYLE
 
@@ -274,14 +289,21 @@ const MyApp = ({ Component, pageProps }) => {
     }
 
     const hideTip = (trigger) => {
-      if (!isManagedTooltip(trigger)) return
       const tip = trigger.querySelector(':scope > .tooltiptext')
       if (!tip) return
+      if (!isManagedTooltip(trigger)) {
+        tip.style.cssText = ''
+        tip.classList.remove('tooltip-flip')
+        return
+      }
       tip.style.cssText = BASE_HIDDEN_STYLE
       tip.classList.remove('tooltip-flip')
     }
 
     const positionTip = (trigger) => {
+      // Ignore bubbled mouseover events from nested nodes (svg/path/etc.)
+      // when the same tooltip is already active.
+      if (activeTrigger === trigger) return
       // Cancel any pending hide so moving between rows shows no gap/flash
       if (clearTimer) {
         clearTimeout(clearTimer)
