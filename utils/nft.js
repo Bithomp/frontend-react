@@ -149,15 +149,27 @@ export const nftThumbnail = (nft) => {
   const nftId = nft.nftokenID || nft.uritokenID
   if (!nftId) return ''
   const imageSrc = nftUrl(nft, 'thumbnail')
-  if (!imageSrc) return ''
+  const size = 32
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+      <rect width="100%" height="100%" fill="#ffffff"/>
+      <text x="50%" y="50%" font-family="sans-serif" font-size="8" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+        No image
+      </text>
+    </svg>`
+  )}`
   return (
     <Link href={'/nft/' + nftId}>
       <img
-        src={imageSrc}
+        src={imageSrc || placeholder}
         width="32px"
         height="32px"
         style={{ borderRadius: '50% 20% / 10% 40%', verticalAlign: 'middle' }}
-        alt={nftName(nft)}
+        alt={nftName(nft) || 'NFT thumbnail'}
+        onError={(e) => {
+          e.target.onerror = null
+          e.target.src = placeholder
+        }}
       />
     </Link>
   )

@@ -953,7 +953,7 @@ export default function NftsComponent({
               {activeView === 'list' && (
                 <>
                   {windowWidth > 500 ? (
-                    <table className="table-large no-border">
+                    <table className="table-large">
                       <thead>
                         <tr>
                           <th className="center">{t('table.index')}</th>

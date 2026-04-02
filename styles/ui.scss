@@ -322,6 +322,10 @@ button {
 
 table {
   border-collapse: collapse;
+  --table-frame: color-mix(in srgb, var(--accent-link) 46%, var(--button-additional));
+  --table-divider: color-mix(in srgb, var(--accent-link) 22%, var(--button-additional));
+  --table-row-divider: color-mix(in srgb, var(--accent-link) 14%, var(--button-additional));
+  --table-surface: var(--card-bg);
   &.table-details {
     border: 1px solid var(--button-additional);
     box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
@@ -369,7 +373,17 @@ table {
   &.table-large {
     min-width: 760px;
     margin: auto;
-    border: 1px solid var(--accent-link);
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--table-frame);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--table-surface);
+    outline: 1px solid color-mix(in srgb, var(--accent-link) 20%, transparent);
+    outline-offset: -1px;
+    box-shadow:
+      0 6px 18px rgba(0, 0, 0, 0.12),
+      0 0 0 1px color-mix(in srgb, var(--accent-link) 10%, transparent);
     &.shrink {
       min-width: unset;
       @media screen and (max-width: 800px) {
@@ -381,6 +395,14 @@ table {
     }
     > thead > tr > th {
       font-size: 12px;
+      background: color-mix(in srgb, var(--background-secondary) 92%, transparent);
+      border-bottom: 1px solid var(--table-divider);
+    }
+    > thead > tr > th:first-child {
+      border-top-left-radius: 10px;
+    }
+    > thead > tr > th:last-child {
+      border-top-right-radius: 10px;
     }
     > tbody > tr {
       &:hover {
@@ -392,6 +414,7 @@ table {
       th, td {
         padding: 10px;
         font-size: 14px;
+        background: transparent;
       }
       @media only screen and (max-width: 640px) {
         td, th {
@@ -405,6 +428,18 @@ table {
         }
       }
     }
+    > tbody > tr + tr > td,
+    > tbody > tr + tr > th {
+      border-top: 1px solid var(--table-row-divider);
+    }
+    > tbody > tr:last-child > td:first-child,
+    > tbody > tr:last-child > th:first-child {
+      border-bottom-left-radius: 10px;
+    }
+    > tbody > tr:last-child > td:last-child,
+    > tbody > tr:last-child > th:last-child {
+      border-bottom-right-radius: 10px;
+    }
     @media only screen and (max-width: 800px) {
       min-width: calc(100% - 30px);
     }
@@ -412,6 +447,11 @@ table {
       > tbody > tr:hover {
         background-color: unset;
       }
+    }
+    &.no-border {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
     }
     &.clickable {
       tr {
@@ -423,16 +463,36 @@ table {
     margin: auto;
     font-size: 12px;
     width: calc(100% - 30px);
-    tr {
-      border: 1px solid var(--accent-link);
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    > tbody > tr {
+      border: none;
       > td:last-child,
       > th:last-child {
         padding-right: 6px;
+        border-right: 1px solid var(--table-frame);
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
       }
 
       > td:first-child,
       > th:first-child {
         padding-left: 6px;
+        border-left: 1px solid var(--table-frame);
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+
+      > td,
+      > th {
+        border-top: 1px solid var(--table-frame);
+        border-bottom: 1px solid var(--table-frame);
+        background-color: var(--table-surface);
+      }
+
+      > td:first-child,
+      > th:first-child {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
     }
   }
