@@ -173,14 +173,7 @@ export default function AccountDelete({
           setIsNonActive(false)
         }
 
-        // Fetch destination tag requirement from new endpoint
-        const accountResponse = await axios(`/xrpl/accounts/${address}`)
-        const accountData = accountResponse?.data
-        if (accountData?.account_data?.require_dest_tag) {
-          setRequireDestTag(accountData?.account_data?.require_dest_tag)
-        } else {
-          setRequireDestTag(false)
-        }
+        setRequireDestTag(!!data?.ledgerInfo?.flags?.requireDestTag)
       } catch (error) {
         setError('Error fetching destination account data')
         setDestinationStatus(0)

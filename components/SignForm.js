@@ -1332,6 +1332,12 @@ export default function SignForm({
   ]
   const supportedByDcent =
     !signRequest?.request?.TransactionType || dcentSupportedTxTypes.includes(signRequest.request.TransactionType)
+  const isSignDisabled = !agreedToRisks || formError
+  const signDisabledTooltip = !agreedToRisks
+    ? 'Please confirm the checkbox first.'
+    : formError
+      ? 'Please complete all required fields correctly.'
+      : ''
   const WalletTile = ({ name, alt, src, onClick, disabled, width, height, extraIcons, iconsOnly }) => {
     const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
 
@@ -1657,15 +1663,18 @@ export default function SignForm({
                 <button type="button" className="button-action" onClick={signInCancelAndClose} style={buttonStyle}>
                   {t('button.cancel')}
                 </button>
-                <button
-                  type="button"
-                  className="button-action"
-                  onClick={() => txSend()}
-                  style={buttonStyle}
-                  disabled={!agreedToRisks || formError}
-                >
-                  {t('button.sign')}
-                </button>
+                <span className={signDisabledTooltip ? 'tooltip' : ''}>
+                  <button
+                    type="button"
+                    className="button-action"
+                    onClick={() => txSend()}
+                    style={buttonStyle}
+                    disabled={isSignDisabled}
+                  >
+                    {t('button.sign')}
+                  </button>
+                  {signDisabledTooltip && <span className="tooltiptext left">{signDisabledTooltip}</span>}
+                </span>
               </>
             ) : (
               <>

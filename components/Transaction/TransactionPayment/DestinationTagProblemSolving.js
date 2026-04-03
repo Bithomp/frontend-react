@@ -11,30 +11,8 @@ export default function DestinationTagProblemSolving({ specification, pageFiatRa
     //pageFiatRate - to render only once when the rate is known, otherwise will do 3 calls
     if (noDestTagOrShortDestTag && pageFiatRate) {
       axios
-        .get('xrpl/accounts/' + specification.destination.address)
+        .get('v2/account/' + specification.destination.address)
         .then((response) => {
-          /*
-            {
-              "result": "success",
-              "account_data": {
-                "account": "r325zs5Zuduw7id6DyYSfQ3Gyzd3N6TyLn",
-                "parent": "rJRPhDThVkRsicStittXBoPxoCvWGqeAXg",
-                "inception": 1727765311,
-                "ledger_index": 91118530,
-                "tx_hash": "14FB9FF598A6285A048F3B5334922B180028AB40EDE9FBE4E93BF44963AD6EE9",
-                "initial_balance": 11,
-                "balance": 608942.450567,
-                "disable_master": false,
-                "require_dest_tag": false,
-                "last_submitted_at": 1744291952,
-                "last_submitted_ledger_index": 95363314,
-                "last_submitted_tx_hash": "441BAF63918C64D0AB10EB75FEDB14267250D1E0A50334BFCF089955AE58A76B",
-                "owner_count": 0,
-                "default_ripple": false,
-                "require_auth": false
-              }
-            }
-          */
           setDtData(response?.data)
         })
         .catch((error) => {
@@ -43,7 +21,7 @@ export default function DestinationTagProblemSolving({ specification, pageFiatRa
     }
   }, [specification, pageFiatRate])
 
-  if (dtData?.result !== 'success' || !dtData?.account_data?.require_dest_tag) return ''
+  if (!dtData?.account?.requireDestTag) return ''
 
   const thereIsAName =
     specification.destination?.addressDetails?.service || specification.destination?.addressDetails?.username

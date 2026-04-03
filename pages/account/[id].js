@@ -93,7 +93,7 @@ const setBalancesFunction = (networkInfo, data) => {
 const fetchSignerAccountsServer = async ({ address, req }) => {
   const signerResponse = await axiosServer({
     method: 'get',
-    url: 'xrpl/accounts?regularKeyOrSigner=' + address + '&limit=' + SIGNER_ACCOUNTS_FETCH_LIMIT,
+    url: 'v2/accounts?regularKeyOrSigner=' + address + '&limit=' + SIGNER_ACCOUNTS_FETCH_LIMIT,
     headers: passHeaders(req)
   })
 
@@ -103,9 +103,12 @@ const fetchSignerAccountsServer = async ({ address, req }) => {
   }
 
   const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+  const rows = accountRows.filter((row) => !!row?.account)
+  const total = Number(payload?.summary?.total)
 
   return {
-    rows: accountRows.filter((row) => !!row?.account)
+    rows,
+    total: Number.isFinite(total) && total >= 0 ? total : 0
   }
 }
 
@@ -114,12 +117,12 @@ const fetchActivatedAccountsServer = async ({ address, req, order = 'desc' }) =>
   const [accountsResult, summaryResult] = await Promise.allSettled([
     axiosServer({
       method: 'get',
-      url: `xrpl/accounts?parent=${address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${order}`,
+      url: `v2/accounts?parent=${address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${order.toUpperCase()}`,
       headers
     }),
     axiosServer({
       method: 'get',
-      url: `xrpl/accounts/summary?parent=${address}`,
+      url: `v2/accounts/count?parent=${address}`,
       headers
     })
   ])
@@ -137,23 +140,18 @@ const fetchActivatedAccountsServer = async ({ address, req, order = 'desc' }) =>
   const rows = accountRows.filter((child) => !!child?.account)
   const marker = payload?.marker || null
 
-  let count = Number(payload?.count)
+  let count = Number(payload?.summary?.total)
   let spent = rows.reduce(
-    (sum, child) => sum + (Number.isFinite(Number(child?.initial_balance)) ? Number(child.initial_balance) : 0),
+    (sum, child) => sum + (Number.isFinite(Number(child?.initialBalance)) ? Number(child.initialBalance) : 0),
     0
   )
 
   if (summaryResult.status === 'fulfilled') {
     const summaryData = summaryResult.value?.data || {}
     const summaryCount = Number(summaryData?.count)
-    const summarySpent = Number(summaryData?.initial_balance)
 
     if (Number.isFinite(summaryCount) && summaryCount >= 0) {
       count = summaryCount
-    }
-
-    if (Number.isFinite(summarySpent) && summarySpent >= 0) {
-      spent = summarySpent
     }
   }
 
@@ -505,8 +503,9 @@ export default function Account({
   const [showActivatedAccountsFilters, setShowActivatedAccountsFilters] = useState(false)
   const [activatedAccountsOrder, setActivatedAccountsOrder] = useState('desc')
   const [signerAccounts, setSignerAccounts] = useState(initialSignerAccountsData?.rows || [])
+  const [signerAccountsTotal, setSignerAccountsTotal] = useState(initialSignerAccountsData?.total || 0)
   const [hasMoreSignerAccounts, setHasMoreSignerAccounts] = useState(
-    (initialSignerAccountsData?.rows || []).length === SIGNER_ACCOUNTS_FETCH_LIMIT
+    (initialSignerAccountsData?.rows || []).length < (initialSignerAccountsData?.total || 0)
   )
   const [signerAccountsLoading, setSignerAccountsLoading] = useState(false)
   const [signerAccountsLoadingMore, setSignerAccountsLoadingMore] = useState(false)
@@ -1184,7 +1183,7 @@ export default function Account({
       const offsetValue = append ? signerAccounts.length : 0
       const offsetQuery = offsetValue > 0 ? `&offset=${offsetValue}` : ''
       const response = await axios.get(
-        `xrpl/accounts?regularKeyOrSigner=${data.address}&limit=${SIGNER_ACCOUNTS_FETCH_LIMIT}${offsetQuery}`
+        `v2/accounts?regularKeyOrSigner=${data.address}&limit=${SIGNER_ACCOUNTS_FETCH_LIMIT}${offsetQuery}`
       )
 
       if (signerAccountsRequestTokenRef.current !== requestToken) return
@@ -1195,6 +1194,7 @@ export default function Account({
       }
 
       const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+      const total = Number(payload?.summary?.total)
       const seenAddresses = new Set(append ? signerAccounts.map((row) => row.account) : [])
       const nextRows = accountRows.filter((row) => {
         if (!row?.account || seenAddresses.has(row.account)) return false
@@ -1202,12 +1202,18 @@ export default function Account({
         return true
       })
 
-      setSignerAccounts((prev) => (append ? [...prev, ...nextRows] : nextRows))
-      setHasMoreSignerAccounts(accountRows.length === SIGNER_ACCOUNTS_FETCH_LIMIT)
+      const resolvedTotal = Number.isFinite(total) && total >= 0 ? total : 0
+      setSignerAccounts((prev) => {
+        const mergedRows = append ? [...prev, ...nextRows] : nextRows
+        setSignerAccountsTotal(resolvedTotal)
+        setHasMoreSignerAccounts(mergedRows.length < resolvedTotal)
+        return mergedRows
+      })
     } catch (requestError) {
       if (signerAccountsRequestTokenRef.current !== requestToken) return
       if (!append) {
         setSignerAccounts([])
+        setSignerAccountsTotal(0)
         setHasMoreSignerAccounts(false)
       }
       setSignerAccountsError(requestError?.message || 'Failed to load signer accounts')
@@ -1224,6 +1230,7 @@ export default function Account({
   useEffect(() => {
     if (!data?.address) {
       setSignerAccounts([])
+      setSignerAccountsTotal(0)
       setHasMoreSignerAccounts(false)
       setSignerAccountsLoading(false)
       setSignerAccountsLoadingMore(false)
@@ -1233,9 +1240,11 @@ export default function Account({
     }
 
     const initialRows = initialSignerAccountsData?.rows || []
+    const initialTotal = initialSignerAccountsData?.total || 0
 
     setSignerAccounts(initialRows)
-    setHasMoreSignerAccounts(initialRows.length === SIGNER_ACCOUNTS_FETCH_LIMIT)
+    setSignerAccountsTotal(initialTotal)
+    setHasMoreSignerAccounts(initialRows.length < initialTotal)
     setSignerAccountsLoading(false)
     setSignerAccountsLoadingMore(false)
     setSignerAccountsError(null)
@@ -1267,7 +1276,7 @@ export default function Account({
     try {
       const markerQuery = markerValue ? `&marker=${encodeURIComponent(markerValue)}` : ''
       const response = await axios.get(
-        `xrpl/accounts?parent=${data.address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${activatedAccountsOrder}${markerQuery}`
+        `v2/accounts?parent=${data.address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${activatedAccountsOrder.toUpperCase()}${markerQuery}`
       )
       if (activatedAccountsRequestTokenRef.current !== requestToken) return
 
@@ -1288,25 +1297,20 @@ export default function Account({
       setActivatedAccountsMarker(payload?.marker || null)
 
       if (!append) {
-        let summaryCount = Number(payload?.count)
+        let summaryCount = Number(payload?.summary?.total)
         let summarySpent = rows.reduce(
-          (sum, child) => sum + (Number.isFinite(Number(child?.initial_balance)) ? Number(child.initial_balance) : 0),
+          (sum, child) => sum + (Number.isFinite(Number(child?.initialBalance)) ? Number(child.initialBalance) : 0),
           0
         )
 
         try {
-          const summaryResponse = await axios.get(`xrpl/accounts/summary?parent=${data.address}`)
+          const summaryResponse = await axios.get(`v2/accounts/count?parent=${data.address}`)
           if (activatedAccountsRequestTokenRef.current !== requestToken) return
           const summaryData = summaryResponse?.data || {}
           const summaryCountValue = Number(summaryData?.count)
-          const summarySpentValue = Number(summaryData?.initial_balance)
 
           if (Number.isFinite(summaryCountValue) && summaryCountValue >= 0) {
             summaryCount = summaryCountValue
-          }
-
-          if (Number.isFinite(summarySpentValue) && summarySpentValue >= 0) {
-            summarySpent = summarySpentValue
           }
         } catch {
           // Keep first-page summary values when summary endpoint fails.
@@ -1380,7 +1384,7 @@ export default function Account({
 
       try {
         const response = await axios.get(
-          `xrpl/accounts?parent=${data.address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${activatedAccountsOrder}&marker=${encodeURIComponent(markerValue)}`
+          `v2/accounts?parent=${data.address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${activatedAccountsOrder.toUpperCase()}&marker=${encodeURIComponent(markerValue)}`
         )
         if (activatedAccountsRequestTokenRef.current !== requestToken) return
 
@@ -3015,10 +3019,9 @@ export default function Account({
                         <>
                           {' for '}
                           <span className="bold">
-                            {fullNiceNumber(signerAccounts.length)}
-                            {hasMoreSignerAccounts ? '+' : ''}
+                            {fullNiceNumber(signerAccountsTotal)}
                           </span>{' '}
-                          {signerAccounts.length === 1 ? 'address' : 'addresses'}
+                          {signerAccountsTotal === 1 ? 'address' : 'addresses'}
                         </>
                       )}
                     </span>
@@ -8866,7 +8869,10 @@ export default function Account({
                       <span className="object-title-count" suppressHydrationWarning>
                         {' · '}
                         <span className="tooltip">
-                          {shortNiceNumber(activatedAccountsSpent, 2, 1)} {nativeCurrency}
+                          {amountFormat(Math.round(activatedAccountsSpent * 1000000), {
+                            short: true,
+                            shortSmallFractionDigits: 0
+                          })}
                           <span className="tooltiptext no-brake">
                             {fullNiceNumber(activatedAccountsSpent)} {nativeCurrency}
                           </span>
@@ -8935,8 +8941,8 @@ export default function Account({
                           const activationKey = `${child?.account || 'activation'}-${child?.inception || index}`
                           const activationTimeAgo = child?.inception ? timeFromNow(child.inception, i18n) : '-'
                           const activationTimeFull = child?.inception ? fullDateAndTime(child.inception) : '-'
-                          const activationAmount = Number.isFinite(Number(child?.initial_balance))
-                            ? Number(child.initial_balance)
+                          const activationAmount = Number.isFinite(Number(child?.initialBalance))
+                            ? Number(child.initialBalance)
                             : 0
                           const activationAmountDrops = Math.round(activationAmount * 1000000)
                           const currentBalance = Number.isFinite(Number(child?.balance)) ? Number(child.balance) : null
@@ -8951,10 +8957,10 @@ export default function Account({
                                   fiatRate: pageFiatRate,
                                   asText: true
                                 })
-                          const lastSubmittedFull = child?.last_submitted_at
-                            ? fullDateAndTime(child.last_submitted_at)
+                          const lastSubmittedFull = child?.lastSubmittedAt
+                            ? fullDateAndTime(child.lastSubmittedAt)
                             : null
-                          const deletedFull = child?.deleted_at ? fullDateAndTime(child.deleted_at) : null
+                          const deletedFull = child?.deletedAt ? fullDateAndTime(child.deletedAt) : null
                           const isExpanded = expandedActivatedKey === activationKey
                           const toggleCard = () => setExpandedActivatedKey(isExpanded ? null : activationKey)
 
@@ -9012,21 +9018,21 @@ export default function Account({
                                     <span>Activated:</span>
                                     <span>{activationTimeFull}</span>
                                   </div>
-                                  {child.tx_hash && (
+                                  {child.txHash && (
                                     <div className="detail-row">
                                       <span>Activation tx:</span>
                                       <span className="copy-inline">
                                         <Link
-                                          href={`/transaction/${child.tx_hash}`}
+                                          href={`/transaction/${child.txHash}`}
                                           onClick={(e) => e.stopPropagation()}
                                         >
-                                          {shortHash(child.tx_hash)}
+                                          {shortHash(child.txHash)}
                                         </Link>
-                                        <CopyButton text={child.tx_hash} />
+                                        <CopyButton text={child.txHash} />
                                       </span>
                                     </div>
                                   )}
-                                  {currentBalanceDrops !== null && !child.deleted_at && !child.deleted_tx_hash && (
+                                  {currentBalanceDrops !== null && !child.deletedAt && !child.deletedTxHash && (
                                     <div className="detail-row">
                                       <span>Balance now:</span>
                                       <span className="tx-detail-stacked-amount">
@@ -9039,7 +9045,7 @@ export default function Account({
                                       </span>
                                     </div>
                                   )}
-                                  {(lastSubmittedFull || child.last_submitted_tx_hash) && (
+                                  {(lastSubmittedFull || child.lastSubmittedTxHash) && (
                                     <>
                                       {lastSubmittedFull && (
                                         <div className="detail-row">
@@ -9047,23 +9053,23 @@ export default function Account({
                                           <span title={String(lastSubmittedFull)}>{lastSubmittedFull}</span>
                                         </div>
                                       )}
-                                      {child.last_submitted_tx_hash && (
+                                      {child.lastSubmittedTxHash && (
                                         <div className="detail-row">
                                           <span>Last submitted tx:</span>
                                           <span className="copy-inline">
                                             <Link
-                                              href={`/transaction/${child.last_submitted_tx_hash}`}
+                                              href={`/transaction/${child.lastSubmittedTxHash}`}
                                               onClick={(e) => e.stopPropagation()}
                                             >
-                                              {shortHash(child.last_submitted_tx_hash)}
+                                              {shortHash(child.lastSubmittedTxHash)}
                                             </Link>
-                                            <CopyButton text={child.last_submitted_tx_hash} />
+                                            <CopyButton text={child.lastSubmittedTxHash} />
                                           </span>
                                         </div>
                                       )}
                                     </>
                                   )}
-                                  {(deletedFull || child.deleted_tx_hash) && (
+                                  {(deletedFull || child.deletedTxHash) && (
                                     <>
                                       {deletedFull && (
                                         <div className="detail-row">
@@ -9071,17 +9077,17 @@ export default function Account({
                                           <span title={String(deletedFull)}>{deletedFull}</span>
                                         </div>
                                       )}
-                                      {child.deleted_tx_hash && (
+                                      {child.deletedTxHash && (
                                         <div className="detail-row">
                                           <span>Delete tx:</span>
                                           <span className="copy-inline">
                                             <Link
-                                              href={`/transaction/${child.deleted_tx_hash}`}
+                                              href={`/transaction/${child.deletedTxHash}`}
                                               onClick={(e) => e.stopPropagation()}
                                             >
-                                              {shortHash(child.deleted_tx_hash)}
+                                              {shortHash(child.deletedTxHash)}
                                             </Link>
-                                            <CopyButton text={child.deleted_tx_hash} />
+                                            <CopyButton text={child.deletedTxHash} />
                                           </span>
                                         </div>
                                       )}

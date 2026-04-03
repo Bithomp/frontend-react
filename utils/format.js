@@ -926,7 +926,11 @@ export const amountFormat = (amount, options = {}) => {
       showValue = niceNumber(showValue, 0, null, 15)
     }
   } else if (options.short) {
-    showValue = shortNiceNumber(showValue)
+    const shortSmallFractionDigits =
+      typeof options.shortSmallFractionDigits === 'number' ? options.shortSmallFractionDigits : 2
+    const shortLargeFractionDigits =
+      typeof options.shortLargeFractionDigits === 'number' ? options.shortLargeFractionDigits : 1
+    showValue = shortNiceNumber(showValue, shortSmallFractionDigits, shortLargeFractionDigits)
   } else {
     showValue = niceNumber(showValue, options.minFractionDigits, null, options.maxFractionDigits || 6)
   }

@@ -310,12 +310,12 @@ export const ledgerwalletGetAddressesWithBalances = async ({ start = 0, count = 
     discovered.map(async (item) => {
       try {
         const [balanceResponse, usernameResponse] = await Promise.allSettled([
-          axios('/xrpl/accounts/' + item.address),
+          axios('/v2/account/' + item.address),
           axios('/v2/address/' + item.address + '?username=true')
         ])
 
         const balanceNative =
-          balanceResponse.status === 'fulfilled' ? Number(balanceResponse.value?.data?.account_data?.balance) : 0
+          balanceResponse.status === 'fulfilled' ? Number(balanceResponse.value?.data?.account?.balance) : 0
         const username = usernameResponse.status === 'fulfilled' ? usernameResponse.value?.data?.username || null : null
 
         return {

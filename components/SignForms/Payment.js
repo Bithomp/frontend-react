@@ -81,8 +81,8 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       }
 
       try {
-        const accountResponse = await axios(`/xrpl/accounts/${destinationValue}`)
-        setRequireDestTag(!!accountResponse?.data?.account_data?.require_dest_tag)
+        const accountResponse = await axios(`/v2/account/${destinationValue}`)
+        setRequireDestTag(!!accountResponse?.data?.account?.requireDestTag)
       } catch (error) {
         setRequireDestTag(false)
       }
