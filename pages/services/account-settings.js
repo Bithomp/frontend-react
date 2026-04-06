@@ -15,7 +15,7 @@ import {
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { consumeServicesTxSuccessFlash } from '../../utils/servicesTxFlash'
+import { setupServicesTxSuccessFlashListener } from '../../utils/servicesTxFlash'
 import AddressInput from '../../components/UI/AddressInput'
 import { IoToggleOutline, IoDocumentTextOutline, IoPersonOutline } from 'react-icons/io5'
 import { FaWallet } from 'react-icons/fa6'
@@ -73,7 +73,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   const [currentWalletLocator, setCurrentWalletLocator] = useState('')
 
   useEffect(() => {
-    consumeServicesTxSuccessFlash({
+    return setupServicesTxSuccessFlashListener({
       setSuccessMessage,
       setErrorMessage
     })

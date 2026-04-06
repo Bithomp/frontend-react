@@ -6,7 +6,7 @@ import { explorerName, isAddressValid } from '../../utils'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { consumeServicesTxSuccessFlash } from '../../utils/servicesTxFlash'
+import { setupServicesTxSuccessFlashListener } from '../../utils/servicesTxFlash'
 import AddressInput from '../../components/UI/AddressInput'
 import CopyButton from '../../components/UI/CopyButton'
 import CheckBox from '../../components/UI/CheckBox'
@@ -79,7 +79,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
   const isBlackholed = !!ledgerInfo?.blackholed
 
   useEffect(() => {
-    consumeServicesTxSuccessFlash({
+    return setupServicesTxSuccessFlashListener({
       setSuccessMessage,
       setErrorMessage
     })

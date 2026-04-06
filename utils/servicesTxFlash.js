@@ -1,4 +1,5 @@
 const SERVICES_TX_SUCCESS_KEY = 'services:tx-success'
+const SERVICES_TX_SUCCESS_EVENT = 'services:tx-success:updated'
 
 const defaultTxSuccessMessages = {
   SetRegularKey: 'Regular key updated successfully.',
@@ -43,7 +44,39 @@ export const setServicesTxSuccessFlash = ({ txType, path }) => {
         ts: Date.now()
       })
     )
+    window.dispatchEvent(new Event(SERVICES_TX_SUCCESS_EVENT))
   } catch (_e) {
     return
+  }
+}
+
+export const setupServicesTxSuccessFlashListener = ({ setSuccessMessage, setErrorMessage, customMessages = {} }) => {
+  if (typeof window === 'undefined') return () => {}
+
+  const consume = () => {
+    consumeServicesTxSuccessFlash({
+      setSuccessMessage,
+      setErrorMessage,
+      customMessages
+    })
+  }
+
+  const onVisibilityChange = () => {
+    if (!document.hidden) {
+      consume()
+    }
+  }
+
+  consume()
+  window.addEventListener(SERVICES_TX_SUCCESS_EVENT, consume)
+  window.addEventListener('focus', consume)
+  window.addEventListener('pageshow', consume)
+  document.addEventListener('visibilitychange', onVisibilityChange)
+
+  return () => {
+    window.removeEventListener(SERVICES_TX_SUCCESS_EVENT, consume)
+    window.removeEventListener('focus', consume)
+    window.removeEventListener('pageshow', consume)
+    document.removeEventListener('visibilitychange', onVisibilityChange)
   }
 }

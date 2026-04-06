@@ -7,7 +7,7 @@ import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { consumeServicesTxSuccessFlash } from '../../utils/servicesTxFlash'
+import { setupServicesTxSuccessFlashListener } from '../../utils/servicesTxFlash'
 import CheckBox from '../../components/UI/CheckBox'
 import { IoLayersOutline, IoDocumentTextOutline, IoSkullOutline, IoPersonOutline } from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
@@ -71,7 +71,7 @@ export default function TokenIssuerSettings({
   const isBlackholed = !!ledgerInfo?.blackholed
 
   useEffect(() => {
-    consumeServicesTxSuccessFlash({
+    return setupServicesTxSuccessFlashListener({
       setSuccessMessage,
       setErrorMessage,
       customMessages: {
