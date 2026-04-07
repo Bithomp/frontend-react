@@ -677,6 +677,8 @@ export const avatarSrc = (address, refreshPage) => {
 
 export const tokenImageSrc = (token) => {
   if (!token) return ''
+  const mptId = token?.mptId || token?.mptokenIssuanceID || token?.MPTokenIssuanceID || token?.mpt_issuance_id
+  if (mptId) return mptokenImageSrc(mptId)
   if ((!token.issuer && token.currency === nativeCurrency) || typeof token === 'string')
     return nativeCurrenciesImages[nativeCurrency]
   return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency + '?hashIconZoom=12'

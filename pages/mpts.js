@@ -10,7 +10,6 @@ import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import {
   fullNiceNumber,
-  niceNumber,
   shortNiceNumber,
   dateFormat,
   timeFormat,
@@ -399,6 +398,15 @@ export default function Mpts({
     })
   }
 
+  const openTokenPage = (mptid) => {
+    if (!mptid) return
+    router.push(`/token/${mptid}`)
+  }
+
+  const stopRowClick = (event) => {
+    event.stopPropagation()
+  }
+
   return (
     <>
       <SEO title="Multi-Purpose Tokens" />
@@ -498,7 +506,11 @@ export default function Mpts({
                     <>
                       {data.map((token, i) => {
                         return (
-                          <tr key={i}>
+                          <tr
+                            key={i}
+                            onClick={() => openTokenPage(token.mptokenIssuanceID)}
+                            style={{ cursor: 'pointer' }}
+                          >
                             <td className="center">{i + 1}</td>
                             <td>
                               <TokenCell token={token} />
@@ -515,7 +527,9 @@ export default function Mpts({
                               </span>
                             </td>
                             <td className="center">
-                              <CopyButton text={token.mptokenIssuanceID} />
+                              <span onClick={stopRowClick}>
+                                <CopyButton text={token.mptokenIssuanceID} />
+                              </span>
                             </td>
                             <td className="right">{token.sequence}</td>
                             <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
@@ -533,7 +547,8 @@ export default function Mpts({
                             <td>{timeFromNow(token.lastUsedAt, i18n)}</td>
                             <td className="center">
                               <span
-                                onClick={() => {
+                                onClick={(event) => {
+                                  stopRowClick(event)
                                   authorize(token.mptokenIssuanceID)
                                 }}
                                 className="orange tooltip"
@@ -574,7 +589,11 @@ export default function Mpts({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr key={i}>
+                            <tr
+                              key={i}
+                              onClick={() => openTokenPage(token.mptokenIssuanceID)}
+                              style={{ cursor: 'pointer' }}
+                            >
                               <td style={{ padding: '5px' }} className="center">
                                 <b>{i + 1}</b>
                               </td>
@@ -582,7 +601,11 @@ export default function Mpts({
                                 <br />
                                 <TokenCell token={token} />
                                 <br />
-                                <b>MPT ID:</b> <CopyButton text={token.mptokenIssuanceID} /> <br />
+                                <b>MPT ID:</b>{' '}
+                                <span onClick={stopRowClick}>
+                                  <CopyButton text={token.mptokenIssuanceID} />
+                                </span>{' '}
+                                <br />
                                 <b>Holders:</b>{' '}
                                 <span className="tooltip">
                                   {shortNiceNumber(token.holders, 0, 1)}
@@ -595,6 +618,10 @@ export default function Mpts({
                                   <span className="tooltiptext no-brake">{fullNiceNumber(token.mptokens)}</span>
                                 </span>
                                 <br />
+                                <b>Token sequence:</b> {token.sequence}
+                                <br />
+                                <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : '0%'}
+                                <br />
                                 <b>Created:</b>{' '}
                                 <span>
                                   {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
@@ -602,47 +629,21 @@ export default function Mpts({
                                 <br />
                                 <b>Outstanding:</b>{' '}
                                 <span suppressHydrationWarning>
-                                  {niceNumber(scaleAmount(token.outstandingAmount, token.scale))}{' '}
+                                  {shortNiceNumber(scaleAmount(token.outstandingAmount, token.scale))}
                                 </span>
-                                {token.currency}
                                 <br />
                                 <b>Max supply:</b>{' '}
                                 <span suppressHydrationWarning>
-                                  {niceNumber(scaleAmount(token.maximumAmount, token.scale))}{' '}
+                                  {shortNiceNumber(scaleAmount(token.maximumAmount, token.scale))}
                                 </span>
-                                {token.currency}
                                 <br />
                                 <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
-                                {token.metadata?.description ? (
-                                  <>
-                                    <br />
-                                    <b>Description:</b> {token.metadata?.description}
-                                  </>
-                                ) : (
-                                  ''
-                                )}
-                                {token.metadata ? (
-                                  <>
-                                    <br />
-                                    <b>Metadata:</b>
-                                    <pre style={{ maxHeight: 300, overflow: 'auto' }}>
-                                      <code>{JSON.stringify(token.metadata, null, 2)}</code>
-                                    </pre>
-                                  </>
-                                ) : (
-                                  ''
-                                )}
-                                <br />
-                                <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : 'none'}
-                                <br />
-                                <b>Decimal places:</b> {token.scale || 0}
-                                <br />
-                                <b>Token sequence:</b> {token.sequence}
                                 <br />
                                 <br />
                                 <button
                                   className="button-action narrow thin"
-                                  onClick={() => {
+                                  onClick={(event) => {
+                                    stopRowClick(event)
                                     authorize(token.mptokenIssuanceID)
                                   }}
                                 >

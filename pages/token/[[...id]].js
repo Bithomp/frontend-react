@@ -2,6 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { FaHandshake } from 'react-icons/fa'
 
 import SEO from '../../components/SEO'
 import TokenSelector from '../../components/UI/TokenSelector'
@@ -12,7 +13,9 @@ import {
   fullNiceNumber,
   AddressWithIconFilled,
   addressUsernameOrServiceLink,
-  CurrencyWithIconInline
+  CurrencyWithIconInline,
+  dateFormat,
+  timeFormat
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -30,6 +33,7 @@ export async function getServerSideProps(context) {
   let issuer = null
   let currency = null
   let isNativeTokenRoute = false
+  let tokenId = null
 
   // Parse the dynamic route parameters
   if (id && Array.isArray(id) && id.length >= 2) {
@@ -38,16 +42,41 @@ export async function getServerSideProps(context) {
   } else if (id && Array.isArray(id) && id.length === 1 && id[0] === nativeCurrency) {
     currency = nativeCurrency
     isNativeTokenRoute = true
+  } else if (id && Array.isArray(id) && id.length === 1) {
+    tokenId = id[0]
   } else {
     initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode} or /token/' + nativeCurrency
   }
 
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
-  if (currency) {
+  if (currency || tokenId) {
     if (isNativeTokenRoute) {
       try {
         const url = `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${selectedCurrencyServer}`
+        const res = await axiosServer({
+          method: 'get',
+          url,
+          headers: passHeaders(req)
+        }).catch((error) => {
+          initialErrorMessage = error.message
+        })
+        if (res?.data) {
+          if (res.data?.error) {
+            initialErrorMessage = res.data.error
+          } else {
+            initialData = res.data
+          }
+        } else {
+          initialErrorMessage = 'Token not found'
+        }
+      } catch (e) {
+        console.error(e)
+        initialErrorMessage = 'Failed to fetch token data'
+      }
+    } else if (tokenId) {
+      try {
+        const url = `v2/token/${encodeURIComponent(tokenId)}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}`
         const res = await axiosServer({
           method: 'get',
           url,
@@ -83,7 +112,7 @@ export async function getServerSideProps(context) {
       if (!initialErrorMessage) {
         try {
           // Fetch token data
-          const url = `v2/trustlines/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}`
+          const url = `v2/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}`
           const res = await axiosServer({
             method: 'get',
             url,
@@ -119,6 +148,7 @@ export async function getServerSideProps(context) {
       selectedCurrencyServer,
       issuer,
       currency,
+      tokenId,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -160,9 +190,12 @@ export default function TokenPage({
     setLoading(true)
     const cur = selectedCurrency?.toLowerCase()
     if (!cur) return
-    const url = selectedToken?.issuer
-      ? `v2/trustlines/token/${selectedToken.issuer}/${selectedToken.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
-      : `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${cur}`
+    const selectedMptId = selectedToken?.mptokenIssuanceID
+    const url = selectedMptId
+      ? `v2/token/${encodeURIComponent(selectedMptId)}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+      : selectedToken?.issuer
+        ? `v2/token/${selectedToken.issuer}/${selectedToken.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+        : `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${cur}`
     const res = await axiosServer({
       method: 'get',
       url
@@ -186,7 +219,12 @@ export default function TokenPage({
   useEffect(() => {
     if (!selectedToken?.currency) return
     const { pathname, query } = router
-    query.id = selectedToken?.issuer ? [selectedToken.issuer, selectedToken.currency] : [selectedToken.currency]
+    const selectedMptId = selectedToken?.mptokenIssuanceID
+    query.id = selectedMptId
+      ? [selectedMptId]
+      : selectedToken?.issuer
+        ? [selectedToken.issuer, selectedToken.currency]
+        : [selectedToken.currency]
     router.replace({ pathname, query }, null, { shallow: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedToken])
@@ -317,8 +355,13 @@ export default function TokenPage({
   }
 
   const { statistics } = token
+  const mptId = token?.mptokenIssuanceID
+  const isMptToken = !!mptId
   const isNativeToken = !token?.issuer && token?.currency === nativeCurrency
-  const tokenDisplayCurrency = token?.currencyDetails?.currency || token?.currency || nativeCurrency
+  const isRoundTokenImage = !!token?.issuer || isMptToken || isNativeToken
+  const tokenDisplayCurrency = isMptToken
+    ? token?.metadata?.name || token?.currency || 'MPT'
+    : token?.currencyDetails?.currency || token?.currency || nativeCurrency
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
   const escrowStatus =
     token?.canLock === true ? (
@@ -380,6 +423,16 @@ export default function TokenPage({
     })
   }
 
+  const handleAuthorizeMpt = () => {
+    if (!setSignRequest || !mptId) return
+    setSignRequest({
+      request: {
+        TransactionType: 'MPTokenAuthorize',
+        MPTokenIssuanceID: mptId
+      }
+    })
+  }
+
   const title = isNativeToken ? (
     <>{tokenDisplayCurrency} (native currency)</>
   ) : (
@@ -433,14 +486,25 @@ export default function TokenPage({
               alt="token"
               src={tokenImageSrc(token)}
               className="token-image"
-              style={{ width: 'calc(100% - 2px)', height: 'auto' }}
+              style={{
+                width: 'calc(100% - 2px)',
+                height: 'auto',
+                borderRadius: isRoundTokenImage ? '50%' : undefined,
+                aspectRatio: isRoundTokenImage ? '1 / 1' : undefined,
+                objectFit: isRoundTokenImage ? 'cover' : undefined
+              }}
             />
             <h1>{tokenDisplayCurrency}</h1>
 
             {/* Action Buttons */}
-            {!isNativeToken && (
+            {!isNativeToken && !isMptToken && (
               <button className="button-action wide center" onClick={handleSetTrustline}>
                 Set Trustline
+              </button>
+            )}
+            {isMptToken && (
+              <button className="button-action wide center" onClick={handleAuthorizeMpt}>
+                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Authorize
               </button>
             )}
           </div>
@@ -458,6 +522,14 @@ export default function TokenPage({
                   <td>Currency</td>
                   <td>{tokenDisplayCurrency}</td>
                 </tr>
+                {isMptToken && (
+                  <tr>
+                    <td>MPT ID</td>
+                    <td>
+                      {mptId} <CopyButton text={mptId} />
+                    </td>
+                  </tr>
+                )}
                 {isLpToken && (
                   <tr>
                     <td>AMM pool</td>
@@ -501,48 +573,135 @@ export default function TokenPage({
                     </td>
                   </tr>
                 )}
-                <tr>
-                  <td>Currency code</td>
-                  <td>
-                    {token.currencyDetails?.currencyCode || token.currency}{' '}
-                    <CopyButton text={token.currencyDetails?.currencyCode || token.currency} />
-                  </td>
-                </tr>
-                <tr>
-                  <td>Supply</td>
-                  <td>
-                    {fullNiceNumber(token.supply)} {tokenDisplayCurrency}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Holders</td>
-                  <td>
-                    {isNativeToken ? (
-                      <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
-                    ) : (
-                      <Link
-                        href={
-                          '/distribution?currencyIssuer=' +
-                          token.issuer +
-                          '&currency=' +
-                          token.currencyDetails?.currencyCode
-                        }
-                      >
-                        {fullNiceNumber(token.holders)}
-                      </Link>
-                    )}
-                  </td>
-                </tr>
-                {!isNativeToken && (
+                {!isMptToken && (
                   <tr>
-                    <td>Trustlines</td>
-                    <td>{fullNiceNumber(token.trustlines)}</td>
+                    <td>Currency code</td>
+                    <td>
+                      {token.currencyDetails?.currencyCode || token.currency}{' '}
+                      <CopyButton text={token.currencyDetails?.currencyCode || token.currency} />
+                    </td>
                   </tr>
                 )}
-                <tr>
-                  <td>Escrow</td>
-                  <td>{escrowStatus}</td>
-                </tr>
+                {!isMptToken ? (
+                  <>
+                    <tr>
+                      <td>Supply</td>
+                      <td>
+                        {fullNiceNumber(token.supply)} {tokenDisplayCurrency}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Holders</td>
+                      <td>
+                        {isNativeToken ? (
+                          <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
+                        ) : (
+                          <Link
+                            href={
+                              '/distribution?currencyIssuer=' +
+                              token.issuer +
+                              '&currency=' +
+                              token.currencyDetails?.currencyCode
+                            }
+                          >
+                            {fullNiceNumber(token.holders)}
+                          </Link>
+                        )}
+                      </td>
+                    </tr>
+                    {!isNativeToken && (
+                      <tr>
+                        <td>Trustlines</td>
+                        <td>{fullNiceNumber(token.trustlines)}</td>
+                      </tr>
+                    )}
+                    <tr>
+                      <td>Escrow</td>
+                      <td>{escrowStatus}</td>
+                    </tr>
+                  </>
+                ) : (
+                  <>
+                    <tr>
+                      <td>Outstanding</td>
+                      <td>{fullNiceNumber((Number(token.outstandingAmount || 0) / 10 ** (token.scale || 0)) || 0)}</td>
+                    </tr>
+                    <tr>
+                      <td>Max supply</td>
+                      <td>{fullNiceNumber((Number(token.maximumAmount || 0) / 10 ** (token.scale || 0)) || 0)}</td>
+                    </tr>
+                    <tr>
+                      <td>Locked amount</td>
+                      <td>{fullNiceNumber((Number(token.lockedAmount || 0) / 10 ** (token.scale || 0)) || 0)}</td>
+                    </tr>
+                    <tr>
+                      <td>Holders</td>
+                      <td>{fullNiceNumber(token.holders || 0)}</td>
+                    </tr>
+                    <tr>
+                      <td>Authorized addresses</td>
+                      <td>{fullNiceNumber(token.mptokens || 0)}</td>
+                    </tr>
+                    <tr>
+                      <td>Transfer fee</td>
+                      <td>{token.transferFee ? token.transferFee / 1000 + '%' : 'none'}</td>
+                    </tr>
+                    <tr>
+                      <td>Decimal places</td>
+                      <td>{token.scale || 0}</td>
+                    </tr>
+                    <tr>
+                      <td>Token sequence</td>
+                      <td>{fullNiceNumber(token.sequence || 0)}</td>
+                    </tr>
+                    <tr>
+                      <td>Created</td>
+                      <td>
+                        {token.createdAt ? (
+                          <>
+                            {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
+                          </>
+                        ) : (
+                          '-'
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Last updated</td>
+                      <td>
+                        {token.updatedAt ? (
+                          <>
+                            {dateFormat(token.updatedAt)} {timeFormat(token.updatedAt)}
+                          </>
+                        ) : (
+                          '-'
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Last used</td>
+                      <td>
+                        {token.lastUsedAt ? (
+                          <>
+                            {dateFormat(token.lastUsedAt)} {timeFormat(token.lastUsedAt)}
+                          </>
+                        ) : (
+                          '-'
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Flags</td>
+                      <td>
+                        {token.flags
+                          ? Object.keys(token.flags)
+                            .filter((flag) => token.flags[flag])
+                            .join(', ') || 'none set'
+                          : 'none'}
+                      </td>
+                    </tr>
+                  </>
+                )}
                 {/*
                 <tr>
                   <td>KYC Status</td>
@@ -570,72 +729,106 @@ export default function TokenPage({
               </tbody>
             </table>
 
-            {/* Price Information */}
-            <table className="table-details">
-              <thead>
-                <tr>
-                  <th colSpan="100">Price information</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
+            {isMptToken && token.metadata && (
+              <table className="table-details">
+                <thead>
+                  <tr>
+                    <th colSpan="100">MPT metadata</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {token.metadata?.name && (
+                    <tr>
+                      <td>Name</td>
+                      <td>{token.metadata.name}</td>
+                    </tr>
+                  )}
+                  {(token.metadata?.description || token.description) && (
+                    <tr>
+                      <td>Description</td>
+                      <td>{token.metadata?.description || token.description}</td>
+                    </tr>
+                  )}
+                  <tr>
+                    <td>Raw metadata</td>
+                    <td>
+                      <pre style={{ maxHeight: 260, overflow: 'auto', margin: 0 }}>
+                        <code>{JSON.stringify(token.metadata, null, 2)}</code>
+                      </pre>
                     </td>
                   </tr>
-                ) : (
-                  <>
-                    {effectiveNativePrice && (
-                      <tr>
-                        <td>Last price</td>
-                        <td>
-                          {priceLine({
-                            priceNative: effectiveNativePrice,
-                            priceFiat: statistics?.priceFiats[selectedCurrency]
-                          })}
-                        </td>
-                      </tr>
-                    )}
-                    {changeItems.length > 0 && (
-                      <tr>
-                        <td>Change</td>
-                        <td>
-                          {changeItems.map((item, index) => (
-                            <span key={item.key} className="no-brake">
-                              {index > 0 && <span className="grey"> | </span>}
-                              {item.label}:{' '}
-                              {renderPercentCell({
-                                currentPrice: statistics?.priceFiats[selectedCurrency],
-                                pastPrice: item.pastPrice
-                              })}
-                            </span>
-                          ))}
-                        </td>
-                      </tr>
-                    )}
-                    {statistics?.priceNativeCurrencySpot && (
-                      <tr>
-                        <td>Spot price</td>
-                        <td>
-                          {priceLine({
-                            priceNative: statistics?.priceNativeCurrencySpot,
-                            priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
-                          })}
-                        </td>
-                      </tr>
-                    )}
-                    <tr>
-                      <td>Market cap</td>
-                      <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
+                </tbody>
+              </table>
+            )}
+
+            {/* Price Information */}
+            {!isMptToken && (
+              <table className="table-details">
+                <thead>
+                  <tr>
+                    <th colSpan="100">Price information</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <span className="waiting"></span>
+                      </td>
                     </tr>
-                  </>
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    <>
+                      {effectiveNativePrice && (
+                        <tr>
+                          <td>Last price</td>
+                          <td>
+                            {priceLine({
+                              priceNative: effectiveNativePrice,
+                              priceFiat: statistics?.priceFiats[selectedCurrency]
+                            })}
+                          </td>
+                        </tr>
+                      )}
+                      {changeItems.length > 0 && (
+                        <tr>
+                          <td>Change</td>
+                          <td>
+                            {changeItems.map((item, index) => (
+                              <span key={item.key} className="no-brake">
+                                {index > 0 && <span className="grey"> | </span>}
+                                {item.label}:{' '}
+                                {renderPercentCell({
+                                  currentPrice: statistics?.priceFiats[selectedCurrency],
+                                  pastPrice: item.pastPrice
+                                })}
+                              </span>
+                            ))}
+                          </td>
+                        </tr>
+                      )}
+                      {statistics?.priceNativeCurrencySpot && (
+                        <tr>
+                          <td>Spot price</td>
+                          <td>
+                            {priceLine({
+                              priceNative: statistics?.priceNativeCurrencySpot,
+                              priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
+                            })}
+                          </td>
+                        </tr>
+                      )}
+                      <tr>
+                        <td>Market cap</td>
+                        <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            )}
 
             {/* Stats for the last 24h */}
-            <table className="table-details">
+            {!isMptToken && <table className="table-details">
               <thead>
                 <tr>
                   <th colSpan="100">Stats for the last 24h</th>
@@ -723,10 +916,10 @@ export default function TokenPage({
                   </tr>
                 )}
               </tbody>
-            </table>
+            </table>}
 
             {/* Stats for the last closed day */}
-            <table className="table-details">
+            {!isMptToken && <table className="table-details">
               <thead>
                 <tr>
                   <th colSpan="100">Stats for the last closed day</th>
@@ -752,7 +945,7 @@ export default function TokenPage({
                   </tr>
                 )}
               </tbody>
-            </table>
+            </table>}
           </div>
         </div>
       </div>

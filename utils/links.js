@@ -9,7 +9,7 @@ export const LinkToken = ({ token, icon, copy, children, showIssuer = false }) =
   if (!token) return ''
   const { currencyDetails, issuer, issuerDetails, mptId, currency, metadata } = token
 
-  const tokenUrl = issuer ? '/token/' + issuer + '/' + currency : '/token/' + currency
+  const tokenUrl = mptId ? '/token/' + mptId : issuer ? '/token/' + issuer + '/' + currency : '/token/' + currency
   const lpToken = currencyDetails?.type === 'lp_token'
   const mptCurrency = metadata?.t || metadata?.c || metadata?.currency || currency || 'N/A'
 
@@ -32,7 +32,7 @@ export const LinkToken = ({ token, icon, copy, children, showIssuer = false }) =
 
   return (
     <>
-      {!linkAmm && !mptId ? (
+      {!linkAmm ? (
         <Link href={tokenUrl} className="bold" style={{ textDecoration: 'none' }}>
           {children || icon ? <LinkIcon /> : textCurrency}
         </Link>
