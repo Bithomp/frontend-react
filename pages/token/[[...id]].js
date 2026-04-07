@@ -29,33 +29,25 @@ export async function getServerSideProps(context) {
   let initialErrorMessage = null
   let issuer = null
   let currency = null
+  let isNativeTokenRoute = false
 
   // Parse the dynamic route parameters
   if (id && Array.isArray(id) && id.length >= 2) {
     issuer = id[0]
     currency = id[1]
+  } else if (id && Array.isArray(id) && id.length === 1 && id[0] === nativeCurrency) {
+    currency = nativeCurrency
+    isNativeTokenRoute = true
   } else {
-    initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode}'
+    initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode} or /token/' + nativeCurrency
   }
 
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
-  if (issuer && currency) {
-    // Validate issuer
-    if (!isAddressOrUsername(issuer)) {
-      initialErrorMessage = 'Invalid issuer address or username'
-    }
-
-    // Validate currency code
-    const { valid, currencyCode } = validateCurrencyCode(currency)
-    if (!valid) {
-      initialErrorMessage = 'Invalid currency code'
-    }
-
-    if (!initialErrorMessage) {
+  if (currency) {
+    if (isNativeTokenRoute) {
       try {
-        // Fetch token data
-        const url = `v2/trustlines/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}`
+        const url = `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${selectedCurrencyServer}`
         const res = await axiosServer({
           method: 'get',
           url,
@@ -76,6 +68,45 @@ export async function getServerSideProps(context) {
         console.error(e)
         initialErrorMessage = 'Failed to fetch token data'
       }
+    } else if (issuer) {
+    // Validate issuer
+      if (!isAddressOrUsername(issuer)) {
+        initialErrorMessage = 'Invalid issuer address or username'
+      }
+
+    // Validate currency code
+      const { valid, currencyCode } = validateCurrencyCode(currency)
+      if (!valid) {
+        initialErrorMessage = 'Invalid currency code'
+      }
+
+      if (!initialErrorMessage) {
+        try {
+          // Fetch token data
+          const url = `v2/trustlines/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}`
+          const res = await axiosServer({
+            method: 'get',
+            url,
+            headers: passHeaders(req)
+          }).catch((error) => {
+            initialErrorMessage = error.message
+          })
+          if (res?.data) {
+            if (res.data?.error) {
+              initialErrorMessage = res.data.error
+            } else {
+              initialData = res.data
+            }
+          } else {
+            initialErrorMessage = 'Token not found'
+          }
+        } catch (e) {
+          console.error(e)
+          initialErrorMessage = 'Failed to fetch token data'
+        }
+      }
+    } else {
+      initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode} or /token/' + nativeCurrency
     }
   }
 
@@ -129,7 +160,9 @@ export default function TokenPage({
     setLoading(true)
     const cur = selectedCurrency?.toLowerCase()
     if (!cur) return
-    const url = `v2/trustlines/token/${selectedToken.issuer}/${selectedToken.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+    const url = selectedToken?.issuer
+      ? `v2/trustlines/token/${selectedToken.issuer}/${selectedToken.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+      : `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${cur}`
     const res = await axiosServer({
       method: 'get',
       url
@@ -151,8 +184,9 @@ export default function TokenPage({
   }, [selectedCurrency, selectedToken])
 
   useEffect(() => {
+    if (!selectedToken?.currency) return
     const { pathname, query } = router
-    query.id = [selectedToken?.issuer, selectedToken?.currency]
+    query.id = selectedToken?.issuer ? [selectedToken.issuer, selectedToken.currency] : [selectedToken.currency]
     router.replace({ pathname, query }, null, { shallow: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedToken])
@@ -160,29 +194,35 @@ export default function TokenPage({
   // Helper: price line as "fiat (XRP)" using historical rate when available
   const priceLine = ({ priceNative, priceFiat }) => {
     const price = priceNative
+    const currencyText = token?.currencyDetails?.currency || token?.currency || nativeCurrency
+    const isNativeFromToken = !token?.issuer && token?.currency === nativeCurrency
     return (
       <span suppressHydrationWarning>
         {niceNumber(priceFiat || 0, 4, selectedCurrency)}
-        {isSsrMobile ? <br /> : ' '}
-        <span className="grey">
-          {!isSsrMobile && '('}
-          {price < 0.0001 ? (
-            <>
+        {!isNativeFromToken && (
+          <>
+            {isSsrMobile ? <br /> : ' '}
+            <span className="grey">
+              {!isSsrMobile && '('}
+              {price < 0.0001 ? (
+                <>
+                  <span className="no-brake">
+                    1M {currencyText} = {niceNumber(price * 1000000, 6)}{' '}
+                  </span>
+                  <span className="no-brake">{nativeCurrency}</span>,{' '}
+                </>
+              ) : (
+                <span className="no-brake">
+                  {niceNumber(price, 6)} {nativeCurrency},{' '}
+                </span>
+              )}
               <span className="no-brake">
-                1M {token?.currencyDetails?.currency} = {niceNumber(price * 1000000, 6)}{' '}
+                1 {nativeCurrency} = {niceNumber(1 / price, 6)} {currencyText}
               </span>
-              <span className="no-brake">{nativeCurrency}</span>,{' '}
-            </>
-          ) : (
-            <span className="no-brake">
-              {niceNumber(price, 6)} {nativeCurrency},{' '}
+              {!isSsrMobile && ')'}
             </span>
-          )}
-          <span className="no-brake">
-            1 {nativeCurrency} = {niceNumber(1 / price, 6)} {token?.currencyDetails?.currency}
-          </span>
-          {!isSsrMobile && ')'}
-        </span>
+          </>
+        )}
       </span>
     )
   }
@@ -212,14 +252,15 @@ export default function TokenPage({
     } else {
       volume = statistics?.[type + 'Volume'] || 0
     }
-    const volumeFiat = volume * (statistics?.priceNativeCurrency || 0) * fiatRate || 0
+    const priceInNative = statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1)
+    const volumeFiat = volume * priceInNative * fiatRate || 0
     return (
       <span suppressHydrationWarning>
         {niceNumber(volumeFiat, 2, selectedCurrency)}
         {isSsrMobile ? <br /> : ' '}
         <span className="grey">
           {!isSsrMobile && '('}
-          {niceNumber(volume, 2)} {currencyDetails?.currency}
+          {niceNumber(volume, 2)} {currencyDetails?.currency || token?.currency || nativeCurrency}
           {!isSsrMobile && ')'}
         </span>
       </span>
@@ -276,6 +317,9 @@ export default function TokenPage({
   }
 
   const { statistics } = token
+  const isNativeToken = !token?.issuer && token?.currency === nativeCurrency
+  const tokenDisplayCurrency = token?.currencyDetails?.currency || token?.currency || nativeCurrency
+  const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
   const escrowStatus =
     token?.canLock === true ? (
       <span className="bold">Can be escrowed</span>
@@ -289,25 +333,25 @@ export default function TokenPage({
       key: '5m',
       label: '5m',
       pastPrice: statistics?.priceFiats5m?.[selectedCurrency],
-      hasData: Boolean(statistics?.priceNativeCurrency5m)
+      hasData: statistics?.priceFiats5m?.[selectedCurrency] !== undefined
     },
     {
       key: '1h',
       label: '1h',
       pastPrice: statistics?.priceFiats1h?.[selectedCurrency],
-      hasData: Boolean(statistics?.priceNativeCurrency1h)
+      hasData: statistics?.priceFiats1h?.[selectedCurrency] !== undefined
     },
     {
       key: '24h',
       label: '24h',
       pastPrice: statistics?.priceFiats24h?.[selectedCurrency],
-      hasData: Boolean(statistics?.priceNativeCurrency24h)
+      hasData: statistics?.priceFiats24h?.[selectedCurrency] !== undefined
     },
     {
       key: '7d',
       label: '7d',
       pastPrice: statistics?.priceFiats7d?.[selectedCurrency],
-      hasData: Boolean(statistics?.priceNativeCurrency7d)
+      hasData: statistics?.priceFiats7d?.[selectedCurrency] !== undefined
     }
   ].filter((item) => item.hasData)
 
@@ -336,9 +380,11 @@ export default function TokenPage({
     })
   }
 
-  const title = (
+  const title = isNativeToken ? (
+    <>{tokenDisplayCurrency} (native currency)</>
+  ) : (
     <>
-      {token?.currencyDetails?.currency} issued by {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
+      {tokenDisplayCurrency} issued by {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
     </>
   )
   const isLpToken = token?.currencyDetails?.type === 'lp_token'
@@ -357,9 +403,11 @@ export default function TokenPage({
     <>
       <SEO
         title={
-          token?.currencyDetails?.currency +
-          ' issued by ' +
-          (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
+          isNativeToken
+            ? tokenDisplayCurrency + ' (native currency)'
+            : tokenDisplayCurrency +
+              ' issued by ' +
+              (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
         }
       />
       <div className={tokenClass}>
@@ -376,7 +424,7 @@ export default function TokenPage({
             }}
           >
             <div style={{ width: '100%', marginBottom: '20px' }}>
-              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} />
+              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={false} />
             </div>
           </div>
           <div className="column-left">
@@ -387,12 +435,14 @@ export default function TokenPage({
               className="token-image"
               style={{ width: 'calc(100% - 2px)', height: 'auto' }}
             />
-            <h1>{token?.currencyDetails?.currency}</h1>
+            <h1>{tokenDisplayCurrency}</h1>
 
             {/* Action Buttons */}
-            <button className="button-action wide center" onClick={handleSetTrustline}>
-              Set Trustline
-            </button>
+            {!isNativeToken && (
+              <button className="button-action wide center" onClick={handleSetTrustline}>
+                Set Trustline
+              </button>
+            )}
           </div>
 
           <div className="column-right">
@@ -406,7 +456,7 @@ export default function TokenPage({
               <tbody>
                 <tr>
                   <td>Currency</td>
-                  <td>{token?.currencyDetails?.currency}</td>
+                  <td>{tokenDisplayCurrency}</td>
                 </tr>
                 {isLpToken && (
                   <tr>
@@ -438,48 +488,57 @@ export default function TokenPage({
                     <td>{token.description}</td>
                   </tr>
                 )}
-                <tr>
-                  <td>Issuer</td>
-                  <td>
-                    <AddressWithIconFilled
-                      data={token}
-                      name="issuer"
-                      copyButton={true}
-                      options={isSsrMobile ? { short: 10 } : null}
-                    />
-                  </td>
-                </tr>
+                {!isNativeToken && (
+                  <tr>
+                    <td>Issuer</td>
+                    <td>
+                      <AddressWithIconFilled
+                        data={token}
+                        name="issuer"
+                        copyButton={true}
+                        options={isSsrMobile ? { short: 10 } : null}
+                      />
+                    </td>
+                  </tr>
+                )}
                 <tr>
                   <td>Currency code</td>
                   <td>
-                    {token.currencyDetails?.currencyCode} <CopyButton text={token.currencyDetails?.currencyCode} />
+                    {token.currencyDetails?.currencyCode || token.currency}{' '}
+                    <CopyButton text={token.currencyDetails?.currencyCode || token.currency} />
                   </td>
                 </tr>
                 <tr>
                   <td>Supply</td>
                   <td>
-                    {fullNiceNumber(token.supply)} {token.currencyDetails?.currency}
+                    {fullNiceNumber(token.supply)} {tokenDisplayCurrency}
                   </td>
                 </tr>
                 <tr>
                   <td>Holders</td>
                   <td>
-                    <Link
-                      href={
-                        '/distribution?currencyIssuer=' +
-                        token.issuer +
-                        '&currency=' +
-                        token.currencyDetails?.currencyCode
-                      }
-                    >
-                      {fullNiceNumber(token.holders)}
-                    </Link>
+                    {isNativeToken ? (
+                      <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
+                    ) : (
+                      <Link
+                        href={
+                          '/distribution?currencyIssuer=' +
+                          token.issuer +
+                          '&currency=' +
+                          token.currencyDetails?.currencyCode
+                        }
+                      >
+                        {fullNiceNumber(token.holders)}
+                      </Link>
+                    )}
                   </td>
                 </tr>
-                <tr>
-                  <td>Trustlines</td>
-                  <td>{fullNiceNumber(token.trustlines)}</td>
-                </tr>
+                {!isNativeToken && (
+                  <tr>
+                    <td>Trustlines</td>
+                    <td>{fullNiceNumber(token.trustlines)}</td>
+                  </tr>
+                )}
                 <tr>
                   <td>Escrow</td>
                   <td>{escrowStatus}</td>
@@ -527,12 +586,12 @@ export default function TokenPage({
                   </tr>
                 ) : (
                   <>
-                    {statistics?.priceNativeCurrency && (
+                    {effectiveNativePrice && (
                       <tr>
                         <td>Last price</td>
                         <td>
                           {priceLine({
-                            priceNative: statistics?.priceNativeCurrency,
+                            priceNative: effectiveNativePrice,
                             priceFiat: statistics?.priceFiats[selectedCurrency]
                           })}
                         </td>
@@ -651,7 +710,13 @@ export default function TokenPage({
                   <tr>
                     <td>AMM pools</td>
                     <td>
-                      <Link href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}>
+                      <Link
+                        href={
+                          token?.issuer
+                            ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
+                            : `/amms?currency=${token.currency}`
+                        }
+                      >
                         {statistics?.ammPools || 0}
                       </Link>
                     </td>

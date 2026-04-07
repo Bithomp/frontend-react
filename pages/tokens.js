@@ -19,6 +19,12 @@ import { useRouter } from 'next/router'
 import TokenTabs from '../components/Tabs/TokenTabs'
 import Link from 'next/link'
 
+const mergeNativeTokenOnTop = (tokens, nativeToken) => {
+  const list = Array.isArray(tokens) ? tokens : []
+  const filtered = list.filter((token) => !(token?.currency === nativeCurrency && !token?.issuer))
+  return nativeToken ? [nativeToken, ...filtered] : filtered
+}
+
 /*
   {
     "token": "rL2sSC2eMm6xYyx1nqZ9MW4AP185mg7N9t:4150585800000000000000000000000000000000",
@@ -64,6 +70,7 @@ export async function getServerSideProps(context) {
   const { currency, issuer, order, canEscrow } = query
 
   let initialData = null
+  let nativeTokenData = null
   let initialErrorMessage = null
 
   // Validate order param
@@ -104,21 +111,48 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const res = await axiosServer({
-      method: 'get',
-      url,
-      headers: passHeaders(req)
-    }).catch((error) => {
-      initialErrorMessage = error.message
-    })
-    if (res?.data) {
-      if (res.data?.error) {
-        initialErrorMessage = res.data.error
+    const headers = passHeaders(req)
+    const nativeTokenUrl = `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${selectedCurrencyServer}`
+    const [tokensResult, nativeResult] = await Promise.allSettled([
+      axiosServer({
+        method: 'get',
+        url,
+        headers
+      }),
+      axiosServer({
+        method: 'get',
+        url: nativeTokenUrl,
+        headers
+      })
+    ])
+
+    if (tokensResult.status === 'fulfilled') {
+      const res = tokensResult.value
+      if (res?.data) {
+        if (res.data?.error) {
+          initialErrorMessage = res.data.error
+        } else {
+          initialData = res.data
+        }
       } else {
-        initialData = res.data
+        initialErrorMessage = 'Tokens not found'
       }
     } else {
-      initialErrorMessage = 'Tokens not found'
+      initialErrorMessage = tokensResult.reason?.message || 'Tokens not found'
+    }
+
+    if (nativeResult.status === 'fulfilled') {
+      const nativeRes = nativeResult.value
+      if (nativeRes?.data && !nativeRes.data?.error) {
+        nativeTokenData = nativeRes.data
+      }
+    }
+
+    if (initialData?.tokens && !issuer && !currency) {
+      initialData = {
+        ...initialData,
+        tokens: mergeNativeTokenOnTop(initialData.tokens, nativeTokenData)
+      }
     }
   } catch (e) {
     console.error(e)
@@ -273,18 +307,33 @@ export default function Tokens({
         apiUrl += '&canLock=true'
       }
 
-      const response = await axios
-        .get(apiUrl, {
+      const shouldShowNativeFirst = !issuer && !currency
+      const nativeTokenUrl = `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${selectedCurrency}`
+      const [tokensResponse, nativeResponse] = await Promise.allSettled([
+        axios.get(apiUrl, {
           signal: controller.signal
-        })
-        .catch((error) => {
-          if (error && error.message !== 'canceled') {
-            setErrorMessage(t('error.' + error.message))
-            setLoading(false)
-          }
-        })
+        }),
+        !loadMoreRequest && shouldShowNativeFirst
+          ? axios.get(nativeTokenUrl, {
+              signal: controller.signal
+            })
+          : Promise.resolve(null)
+      ])
 
-      const newdata = response?.data
+      if (tokensResponse.status === 'rejected') {
+        const error = tokensResponse.reason
+        if (error && error.message !== 'canceled') {
+          setErrorMessage(t('error.' + error.message))
+          setLoading(false)
+        }
+        return
+      }
+
+      const nativeToken =
+        nativeResponse.status === 'fulfilled' && nativeResponse.value?.data && !nativeResponse.value.data?.error
+          ? nativeResponse.value.data
+          : null
+      const newdata = tokensResponse.value?.data
       if (newdata) {
         setLoading(false) //keep here for fast tab clickers
         if (newdata.tokens) {
@@ -293,14 +342,21 @@ export default function Tokens({
             setErrorMessage('')
             setMarker(newdata.marker || null)
             if (!loadMoreRequest) {
-              setData(list)
+              setData(shouldShowNativeFirst ? mergeNativeTokenOnTop(list, nativeToken) : list)
             } else {
               setData((prev) => [...prev, ...list])
             }
           } else {
-            setErrorMessage(t('general.no-data'))
+            if (!loadMoreRequest && shouldShowNativeFirst && nativeToken) {
+              setErrorMessage('')
+              setData([nativeToken])
+            } else {
+              setErrorMessage(t('general.no-data'))
+              if (!loadMoreRequest) {
+                setData([])
+              }
+            }
             if (!loadMoreRequest) {
-              setData([])
               setMarker(null)
             }
           }
@@ -498,7 +554,8 @@ export default function Tokens({
     } else {
       volume = statistics?.[type + 'Volume'] || 0
     }
-    const volumeFiat = volume * statistics?.priceNativeCurrency * fiatRate || 0
+    const priceInNative = statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1)
+    const volumeFiat = volume * priceInNative * fiatRate || 0
 
     if (mobile) {
       return <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
@@ -730,15 +787,17 @@ export default function Tokens({
                   ) : (
                     <>
                       {data.map((token, i) => {
+                        const hasIssuer = !!token?.issuer
+                        const tokenPageUrl = hasIssuer ? `/token/${token.issuer}/${token.currency}` : `/token/${token.currency}`
                         return (
-                          <tr key={i} onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}>
+                          <tr key={i} onClick={() => router.push(tokenPageUrl)}>
                             <td className="center">{i + 1}</td>
                             <td>
                               <TokenCell token={token} />
                             </td>
                             <td className="right">
                               {priceToFiat({
-                                price: token.statistics?.priceNativeCurrency,
+                                price: token.statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1),
                                 priceFiats: token.statistics.priceFiats
                               })}
                             </td>
@@ -780,13 +839,17 @@ export default function Tokens({
                             </td>
                             {!xahauNetwork && (
                               <td className="center">
-                                <a
-                                  href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                  className="tooltip"
-                                >
-                                  {token.statistics?.ammPools || 0}
-                                  <span className="tooltiptext no-brake">View AMMs</span>
-                                </a>
+                                {hasIssuer ? (
+                                  <a
+                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                    className="tooltip"
+                                  >
+                                    {token.statistics?.ammPools || 0}
+                                    <span className="tooltiptext no-brake">View AMMs</span>
+                                  </a>
+                                ) : (
+                                  token.statistics?.ammPools || 0
+                                )}
                                 <br />
                                 <span className="tooltip green">
                                   {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
@@ -803,15 +866,19 @@ export default function Tokens({
                             </td>
                             <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
                             <td className="center">
-                              <span
-                                onClick={() => {
-                                  handleSetTrustline(token)
-                                }}
-                                className="orange tooltip"
-                              >
-                                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                                <span className="tooltiptext no-brake">Set trust</span>
-                              </span>
+                              {hasIssuer ? (
+                                <span
+                                  onClick={() => {
+                                    handleSetTrustline(token)
+                                  }}
+                                  className="orange tooltip"
+                                >
+                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                                  <span className="tooltiptext no-brake">Set trust</span>
+                                </span>
+                              ) : (
+                                <span className="grey">-</span>
+                              )}
                             </td>
                           </tr>
                         )
@@ -845,6 +912,13 @@ export default function Tokens({
                     ) : (
                       <>
                         {data.map((token, i) => {
+                          const hasIssuer = !!token?.issuer
+                          const tokenPageUrl = hasIssuer
+                            ? `/token/${token.issuer}/${token.currency}`
+                            : `/token/${token.currency}`
+                          const distributionUrl = hasIssuer
+                            ? `/distribution?currencyIssuer=${token.issuer}&currency=${token.currency}`
+                            : '/distribution'
                           return (
                             <tr key={i}>
                               <td style={{ padding: '5px' }} className="center">
@@ -855,7 +929,7 @@ export default function Tokens({
                                 <p>
                                   Price:{' '}
                                   {priceToFiat({
-                                    price: token.statistics?.priceNativeCurrency,
+                                    price: token.statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1),
                                     mobile: true,
                                     priceFiats: token.statistics.priceFiats
                                   })}
@@ -875,11 +949,7 @@ export default function Tokens({
                                   Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
                                   Holders:{' '}
-                                  <Link
-                                    href={`/distribution?currencyIssuer=${token.issuer}&currency=${token.currency}`}
-                                  >
-                                    {niceNumber(token.holders)}
-                                  </Link>
+                                  <Link href={distributionUrl}>{niceNumber(token.holders)}</Link>
                                   <br />
                                   Trustlines: {niceNumber(token.trustlines)}
                                   <br />
@@ -887,15 +957,20 @@ export default function Tokens({
                                   <span className="mobile-token-actions">
                                     <button
                                       className="button-action narrow thin"
-                                      onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                                      onClick={() => {
+                                        router.push(tokenPageUrl)
+                                      }}
                                     >
                                       Token Page
                                     </button>
                                     <button
                                       className="button-action narrow thin"
                                       onClick={() => {
-                                        handleSetTrustline(token)
+                                        if (hasIssuer) {
+                                          handleSetTrustline(token)
+                                        }
                                       }}
+                                      disabled={!hasIssuer}
                                     >
                                       <FaHandshake style={{ fontSize: 16, marginBottom: -3 }} /> Set Trust
                                     </button>

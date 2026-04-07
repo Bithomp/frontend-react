@@ -258,7 +258,7 @@ export const CurrencyWithIconInline = ({ token, copy, link, linkIcon, showIssuer
   const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
 
   if (linkIcon) {
-    const tokenUrl = token.issuer ? `/token/${token.issuer}/${token.currency}` : null
+    const tokenUrl = token?.issuer ? `/token/${token.issuer}/${token.currency}` : `/token/${token.currency}`
     return (
       <>
         <TokenImage token={token} />
