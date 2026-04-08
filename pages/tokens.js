@@ -14,7 +14,14 @@ import CheckBox from '../components/UI/CheckBox'
 import { fullNiceNumber, niceCurrency, niceNumber, shortNiceNumber, CurrencyWithIcon } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { isAddressOrUsername, nativeCurrency, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
+import {
+  explorerName,
+  isAddressOrUsername,
+  nativeCurrency,
+  setTabParams,
+  validateCurrencyCode,
+  xahauNetwork
+} from '../utils'
 import { useRouter } from 'next/router'
 import TokenTabs from '../components/Tabs/TokenTabs'
 import Link from 'next/link'
@@ -638,7 +645,7 @@ export default function Tokens({
         }}
         twitterImage={{ file: 'previews/630x630/tokens.png' }}
       />
-      <h1 className="center">Tokens</h1>
+      <h1 className="center">{explorerName} Tokens</h1>
 
       {!xahauNetwork && <TokenTabs tab="tokens" />}
 
@@ -788,7 +795,9 @@ export default function Tokens({
                     <>
                       {data.map((token, i) => {
                         const hasIssuer = !!token?.issuer
-                        const tokenPageUrl = hasIssuer ? `/token/${token.issuer}/${token.currency}` : `/token/${token.currency}`
+                        const tokenPageUrl = hasIssuer
+                          ? `/token/${token.issuer}/${token.currency}`
+                          : `/token/${token.currency}`
                         return (
                           <tr key={i} onClick={() => router.push(tokenPageUrl)}>
                             <td className="center">{i + 1}</td>
@@ -949,8 +958,7 @@ export default function Tokens({
                                   <br />
                                   Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
-                                  Holders:{' '}
-                                  <Link href={distributionUrl}>{niceNumber(token.holders)}</Link>
+                                  Holders: <Link href={distributionUrl}>{niceNumber(token.holders)}</Link>
                                   {!isNativeToken && (
                                     <>
                                       <br />
