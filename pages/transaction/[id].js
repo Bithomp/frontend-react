@@ -29,10 +29,26 @@ import {
   TransactionBatch,
   TransactionSignerListSet,
   TransactionCron,
-  TransactionPermissionedDomain
+  TransactionPermissionedDomain,
+  TransactionMPToken
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
+
+const collectMptIssuanceIds = (txData) => {
+  const ids = new Set()
+
+  const addId = (value) => {
+    if (value && typeof value === 'string') {
+      ids.add(value)
+    }
+  }
+
+  addId(txData?.specification?.mptIssuanceID)
+  Object.keys(txData?.outcome?.mptokenChanges || {}).forEach(addId)
+
+  return Array.from(ids)
+}
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -57,6 +73,37 @@ export async function getServerSideProps(context) {
 
   if (typeof data === 'object') {
     data.id = id
+    const txType = data?.tx?.TransactionType
+
+    if (txType?.startsWith('MPToken')) {
+      const mptIssuanceIds = collectMptIssuanceIds(data)
+
+      if (mptIssuanceIds.length > 0) {
+        const tokenResponses = await Promise.all(
+          mptIssuanceIds.map(async (mptIssuanceId) => {
+            try {
+              const tokenRes = await axiosServer({
+                method: 'get',
+                url: `v2/token/${encodeURIComponent(mptIssuanceId)}?currencyDetails=true`,
+                headers: passHeaders(req)
+              })
+              return tokenRes?.data || null
+            } catch (e) {
+              return null
+            }
+          })
+        )
+
+        data.mptokensDetails = tokenResponses.reduce((acc, tokenData) => {
+          const mptIssuanceId =
+            tokenData?.mptokenIssuanceID || tokenData?.MPTokenIssuanceID || tokenData?.mpt_issuance_id
+          if (mptIssuanceId) {
+            acc[mptIssuanceId] = tokenData
+          }
+          return acc
+        }, {})
+      }
+    }
   } else {
     initialErrorMessage = data
   }
@@ -128,6 +175,8 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
     TransactionComponent = TransactionImport
   } else if (txType?.includes('NFToken')) {
     TransactionComponent = TransactionNFToken
+  } else if (txType?.startsWith('MPToken')) {
+    TransactionComponent = TransactionMPToken
   } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
     TransactionComponent = TransactionOffer
   } else if (txType === 'Payment') {
