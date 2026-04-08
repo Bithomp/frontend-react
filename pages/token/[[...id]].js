@@ -399,6 +399,12 @@ export default function TokenPage({
       hasData: statistics?.priceFiats7d?.[selectedCurrency] !== undefined
     }
   ].filter((item) => item.hasData)
+  const showPriceInformation =
+    loading ||
+    effectiveNativePrice ||
+    changeItems.length > 0 ||
+    statistics?.priceNativeCurrencySpot ||
+    statistics?.marketcap
 
   // Helper function to format supply for trustline
   const formatSupply = (supply) => {
@@ -764,7 +770,7 @@ export default function TokenPage({
             )}
 
             {/* Price Information */}
-            {!isMptToken && (
+            {showPriceInformation && (
               <table className="table-details">
                 <thead>
                   <tr>
@@ -830,7 +836,7 @@ export default function TokenPage({
             )}
 
             {/* Stats for the last 24h */}
-            {!isMptToken && (
+            {statistics && (
               <table className="table-details">
                 <thead>
                   <tr>
@@ -902,7 +908,7 @@ export default function TokenPage({
                     <td>Unique accounts</td>
                     <td>{fullNiceNumber(statistics?.uniqueAccounts || 0)}</td>
                   </tr>
-                  {!xahauNetwork && (
+                  {!xahauNetwork && !isMptToken && (
                     <tr>
                       <td>AMM pools</td>
                       <td>
@@ -923,7 +929,7 @@ export default function TokenPage({
             )}
 
             {/* Stats for the last closed day */}
-            {!isMptToken && (
+            {statistics && (
               <table className="table-details">
                 <thead>
                   <tr>
@@ -943,7 +949,7 @@ export default function TokenPage({
                     <td>Active offers</td>
                     <td>{fullNiceNumber(statistics?.activeOffers || 0)}</td>
                   </tr>
-                  {!xahauNetwork && (
+                  {!xahauNetwork && !isMptToken && (
                     <tr>
                       <td>Active AMM pools</td>
                       <td>{niceNumber(statistics?.activeAmmPools || 0)}</td>
