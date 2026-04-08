@@ -316,7 +316,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
 import { NftImage, isNftExplicit, nftName, nftUrl } from '../../utils/nft'
 import {
-  AddressWithIcon,
+  AddressWithIconFilled,
   AddressWithIconInline,
   amountFormat,
   codeHighlight,
@@ -3018,9 +3018,7 @@ export default function Account({
                       ) : (
                         <>
                           {' for '}
-                          <span className="bold">
-                            {fullNiceNumber(signerAccountsTotal)}
-                          </span>{' '}
+                          <span className="bold">{fullNiceNumber(signerAccountsTotal)}</span>{' '}
                           {signerAccountsTotal === 1 ? 'address' : 'addresses'}
                         </>
                       )}
@@ -3062,10 +3060,7 @@ export default function Account({
                                 <div className="signer-row" key={`${signerAccount.account}-${index}`}>
                                   <span className="signer-row-index">{index + 1}</span>
                                   <div className="signer-row-address">
-                                    <AddressWithIconInline
-                                      data={{ address: signerAccount.account }}
-                                      options={{ short: 6, showAddress: true }}
-                                    />
+                                    <AddressWithIconInline data={signerAccount} options={{ short: 6 }} name="account" />
                                   </div>
                                   <span className="signer-row-role">
                                     <span className="grey">({roleLabel})</span>
@@ -8978,11 +8973,7 @@ export default function Account({
                                     </span>
                                   </div>
                                   <div className="tx-collapsed-meta">
-                                    <AddressWithIcon address={child.account}>
-                                      <span className="activated-account-inline-address">
-                                        {shortHash(child.account, 6)}
-                                      </span>
-                                    </AddressWithIcon>
+                                    <AddressWithIconFilled data={child} name="account" options={{ short: 6 }} />
                                   </div>
                                 </div>
                                 <div className="asset-value tx-collapsed-change">
@@ -9003,10 +8994,7 @@ export default function Account({
                                   <div className="detail-row">
                                     <span>Address:</span>
                                     <span className="copy-inline">
-                                      <AddressWithIconInline
-                                        data={{ address: child.account }}
-                                        options={{ short: 6, showAddress: true }}
-                                      />
+                                      <AddressWithIconInline data={child} name="account" options={{ short: 6 }} />
                                       <CopyButton text={child.account} />
                                     </span>
                                   </div>
