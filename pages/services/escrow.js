@@ -455,6 +455,8 @@ export default function CreateEscrow({
             showYearDropdown
           />
 
+          <br />
+
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
