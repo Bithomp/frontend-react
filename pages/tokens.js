@@ -913,6 +913,7 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           const hasIssuer = !!token?.issuer
+                          const isNativeToken = !hasIssuer && token?.currency === nativeCurrency
                           const tokenPageUrl = hasIssuer
                             ? `/token/${token.issuer}/${token.currency}`
                             : `/token/${token.currency}`
@@ -950,8 +951,12 @@ export default function Tokens({
                                   <br />
                                   Holders:{' '}
                                   <Link href={distributionUrl}>{niceNumber(token.holders)}</Link>
-                                  <br />
-                                  Trustlines: {niceNumber(token.trustlines)}
+                                  {!isNativeToken && (
+                                    <>
+                                      <br />
+                                      Trustlines: {niceNumber(token.trustlines)}
+                                    </>
+                                  )}
                                   <br />
                                   <br />
                                   <span className="mobile-token-actions">
@@ -963,17 +968,19 @@ export default function Tokens({
                                     >
                                       Token Page
                                     </button>
-                                    <button
-                                      className="button-action narrow thin"
-                                      onClick={() => {
-                                        if (hasIssuer) {
-                                          handleSetTrustline(token)
-                                        }
-                                      }}
-                                      disabled={!hasIssuer}
-                                    >
-                                      <FaHandshake style={{ fontSize: 16, marginBottom: -3 }} /> Set Trust
-                                    </button>
+                                    {!isNativeToken && (
+                                      <button
+                                        className="button-action narrow thin"
+                                        onClick={() => {
+                                          if (hasIssuer) {
+                                            handleSetTrustline(token)
+                                          }
+                                        }}
+                                        disabled={!hasIssuer}
+                                      >
+                                        <FaHandshake style={{ fontSize: 16, marginBottom: -3 }} /> Set Trust
+                                      </button>
+                                    )}
                                   </span>
                                 </p>
                               </td>

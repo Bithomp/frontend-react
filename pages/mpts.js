@@ -589,11 +589,7 @@ export default function Mpts({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr
-                              key={i}
-                              onClick={() => openTokenPage(token.mptokenIssuanceID)}
-                              style={{ cursor: 'pointer' }}
-                            >
+                            <tr key={i}>
                               <td style={{ padding: '5px' }} className="center">
                                 <b>{i + 1}</b>
                               </td>
@@ -640,15 +636,23 @@ export default function Mpts({
                                 <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
                                 <br />
                                 <br />
-                                <button
-                                  className="button-action narrow thin"
-                                  onClick={(event) => {
-                                    stopRowClick(event)
-                                    authorize(token.mptokenIssuanceID)
-                                  }}
-                                >
-                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Authorize
-                                </button>
+                                <span className="mobile-token-actions">
+                                  <button
+                                    className="button-action narrow thin"
+                                    onClick={() => openTokenPage(token.mptokenIssuanceID)}
+                                  >
+                                    Token page
+                                  </button>
+                                  <button
+                                    className="button-action narrow thin"
+                                    onClick={(event) => {
+                                      stopRowClick(event)
+                                      authorize(token.mptokenIssuanceID)
+                                    }}
+                                  >
+                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Authorize
+                                  </button>
+                                </span>
                                 <br />
                                 <br />
                               </td>
@@ -664,6 +668,23 @@ export default function Mpts({
           </div>
         </InfiniteScrolling>
       </FiltersFrame>
+
+      <style jsx>{`
+        .mobile-token-actions {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: nowrap;
+          white-space: nowrap;
+        }
+
+        @media only screen and (max-width: 480px) {
+          .mobile-token-actions :global(.button-action.narrow.thin) {
+            padding: 7px 10px;
+            font-size: 14px;
+          }
+        }
+      `}</style>
     </>
   )
 }

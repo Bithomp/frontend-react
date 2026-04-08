@@ -45,7 +45,8 @@ export async function getServerSideProps(context) {
   } else if (id && Array.isArray(id) && id.length === 1) {
     tokenId = id[0]
   } else {
-    initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode} or /token/' + nativeCurrency
+    initialErrorMessage =
+      'Invalid token URL. Expected format: /token/{issuer}/{currencyCode} or /token/' + nativeCurrency
   }
 
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
@@ -98,12 +99,12 @@ export async function getServerSideProps(context) {
         initialErrorMessage = 'Failed to fetch token data'
       }
     } else if (issuer) {
-    // Validate issuer
+      // Validate issuer
       if (!isAddressOrUsername(issuer)) {
         initialErrorMessage = 'Invalid issuer address or username'
       }
 
-    // Validate currency code
+      // Validate currency code
       const { valid, currencyCode } = validateCurrencyCode(currency)
       if (!valid) {
         initialErrorMessage = 'Invalid currency code'
@@ -135,7 +136,8 @@ export async function getServerSideProps(context) {
         }
       }
     } else {
-      initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode} or /token/' + nativeCurrency
+      initialErrorMessage =
+        'Invalid token URL. Expected format: /token/{issuer}/{currencyCode} or /token/' + nativeCurrency
     }
   }
 
@@ -576,7 +578,7 @@ export default function TokenPage({
                 {!isMptToken && (
                   <tr>
                     <td>Currency code</td>
-                    <td>
+                    <td className="brake">
                       {token.currencyDetails?.currencyCode || token.currency}{' '}
                       <CopyButton text={token.currencyDetails?.currencyCode || token.currency} />
                     </td>
@@ -624,15 +626,15 @@ export default function TokenPage({
                   <>
                     <tr>
                       <td>Outstanding</td>
-                      <td>{fullNiceNumber((Number(token.outstandingAmount || 0) / 10 ** (token.scale || 0)) || 0)}</td>
+                      <td>{fullNiceNumber(Number(token.outstandingAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
                     </tr>
                     <tr>
                       <td>Max supply</td>
-                      <td>{fullNiceNumber((Number(token.maximumAmount || 0) / 10 ** (token.scale || 0)) || 0)}</td>
+                      <td>{fullNiceNumber(Number(token.maximumAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
                     </tr>
                     <tr>
                       <td>Locked amount</td>
-                      <td>{fullNiceNumber((Number(token.lockedAmount || 0) / 10 ** (token.scale || 0)) || 0)}</td>
+                      <td>{fullNiceNumber(Number(token.lockedAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
                     </tr>
                     <tr>
                       <td>Holders</td>
@@ -695,8 +697,8 @@ export default function TokenPage({
                       <td>
                         {token.flags
                           ? Object.keys(token.flags)
-                            .filter((flag) => token.flags[flag])
-                            .join(', ') || 'none set'
+                              .filter((flag) => token.flags[flag])
+                              .join(', ') || 'none set'
                           : 'none'}
                       </td>
                     </tr>
@@ -792,7 +794,7 @@ export default function TokenPage({
                       {changeItems.length > 0 && (
                         <tr>
                           <td>Change</td>
-                          <td>
+                          <td className="brake">
                             {changeItems.map((item, index) => (
                               <span key={item.key} className="no-brake">
                                 {index > 0 && <span className="grey"> | </span>}
@@ -828,124 +830,128 @@ export default function TokenPage({
             )}
 
             {/* Stats for the last 24h */}
-            {!isMptToken && <table className="table-details">
-              <thead>
-                <tr>
-                  <th colSpan="100">Stats for the last 24h</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Volume (total)</td>
-                  <td>{volumeLine({ token, type: 'total' })}</td>
-                </tr>
-                <tr>
-                  <td>Volume (buy)</td>
-                  <td>{volumeLine({ token, type: 'buy' })}</td>
-                </tr>
-                <tr>
-                  <td>Volume (sell)</td>
-                  <td>{volumeLine({ token, type: 'sell' })}</td>
-                </tr>
-                <tr>
-                  <td>Trades</td>
-                  <td>{fullNiceNumber(statistics?.dexes || 0)}</td>
-                </tr>
-                <tr>
-                  <td>DEX txs</td>
-                  <td>{fullNiceNumber(statistics?.dexTxs || 0)}</td>
-                </tr>
-                <tr>
-                  <td>Buyers</td>
-                  <td>{fullNiceNumber(statistics?.uniqueBuyers || 0)}</td>
-                </tr>
-                <tr>
-                  <td>Sellers</td>
-                  <td>{fullNiceNumber(statistics?.uniqueSellers || 0)}</td>
-                </tr>
-                <tr>
-                  <td>Traders</td>
-                  <td>{fullNiceNumber(statistics?.uniqueDexAccounts || 0)}</td>
-                </tr>
-                <tr>
-                  <td>Transfer volume</td>
-                  <td>{volumeLine({ token, type: 'transfer' })}</td>
-                </tr>
-                <tr>
-                  <td>Transfer transactions</td>
-                  <td>{niceNumber(statistics?.transferTxs || 0)}</td>
-                </tr>
-                <tr>
-                  <td>Rippling txs</td>
-                  <td>{fullNiceNumber(statistics?.ripplingTxs || 0)}</td>
-                </tr>
-                <tr>
-                  <td>Mint volume</td>
-                  <td>{volumeLine({ token, type: 'mint' })}</td>
-                </tr>
-                <tr>
-                  <td>Mint transactions</td>
-                  <td>{shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}</td>
-                </tr>
-                <tr>
-                  <td>Burn volume</td>
-                  <td>{volumeLine({ token, type: 'burn' })}</td>
-                </tr>
-                <tr>
-                  <td>Burn transactions</td>
-                  <td>{shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}</td>
-                </tr>
-                <tr>
-                  <td>Unique accounts</td>
-                  <td>{fullNiceNumber(statistics?.uniqueAccounts || 0)}</td>
-                </tr>
-                {!xahauNetwork && (
+            {!isMptToken && (
+              <table className="table-details">
+                <thead>
                   <tr>
-                    <td>AMM pools</td>
-                    <td>
-                      <Link
-                        href={
-                          token?.issuer
-                            ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
-                            : `/amms?currency=${token.currency}`
-                        }
-                      >
-                        {statistics?.ammPools || 0}
-                      </Link>
-                    </td>
+                    <th colSpan="100">Stats for the last 24h</th>
                   </tr>
-                )}
-              </tbody>
-            </table>}
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Volume (total)</td>
+                    <td>{volumeLine({ token, type: 'total' })}</td>
+                  </tr>
+                  <tr>
+                    <td>Volume (buy)</td>
+                    <td>{volumeLine({ token, type: 'buy' })}</td>
+                  </tr>
+                  <tr>
+                    <td>Volume (sell)</td>
+                    <td>{volumeLine({ token, type: 'sell' })}</td>
+                  </tr>
+                  <tr>
+                    <td>Trades</td>
+                    <td>{fullNiceNumber(statistics?.dexes || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>DEX txs</td>
+                    <td>{fullNiceNumber(statistics?.dexTxs || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>Buyers</td>
+                    <td>{fullNiceNumber(statistics?.uniqueBuyers || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>Sellers</td>
+                    <td>{fullNiceNumber(statistics?.uniqueSellers || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>Traders</td>
+                    <td>{fullNiceNumber(statistics?.uniqueDexAccounts || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>Transfer volume</td>
+                    <td>{volumeLine({ token, type: 'transfer' })}</td>
+                  </tr>
+                  <tr>
+                    <td>Transfer transactions</td>
+                    <td>{niceNumber(statistics?.transferTxs || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>Rippling txs</td>
+                    <td>{fullNiceNumber(statistics?.ripplingTxs || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>Mint volume</td>
+                    <td>{volumeLine({ token, type: 'mint' })}</td>
+                  </tr>
+                  <tr>
+                    <td>Mint transactions</td>
+                    <td>{shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}</td>
+                  </tr>
+                  <tr>
+                    <td>Burn volume</td>
+                    <td>{volumeLine({ token, type: 'burn' })}</td>
+                  </tr>
+                  <tr>
+                    <td>Burn transactions</td>
+                    <td>{shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}</td>
+                  </tr>
+                  <tr>
+                    <td>Unique accounts</td>
+                    <td>{fullNiceNumber(statistics?.uniqueAccounts || 0)}</td>
+                  </tr>
+                  {!xahauNetwork && (
+                    <tr>
+                      <td>AMM pools</td>
+                      <td>
+                        <Link
+                          href={
+                            token?.issuer
+                              ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
+                              : `/amms?currency=${token.currency}`
+                          }
+                        >
+                          {statistics?.ammPools || 0}
+                        </Link>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
 
             {/* Stats for the last closed day */}
-            {!isMptToken && <table className="table-details">
-              <thead>
-                <tr>
-                  <th colSpan="100">Stats for the last closed day</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Trading pairs</td>
-                  <td>{fullNiceNumber(statistics?.activeCounters || 0)}</td>
-                </tr>
-                <tr>
-                  <td>Active holders</td>
-                  <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
-                </tr>
-                <tr>
-                  <td>Active offers</td>
-                  <td>{fullNiceNumber(statistics?.activeOffers || 0)}</td>
-                </tr>
-                {!xahauNetwork && (
+            {!isMptToken && (
+              <table className="table-details">
+                <thead>
                   <tr>
-                    <td>Active AMM pools</td>
-                    <td>{niceNumber(statistics?.activeAmmPools || 0)}</td>
+                    <th colSpan="100">Stats for the last closed day</th>
                   </tr>
-                )}
-              </tbody>
-            </table>}
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Trading pairs</td>
+                    <td>{fullNiceNumber(statistics?.activeCounters || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>Active holders</td>
+                    <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
+                  </tr>
+                  <tr>
+                    <td>Active offers</td>
+                    <td>{fullNiceNumber(statistics?.activeOffers || 0)}</td>
+                  </tr>
+                  {!xahauNetwork && (
+                    <tr>
+                      <td>Active AMM pools</td>
+                      <td>{niceNumber(statistics?.activeAmmPools || 0)}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>
