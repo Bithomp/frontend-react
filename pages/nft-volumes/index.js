@@ -860,19 +860,6 @@ export default function NftVolumes({
       )
     }
 
-    if (family) {
-      if (
-        name &&
-        !family.toLowerCase().includes(name.toLowerCase()) &&
-        !name.toLowerCase().includes(family.toLowerCase())
-      ) {
-        return (
-          <>
-            {family}: <b>{nameLink}</b>
-          </>
-        )
-      }
-    }
     if (name) {
       return <b>{nameLink}</b>
     }
