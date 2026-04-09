@@ -127,7 +127,9 @@ export const fetchTeaserNftCollections = async (req, selectedCurrency = 'usd') =
   try {
     const response = await axiosServer({
       method: 'get',
-      url: 'v2/nft-volumes-extended?list=collections&period=week&limit=5&convertCurrencies=' + selectedCurrency,
+      url:
+        'v2/nft-volumes-extended?list=collections&period=week&limit=5&order=rating&convertCurrencies=' +
+        selectedCurrency,
       headers: passHeaders(req),
       timeout: 5000
     })
