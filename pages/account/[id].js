@@ -3086,7 +3086,7 @@ export default function Account({
                                     <span className="waiting inline" aria-hidden="true"></span>
                                   </>
                                 ) : (
-                                  'Load more signers'
+                                  'Load more'
                                 )}
                               </button>
                             </div>
