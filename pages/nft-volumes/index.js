@@ -1139,8 +1139,13 @@ export default function NftVolumes({
                                   <tr key={i}>
                                     <td className="center">{i + 1}</td>
                                     {listTab === 'collections' && (
-                                      <td>
-                                        {collectionThumbnail(volume.collectionDetails)} {collectionName(volume)}
+                                      <td className="collections-name-cell">
+                                        <span className="collections-name-wrap">
+                                          <span className="collections-name-thumb">
+                                            {collectionThumbnail(volume.collectionDetails)}
+                                          </span>
+                                          <span className="collections-name-text">{collectionName(volume)}</span>
+                                        </span>
                                       </td>
                                     )}
                                     {listTab === 'marketplaces' && <td>{volume.marketplace}</td>}
@@ -1438,6 +1443,30 @@ export default function NftVolumes({
           )}
         </>
       </FiltersFrame>
+
+      <style jsx>{`
+        .collections-name-cell {
+          max-width: 220px;
+        }
+
+        .collections-name-wrap {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          max-width: 220px;
+        }
+
+        .collections-name-thumb {
+          flex: 0 0 auto;
+        }
+
+        .collections-name-text {
+          min-width: 0;
+          white-space: normal;
+          overflow-wrap: anywhere;
+          line-height: 1.3;
+        }
+      `}</style>
     </>
   )
 }
