@@ -792,7 +792,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
                       Disable Master Key
                     </button>,
                     disableMasterDisabledReason,
-                    'left'
+                    'right'
                   )}
             </div>
           </div>
