@@ -38,7 +38,7 @@ const NFT_FETCH_LIMIT = 45
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
 const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
-const SIGNER_ACCOUNTS_FETCH_LIMIT = 20
+const SIGNER_ACCOUNTS_FETCH_LIMIT = 10
 const OBJECT_PREVIEW_LIMIT = 5
 const OBJECT_LOAD_MORE_STEP = 5
 
@@ -1194,7 +1194,6 @@ export default function Account({
       }
 
       const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
-      const total = Number(payload?.summary?.total)
       const seenAddresses = new Set(append ? signerAccounts.map((row) => row.account) : [])
       const nextRows = accountRows.filter((row) => {
         if (!row?.account || seenAddresses.has(row.account)) return false
@@ -1202,11 +1201,11 @@ export default function Account({
         return true
       })
 
-      const resolvedTotal = Number.isFinite(total) && total >= 0 ? total : 0
       setSignerAccounts((prev) => {
         const mergedRows = append ? [...prev, ...nextRows] : nextRows
+        const resolvedTotal = initialSignerAccountsData?.total || signerAccountsTotal || mergedRows.length
         setSignerAccountsTotal(resolvedTotal)
-        setHasMoreSignerAccounts(mergedRows.length < resolvedTotal)
+        setHasMoreSignerAccounts(nextRows.length === SIGNER_ACCOUNTS_FETCH_LIMIT && mergedRows.length < resolvedTotal)
         return mergedRows
       })
     } catch (requestError) {
@@ -1249,7 +1248,7 @@ export default function Account({
     setSignerAccountsLoadingMore(false)
     setSignerAccountsError(null)
     setExpandedSignerCard(false)
-  }, [data?.address, initialSignerAccountsData, refreshPage])
+  }, [data?.address, initialSignerAccountsData])
 
   const loadMoreSignerAccounts = () => {
     if (!data?.address || !hasMoreSignerAccounts || signerAccountsLoading || signerAccountsLoadingMore) return
