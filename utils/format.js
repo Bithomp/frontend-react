@@ -236,11 +236,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
               {!doubleIcon && !hideIssuer && (
                 <>
                   <br />
-                  {mptId ? (
-                    <>{addressUsernameOrServiceLink(token, 'issuer', options)}</>
-                  ) : (
-                    <span className="grey text-xs">{serviceUsernameOrAddressText(token, 'issuer')}</span>
-                  )}
+                  <span className="grey text-xs">{serviceUsernameOrAddressText(token, 'issuer')}</span>
                 </>
               )}
             </td>

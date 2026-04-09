@@ -506,15 +506,15 @@ export default function Mpts({
                     <>
                       {data.map((token, i) => {
                         return (
-                          <tr
-                            key={i}
-                            onClick={() => openTokenPage(token.mptokenIssuanceID)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <td className="center">{i + 1}</td>
-                            <td>
-                              <TokenCell token={token} />
-                            </td>
+                            <tr
+                              key={i}
+                              onClick={() => openTokenPage(token.mptokenIssuanceID)}
+                              style={{ cursor: 'pointer' }}
+                            >
+                              <td className="center">{i + 1}</td>
+                              <td onClick={stopRowClick}>
+                                <TokenCell token={token} />
+                              </td>
                             <td className="right">
                               <span className="tooltip green">
                                 {shortNiceNumber(token.holders, 0, 1)}
