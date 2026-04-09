@@ -161,7 +161,7 @@ export default function NftVolumes({
     }
 
     const oldListTab = rawData?.list
-    const oldConvertCurrency = rawData?.sortCurrency
+    const oldConvertCurrency = listTab === 'collections' ? convertCurrency : rawData?.sortCurrency
     const oldPeriod = rawData?.period
     const oldSaleType = rawData?.saleType
       ? rawData.saleType === 'all'
@@ -257,7 +257,11 @@ export default function NftVolumes({
       '&convertCurrencies=' +
       convertCurrency
 
-    apiUrl += '&sortCurrency=' + convertCurrency
+    if (listTab === 'collections') {
+      apiUrl += '&order=rating'
+    } else {
+      apiUrl += '&sortCurrency=' + convertCurrency
+    }
 
     if ((listTab === 'issuers' || listTab === 'collections') && extendedStats) {
       apiUrl += '&floorPrice=true&statistics=true'
