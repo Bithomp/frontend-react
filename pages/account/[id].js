@@ -8854,7 +8854,7 @@ export default function Account({
                     {(!activatedAccountsLoading || activatedAccountsCount > 0) && (
                       <span className="object-title-count" suppressHydrationWarning>
                         <span className="tooltip">
-                          {fullNiceNumber(activatedAccountsCount)}
+                          {shortNiceNumber(activatedAccountsCount, 0, 1)}
                           <span className="tooltiptext no-brake">{fullNiceNumber(activatedAccountsCount)}</span>
                         </span>
                       </span>
@@ -8863,10 +8863,9 @@ export default function Account({
                       <span className="object-title-count" suppressHydrationWarning>
                         {' · '}
                         <span className="tooltip">
-                          {amountFormat(Math.round(activatedAccountsSpent * 1000000), {
-                            short: true,
-                            shortSmallFractionDigits: 0
-                          })}
+                          {activatedAccountsSpent >= 1000
+                            ? `${niceNumber(activatedAccountsSpent / 1000, 1)}K ${nativeCurrency}`
+                            : `${shortNiceNumber(activatedAccountsSpent, 2, 1)} ${nativeCurrency}`}
                           <span className="tooltiptext no-brake">
                             {fullNiceNumber(activatedAccountsSpent)} {nativeCurrency}
                           </span>
