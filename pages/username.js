@@ -71,6 +71,10 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   const [update, setUpdate] = useState(false)
   const [xamanUserToken, setXamanUserToken] = useState(null)
 
+  const handleSignOut = () => {
+    void signOut()
+  }
+
   const addressRef = useRef(null)
   let usernameRef
 
@@ -547,7 +551,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                           <>
                             <p>
                               {t('step0.your-address', { ns: 'username' })} (
-                              <b className="link" onClick={signOut}>
+                              <b className="link" onClick={handleSignOut}>
                                 {t('step0.sign-out', { ns: 'username' })}
                               </b>
                               ):
@@ -648,7 +652,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                 {t('step0.already-registered', { ns: 'username' })}: <b>{account.username}</b>.
                 <br />
                 <Trans ns="username" i18nKey="step0.sign-out-to-register-another-one">
-                  <b className="link" onClick={signOut}>
+                  <b className="link" onClick={handleSignOut}>
                     Sign out
                   </b>{' '}
                   from this account to register a username for a different address.
