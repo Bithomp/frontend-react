@@ -26,8 +26,44 @@ header {
   .header-logo {
     margin-top: 12px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
     svg {
       height: 36px;
+    }
+
+    .header-fiat-rate {
+      margin-left: 12px;
+      width: 144px;
+      min-width: 144px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-link);
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 7px;
+      padding: 2px 6px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+      text-align: center;
+      box-sizing: border-box;
+
+      &.large-logo {
+        margin-top: -9px;
+      }
+
+      &.compact-logo {
+        margin-top: -13px;
+      }
+
+      .header-fiat-rate-text {
+        visibility: hidden;
+      }
+
+      .header-fiat-rate-text.visible {
+        visibility: visible;
+      }
     }
   }
 
@@ -610,6 +646,26 @@ header {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
     flex-shrink: 0;
     display: block;
+  }
+}
+
+@media only screen and (max-width: 460px) {
+  header {
+    .header-logo {
+      .header-fiat-rate.xahau-rate {
+        display: none;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 305px) {
+  header {
+    .header-logo {
+      .header-fiat-rate.default-rate {
+        display: none;
+      }
+    }
   }
 }
 

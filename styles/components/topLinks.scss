@@ -12,3 +12,9 @@
     font-weight: 400;
   }
 }
+
+body[data-hide-ads='true'] {
+  .top-links {
+    display: none;
+  }
+}

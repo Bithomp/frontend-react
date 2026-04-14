@@ -519,6 +519,11 @@ const MyApp = ({ Component, pageProps }) => {
   }, [proExpire])
 
   useEffect(() => {
+    if (typeof document === 'undefined') return
+    document.body.dataset.hideAds = !subscriptionExpired ? 'true' : 'false'
+  }, [subscriptionExpired])
+
+  useEffect(() => {
     if (sessionToken) {
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken?.replace(/['"]+/g, '')
     }

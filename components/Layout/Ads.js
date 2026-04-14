@@ -22,7 +22,7 @@ export default function Ads({}) {
   const color = rendered ? (theme === 'dark' ? 'white' : '#1C1F21') : '#1C1F21'
 
   return (
-    <div className={brandsBlock}>
+    <div className={brandsBlock} data-ad-slot="brands">
       {/*
       <a href="https://bithomp.com/go/main-buy-swap" target="_blank" rel="noreferrer">
         <div className="brand-item nexo">

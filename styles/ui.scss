@@ -17,6 +17,10 @@ body {
   transition: background-color 200ms, color 200ms;
 }
 
+body[data-hide-ads='true'] [data-ad-slot='brands'] {
+  display: none;
+}
+
 #root {
   height: 100%;
 }

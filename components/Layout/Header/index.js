@@ -322,6 +322,7 @@ export default function Header({
       !router?.query?.id)
 
   const showLargeLogo = (width < 1050 && width > 370) || width >= 1440 || !width
+  const showFiatRateSlot = !xahauNetwork || width > 460 || !width
 
   return (
     <div
@@ -353,24 +354,19 @@ export default function Header({
             )}
           </Link>
           {/* fiat price next to logo */}
-          {fiatRate > 0 && ((!xahauNetwork && width > 305) || width > 460) && (
+          {showFiatRateSlot && (
             <span
-              className="header-fiat-rate"
-              style={{
-                marginTop: showLargeLogo ? -9 : -13,
-                marginLeft: 12,
-                color: 'var(--accent-link)',
-                whiteSpace: 'nowrap',
-                background: 'rgba(255,255,255,0.07)',
-                borderRadius: 7,
-                padding: '2px 6px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                width: '144px',
-                textAlign: 'center'
-              }}
+              className={
+                'header-fiat-rate' +
+                (showLargeLogo ? ' large-logo' : ' compact-logo') +
+                (xahauNetwork ? ' xahau-rate' : ' default-rate')
+              }
               suppressHydrationWarning
+              aria-hidden={fiatRate > 0 ? 'false' : 'true'}
             >
-              {nativeCurrency} = {niceNumber(fiatRate, null, selectedCurrency, 4)}
+              <span className={'header-fiat-rate-text' + (fiatRate > 0 ? ' visible' : '')}>
+                {fiatRate > 0 ? `${nativeCurrency} = ${niceNumber(fiatRate, null, selectedCurrency, 4)}` : ' '}
+              </span>
             </span>
           )}
         </div>

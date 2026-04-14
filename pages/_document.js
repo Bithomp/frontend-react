@@ -17,9 +17,11 @@ class MyDocument extends Document {
     // Run the parent `getInitialProps`, it now includes the custom `renderPage`
     const initialProps = await Document.getInitialProps(ctx)
     const cookieTheme = ctx.req?.cookies?.theme ?? null
+    const proExpire = ctx.req?.cookies?.['pro-expire']
+    const hasActivePro = proExpire ? Number(proExpire) > Date.now() : false
     const logoPath = '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer')
 
-    return { ...initialProps, cookieTheme, logoPath }
+    return { ...initialProps, cookieTheme, logoPath, hasActivePro }
   }
 
   render() {
@@ -31,7 +33,11 @@ class MyDocument extends Document {
           <link rel="apple-touch-icon" href={this.props.logoPath + '/apple-touch-icon.png'} />
           <link rel="manifest" href="/manifest.json" />
         </Head>
-        <body className={this.props.cookieTheme} data-networkname={process.env.NEXT_PUBLIC_NETWORK_NAME}>
+        <body
+          className={this.props.cookieTheme}
+          data-networkname={process.env.NEXT_PUBLIC_NETWORK_NAME}
+          data-hide-ads={this.props.hasActivePro ? 'true' : 'false'}
+        >
           <script
             dangerouslySetInnerHTML={{
               __html: `(function () {
