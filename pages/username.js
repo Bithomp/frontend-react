@@ -624,15 +624,17 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                           </Trans>
                         </CheckBox>
 
-                        <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy}>
-                          <Trans ns="username" i18nKey="step0.agree-privacy-policy">
-                            I agree with the{' '}
-                            <Link href="/privacy-policy" target="_blank">
-                              Privacy policy
-                            </Link>
-                            .
-                          </Trans>
-                        </CheckBox>
+                        <div style={{ width: '100%' }}>
+                          <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy}>
+                            <Trans ns="username" i18nKey="step0.agree-privacy-policy">
+                              I agree with the{' '}
+                              <Link href="/privacy-policy" target="_blank">
+                                Privacy policy
+                              </Link>
+                              .
+                            </Trans>
+                          </CheckBox>
+                        </div>
 
                         <p className="center">
                           <input
