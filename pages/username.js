@@ -376,7 +376,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
           "price": 29.46,
           "totalReceivedAmount": 29.1,
           "currency": "XRP",
-          "priceInSEK": 100,
+          "priceInEUR": 100,
           "country": "SE",
           "totalToPay": 29.46,
           "totalPayLeft": 0.35999999999999943
@@ -509,9 +509,8 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                 <p>{t('step0.pay-from-your-address', { ns: 'username' })}</p>
                 <p>
                   <Trans ns="username" i18nKey="step0.text3">
-                    The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is{' '}
-                    <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as
-                    donation and won't be refunded.
+                    The payment for the username is <b>not refundable</b>. If you pay more than requested, the
+                    exceeding amount will be counted as donation and won't be refunded.
                   </Trans>
                 </p>
                 <p>

@@ -28,79 +28,29 @@ export default function Receipt({ item, details }) {
   }
 
   let timestamp = null
-  let fiatPrice = 0
-  let xrpPrice = 0
-  let serviceName = 'Service name'
-  let txHash = ''
-  let fiatCurrency = ''
-
-  if (item === 'username') {
-    serviceName = t('menu.services.username')
-    if (details) {
-      timestamp = details.completedAt
-      fiatPrice = details.priceInSEK
-      xrpPrice = details.price
-      txHash = details.txHash
-      fiatCurrency = 'SEK'
-    }
-
-    /*
-    {
-      action: "Registration",
-      address: "rpqVJrX7L4yx2vjYPpDC5DAGrdp92zcsMW",
-      bithompid: "testtest1",
-      completedAt: 1658841346,
-      country: "SE",
-      createdAt: 1658837571,
-      currency: "XRP",
-      destinationTag: 480657625,
-      id: 933,
-      price: 29.46,
-      priceInSEK: 100,
-      status: "Completed",
-      totalReceivedAmount: 29.470000000000002,
-      txHash: "5F622D6CA708F72B7ECAC575995739D4844C267A533889A595573E91316B2FA0"
-      updatedAt: 1658841346
-    }
-    */
-  } else if (item === 'subscription') {
-    /*
-    {
-      "id": 53,
-      "createdAt": 1713180707,
-      "updatedAt": 1713180831,
-      "destinationTag": 173620292,
-      "action": "Pay for Bithomp Pro",
-      "status": "Completed",
-      "price": 61.952751,
-      "totalReceivedAmount": 61.96,
-      "currency": "XRP",
-      "priceInSEK": 347.1,
-      "country": "SE",
-      "completedAt": 1713180831,
-      "txHash": "2D4B8220D325F0A76D2862DAC80D64B36C9FDED3B8DB8E774338F086C2FB5E39",
-      "destinationAddress": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
-      "priceInEUR": 30,
-      "type": "bithomp_pro",
-      "period": "month",
-      "periodCount": 3,
-      "partnerID": 5
-    }
-    */
-
-    if (details) {
-      serviceName = 'Bithomp Pro' //details.action
-      timestamp = details.completedAt
-      fiatPrice = details.priceInEUR
-      xrpPrice = details.price
-      txHash = details.txHash
-      fiatCurrency = 'EUR'
+  const receiptConfig = {
+    username: {
+      serviceName: t('menu.services.username')
+    },
+    subscription: {
+      serviceName: 'Bithomp Pro'
     }
   }
 
+  const currentReceipt = receiptConfig[item]
+
+  if (!currentReceipt) {
+    return null
+  }
+
+  timestamp = details.completedAt
+  const fiatPrice = details.priceInEUR?.toFixed(2)
+  const xrpPrice = details.price?.toFixed(2)
+  const serviceName = currentReceipt.serviceName
+  const txHash = details.txHash
+  const fiatCurrency = 'EUR'
+
   timestamp = fullDateAndTime(timestamp, null, { asText: true })
-  fiatPrice = fiatPrice?.toFixed(2)
-  xrpPrice = xrpPrice?.toFixed(2)
   const rate = Math.floor((fiatPrice / xrpPrice) * 100) / 100
 
   return (
