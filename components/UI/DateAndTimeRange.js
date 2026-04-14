@@ -159,7 +159,7 @@ export default function DateAndTimeRange({
   }
 
   return (
-    <span style={style}>
+    <span style={style} className="date-and-time-range">
       {tabs && ready && (
         <>
           <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name={periodQueryName + 'Tabs'} />
@@ -174,38 +174,44 @@ export default function DateAndTimeRange({
         </>
       )}
 
-      <DatePicker
-        selected={startDate}
-        onChange={startOnChange}
-        selectsStart
-        showTimeInput
-        timeInputLabel={t('table.time')}
-        startDate={startDate}
-        minDate={minDate}
-        maxDate={new Date().setMilliseconds(0)}
-        endDate={endDate}
-        dateFormat="yyyy/MM/dd HH:mm"
-        className="dateAndTimeRange"
-        showMonthDropdown
-        showYearDropdown
-        name={'StartDate' + periodQueryName}
-      />
-      <DatePicker
-        selected={endDate}
-        onChange={endOnChange}
-        selectsEnd
-        showTimeInput
-        timeInputLabel={t('table.time')}
-        startDate={startDate}
-        endDate={endDate}
-        minDate={startDate}
-        maxDate={new Date().setMilliseconds(0)}
-        dateFormat="yyyy/MM/dd HH:mm"
-        className="dateAndTimeRange"
-        showMonthDropdown
-        showYearDropdown
-        name={'EndDate' + periodQueryName}
-      />
+      <span className="date-and-time-range-inputs">
+        <span className="date-and-time-range-field">
+          <DatePicker
+            selected={startDate}
+            onChange={startOnChange}
+            selectsStart
+            showTimeInput
+            timeInputLabel={t('table.time')}
+            startDate={startDate}
+            minDate={minDate}
+            maxDate={new Date().setMilliseconds(0)}
+            endDate={endDate}
+            dateFormat="yyyy/MM/dd HH:mm"
+            className="dateAndTimeRange"
+            showMonthDropdown
+            showYearDropdown
+            name={'StartDate' + periodQueryName}
+          />
+        </span>
+        <span className="date-and-time-range-field">
+          <DatePicker
+            selected={endDate}
+            onChange={endOnChange}
+            selectsEnd
+            showTimeInput
+            timeInputLabel={t('table.time')}
+            startDate={startDate}
+            endDate={endDate}
+            minDate={startDate}
+            maxDate={new Date().setMilliseconds(0)}
+            dateFormat="yyyy/MM/dd HH:mm"
+            className="dateAndTimeRange"
+            showMonthDropdown
+            showYearDropdown
+            name={'EndDate' + periodQueryName}
+          />
+        </span>
+      </span>
     </span>
   )
 }

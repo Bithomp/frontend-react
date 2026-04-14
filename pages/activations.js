@@ -84,8 +84,8 @@ export default function Activations({ periodQuery }) {
         description={nativeCurrency + ' ' + t('header', { ns: 'activations' })}
       />
       <div className="content-text">
-        <h1 className="center">{t('header', { ns: 'activations' })}</h1>
-        <div className="tabs-inline">
+        <h1 className="center" style={{ marginBottom: 24 }}>{t('header', { ns: 'activations' })}</h1>
+        <div className="tabs-inline" style={{ marginBottom: 18 }}>
           <DateAndTimeRange period={period} setPeriod={setPeriod} defaultPeriod={periodQuery} tabs={true} />
         </div>
 

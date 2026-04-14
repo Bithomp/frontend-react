@@ -1,3 +1,39 @@
+.date-and-time-range {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.date-and-time-range-inputs {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.date-and-time-range-field {
+  display: inline-flex;
+  align-items: center;
+  height: 29px;
+  min-height: 29px;
+}
+
+.date-and-time-range-field .react-datepicker-wrapper,
+.date-and-time-range-field .react-datepicker__input-container {
+  display: inline-block;
+  height: 29px;
+  min-height: 29px;
+}
+
+.date-and-time-range .dateAndTimeRange {
+  height: 29px;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
 .react-datepicker {
   border: 1px solid var(--unaccent-icon) !important;
   border-radius: unset !important;
@@ -57,7 +93,6 @@ input {
   &.dateAndTimeRange {
     height: 29px;
     border: 1px solid var(--unaccent-icon);
-    margin-right: 10px;
     padding: 1.4px;
     padding-left: 5px;
     margin-bottom: 10px;
@@ -103,6 +138,44 @@ input {
     svg {
       width: 16px;
       height: 16px;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .tabs-inline {
+    .date-and-time-range {
+      display: flex;
+      width: 100%;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 10px 0;
+    }
+
+    .date-and-time-range-inputs {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 8px;
+      margin-left: 0;
+      align-items: flex-start;
+    }
+
+    .date-and-time-range .dateAndTimeRange {
+      width: min(100%, 370px);
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    .date-and-time-range-field {
+      width: min(100%, 370px);
+    }
+
+    .date-and-time-range-field .react-datepicker-wrapper,
+    .date-and-time-range-field .react-datepicker__input-container {
+      width: 100%;
+      min-width: 0;
+      height: 29px;
     }
   }
 }
