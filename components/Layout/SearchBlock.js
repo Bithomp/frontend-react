@@ -95,22 +95,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [isMounted, setIsMounted] = useState(false)
-
   if (!searchPlaceholderText) {
     searchPlaceholderText =
       isSsrMobile || (windowWidth && windowWidth < 730)
         ? t('home.search-placeholder-short')
         : t('home.search-placeholder')
   }
-
-  useEffect(() => setIsMounted(true), [])
-
-  useEffect(() => {
-    if (!id && searchInput.current) {
-      searchInput.current.focus()
-    }
-  }, [id, searchInput])
 
   // Clear search field on route change
   useEffect(() => {
@@ -373,123 +363,98 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
               )}
             </div>
           )}
-          {isMounted ? (
-            <div onKeyUp={searchOnKeyUp}>
-              <Select
-                ref={searchInput}
-                className="search-input search-input-select"
-                placeholder={searchPlaceholderText}
-                onChange={searchOnChange}
-                spellCheck="false"
-                options={searchSuggestions}
-                formatOptionLabel={(option, { context }) => {
-                  if (context === 'value') {
-                    // Display simple format when selected
-                    return option.username || option.address
-                  }
-                  // Display full format in dropdown
-                  return (
-                    <>
-                      <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
-                      {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
-                      <b className="blue">{option.username}</b>
-                      {option.service && (
-                        <>
-                          {option.username ? ' (' : ''}
-                          <b className="green">{option.service}</b>
-                          {option.username ? ')' : ''}
-                        </>
-                      )}
-                      {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && (
-                        <>, </>
-                      )}
-                      {option.verifiedDomain ? (
-                        <span className="green bold"> {option.verifiedDomain}</span>
-                      ) : (
-                        option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
-                      )}
-                      {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
-                        option.xaman && <>, </>}
-                      {option.xaman && (
-                        <>
-                          Xaman{' '}
-                          <span className="orange">
-                            {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
-                          </span>
-                          {option.xamanVerified && <> ✅</>}
-                        </>
-                      )}
-                      {option.tag ? (
-                        <b className="no-brake">
-                          {' '}
-                          [TAG: <span className="orange">{option.tag}</span>]
-                        </b>
-                      ) : (
-                        <>
-                          {option.balance !== null && (
-                            <>
-                              {' '}
-                              [
-                              <b>
-                                {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) ||
-                                  'Not activated'}
-                              </b>
-                              ]
-                            </>
-                          )}
-                        </>
-                      )}
-                    </>
-                  )
-                }}
-                getOptionValue={(option) =>
-                  option.address +
-                  option.username +
-                  option.service +
-                  option.payString +
-                  option.xaman +
-                  option.verifiedDomain +
-                  option.serviceDomain +
-                  option.xAddress +
-                  option.tag
-                }
-                inputValue={searchItem}
-                value={null}
-                onInputChange={searchOnInputChange}
-                isSearchable={true}
-                classNamePrefix="react-select"
-                instanceId={compact ? 'search-select-header' : 'search-select-page'}
-                noOptionsMessage={
-                  () => (searchingSuggestions ? t('explorer.searching-for-addresses') : null)
-                  //({ inputValue }) => inputValue.length > 3
-                }
-                aria-label="Search"
-                setSearchSuggestions={setSearchSuggestions}
-                setErrorMessage={setErrorMessage}
-                components={{
-                  IndicatorsContainer: IndicatorsWithClear,
-                  DropdownIndicator: null,
-                  IndicatorSeparator: null
-                }}
-              />
-            </div>
-          ) : (
-            <input
-              aria-label="Search"
+          <div onKeyUp={searchOnKeyUp}>
+            <Select
               ref={searchInput}
-              type="text"
-              className="search-input search-input-placeholder"
+              className="search-input search-input-select"
               placeholder={searchPlaceholderText}
-              value={searchItem}
-              onChange={(e) => setSearchItem(e.target.value)}
-              onKeyUp={searchOnKeyUp}
+              onChange={searchOnChange}
               spellCheck="false"
-              style={{
-                height: compact ? 28 : 36,
-                paddingRight: compact ? 38 : 64
+              options={searchSuggestions}
+              formatOptionLabel={(option, { context }) => {
+                if (context === 'value') {
+                  return option.username || option.address
+                }
+                return (
+                  <>
+                    <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
+                    {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
+                    <b className="blue">{option.username}</b>
+                    {option.service && (
+                      <>
+                        {option.username ? ' (' : ''}
+                        <b className="green">{option.service}</b>
+                        {option.username ? ')' : ''}
+                      </>
+                    )}
+                    {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
+                    {option.verifiedDomain ? (
+                      <span className="green bold"> {option.verifiedDomain}</span>
+                    ) : (
+                      option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
+                    )}
+                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
+                      option.xaman && <>, </>}
+                    {option.xaman && (
+                      <>
+                        Xaman{' '}
+                        <span className="orange">
+                          {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
+                        </span>
+                        {option.xamanVerified && <> ✅</>}
+                      </>
+                    )}
+                    {option.tag ? (
+                      <b className="no-brake">
+                        {' '}
+                        [TAG: <span className="orange">{option.tag}</span>]
+                      </b>
+                    ) : (
+                      <>
+                        {option.balance !== null && (
+                          <>
+                            {' '}
+                            [
+                            <b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}</b>
+                            ]
+                          </>
+                        )}
+                      </>
+                    )}
+                  </>
+                )
+              }}
+              getOptionValue={(option) =>
+                option.address +
+                option.username +
+                option.service +
+                option.payString +
+                option.xaman +
+                option.verifiedDomain +
+                option.serviceDomain +
+                option.xAddress +
+                option.tag
+              }
+              inputValue={searchItem}
+              value={null}
+              onInputChange={searchOnInputChange}
+              isSearchable={true}
+              classNamePrefix="react-select"
+              instanceId={compact ? 'search-select-header' : 'search-select-page'}
+              noOptionsMessage={
+                () => (searchingSuggestions ? t('explorer.searching-for-addresses') : null)
+                //({ inputValue }) => inputValue.length > 3
+              }
+              aria-label="Search"
+              setSearchSuggestions={setSearchSuggestions}
+              setErrorMessage={setErrorMessage}
+              components={{
+                IndicatorsContainer: IndicatorsWithClear,
+                DropdownIndicator: null,
+                IndicatorSeparator: null
               }}
             />
-          )}
+          </div>
 
           <div className="search-button" onClick={onSearch}>
             <IoSearch className="search-icon" />
