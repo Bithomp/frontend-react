@@ -6,6 +6,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../utils/mobile'
 import dynamic from 'next/dynamic'
+import { axiosServer, passHeaders } from '../utils/axios'
 
 import {
   isAddressValid,
@@ -16,21 +17,42 @@ import {
   encode,
   network,
   ledgerName,
+  nativeCurrency,
   isUsernameValidToRegister,
   useCookie
 } from '../utils'
+import { amountFormat } from '../utils/format'
 
 let registrtaionCompleted = false
+const serviceAvailable = network === 'mainnet' || network === 'staging'
 
 export const getServerSideProps = async (context) => {
-  const { query, locale } = context
+  const { query, locale, req } = context
   const { address, username, receipt } = query
+  let usernamePrice = null
+
+  if (serviceAvailable) {
+    const priceRes = await axiosServer({
+      method: 'get',
+      url: 'v2/price/bithompid/create',
+      headers: passHeaders(req)
+    }).catch(() => null)
+    const priceData = priceRes?.data
+    if (priceData?.price) {
+      usernamePrice = {
+        value: priceData.price,
+        currency: priceData.currency || nativeCurrency
+      }
+    }
+  }
+
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
       addressQuery: address || '',
       usernameQuery: username || '',
       receiptQuery: receipt || 'false',
+      usernamePrice,
       ...(await serverSideTranslations(locale, ['common', 'username']))
     }
   }
@@ -48,9 +70,15 @@ const checkmark = '/images/checkmark.svg'
 let interval
 let ws = null
 
-const serviceAvailable = network === 'mainnet' || network === 'staging'
-
-export default function Username({ setSignRequest, account, signOut, addressQuery, usernameQuery, receiptQuery }) {
+export default function Username({
+  setSignRequest,
+  account,
+  signOut,
+  addressQuery,
+  usernameQuery,
+  receiptQuery,
+  usernamePrice
+}) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
 
@@ -74,6 +102,8 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   const handleSignOut = () => {
     void signOut()
   }
+
+  const usernamePriceText = usernamePrice ? amountFormat(usernamePrice, { maxFractionDigits: 6 }) : ''
 
   const addressRef = useRef(null)
   let usernameRef
@@ -508,10 +538,16 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                 <p>{t('step0.address-you-control', { ns: 'username' })}</p>
                 <p>{t('step0.pay-from-your-address', { ns: 'username' })}</p>
                 <p>
-                  <Trans ns="username" i18nKey="step0.text3">
-                    The payment for the username is <b>not refundable</b>. If you pay more than requested, the
-                    exceeding amount will be counted as donation and won't be refunded.
-                  </Trans>
+                  {usernamePriceText ? (
+                    <Trans
+                      ns="username"
+                      i18nKey="step0.text3"
+                      values={{ price: usernamePriceText }}
+                      components={{ priceValue: <b />, strong: <b /> }}
+                    />
+                  ) : (
+                    <Trans ns="username" i18nKey="step0.text3-no-price" components={{ strong: <b /> }} />
+                  )}
                 </p>
                 <p>
                   <b>{t('step0.please-note', { ns: 'username' })}</b> {t('step0.we-can-revoke', { ns: 'username' })}
