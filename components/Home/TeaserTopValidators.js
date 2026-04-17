@@ -11,7 +11,7 @@ export default function TeaserTopValidators({ data = [], isLoading = false }) {
   return (
     <HomeTeaser title="home.teaser.topValidators" href="/validators" isLoading={isLoading} isEmpty={!data?.length}>
       {data?.map((validator) => (
-        <HomeTeaseRow key={validator.publicKey} className={styles.validatorRow}>
+        <HomeTeaseRow key={validator.publicKey} href={`/validator/${validator.publicKey}`} className={styles.validatorRow}>
           <div className={styles.validatorPrimary}>
             <Avatar
               src={avatarServer + validator.publicKey}
@@ -29,7 +29,9 @@ export default function TeaserTopValidators({ data = [], isLoading = false }) {
                 title="Owner"
               />
             )}
-            <span className={styles.validatorName}>{validatorName(validator)}</span>
+            <span className={styles.validatorName}>
+              {validatorName(validator)}
+            </span>
           </div>
           <div className={styles.validatorDomain}>{validator.domain || ''}</div>
           <div className={styles.validatorServerMeta}>

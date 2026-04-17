@@ -122,6 +122,19 @@
         }
       }
     }
+
+    .tabs-list[aria-label="networkPagesTab"] {
+      flex-wrap: nowrap;
+
+      .tab-item {
+        flex: 0 1 auto;
+        min-width: 0;
+
+        > span {
+          white-space: nowrap;
+        }
+      }
+    }
   }
 
   .content-center .tabs,

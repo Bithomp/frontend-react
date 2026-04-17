@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
 import ReactCountryFlag from 'react-country-flag'
 import { useTheme } from '../components/Layout/ThemeContext'
+import { useRouter } from 'next/router'
 
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
@@ -377,6 +378,7 @@ const buildTimeAgoMap = (list, lang) => {
 }
 
 export default function Validators({ amendment, initialData, initialProcessed, initialErrorMessage, isSsrMobile }) {
+  const router = useRouter()
   const [validators, setValidators] = useState(initialProcessed?.validators || null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(initialProcessed?.unlValidatorsCount || 0)
   const [developerMode, setDeveloperMode] = useState(false)
@@ -438,6 +440,12 @@ export default function Validators({ amendment, initialData, initialProcessed, i
   }
 
   const ShowTimeMemo = memo(showTime)
+
+  const openValidatorRow = (event, publicKey) => {
+    if (!publicKey) return
+    if (event.target.closest('a, button, input, label, svg')) return
+    router.push(`/validator/${publicKey}`)
+  }
 
   const twitterLink = (twitter) => {
     if (!twitter) return ''
@@ -906,12 +914,12 @@ export default function Validators({ amendment, initialData, initialProcessed, i
         )}
 
         {isMobileView ? (
-          <table className="table-mobile">
+          <table className="table-mobile clickable">
             <thead></thead>
             <tbody>
               {!initialErrorMessage && validators?.validators?.length > 0 ? (
                 validators.validators.map((v, i) => (
-                  <tr key={i}>
+                  <tr key={i} className="validator-row-link" onClick={(event) => openValidatorRow(event, v.publicKey)}>
                     <td style={{ padding: '5px' }} className="center">
                       <Avatar src={avatarServer + v.publicKey} />
                       <br />
@@ -922,7 +930,12 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                         {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}
                         {v.principals?.map((p, i) => (
                           <span key={i}>
-                            {p.name && <b> {p.name}</b>}
+                            {p.name && (
+                              <>
+                                {' '}
+                                <b>{p.name}</b>
+                              </>
+                            )}
                             {twitterLink(p.twitter || p.x)}
                             <br />
                           </span>
@@ -1041,7 +1054,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
             </tbody>
           </table>
         ) : (
-          <table className="table-large">
+          <table className="table-large clickable">
             <thead>
               <tr>
                 <th> </th>
@@ -1056,7 +1069,11 @@ export default function Validators({ amendment, initialData, initialProcessed, i
             <tbody>
               {!initialErrorMessage && validators?.validators?.length > 0 ? (
                 validators.validators.map((v, i) => (
-                  <tr key={v.publicKey}>
+                  <tr
+                    key={v.publicKey}
+                    className="validator-row-link"
+                    onClick={(event) => openValidatorRow(event, v.publicKey)}
+                  >
                     <td className="center">
                       <Avatar src={avatarServer + v.publicKey} />
                       <br />

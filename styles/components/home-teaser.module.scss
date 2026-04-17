@@ -61,6 +61,7 @@
   .validatorRow {
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) auto;
     padding: 7px 0;
+    cursor: pointer;
   }
 
   .amendmentCard {
