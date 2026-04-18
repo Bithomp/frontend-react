@@ -25,7 +25,8 @@ class ErrorBoundary extends React.Component {
       "null is not an object (evaluating 'localStorage.getItem')",
       "Cannot read properties of null (reading 'getItem')",
       "Cannot read properties of null (reading 'createImageData')",
-      'Cannot convert undefined or null to object'
+      'Cannot convert undefined or null to object',
+      "Failed to execute 'createScriptURL' on 'TrustedTypePolicy': The provided callback is no longer runnable."
     ]
 
     if (process.env.NODE_ENV === 'development') {
