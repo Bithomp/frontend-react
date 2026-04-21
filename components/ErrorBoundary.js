@@ -26,7 +26,8 @@ class ErrorBoundary extends React.Component {
       "Cannot read properties of null (reading 'getItem')",
       "Cannot read properties of null (reading 'createImageData')",
       'Cannot convert undefined or null to object',
-      "Failed to execute 'createScriptURL' on 'TrustedTypePolicy': The provided callback is no longer runnable."
+      "Failed to execute 'createScriptURL' on 'TrustedTypePolicy': The provided callback is no longer runnable.",
+      "can't access property \"resetSeries\", this.series is null"
     ]
 
     if (process.env.NODE_ENV === 'development') {
