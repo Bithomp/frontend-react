@@ -66,7 +66,7 @@ export async function getServerSideProps(context) {
   const selectedCurrencyServer = currencyServer(req)
   const convertCurrency = (selectedCurrencyServer || 'usd').toLowerCase()
 
-  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true`
+  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=${period === 'month' ? 'calendar' : 'true'}`
   if (period) {
     apiUrl += `&period=${encodeURIComponent(period)}`
   }
@@ -195,9 +195,12 @@ export default function Dapps({
     const controller = new AbortController()
     abortControllerRef.current = controller
     axios
-      .get(`/v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true&period=${period}`, {
-        signal: controller.signal
-      })
+      .get(
+        `/v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=${period === 'month' ? 'calendar' : 'true'}&period=${period}`,
+        {
+          signal: controller.signal
+        }
+      )
       .then((res) => {
         setRawData(res?.data || {})
         setLoading(false)
@@ -366,6 +369,11 @@ export default function Dapps({
           <div>
             Period
             <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
+            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
+              {period === 'day' && '% compared to previous 24h'}
+              {period === 'week' && '% compared to previous 7 days'}
+              {period === 'month' && '% compared to previous full calendar month'}
+            </div>
           </div>
           <div>
             <CheckBox checked={excludeNoWallets} setChecked={onToggleExclude}>
