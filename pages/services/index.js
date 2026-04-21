@@ -48,7 +48,14 @@ function Section({ title, items }) {
       <div className={styles.items}>
         {items.map((it) => {
           const Icon = it.icon
-          return (
+          return it.external ? (
+            <a key={it.href} href={it.href} className={styles.item}>
+              <span className={styles.itemIcon} aria-hidden="true">
+                <Icon />
+              </span>
+              <span className={styles.itemTitle}>{it.title}</span>
+            </a>
+          ) : (
             <Link key={it.href} href={it.href} className={styles.item}>
               <span className={styles.itemIcon} aria-hidden="true">
                 <Icon />
@@ -141,7 +148,7 @@ export default function ServicesPage() {
           icon: IoIosRocket
         },
         { href: '/learn/image-services', title: 'Token / NFT / Address Images', icon: MdOutlineImage },
-        { href: '/submit/', title: t('menu.submit-offline-tx'), icon: RiFilePaper2Line }
+        { href: '/submit/', title: t('menu.submit-offline-tx'), icon: RiFilePaper2Line, external: true }
       ]
     }
 
