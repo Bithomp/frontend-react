@@ -89,7 +89,7 @@ const xrpToBillions = (xrp) => xrp / 1_000_000_000
 const formatBillions = (xrp) => {
   const b = xrpToBillions(xrp)
   if (b >= 1) return shortNiceNumber(b, 2, 1) + 'B'
-  const m = xrp / 1_000_000_000
+  const m = xrp / 1_000_000
   return shortNiceNumber(m, 2, 1) + 'M'
 }
 
@@ -107,6 +107,7 @@ export default function Allocation({ initialData, errorMessage }) {
   const distribution = (data?.distribution || []).filter((d) => Number(d.amount) > 0)
   const burned = data?.burned ? dropsToXrp(data.burned) : 0
   const totalCoins = data?.totalCoins ? dropsToXrp(data.totalCoins) : data?.maxCoins ? dropsToXrp(data.maxCoins) : 0
+  const maxCoins = data?.maxCoins ? dropsToXrp(data.maxCoins) : totalCoins
   const updatedAt = data?.updatedAt
 
   // Circulating = total outstanding minus escrowed and blackholed (totalCoins already excludes burned)
@@ -258,6 +259,14 @@ export default function Allocation({ initialData, errorMessage }) {
             <div className="flex-container flex-center allocation-stats">
               <div className="grey-box allocation-stat-box">
                 <div className="allocation-stat-label">{t('max-supply', { ns: 'allocation' })}</div>
+                <div className="allocation-stat-value">
+                  {formatBillions(maxCoins)} {nativeCurrency}
+                </div>
+              </div>
+              <div className="grey-box allocation-stat-box">
+                <div className="allocation-stat-label">
+                  {t('current-supply', { ns: 'allocation', defaultValue: 'Current Supply' })}
+                </div>
                 <div className="allocation-stat-value">
                   {formatBillions(totalCoins)} {nativeCurrency}
                 </div>
