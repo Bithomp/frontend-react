@@ -294,7 +294,17 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
                 <div className="validator-agreement-label">{agreementLabel(key)}</div>
                 <div className="validator-agreement-score">{scorePercent(value?.score)}</div>
                 <div className="validator-agreement-meta">
-                  Missed {Number(value?.missed || 0)} / {Number(value?.total || 0)}
+                  <span className="tooltip" tabIndex={0}>
+                    Missed {Number(value?.missed || 0)} / {Number(value?.total || 0)}
+                    <span className="tooltiptext right" style={{ width: '200px' }}>
+                      <div>
+                        <b>Missed</b> — ledgers this validator did not validate.
+                      </div>
+                      <div>
+                        <b>Total</b> — all ledgers in this period.
+                      </div>
+                    </span>
+                  </span>
                 </div>
               </div>
             ))}
@@ -423,8 +433,22 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
                 <tr>
                   <th>Date</th>
                   <th className="right">Score</th>
-                  <th className="right">Missed</th>
-                  <th className="right">Total</th>
+                  <th className="right">
+                    <span className="tooltip" tabIndex={0}>
+                      Missed
+                      <span className="tooltiptext left" style={{ width: '180px' }}>
+                        Ledgers this validator did not validate that day.
+                      </span>
+                    </span>
+                  </th>
+                  <th className="right">
+                    <span className="tooltip" tabIndex={0}>
+                      Total
+                      <span className="tooltiptext left" style={{ width: '160px' }}>
+                        Total ledgers closed that day.
+                      </span>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>

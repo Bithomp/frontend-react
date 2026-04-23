@@ -856,6 +856,7 @@ table {
     left: 50%;
     bottom: calc(100% + 10px);
     width: max-content;
+    text-transform: none;
     max-width: min(320px, calc(100vw - 24px));
     padding: 8px 10px;
     background: rgba(28, 32, 38, 0.96);
@@ -873,6 +874,7 @@ table {
     hyphens: manual;
     line-height: 1.35;
     visibility: hidden;
+
     opacity: 0;
     transform: translate(var(--tooltip-shift-x), 4px);
     transition:
@@ -914,6 +916,8 @@ table {
       right: auto;
       text-align: left;
 
+      div, p, span { text-align: left; }
+
       &:after {
         left: 18px;
         transform: none;
@@ -936,6 +940,8 @@ table {
       left: auto;
       right: 0;
       text-align: left;
+
+      div, p, span { text-align: left; }
 
       &:after {
         left: auto;
