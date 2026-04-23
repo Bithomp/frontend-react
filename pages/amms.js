@@ -9,7 +9,6 @@ import Link from 'next/link'
 
 import {
   showAmmPercents,
-  addressUsernameOrServiceLink,
   shortNiceNumber,
   fullDateAndTime,
   timeFromNow,
@@ -44,7 +43,9 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amms?order=currencyHigh&limit=100&voteSlots=false&auctionSlot=false&holders=true' + currencyPart,
+      url:
+        'v2/amms?order=currencyHigh&limit=100&voteSlots=false&auctionSlot=false&holders=true&priceNativeCurrencySpot=true' +
+        currencyPart,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -71,11 +72,51 @@ export async function getServerSideProps(context) {
   }
 }
 
+import { useRouter } from 'next/router'
 import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import TokenTabs from '../components/Tabs/TokenTabs'
+
+const AmountWithIcon = ({ amount, fiatRate, selectedCurrency }) => {
+  const hasIssuer = !!amount?.issuer
+  return (
+    <AddressWithIcon address={amount?.issuer}>
+      {hasIssuer ? (
+        <>
+          <span suppressHydrationWarning>{shortNiceNumber(amount.value, 6, 2)}</span>{' '}
+          <span>{niceCurrency(amount.currency)}</span>
+        </>
+      ) : (
+        amountFormatNode(amount, { short: true, maxFractionDigits: 6 })
+      )}
+      <br />
+      {fiatRate > 0 && tokenToFiat({ amount, selectedCurrency, fiatRate })}
+    </AddressWithIcon>
+  )
+}
+
+const LPToken = ({ a }) => {
+  return (
+    <CurrencyWithIcon
+      options={{ disableTokenLink: true }}
+      token={{
+        ...a.lpTokenBalance,
+        currencyDetails: {
+          type: 'lp_token',
+          ammID: a.ammID,
+          asset: a.amount,
+          asset2: a.amount2,
+          currency:
+            niceCurrency(a.amount?.currency || nativeCurrency) +
+            '/' +
+            niceCurrency(a.amount2?.currency || nativeCurrency)
+        }
+      }}
+    />
+  )
+}
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -108,6 +149,7 @@ export default function Amms({
   signOutPro
 }) {
   const { t, i18n } = useTranslation()
+  const router = useRouter()
 
   let fiatRate = fiatRateServer
   let selectedCurrency = selectedCurrencyServer
@@ -181,7 +223,11 @@ export default function Amms({
     }
 
     let apiUrl =
-      'v2/amms?order=' + order + '&limit=100&voteSlots=false&auctionSlot=false&holders=true' + markerPart + currencyPart
+      'v2/amms?order=' +
+      order +
+      '&limit=100&voteSlots=false&auctionSlot=false&holders=true&priceNativeCurrencySpot=true' +
+      markerPart +
+      currencyPart
 
     if (!markerPart) {
       setLoading(true)
@@ -243,46 +289,12 @@ export default function Amms({
     { label: 'Asset 1, issuer', key: 'amount.issuer' },
     { label: 'Asset 2', key: 'amount2Formated' },
     { label: 'Asset 2, issuer', key: 'amount2.issuer' },
-    { label: 'LP balance', key: 'lpTokenBalance.value' },
     { label: 'Currency code', key: 'lpTokenBalance.currency' },
     { label: 'AMM address', key: 'account' },
     { label: 'AMM ID', key: 'ammID' },
     { label: 'Created', key: 'createdAtFormated' },
-    { label: 'Updated', key: 'updatedAtFormated' },
-    { label: 'Trading fee', key: 'tradingFeeFormated' }
+    { label: 'Updated', key: 'updatedAtFormated' }
   ]
-
-  const AmountWithIcon = ({ amount }) => {
-    return (
-      <AddressWithIcon address={amount?.issuer}>
-        {amountFormatNode(amount, { short: true, maxFractionDigits: 6 })}
-        <br />
-        {amount?.issuer
-          ? addressUsernameOrServiceLink(amount, 'issuer', { short: true })
-          : fiatRate > 0 && tokenToFiat({ amount, selectedCurrency, fiatRate })}
-      </AddressWithIcon>
-    )
-  }
-
-  const LPToken = ({ a }) => {
-    return (
-      <CurrencyWithIcon
-        token={{
-          ...a.lpTokenBalance,
-          currencyDetails: {
-            type: 'lp_token',
-            ammID: a.ammID,
-            asset: a.amount,
-            asset2: a.amount2,
-            currency:
-              niceCurrency(a.amount?.currency || nativeCurrency) +
-              '/' +
-              niceCurrency(a.amount2?.currency || nativeCurrency)
-          }
-        }}
-      />
-    )
-  }
 
   return (
     <>
@@ -340,7 +352,7 @@ export default function Amms({
           openEmailLogin={openEmailLogin}
         >
           {!windowWidth || windowWidth > 860 ? (
-            <table className="table-large expand">
+            <table className="table-large expand clickable">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
@@ -348,9 +360,7 @@ export default function Amms({
                   <th>Asset 1</th>
                   <th>Asset 2</th>
                   <th className="right">Holders</th>
-                  <th className="right">LP balance</th>
-                  <th>Created</th>
-                  <th>{t('table.updated')}</th>
+                  <th className="right">Created</th>
                   <th className="right">Trading fee</th>
                   <th className="center">Actions</th>
                 </tr>
@@ -373,16 +383,24 @@ export default function Amms({
                       <>
                         {data.length > 0 &&
                           data.map((a, i) => (
-                            <tr key={i}>
+                            <tr key={i} onClick={() => router.push('/amm/' + a.ammID)}>
                               <td className="center">{i + 1}</td>
                               <td>
                                 <LPToken a={a} />
                               </td>
                               <td>
-                                <AmountWithIcon amount={a.amount} />
+                                <AmountWithIcon
+                                  amount={a.amount}
+                                  fiatRate={fiatRate}
+                                  selectedCurrency={selectedCurrency}
+                                />
                               </td>
                               <td>
-                                <AmountWithIcon amount={a.amount2} />
+                                <AmountWithIcon
+                                  amount={a.amount2}
+                                  fiatRate={fiatRate}
+                                  selectedCurrency={selectedCurrency}
+                                />
                               </td>
                               <td className="right">
                                 <Link
@@ -396,13 +414,9 @@ export default function Amms({
                                   {a.holders}
                                 </Link>
                               </td>
-                              <td suppressHydrationWarning className="right">
-                                {shortNiceNumber(a.lpTokenBalance?.value)}
-                              </td>
-                              <td>{timeFromNow(a.createdAt, i18n)}</td>
-                              <td>{timeFromNow(a.updatedAt, i18n)}</td>
+                              <td className="right">{timeFromNow(a.createdAt, i18n)}</td>
                               <td className="right">{showAmmPercents(a.tradingFee)}</td>
-                              <td className="center">
+                              <td className="center" onClick={(e) => e.stopPropagation()}>
                                 <Link
                                   href={
                                     '/services/amm/deposit?currency=' +
@@ -476,18 +490,24 @@ export default function Amms({
                               <tbody>
                                 <tr className="no-border">
                                   <td>
-                                    <AmountWithIcon amount={a.amount} />
+                                    <AmountWithIcon
+                                      amount={a.amount}
+                                      fiatRate={fiatRate}
+                                      selectedCurrency={selectedCurrency}
+                                    />
                                   </td>
                                   <td style={{ paddingLeft: 10 }}>
-                                    <AmountWithIcon amount={a.amount2} />
+                                    <AmountWithIcon
+                                      amount={a.amount2}
+                                      fiatRate={fiatRate}
+                                      selectedCurrency={selectedCurrency}
+                                    />
                                   </td>
                                 </tr>
                               </tbody>
                             </table>
-                            <p suppressHydrationWarning>LP balance: {shortNiceNumber(a.lpTokenBalance?.value)}</p>
                             <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
                             <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
-                            <p>Updated: {timeFromNow(a.updatedAt, i18n)}</p>
                             <Link
                               href={
                                 '/services/amm/deposit?currency=' +
@@ -500,7 +520,13 @@ export default function Amms({
                               className="button-action thin narrow"
                             >
                               Deposit
-                            </Link>
+                            </Link>{' '}
+                            <button
+                              className="button-action thin narrow"
+                              onClick={() => router.push('/amm/' + a.ammID)}
+                            >
+                              AMM Page
+                            </button>
                             <br />
                             <br />
                           </td>

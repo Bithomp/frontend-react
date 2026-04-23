@@ -14,7 +14,12 @@ import {
   showAmmPercents,
   timeFromNow,
   AddressWithIconFilled,
-  CurrencyWithIcon
+  AddressWithIcon,
+  CurrencyWithIcon,
+  shortNiceNumber,
+  niceCurrency,
+  tokenToFiat,
+  amountFormatNode
 } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import DatePicker from 'react-datepicker'
@@ -23,7 +28,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import CopyButton from '../../components/UI/CopyButton'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { axiosServer, passHeaders } from '../../utils/axios'
+import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import Link from 'next/link'
 import AmmTabs from '../../components/Tabs/AmmTabs'
 
@@ -35,7 +40,11 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amm/' + id + '?holders=true' + (ledgerTimestamp ? '&ledgerTimestamp=' + ledgerTimestamp : ''),
+      url:
+        'v2/amm/' +
+        id +
+        '?holders=true&priceNativeCurrencySpot=true' +
+        (ledgerTimestamp ? '&ledgerTimestamp=' + ledgerTimestamp : ''),
       headers: passHeaders(req)
     }).catch((error) => {
       errorMessage = error.message
@@ -52,15 +61,33 @@ export async function getServerSideProps(context) {
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
       initialErrorMessage: errorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
+      ...(await getFiatRateServer(req)),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function Amm({ id, initialData, initialErrorMessage, ledgerTimestampQuery, isSsrMobile }) {
+export default function Amm({
+  id,
+  initialData,
+  initialErrorMessage,
+  ledgerTimestampQuery,
+  isSsrMobile,
+  fiatRate: fiatRateApp,
+  selectedCurrency: selectedCurrencyApp,
+  fiatRateServer,
+  selectedCurrencyServer
+}) {
   const { t, i18n } = useTranslation()
   const width = useWidth()
   const router = useRouter()
+
+  let fiatRate = fiatRateServer
+  let selectedCurrency = selectedCurrencyServer
+  if (fiatRateApp) {
+    fiatRate = fiatRateApp
+    selectedCurrency = selectedCurrencyApp
+  }
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
   const [loading, setLoading] = useState(false)
@@ -75,7 +102,7 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
     const response = await axios(
       'v2/amm/' +
         id +
-        '?holders=true' +
+        '?holders=true&priceNativeCurrencySpot=true' +
         (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
       setErrorMessage(t('error.' + error.message))
@@ -174,26 +201,41 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
   const renderAssetRow = (amount, name) => {
     const nativeAsset = isNativeAsset(amount)
     const parsedAmount = getAssetAmountValue(amount)
+    const tokenUrl = !nativeAsset && amount?.issuer ? `/token/${amount.issuer}/${amount.currency}` : null
 
     return (
       <tr>
         <td>{name}</td>
         <td>
           {nativeAsset ? (
-            <span className="bold no-brake">
-              {fullNiceNumber(parsedAmount)} {nativeCurrency}
-            </span>
+            <>
+              <span className="bold no-brake">
+                {fullNiceNumber(parsedAmount)} {nativeCurrency}
+              </span>
+              {fiatRate > 0 && (
+                <>
+                  <br />
+                  {tokenToFiat({ amount, selectedCurrency, fiatRate })}
+                </>
+              )}
+            </>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-              <span className="bold no-brake">{fullNiceNumber(parsedAmount)}</span>
-              <CurrencyWithIcon
-                token={{
-                  currency: amount?.currency || nativeCurrency,
-                  issuer: amount?.issuer || null,
-                  issuerDetails: amount?.issuerDetails || null
-                }}
-              />
-            </div>
+            <AddressWithIcon address={amount?.issuer}>
+              {tokenUrl ? (
+                <>
+                  <span suppressHydrationWarning>{shortNiceNumber(amount.value, 6, 2)}</span>{' '}
+                  <Link href={tokenUrl}>{niceCurrency(amount.currency)}</Link>
+                </>
+              ) : (
+                amountFormatNode(amount, { short: true, maxFractionDigits: 6 })
+              )}
+              {fiatRate > 0 && (
+                <>
+                  <br />
+                  {tokenToFiat({ amount, selectedCurrency, fiatRate })}
+                </>
+              )}
+            </AddressWithIcon>
           )}
         </td>
       </tr>
@@ -248,7 +290,7 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
             className="dateAndTimeRange"
             showMonthDropdown
             showYearDropdown
-          />
+          />{' '}
           {width > 600 ? (
             timeMachineButtons
           ) : (
