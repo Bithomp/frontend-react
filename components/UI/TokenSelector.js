@@ -139,7 +139,7 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
-      let urlPart = excludeLPtokens ? '&lptoken=false' : '&currencyDetails=true'
+      let urlPart = excludeLPtokens ? '&lptokens=false' : '&currencyDetails=true'
       if (canLock) {
         urlPart += '&canLock=true'
       }
