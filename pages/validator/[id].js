@@ -67,7 +67,7 @@ export async function getServerSideProps(context) {
   let errorMessage = ''
 
   try {
-    const [metricsRes, reportsRes, validatorsRes] = await Promise.all([
+    const [metricsRes, reportsRes, validatorRes] = await Promise.all([
       axiosServer({
         method: 'get',
         url: 'v2/validator/' + encodeURIComponent(id) + '/metrics',
@@ -80,21 +80,12 @@ export async function getServerSideProps(context) {
       }),
       axiosServer({
         method: 'get',
-        url: 'v2/validators',
+        url: 'v2/validator/' + encodeURIComponent(id),
         headers: passHeaders(req)
       })
     ])
 
-    const validatorsList = Array.isArray(validatorsRes?.data)
-      ? validatorsRes.data
-      : Array.isArray(validatorsRes?.data?.validators)
-        ? validatorsRes.data.validators
-        : []
-    const validatorMeta =
-      validatorsList.find((item) => item.publicKey === id || item.validation_public_key === id || item.publicKey === metricsRes?.data?.validation_public_key) ||
-      null
-
-    validator = normalizeValidator(metricsRes?.data || null, validatorMeta)
+    validator = normalizeValidator(metricsRes.data, validatorRes.data)
     reportsPayload = reportsRes?.data || null
   } catch (error) {
     errorMessage = error?.message || 'Failed to load validator'
@@ -162,7 +153,7 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
               fill={theme === 'dark' ? '#fff' : '#000'}
             />
           </svg>
-          <span className="tooltiptext right no-brake">{twitterHandle}</span>
+          <span className="tooltiptext no-brake">{twitterHandle}</span>
         </span>
       </a>
     )
@@ -180,9 +171,7 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
         >
           <VerifiedIcon />
         </a>
-        <span className="tooltiptext right no-brake">
-          {t('table.text.domain-verified-toml', { ns: 'validators' })}
-        </span>
+        <span className="tooltiptext right no-brake">{t('table.text.domain-verified-toml', { ns: 'validators' })}</span>
       </span>
     )
   }
@@ -190,7 +179,8 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
   const listAmendments = (amendments) => {
     if (!amendments?.length) return <span className="grey">{t('table.text.no-votes')}</span>
     return amendments.map((amendment, index) => {
-      const amendmentId = typeof amendment === 'string' ? amendment : amendment?.id || amendment?.amendment || amendment?.name
+      const amendmentId =
+        typeof amendment === 'string' ? amendment : amendment?.id || amendment?.amendment || amendment?.name
       const amendmentName = typeof amendment === 'string' ? amendment : amendment?.name || amendmentId
       if (!amendmentId && !amendmentName) return null
       return (
@@ -246,15 +236,15 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
                 )}
                 {isPartial && <span className="validator-badge warning">Partial data</span>}
                 {isRevoked && <span className="validator-badge negative">Revoked</span>}
-                {!isRevoked && !isPartial && (
-                  seenRecently ? (
+                {!isRevoked &&
+                  !isPartial &&
+                  (seenRecently ? (
                     <span className="validator-badge neutral">Active</span>
                   ) : lastSeenTime > 0 ? (
                     <span className="validator-badge warning">Last seen {timeFromNow(lastSeenTime, i18n)}</span>
                   ) : (
                     <span className="validator-badge warning">Not seen recently</span>
-                  )
-                )}
+                  ))}
               </div>
               <div className="validator-meta-line">
                 {validator?.principals?.map((principal, index) => (
@@ -266,7 +256,12 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
                 {legacyDomain && (
                   <span className="validator-domain-wrap">
                     <b>{t('domain-legacy', { ns: 'validators' })}:</b>{' '}
-                    <a href={`https://${legacyDomain}`} target="_blank" rel="noreferrer" className="validator-domain-link">
+                    <a
+                      href={`https://${legacyDomain}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="validator-domain-link"
+                    >
                       {legacyDomain}
                     </a>
                     {verifiedSign(validator.domainLegacyVerified, legacyDomain)}
@@ -275,13 +270,17 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
                 {ownerCountry && (
                   <span className="validator-flag-item">
                     <ReactCountryFlag countryCode={ownerCountry} svg style={{ width: '18px', height: '18px' }} />
-                    <span><b>Operator:</b> {ownerCountry}</span>
+                    <span>
+                      <b>Operator:</b> {ownerCountry}
+                    </span>
                   </span>
                 )}
                 {serverCountry && (
                   <span className="validator-flag-item">
                     <ReactCountryFlag countryCode={serverCountry} svg style={{ width: '18px', height: '18px' }} />
-                    <span><b>Server:</b> {serverCountry}</span>
+                    <span>
+                      <b>Server:</b> {serverCountry}
+                    </span>
                   </span>
                 )}
                 {validator?.server_version && <span>Version: {validator.server_version}</span>}
@@ -353,8 +352,12 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
                 <div className="validator-detail-row">
                   <span>{t('table.network-asn', { ns: 'validators' })}</span>
                   <span>
-                    {validator.serverCloud === true && <span title={t('table.cloud-private', { ns: 'validators' })}>☁️</span>}
-                    {validator.serverCloud === false && <span title={t('table.cloud-private', { ns: 'validators' })}>🏠</span>}
+                    {validator.serverCloud === true && (
+                      <span title={t('table.cloud-private', { ns: 'validators' })}>☁️</span>
+                    )}
+                    {validator.serverCloud === false && (
+                      <span title={t('table.cloud-private', { ns: 'validators' })}>🏠</span>
+                    )}
                     {validator.networkASN && <> {validator.networkASN}</>}
                   </span>
                 </div>
@@ -439,7 +442,6 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
               </tbody>
             </table>
           </div>
-
         </section>
       </div>
 
