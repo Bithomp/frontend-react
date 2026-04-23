@@ -914,12 +914,12 @@ export default function Validators({ amendment, initialData, initialProcessed, i
         )}
 
         {isMobileView ? (
-          <table className="table-mobile clickable">
+          <table className="table-mobile">
             <thead></thead>
             <tbody>
               {!initialErrorMessage && validators?.validators?.length > 0 ? (
                 validators.validators.map((v, i) => (
-                  <tr key={i} className="validator-row-link" onClick={(event) => openValidatorRow(event, v.publicKey)}>
+                  <tr key={i}>
                     <td style={{ padding: '5px' }} className="center">
                       <Avatar src={avatarServer + v.publicKey} />
                       <br />
@@ -1040,6 +1040,14 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                       )}
                       <p>
                         {t('table.sequence')}: {v.sequence}
+                      </p>
+                      <p>
+                        <button
+                          className="button-action narrow thin"
+                          onClick={() => router.push(`/validator/${v.publicKey}`)}
+                        >
+                          {t('table.validator', { ns: 'validators' })} Page
+                        </button>
                       </p>
                     </td>
                   </tr>
