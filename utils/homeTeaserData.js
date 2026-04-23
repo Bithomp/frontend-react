@@ -6,7 +6,7 @@
 import { axiosServer, passHeaders } from './axios'
 import { dappBySourceTag } from './transaction'
 import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
-import { nativeCurrency, devNet } from './index'
+import { nativeCurrency, devNet, xahauNetwork, showXahauNewAmendment } from './index'
 
 /**
  * Helper function to ensure we always get an array from API response
@@ -241,6 +241,7 @@ export const fetchTeaserAmendments = async (req) => {
         threshold: features[a.amendment]?.threshold ?? null
       }))
       .filter((a) => voting.has(a.amendment))
+      .filter((a) => showXahauNewAmendment(a, xahauNetwork))
 
     const parseVersion = (version) => {
       const parts = String(version || '').match(/\d+/g)

@@ -4,7 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fullDateAndTime, shortHash, timeOrDate } from '../utils/format'
-import { shortName, useWidth, xahauNetwork } from '../utils'
+import { shortName, useWidth, xahauNetwork, showXahauNewAmendment } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { axiosServer, passHeaders } from '../utils/axios'
 
@@ -164,6 +164,7 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
 
       //with more votes on top
       newArray.sort((a, b) => (a.count > b.count ? -1 : 1))
+      newArray = newArray.filter((a) => showXahauNewAmendment(a, xahauNetwork))
 
       setNotAvailableAmendments(notAvailableArray)
       setObsoleteAmendments(obsoleteArray)

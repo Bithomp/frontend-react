@@ -1,11 +1,19 @@
 import ReactCountryFlag from 'react-country-flag'
 import HomeTeaser, { HomeTeaseRow } from './HomeTeaser'
 import { shortHash } from '../../utils/format'
-import { avatarServer } from '../../utils'
+import { avatarServer, xahauNetwork } from '../../utils'
 import Avatar from '../UI/Avatar'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 const validatorName = (v) => v.principals?.[0]?.name || shortHash(v.publicKey, 6)
+const validatorVersion = (version) => {
+  if (!version) return null
+
+  const normalizedVersion = String(version).startsWith('v') ? String(version).slice(1) : String(version)
+  const displayVersion = xahauNetwork ? normalizedVersion.split('+')[0] : normalizedVersion
+
+  return xahauNetwork ? displayVersion : `v${displayVersion}`
+}
 
 export default function TeaserTopValidators({ data = [], isLoading = false }) {
   return (
@@ -44,9 +52,7 @@ export default function TeaserTopValidators({ data = [], isLoading = false }) {
             )}
             {validator.serverVersion ? (
               <span className={styles.amendmentVersion}>
-                {String(validator.serverVersion).startsWith('v')
-                  ? validator.serverVersion
-                  : `v${validator.serverVersion}`}
+                {validatorVersion(validator.serverVersion)}
               </span>
             ) : null}
           </div>

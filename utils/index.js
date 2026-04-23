@@ -547,6 +547,17 @@ const webAddress = process.env.NEXT_PUBLIC_WEB_ADDRESS
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
 export const xahauNetwork = network.includes('xahau')
 
+export const showXahauNewAmendment = (amendment, isXahauNetwork = xahauNetwork) => {
+  if (!isXahauNetwork) return true
+
+  const votes = Number(amendment?.count) || 0
+  if (votes > 0) return true
+
+  const version = String(amendment?.introduced || '').trim()
+  const year = Number(version.match(/^(\d{4})/)?.[1])
+  return Number.isInteger(year) && year >= 2026
+}
+
 export const networks = {
   mainnet: {
     id: 0,
