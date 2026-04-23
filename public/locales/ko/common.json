@@ -3,7 +3,7 @@
     "viewAll": "모두 보기",
     "noData": "이용 가능한 데이터가 없습니다",
     "addresses": "주소",
-    "holders": 보유자",
+    "holders": "보유자",
     "sales": "총기보 식"
   },
   "menu": {
@@ -60,7 +60,8 @@
       "validators": "벨리데이터",
       "amendments": "수정사항",
       "unl-report": "UNL report",
-      "genesis": "Genesis 계정"
+      "genesis": "Genesis 계정",
+      "allocation": "{{currency}} 배분"
     },
     "developers": {
       "developers": "개발자",
@@ -227,7 +228,7 @@
     "base-reserve": "계정 리저브",
     "increment-reserve": "오브젝트 리저브",
     "total-supply": "전체 공급",
-    "burned-by-hooks":"Hooks에 의해 소각됨",
+    "burned-by-hooks": "Hooks에 의해 소각됨",
     "total-burned": "전체 소각량"
   },
   "nft-statistics": {
@@ -353,7 +354,7 @@
       "address-invalid": "유효한 주소를 입력해주세요.",
       "domain-empty": "웹 도메인을 입력해주세요.",
       "domain-invalid": "유효한 웹 도메인을 입력해주세요.",
-      "description-empty": "설명을 입력해주세요.", 
+      "description-empty": "설명을 입력해주세요.",
       "description-short": "설명이 너무 짧습니다.",
       "email-empty": "이메일을 입력하세요",
       "email-invalid": "유효한 이메일 주소를 입력하세요",
@@ -430,12 +431,12 @@
     "currency": "통화",
     "currency-issuer": "통화 발행자",
     "destination-tag": "대상 태그",
-    "uri": "URI", 
-    "mints": "민팅", 
-    "view": "보기", 
-    "period": "기간", 
-    "mint-period": "민팅 기간", 
-    "burn-period": "소각 기간", 
+    "uri": "URI",
+    "mints": "민팅",
+    "view": "보기",
+    "period": "기간",
+    "mint-period": "민팅 기간",
+    "burn-period": "소각 기간",
     "warning": "경고",
     "sequence": "절차",
     "version": "버전",
@@ -583,9 +584,9 @@
     "bids": "입찰",
     "all-tokens": "모든 토큰",
     "single-token": "단일 토큰",
-    "mintedNew": "최신", 
-    "mintedOld": "가장 오래된", 
-    "existing": "기존", 
+    "mintedNew": "최신",
+    "mintedOld": "가장 오래된",
+    "existing": "기존",
     "burned": "소각됨"
   },
   "xaman": {

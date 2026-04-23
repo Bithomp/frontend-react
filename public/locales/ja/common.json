@@ -60,7 +60,8 @@
       "validators": "バリデータ",
       "amendments": "修正案",
       "unl-report": "UNLレポート",
-      "genesis": "ジェネシスアカウント"
+      "genesis": "ジェネシスアカウント",
+      "allocation": "{{currency}} 配分"
     },
     "developers": {
       "developers": "開発者",
@@ -203,7 +204,7 @@
       },
       "escrows": "エスクロー",
       "amms": "AMMプール",
-      "nodes": "ノード" 
+      "nodes": "ノード"
     },
     "teaser": {
       "topDapps": "トップDapps",

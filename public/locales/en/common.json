@@ -60,7 +60,8 @@
       "validators": "Validators",
       "amendments": "Amendments",
       "unl-report": "UNL report",
-      "genesis": "Genesis accounts"
+      "genesis": "Genesis accounts",
+      "allocation": "{{currency}} Allocation"
     },
     "developers": {
       "developers": "Developers",

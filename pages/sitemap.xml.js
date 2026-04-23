@@ -42,6 +42,7 @@ const pages = [
   { loc: 'nodes', changefreq: 'always', priority: '0.7' },
   { loc: 'activations', changefreq: 'always', priority: '0.7' },
   { loc: 'domains', changefreq: 'always', priority: '0.7' },
+  { loc: 'allocation', changefreq: 'always', priority: '0.8' },
   { loc: 'distribution', changefreq: 'always', priority: '0.7' },
 
   { loc: 'genesis', changefreq: 'weekly', priority: '0.6' },
@@ -109,7 +110,7 @@ if (network === 'mainnet') {
     { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' },
     { loc: 'learn/send-payments', changefreq: 'monthly', priority: '0.5' },
     { loc: 'learn/types-of-assets', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/checks', changefreq: 'monthly', priority: '0.5' },
+    { loc: 'learn/checks', changefreq: 'monthly', priority: '0.5' }
   )
 }
 
@@ -162,7 +163,7 @@ function generateSiteMap(posts) {
     'learn/paystrings',
     'learn/send-payments',
     'learn/types-of-assets',
-    'learn/checks',
+    'learn/checks'
   ]
 
   return `<?xml version="1.0" encoding="UTF-8"?>

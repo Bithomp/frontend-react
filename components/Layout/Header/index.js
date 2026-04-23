@@ -62,6 +62,7 @@ import {
   IoBarChartOutline,
   IoTicketOutline,
   IoStatsChartOutline,
+  IoPieChartOutline,
   IoFlashOutline,
   IoInformationCircleOutline,
   IoListCircleOutline,
@@ -645,6 +646,10 @@ export default function Header({
             <Link href="/genesis">
               <IoKeyOutline className="menu-item-icon" />
               {t('menu.network.genesis')}
+            </Link>
+            <Link href="/allocation">
+              <IoPieChartOutline className="menu-item-icon" />
+              {t('menu.network.allocation', { currency: nativeCurrency })}
             </Link>
           </MenuDropDown>
 

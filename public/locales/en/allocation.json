@@ -1,0 +1,36 @@
+{
+  "title": "{{currency}} Allocation",
+  "subtitle": "How {{supply}} {{currency}} is distributed across the network",
+  "max-supply": "Max Supply",
+  "circulating": "Circulating Supply",
+  "circulating-note": "Max minus burned, escrowed & blackholed.",
+  "distribution-link": "{{currency}} distribution",
+  "burned": "Burned",
+  "of-max": "of max",
+  "chart-center-label": "Max Supply",
+  "chart-title": "Distribution by Category",
+  "breakdown-title": "Breakdown",
+  "col-category": "Category",
+  "col-amount": "Amount",
+  "col-percent": "Share",
+  "updated-at": "Last updated",
+  "category": {
+    "escrowRipple": "Ripple Escrow",
+    "ripple": "Ripple",
+    "escrowService": "Service Escrow",
+    "escrowRest": "Other Escrow",
+    "rest": "Active Wallets",
+    "service": "Known Services",
+    "amm": "AMM Pools",
+    "notActive1": "Inactive 1–2 yrs",
+    "notActive2": "Inactive 2–3 yrs",
+    "notActive3": "Inactive 3–5 yrs",
+    "notActive5": "Inactive 5–10 yrs",
+    "notActive10": "Inactive 10+ yrs",
+    "blackholed": "Blackholed"
+  },
+  "group": {
+    "inactive-short": "Inactive 1–5 yrs",
+    "inactive-long": "Inactive 5+ yrs"
+  }
+}

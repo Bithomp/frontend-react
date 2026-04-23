@@ -60,7 +60,8 @@
       "validators": "Валидаторы",
       "amendments": "Поправки",
       "unl-report": "UNL репорт",
-      "genesis": "Генезис аккаунты"
+      "genesis": "Генезис аккаунты",
+      "allocation": "Распределение {{currency}}"
     },
     "developers": {
       "developers": "Разработчикам",

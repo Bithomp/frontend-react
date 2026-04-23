@@ -1,0 +1,36 @@
+{
+  "title": "Alokasi {{currency}}",
+  "subtitle": "Bagaimana {{supply}} {{currency}} didistribusikan di jaringan",
+  "max-supply": "Pasokan Maksimum",
+  "circulating": "Pasokan Beredar",
+  "circulating-note": "Maksimum dikurangi yang dibakar, dititipkan & diblokir.",
+  "distribution-link": "Distribusi {{currency}}",
+  "burned": "Dibakar",
+  "of-max": "dari maksimum",
+  "chart-center-label": "Pasokan Maksimum",
+  "chart-title": "Distribusi per Kategori",
+  "breakdown-title": "Rincian",
+  "col-category": "Kategori",
+  "col-amount": "Jumlah",
+  "col-percent": "Bagian",
+  "updated-at": "Terakhir diperbarui",
+  "category": {
+    "escrowRipple": "Escrow Ripple",
+    "ripple": "Ripple",
+    "escrowService": "Escrow Layanan",
+    "escrowRest": "Escrow Lainnya",
+    "rest": "Dompet Aktif",
+    "service": "Layanan Dikenal",
+    "amm": "Pool AMM",
+    "notActive1": "Tidak Aktif 1–2 thn",
+    "notActive2": "Tidak Aktif 2–3 thn",
+    "notActive3": "Tidak Aktif 3–5 thn",
+    "notActive5": "Tidak Aktif 5–10 thn",
+    "notActive10": "Tidak Aktif 10+ thn",
+    "blackholed": "Blackholed"
+  },
+  "group": {
+    "inactive-short": "Tidak Aktif 1–5 thn",
+    "inactive-long": "Tidak Aktif 5+ thn"
+  }
+}

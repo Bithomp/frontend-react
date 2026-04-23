@@ -60,7 +60,8 @@
       "validators": "Validatoren",
       "amendments": "Änderungen",
       "unl-report": "UNL report",
-      "genesis": "Genesis Konten"
+      "genesis": "Genesis Konten",
+      "allocation": "{{currency}} Verteilung"
     },
     "developers": {
       "developers": "Entwickler",
@@ -305,7 +306,7 @@
     "accept": "Akzeptieren",
     "submit": "Abschicken",
     "search": "Suchen",
-    "print": "Drucken", 
+    "print": "Drucken",
     "download": "Herunterladen",
     "copy": "Kopieren",
     "copied": "Kopiert",

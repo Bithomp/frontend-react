@@ -1,0 +1,36 @@
+{
+  "title": "{{currency}} 配分",
+  "subtitle": "{{supply}} {{currency}} がネットワーク上でどのように配分されているか",
+  "max-supply": "最大供給量",
+  "circulating": "流通供給量",
+  "circulating-note": "最大量からバーン済み、エスクロー済み、ブラックホール済みを差し引いた量。",
+  "distribution-link": "{{currency}}の分布",
+  "burned": "バーン済み",
+  "of-max": "最大比",
+  "chart-center-label": "最大供給量",
+  "chart-title": "カテゴリ別分布",
+  "breakdown-title": "内訳",
+  "col-category": "カテゴリ",
+  "col-amount": "金額",
+  "col-percent": "割合",
+  "updated-at": "最終更新",
+  "category": {
+    "escrowRipple": "Ripple エスクロー",
+    "ripple": "Ripple",
+    "escrowService": "サービスエスクロー",
+    "escrowRest": "その他のエスクロー",
+    "rest": "アクティブウォレット",
+    "service": "既知のサービス",
+    "amm": "AMMプール",
+    "notActive1": "非アクティブ 1〜2年",
+    "notActive2": "非アクティブ 2〜3年",
+    "notActive3": "非アクティブ 3〜5年",
+    "notActive5": "非アクティブ 5〜10年",
+    "notActive10": "非アクティブ 10年以上",
+    "blackholed": "ブラックホール"
+  },
+  "group": {
+    "inactive-short": "非アクティブ 1〜5年",
+    "inactive-long": "非アクティブ 5年以上"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "title": "Распределение {{currency}}",
+  "subtitle": "Как {{supply}} {{currency}} распределены в сети",
+  "max-supply": "Максимальное предложение",
+  "circulating": "Обращающееся предложение",
+  "circulating-note": "Максимум минус сожжённые, заблокированные в эскроу и чёрные дыры.",
+  "distribution-link": "ТОП адресов по балансу {{currency}}",
+  "burned": "Сожжено",
+  "of-max": "от максимума",
+  "chart-center-label": "Максимальное предложение",
+  "chart-title": "Распределение по категориям",
+  "breakdown-title": "Разбивка",
+  "col-category": "Категория",
+  "col-amount": "Сумма",
+  "col-percent": "Доля",
+  "updated-at": "Последнее обновление",
+  "category": {
+    "escrowRipple": "Эскроу Ripple",
+    "ripple": "Ripple",
+    "escrowService": "Эскроу сервиса",
+    "escrowRest": "Прочий эскроу",
+    "rest": "Активные кошельки",
+    "service": "Известные сервисы",
+    "amm": "Пулы AMM",
+    "notActive1": "Неактивен 1–2 года",
+    "notActive2": "Неактивен 2–3 года",
+    "notActive3": "Неактивен 3–5 лет",
+    "notActive5": "Неактивен 5–10 лет",
+    "notActive10": "Неактивен 10+ лет",
+    "blackholed": "Чёрная дыра"
+  },
+  "group": {
+    "inactive-short": "Неактивен 1–5 лет",
+    "inactive-long": "Неактивен 5+ лет"
+  }
+}

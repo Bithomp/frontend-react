@@ -1,0 +1,226 @@
+.page-allocation {
+  max-width: 1200px !important;
+
+  // Force ApexCharts tooltip to always be dark-on-dark-proof
+  .apexcharts-tooltip {
+    background: #1e2a30 !important;
+    border-color: #374650 !important;
+    color: #f0f0f0 !important;
+
+    .apexcharts-tooltip-title {
+      background: #243038 !important;
+      border-bottom-color: #374650 !important;
+      color: #ffffff !important;
+    }
+
+    .apexcharts-tooltip-text,
+    .apexcharts-tooltip-y-group,
+    .apexcharts-tooltip-z-group,
+    .apexcharts-tooltip-text-y-label,
+    .apexcharts-tooltip-text-y-value {
+      color: #f0f0f0 !important;
+    }
+  }
+
+  .allocation-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+  }
+
+  .allocation-stats {
+    margin-bottom: 24px;
+
+    .allocation-stat-box {
+      text-align: center;
+      min-width: 200px;
+      flex: 1;
+      max-width: 280px;
+    }
+
+    .allocation-stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .allocation-stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-main);
+    }
+
+    .allocation-stat-note {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+
+      a {
+        color: var(--accent-link);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .allocation-main {
+    align-items: flex-start;
+
+    .allocation-chart-box {
+      min-width: 320px;
+      flex: 1;
+      max-width: 520px;
+    }
+
+    .allocation-table-box {
+      flex: 1;
+      min-width: 300px;
+    }
+  }
+
+  .allocation-distribution-link {
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    margin-top: -8px;
+  }
+
+  .allocation-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .allocation-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+
+    th {
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--card-border, #ddd);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      padding: 7px 8px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      vertical-align: middle;
+    }
+
+    body.dark & td {
+      border-bottom-color: rgba(255, 255, 255, 0.06);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: rgba(0, 129, 142, 0.05);
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .allocation-pct {
+      font-weight: 600;
+      color: var(--accent-link);
+      min-width: 60px;
+    }
+
+    .allocation-burned-row {
+      border-top: 2px solid var(--card-border, #ddd);
+
+      td {
+        color: var(--red);
+        font-weight: 600;
+      }
+
+      .allocation-pct {
+        color: var(--red);
+      }
+    }
+
+    .allocation-group-header {
+      background-color: rgba(0, 129, 142, 0.07);
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        background-color: rgba(0, 129, 142, 0.13);
+      }
+
+      body.dark & {
+        background-color: rgba(0, 177, 193, 0.08);
+
+        &:hover {
+          background-color: rgba(0, 177, 193, 0.14);
+        }
+      }
+
+      td {
+        padding: 8px 8px 6px;
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-secondary);
+      }
+
+      .allocation-pct {
+        color: var(--text-secondary);
+        font-weight: 700;
+      }
+
+      .allocation-group-chevron {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 6px;
+        vertical-align: middle;
+        color: var(--accent-link);
+        font-size: 0.85rem;
+      }
+    }
+
+    .allocation-subrow {
+      td {
+        font-size: 0.84rem;
+        color: var(--text-secondary);
+        border-bottom-color: transparent;
+      }
+    }
+
+    .allocation-sub-indent {
+      display: inline-block;
+      width: 14px;
+    }
+  }
+
+  .allocation-color-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+
+  .allocation-updated {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 20px;
+  }
+}

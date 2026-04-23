@@ -1,0 +1,36 @@
+{
+  "title": "{{currency}} 배분",
+  "subtitle": "{{supply}} {{currency}}이 네트워크에 어떻게 분배되는지",
+  "max-supply": "최대 공급량",
+  "circulating": "유통 공급량",
+  "circulating-note": "최대량에서 소각, 에스크로 및 블랙홀 처리된 양을 뺀 값.",
+  "distribution-link": "{{currency}} 분배",
+  "burned": "소각됨",
+  "of-max": "최대 대비",
+  "chart-center-label": "최대 공급량",
+  "chart-title": "카테고리별 분포",
+  "breakdown-title": "세부 내역",
+  "col-category": "카테고리",
+  "col-amount": "금액",
+  "col-percent": "비율",
+  "updated-at": "마지막 업데이트",
+  "category": {
+    "escrowRipple": "Ripple 에스크로",
+    "ripple": "Ripple",
+    "escrowService": "서비스 에스크로",
+    "escrowRest": "기타 에스크로",
+    "rest": "활성 지갑",
+    "service": "알려진 서비스",
+    "amm": "AMM 풀",
+    "notActive1": "비활성 1–2년",
+    "notActive2": "비활성 2–3년",
+    "notActive3": "비활성 3–5년",
+    "notActive5": "비활성 5–10년",
+    "notActive10": "비활성 10년 이상",
+    "blackholed": "블랙홀"
+  },
+  "group": {
+    "inactive-short": "비활성 1–5년",
+    "inactive-long": "비활성 5년 이상"
+  }
+}

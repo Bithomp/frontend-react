@@ -39,6 +39,7 @@ import {
   IoStorefrontOutline,
   IoBarChartOutline,
   IoStatsChartOutline,
+  IoPieChartOutline,
   IoTicketOutline,
   IoFlashOutline,
   IoInformationCircleOutline,
@@ -495,6 +496,10 @@ export default function MobileMenu({
           <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoKeyOutline style={itemIconStyle} />
             {t('menu.network.genesis')}
+          </Link>
+          <Link href="/allocation" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <IoPieChartOutline style={itemIconStyle} />
+            {t('menu.network.allocation', { currency: nativeCurrency })}
           </Link>
         </div>
 

@@ -1,0 +1,36 @@
+{
+  "title": "Distribución de {{currency}}",
+  "subtitle": "Cómo se distribuyen {{supply}} {{currency}} en la red",
+  "max-supply": "Suministro máximo",
+  "circulating": "Suministro circulante",
+  "circulating-note": "Máximo menos quemado, en depósito y bloqueado.",
+  "distribution-link": "Distribución de {{currency}}",
+  "burned": "Quemado",
+  "of-max": "del máximo",
+  "chart-center-label": "Suministro máximo",
+  "chart-title": "Distribución por categoría",
+  "breakdown-title": "Desglose",
+  "col-category": "Categoría",
+  "col-amount": "Cantidad",
+  "col-percent": "Porcentaje",
+  "updated-at": "Última actualización",
+  "category": {
+    "escrowRipple": "Depósito de Ripple",
+    "ripple": "Ripple",
+    "escrowService": "Depósito de servicio",
+    "escrowRest": "Otro depósito",
+    "rest": "Carteras activas",
+    "service": "Servicios conocidos",
+    "amm": "Pools AMM",
+    "notActive1": "Inactivo 1–2 años",
+    "notActive2": "Inactivo 2–3 años",
+    "notActive3": "Inactivo 3–5 años",
+    "notActive5": "Inactivo 5–10 años",
+    "notActive10": "Inactivo 10+ años",
+    "blackholed": "Blackholed"
+  },
+  "group": {
+    "inactive-short": "Inactivo 1–5 años",
+    "inactive-long": "Inactivo 5+ años"
+  }
+}

@@ -60,7 +60,8 @@
       "validators": "Validasi",
       "amendments": "Perubahan",
       "unl-report": "Laporan UNL",
-      "genesis": "Akun Awal"
+      "genesis": "Akun Awal",
+      "allocation": "Alokasi {{currency}}"
     },
     "developers": {
       "developers": "Pengembang",
