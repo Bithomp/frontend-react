@@ -115,6 +115,8 @@ export const gemwalletTxSend = ({
   setAwaiting,
   t
 }) => {
+  const requiresFreshAddress = !!signRequest?.connectAnotherWallet || !tx || tx?.TransactionType === 'SignIn'
+
   isInstalled().then((response) => {
     if (response.result.isInstalled) {
       getNetwork().then((response) => {
@@ -161,7 +163,7 @@ export const gemwalletTxSend = ({
           return
         }
 
-        if (account?.address && account?.wallet === 'gemwallet') {
+        if (!requiresFreshAddress && account?.address && account?.wallet === 'gemwallet') {
           // gemwallet installed, account is known
           const address = account.address
           gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
