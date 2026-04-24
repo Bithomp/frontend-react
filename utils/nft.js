@@ -345,6 +345,41 @@ export const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => 
   }
 }
 
+export const metadataFilesUrls = (nft, type = 'image', gateway = 'our') => {
+  const files = nft?.metadata?.properties?.files
+  const flags = nft?.flags
+  if (!Array.isArray(files) || !files.length) return []
+
+  const normalizedType = String(type || '').toLowerCase()
+  const matchesType = (file) => {
+    const fileType = String(file?.type || '').toLowerCase()
+    const uri = String(file?.uri || file?.url || '')
+
+    if (normalizedType === 'image') {
+      return fileType.startsWith('image/') || isCorrectFileType(uri, 'image')
+    }
+    if (normalizedType === 'video') {
+      return fileType.startsWith('video/') || isCorrectFileType(uri, 'video')
+    }
+    if (normalizedType === 'audio') {
+      return fileType.startsWith('audio/') || isCorrectFileType(uri, 'audio')
+    }
+    if (normalizedType === 'model') {
+      return fileType.includes('model') || isCorrectFileType(uri, 'model')
+    }
+    return false
+  }
+
+  return Array.from(
+    new Set(
+      files
+        .filter((file) => file && matchesType(file))
+        .map((file) => assetUrl(file.uri || file.url, type, gateway, flags))
+        .filter(Boolean)
+    )
+  )
+}
+
 const metaUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft.metadata) return null
   let meta = nft.metadata
@@ -359,6 +394,8 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
     //XLS-20
     if (meta.image) return assetUrl(meta.image, type, gateway, flags)
     if (meta.image_url) return assetUrl(meta.image_url, type, gateway, flags)
+    const propertyImages = metadataFilesUrls(nft, 'image', gateway)
+    if (propertyImages[0]) return propertyImages[0]
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway, flags)
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway, flags)
     //sologenic
@@ -374,6 +411,8 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
   }
   if (type === 'video' || type === 'thumbnail' || type === 'preview') {
     if (meta.video) return assetUrl(meta.video, type, gateway, flags)
+    const propertyVideos = metadataFilesUrls(nft, 'video', gateway)
+    if (propertyVideos[0]) return propertyVideos[0]
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway, flags)
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway, flags)
     // a hack for xSPECTAR avatars
@@ -385,10 +424,14 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
   }
   if (type === 'audio') {
     if (meta.audio) return assetUrl(meta.audio, type, gateway, flags)
+    const propertyAudios = metadataFilesUrls(nft, 'audio', gateway)
+    if (propertyAudios[0]) return propertyAudios[0]
   }
   if (type === 'model') {
     if (meta['3D_model']) return assetUrl(meta['3D_model'], type, gateway, flags)
     if (meta['3d_model']) return assetUrl(meta['3d_model'], type, gateway, flags)
+    const propertyModels = metadataFilesUrls(nft, 'model', gateway)
+    if (propertyModels[0]) return propertyModels[0]
   }
   if (type === 'viewer') {
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway, flags)

@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 
 import { forbid18Plus, stripText } from '../utils'
-import { needNftAgeCheck, nftName, nftUrl } from '../utils/nft'
+import { metadataFilesUrls, needNftAgeCheck, nftName, nftUrl } from '../utils/nft'
 
 import Tabs from './Tabs'
 import LoadingGif from '../public/images/loading.gif'
@@ -38,6 +38,9 @@ const isPanorama = (metadata) => {
 export default function NftPreview({ nft }) {
   const { t } = useTranslation()
   const [contentTab, setContentTab] = useState('image')
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [displayedImageIndex, setDisplayedImageIndex] = useState(0)
+  const [isSwitchingImage, setIsSwitchingImage] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [errored, setErrored] = useState(false)
   const [isPanoramic, setIsPanoramic] = useState(false)
@@ -49,17 +52,27 @@ export default function NftPreview({ nft }) {
     marginBottom: '20px'
   }
 
+  const mediaFrameStyle = {
+    width: '100%',
+    minHeight: '420px',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden'
+  }
+
   const loadingImage = () => {
     if (errored) {
       return (
-        <div style={style}>
+        <div style={{ ...mediaFrameStyle, flexDirection: 'column' }}>
           {t('general.load-failed')}
           <br />
         </div>
       )
     } else if (!loaded) {
       return (
-        <div style={style}>
+        <div style={{ ...mediaFrameStyle, flexDirection: 'column' }}>
           <span className="waiting"></span>
           <br />
           {t('general.loading')}
@@ -73,11 +86,24 @@ export default function NftPreview({ nft }) {
   const audioUrl = nftUrl(nft, 'audio')
   const modelUrl = nftUrl(nft, 'model')
   const viewerUrl = nftUrl(nft, 'viewer')
+  const metadataImageUrls = metadataFilesUrls(nft, 'image')
+  const metadataImageUrlsCl = metadataFilesUrls(nft, 'image', 'cl')
+  const mainImageFallbackUrl = nftUrl(nft, 'image', 'cl') || imageUrl
+  const imageGalleryItems = [
+    ...(imageUrl ? [{ url: imageUrl, fallbackUrl: mainImageFallbackUrl }] : []),
+    ...metadataImageUrls.map((url, index) => ({
+      url,
+      fallbackUrl: metadataImageUrlsCl[index] || url
+    }))
+  ].filter((item, index, items) => item?.url && items.findIndex((entry) => entry.url === item.url) === index)
+  const currentImage = imageGalleryItems[displayedImageIndex] || imageGalleryItems[0] || null
+  const currentImageUrl = currentImage?.url || imageUrl
+  const currentImageFallbackUrl = currentImage?.fallbackUrl || currentImageUrl
 
   let modelState = null
 
   const clUrl = {
-    image: nftUrl(nft, 'image', 'cl'),
+    image: currentImageFallbackUrl,
     video: nftUrl(nft, 'video', 'cl'),
     audio: nftUrl(nft, 'audio', 'cl'),
     model: nftUrl(nft, 'model', 'cl')
@@ -94,7 +120,7 @@ export default function NftPreview({ nft }) {
     contentTabList.push({ value: 'model', label: t('tabs.model') })
   }
 
-  let imageStyle = { width: '100%', height: 'auto' }
+  let imageStyle = { maxWidth: '100%', maxHeight: '420px', width: 'auto', height: 'auto', objectFit: 'contain' }
   if (imageUrl) {
     if (imageUrl.slice(0, 10) === 'data:image') {
       imageStyle.imageRendering = 'pixelated'
@@ -180,6 +206,43 @@ export default function NftPreview({ nft }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl, videoUrl])
 
+  useEffect(() => {
+    setSelectedImageIndex(0)
+    setDisplayedImageIndex(0)
+    setIsSwitchingImage(false)
+    setLoaded(false)
+    setErrored(false)
+  }, [nft?.nftokenID, imageUrl])
+
+  useEffect(() => {
+    if (selectedImageIndex === displayedImageIndex) return
+
+    const nextImage = imageGalleryItems[selectedImageIndex]
+    if (!nextImage?.url) return
+
+    setIsSwitchingImage(true)
+
+    const preloadImage = new Image()
+    preloadImage.onload = () => {
+      setDisplayedImageIndex(selectedImageIndex)
+      setLoaded(true)
+      setErrored(false)
+      setIsSwitchingImage(false)
+    }
+    preloadImage.onerror = () => {
+      setDisplayedImageIndex(selectedImageIndex)
+      setLoaded(true)
+      setErrored(false)
+      setIsSwitchingImage(false)
+    }
+    preloadImage.src = nextImage.url
+
+    return () => {
+      preloadImage.onload = null
+      preloadImage.onerror = null
+    }
+  }, [selectedImageIndex, displayedImageIndex, imageGalleryItems])
+
   const clickOn18PlusImage = async () => {
     const forbid = await forbid18Plus()
     if (forbid) return
@@ -231,22 +294,78 @@ export default function NftPreview({ nft }) {
                   style={{ width: '100%', aspectRatio: '2/1', display: loaded ? 'inline-block' : 'none' }}
                 />
               ) : (
-                <img
-                  style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
-                  src={imageUrl}
-                  onLoad={() => {
-                    setLoaded(true)
-                    setErrored(false)
-                  }}
-                  onError={({ currentTarget }) => {
-                    if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
-                      currentTarget.src = clUrl.image
-                    } else {
-                      setErrored(true)
-                    }
-                  }}
-                  alt={nftName(nft)}
-                />
+                <>
+                  <div style={mediaFrameStyle}>
+                    <img
+                      style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
+                      src={currentImageUrl}
+                      onLoad={() => {
+                        setLoaded(true)
+                        setErrored(false)
+                      }}
+                      onError={({ currentTarget }) => {
+                        if (currentTarget.src === currentImageUrl && currentImageUrl !== clUrl.image) {
+                          currentTarget.src = clUrl.image
+                        } else {
+                          setErrored(true)
+                        }
+                      }}
+                      alt={nftName(nft)}
+                    />
+                    {isSwitchingImage && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'rgba(255, 255, 255, 0.08)',
+                          pointerEvents: 'none'
+                        }}
+                      >
+                        <span className="waiting"></span>
+                      </div>
+                    )}
+                  </div>
+                  {imageGalleryItems.length > 1 && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: 8,
+                        flexWrap: 'wrap',
+                        marginTop: 12,
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {imageGalleryItems.map((galleryItem, index) => (
+                        <button
+                          key={galleryItem.url}
+                          type="button"
+                          onClick={() => {
+                            setSelectedImageIndex(index)
+                          }}
+                          style={{
+                            width: 56,
+                            height: 56,
+                            padding: 0,
+                            borderRadius: 8,
+                            overflow: 'hidden',
+                            cursor: 'pointer',
+                            border:
+                              index === selectedImageIndex ? '2px solid var(--accent-link)' : '1px solid var(--border-main)'
+                          }}
+                        >
+                          <img
+                            src={galleryItem.url}
+                            alt={`${nftName(nft)} ${index + 1}`}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}
