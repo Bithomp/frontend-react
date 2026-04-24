@@ -643,6 +643,7 @@ export default function Account({
     !!setSignRequest &&
     !effectiveLedgerTimestamp &&
     !!data?.address &&
+    !isBlackholed &&
     !isDeletedAccount &&
     data?.ledgerInfo?.activated !== false &&
     (!account?.address || account.address === data.address)
