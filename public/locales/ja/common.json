@@ -82,7 +82,10 @@
       "earn": "XRPで稼ぐ"
     },
     "learn-more": {
-      "title": "もっと学ぶ"
+      "title": "もっと学ぶ",
+      "buy-wallet": "ウォレットを購入",
+      "xrp-wallets": "XRPウォレット",
+      "xahau-wallets": "Xahauウォレット"
     }
   },
   "components": {

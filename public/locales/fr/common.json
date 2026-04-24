@@ -82,7 +82,10 @@
       "earn": "Gagner sur XRP"
     },
     "learn-more": {
-      "title": "En savoir plus"
+      "title": "En savoir plus",
+      "buy-wallet": "Acheter un portefeuille",
+      "xrp-wallets": "Portefeuilles XRP",
+      "xahau-wallets": "Portefeuilles Xahau"
     }
   },
   "components": {

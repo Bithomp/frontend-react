@@ -82,7 +82,10 @@
       "earn": "Earn on XRP"
     },
     "learn-more": {
-      "title": "Learn more"
+      "title": "Learn more",
+      "buy-wallet": "Buy a Wallet",
+      "xrp-wallets": "XRP Wallets",
+      "xahau-wallets": "Xahau Wallets"
     }
   },
   "components": {

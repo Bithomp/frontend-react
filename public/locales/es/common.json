@@ -82,7 +82,10 @@
       "earn": "Gana en XRP"
     },
     "learn-more": {
-      "title": "Aprende más"
+      "title": "Aprende más",
+      "buy-wallet": "Comprar una billetera",
+      "xrp-wallets": "Billeteras XRP",
+      "xahau-wallets": "Billeteras Xahau"
     }
   },
   "components": {

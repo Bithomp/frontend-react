@@ -67,7 +67,8 @@ if (xahauNetwork) {
   pages.push(
     { loc: 'governance', changefreq: 'hourly', priority: '0.9' },
     { loc: 'unl-report', changefreq: 'always', priority: '0.5' },
-    { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.9' }
+    { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.9' },
+    { loc: 'xahau-wallets', changefreq: 'monthly', priority: '0.8' }
   )
 } else {
   // only on xrpl
@@ -75,7 +76,8 @@ if (xahauNetwork) {
     { loc: 'services/amm/deposit', changefreq: 'monthly', priority: '0.9' },
     { loc: 'services/amm/create', changefreq: 'monthly', priority: '0.8' },
     { loc: 'services/amm/withdraw', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'services/amm/vote', changefreq: 'monthly', priority: '0.7' }
+    { loc: 'services/amm/vote', changefreq: 'monthly', priority: '0.7' },
+    { loc: 'xrp-wallets', changefreq: 'monthly', priority: '0.8' }
   )
 }
 
@@ -163,7 +165,9 @@ function generateSiteMap(posts) {
     'learn/paystrings',
     'learn/send-payments',
     'learn/types-of-assets',
-    'learn/checks'
+    'learn/checks',
+    'xrp-wallets',
+    'xahau-wallets'
   ]
 
   return `<?xml version="1.0" encoding="UTF-8"?>

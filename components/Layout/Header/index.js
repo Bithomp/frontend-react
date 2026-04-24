@@ -21,7 +21,7 @@ import LangTable from './LangTable'
 import CurrencyTable from './CurrencyTable'
 import NetworkTable from './NetworkTable'
 import MobileMenu from './MobileMenu'
-import { FaAngleDown } from 'react-icons/fa'
+import { FaAngleDown, FaShoppingBag } from 'react-icons/fa'
 import { IoIosRocket } from 'react-icons/io'
 
 import LogoSmall from '../LogoSmall'
@@ -761,7 +761,7 @@ export default function Header({
                 }}
                 className="link"
               >
-                <IoWalletOutline style={{ height: 24, width: 24, marginTop: -4 }} className="wallet-logo" />
+                <IoWalletOutline className="menu-item-icon" />
                 Connect Wallet
               </span>
             )}
@@ -865,7 +865,7 @@ export default function Header({
 
             <hr className="hr" />
             <Link href="/admin">
-              <IoIosRocket style={{ fontSize: '1.2em', marginBottom: '-2px' }} /> Bithomp Pro
+              <IoIosRocket className="menu-item-icon" /> Bithomp Pro
             </Link>
             {proLoggedIn && (
               <>
@@ -900,6 +900,11 @@ export default function Header({
                 </span>
               </>
             )}
+            <hr className="hr" />
+            <Link href={xahauNetwork ? '/xahau-wallets' : '/xrp-wallets'}>
+              <FaShoppingBag className="menu-item-icon" />
+              {t('menu.learn-more.buy-wallet')}
+            </Link>
           </MenuDropDown>
 
           <MenuDropDown

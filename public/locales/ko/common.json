@@ -82,7 +82,10 @@
       "earn": "XRP 수익창출"
     },
     "learn-more": {
-      "title": "더 알아보기"
+      "title": "더 알아보기",
+      "buy-wallet": "지갑 구매",
+      "xrp-wallets": "XRP 지갑",
+      "xahau-wallets": "Xahau 지갑"
     }
   },
   "components": {

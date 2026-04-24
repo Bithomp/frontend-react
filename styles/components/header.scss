@@ -111,9 +111,11 @@ header {
       a,
       .link {
         text-decoration: none;
-        display: block;
+        display: flex;
+        align-items: center;
         margin: 0;
         padding: 10px 16px;
+        gap: 10px;
         white-space: nowrap;
         color: var(--text-contrast);
         background: none;
@@ -127,10 +129,14 @@ header {
         }
 
         .menu-item-icon {
-          width: 20px;
+          width: 22px;
+          min-width: 22px;
           height: 20px;
-          margin-right: 8px;
-          margin-top: -2px;
+          margin-right: 0;
+          margin-top: 0;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           vertical-align: middle;
           flex-shrink: 0;
         }

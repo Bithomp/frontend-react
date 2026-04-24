@@ -82,7 +82,10 @@
       "earn": "XRP вклады"
     },
     "learn-more": {
-      "title": "Узнать больше"
+      "title": "Узнать больше",
+      "buy-wallet": "Купить кошелек",
+      "xrp-wallets": "XRP кошельки",
+      "xahau-wallets": "Xahau кошельки"
     }
   },
   "components": {

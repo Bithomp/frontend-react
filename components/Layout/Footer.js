@@ -57,6 +57,9 @@ export default function Footer(
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
+          <Link href={xahauNetwork ? '/xahau-wallets' : '/xrp-wallets'}>
+            {xahauNetwork ? t('menu.learn-more.xahau-wallets') : t('menu.learn-more.xrp-wallets')}
+          </Link>
           {!xahauNetwork && <Link href="/learn/xrpl-article">XRP, XRPL, Ripple</Link>}
           <Link href="/learn/verified-domain">Verified domains</Link>
           {!xahauNetwork && <Link href="/learn/ripple-usd">Ripple USD</Link>}

@@ -608,6 +608,10 @@ export default function MobileMenu({
           <MdMenuBook style={{ marginBottom: '-2px' }} /> {t('menu.learn-more.title')}
         </div>
         <div className="mobile-menu__submenu">
+          <Link href={xahauNetwork ? '/xahau-wallets' : '/xrp-wallets'} className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <IoStorefrontOutline style={itemIconStyle} />
+            {xahauNetwork ? t('menu.learn-more.xahau-wallets') : t('menu.learn-more.xrp-wallets')}
+          </Link>
           {!xahauNetwork && (
             <Link href="/learn/xrpl-article" className="mobile-menu-item" onClick={mobileMenuToggle}>
               <IoBookOutline style={itemIconStyle} />

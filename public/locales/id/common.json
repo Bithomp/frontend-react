@@ -82,7 +82,10 @@
       "earn": "Dapatkan dari XRP"
     },
     "learn-more": {
-      "title": "Pelajari lebih lanjut"
+      "title": "Pelajari lebih lanjut",
+      "buy-wallet": "Beli Wallet",
+      "xrp-wallets": "Wallet XRP",
+      "xahau-wallets": "Wallet Xahau"
     }
   },
   "components": {
