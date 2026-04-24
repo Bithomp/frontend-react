@@ -288,35 +288,11 @@
     font-size: 11px;
     color: var(--text-secondary);
     white-space: nowrap;
-    width: auto;
+    width: 40px;
+    min-width: 40px;
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .whaleTimeAgo {
-    display: inline;
-  }
-
-  .whaleTimeOnly {
-    display: none;
-  }
-
-  @media (max-width: 640px) {
-    .timeAgo {
-      width: auto !important;
-      min-width: 42px;
-      overflow: visible;
-      text-overflow: clip;
-    }
-
-    .whaleTimeAgo {
-      display: none;
-    }
-
-    .whaleTimeOnly {
-      display: inline;
-    }
   }
 
   .loadingPlaceholder {

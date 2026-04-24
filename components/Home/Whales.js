@@ -2,7 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { AddressWithIconInline, shortNiceNumber, timeFromNow } from '../../utils/format'
+import { AddressWithIconInline, shortNiceNumber } from '../../utils/format'
 import HomeTeaser, { HomeTeaseRow } from './HomeTeaser'
 import styles from '@/styles/components/home-teaser.module.scss'
 
@@ -16,9 +16,7 @@ const formatTxTime = (tx) => {
 export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
   const [difference, setDifference] = useState(null)
-  const [timeColWidth, setTimeColWidth] = useState(null)
   const [sourceColWidth, setSourceColWidth] = useState(null)
-  const timeCellRefs = useRef([])
   const sourceCellRefs = useRef([])
   const { i18n } = useTranslation()
 
@@ -49,12 +47,6 @@ export default function Whales({ currency, data, setData }) {
 
   useLayoutEffect(() => {
     const rowCount = data?.slice(0, 7)?.length || 0
-    const width = timeCellRefs.current.slice(0, rowCount).reduce((max, el) => {
-      if (!el) return max
-      return Math.max(max, Math.ceil(el.scrollWidth))
-    }, 0)
-    setTimeColWidth(width || null)
-
     const sourceWidth = sourceCellRefs.current.slice(0, rowCount).reduce((max, el) => {
       if (!el) return max
       return Math.max(max, Math.ceil(el.scrollWidth))
@@ -76,20 +68,10 @@ export default function Whales({ currency, data, setData }) {
           href={`/transaction/${tx.hash}`}
           className={`${styles.whaleRow} ${difference?.includes(tx) ? 'just-added' : ''}`}
           style={{
-            '--whale-time-col': timeColWidth ? `${timeColWidth}px` : undefined,
             '--whale-source-col': sourceColWidth ? `${sourceColWidth}px` : undefined
           }}
         >
-          <div
-            ref={(el) => {
-              timeCellRefs.current[index] = el
-            }}
-            className={styles.timeAgo}
-            style={timeColWidth ? { width: `${timeColWidth}px` } : undefined}
-          >
-            <span className={styles.whaleTimeAgo}>{timeFromNow(tx.time || tx.timestamp, i18n)}</span>
-            <span className={styles.whaleTimeOnly}>{formatTxTime(tx)}</span>
-          </div>
+          <div className={styles.timeAgo}>{formatTxTime(tx)}</div>
           <div
             ref={(el) => {
               sourceCellRefs.current[index] = el
