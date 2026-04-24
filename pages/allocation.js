@@ -116,6 +116,7 @@ export default function Allocation({ initialData, errorMessage }) {
   const distMap0 = Object.fromEntries((data?.distribution || []).map((d) => [d.category, d]))
   const deducted = DEDUCT_CATS.reduce((s, c) => s + (distMap0[c] ? dropsToXrp(Number(distMap0[c].amount)) : 0), 0)
   const circulatingSupply = totalCoins - deducted
+  const subtitleSupply = xahauNetwork ? circulatingSupply : maxCoins
 
   // Build donut chart data
   const { chartSeries, chartOptions } = useMemo(() => {
@@ -251,7 +252,7 @@ export default function Allocation({ initialData, errorMessage }) {
       <div className="page-allocation content-profile">
         <h1 className="center">{t('title', { ns: 'allocation', currency: nativeCurrency })}</h1>
         <p className="center allocation-subtitle">
-          {t('subtitle', { ns: 'allocation', currency: nativeCurrency, supply: formatBillions(totalCoins) })}
+          {t('subtitle', { ns: 'allocation', currency: nativeCurrency, supply: formatBillions(subtitleSupply) })}
         </p>
 
         {errorMessage && <div className="center orange">{errorMessage}</div>}
