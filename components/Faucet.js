@@ -27,7 +27,6 @@ import { useEffect, useState } from 'react'
 import { addressLink, amountFormat, duration, fullNiceNumber } from '../utils/format'
 import { LedgerLink, LinkTx } from '../utils/links'
 import Link from 'next/link'
-import Image from 'next/image'
 import { errorCodeDescription } from '../utils/transaction'
 
 const convertToDrops = (amount) => {
@@ -440,7 +439,6 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
                     <FormInput
                       title={
                         <>
-                          <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
                           <Trans
                             i18nKey="last-ledger-index-find-on-landing-page"
                             ns="faucet"
