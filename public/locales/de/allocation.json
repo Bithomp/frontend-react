@@ -2,6 +2,7 @@
   "title": "{{currency}} Verteilung",
   "subtitle": "Wie {{supply}} {{currency}} im Netzwerk verteilt sind",
   "max-supply": "Maximales Angebot",
+  "current-supply": "Aktuelles Angebot",
   "circulating": "Umlaufmenge",
   "circulating-note": "Maximum minus verbrannt, hinterlegt & blockiert.",
   "distribution-link": "{{currency}} Verteilung",
@@ -27,7 +28,7 @@
     "notActive3": "Inaktiv 3–5 Jahre",
     "notActive5": "Inaktiv 5–10 Jahre",
     "notActive10": "Inaktiv 10+ Jahre",
-    "blackholed": "Blackholed"
+    "blackholed": "Blackholed-Konten"
   },
   "group": {
     "inactive-short": "Inaktiv 1–5 Jahre",

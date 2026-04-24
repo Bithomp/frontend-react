@@ -2,6 +2,7 @@
   "title": "{{currency}} 배분",
   "subtitle": "{{supply}} {{currency}}이 네트워크에 어떻게 분배되는지",
   "max-supply": "최대 공급량",
+  "current-supply": "현재 공급량",
   "circulating": "유통 공급량",
   "circulating-note": "최대량에서 소각, 에스크로 및 블랙홀 처리된 양을 뺀 값.",
   "distribution-link": "{{currency}} 분배",

@@ -2,6 +2,7 @@
   "title": "Alokasi {{currency}}",
   "subtitle": "Bagaimana {{supply}} {{currency}} didistribusikan di jaringan",
   "max-supply": "Pasokan Maksimum",
+  "current-supply": "Pasokan Saat Ini",
   "circulating": "Pasokan Beredar",
   "circulating-note": "Maksimum dikurangi yang dibakar, dititipkan & diblokir.",
   "distribution-link": "Distribusi {{currency}}",
@@ -27,7 +28,7 @@
     "notActive3": "Tidak Aktif 3–5 thn",
     "notActive5": "Tidak Aktif 5–10 thn",
     "notActive10": "Tidak Aktif 10+ thn",
-    "blackholed": "Blackholed"
+    "blackholed": "Akun blackholed"
   },
   "group": {
     "inactive-short": "Tidak Aktif 1–5 thn",

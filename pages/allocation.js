@@ -6,7 +6,7 @@ import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import Link from 'next/link'
 
 import SEO from '../components/SEO'
-import { nativeCurrency } from '../utils'
+import { nativeCurrency, xahauNetwork } from '../utils'
 import { fullDateAndTime, shortNiceNumber, timeFromNow } from '../utils/format'
 import { getIsSsrMobile } from '../utils/mobile'
 import { axiosServer, passHeaders } from '../utils/axios'
@@ -156,10 +156,13 @@ export default function Allocation({ initialData, errorMessage }) {
               total: {
                 show: true,
                 showAlways: true,
-                label: t('chart-center-label', { ns: 'allocation' }),
+                label: xahauNetwork
+                  ? t('circulating', { ns: 'allocation' })
+                  : t('chart-center-label', { ns: 'allocation' }),
                 fontSize: '13px',
                 color: textColor,
-                formatter: () => formatBillions(totalCoins) + ' ' + nativeCurrency
+                formatter: () =>
+                  formatBillions(xahauNetwork ? circulatingSupply : maxCoins) + ' ' + nativeCurrency
               },
               value: {
                 show: true,
@@ -257,20 +260,21 @@ export default function Allocation({ initialData, errorMessage }) {
           <>
             {/* Key stats */}
             <div className="flex-container flex-center allocation-stats">
-              <div className="grey-box allocation-stat-box">
-                <div className="allocation-stat-label">{t('max-supply', { ns: 'allocation' })}</div>
-                <div className="allocation-stat-value">
-                  {formatBillions(maxCoins)} {nativeCurrency}
+              {xahauNetwork ? (
+                <div className="grey-box allocation-stat-box">
+                  <div className="allocation-stat-label">{t('current-supply', { ns: 'allocation' })}</div>
+                  <div className="allocation-stat-value">
+                    {formatBillions(totalCoins)} {nativeCurrency}
+                  </div>
                 </div>
-              </div>
-              <div className="grey-box allocation-stat-box">
-                <div className="allocation-stat-label">
-                  {t('current-supply', { ns: 'allocation', defaultValue: 'Current Supply' })}
+              ) : (
+                <div className="grey-box allocation-stat-box">
+                  <div className="allocation-stat-label">{t('max-supply', { ns: 'allocation' })}</div>
+                  <div className="allocation-stat-value">
+                    {formatBillions(maxCoins)} {nativeCurrency}
+                  </div>
                 </div>
-                <div className="allocation-stat-value">
-                  {formatBillions(totalCoins)} {nativeCurrency}
-                </div>
-              </div>
+              )}
               <div className="grey-box allocation-stat-box">
                 <div className="allocation-stat-label">{t('circulating', { ns: 'allocation' })}</div>
                 <div className="allocation-stat-value">

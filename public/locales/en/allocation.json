@@ -2,6 +2,7 @@
   "title": "{{currency}} Allocation",
   "subtitle": "How {{supply}} {{currency}} is distributed across the network",
   "max-supply": "Max Supply",
+  "current-supply": "Current Supply",
   "circulating": "Circulating Supply",
   "circulating-note": "Max minus burned, escrowed & blackholed.",
   "distribution-link": "{{currency}} distribution",

@@ -2,6 +2,7 @@
   "title": "{{currency}} 配分",
   "subtitle": "{{supply}} {{currency}} がネットワーク上でどのように配分されているか",
   "max-supply": "最大供給量",
+  "current-supply": "現在の供給量",
   "circulating": "流通供給量",
   "circulating-note": "最大量からバーン済み、エスクロー済み、ブラックホール済みを差し引いた量。",
   "distribution-link": "{{currency}}の分布",

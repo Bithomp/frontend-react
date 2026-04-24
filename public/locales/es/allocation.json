@@ -2,6 +2,7 @@
   "title": "Distribución de {{currency}}",
   "subtitle": "Cómo se distribuyen {{supply}} {{currency}} en la red",
   "max-supply": "Suministro máximo",
+  "current-supply": "Suministro actual",
   "circulating": "Suministro circulante",
   "circulating-note": "Máximo menos quemado, en depósito y bloqueado.",
   "distribution-link": "Distribución de {{currency}}",
@@ -27,7 +28,7 @@
     "notActive3": "Inactivo 3–5 años",
     "notActive5": "Inactivo 5–10 años",
     "notActive10": "Inactivo 10+ años",
-    "blackholed": "Blackholed"
+    "blackholed": "Cuentas blackholed"
   },
   "group": {
     "inactive-short": "Inactivo 1–5 años",
