@@ -5,6 +5,7 @@ import { network } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
 import Image from 'next/image'
 import Breadcrumbs from '../../components/Breadcrumbs'
+import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -35,7 +36,7 @@ export default function BlacklistedAddress() {
           <h1>Fraud Alert. Blacklisted accounts on {explorerName}</h1>
 
           <Image
-            src="/images/pages/blacklisted-picture.jpg"
+            src="/images/pages/blacklisted-address-cover.png"
             alt="Blacklisted Accounts on XRPL"
             width={1520}
             height={1084}
@@ -62,11 +63,11 @@ export default function BlacklistedAddress() {
           </p>
           <figure>
             <Image
-              src={'/images/pages/blacklisted-screen' + (xahauNetwork ? '-xahau' : '') + '.png'}
+              src={'/images/pages/blacklisted-address-screen.png'}
               alt="Blacklisted Account on XRPL-example"
               width={1520}
-              height={704}
-              className="max-w-full h-auto object-contain"
+              height={673}
+              className="w-full h-auto object-contain scale-110"
               priority
             />
             <figcaption>Example of a blacklisted account</figcaption>
@@ -87,6 +88,33 @@ export default function BlacklistedAddress() {
             We can flag accounts ourselves based on objective user reports or receive fraud alerts through our partners'
             APIs.
           </p>
+          <h3>Related Articles</h3>
+
+          <ul>
+            {!xahauNetwork && (
+              <>
+                <li>
+                  <Link href="/learn/xrpl-article">XRP, XRP Ledger, Ripple – key differences</Link>
+                </li>
+                <li>
+                  <Link href="/learn/ripple-usd">Ripple USD</Link>
+                </li>
+                <li>
+                  <Link href="/learn/the-bithomp-explorer-advantages">Advantages of Bithomp XRP Ledger Explorer</Link>
+                </li>
+              </>
+            )}
+
+            {xahauNetwork && (
+              <li>
+                <Link href="/learn/the-bithomp-explorer-advantages">Advantages of Xahau Explorer</Link>
+              </li>
+            )}
+
+            <li>
+              <Link href="/learn/blackholed-address">Blackholed addresses on {explorerName}</Link>
+            </li>
+          </ul>
         </article>
       </div>
     </>

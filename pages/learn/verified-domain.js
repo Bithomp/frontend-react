@@ -34,8 +34,8 @@ export default function VerifiedDomains() {
             src="/images/pages/learn/verified-domain/cover.png"
             alt="Verified Domains"
             width={1520}
-            height={1000}
-            className="max-w-full h-auto object-contain"
+            height={855}
+            className="w-full h-auto object"
             priority
           />
           <p>
@@ -111,7 +111,7 @@ export default function VerifiedDomains() {
               alt="Set a verified domain"
               width={1520}
               height={556}
-              className="max-w-full h-auto object-contain"
+              className="w-full h-auto object-contain scale-110"
               priority
             />
             <figcaption>Set a verified domain</figcaption>
@@ -126,7 +126,7 @@ export default function VerifiedDomains() {
               alt="Verified domains on your account page"
               width={1520}
               height={950}
-              className="max-w-full h-auto object-contain"
+              className="w-full h-auto object-contain scale-110"
               priority
             />
             <figcaption>Verified domains on your account page</figcaption>
@@ -173,8 +173,8 @@ export default function VerifiedDomains() {
             </Link>
           </p>
           <p>
-            Bithomp {ledgerName} explorer shows verified domains in the “Ledger Data” block as clickable links in a
-            green colour and a checkmark next to them.
+            Bithomp {ledgerName} explorer shows verified domains on a badge next to the avatar. The domain is shown
+            below as a clickable green link with a checkmark indicator
           </p>
           <figure>
             <Image
@@ -186,10 +186,10 @@ export default function VerifiedDomains() {
               alt="Verified domains on Bithomp"
               width={1520}
               height={945}
-              className="max-w-full h-auto object-contain"
+              className="w-full h-auto object-contain scale-110"
               priority
             />
-            <figcaption>Verified domains on Bithomp</figcaption>
+            <figcaption>Verified domains on {explorerName}</figcaption>
           </figure>
           <p>
             Our system re-verifies every verified domain every 24 hours to make sure that we only show checkmark for
@@ -201,6 +201,36 @@ export default function VerifiedDomains() {
             otherwise it can take up to 24 hours to get verified.
           </p>
           <br />
+          <h3>Related Articles</h3>
+
+          <ul>
+            {!xahauNetwork && (
+              <>
+                <li>
+                  <Link href="/learn/xrpl-article">XRP, XRP Ledger, Ripple – key differences</Link>
+                </li>
+                <li>
+                  <Link href="/learn/ripple-usd">Ripple USD</Link>
+                </li>
+                <li>
+                  <Link href="/learn/the-bithomp-explorer-advantages">Advantages of Bithomp XRP Ledger Explorer</Link>
+                </li>
+                <li>
+                  <Link href="/learn/guide-for-token-issuers">Guide for the Token Issuers</Link>
+                </li>
+              </>
+            )}
+
+            {xahauNetwork && (
+              <li>
+                <Link href="/learn/the-bithomp-explorer-advantages">Advantages of Xahau Explorer</Link>
+              </li>
+            )}
+
+            <li>
+              <Link href="/learn/blackholed-address">Blackholed addresses on {explorerName}</Link>
+            </li>
+          </ul>
         </article>
       </div>
     </>

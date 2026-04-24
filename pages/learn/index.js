@@ -50,7 +50,7 @@ const buildLearnContent = () => {
         { title: 'Understanding Trustlines', slug: 'trustlines' },
         { title: 'NFT Explorer', slug: 'nft-explorer' },
         { title: 'Send Payments with us: Key Benefits', slug: 'send-payments' },
-        { title: 'Types of assets on' + explorerName, slug: 'types-of-assets' },
+        { title: 'Types of assets on ' + explorerName, slug: 'types-of-assets' },
         { title: 'Checks explained', slug: 'checks' },
       ]
     }

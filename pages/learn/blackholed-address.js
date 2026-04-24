@@ -18,27 +18,36 @@ export async function getServerSideProps(context) {
 }
 
 export default function BlackholedAddress() {
+  const imagePath = '/images/' + (xahauNetwork ? 'xahau' : 'xrpl') + 'explorer/learn/blackholed-address/'
   return (
     <>
       <SEO
         title={'Blackholed Addresses on ' + explorerName}
         description="What are blackholed addresses on XRP and Xahau Ledgers, why they are important, how accounts become blackholed."
         noindex={network !== 'mainnet'}
-        image={{ file: 'pages/blackholed-picture.png', width: 760, height: 500, allNetworks: true }}
+        image={{
+          file: '/xrplexplorer/learn/blackholed-address/cover.png',
+          width: 1520,
+          height: 855,
+          allNetworks: true
+        }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>What Are Blackholed Addresses on {explorerName}?</h1>
           <div className="flex justify-center">
-            <img
-              src="/images/pages/blackholed-picture.png"
-              alt="Blackholed Accounts"
-              width="816"
-              height="510"
-              className="max-w-full h-auto object-contain"
-              priority="true"
-            />
+            <figure>
+              <Image
+                src={imagePath + 'cover.png'}
+                alt="Blackholed Accounts"
+                width={1520}
+                height={857}
+                className="w-full h-auto object-contain scale-110"
+                priority
+              />
+              <figcaption>Blackholed accounts on {explorerName}</figcaption>
+            </figure>
           </div>
 
           <p>
@@ -63,11 +72,11 @@ export default function BlackholedAddress() {
           </p>
           <figure>
             <Image
-              src={'/images/pages/blackholed-screen' + (xahauNetwork ? '-xahau' : '') + '.png'}
+              src={imagePath + 'blackholed-account-screen.png'}
               alt="Blackholed Account-example"
               width={1520}
-              height={893}
-              className="max-w-full h-auto object-contain"
+              height={857}
+              className="w-full h-auto object-contain scale-110"
               priority
             />
             <figcaption>Example of a blackholed account</figcaption>
@@ -143,6 +152,42 @@ export default function BlackholedAddress() {
             can ensure decentralization and prevent unauthorized modifications. While blackholing is a useful tool, it
             should be done with careful consideration, as the process is irreversible.
           </p>
+          <h3>Related Articles</h3>
+
+<ul>
+  {!xahauNetwork && (
+    <>
+      <li>
+        <Link href="/learn/xrpl-article">
+          XRP, XRP Ledger, Ripple – key differences
+        </Link>
+      </li>
+      <li>
+        <Link href="/learn/ripple-usd">
+          Ripple USD
+        </Link>
+      </li>
+      <li>
+        <Link href="/learn/the-bithomp-explorer-advantages">
+          Advantages of Bithomp XRP Ledger Explorer
+        </Link>
+      </li>
+    </>
+  )}
+
+  {xahauNetwork && (
+    <li>
+      <Link href="/learn/the-bithomp-explorer-advantages">
+        Advantages of Xahau Explorer
+      </Link>
+    </li>
+  )}
+ <li>
+    <Link href="/learn/blacklisted-address">
+      Blacklisted addresses on {explorerName}
+    </Link>
+  </li>
+</ul>
         </article>
       </div>
     </>
