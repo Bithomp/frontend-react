@@ -554,6 +554,7 @@ export default function SignForm({
       const deduped = Array.from(new Set(addressList))
       const activeAddress = deduped[0]
       const toPersist = deduped.length > 1 ? [...deduped.slice(1), activeAddress] : deduped
+      const deferCloseForXamanReturn = wallet === 'xaman' && !!uuid
 
       for (const [index, itemAddress] of toPersist.entries()) {
         if (wallet === 'ledgerwallet' && toPersist.length > 1) {
@@ -570,7 +571,9 @@ export default function SignForm({
 
       //if redirect
       if (redirectName) {
-        signInCancelAndClose()
+        if (!deferCloseForXamanReturn) {
+          signInCancelAndClose()
+        }
         if (redirectName === 'nfts') {
           router.push('/nfts/' + activeAddress)
           return

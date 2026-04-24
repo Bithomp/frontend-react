@@ -28,11 +28,11 @@ export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, aft
     const result = data.response?.dispatched_result //ter - no tx on the ledger
 
     if (signRequestData?.signOnly) {
-      afterSigning({ signRequestData, blob: data.response?.hex, address })
+      await afterSigning({ signRequestData, blob: data.response?.hex, address })
     } else {
       const redirectName = data.custom_meta?.blob?.redirect
-      onSignIn({ address, wallet: 'xaman', redirectName })
-      afterSubmitExe({
+      await onSignIn({ address, wallet: 'xaman', redirectName })
+      await afterSubmitExe({
         redirectName,
         broker: data.custom_meta?.blob?.broker,
         txHash: data.response?.txid,
