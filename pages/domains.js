@@ -48,7 +48,7 @@ export default function Domains({ setSignRequest }) {
 
   const checkApi = async () => {
     setLoading(true)
-    const response = await axios('xrpl/domains')
+    const response = await axios('xrpl/domains?excludeFirstledger=true')
     const data = response.data
     if (data?.domains) {
       setData(data.domains.reverse())
