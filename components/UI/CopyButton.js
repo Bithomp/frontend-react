@@ -9,18 +9,21 @@ const copyTextToClipboard = async (text) => {
   }
 }
 
-export default function CopyButton({ text, copyText }) {
+export default function CopyButton({ text, copyText, size = 20, tooltipClassName = '' }) {
   const { t } = useTranslation()
 
   const [isCopied, setIsCopied] = useState(false)
   const [isTooltipEnabled, setIsTooltipEnabled] = useState(true)
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false)
 
   const handleCopyClick = () => {
+    setIsTooltipOpen(true)
     copyTextToClipboard(text)
       .then(() => {
         setIsCopied(true)
         setTimeout(() => {
           setIsCopied(false)
+          setIsTooltipOpen(false)
           setIsTooltipEnabled(false)
         }, 1000)
         setTimeout(() => {
@@ -50,8 +53,8 @@ export default function CopyButton({ text, copyText }) {
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 210.107 210.107"
-        width="20px"
-        height="20px"
+        width={`${size}px`}
+        height={`${size}px`}
         className="change-fill"
         fill="#00B1C1"
         style={isCopied ? copiedStyle : notCopiedStyle}
@@ -70,7 +73,9 @@ export default function CopyButton({ text, copyText }) {
         </g>
       </svg>
       {isTooltipEnabled && (
-        <span className="tooltiptext">{isCopied ? t('button.copied') : copyText || t('button.copy')}</span>
+        <span className={`tooltiptext ${tooltipClassName} ${isTooltipOpen ? 'is-visible' : ''}`.trim()}>
+          {isCopied ? t('button.copied') : copyText || t('button.copy')}
+        </span>
       )}
     </span>
   )

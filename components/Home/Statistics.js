@@ -6,6 +6,7 @@ import axios from 'axios'
 import { xahauNetwork } from '../../utils'
 import { amountFormat, niceNumber } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
+import CopyButton from '../UI/CopyButton'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 export default function Statistics({ data, setData, title, mode = 'activity', fetchOnMount = true }) {
@@ -96,7 +97,10 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
           </div>
           <div className="statistics-row">
             <span>{t('home.stat.ledger-index')}</span>
-            <span>{ledgerIndex ? <LedgerLink version={ledgerIndex} /> : '0'}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              {ledgerIndex ? <LedgerLink version={ledgerIndex} /> : '0'}
+              {!!ledgerIndex && <CopyButton text={String(ledgerIndex)} size={16} tooltipClassName="small ledger-copy-tooltip" />}
+            </span>
           </div>
           <div className="statistics-row">
             <span>{t('home.stat.close-time')}</span>
