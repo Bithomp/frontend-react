@@ -113,9 +113,9 @@ export default function Tiles({
                       <div className="index">{i + 1}</div>
                       <div className="title"></div>
 
-                      <div className="title-text">
+                      <div className="title-text" style={{ bottom: '9%' }}>
                         {type === 'name'
-                          ? nftName(nft, { maxLength: 18 })
+                          ? nftName(nft, { maxLength: 12 })
                           : saleData(
                               type === 'bids' ? nft.buyOffers : nft.sellOffers,
                               type === 'bids' ? 'buy' : 'sell'
@@ -170,7 +170,7 @@ export default function Tiles({
                       <NftImageOrVideo nft={nft.nftoken} />
                       <div className="index">{i + 1}</div>
                       <div className="title"></div>
-                      <div className="title-text">
+                      <div className="title-text" style={{ bottom: '8%' }}>
                         {convertedAmount(nft, convertCurrency, { short: true }) ||
                           amountFormat(nft.amount, { short: true })}
                         <br />
