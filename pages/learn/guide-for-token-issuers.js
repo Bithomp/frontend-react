@@ -115,7 +115,7 @@ export default function GuideForTokenIssuers() {
             <>
               <p>
                 Before going live, you can validate your TOML file using a{' '}
-                <Link href="https://xrpl.org/resources/dev-tools/xrp-ledger-toml-checker">TOML Checker tool</Link> to
+                <Link href="/services/toml-checker">TOML Checker tool</Link> to
                 ensure it’s correctly formatted and recognized.
               </p>
             </>

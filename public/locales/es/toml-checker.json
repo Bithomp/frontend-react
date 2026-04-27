@@ -1,0 +1,23 @@
+{
+  "title": "Comprobador TOML de {{explorerName}}",
+  "description": "Comprueba y valida {{tomlName}} para dominios de {{ledgerName}} con {{explorerName}}.",
+  "check-title": "Comprobar un dominio",
+  "check-description": "Introduce un dominio para obtener, decodificar e inspeccionar su archivo {{tomlName}}.",
+  "domain-placeholder": "Introduce un dominio como bithomp.com",
+  "cooldown-note": "Hay un límite de 10 segundos entre comprobaciones.",
+  "cooldown-left": "Espera {{seconds}} s antes de la siguiente comprobación.",
+  "button": "Comprobar TOML",
+  "checking": "Comprobando...",
+  "result-title": "Resultado de la verificación",
+  "fields": {
+    "domain": "Dominio",
+    "tomlfile": "URL del archivo TOML",
+    "toml": "TOML decodificado",
+    "rawtoml": "Respuesta TOML sin procesar"
+  },
+  "errors": {
+    "invalid-domain": "Introduce un dominio válido.",
+    "captcha-required": "Completa el captcha.",
+    "failed": "No se puede verificar el dominio ahora mismo."
+  }
+}

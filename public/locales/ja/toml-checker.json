@@ -1,0 +1,23 @@
+{
+  "title": "{{explorerName}} TOMLチェッカー",
+  "description": "{{explorerName}} で {{ledgerName}} ドメインの {{tomlName}} を確認・検証します。",
+  "check-title": "ドメインを確認",
+  "check-description": "ドメインを入力して {{tomlName}} ファイルを取得、デコード、確認します。",
+  "domain-placeholder": "bithomp.com のようなドメインを入力",
+  "cooldown-note": "確認のたびに 10 秒の待機時間があります。",
+  "cooldown-left": "次の確認まで {{seconds}} 秒お待ちください。",
+  "button": "TOMLを確認",
+  "checking": "確認中...",
+  "result-title": "確認結果",
+  "fields": {
+    "domain": "ドメイン",
+    "tomlfile": "TOML ファイル URL",
+    "toml": "デコード済み TOML",
+    "rawtoml": "生の TOML レスポンス"
+  },
+  "errors": {
+    "invalid-domain": "有効なドメインを入力してください。",
+    "captcha-required": "captcha を完了してください。",
+    "failed": "現在このドメインを確認できません。"
+  }
+}

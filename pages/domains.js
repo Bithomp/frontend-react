@@ -1,6 +1,7 @@
 import { useTranslation, Trans } from 'next-i18next'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { AddressWithIconFilled } from '../utils/format'
@@ -100,14 +101,13 @@ export default function Domains({ setSignRequest }) {
               <br />
               {t('address-in-toml', { ns: 'domains' })}
             </p>
-            {!xahauNetwork && (
-              <p>
-                <Trans i18nKey="read-about-toml" ns="domains">
-                  You can verify that everything is set properly with the tool:{' '}
-                  <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>.
-                </Trans>
-              </p>
-            )}
+            <p>
+              <Trans
+                i18nKey="read-about-toml"
+                ns="domains"
+                components={[<Link key="toml-checker-link-read" href="/services/toml-checker" />]}
+              />
+            </p>
           </div>
           <div className="grey-box">
             <h4>{t('address-claims-domain', { ns: 'domains' })}</h4>
@@ -153,16 +153,13 @@ export default function Domains({ setSignRequest }) {
               </button>
             </p>
             <h4>{t('verify', { ns: 'domains' })}</h4>
-            {!xahauNetwork && (
-              <p>
-                <Trans i18nKey="verify-desc" ns="domains">
-                  You can verify that everything is set properly with the tool:{' '}
-                  <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>. The list on this page
-                  updates from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not
-                  on our list within 24h, then it's possible that we can not parse your TOML file.
-                </Trans>
-              </p>
-            )}
+            <p>
+              <Trans
+                i18nKey="verify-desc"
+                ns="domains"
+                components={[<Link key="toml-checker-link-verify" href="/services/toml-checker" />]}
+              />
+            </p>
             <br />
             <p>{t('desc', { ns: 'domains', ledgerName })}</p>
           </div>

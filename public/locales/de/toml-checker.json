@@ -1,0 +1,23 @@
+{
+  "title": "{{explorerName}} TOML-Checker",
+  "description": "Prüfen und validieren Sie {{tomlName}} für {{ledgerName}}-Domains mit {{explorerName}}.",
+  "check-title": "Domain prüfen",
+  "check-description": "Geben Sie eine Domain ein, um die Datei {{tomlName}} abzurufen, zu decodieren und zu prüfen.",
+  "domain-placeholder": "Geben Sie eine Domain wie bithomp.com ein",
+  "cooldown-note": "Zwischen den Prüfungen gilt ein Limit von 10 Sekunden.",
+  "cooldown-left": "Bitte warten Sie {{seconds}} Sek., bevor Sie erneut prüfen.",
+  "button": "TOML prüfen",
+  "checking": "Wird geprüft...",
+  "result-title": "Prüfergebnis",
+  "fields": {
+    "domain": "Domain",
+    "tomlfile": "TOML-Datei-URL",
+    "toml": "Dekodiertes TOML",
+    "rawtoml": "Rohe TOML-Antwort"
+  },
+  "errors": {
+    "invalid-domain": "Bitte geben Sie eine gültige Domain ein.",
+    "captcha-required": "Bitte füllen Sie das Captcha aus.",
+    "failed": "Die Domain kann derzeit nicht geprüft werden."
+  }
+}

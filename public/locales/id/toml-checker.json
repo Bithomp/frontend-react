@@ -1,0 +1,23 @@
+{
+  "title": "Pemeriksa TOML {{explorerName}}",
+  "description": "Periksa dan validasi {{tomlName}} untuk domain {{ledgerName}} dengan {{explorerName}}.",
+  "check-title": "Periksa domain",
+  "check-description": "Masukkan domain untuk mengambil, mendekode, dan memeriksa file {{tomlName}}.",
+  "domain-placeholder": "Masukkan domain seperti bithomp.com",
+  "cooldown-note": "Ada batas 10 detik di antara setiap pemeriksaan.",
+  "cooldown-left": "Silakan tunggu {{seconds}} dtk sebelum pemeriksaan berikutnya.",
+  "button": "Periksa TOML",
+  "checking": "Memeriksa...",
+  "result-title": "Hasil verifikasi",
+  "fields": {
+    "domain": "Domain",
+    "tomlfile": "URL file TOML",
+    "toml": "TOML yang didekode",
+    "rawtoml": "Respons TOML mentah"
+  },
+  "errors": {
+    "invalid-domain": "Masukkan domain yang valid.",
+    "captcha-required": "Selesaikan captcha terlebih dahulu.",
+    "failed": "Tidak dapat memverifikasi domain saat ini."
+  }
+}

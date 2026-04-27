@@ -405,6 +405,10 @@ export default function Header({
               <IoSettingsOutline className="menu-item-icon" />
               {t('menu.services.account-settings')}
             </Link>
+            <Link href="/services/toml-checker">
+              <IoCodeSlashOutline className="menu-item-icon" />
+              {t('menu.services.toml-checker')}
+            </Link>
             <Link href="/faucet">
               <IoFlashOutline className="menu-item-icon" />
               {t('menu.developers.faucet')}
@@ -662,6 +666,10 @@ export default function Header({
             <Link href="/learn/the-bithomp-api">
               <IoCodeSlashOutline className="menu-item-icon" />
               {t('menu.developers.api')}
+            </Link>
+            <Link href="/services/toml-checker">
+              <IoDocumentTextOutline className="menu-item-icon" />
+              {t('menu.services.toml-checker')}
             </Link>
             <Link href="/learn/image-services">
               <IoImagesOutline className="menu-item-icon" />

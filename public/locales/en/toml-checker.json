@@ -1,0 +1,23 @@
+{
+  "title": "{{explorerName}} TOML Checker",
+  "description": "Check and validate {{tomlName}} for {{ledgerName}} domains with {{explorerName}}.",
+  "check-title": "Check a domain",
+  "check-description": "Enter a domain to fetch, decode, and inspect its {{tomlName}} file.",
+  "domain-placeholder": "Enter a domain like bithomp.com",
+  "cooldown-note": "There is a 10-second limit between checks.",
+  "cooldown-left": "Please wait {{seconds}}s before the next check.",
+  "button": "Check TOML",
+  "checking": "Checking...",
+  "result-title": "Verification result",
+  "fields": {
+    "domain": "Domain",
+    "tomlfile": "TOML file URL",
+    "toml": "Decoded TOML",
+    "rawtoml": "Raw TOML response"
+  },
+  "errors": {
+    "invalid-domain": "Please enter a valid domain.",
+    "captcha-required": "Please complete the captcha.",
+    "failed": "Unable to verify the domain right now."
+  }
+}

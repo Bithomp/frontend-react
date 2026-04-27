@@ -27,7 +27,8 @@ import {
   IoKeyOutline,
   IoDocumentTextOutline,
   IoPersonOutline,
-  IoLayersOutline
+  IoLayersOutline,
+  IoCodeOutline
 } from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
 import { LuCoins, LuFileCheck2 } from 'react-icons/lu'
@@ -83,6 +84,7 @@ export default function ServicesPage() {
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: LuFileCheck2 },
         { href: '/username', title: t('menu.services.username'), icon: IoPersonOutline },
         { href: '/submit-account-information', title: t('menu.project-registration'), icon: IoDocumentTextOutline },
+        { href: '/services/toml-checker', title: t('menu.services.toml-checker'), icon: IoCodeOutline },
         !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbBell } : null,
         !devNet ? { href: '/admin/watchlist', title: 'Watchlist', icon: MdVerified } : null
       ].filter(Boolean)

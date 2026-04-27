@@ -242,6 +242,10 @@ export default function MobileMenu({
             <IoSettingsOutline style={itemIconStyle} />
             {t('menu.services.account-settings')}
           </Link>
+          <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <IoCodeSlashOutline style={itemIconStyle} />
+            {t('menu.services.toml-checker')}
+          </Link>
           <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoFlashOutline style={itemIconStyle} />
             {t('menu.developers.faucet')}
@@ -510,6 +514,10 @@ export default function MobileMenu({
           <Link href="/learn/the-bithomp-api" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCodeSlashOutline style={itemIconStyle} />
             {t('menu.developers.api')}
+          </Link>
+          <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <IoDocumentTextOutline style={itemIconStyle} />
+            {t('menu.services.toml-checker')}
           </Link>
           <Link href="/learn/image-services" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoImagesOutline style={itemIconStyle} />

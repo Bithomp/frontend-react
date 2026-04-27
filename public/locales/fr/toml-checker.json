@@ -1,0 +1,23 @@
+{
+  "title": "Vérificateur TOML {{explorerName}}",
+  "description": "Vérifiez et validez {{tomlName}} pour les domaines {{ledgerName}} avec {{explorerName}}.",
+  "check-title": "Vérifier un domaine",
+  "check-description": "Saisissez un domaine pour récupérer, décoder et inspecter son fichier {{tomlName}}.",
+  "domain-placeholder": "Saisissez un domaine comme bithomp.com",
+  "cooldown-note": "Une limite de 10 secondes s'applique entre chaque vérification.",
+  "cooldown-left": "Veuillez attendre {{seconds}} s avant la prochaine vérification.",
+  "button": "Vérifier TOML",
+  "checking": "Vérification...",
+  "result-title": "Résultat de la vérification",
+  "fields": {
+    "domain": "Domaine",
+    "tomlfile": "URL du fichier TOML",
+    "toml": "TOML décodé",
+    "rawtoml": "Réponse TOML brute"
+  },
+  "errors": {
+    "invalid-domain": "Veuillez saisir un domaine valide.",
+    "captcha-required": "Veuillez compléter le captcha.",
+    "failed": "Impossible de vérifier le domaine pour le moment."
+  }
+}

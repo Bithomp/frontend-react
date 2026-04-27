@@ -1,0 +1,23 @@
+{
+  "title": "Проверка TOML в {{explorerName}}",
+  "description": "Проверьте и валидируйте {{tomlName}} для доменов {{ledgerName}} с помощью {{explorerName}}.",
+  "check-title": "Проверить домен",
+  "check-description": "Введите домен, чтобы получить, декодировать и проверить файл {{tomlName}}.",
+  "domain-placeholder": "Введите домен, например bithomp.com",
+  "cooldown-note": "Между проверками действует лимит 10 секунд.",
+  "cooldown-left": "Подождите {{seconds}} сек. перед следующей проверкой.",
+  "button": "Проверить TOML",
+  "checking": "Проверяем...",
+  "result-title": "Результат проверки",
+  "fields": {
+    "domain": "Домен",
+    "tomlfile": "URL TOML файла",
+    "toml": "Декодированный TOML",
+    "rawtoml": "Сырой ответ TOML"
+  },
+  "errors": {
+    "invalid-domain": "Введите корректный домен.",
+    "captcha-required": "Пожалуйста, пройдите captcha.",
+    "failed": "Сейчас не удалось проверить домен."
+  }
+}
