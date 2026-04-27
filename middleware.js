@@ -67,30 +67,32 @@ const isClearlyBadClient = (ua) =>
   )
 
 export async function middleware(req) {
+  const rawPathname = normalizeSlashes(new URL(req.url).pathname)
+
   if (
-    req.nextUrl.pathname === '/favicon.ico' ||
-    req.nextUrl.pathname === '/robots.txt' ||
-    req.nextUrl.pathname === '/sitemap.xml' ||
-    req.nextUrl.pathname.startsWith('/_next') ||
-    req.nextUrl.pathname.startsWith('/api/') ||
-    PUBLIC_FILE.test(req.nextUrl.pathname) ||
-    req.nextUrl.pathname.includes('/manifest.json')
+    rawPathname === '/favicon.ico' ||
+    rawPathname === '/robots.txt' ||
+    rawPathname === '/sitemap.xml' ||
+    rawPathname.startsWith('/_next') ||
+    rawPathname.startsWith('/api/') ||
+    PUBLIC_FILE.test(rawPathname) ||
+    rawPathname.includes('/manifest.json')
   ) {
     return NextResponse.next()
   }
 
   const ua = req.headers.get('user-agent') || ''
 
-  if (req.nextUrl.pathname === '/default' || req.nextUrl.pathname.startsWith('/default/')) {
+  if (rawPathname === '/default' || rawPathname.startsWith('/default/')) {
     const url = req.nextUrl.clone()
-    url.pathname = stripLeadingLocale(req.nextUrl.pathname)
+    url.pathname = stripLeadingLocale(rawPathname)
     setUrlLocale(url, 'en')
     return NextResponse.redirect(url)
   }
 
-  if (req.nextUrl.pathname === '/en' || req.nextUrl.pathname.startsWith('/en/')) {
+  if (rawPathname === '/en' || rawPathname.startsWith('/en/')) {
     const url = req.nextUrl.clone()
-    url.pathname = stripLeadingLocale(req.nextUrl.pathname)
+    url.pathname = stripLeadingLocale(rawPathname)
     setUrlLocale(url, 'en')
     return NextResponse.redirect(url)
   }
@@ -117,22 +119,22 @@ export async function middleware(req) {
   }
 
   // Redirect legacy paper wallet page to GitHub
-  if (req.nextUrl.pathname.startsWith('/paperwallet')) {
+  if (rawPathname.startsWith('/paperwallet')) {
     return NextResponse.redirect(new URL('https://bithomp.github.io/xrp-paper-wallet/'))
   }
 
   // Redirect links that use removed locales
   for (const locale of removedLocales) {
-    if (req.nextUrl.pathname.startsWith(`/${locale}/`)) {
+    if (rawPathname.startsWith(`/${locale}/`)) {
       const url = req.nextUrl.clone()
-      url.pathname = applyLocale(req.nextUrl.pathname, viewLocale)
+      url.pathname = applyLocale(rawPathname, viewLocale)
       setUrlLocale(url, viewLocale)
       return NextResponse.redirect(url)
     }
 
-    if (req.nextUrl.pathname === `/${locale}` && locale !== viewLocale) {
+    if (rawPathname === `/${locale}` && locale !== viewLocale) {
       const url = req.nextUrl.clone()
-      url.pathname = applyLocale(req.nextUrl.pathname, viewLocale)
+      url.pathname = applyLocale(rawPathname, viewLocale)
       setUrlLocale(url, viewLocale)
       return NextResponse.redirect(url)
     }
@@ -143,7 +145,7 @@ export async function middleware(req) {
     const url = req.nextUrl.clone()
 
     // Respect cookie locale but strip any old locale from the path
-    url.pathname = applyLocale(url.pathname, viewLocale)
+    url.pathname = applyLocale(rawPathname, viewLocale)
     setUrlLocale(url, viewLocale)
 
     if (url.searchParams.has('id')) {
@@ -154,8 +156,8 @@ export async function middleware(req) {
   }
 
   // Normalize double slashes even when no locale change is needed
-  const normalizedPath = normalizeSlashes(req.nextUrl.pathname)
-  if (normalizedPath !== req.nextUrl.pathname) {
+  const normalizedPath = normalizeSlashes(rawPathname)
+  if (normalizedPath !== rawPathname) {
     const url = req.nextUrl.clone()
     url.pathname = normalizedPath
     // Keep locale as-is here
