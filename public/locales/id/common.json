@@ -6,6 +6,21 @@
     "holders": "pemegang",
     "sales": "penjualan"
   },
+  "token-tabs": {
+    "tokens": "Token",
+    "amms": "LP Token",
+    "mpts": "MPT"
+  },
+  "search-select": {
+    "currency": "Mata uang",
+    "issuer": "Penerbit",
+    "search-currency": "Cari mata uang",
+    "search-issuer": "Cari penerbit",
+    "no-results": "Tidak ada hasil",
+    "start-currency": "Mulai ketik untuk mencari mata uang",
+    "start-issuer": "Mulai ketik untuk mencari penerbit",
+    "more-than-results": "Lebih dari {{count}} hasil. Ketik lebih banyak untuk mempersempit pencarian Anda."
+  },
   "menu": {
     "tokens": "Token",
     "amm": {
@@ -334,6 +349,7 @@
     "error": "Kesalahan",
     "no-data": "Tidak ada data tersedia",
     "loading": "Memuat...",
+    "filters": "Filter",
     "login-to-bithomp-pro": "Memuat lebih banyak data tersedia untuk pelanggan Bithomp Pro yang <2>termasuk login</2>.",
     "renew-bithomp-pro": "Langganan Bithomp Pro Anda telah kedaluwarsa. <1>Perbarui langganan Anda</1>.",
     "load-failed": "Gagal memuat",

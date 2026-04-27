@@ -6,6 +6,21 @@
     "holders": "poseedores",
     "sales": "ventas"
   },
+  "token-tabs": {
+    "tokens": "Tokens",
+    "amms": "LP Tokens",
+    "mpts": "MPT"
+  },
+  "search-select": {
+    "currency": "Moneda",
+    "issuer": "Emisor",
+    "search-currency": "Buscar moneda",
+    "search-issuer": "Buscar emisor",
+    "no-results": "No se encontraron resultados",
+    "start-currency": "Empieza a escribir para buscar monedas",
+    "start-issuer": "Empieza a escribir para buscar emisores",
+    "more-than-results": "Más de {{count}} resultados. Escribe más para acotar tu búsqueda."
+  },
   "menu": {
     "tokens": "Tokens",
     "amm": {
@@ -334,6 +349,7 @@
     "error": "Error",
     "no-data": "Datos no disponibles",
     "loading": "Cargando...",
+    "filters": "Filtros",
     "login-to-bithomp-pro": "Cargar más datos está disponible para los suscriptores de Bithomp Pro <2>con sesión iniciada</2>.",
     "renew-bithomp-pro": "Tu suscripción a Bithomp Pro ha expirado. <1>Renueva tu suscripción</1>.",
     "load-failed": "Fallo al cargar",

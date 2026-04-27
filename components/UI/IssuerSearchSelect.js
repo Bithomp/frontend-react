@@ -1,4 +1,5 @@
 import Select from 'react-select'
+import { useTranslation } from 'next-i18next'
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { IoMdClose } from 'react-icons/io'
@@ -7,6 +8,7 @@ import { shortAddress, amountFormat } from '../../utils/format'
 import { useWidth } from '../../utils'
 
 export default function IssuerSearchSelect({ setIssuer, defaultValue = '', type }) {
+  const { t } = useTranslation()
   // Core states
   const [inputValue, setInputValue] = useState(defaultValue || '')
   const [searchSuggestions, setSearchSuggestions] = useState([])
@@ -116,12 +118,12 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '', type 
 
   return (
     <div className="center">
-      <span className="input-title">Issuer</span>
+      <span className="input-title">{t('search-select.issuer')}</span>
       <div className="form-input">
         <div className="form-input__wrap">
           <Select
             className={`address-input${notEmpty ? ' not-empty' : ''}`}
-            placeholder="Search issuer"
+            placeholder={t('search-select.search-issuer')}
             onChange={searchOnChange}
             onInputChange={searchOnInputChange}
             inputValue={inputValue}
@@ -176,7 +178,7 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '', type 
             instanceId="issuer-search-select"
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
             filterOption={() => true}
-            noOptionsMessage={() => (inputValue.length > 3 ? 'No results found' : 'Start typing to search for issuers')}
+            noOptionsMessage={() => (inputValue.length > 3 ? t('search-select.no-results') : t('search-select.start-issuer'))}
           />
           <div className="form-input__btns">
             <button className="form-input__clear" onClick={clearAll}>

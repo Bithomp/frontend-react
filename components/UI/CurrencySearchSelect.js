@@ -1,4 +1,5 @@
 import Select from 'react-select'
+import { useTranslation } from 'next-i18next'
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { IoMdClose } from 'react-icons/io'
@@ -13,13 +14,14 @@ const limit = 20
 function MenuList(props) {
   const { children } = props
   const { options } = props
+  const { t } = useTranslation()
   // limit is in closure
   return (
     <selectComponents.MenuList {...props}>
       {children}
       {options.length >= limit && (
         <div style={{ color: 'orange', padding: '6px 12px 12px 12px' }}>
-          More than {limit} results. Please type more to narrow your search.
+          {t('search-select.more-than-results', { count: limit })}
         </div>
       )}
     </selectComponents.MenuList>
@@ -27,6 +29,7 @@ function MenuList(props) {
 }
 
 export default function CurrencySearchSelect({ setCurrency, defaultValue = '', type }) {
+  const { t } = useTranslation()
   const [inputValue, setInputValue] = useState(defaultValue || '')
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
@@ -146,7 +149,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '', t
   return (
     <div className="center">
       <span className="input-title">
-        Currency
+        {t('search-select.currency')}
         {selectedOption && selectedOption.item && (
           <>
             : <b>{selectedOption.item.currencyDetails?.currency}</b>
@@ -159,7 +162,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '', t
             className={`address-input${notEmpty ? ' not-empty' : ''}`}
             classNamePrefix="react-select"
             instanceId="currency-search-select"
-            placeholder="Search currency"
+            placeholder={t('search-select.search-currency')}
             isClearable
             onInputChange={searchOnInputChange}
             onChange={searchOnChange}
@@ -170,7 +173,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '', t
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null, MenuList }}
             filterOption={() => true}
             noOptionsMessage={() =>
-              inputValue.length > 2 ? 'No results found' : 'Start typing to search for currencies'
+              inputValue.length > 2 ? t('search-select.no-results') : t('search-select.start-currency')
             }
           />
           <div className="form-input__btns">

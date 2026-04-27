@@ -6,6 +6,21 @@
     "holders": "holders",
     "sales": "sales"
   },
+  "token-tabs": {
+    "tokens": "Tokens",
+    "amms": "LP Tokens",
+    "mpts": "MPT"
+  },
+  "search-select": {
+    "currency": "Currency",
+    "issuer": "Issuer",
+    "search-currency": "Search currency",
+    "search-issuer": "Search issuer",
+    "no-results": "No results found",
+    "start-currency": "Start typing to search for currencies",
+    "start-issuer": "Start typing to search for issuers",
+    "more-than-results": "More than {{count}} results. Please type more to narrow your search."
+  },
   "menu": {
     "tokens": "Tokens",
     "amm": {
@@ -334,6 +349,7 @@
     "error": "Error",
     "no-data": "No data available",
     "loading": "Loading...",
+    "filters": "Filters",
     "login-to-bithomp-pro": "Loading more data is available to <2>logged-in</2> Bithomp Pro subscribers.",
     "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "Failed to load",

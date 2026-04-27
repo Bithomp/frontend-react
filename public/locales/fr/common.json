@@ -6,6 +6,21 @@
     "holders": "détenteurs",
     "sales": "ventes"
   },
+  "token-tabs": {
+    "tokens": "Jetons",
+    "amms": "Jetons LP",
+    "mpts": "MPT"
+  },
+  "search-select": {
+    "currency": "Devise",
+    "issuer": "Émetteur",
+    "search-currency": "Rechercher une devise",
+    "search-issuer": "Rechercher un émetteur",
+    "no-results": "Aucun résultat trouvé",
+    "start-currency": "Commencez à saisir pour rechercher des devises",
+    "start-issuer": "Commencez à saisir pour rechercher des émetteurs",
+    "more-than-results": "Plus de {{count}} résultats. Veuillez saisir davantage pour affiner votre recherche."
+  },
   "menu": {
     "tokens": "Jetons",
     "amm": {
@@ -334,6 +349,7 @@
     "error": "Erreur",
     "no-data": "Aucune donnée disponible",
     "loading": "Chargement...",
+    "filters": "Filtres",
     "login-to-bithomp-pro": "Charger plus de données est disponible pour les <2>abonnés connectés</2> à Bithomp Pro.",
     "renew-bithomp-pro": "Votre abonnement Bithomp Pro a expiré. <1>Renouveler votre abonnement</1>.",
     "load-failed": "Échec du chargement",

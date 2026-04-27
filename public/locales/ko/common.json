@@ -6,6 +6,21 @@
     "holders": "보유자",
     "sales": "총기보 식"
   },
+  "token-tabs": {
+    "tokens": "토큰",
+    "amms": "LP 토큰",
+    "mpts": "MPT"
+  },
+  "search-select": {
+    "currency": "통화",
+    "issuer": "발행자",
+    "search-currency": "통화 검색",
+    "search-issuer": "발행자 검색",
+    "no-results": "검색 결과가 없습니다",
+    "start-currency": "통화를 검색하려면 입력하세요",
+    "start-issuer": "발행자를 검색하려면 입력하세요",
+    "more-than-results": "{{count}}개 이상의 결과가 있습니다. 검색 범위를 좁히려면 더 입력하세요."
+  },
   "menu": {
     "tokens": "토큰",
     "amm": {
@@ -334,6 +349,7 @@
     "error": "오류",
     "no-data": "데이터를 찾을 수 없습니다",
     "loading": "대기 중",
+    "filters": "필터",
     "login-to-bithomp-pro": "더 많은 데이터를 로드하려면 <2>로그인한</2> Bithomp Pro 구독자가 필요합니다.",
     "renew-bithomp-pro": "귀하의 Bithomp Pro 구독이 만료되었습니다. <1>구독을 갱신하세요</1>",
     "load-failed": "로딩에 실패했습니다",

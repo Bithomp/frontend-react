@@ -71,7 +71,7 @@ export default function LeftFilters({
           <div className="filters__box">
             <button className="filters-toggle" onClick={toggleFilters}>
               <BsFilter className="filters-icon" />
-              <span className="filters-text">Filters</span>
+              <span className="filters-text">{t('general.filters')}</span>
             </button>
             <div className="filters__wrap">
               <div className="filters-head">
