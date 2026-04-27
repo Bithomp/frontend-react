@@ -137,7 +137,7 @@ export default function DateAndTimeRange({
 
   let lang = i18n.language
 
-  const notSupportedLanguages = ['my']
+  const notSupportedLanguages = ['my', 'default']
   if (notSupportedLanguages.includes(lang)) {
     lang = 'en'
   }
