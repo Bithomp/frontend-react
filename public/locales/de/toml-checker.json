@@ -18,6 +18,7 @@
   "errors": {
     "invalid-domain": "Bitte geben Sie eine gültige Domain ein.",
     "captcha-required": "Bitte füllen Sie das Captcha aus.",
+    "domain-not-found": "Diese Domain oder ihre TOML-Datei konnte nicht erreicht werden. Bitte prüfen Sie die Domain und versuchen Sie es erneut.",
     "failed": "Die Domain kann derzeit nicht geprüft werden."
   }
 }

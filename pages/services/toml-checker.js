@@ -29,6 +29,17 @@ const formatResponse = (value) => {
   }
 }
 
+const getFriendlyError = (error, tt, t) => {
+  const apiError = error?.response?.data?.error
+  const message = apiError || error?.message || ''
+
+  if (message.includes('ENOTFOUND') || message.includes('getaddrinfo')) {
+    return tt('errors.domain-not-found')
+  }
+
+  return apiError || t('error.' + message) || tt('errors.failed')
+}
+
 export async function getServerSideProps({ locale }) {
   return {
     props: {
@@ -109,7 +120,7 @@ export default function TomlCheckerPage() {
         'cf-turnstile-response': turnstileToken
       })
       .catch((error) => {
-        setErrorMessage(error?.response?.data?.error || tt('errors.failed'))
+        setErrorMessage(getFriendlyError(error, tt, t))
         return null
       })
 
@@ -122,7 +133,11 @@ export default function TomlCheckerPage() {
     if (!data) return
 
     if (data.error) {
-      setErrorMessage(data.error)
+      setErrorMessage(
+        String(data.error).includes('ENOTFOUND') || String(data.error).includes('getaddrinfo')
+          ? tt('errors.domain-not-found')
+          : data.error
+      )
       return
     }
 

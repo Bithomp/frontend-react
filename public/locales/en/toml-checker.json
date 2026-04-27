@@ -18,6 +18,7 @@
   "errors": {
     "invalid-domain": "Please enter a valid domain.",
     "captcha-required": "Please complete the captcha.",
+    "domain-not-found": "We could not reach that domain or find its TOML file. Please check the domain and try again.",
     "failed": "Unable to verify the domain right now."
   }
 }

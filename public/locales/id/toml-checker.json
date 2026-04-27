@@ -18,6 +18,7 @@
   "errors": {
     "invalid-domain": "Masukkan domain yang valid.",
     "captcha-required": "Selesaikan captcha terlebih dahulu.",
+    "domain-not-found": "Kami tidak dapat menjangkau domain tersebut atau menemukan file TOML-nya. Periksa domain lalu coba lagi.",
     "failed": "Tidak dapat memverifikasi domain saat ini."
   }
 }

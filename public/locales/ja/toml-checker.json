@@ -18,6 +18,7 @@
   "errors": {
     "invalid-domain": "有効なドメインを入力してください。",
     "captcha-required": "captcha を完了してください。",
+    "domain-not-found": "そのドメイン、または TOML ファイルにアクセスできませんでした。ドメインを確認して再度お試しください。",
     "failed": "現在このドメインを確認できません。"
   }
 }
