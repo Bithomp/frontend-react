@@ -121,7 +121,7 @@
     "connect": "Se connecter",
     "signin": "Se connecter",
     "signout": "Se déconnecter",
-    "choose-app": "Choisir une application de signature",
+    "choose-app": "Choisir une app de signature",
     "login-with": "Connexion avec {{appName}}",
     "sign-with": "Signer avec {{appName}}",
     "amount": {
