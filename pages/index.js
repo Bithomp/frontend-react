@@ -1,9 +1,8 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
 import { server, explorerName, nativeCurrency, xahauNetwork, ledgerName, network } from '../utils'
@@ -55,6 +54,7 @@ export async function getServerSideProps(context) {
     props: {
       fiatRateServer,
       selectedCurrencyServer,
+      initialLocale: locale || 'en',
       isSsrMobile: getIsSsrMobile(context),
       teaserDapps,
       teaserTokens,
@@ -68,6 +68,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({
+  initialLocale,
   selectedCurrency: selectedCurrencyApp,
   setSelectedCurrency,
   showAds,
@@ -86,9 +87,8 @@ export default function Home({
   teaserAmendments = []
 }) {
   const { t } = useTranslation()
-  const router = useRouter()
-  const isEnglishMainnetHome = network === 'mainnet' && !xahauNetwork && (!router.locale || router.locale === 'default' || router.locale === 'en')
-  const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
+  const isEnglishLikeLocale = !initialLocale || initialLocale === 'default' || initialLocale === 'en'
+  const isEnglishMainnetHome = network === 'mainnet' && !xahauNetwork && isEnglishLikeLocale
   const isEnglishTestnetHome = network === 'testnet' && isEnglishLikeLocale
   const isEnglishDevnetHome = network === 'devnet' && isEnglishLikeLocale
 
@@ -113,9 +113,14 @@ export default function Home({
       : isEnglishDevnetHome
         ? 'XRPL Devnet Explorer and Faucet'
         : t('home.h1', { nativeCurrency })
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   let selectedCurrency = selectedCurrencyServer
-  if (selectedCurrencyApp) {
+  if (isHydrated && selectedCurrencyApp) {
     selectedCurrency = selectedCurrencyApp
   }
 

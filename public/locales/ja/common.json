@@ -598,6 +598,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}}エクスプローラ",
+      "sub": "{{nativeCurrency}} のトランザクション、アカウント、トークン、NFT を検索。{{nativeCurrency}} Ledger をすばやく信頼できる方法で探索できます。",
       "topNftCollections": "トップNFTコレクション",
       "amm": "AMMプール情報",
       "object": "オブジェクト情報",

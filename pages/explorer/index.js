@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 import { server, explorerName, nativeCurrency, network } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -17,6 +16,7 @@ export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
+      initialLocale: locale || 'en',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
@@ -137,10 +137,9 @@ const examples = {
   }
 }
 
-export default function Explorer({ isSsrMobile, showAds }) {
+export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
   const { t } = useTranslation()
-  const router = useRouter()
-  const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
+  const isEnglishLikeLocale = !initialLocale || initialLocale === 'default' || initialLocale === 'en'
   const isEnglishMainnetExplorer =
     network === 'mainnet' && isEnglishLikeLocale
   const isEnglishTestnetExplorer = network === 'testnet' && isEnglishLikeLocale

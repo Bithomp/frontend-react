@@ -549,7 +549,8 @@ export const xahauNetwork = network.includes('xahau')
 export const normalizeLocale = (locale) => (!locale || locale === 'default' ? 'en' : locale)
 export const localePath = (path = '/', locale) => {
   const normalizedLocale = normalizeLocale(locale)
-  const normalizedPath = path?.startsWith('/') ? path : `/${path || ''}`
+  const rawPath = path?.startsWith('/') ? path : `/${path || ''}`
+  const normalizedPath = rawPath.replace(/^\/(default|en|ko|ru|de|es|id|ja|fr)(?=\/|$)/, '') || '/'
   return normalizedLocale === 'en' ? normalizedPath : `/${normalizedLocale}${normalizedPath}`
 }
 

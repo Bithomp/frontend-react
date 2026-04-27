@@ -598,6 +598,7 @@
   "explorer": {
     "header": {
       "main": "Explorateur {{explorerName}}",
+      "sub": "Explorez les transactions, comptes, tokens et NFT {{nativeCurrency}} : une manière rapide et fiable d’explorer le {{nativeCurrency}} Ledger.",
       "topNftCollections": "Top Collections NFT",
       "amm": "Informations sur la pools AMM",
       "object": "Informations sur l'objet",

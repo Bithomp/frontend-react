@@ -291,6 +291,7 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   if (!data || !data[name]) return ''
   const address = data[name]
   const size = 16
+  const noLink = options?.noLink
   const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
      <rect width="100%" height="100%" fill="#ffffff"/>
@@ -302,7 +303,7 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
 
   return (
     <span className="no-brake">
-      <Link href={'/account/' + address}>
+      {noLink ? (
         <div
           style={{
             height: size,
@@ -328,9 +329,41 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
             }}
           />
         </div>
-      </Link>
+      ) : (
+        <Link href={'/account/' + address}>
+          <div
+            style={{
+              height: size,
+              width: size,
+              verticalAlign: 'text-bottom',
+              marginRight: 3,
+              borderRadius: '50%',
+              overflow: 'hidden',
+              display: 'inline-block'
+            }}
+          >
+            <img
+              src={avatarServer + address + '?hashIconZoom=12' || placeholder}
+              alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
+              height={size}
+              width={size}
+              style={{
+                objectFit: 'cover'
+              }}
+              onError={(e) => {
+                e.target.onerror = null
+                e.target.src = placeholder
+              }}
+            />
+          </div>
+        </Link>
+      )}
       {options?.showAddress ? (
-        <Link href={'/account/' + address}>{shortAddress(address, options?.short || 6)}</Link>
+        noLink ? (
+          shortAddress(address, options?.short || 6)
+        ) : (
+          <Link href={'/account/' + address}>{shortAddress(address, options?.short || 6)}</Link>
+        )
       ) : (
         addressUsernameOrServiceLink(data, name, options)
       )}
@@ -810,12 +843,16 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
     return <b>{options.noBroker}</b>
   }
   if (userOrServiceLink(data, type) !== '') {
+    if (options.noLink) {
+      const details = data?.[type + 'Details']
+      return userOrServiceName(details) || shortAddress(data?.[type], options.short || 6)
+    }
     return userOrServiceLink(data, type, options)
   }
   if (options.short) {
-    return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
+    return options.noLink ? shortAddress(data?.[type], options.short) : <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
   }
-  return <Link href={options.url + data?.[type]}>{data?.[type]}</Link>
+  return options.noLink ? data?.[type] : <Link href={options.url + data?.[type]}>{data?.[type]}</Link>
 }
 
 export const addressLink = (address, options = {}) => {

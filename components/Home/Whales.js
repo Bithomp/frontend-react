@@ -78,11 +78,11 @@ export default function Whales({ currency, data, setData }) {
             }}
             className={`${styles.itemName} ${styles.whaleAddressCell}`}
           >
-            <AddressWithIconInline data={tx} name="sourceAddress" options={{ short: 3 }} />
+            <AddressWithIconInline data={tx} name="sourceAddress" options={{ short: 3, noLink: true }} />
           </div>
           <div className={styles.whaleArrow}>→</div>
           <div className={`${styles.itemName} ${styles.whaleAddressCell}`}>
-            <AddressWithIconInline data={tx} name="destinationAddress" options={{ short: 3 }} />
+            <AddressWithIconInline data={tx} name="destinationAddress" options={{ short: 3, noLink: true }} />
           </div>
           <div className={`${styles.metric} ${styles.whaleFiat}`}>
             {tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency) : ''}

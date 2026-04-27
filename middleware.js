@@ -38,11 +38,19 @@ function stripLeadingLocale(pathname) {
 function applyLocale(pathname, locale) {
   const cleanPath = stripLeadingLocale(pathname)
 
+  if (locale === 'en') {
+    return cleanPath === '' ? '/' : cleanPath
+  }
+
   if (cleanPath === '/' || cleanPath === '') {
     return `/${locale}`
   }
 
   return normalizeSlashes(`/${locale}${cleanPath}`)
+}
+
+function setUrlLocale(url, locale) {
+  url.locale = locale === 'en' ? 'default' : locale
 }
 
 const isKnownSeoOrPreviewBot = (ua) =>
@@ -76,14 +84,14 @@ export async function middleware(req) {
   if (req.nextUrl.pathname === '/default' || req.nextUrl.pathname.startsWith('/default/')) {
     const url = req.nextUrl.clone()
     url.pathname = stripLeadingLocale(req.nextUrl.pathname)
-    url.locale = 'en'
+    setUrlLocale(url, 'en')
     return NextResponse.redirect(url)
   }
 
   if (req.nextUrl.pathname === '/en' || req.nextUrl.pathname.startsWith('/en/')) {
     const url = req.nextUrl.clone()
     url.pathname = stripLeadingLocale(req.nextUrl.pathname)
-    url.locale = 'en'
+    setUrlLocale(url, 'en')
     return NextResponse.redirect(url)
   }
 
@@ -95,6 +103,7 @@ export async function middleware(req) {
 
   const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
   const reactLocale = req.nextUrl.locale
+  const normalizedReactLocale = !reactLocale || reactLocale === 'default' ? 'en' : reactLocale
 
   // Default locale
   let viewLocale = 'en'
@@ -117,27 +126,25 @@ export async function middleware(req) {
     if (req.nextUrl.pathname.startsWith(`/${locale}/`)) {
       const url = req.nextUrl.clone()
       url.pathname = applyLocale(req.nextUrl.pathname, viewLocale)
-      url.locale = viewLocale // IMPORTANT: keep URL locale in sync
+      setUrlLocale(url, viewLocale)
       return NextResponse.redirect(url)
     }
 
     if (req.nextUrl.pathname === `/${locale}` && locale !== viewLocale) {
       const url = req.nextUrl.clone()
       url.pathname = applyLocale(req.nextUrl.pathname, viewLocale)
-      url.locale = viewLocale // IMPORTANT: keep URL locale in sync
+      setUrlLocale(url, viewLocale)
       return NextResponse.redirect(url)
     }
   }
 
   // Normalize locale according to cookie / detected locale
-  if (reactLocale !== viewLocale) {
+  if (normalizedReactLocale !== viewLocale) {
     const url = req.nextUrl.clone()
 
     // Respect cookie locale but strip any old locale from the path
     url.pathname = applyLocale(url.pathname, viewLocale)
-
-    // This is the key line: make Next.js stop prefixing with the old locale
-    url.locale = viewLocale
+    setUrlLocale(url, viewLocale)
 
     if (url.searchParams.has('id')) {
       url.searchParams.delete('id')
