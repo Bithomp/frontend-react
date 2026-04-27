@@ -613,10 +613,12 @@ export default function Validators({ amendment, initialData, initialProcessed, i
   const checkBoxStyles = {
     display: 'inline-flex',
     alignItems: 'center',
-    marginTop: windowWidth > 500 ? '-20px' : 0,
-    marginBottom: '20px',
-    marginRight: '20px',
-    marginLeft: '20px'
+    justifyContent: 'center',
+    lineHeight: 1.2,
+    marginTop: isMobileView ? '8px' : '8px',
+    marginBottom: isMobileView ? '8px' : '20px',
+    marginRight: isMobileView ? 0 : '20px',
+    marginLeft: isMobileView ? 0 : '20px'
   }
 
   return (
@@ -900,18 +902,19 @@ export default function Validators({ amendment, initialData, initialProcessed, i
             </table>
           </div>
         </div>
-        <br />
-        {!isMobileView ? (
-          <center>
-            <div style={{ display: 'inline-block' }}>
-              <CheckBox checked={developerMode} setChecked={setDeveloperMode} style={checkBoxStyles}>
-                {t('general.developer-mode')}
-              </CheckBox>
-            </div>
-          </center>
-        ) : (
-          <br />
-        )}
+        <center>
+          <div
+            style={
+              isMobileView
+                ? { display: 'flex', justifyContent: 'center', width: '100%' }
+                : { display: 'inline-block' }
+            }
+          >
+            <CheckBox checked={developerMode} setChecked={setDeveloperMode} style={checkBoxStyles}>
+              {t('general.developer-mode')}
+            </CheckBox>
+          </div>
+        </center>
 
         {isMobileView ? (
           <table className="table-mobile">
@@ -966,7 +969,10 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                       {(v.nUnl || !v.baseFee) && <p>nUNL: ❌</p>}
                       <p>
                         {t('table.public-key')}:<br />
-                        {shortHash(v.publicKey)} <CopyButton text={v.publicKey} />
+                        <span style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
+                          {developerMode ? v.publicKey : shortHash(v.publicKey)}
+                        </span>{' '}
+                        <CopyButton text={v.publicKey} />
                       </p>
                       {!v.amendments && !v.baseFee ? (
                         <p className="red bold">Offline</p>
@@ -1031,7 +1037,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                           </p>
                         </>
                       )}
-                      {xahauNetwork && (
+                      {(xahauNetwork || developerMode) && (
                         <p>
                           {t('table.address')} <CopyButton text={v.address} />
                           <br />
