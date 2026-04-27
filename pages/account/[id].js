@@ -2499,7 +2499,14 @@ export default function Account({
               <span className="tooltiptext right small no-brake">TOML Verified Domain</span>
             </span>
           )}{' '}
-          {showUnverified && <span className="grey">(unverified)</span>}
+          {showUnverified && (
+            <>
+              <span className="grey">(unverified)</span>{' '}
+              <Link href="/domains" className="link">
+                Verify
+              </Link>
+            </>
+          )}
           {domainActionButtons}
         </span>
       ) : (
