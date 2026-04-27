@@ -18,7 +18,7 @@ export async function getServerSideProps(context) {
     props: {
       initialLocale: locale || 'en',
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'explorer']))
     }
   }
 }
@@ -139,6 +139,7 @@ const examples = {
 
 export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
   const { t } = useTranslation()
+  const { t: tt } = useTranslation('explorer')
   const isEnglishLikeLocale = !initialLocale || initialLocale === 'default' || initialLocale === 'en'
   const isEnglishMainnetExplorer =
     network === 'mainnet' && isEnglishLikeLocale
@@ -146,25 +147,25 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
   const isEnglishDevnetExplorer = network === 'devnet' && isEnglishLikeLocale
 
   const pageTitle = isEnglishMainnetExplorer
-    ? 'Search the XRP Ledger — Accounts, Transactions, Tokens, NFTs'
+    ? tt('seo.mainnet.title')
     : isEnglishTestnetExplorer
-      ? 'Search XRPL Testnet — Accounts, Transactions, Tokens, NFTs'
+      ? tt('seo.testnet.title')
       : isEnglishDevnetExplorer
-        ? 'Search XRPL Devnet — Accounts, Transactions, Tokens, NFTs'
+        ? tt('seo.devnet.title')
         : t('explorer.header.main', { explorerName })
   const pageDescription = isEnglishMainnetExplorer
-    ? 'Search XRP addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, AMMs, and ledger objects on the XRP Ledger.'
+    ? tt('seo.mainnet.description')
     : isEnglishTestnetExplorer
-      ? 'Search XRPL Testnet addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, and ledger objects. Need coins too? Use the testnet faucet.'
+      ? tt('seo.testnet.description')
       : isEnglishDevnetExplorer
-        ? 'Search XRPL Devnet addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, and ledger objects. Need coins too? Use the devnet faucet.'
-        : t('explorer.header.sub', { nativeCurrency })
+        ? tt('seo.devnet.description')
+        : tt('intro.subtitle', { nativeCurrency })
   const pageHeading = isEnglishMainnetExplorer
-    ? 'Search the XRP Ledger'
+    ? tt('seo.mainnet.heading')
     : isEnglishTestnetExplorer
-      ? 'Search XRPL Testnet'
+      ? tt('seo.testnet.heading')
       : isEnglishDevnetExplorer
-        ? 'Search XRPL Devnet'
+        ? tt('seo.devnet.heading')
         : t('explorer.header.main', { explorerName })
 
   const shortingHash = (hash) => {
@@ -189,11 +190,11 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
 
       <section className="home-section">
         <h1 className="center">{pageHeading}</h1>
-        <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
+        <p className="center">{tt('intro.subtitle', { nativeCurrency })}</p>
         {isEnglishMainnetExplorer && (
           <p className="center">
-            Want live stats, price tools, top transfers, validators, and amendments? Visit the{' '}
-            <Link href="/">XRP Explorer homepage</Link>.
+            {tt('intro.home-link-prefix')}{' '}
+            <Link href="/">{tt('intro.home-link-label')}</Link>.
           </p>
         )}
         <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} type="explorer" />
@@ -203,28 +204,28 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
 
       <section className="home-section">
         <div className="content-text content-center">
-          <h2 className="center">Examples</h2>
-          <h2>Account</h2>
-          <p>
-            start typing an account address, X-address, PayString, username, service name or web domain in the search
-            box above.
-          </p>
-          <b>Address</b> examples: "rHb9CJ" - start typing it, and we will find the full address for you, or enter a
+          <h2 className="center">{tt('examples.title')}</h2>
+          <h2>{tt('examples.account.title')}</h2>
+          <p>{tt('examples.account.intro')}</p>
+          <b>{tt('examples.account.address-label')}</b> {tt('examples.account.address-prefix')} "rHb9CJ" -{' '}
+          {tt('examples.account.address-middle')}{' '}
           full address like {examples[network]?.account} <CopyButton text={examples[network]?.account} />
           <br />
           <br />
-          <b>Username</b> examples: {examples[network]?.username?.[0]}, {examples[network]?.username?.[1]},{' '}
-          {examples[network]?.username?.[2]} (start typing and we will find the full usernames){' '}
-          <Link href="/username">Register your username.</Link>
+          <b>{tt('examples.account.username-label')}</b> {tt('examples.account.examples-label')}:{' '}
+          {examples[network]?.username?.[0]}, {examples[network]?.username?.[1]}, {examples[network]?.username?.[2]} (
+          {tt('examples.account.username-note')}) <Link href="/username">{tt('examples.account.username-link')}</Link>
           <br />
           <br />
-          <b>Domain</b> examples: "binance.com", "coinbase.com", "ripple.com" (start typing and we will find accounts
-          with such domains) <Link href="/domains">Verify your domain.</Link>
+          <b>{tt('examples.account.domain-label')}</b> {tt('examples.account.examples-label')}: "binance.com",
+          "coinbase.com", "ripple.com" ({tt('examples.account.domain-note')}){' '}
+          <Link href="/domains">{tt('examples.account.domain-link')}</Link>
           <br />
           <br />
           {examples[network]?.xAddress && (
             <>
-              <b>X-Address</b> example: <span className="brake">{shortingHash(examples[network]?.xAddress)} </span>
+              <b>{tt('examples.account.xaddress-label')}</b> {tt('examples.account.example-label')}:{' '}
+              <span className="brake">{shortingHash(examples[network]?.xAddress)} </span>
               <CopyButton text={examples[network]?.xAddress} />
               <br />
               <br />
@@ -232,36 +233,45 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
           )}
           {examples[network]?.payString?.[0] && (
             <>
-              <b>PayString</b> example: {examples[network]?.payString?.[0]}{' '}
+              <b>{tt('examples.account.paystring-label')}</b> {tt('examples.account.example-label')}:{' '}
+              {examples[network]?.payString?.[0]}{' '}
               <CopyButton text={examples[network]?.payString?.[0]} />, {examples[network]?.payString?.[1]}{' '}
-              <CopyButton text={examples[network]?.payString?.[1]} /> <Link href="/username">Get your PayString.</Link>
+              <CopyButton text={examples[network]?.payString?.[1]} />{' '}
+              <Link href="/username">{tt('examples.account.paystring-link')}</Link>
               <br />
               <br />
             </>
           )}
-          <h2>Transaction</h2>
-          <b>CTID</b> (compact transaction ID) example: {examples[network]?.txCTID}{' '}
+          <h2>{tt('examples.transaction.title')}</h2>
+          <b>{tt('examples.transaction.ctid-label')}</b> ({tt('examples.transaction.ctid-note')}){' '}
+          {tt('examples.transaction.example-label')}: {examples[network]?.txCTID}{' '}
           <CopyButton text={examples[network]?.txCTID} />
           <br />
           <br />
-          <b>Transaction Hash</b> example: <span className="brake">{shortingHash(examples[network]?.txHash)} </span>
+          <b>{tt('examples.transaction.hash-label')}</b> {tt('examples.transaction.example-label')}:{' '}
+          <span className="brake">{shortingHash(examples[network]?.txHash)} </span>
           <CopyButton text={examples[network]?.txHash} />
           <br />
           <br />
-          <h2>NFT, {examples[network]?.amm && 'AMM, '}Object</h2>
-          <b>NFT</b> example: <span className="brake">{shortingHash(examples[network]?.nft)} </span>
+          <h2>
+            {examples[network]?.amm ? tt('examples.objects.title-with-amm') : tt('examples.objects.title-without-amm')}
+          </h2>
+          <b>{tt('examples.objects.nft-label')}</b> {tt('examples.objects.example-label')}:{' '}
+          <span className="brake">{shortingHash(examples[network]?.nft)} </span>
           <CopyButton text={examples[network]?.nft} />
           <br />
           <br />
           {examples[network]?.amm && (
             <>
-              <b>AMM</b> example: <span className="brake">{shortingHash(examples[network]?.amm)} </span>
+              <b>{tt('examples.objects.amm-label')}</b> {tt('examples.objects.example-label')}:{' '}
+              <span className="brake">{shortingHash(examples[network]?.amm)} </span>
               <CopyButton text={examples[network]?.amm} />
               <br />
               <br />
             </>
           )}
-          <b>Object</b> example: <span className="brake">{shortingHash(examples[network]?.object)} </span>
+          <b>{tt('examples.objects.object-label')}</b> {tt('examples.objects.example-label')}:{' '}
+          <span className="brake">{shortingHash(examples[network]?.object)} </span>
           <CopyButton text={examples[network]?.object} />
           <br />
           <br />

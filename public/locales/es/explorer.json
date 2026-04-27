@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "Buscar en XRP Ledger — cuentas, transacciones, tokens, NFT",
+      "description": "Busca direcciones XRP, hashes de transacción, nombres de usuario, CTID, NFT, tokens, AMM y objetos del ledger en XRP Ledger.",
+      "heading": "Buscar en XRP Ledger"
+    },
+    "testnet": {
+      "title": "Buscar en XRPL Testnet — cuentas, transacciones, tokens, NFT",
+      "description": "Busca direcciones de XRPL Testnet, hashes de transacción, nombres de usuario, CTID, NFT, tokens y objetos del ledger. ¿Necesitas monedas? Usa el faucet de testnet.",
+      "heading": "Buscar en XRPL Testnet"
+    },
+    "devnet": {
+      "title": "Buscar en XRPL Devnet — cuentas, transacciones, tokens, NFT",
+      "description": "Busca direcciones de XRPL Devnet, hashes de transacción, nombres de usuario, CTID, NFT, tokens y objetos del ledger. ¿Necesitas monedas? Usa el faucet de devnet.",
+      "heading": "Buscar en XRPL Devnet"
+    }
+  },
+  "intro": {
+    "subtitle": "Explora transacciones, cuentas, tokens y NFT de {{nativeCurrency}} de forma rápida y fiable en {{nativeCurrency}} Ledger.",
+    "home-link-prefix": "¿Quieres estadísticas en vivo, herramientas de precio, top transferencias, validadores y enmiendas? Visita la",
+    "home-link-label": "página principal del explorador XRP"
+  },
+  "examples": {
+    "title": "Ejemplos",
+    "account": {
+      "title": "Cuenta",
+      "intro": "Empieza a escribir una dirección de cuenta, X-address, PayString, nombre de usuario, nombre de servicio o dominio web en el cuadro de búsqueda de arriba.",
+      "address-label": "Dirección",
+      "address-prefix": "ejemplos:",
+      "address-middle": "empieza a escribirla y encontraremos la dirección completa por ti, o introduce una dirección completa como",
+      "username-label": "Nombre de usuario",
+      "examples-label": "ejemplos",
+      "username-note": "empieza a escribir y encontraremos los nombres de usuario completos",
+      "username-link": "Registra tu nombre de usuario.",
+      "domain-label": "Dominio",
+      "domain-note": "empieza a escribir y encontraremos cuentas con esos dominios",
+      "domain-link": "Verifica tu dominio.",
+      "xaddress-label": "X-Address",
+      "paystring-label": "PayString",
+      "paystring-link": "Consigue tu PayString.",
+      "example-label": "ejemplo"
+    },
+    "transaction": {
+      "title": "Transacción",
+      "ctid-label": "CTID",
+      "ctid-note": "ID compacta de transacción",
+      "hash-label": "Hash de transacción",
+      "example-label": "ejemplo"
+    },
+    "objects": {
+      "title-with-amm": "NFT, AMM, Objeto",
+      "title-without-amm": "NFT, Objeto",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "Objeto",
+      "example-label": "ejemplo"
+    }
+  }
+}

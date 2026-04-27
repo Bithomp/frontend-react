@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "Rechercher sur XRP Ledger — comptes, transactions, jetons, NFT",
+      "description": "Recherchez des adresses XRP, des hashes de transaction, des noms d'utilisateur, des CTID, des NFT, des jetons, des AMM et des objets du registre sur le XRP Ledger.",
+      "heading": "Rechercher sur XRP Ledger"
+    },
+    "testnet": {
+      "title": "Rechercher sur XRPL Testnet — comptes, transactions, jetons, NFT",
+      "description": "Recherchez des adresses XRPL Testnet, des hashes de transaction, des noms d'utilisateur, des CTID, des NFT, des jetons et des objets du registre. Besoin de coins ? Utilisez le faucet testnet.",
+      "heading": "Rechercher sur XRPL Testnet"
+    },
+    "devnet": {
+      "title": "Rechercher sur XRPL Devnet — comptes, transactions, jetons, NFT",
+      "description": "Recherchez des adresses XRPL Devnet, des hashes de transaction, des noms d'utilisateur, des CTID, des NFT, des jetons et des objets du registre. Besoin de coins ? Utilisez le faucet devnet.",
+      "heading": "Rechercher sur XRPL Devnet"
+    }
+  },
+  "intro": {
+    "subtitle": "Explorez les transactions, comptes, jetons et NFT {{nativeCurrency}} rapidement et de manière fiable sur le {{nativeCurrency}} Ledger.",
+    "home-link-prefix": "Vous cherchez des statistiques en direct, des outils de prix, les plus gros transferts, des validateurs et des amendments ? Visitez la",
+    "home-link-label": "page d’accueil de l’explorateur XRP"
+  },
+  "examples": {
+    "title": "Exemples",
+    "account": {
+      "title": "Compte",
+      "intro": "Commencez à saisir une adresse de compte, une X-address, un PayString, un nom d'utilisateur, un nom de service ou un domaine web dans la barre de recherche ci-dessus.",
+      "address-label": "Adresse",
+      "address-prefix": "exemples :",
+      "address-middle": "commencez à la saisir et nous trouverons l’adresse complète pour vous, ou saisissez une adresse complète comme",
+      "username-label": "Nom d'utilisateur",
+      "examples-label": "exemples",
+      "username-note": "commencez à saisir et nous trouverons les noms d'utilisateur complets",
+      "username-link": "Enregistrez votre nom d'utilisateur.",
+      "domain-label": "Domaine",
+      "domain-note": "commencez à saisir et nous trouverons des comptes avec ces domaines",
+      "domain-link": "Vérifiez votre domaine.",
+      "xaddress-label": "X-Address",
+      "paystring-label": "PayString",
+      "paystring-link": "Obtenez votre PayString.",
+      "example-label": "exemple"
+    },
+    "transaction": {
+      "title": "Transaction",
+      "ctid-label": "CTID",
+      "ctid-note": "identifiant compact de transaction",
+      "hash-label": "Hash de transaction",
+      "example-label": "exemple"
+    },
+    "objects": {
+      "title-with-amm": "NFT, AMM, Objet",
+      "title-without-amm": "NFT, Objet",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "Objet",
+      "example-label": "exemple"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "XRP Ledger 검색 — 계정, 거래, 토큰, NFT",
+      "description": "XRP Ledger에서 XRP 주소, 거래 해시, 사용자명, CTID, NFT, 토큰, AMM, 레저 객체를 검색하세요.",
+      "heading": "XRP Ledger 검색"
+    },
+    "testnet": {
+      "title": "XRPL Testnet 검색 — 계정, 거래, 토큰, NFT",
+      "description": "XRPL Testnet 주소, 거래 해시, 사용자명, CTID, NFT, 토큰, 레저 객체를 검색하세요. 테스트 코인이 필요하신가요? Testnet faucet을 사용하세요.",
+      "heading": "XRPL Testnet 검색"
+    },
+    "devnet": {
+      "title": "XRPL Devnet 검색 — 계정, 거래, 토큰, NFT",
+      "description": "XRPL Devnet 주소, 거래 해시, 사용자명, CTID, NFT, 토큰, 레저 객체를 검색하세요. 테스트 코인이 필요하신가요? Devnet faucet을 사용하세요.",
+      "heading": "XRPL Devnet 검색"
+    }
+  },
+  "intro": {
+    "subtitle": "{{nativeCurrency}} 거래, 계정, 토큰, NFT를 빠르고 신뢰할 수 있게 검색하세요.",
+    "home-link-prefix": "실시간 통계, 가격 도구, 대형 전송, 검증자, amendments를 찾고 계신가요? 방문해 보세요:",
+    "home-link-label": "XRP Explorer 홈페이지"
+  },
+  "examples": {
+    "title": "예시",
+    "account": {
+      "title": "계정",
+      "intro": "위 검색창에 계정 주소, X-address, PayString, 사용자명, 서비스 이름 또는 웹 도메인을 입력하기 시작하세요.",
+      "address-label": "주소",
+      "address-prefix": "예시:",
+      "address-middle": "입력을 시작하면 전체 주소를 찾아드리며, 또는 다음과 같은 전체 주소를 입력할 수 있습니다",
+      "username-label": "사용자명",
+      "examples-label": "예시",
+      "username-note": "입력을 시작하면 전체 사용자명을 찾아드립니다",
+      "username-link": "사용자명을 등록하세요.",
+      "domain-label": "도메인",
+      "domain-note": "입력을 시작하면 해당 도메인을 가진 계정을 찾아드립니다",
+      "domain-link": "도메인을 인증하세요.",
+      "xaddress-label": "X-Address",
+      "paystring-label": "PayString",
+      "paystring-link": "PayString을 받으세요.",
+      "example-label": "예시"
+    },
+    "transaction": {
+      "title": "거래",
+      "ctid-label": "CTID",
+      "ctid-note": "축약 거래 ID",
+      "hash-label": "거래 해시",
+      "example-label": "예시"
+    },
+    "objects": {
+      "title-with-amm": "NFT, AMM, 객체",
+      "title-without-amm": "NFT, 객체",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "객체",
+      "example-label": "예시"
+    }
+  }
+}

@@ -614,7 +614,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Эксплорер",
-      "sub": "Просматривайте транзакции, адреса, токены и NFT в {{nativeCurrency}} Ledger — быстро и надёжно.",
+      "sub": "Просматривайте транзакции, адреса, токены и NFT в {{nativeCurrency}} Ledger быстро и удобно.",
       "topNftCollections": "Топ коллекции NFT",
       "amm": "Информация об АММ пуле",
       "object": "Информация об объекте",

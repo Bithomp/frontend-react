@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "Cari di XRP Ledger — akun, transaksi, token, NFT",
+      "description": "Cari alamat XRP, hash transaksi, username, CTID, NFT, token, AMM, dan objek ledger di XRP Ledger.",
+      "heading": "Cari di XRP Ledger"
+    },
+    "testnet": {
+      "title": "Cari di XRPL Testnet — akun, transaksi, token, NFT",
+      "description": "Cari alamat XRPL Testnet, hash transaksi, username, CTID, NFT, token, dan objek ledger. Butuh coin juga? Gunakan faucet testnet.",
+      "heading": "Cari di XRPL Testnet"
+    },
+    "devnet": {
+      "title": "Cari di XRPL Devnet — akun, transaksi, token, NFT",
+      "description": "Cari alamat XRPL Devnet, hash transaksi, username, CTID, NFT, token, dan objek ledger. Butuh coin juga? Gunakan faucet devnet.",
+      "heading": "Cari di XRPL Devnet"
+    }
+  },
+  "intro": {
+    "subtitle": "Jelajahi transaksi, akun, token, dan NFT {{nativeCurrency}} dengan cepat dan tepercaya di {{nativeCurrency}} Ledger.",
+    "home-link-prefix": "Ingin statistik live, alat harga, transfer teratas, validator, dan amendments? Kunjungi",
+    "home-link-label": "beranda XRP Explorer"
+  },
+  "examples": {
+    "title": "Contoh",
+    "account": {
+      "title": "Akun",
+      "intro": "Mulailah mengetik alamat akun, X-address, PayString, username, nama layanan, atau domain web di kotak pencarian di atas.",
+      "address-label": "Alamat",
+      "address-prefix": "contoh:",
+      "address-middle": "mulailah mengetiknya dan kami akan menemukan alamat lengkap untuk Anda, atau masukkan alamat lengkap seperti",
+      "username-label": "Username",
+      "examples-label": "contoh",
+      "username-note": "mulailah mengetik dan kami akan menemukan username lengkapnya",
+      "username-link": "Daftarkan username Anda.",
+      "domain-label": "Domain",
+      "domain-note": "mulailah mengetik dan kami akan menemukan akun dengan domain seperti itu",
+      "domain-link": "Verifikasi domain Anda.",
+      "xaddress-label": "X-Address",
+      "paystring-label": "PayString",
+      "paystring-link": "Dapatkan PayString Anda.",
+      "example-label": "contoh"
+    },
+    "transaction": {
+      "title": "Transaksi",
+      "ctid-label": "CTID",
+      "ctid-note": "ID transaksi ringkas",
+      "hash-label": "Hash transaksi",
+      "example-label": "contoh"
+    },
+    "objects": {
+      "title-with-amm": "NFT, AMM, Objek",
+      "title-without-amm": "NFT, Objek",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "Objek",
+      "example-label": "contoh"
+    }
+  }
+}

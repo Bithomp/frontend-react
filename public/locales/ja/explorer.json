@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "XRP Ledger を検索 — アカウント、トランザクション、トークン、NFT",
+      "description": "XRP Ledger 上で XRP アドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、AMM、Ledger オブジェクトを検索できます。",
+      "heading": "XRP Ledger を検索"
+    },
+    "testnet": {
+      "title": "XRPL Testnet を検索 — アカウント、トランザクション、トークン、NFT",
+      "description": "XRPL Testnet のアドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、Ledger オブジェクトを検索できます。テスト用コインが必要ですか？Testnet faucet をご利用ください。",
+      "heading": "XRPL Testnet を検索"
+    },
+    "devnet": {
+      "title": "XRPL Devnet を検索 — アカウント、トランザクション、トークン、NFT",
+      "description": "XRPL Devnet のアドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、Ledger オブジェクトを検索できます。テスト用コインが必要ですか？Devnet faucet をご利用ください。",
+      "heading": "XRPL Devnet を検索"
+    }
+  },
+  "intro": {
+    "subtitle": "{{nativeCurrency}} のトランザクション、アカウント、トークン、NFT をすばやく信頼できる方法で検索できます。",
+    "home-link-prefix": "ライブ統計、価格ツール、大口送金、バリデータ、Amendments を探していますか？",
+    "home-link-label": "XRP Explorer のホームページ"
+  },
+  "examples": {
+    "title": "例",
+    "account": {
+      "title": "アカウント",
+      "intro": "上の検索ボックスにアカウントアドレス、X-address、PayString、ユーザー名、サービス名、または Web ドメインを入力し始めてください。",
+      "address-label": "アドレス",
+      "address-prefix": "例:",
+      "address-middle": "入力し始めると完全なアドレスを見つけます。あるいは次のような完全なアドレスを入力してください",
+      "username-label": "ユーザー名",
+      "examples-label": "例",
+      "username-note": "入力し始めると完全なユーザー名を見つけます",
+      "username-link": "ユーザー名を登録する。",
+      "domain-label": "ドメイン",
+      "domain-note": "入力し始めるとそのドメインを持つアカウントを見つけます",
+      "domain-link": "ドメインを認証する。",
+      "xaddress-label": "X-Address",
+      "paystring-label": "PayString",
+      "paystring-link": "PayString を取得する。",
+      "example-label": "例"
+    },
+    "transaction": {
+      "title": "トランザクション",
+      "ctid-label": "CTID",
+      "ctid-note": "コンパクトトランザクションID",
+      "hash-label": "トランザクションハッシュ",
+      "example-label": "例"
+    },
+    "objects": {
+      "title-with-amm": "NFT、AMM、オブジェクト",
+      "title-without-amm": "NFT、オブジェクト",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "オブジェクト",
+      "example-label": "例"
+    }
+  }
+}

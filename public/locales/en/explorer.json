@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "Search the XRP Ledger — Accounts, Transactions, Tokens, NFTs",
+      "description": "Search XRP addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, AMMs, and ledger objects on the XRP Ledger.",
+      "heading": "Search the XRP Ledger"
+    },
+    "testnet": {
+      "title": "Search XRPL Testnet — Accounts, Transactions, Tokens, NFTs",
+      "description": "Search XRPL Testnet addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, and ledger objects. Need coins too? Use the testnet faucet.",
+      "heading": "Search XRPL Testnet"
+    },
+    "devnet": {
+      "title": "Search XRPL Devnet — Accounts, Transactions, Tokens, NFTs",
+      "description": "Search XRPL Devnet addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, and ledger objects. Need coins too? Use the devnet faucet.",
+      "heading": "Search XRPL Devnet"
+    }
+  },
+  "intro": {
+    "subtitle": "Scan {{nativeCurrency}} transactions, accounts, tokens, and NFTs — the fast and trusted way to explore the {{nativeCurrency}} Ledger.",
+    "home-link-prefix": "Want live stats, price tools, top transfers, validators, and amendments? Visit the",
+    "home-link-label": "XRP Explorer homepage"
+  },
+  "examples": {
+    "title": "Examples",
+    "account": {
+      "title": "Account",
+      "intro": "Start typing an account address, X-address, PayString, username, service name, or web domain in the search box above.",
+      "address-label": "Address",
+      "address-prefix": "examples:",
+      "address-middle": "start typing it, and we will find the full address for you, or enter a",
+      "username-label": "Username",
+      "examples-label": "examples",
+      "username-note": "start typing and we will find the full usernames",
+      "username-link": "Register your username.",
+      "domain-label": "Domain",
+      "domain-note": "start typing and we will find accounts with such domains",
+      "domain-link": "Verify your domain.",
+      "xaddress-label": "X-Address",
+      "paystring-label": "PayString",
+      "paystring-link": "Get your PayString.",
+      "example-label": "example"
+    },
+    "transaction": {
+      "title": "Transaction",
+      "ctid-label": "CTID",
+      "ctid-note": "compact transaction ID",
+      "hash-label": "Transaction Hash",
+      "example-label": "example"
+    },
+    "objects": {
+      "title-with-amm": "NFT, AMM, Object",
+      "title-without-amm": "NFT, Object",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "Object",
+      "example-label": "example"
+    }
+  }
+}

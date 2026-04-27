@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "Поиск по XRP Ledger — адреса, транзакции, токены, NFT",
+      "description": "Ищите XRP-адреса, хэши транзакций, usernames, CTID, NFT, токены, AMM и объекты ledger в XRP Ledger.",
+      "heading": "Поиск по XRP Ledger"
+    },
+    "testnet": {
+      "title": "Поиск по XRPL Testnet — адреса, транзакции, токены, NFT",
+      "description": "Ищите адреса XRPL Testnet, хэши транзакций, usernames, CTID, NFT, токены и объекты ledger. Нужны тестовые монеты? Используйте testnet faucet.",
+      "heading": "Поиск по XRPL Testnet"
+    },
+    "devnet": {
+      "title": "Поиск по XRPL Devnet — адреса, транзакции, токены, NFT",
+      "description": "Ищите адреса XRPL Devnet, хэши транзакций, usernames, CTID, NFT, токены и объекты ledger. Нужны тестовые монеты? Используйте devnet faucet.",
+      "heading": "Поиск по XRPL Devnet"
+    }
+  },
+  "intro": {
+    "subtitle": "Просматривайте транзакции, адреса, токены и NFT в {{nativeCurrency}} Ledger быстро и удобно.",
+    "home-link-prefix": "Нужны живая статистика, ценовые инструменты, крупные переводы, валидаторы и amendments? Откройте",
+    "home-link-label": "главную страницу XRP Explorer"
+  },
+  "examples": {
+    "title": "Примеры",
+    "account": {
+      "title": "Адрес",
+      "intro": "Начните вводить адрес аккаунта, X-address, PayString, username, название сервиса или веб-домен в строке поиска выше.",
+      "address-label": "Адрес",
+      "address-prefix": "примеры:",
+      "address-middle": "начните вводить его, и мы найдём полный адрес за вас, или введите полный адрес, например",
+      "username-label": "Username",
+      "examples-label": "примеры",
+      "username-note": "начните вводить, и мы найдём полные usernames",
+      "username-link": "Зарегистрировать username.",
+      "domain-label": "Домен",
+      "domain-note": "начните вводить, и мы найдём аккаунты с такими доменами",
+      "domain-link": "Подтвердить домен.",
+      "xaddress-label": "X-Address",
+      "paystring-label": "PayString",
+      "paystring-link": "Получить свой PayString.",
+      "example-label": "пример"
+    },
+    "transaction": {
+      "title": "Транзакция",
+      "ctid-label": "CTID",
+      "ctid-note": "компактный ID транзакции",
+      "hash-label": "Хэш транзакции",
+      "example-label": "пример"
+    },
+    "objects": {
+      "title-with-amm": "NFT, AMM, Объект",
+      "title-without-amm": "NFT, Объект",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "Объект",
+      "example-label": "пример"
+    }
+  }
+}

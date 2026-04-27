@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "XRPL durchsuchen — Konten, Transaktionen, Token, NFTs",
+      "description": "Suche XRP-Adressen, Transaktions-Hashes, Benutzernamen, CTIDs, NFTs, Token, AMMs und Ledger-Objekte im XRP Ledger.",
+      "heading": "XRPL durchsuchen"
+    },
+    "testnet": {
+      "title": "XRPL Testnet durchsuchen — Konten, Transaktionen, Token, NFTs",
+      "description": "Suche XRPL-Testnet-Adressen, Transaktions-Hashes, Benutzernamen, CTIDs, NFTs, Token und Ledger-Objekte. Brauchst du Coins? Nutze den Testnet-Faucet.",
+      "heading": "XRPL Testnet durchsuchen"
+    },
+    "devnet": {
+      "title": "XRPL Devnet durchsuchen — Konten, Transaktionen, Token, NFTs",
+      "description": "Suche XRPL-Devnet-Adressen, Transaktions-Hashes, Benutzernamen, CTIDs, NFTs, Token und Ledger-Objekte. Brauchst du Coins? Nutze den Devnet-Faucet.",
+      "heading": "XRPL Devnet durchsuchen"
+    }
+  },
+  "intro": {
+    "subtitle": "Scanne {{nativeCurrency}}-Transaktionen, Konten, Token und NFTs – schnell und zuverlässig im {{nativeCurrency}} Ledger.",
+    "home-link-prefix": "Du suchst Live-Statistiken, Preis-Tools, Top-Transfers, Validatoren und Amendments? Besuche die",
+    "home-link-label": "XRP-Explorer-Startseite"
+  },
+  "examples": {
+    "title": "Beispiele",
+    "account": {
+      "title": "Konto",
+      "intro": "Beginne oben im Suchfeld mit der Eingabe einer Kontoadresse, X-Adresse, PayString, eines Benutzernamens, Servicenamens oder einer Webdomain.",
+      "address-label": "Adresse",
+      "address-prefix": "Beispiele:",
+      "address-middle": "tippe sie an, und wir finden die vollständige Adresse für dich, oder gib eine vollständige Adresse ein wie",
+      "username-label": "Benutzername",
+      "examples-label": "Beispiele",
+      "username-note": "tippe an und wir finden die vollständigen Benutzernamen",
+      "username-link": "Benutzernamen registrieren.",
+      "domain-label": "Domain",
+      "domain-note": "tippe an und wir finden Konten mit solchen Domains",
+      "domain-link": "Domain verifizieren.",
+      "xaddress-label": "X-Adresse",
+      "paystring-label": "PayString",
+      "paystring-link": "Hol dir deinen PayString.",
+      "example-label": "Beispiel"
+    },
+    "transaction": {
+      "title": "Transaktion",
+      "ctid-label": "CTID",
+      "ctid-note": "kompakte Transaktions-ID",
+      "hash-label": "Transaktions-Hash",
+      "example-label": "Beispiel"
+    },
+    "objects": {
+      "title-with-amm": "NFT, AMM, Objekt",
+      "title-without-amm": "NFT, Objekt",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "Objekt",
+      "example-label": "Beispiel"
+    }
+  }
+}
