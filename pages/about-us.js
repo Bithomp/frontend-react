@@ -4,6 +4,7 @@ import SEO from '../components/SEO'
 import { useTranslation } from 'next-i18next'
 import { getIsSsrMobile } from '../utils/mobile'
 import SocialIcons from '../components/Layout/SocialIcons'
+import { localePath } from '../utils'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -30,37 +31,37 @@ export default function AboutUs() {
         </p>
         <ul>
           <li>
-            <a href={'https://bithomp.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://bithomp.com' + localePath('/', i18n.language)} target="_blank" rel="noreferrer">
               XRPL Mainnet
             </a>
             ,
           </li>
           <li>
-            <a href={'https://xahauexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://xahauexplorer.com' + localePath('/', i18n.language)} target="_blank" rel="noreferrer">
               XAHAU Mainnet
             </a>
             ,
           </li>
           <li>
-            <a href={'https://test.bithomp.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://test.bithomp.com' + localePath('/', i18n.language)} target="_blank" rel="noreferrer">
               XRPL Testnet
             </a>
             ,
           </li>
           <li>
-            <a href={'https://dev.bithomp.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://dev.bithomp.com' + localePath('/', i18n.language)} target="_blank" rel="noreferrer">
               XRPL Devnet
             </a>
             ,
           </li>
           <li>
-            <a href={'https://alphanet.bithomp.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://alphanet.bithomp.com' + localePath('/', i18n.language)} target="_blank" rel="noreferrer">
               XRPL AlphaNet
             </a>
             ,
           </li>
           <li>
-            <a href={'https://test.xahauexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://test.xahauexplorer.com' + localePath('/', i18n.language)} target="_blank" rel="noreferrer">
               XAHAU Testnet
             </a>
             .
@@ -118,19 +119,19 @@ export default function AboutUs() {
           <li>
             <b>
               Explorers and Faucets for{' '}
-              <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
+              <a href={'https://test.bithomp.com' + localePath('/faucet', i18n.language)} target="_blank" rel="noreferrer">
                 XRPL Testnet
               </a>
               ,{' '}
-              <a href={'https://dev.bithomp.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
+              <a href={'https://dev.bithomp.com' + localePath('/faucet', i18n.language)} target="_blank" rel="noreferrer">
                 XRPL Devnet
               </a>
               ,{' '}
-              <a href={'https://alphanet.bithomp.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
+              <a href={'https://alphanet.bithomp.com' + localePath('/faucet', i18n.language)} target="_blank" rel="noreferrer">
                 XRPL AlphaNet
               </a>
               , and{' '}
-              <a href={'https://test.xahauexplorer.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
+              <a href={'https://test.xahauexplorer.com' + localePath('/faucet', i18n.language)} target="_blank" rel="noreferrer">
                 XAHAU Testnet
               </a>
             </b>{' '}

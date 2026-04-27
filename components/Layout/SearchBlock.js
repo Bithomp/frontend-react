@@ -65,6 +65,7 @@ import {
   useWidth,
   isValidCTID,
   decodeCTID,
+  localePath,
   networkId,
   networksIds,
   isValidNftXls20,
@@ -231,7 +232,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
         const { networkId: CTIDnetworkId } = decodeCTID(searchFor)
         if (networkId === CTIDnetworkId) {
           // we are on the correct explorer
-          window.location = '/' + i18n.language + '/tx/' + searchFor
+          window.location = localePath('/tx/' + searchFor, i18n.language)
         } else if (networksIds[CTIDnetworkId]) {
           setErrorMessage(
             <>
@@ -241,7 +242,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
               ,{' '}
               <Trans i18nKey="explorer.check-tx-on-different-explorer">
                 check the details{' '}
-                <a href={networksIds[CTIDnetworkId].server + '/' + i18n.language + '/tx/' + searchFor}>
+                <a href={networksIds[CTIDnetworkId].server + localePath('/tx/' + searchFor, i18n.language)}>
                   <u>here</u>
                 </a>
               </Trans>

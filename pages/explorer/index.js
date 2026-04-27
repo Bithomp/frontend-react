@@ -2,6 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { server, explorerName, nativeCurrency, network } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -138,6 +139,34 @@ const examples = {
 
 export default function Explorer({ isSsrMobile, showAds }) {
   const { t } = useTranslation()
+  const router = useRouter()
+  const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
+  const isEnglishMainnetExplorer =
+    network === 'mainnet' && isEnglishLikeLocale
+  const isEnglishTestnetExplorer = network === 'testnet' && isEnglishLikeLocale
+  const isEnglishDevnetExplorer = network === 'devnet' && isEnglishLikeLocale
+
+  const pageTitle = isEnglishMainnetExplorer
+    ? 'Search the XRP Ledger — Accounts, Transactions, Tokens, NFTs'
+    : isEnglishTestnetExplorer
+      ? 'Search XRPL Testnet — Accounts, Transactions, Tokens, NFTs'
+      : isEnglishDevnetExplorer
+        ? 'Search XRPL Devnet — Accounts, Transactions, Tokens, NFTs'
+        : t('explorer.header.main', { explorerName })
+  const pageDescription = isEnglishMainnetExplorer
+    ? 'Search XRP addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, AMMs, and ledger objects on the XRP Ledger.'
+    : isEnglishTestnetExplorer
+      ? 'Search XRPL Testnet addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, and ledger objects. Need coins too? Use the testnet faucet.'
+      : isEnglishDevnetExplorer
+        ? 'Search XRPL Devnet addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, and ledger objects. Need coins too? Use the devnet faucet.'
+        : t('explorer.header.sub', { nativeCurrency })
+  const pageHeading = isEnglishMainnetExplorer
+    ? 'Search the XRP Ledger'
+    : isEnglishTestnetExplorer
+      ? 'Search XRPL Testnet'
+      : isEnglishDevnetExplorer
+        ? 'Search XRPL Devnet'
+        : t('explorer.header.main', { explorerName })
 
   const shortingHash = (hash) => {
     let length = 24
@@ -150,17 +179,24 @@ export default function Explorer({ isSsrMobile, showAds }) {
   return (
     <>
       <SEO
-        title={t('explorer.header.main', { explorerName })}
+        title={pageTitle}
         titleWithNetwork="true"
-        description={t('explorer.header.sub', { nativeCurrency })}
+        description={pageDescription}
+        descriptionWithNetwork="true"
       />
       <Head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
       </Head>
 
       <section className="home-section">
-        <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
+        <h1 className="center">{pageHeading}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
+        {isEnglishMainnetExplorer && (
+          <p className="center">
+            Want live stats, price tools, top transfers, validators, and amendments? Visit the{' '}
+            <Link href="/">XRP Explorer homepage</Link>.
+          </p>
+        )}
         <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} type="explorer" />
       </section>
 

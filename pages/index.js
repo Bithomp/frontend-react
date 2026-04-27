@@ -2,9 +2,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { server, explorerName, nativeCurrency, xahauNetwork, ledgerName } from '../utils'
+import { server, explorerName, nativeCurrency, xahauNetwork, ledgerName, network } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -84,6 +86,33 @@ export default function Home({
   teaserAmendments = []
 }) {
   const { t } = useTranslation()
+  const router = useRouter()
+  const isEnglishMainnetHome = network === 'mainnet' && !xahauNetwork && (!router.locale || router.locale === 'default' || router.locale === 'en')
+  const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
+  const isEnglishTestnetHome = network === 'testnet' && isEnglishLikeLocale
+  const isEnglishDevnetHome = network === 'devnet' && isEnglishLikeLocale
+
+  const pageTitle = isEnglishMainnetHome
+    ? 'XRP Explorer & XRP Ledger Tools — Bithomp | Search Transactions, Accounts, NFTs'
+    : isEnglishTestnetHome
+      ? 'XRPL Testnet Explorer & Faucet — Free Test XRP and RLUSD'
+      : isEnglishDevnetHome
+        ? 'XRPL Devnet Explorer & Faucet — Free Test XRP for Developers'
+        : t('home.title', { explorerName, nativeCurrency })
+  const pageDescription = isEnglishMainnetHome
+    ? 'XRP Explorer by Bithomp. Search XRP transactions, accounts, tokens, and NFTs, track balances, validate accounts, and explore the XRP Ledger.'
+    : isEnglishTestnetHome
+      ? 'XRPL Testnet explorer and faucet by Bithomp. Search testnet transactions, accounts, tokens, and NFTs, and get free test XRP and RLUSD for development.'
+      : isEnglishDevnetHome
+        ? 'XRPL Devnet explorer and faucet by Bithomp. Search devnet transactions, accounts, tokens, and NFTs, and get free test XRP for development.'
+        : t('home.description', { explorerName, nativeCurrency })
+  const pageHeading = isEnglishMainnetHome
+    ? 'XRP Explorer and XRP Ledger Tools'
+    : isEnglishTestnetHome
+      ? 'XRPL Testnet Explorer and Faucet'
+      : isEnglishDevnetHome
+        ? 'XRPL Devnet Explorer and Faucet'
+        : t('home.h1', { nativeCurrency })
 
   let selectedCurrency = selectedCurrencyServer
   if (selectedCurrencyApp) {
@@ -144,9 +173,10 @@ export default function Home({
         />
       </Head>
       <SEO
-        title={t('home.title', { explorerName, nativeCurrency })}
+        title={pageTitle}
         titleWithNetwork="true"
-        description={t('home.description', { explorerName, nativeCurrency })}
+        description={pageDescription}
+        descriptionWithNetwork="true"
         image={{
           width: 1200,
           height: 630,
@@ -158,8 +188,13 @@ export default function Home({
       />
 
       <section className="home-section">
-        <h1 className="center">{t('home.h1', { nativeCurrency })}</h1>
+        <h1 className="center">{pageHeading}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
+        {isEnglishMainnetHome && (
+          <p className="center">
+            Need direct lookup? Open the <Link href="/explorer">XRP Ledger search page</Link>.
+          </p>
+        )}
         {showAds && <Ads countryCode={countryCode} />}
       </section>
 

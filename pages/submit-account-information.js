@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react'
 import { isEmailValid, isDomainValid, isAddressValid, network } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
+import { localePath } from '../utils'
 import axios from 'axios'
 
 export async function getServerSideProps(context) {
@@ -271,7 +272,7 @@ export default function SubmitAccountInformation() {
             <Trans ns="submit-account-information" i18nKey="cross-chain">
               Services are used cross-chain,{' '}
               <a
-                href={'https://bithomp.com/' + i18n.language + '/submit-account-information'}
+                href={'https://bithomp.com' + localePath('/submit-account-information', i18n.language)}
                 target="_blank"
                 rel="noreferrer"
               >

@@ -50,22 +50,30 @@ export default function FaucetPage({ account, showAds, sessionTokenData, country
   const isRlusdAvailableNetwork = network === 'testnet'
   const faucetTitle = isRlusdAvailableNetwork ? 'XRP and RLUSD Faucet' : 'Faucet'
   const faucetFreeText = isRlusdAvailableNetwork ? 'XRP and RLUSD' : nativeCurrency
+  const faucetSeoTitle = network === 'testnet'
+    ? 'XRPL Testnet Faucet — Free Test XRP and RLUSD for Developers'
+    : network === 'devnet'
+      ? 'XRPL Devnet Faucet — Free Test XRP for Developers'
+      : faucetTitle + '. Free ' + faucetFreeText + ' for Developers.'
+  const faucetSeoDescription = network === 'testnet'
+    ? 'Get free test XRP and RLUSD for XRPL Testnet development. Fund your testnet wallet instantly and test payments, tokens, NFTs, and apps on XRPL Testnet.'
+    : network === 'devnet'
+      ? 'Get free test XRP for XRPL Devnet development. Fund your devnet wallet instantly and test payments, tokens, NFTs, and apps on XRPL Devnet.'
+      : 'Get free ' +
+        nativeCurrency +
+        ' for development and testing on the ' +
+        ledgerName +
+        '. Instantly fund your ' +
+        explorerName +
+        ' wallet with ' +
+        nativeCurrency +
+        ' using our reliable and fast faucet.'
 
   return (
     <>
       <SEO
-        title={faucetTitle + '. Free ' + faucetFreeText + ' for Developers.'}
-        description={
-          'Get free ' +
-          nativeCurrency +
-          ' for development and testing on the ' +
-          ledgerName +
-          '. Instantly fund your ' +
-          explorerName +
-          ' wallet with ' +
-          nativeCurrency +
-          ' using our reliable and fast faucet.'
-        }
+        title={faucetSeoTitle}
+        description={faucetSeoDescription}
         descriptionWithNetwork={true}
       />
       <div className="content-text content-center">

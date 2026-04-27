@@ -11,6 +11,7 @@ import { axiosServer, passHeaders } from '../utils/axios'
 import {
   isAddressValid,
   server,
+  localePath,
   wssServer,
   addAndRemoveQueryParams,
   addQueryParams,
@@ -569,9 +570,7 @@ export default function Username({
                         <Trans ns="username" i18nKey="step0.text4">
                           Usernames are now used cross-chain,{' '}
                           <a
-                            href={
-                              'https://bithomp.com/' + (i18n.language !== 'en' ? i18n.language + '/' : '') + 'username'
-                            }
+                            href={'https://bithomp.com' + localePath('/username', i18n.language)}
                             target="_blank"
                             rel="noreferrer"
                           >

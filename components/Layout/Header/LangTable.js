@@ -12,7 +12,7 @@ import 'dayjs/locale/fr' // 'fr'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
-import { cookieParams } from '../../../utils'
+import { cookieParams, normalizeLocale } from '../../../utils'
 
 const cookies = new Cookies()
 
@@ -37,7 +37,8 @@ export default function LanguageSwitch({ close }) {
   }
 
   const handleLangChange = (lang) => {
-    if (i18n.language && i18n.language !== 'default' && i18n.language.slice(0, 2) !== lang) {
+    const currentLang = normalizeLocale(i18n.language)?.slice(0, 2)
+    if (currentLang !== lang) {
       langChange(lang)
       router.replace({ pathname, query }, asPath, { locale: lang })
       //hard refresh to avoid the issue when in some cases the language is not saved when user returned from a third party site
@@ -46,10 +47,10 @@ export default function LanguageSwitch({ close }) {
     close()
   }
 
-  langChange(i18n.language)
+  langChange(normalizeLocale(i18n.language))
 
   const spanClass = (lang) => {
-    return i18n.language === lang?.value ? 'link blue' : 'link'
+    return normalizeLocale(i18n.language) === lang?.value ? 'link blue' : 'link'
   }
 
   const td = (langList, i, columnsNumber) => {

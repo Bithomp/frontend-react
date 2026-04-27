@@ -4,6 +4,7 @@ import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import { isAddressOrUsername, isIdValid, isLedgerIndexValid, isValidCTID, performIdSearch } from '../../utils'
+import SEO from '../../components/SEO'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|rar|tar)$/i
@@ -73,30 +74,36 @@ export default function ExplorerRedirect() {
 
   if (processing) {
     return (
-      <div className="content-text center">
-        <br />
-        <span className="waiting"></span>
-        <br />
-        {t('general.loading')}
-        <br />
-        <br />
-      </div>
+      <>
+        <SEO noindex />
+        <div className="content-text center">
+          <br />
+          <span className="waiting"></span>
+          <br />
+          {t('general.loading')}
+          <br />
+          <br />
+        </div>
+      </>
     )
   }
 
   return (
-    <div className="content-text center">
-      <h1>{t('page-not-found.header')}</h1>
-      {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-      <p>
-        <Trans i18nKey="page-not-found.text">
-          Click{' '}
-          <Link href="/" className="bold">
-            here
-          </Link>{' '}
-          to check our landing page.
-        </Trans>
-      </p>
-    </div>
+    <>
+      <SEO noindex />
+      <div className="content-text center">
+        <h1>{t('page-not-found.header')}</h1>
+        {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+        <p>
+          <Trans i18nKey="page-not-found.text">
+            Click{' '}
+            <Link href="/" className="bold">
+              here
+            </Link>{' '}
+            to check our landing page.
+          </Trans>
+        </p>
+      </div>
+    </>
   )
 }

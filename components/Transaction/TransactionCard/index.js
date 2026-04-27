@@ -16,7 +16,7 @@ import {
   shortHash,
   timeFromNow
 } from '../../../utils/format'
-import { decodeCTID, isValidCTID, nativeCurrency, networksIds, server, xahauNetwork } from '../../../utils'
+import { decodeCTID, isValidCTID, localePath, nativeCurrency, networksIds, server, xahauNetwork } from '../../../utils'
 import { dappBySourceTag, errorCodeDescription, memoNode, shortErrorCode } from '../../../utils/transaction'
 import { add } from '../../../utils/calc'
 import ExchangesTable from './ExchangeTable'
@@ -76,8 +76,8 @@ export const TransactionCard = ({
               check the details:
               <br />
               <br />
-              <a href={networksIds[CTIDnetworkId].server + '/' + i18n.language + '/tx/' + id}>
-                {networksIds[CTIDnetworkId].server + '/' + i18n.language + '/tx/' + id}
+              <a href={networksIds[CTIDnetworkId].server + localePath('/tx/' + id, i18n.language)}>
+                {networksIds[CTIDnetworkId].server + localePath('/tx/' + id, i18n.language)}
               </a>
             </>
           )

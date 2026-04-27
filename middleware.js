@@ -9,7 +9,7 @@ const removedLocales = ['ca', 'da', 'nn', 'my', 'hr']
 const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
 
 // All known locales
-const allLocales = [...currentLocales, ...removedLocales]
+const allLocales = ['default', ...currentLocales, ...removedLocales]
 
 // Normalize accidental multiple slashes in path
 function normalizeSlashes(path) {
@@ -72,6 +72,20 @@ export async function middleware(req) {
   }
 
   const ua = req.headers.get('user-agent') || ''
+
+  if (req.nextUrl.pathname === '/default' || req.nextUrl.pathname.startsWith('/default/')) {
+    const url = req.nextUrl.clone()
+    url.pathname = stripLeadingLocale(req.nextUrl.pathname)
+    url.locale = 'en'
+    return NextResponse.redirect(url)
+  }
+
+  if (req.nextUrl.pathname === '/en' || req.nextUrl.pathname.startsWith('/en/')) {
+    const url = req.nextUrl.clone()
+    url.pathname = stripLeadingLocale(req.nextUrl.pathname)
+    url.locale = 'en'
+    return NextResponse.redirect(url)
+  }
 
   if (isKnownSeoOrPreviewBot(ua)) return NextResponse.next()
 

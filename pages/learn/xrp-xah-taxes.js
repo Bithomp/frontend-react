@@ -4,6 +4,7 @@ import Link from 'next/link'
 
 import Breadcrumbs from '../../components/Breadcrumbs'
 import SEO from '../../components/SEO'
+import { localePath } from '../../utils'
 import { network } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { i18n } from 'next-i18next'
@@ -68,14 +69,14 @@ export default function XRPXAHTaxes() {
           On our platform you can get the most comprehensive XRPL and XAHAU transaction exports for your tax reports:
           <div className="links">
             <a
-              href={'https://bithomp.com/' + i18n.language + '/admin/pro/history'}
+              href={'https://bithomp.com' + localePath('/admin/pro/history', i18n.language)}
               target="_blank"
               rel="noopener noreferrer"
             >
               XRPL
             </a>
             <a
-              href={'https://xahauexplorer.com/' + i18n.language + '/admin/pro/history'}
+              href={'https://xahauexplorer.com' + localePath('/admin/pro/history', i18n.language)}
               target="_blank"
               rel="noopener noreferrer"
             >

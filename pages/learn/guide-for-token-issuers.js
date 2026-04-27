@@ -1,7 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network, server, siteName } from '../../utils'
+import { localePath, network, server, siteName } from '../../utils'
 import { explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -225,7 +225,7 @@ export default function GuideForTokenIssuers() {
 
             <li>
               Your Token info and Statistics:{' '}
-              <code>{'https://' + server + '/' + i18n.language + '/token/[ISSUER ADDRESS]/[CURRENCY CODE]'}</code>
+              <code>{server + localePath('/token/[ISSUER ADDRESS]/[CURRENCY CODE]', i18n.language)}</code>
             </li>
           </ul>
           <p>

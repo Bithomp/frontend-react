@@ -1,7 +1,7 @@
 import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, shortHash } from '../../utils/format'
-import { networkId, networksIds } from '../../utils'
+import { localePath, networkId, networksIds } from '../../utils'
 import { i18n } from 'next-i18next'
 
 //https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/import
@@ -48,7 +48,7 @@ export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
       <tr>
         <TData>Proof TX hash</TData>
         <TData>
-          <a href={importExplorer + '/' + i18n.language + '/tx/' + importTX}>{shortHash(importTX)}</a>
+          <a href={importExplorer + localePath('/tx/' + importTX, i18n.language)}>{shortHash(importTX)}</a>
         </TData>
       </tr>
       <tr>
@@ -59,7 +59,7 @@ export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData>XRPL NFT</TData>
           <TData>
-            <a href={importExplorer + '/' + i18n.language + '/nft/' + burnedNft}>{shortHash(burnedNft)}</a>
+            <a href={importExplorer + localePath('/nft/' + burnedNft, i18n.language)}>{shortHash(burnedNft)}</a>
           </TData>
         </tr>
       )}

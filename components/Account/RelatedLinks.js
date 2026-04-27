@@ -1,12 +1,12 @@
 import { i18n } from 'next-i18next'
-import { network } from '../../utils'
+import { localePath, network } from '../../utils'
 
 export default function RelatedLinks({ data }) {
   const otherNetworksNode = (
     <>
       {network !== 'mainnet' && (
         <>
-          <a href={'https://bithomp.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://bithomp.com' + localePath('/account/' + data?.address, i18n.language)} rel="nofollow">
             XRPL
           </a>{' '}
           |{' '}
@@ -14,7 +14,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network !== 'testnet' && (
         <>
-          <a href={'https://test.bithomp.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://test.bithomp.com' + localePath('/account/' + data?.address, i18n.language)} rel="nofollow">
             XRPL Testnet
           </a>{' '}
           |{' '}
@@ -22,7 +22,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network !== 'devnet' && (
         <>
-          <a href={'https://dev.bithomp.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://dev.bithomp.com' + localePath('/account/' + data?.address, i18n.language)} rel="nofollow">
             XRPL Devnet
           </a>{' '}
           |{' '}
@@ -30,7 +30,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network !== 'alphanet' && (
         <>
-          <a href={'https://alphanet.bithomp.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://alphanet.bithomp.com' + localePath('/account/' + data?.address, i18n.language)} rel="nofollow">
             XRPL AlphaNet
           </a>{' '}
           |{' '}
@@ -38,7 +38,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network !== 'xahau' && (
         <>
-          <a href={'https://xahauexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://xahauexplorer.com' + localePath('/account/' + data?.address, i18n.language)} rel="nofollow">
             Xahau
           </a>{' '}
           |{' '}
@@ -46,7 +46,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network !== 'xahau-testnet' && (
         <>
-          <a href={'https://test.xahauexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://test.xahauexplorer.com' + localePath('/account/' + data?.address, i18n.language)} rel="nofollow">
             Xahau Testnet
           </a>
           {network !== 'xahau-jshooks' && ' | '}
@@ -54,7 +54,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network !== 'xahau-jshooks' && (
         <>
-          <a href={'https://jshooks.xahauexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://jshooks.xahauexplorer.com' + localePath('/account/' + data?.address, i18n.language)} rel="nofollow">
             Xahau JS Hooks
           </a>
         </>

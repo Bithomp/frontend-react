@@ -2,7 +2,7 @@ import { NextSeo } from 'next-seo'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import { server, explorerName, xahauNetwork } from '../utils'
+import { server, explorerName, xahauNetwork, network } from '../utils'
 
 export default function SEO({
   title,
@@ -19,14 +19,16 @@ export default function SEO({
 
   description = description || title
 
-  const canonical = server + '/' + router.locale + (router.asPath === '/' ? '' : router.asPath)
+  const normalizedPath = router.asPath === '/' ? '' : router.asPath
+  const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
+  const canonical = isEnglishLikeLocale ? server + normalizedPath : `${server}/${router.locale}${normalizedPath}`
 
   let openGraph = {
     type: 'website',
     url: canonical,
     title: title || page,
     description,
-    locale: router.locale,
+    locale: isEnglishLikeLocale ? 'en' : router.locale,
     site_name: websiteName || explorerName + ' ' + (page ? page : 'Explorer')
   }
 
@@ -83,8 +85,8 @@ export default function SEO({
   let path = router.asPath !== '/' ? router.asPath : ''
 
   let languageAlternates = [
-    { hrefLang: 'x-default', href: server + '/en' + path },
-    { hrefLang: 'en', href: server + '/en' + path },
+    { hrefLang: 'x-default', href: server + path },
+    { hrefLang: 'en', href: server + path },
     { hrefLang: 'ko', href: server + '/ko' + path },
     { hrefLang: 'ru', href: server + '/ru' + path },
     { hrefLang: 'de', href: server + '/de' + path },
@@ -93,6 +95,10 @@ export default function SEO({
     { hrefLang: 'ja', href: server + '/ja' + path },
     { hrefLang: 'fr', href: server + '/fr' + path }
   ]
+
+  const isPrimaryIndexableNetwork = ['mainnet', 'xahau'].includes(network)
+  const isNonMainnetLandingPage = ['', '/', '/faucet', '/explorer'].includes(normalizedPath || '/')
+  const shouldNoindex = noindex || (!isPrimaryIndexableNetwork && !isNonMainnetLandingPage)
 
   return (
     <>
@@ -103,7 +109,7 @@ export default function SEO({
         twitter={twitter}
         languageAlternates={languageAlternates}
         canonical={canonical}
-        noindex={noindex ? true : false}
+        noindex={shouldNoindex}
       />
       {twitterImageUrl && (
         <Head>
