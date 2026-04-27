@@ -542,6 +542,7 @@ export const dappBySourceTag = (sourceTag) => {
     46350430: 'Meld Gold',
     48151623: 'XRPL Dash',
     48484848: 'AMY DAO',
+    508090:'XRP Deals',
     52809917: 'Credefi Finance',
     54576093: 'Tugela',
     55074236: 'zazema',

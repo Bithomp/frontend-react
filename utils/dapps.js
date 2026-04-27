@@ -260,6 +260,12 @@ export const DAPPS_META = [
     75856879: {
       name: 'Kudos Setler',
       logo: 'kudos.png'
+    },
+    508090: {
+      name: 'XRP Deals',
+      url: 'xrp.deals',
+      x: 'XRPDeals',
+      logo: 'xrpdeals.png'
     }
   }
 ]
