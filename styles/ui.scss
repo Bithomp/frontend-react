@@ -999,6 +999,12 @@ table {
       }
     }
 
+    &.token-action-tooltip {
+      &:after {
+        right: 8px;
+      }
+    }
+
     &.table-large {
       max-width: min(360px, calc(100vw - 24px));
     }

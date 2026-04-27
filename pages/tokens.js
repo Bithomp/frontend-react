@@ -32,6 +32,20 @@ const mergeNativeTokenOnTop = (tokens, nativeToken) => {
   return nativeToken ? [nativeToken, ...filtered] : filtered
 }
 
+const getOrderList = (t) => [
+  { value: 'rating', label: t('order.ratingHighToLow') },
+  { value: 'trustlinesHigh', label: t('order.trustlinesHighToLow') },
+  { value: 'holdersHigh', label: t('order.holdersHighToLow') },
+  { value: 'priceNativeCurrencyHigh', label: t('order.priceHighToLow') },
+  { value: 'marketCapHigh', label: t('order.marketcapHighToLow') },
+  { value: 'sellVolumeHigh', label: t('order.sellVolume24hHighToLow') },
+  { value: 'buyVolumeHigh', label: t('order.buyVolume24hHighToLow') },
+  { value: 'totalVolumeHigh', label: t('order.totalVolume24hHighToLow') },
+  { value: 'uniqueTradersHigh', label: t('order.uniqueTraders24hHighToLow') },
+  { value: 'uniqueSellersHigh', label: t('order.uniqueSellers24hHighToLow') },
+  { value: 'uniqueBuyersHigh', label: t('order.uniqueBuyers24hHighToLow') }
+]
+
 /*
   {
     "token": "rL2sSC2eMm6xYyx1nqZ9MW4AP185mg7N9t:4150585800000000000000000000000000000000",
@@ -103,14 +117,14 @@ export async function getServerSideProps(context) {
     if (valid) {
       url += `&currency=${currencyCode}`
     } else {
-      initialErrorMessage = 'Invalid currency code'
+      initialErrorMessage = 'invalid-currency-code'
     }
   }
   if (issuer) {
     if (isAddressOrUsername(issuer)) {
       url += `&issuer=${issuer}`
     } else {
-      initialErrorMessage = 'Invalid issuer address or issuer username'
+      initialErrorMessage = 'invalid-issuer-address-or-issuer-username'
     }
   }
   if (canEscrow === 'true') {
@@ -142,10 +156,10 @@ export async function getServerSideProps(context) {
           initialData = res.data
         }
       } else {
-        initialErrorMessage = 'Tokens not found'
+        initialErrorMessage = 'tokens-not-found'
       }
     } else {
-      initialErrorMessage = tokensResult.reason?.message || 'Tokens not found'
+      initialErrorMessage = tokensResult.reason?.message || 'tokens-not-found'
     }
 
     if (nativeResult.status === 'fulfilled') {
@@ -176,24 +190,10 @@ export async function getServerSideProps(context) {
       issuerQuery: issuer || initialData?.issuer || null,
       orderQuery: supportedOrders.includes(order) ? order : null,
       canEscrowQuery: canEscrow === 'true',
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'tokens']))
     }
   }
 }
-
-const orderList = [
-  { value: 'rating', label: 'Rating: High to Low' },
-  { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
-  { value: 'holdersHigh', label: 'Holders: High to Low' },
-  { value: 'priceNativeCurrencyHigh', label: 'Price: High to Low' },
-  { value: 'marketCapHigh', label: 'Marketcap: High to Low' },
-  { value: 'sellVolumeHigh', label: 'Sell Volume (24h): High to Low' },
-  { value: 'buyVolumeHigh', label: 'Buy Volume (24h): High to Low' },
-  { value: 'totalVolumeHigh', label: 'Total Volume (24h): High to Low' },
-  { value: 'uniqueTradersHigh', label: 'Unique Traders (24h): High to Low' },
-  { value: 'uniqueSellersHigh', label: 'Unique Sellers (24h): High to Low' },
-  { value: 'uniqueBuyersHigh', label: 'Unique Buyers (24h): High to Low' }
-]
 
 // Helper component to render token with icon
 const TokenCell = ({ token }) => {
@@ -218,10 +218,12 @@ export default function Tokens({
   canEscrowQuery,
   signOutPro
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
+  const { t: tt } = useTranslation('tokens')
   const isFirstRender = useRef(true)
   const isFetchingRef = useRef(false)
   const router = useRouter()
+  const orderList = getOrderList(tt)
 
   let selectedCurrency = selectedCurrencyServer
   let fiatRate = fiatRateServer
@@ -236,7 +238,9 @@ export default function Tokens({
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(
-    t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
+    tt(`errors.${initialErrorMessage}`, {
+      defaultValue: t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage })
+    }) || ''
   )
   const [order, setOrder] = useState(orderQuery || 'rating')
   const [filtersHide, setFiltersHide] = useState(false)
@@ -460,10 +464,10 @@ export default function Tokens({
 
   // CSV headers for export
   const csvHeaders = [
-    { label: 'Currency', key: 'currency' },
-    { label: 'Issuer', key: 'issuer' },
-    { label: 'Trustlines', key: 'trustlines' },
-    { label: 'Holders', key: 'holders' }
+    { label: t('table.currency'), key: 'currency' },
+    { label: t('table.issuer'), key: 'issuer' },
+    { label: tt('headers.trustlines'), key: 'trustlines' },
+    { label: tt('headers.holders'), key: 'holders' }
   ]
 
   const handleSetTrustline = (token) => {
@@ -544,9 +548,9 @@ export default function Tokens({
         {change >= 0 ? '+' : '-'}
         {percentText}
         <span className="tooltiptext right no-brake" suppressHydrationWarning>
-          Now: {fullNiceNumber(currentPrice, selectedCurrency)}
+          {tt('tooltips.now')}: {fullNiceNumber(currentPrice, selectedCurrency)}
           <br />
-          Before: {fullNiceNumber(pastPrice, selectedCurrency)}
+          {tt('tooltips.before')}: {fullNiceNumber(pastPrice, selectedCurrency)}
         </span>
       </span>
     )
@@ -637,7 +641,7 @@ export default function Tokens({
   return (
     <>
       <SEO
-        title="Tokens"
+        title={tt('title')}
         image={{
           width: 1200,
           height: 630,
@@ -645,7 +649,7 @@ export default function Tokens({
         }}
         twitterImage={{ file: 'previews/630x630/tokens.png' }}
       />
-      <h1 className="center">{explorerName} Tokens</h1>
+      <h1 className="center">{tt('h1', { explorerName })}</h1>
 
       {!xahauNetwork && <TokenTabs tab="tokens" />}
 
@@ -674,7 +678,7 @@ export default function Tokens({
               <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
               {!xahauNetwork && (
                 <CheckBox checked={canEscrow} setChecked={setCanEscrow} name="can-escrow">
-                  Can Escrow
+                  {tt('filters.canEscrow')}
                 </CheckBox>
               )}
             </div>
@@ -700,19 +704,19 @@ export default function Tokens({
                     <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} />
                   </span>
                 </th>
-                <th className="left">Token</th>
+                <th className="left">{tt('headers.token')}</th>
                 <th className="right">
                   <span className="inline-flex items-center">
-                    Price
+                    {tt('headers.price')}
                     <SortingArrow sortKey="price" currentSort={sortConfig} onClick={() => sortTable('price')} />
                   </span>
                 </th>
-                <th className="right">Change (24h)</th>
+                <th className="right">{tt('headers.change24h')}</th>
                 <th className="right">
-                  Total volume
+                  {tt('headers.totalVolume')}
                   <br />
                   <span className="inline-flex items-center">
-                    (24h)
+                    {tt('headers.period24h')}
                     <SortingArrow
                       sortKey="totalVolume"
                       currentSort={sortConfig}
@@ -722,7 +726,7 @@ export default function Tokens({
                 </th>
                 <th className="right">
                   <span className="inline-flex items-center">
-                    Buyers
+                    {tt('headers.buyers')}
                     <SortingArrow
                       sortKey="uniqueBuyers"
                       currentSort={sortConfig}
@@ -730,7 +734,7 @@ export default function Tokens({
                     />
                   </span>
                   <span className="inline-flex items-center">
-                    / Sellers
+                    / {tt('headers.sellers')}
                     <SortingArrow
                       sortKey="uniqueSellers"
                       currentSort={sortConfig}
@@ -739,7 +743,7 @@ export default function Tokens({
                   </span>
                   <br />
                   <span className="inline-flex items-center">
-                    Traders (24h)
+                    {tt('headers.traders24h')}
                     <SortingArrow
                       sortKey="uniqueTraders"
                       currentSort={sortConfig}
@@ -749,31 +753,31 @@ export default function Tokens({
                 </th>
                 <th className="right">
                   <span className="inline-flex items-center">
-                    Holders
+                    {tt('headers.holders')}
                     <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />,
                   </span>
                   <br />
-                  Active (24h)
+                  {tt('headers.active24h')}
                 </th>
                 {!xahauNetwork && (
                   <th className="center">
-                    AMMs,
+                    {tt('headers.amms')},
                     <br />
-                    Active (24h)
+                    {tt('headers.active24h')}
                   </th>
                 )}
                 <th className="right">
-                  Trades
+                  {tt('headers.trades')}
                   <br />
-                  (24h)
+                  {tt('headers.period24h')}
                 </th>
                 <th className="right">
                   <span className="inline-flex items-center">
-                    Marketcap
+                    {tt('headers.marketcap')}
                     <SortingArrow sortKey="marketcap" currentSort={sortConfig} onClick={() => sortTable('marketcap')} />
                   </span>
                 </th>
-                <th className="center">Action</th>
+                <th className="center">{tt('headers.action')}</th>
               </tr>
             </thead>
             <tbody>
@@ -854,7 +858,7 @@ export default function Tokens({
                                     className="tooltip"
                                   >
                                     {token.statistics?.ammPools || 0}
-                                    <span className="tooltiptext no-brake">View AMMs</span>
+                                    <span className="tooltiptext no-brake">{tt('actions.viewAmms')}</span>
                                   </a>
                                 ) : (
                                   token.statistics?.ammPools || 0
@@ -883,10 +887,12 @@ export default function Tokens({
                                   className="orange tooltip"
                                 >
                                   <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                                  <span className="tooltiptext no-brake">Set trust</span>
+                                  <span className="tooltiptext left no-brake token-action-tooltip">
+                                    {tt('actions.setTrust')}
+                                  </span>
                                 </span>
                               ) : (
-                                <span className="grey">-</span>
+                                <span></span>
                               )}
                             </td>
                           </tr>
@@ -937,32 +943,37 @@ export default function Tokens({
                               <td>
                                 <TokenCell token={token} />
                                 <p>
-                                  Price:{' '}
+                                  {tt('headers.price')}:{' '}
                                   {priceToFiat({
                                     price: token.statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1),
                                     mobile: true,
                                     priceFiats: token.statistics.priceFiats
                                   })}
                                   <br />
-                                  Change 24h ({selectedCurrency.toUpperCase()}):{' '}
+                                  {tt('mobile.change24h', {
+                                    currency: selectedCurrency.toUpperCase()
+                                  })}:{' '}
                                   {renderPercentCell({
                                     currentPrice: token.statistics?.priceFiats[selectedCurrency],
                                     pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
                                   })}
                                   <br />
-                                  Total Volume (24h): {volumeToFiat({ token, mobile: true })}
+                                  {tt('mobile.totalVolume24h')}: {volumeToFiat({ token, mobile: true })}
                                   <br />
-                                  Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
+                                  {tt('mobile.trades24h')}: {niceNumber(token.statistics?.dexes) || 0}
                                   <br />
-                                  Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
+                                  {tt('mobile.uniqueTraders24h')}:{' '}
+                                  {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
                                   <br />
-                                  Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
+                                  {tt('mobile.marketcap')}:{' '}
+                                  {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
-                                  Holders: <Link href={distributionUrl}>{niceNumber(token.holders)}</Link>
+                                  {tt('mobile.holders')}:{' '}
+                                  <Link href={distributionUrl}>{niceNumber(token.holders)}</Link>
                                   {!isNativeToken && (
                                     <>
                                       <br />
-                                      Trustlines: {niceNumber(token.trustlines)}
+                                      {tt('mobile.trustlines')}: {niceNumber(token.trustlines)}
                                     </>
                                   )}
                                   <br />
@@ -974,7 +985,7 @@ export default function Tokens({
                                         router.push(tokenPageUrl)
                                       }}
                                     >
-                                      Token Page
+                                      {tt('actions.tokenPage')}
                                     </button>
                                     {!isNativeToken && (
                                       <button
@@ -986,7 +997,8 @@ export default function Tokens({
                                         }}
                                         disabled={!hasIssuer}
                                       >
-                                        <FaHandshake style={{ fontSize: 16, marginBottom: -3 }} /> Set Trust
+                                        <FaHandshake style={{ fontSize: 16, marginBottom: -3 }} />{' '}
+                                        {tt('actions.setTrust')}
                                       </button>
                                     )}
                                   </span>
