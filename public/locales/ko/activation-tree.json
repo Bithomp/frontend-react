@@ -38,6 +38,7 @@
   "label-balance": "잔액",
   "label-current-balance": "현재 잔액",
   "label-activation-balance": "활성화 당시 잔액",
+  "label-genesis-balance": "Genesis balance",
   "label-activated": "활성화",
   "label-children": "자식"
 }

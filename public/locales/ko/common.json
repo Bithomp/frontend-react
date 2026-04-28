@@ -78,7 +78,8 @@
       "amendments": "수정사항",
       "unl-report": "UNL report",
       "genesis": "Genesis 계정",
-      "allocation": "{{currency}} 배분"
+      "allocation": "{{currency}} 배분",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "개발자",

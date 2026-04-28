@@ -245,6 +245,7 @@ export default function MobileMenu({
           <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCodeSlashOutline style={itemIconStyle} />
             {t('menu.services.toml-checker')}
+            <span className="menu-item-badge">NEW</span>
           </Link>
           <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoFlashOutline style={itemIconStyle} />
@@ -504,6 +505,12 @@ export default function MobileMenu({
           <Link href="/allocation" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoPieChartOutline style={itemIconStyle} />
             {t('menu.network.allocation', { currency: nativeCurrency })}
+            <span className="menu-item-badge">NEW</span>
+          </Link>
+          <Link href="/activation-tree" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <IoGitBranchOutline style={itemIconStyle} />
+            {t('menu.network.activation-tree')}
+            <span className="menu-item-badge">NEW</span>
           </Link>
         </div>
 
@@ -518,6 +525,7 @@ export default function MobileMenu({
           <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoDocumentTextOutline style={itemIconStyle} />
             {t('menu.services.toml-checker')}
+            <span className="menu-item-badge">NEW</span>
           </Link>
           <Link href="/learn/image-services" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoImagesOutline style={itemIconStyle} />

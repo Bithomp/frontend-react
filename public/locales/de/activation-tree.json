@@ -38,6 +38,7 @@
   "label-balance": "Guthaben",
   "label-current-balance": "Aktuelles Guthaben",
   "label-activation-balance": "Guthaben bei Aktivierung",
+  "label-genesis-balance": "Genesis balance",
   "label-activated": "Aktiviert",
   "label-children": "Kinder"
 }

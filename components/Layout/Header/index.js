@@ -408,6 +408,7 @@ export default function Header({
             <Link href="/services/toml-checker">
               <IoCodeSlashOutline className="menu-item-icon" />
               {t('menu.services.toml-checker')}
+              <span className="menu-item-badge">NEW</span>
             </Link>
             <Link href="/faucet">
               <IoFlashOutline className="menu-item-icon" />
@@ -654,6 +655,12 @@ export default function Header({
             <Link href="/allocation">
               <IoPieChartOutline className="menu-item-icon" />
               {t('menu.network.allocation', { currency: nativeCurrency })}
+              <span className="menu-item-badge">NEW</span>
+            </Link>
+            <Link href="/activation-tree">
+              <IoGitBranchOutline className="menu-item-icon" />
+              {t('menu.network.activation-tree')}
+              <span className="menu-item-badge">NEW</span>
             </Link>
           </MenuDropDown>
 
@@ -670,6 +677,7 @@ export default function Header({
             <Link href="/services/toml-checker">
               <IoDocumentTextOutline className="menu-item-icon" />
               {t('menu.services.toml-checker')}
+              <span className="menu-item-badge">NEW</span>
             </Link>
             <Link href="/learn/image-services">
               <IoImagesOutline className="menu-item-icon" />

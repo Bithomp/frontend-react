@@ -38,6 +38,7 @@
   "label-balance": "Saldo",
   "label-current-balance": "Saldo saat ini",
   "label-activation-balance": "Saldo saat aktivasi",
+  "label-genesis-balance": "Genesis balance",
   "label-activated": "Diaktifkan",
   "label-children": "Anak"
 }

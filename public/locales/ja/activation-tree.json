@@ -38,6 +38,7 @@
   "label-balance": "残高",
   "label-current-balance": "現在の残高",
   "label-activation-balance": "アクティベーション時の残高",
+  "label-genesis-balance": "Genesis balance",
   "label-activated": "アクティベート日",
   "label-children": "子の数"
 }

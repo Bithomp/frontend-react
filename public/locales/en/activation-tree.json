@@ -38,6 +38,7 @@
   "label-balance": "Balance",
   "label-current-balance": "Current balance",
   "label-activation-balance": "Activation balance",
+  "label-genesis-balance": "Genesis balance",
   "label-activated": "Activated",
   "label-children": "Children"
 }

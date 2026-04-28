@@ -78,7 +78,8 @@
       "amendments": "修正案",
       "unl-report": "UNLレポート",
       "genesis": "ジェネシスアカウント",
-      "allocation": "{{currency}} 配分"
+      "allocation": "{{currency}} 配分",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "開発者",

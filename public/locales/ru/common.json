@@ -78,7 +78,8 @@
       "amendments": "Поправки",
       "unl-report": "UNL репорт",
       "genesis": "Генезис аккаунты",
-      "allocation": "Распределение {{currency}}"
+      "allocation": "Распределение {{currency}}",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "Разработчикам",

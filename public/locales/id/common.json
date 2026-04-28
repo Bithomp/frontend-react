@@ -78,7 +78,8 @@
       "amendments": "Perubahan",
       "unl-report": "Laporan UNL",
       "genesis": "Akun Awal",
-      "allocation": "Alokasi {{currency}}"
+      "allocation": "Alokasi {{currency}}",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "Pengembang",

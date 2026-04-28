@@ -38,6 +38,7 @@
   "label-balance": "Saldo",
   "label-current-balance": "Saldo actual",
   "label-activation-balance": "Saldo de activación",
+  "label-genesis-balance": "Genesis balance",
   "label-activated": "Activado",
   "label-children": "Hijos"
 }

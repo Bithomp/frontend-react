@@ -140,6 +140,18 @@ header {
           vertical-align: middle;
           flex-shrink: 0;
         }
+
+        .menu-item-badge {
+          margin-left: auto;
+          padding: 2px 8px;
+          border-radius: 999px;
+          background: #ff8a00;
+          color: #fff;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          line-height: 1.4;
+        }
       }
 
       hr {
@@ -707,6 +719,18 @@ header {
       width: 24px;
       height: 24px;
       margin-right: 5px;
+    }
+
+    .menu-item-badge {
+      margin-left: auto;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #ff8a00;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.4;
     }
   }
 

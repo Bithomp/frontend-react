@@ -78,7 +78,8 @@
       "amendments": "Amendments",
       "unl-report": "UNL report",
       "genesis": "Genesis accounts",
-      "allocation": "{{currency}} Allocation"
+      "allocation": "{{currency}} Allocation",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "Developers",

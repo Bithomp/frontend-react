@@ -40,6 +40,7 @@
   "label-balance": "Баланс",
   "label-current-balance": "Текущий баланс",
   "label-activation-balance": "Баланс при активации",
+  "label-genesis-balance": "Genesis balance",
   "label-activated": "Активирован",
   "label-children": "Дети",
 }
