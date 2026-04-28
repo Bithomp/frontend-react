@@ -47,6 +47,7 @@ const pages = [
   { loc: 'distribution', changefreq: 'always', priority: '0.7' },
 
   { loc: 'genesis', changefreq: 'weekly', priority: '0.6' },
+  { loc: 'activation-tree', changefreq: 'weekly', priority: '0.6' },
   { loc: 'build-unl', changefreq: 'yearly', priority: '0.6' },
   { loc: 'advertise', changefreq: 'yearly', priority: '0.6' },
   { loc: 'eaas', changefreq: 'yearly', priority: '0.6' },

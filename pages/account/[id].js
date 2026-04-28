@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { TbBinaryTree } from 'react-icons/tb'
 import LinkIcon from '../../public/images/link.svg'
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
@@ -2354,9 +2355,9 @@ export default function Account({
   )
 
   const publicDataRows = []
-  const pushPublicRow = (label, value) => {
+  const pushPublicRow = (label, value, action = null) => {
     if (!value) return
-    publicDataRows.push({ label, value, key: `${label}-${publicDataRows.length}` })
+    publicDataRows.push({ label, value, action, key: `${label}-${publicDataRows.length}` })
   }
 
   const xamanThirdPartyProfile = data?.xamanMeta?.thirdPartyProfiles?.[0]
@@ -2577,7 +2578,16 @@ export default function Account({
             with <span className="activated-amount">{activatedWithAmount}</span>
           </>
         )}
-      </span>
+      </span>,
+      <Link
+        href={`/activation-tree/${data.address}`}
+        className="tooltip activated-tree-link"
+        aria-label="Open family tree"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <TbBinaryTree className="activated-tree-icon" aria-hidden="true" focusable="false" />
+        <span className="tooltiptext no-brake">Family tree</span>
+      </Link>
     )
   }
 
@@ -3002,7 +3012,10 @@ export default function Account({
                 <div className="info-rows">
                   {publicDataRows.map((row) => (
                     <div className="info-row" key={row.key}>
-                      <span className="label">{row.label}</span>
+                      <span className="info-row-head">
+                        <span className="label">{row.label}</span>
+                        {row.action}
+                      </span>
                       <span className="value">{row.value}</span>
                     </div>
                   ))}
@@ -9989,6 +10002,49 @@ export default function Account({
           flex-wrap: wrap;
           gap: 6px;
           align-items: center;
+        }
+
+        .info-row-head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+        }
+
+        .activated-tree-link {
+          min-width: 28px;
+          height: 28px;
+          padding: 0 6px;
+          border-radius: 8px;
+          display: inline-flex;
+          flex: 0 0 auto;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid color-mix(in srgb, var(--accent-link) 24%, transparent);
+          box-shadow: inset 0 1px 0 color-mix(in srgb, white 20%, transparent);
+          background: color-mix(in srgb, var(--accent-link) 18%, var(--background-input));
+          color: var(--accent-link);
+          text-decoration: none;
+          transition:
+            background 0.15s ease,
+            border-color 0.15s ease,
+            color 0.15s ease,
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+        }
+
+        .activated-tree-link:hover,
+        .activated-tree-link:focus-visible {
+          background: color-mix(in srgb, var(--accent-link) 26%, var(--background-input));
+          border-color: color-mix(in srgb, var(--accent-link) 38%, transparent);
+          color: var(--text-main);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 10px color-mix(in srgb, var(--accent-link) 18%, transparent);
+        }
+
+        .activated-tree-icon {
+          font-size: 16px;
+          display: block;
         }
 
         .activated-by {
