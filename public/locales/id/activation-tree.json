@@ -1,12 +1,12 @@
 {
   "title": "Pohon aktivasi",
-  "description": "Jelajahi siapa yang mengaktifkan dompet XRP Ledger, dompet mana yang kemudian diaktifkannya, dan bagaimana nilai menyebar melalui jaringan di {{explorerName}}.",
+  "description": "Jelajahi siapa yang mengaktifkan dompet {{ledgerName}}, dompet mana yang kemudian diaktifkannya, dan bagaimana nilai menyebar melalui jaringan di {{explorerName}}.",
   "search-label": "Jelajahi dompet",
   "search-title": "Address",
-  "search-placeholder": "Masukkan alamat XRP",
+  "search-placeholder": "Masukkan alamat {{nativeCurrency}}",
   "search-button": "Tampilkan pohon",
   "search-hint": "Tampilan default menunjukkan {{ancestors}} generasi ke atas dan {{descendants}} generasi ke bawah.",
-  "invalid-address": "Masukkan alamat XRP Ledger yang valid.",
+  "invalid-address": "Masukkan alamat {{ledgerName}} yang valid.",
   "genesis-title": "Mulai dari genesis",
   "genesis-description": "Pilih dompet era genesis untuk menelusuri salah satu cabang aktivasi tertua yang masih terlihat di jaringan.",
   "focus-title": "Pohon keluarga dompet",
@@ -32,7 +32,7 @@
   "focus-tree": "Fokus",
   "no-descendants": "Tidak ditemukan keturunan untuk dompet ini pada kedalaman yang dimuat.",
   "errors": {
-    "invalid-address": "Masukkan alamat XRP Ledger yang valid.",
+    "invalid-address": "Masukkan alamat {{ledgerName}} yang valid.",
     "failed": "Pohon aktivasi ini tidak dapat dimuat saat ini."
   },
   "label-balance": "Saldo",

@@ -34,6 +34,7 @@
     "services": {
       "services": "Services",
       "send": "Send payment",
+      "reward-auto-claim": "Reward Auto Claim",
       "add-token": "Add token (Trustline)",
       "account-settings": "Account settings",
       "toml-checker": "TOML Checker",

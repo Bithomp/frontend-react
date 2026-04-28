@@ -1,12 +1,12 @@
 {
   "title": "Activation Tree",
-  "description": "Explore who activated an XRP Ledger wallet, which wallets it later activated, and how value spread through the network on {{explorerName}}.",
+  "description": "Explore who activated a {{ledgerName}} wallet, which wallets it later activated, and how value spread through the network on {{explorerName}}.",
   "search-label": "Explore a wallet",
   "search-title": "Address",
-  "search-placeholder": "Enter an XRP address",
+  "search-placeholder": "Enter a {{nativeCurrency}} address",
   "search-button": "Show tree",
   "search-hint": "Default view shows {{ancestors}} generations up and {{descendants}} generations down.",
-  "invalid-address": "Please enter a valid XRP Ledger address.",
+  "invalid-address": "Please enter a valid {{ledgerName}} address.",
   "genesis-title": "Start from genesis",
   "genesis-description": "Pick a genesis-era wallet to trace one of the oldest visible activation branches on the network.",
   "focus-title": "Wallet family tree",
@@ -32,7 +32,7 @@
   "focus-tree": "Focus",
   "no-descendants": "No descendants were found for this wallet in the loaded depth.",
   "errors": {
-    "invalid-address": "Please enter a valid XRP Ledger address.",
+    "invalid-address": "Please enter a valid {{ledgerName}} address.",
     "failed": "We couldn't load this activation tree right now."
   },
   "label-balance": "Balance",

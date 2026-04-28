@@ -69,6 +69,7 @@ if (xahauNetwork) {
   pages.push(
     { loc: 'governance', changefreq: 'hourly', priority: '0.9' },
     { loc: 'unl-report', changefreq: 'always', priority: '0.5' },
+    { loc: 'services/reward-auto-claim', changefreq: 'monthly', priority: '0.8' },
     { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.9' },
     { loc: 'xahau-wallets', changefreq: 'monthly', priority: '0.8' }
   )
@@ -146,6 +147,7 @@ function generateSiteMap(posts) {
     'services/account-settings',
     'services/account-delete',
     'services/toml-checker',
+    'services/reward-auto-claim',
     'services/amm/deposit',
     'services/amm/create',
     'services/amm/withdraw',

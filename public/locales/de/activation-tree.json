@@ -1,12 +1,12 @@
 {
   "title": "Aktivierungsbaum",
-  "description": "Erkunden Sie, wer eine XRP-Ledger-Wallet aktiviert hat, welche Wallets sie später aktiviert hat und wie sich Werte im Netzwerk über {{explorerName}} verbreitet haben.",
+  "description": "Erkunden Sie, wer eine {{ledgerName}}-Wallet aktiviert hat, welche Wallets sie später aktiviert hat und wie sich Werte im Netzwerk über {{explorerName}} verbreitet haben.",
   "search-label": "Wallet erkunden",
   "search-title": "Address",
-  "search-placeholder": "XRP-Adresse eingeben",
+  "search-placeholder": "{{nativeCurrency}}-Adresse eingeben",
   "search-button": "Baum anzeigen",
   "search-hint": "Standardansicht zeigt {{ancestors}} Generationen nach oben und {{descendants}} Generationen nach unten.",
-  "invalid-address": "Bitte geben Sie eine gültige XRP-Ledger-Adresse ein.",
+  "invalid-address": "Bitte geben Sie eine gültige {{ledgerName}}-Adresse ein.",
   "genesis-title": "Mit Genesis beginnen",
   "genesis-description": "Wählen Sie eine Wallet aus der Genesis-Zeit, um einen der ältesten sichtbaren Aktivierungszweige des Netzwerks zu verfolgen.",
   "focus-title": "Wallet-Stammbaum",
@@ -32,7 +32,7 @@
   "focus-tree": "Fokus",
   "no-descendants": "Für diese Wallet wurden in der geladenen Tiefe keine Nachkommen gefunden.",
   "errors": {
-    "invalid-address": "Bitte geben Sie eine gültige XRP-Ledger-Adresse ein.",
+    "invalid-address": "Bitte geben Sie eine gültige {{ledgerName}}-Adresse ein.",
     "failed": "Dieser Aktivierungsbaum konnte derzeit nicht geladen werden."
   },
   "label-balance": "Guthaben",

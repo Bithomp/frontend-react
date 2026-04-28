@@ -222,6 +222,13 @@ export default function MobileMenu({
             <IoCompassOutline style={itemIconStyle} />
             {explorerName} Explorer
           </Link>
+          {xahauNetwork && (
+            <Link href="/services/reward-auto-claim" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <IoCashOutline style={itemIconStyle} />
+              {t('menu.services.reward-auto-claim')}
+              <span className="menu-item-badge">NEW</span>
+            </Link>
+          )}
           <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoPaperPlaneOutline style={itemIconStyle} />
             {t('menu.services.send')}

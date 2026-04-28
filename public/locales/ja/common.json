@@ -34,6 +34,7 @@
     "services": {
       "services": "サービス",
       "send": "支払いを送信",
+      "reward-auto-claim": "Reward Auto Claim",
       "add-token": "トークンを追加 (Trustline)",
       "account-settings": "アカウント設定",
       "toml-checker": "TOMLチェッカー",

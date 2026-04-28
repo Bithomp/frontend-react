@@ -10,12 +10,12 @@ import AddressInput from '../../components/UI/AddressInput'
 import styles from '../../styles/pages/activation-tree.module.scss'
 
 import { axiosServer, passHeaders } from '../../utils/axios'
-import { explorerName, isAddressValid } from '../../utils'
+import { explorerName, isAddressValid, ledgerName, nativeCurrency } from '../../utils'
 import {
   AddressWithIcon,
-  amountFormat,
   dateFormat,
   fullDateAndTime,
+  fullNiceNumber,
   shortHash,
   shortNiceNumber,
   userOrServiceName
@@ -29,8 +29,14 @@ const INITIAL_VISIBLE_ROOT_CHILDREN = 10
 const VISIBLE_CHILDREN_STEP = 20
 
 const safeNumber = (value) => {
+  if (value === null || value === undefined || value === '') return null
   const parsed = Number(value)
   return Number.isFinite(parsed) ? parsed : null
+}
+
+const scaleDropsToNative = (value) => {
+  const parsed = safeNumber(value)
+  return parsed === null ? null : parsed / 1000000
 }
 
 const buildDetailsData = (raw) => {
@@ -299,9 +305,15 @@ function NodeCard({
         <div className={styles.nodePreview}>
           <div className={styles.previewBalances}>
             {(initialBalance ?? balance) !== null && (
-              <span className={styles.previewCurrent}>{shortNiceNumber(initialBalance ?? balance, 0, 1)} XRP</span>
+              <span className={styles.previewCurrent}>
+                {shortNiceNumber(initialBalance ?? balance, 0, 1)} {nativeCurrency}
+              </span>
             )}
-            {balance !== null && <span className={styles.previewStrong}>{shortNiceNumber(balance, 0, 1)} XRP</span>}
+            {balance !== null && (
+              <span className={styles.previewStrong}>
+                {shortNiceNumber(balance, 0, 1)} {nativeCurrency}
+              </span>
+            )}
           </div>
           {(inception || showFamilyCounts) && (
             <div className={styles.previewMeta}>
@@ -340,13 +352,17 @@ function NodeCard({
             {balance !== null && (
               <>
                 <dt>{t('label-current-balance')}</dt>
-                <dd>{amountFormat(Math.round(balance * 1000000), { maxFractionDigits: 6, noSpace: false })}</dd>
+                <dd>
+                  {fullNiceNumber(balance)} {nativeCurrency}
+                </dd>
               </>
             )}
             {initialBalance !== null && (
               <>
                 <dt>{activationBalance !== null ? t('label-activation-balance') : t('label-genesis-balance')}</dt>
-                <dd>{amountFormat(Math.round(initialBalance * 1000000), { maxFractionDigits: 6, noSpace: false })}</dd>
+                <dd>
+                  {fullNiceNumber(initialBalance)} {nativeCurrency}
+                </dd>
               </>
             )}
             {inception && (
@@ -663,6 +679,12 @@ export default function ActivationTreePage({
     if (treeState.rootData?.address) return `${t('title')} • ${shortHash(treeState.rootData.address, 8)}`
     return t('title')
   }, [treeState.rootData?.address, t])
+  const pageDescription = useMemo(
+    () => t('description', { explorerName, ledgerName, nativeCurrency }),
+    [t]
+  )
+  const searchPlaceholder = useMemo(() => t('search-placeholder', { nativeCurrency }), [t])
+  const invalidAddressText = useMemo(() => t('invalid-address', { ledgerName }), [t])
 
   const onSubmit = async (e) => {
     e.preventDefault()
@@ -671,7 +693,7 @@ export default function ActivationTreePage({
     const goToTree = (address) => router.push(`/activation-tree/${address}`)
 
     if (!rawValue) {
-      setSearchError(t('invalid-address'))
+      setSearchError(invalidAddressText)
       return
     }
 
@@ -693,13 +715,13 @@ export default function ActivationTreePage({
       setSearchAddress(resolvedAddress)
       goToTree(resolvedAddress)
     } catch {
-      setSearchError(t('invalid-address'))
+      setSearchError(invalidAddressText)
     }
   }
 
   return (
     <>
-      <SEO title={pageTitle} description={t('description', { explorerName })} />
+      <SEO title={pageTitle} description={pageDescription} />
       <div className={styles.page}>
         <section className={styles.hero}>
           <div className={styles.heroAura} />
@@ -707,20 +729,20 @@ export default function ActivationTreePage({
             <div className={styles.heroCopy}>
               <div className={styles.heroEyebrow}>{explorerName}</div>
               <h1>{t('title')}</h1>
-              <p>{t('description', { explorerName })}</p>
+              <p>{pageDescription}</p>
             </div>
 
             <form className={styles.searchCard} onSubmit={onSubmit}>
               <label className={styles.searchLabel}>{t('search-label')}</label>
               <AddressInput
-                placeholder={t('search-placeholder')}
+                placeholder={searchPlaceholder}
                 title={t('search-title')}
                 setValue={setSearchAddress}
                 setInnerValue={setSearchValue}
               />
               {searchError && <div className="red">{searchError}</div>}
               {!searchError && treeState.initialError && (
-                <div className="orange">{t(`errors.${treeState.initialError}`)}</div>
+                <div className="orange">{t(`errors.${treeState.initialError}`, { ledgerName })}</div>
               )}
             </form>
           </div>
@@ -740,12 +762,12 @@ export default function ActivationTreePage({
                   node={{
                     details: {
                       address: account.address,
-                      genesisBalance: safeNumber(account.genesis_balance),
-                      balance: safeNumber(account.balance)
+                      genesisBalance: scaleDropsToNative(account.genesis_balance),
+                      balance: scaleDropsToNative(account.balance)
                     },
                     account: account.address,
-                    genesisBalance: safeNumber(account.genesis_balance),
-                    balance: safeNumber(account.balance),
+                    genesisBalance: scaleDropsToNative(account.genesis_balance),
+                    balance: scaleDropsToNative(account.balance),
                     inception: account.inception,
                     descendants: []
                   }}

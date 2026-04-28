@@ -1,12 +1,12 @@
 {
   "title": "Дерево активаций",
-  "description": "Показывает, кто активировал XRP Ledger кошелёк, какие кошельки он активировал потом и как ценность распространялась по сети в {{explorerName}}.",
+  "description": "Показывает, кто активировал кошелёк {{ledgerName}}, какие кошельки он активировал потом и как ценность распространялась по сети в {{explorerName}}.",
   "search-label": "Исследовать кошелёк",
   "search-title": "Address",
-  "search-placeholder": "Введите XRP адрес",
+  "search-placeholder": "Введите адрес {{nativeCurrency}}",
   "search-button": "Показать дерево",
   "search-hint": "По умолчанию показывается {{ancestors}} поколения вверх и {{descendants}} поколения вниз.",
-  "invalid-address": "Введите корректный адрес XRP Ledger.",
+  "invalid-address": "Введите корректный адрес {{ledgerName}}.",
   "genesis-title": "Начать от genesis",
   "genesis-description": "Выберите кошелёк из эпохи genesis, чтобы проследить одну из самых ранних видимых веток активации в сети.",
   "focus-title": "Семейное дерево кошелька",
@@ -34,7 +34,7 @@
   "focus-tree": "Фокус",
   "no-descendants": "Для этого кошелька не найдено потомков в загруженной глубине.",
   "errors": {
-    "invalid-address": "Введите корректный адрес XRP Ledger.",
+    "invalid-address": "Введите корректный адрес {{ledgerName}}.",
     "failed": "Сейчас не удалось загрузить это дерево активаций."
   },
   "label-balance": "Баланс",

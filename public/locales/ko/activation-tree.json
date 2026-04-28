@@ -1,12 +1,12 @@
 {
   "title": "활성화 트리",
-  "description": "{{explorerName}}에서 어떤 지갑이 XRP Ledger 지갑을 활성화했고, 이후 어떤 지갑들을 활성화했는지, 그리고 가치가 네트워크에 어떻게 퍼졌는지 살펴보세요.",
+  "description": "{{explorerName}}에서 어떤 지갑이 {{ledgerName}} 지갑을 활성화했고, 이후 어떤 지갑들을 활성화했는지, 그리고 가치가 네트워크에 어떻게 퍼졌는지 살펴보세요.",
   "search-label": "지갑 탐색",
   "search-title": "Address",
-  "search-placeholder": "XRP 주소를 입력하세요",
+  "search-placeholder": "{{nativeCurrency}} 주소를 입력하세요",
   "search-button": "트리 보기",
   "search-hint": "기본 보기에서는 위로 {{ancestors}}세대, 아래로 {{descendants}}세대를 표시합니다.",
-  "invalid-address": "유효한 XRP Ledger 주소를 입력하세요.",
+  "invalid-address": "유효한 {{ledgerName}} 주소를 입력하세요.",
   "genesis-title": "Genesis에서 시작",
   "genesis-description": "Genesis 시대의 지갑을 선택해 네트워크에서 가장 오래된 활성화 가지 중 하나를 따라가 보세요.",
   "focus-title": "지갑 가계도",
@@ -32,7 +32,7 @@
   "focus-tree": "포커스",
   "no-descendants": "불러온 깊이에서는 이 지갑의 후손을 찾지 못했습니다.",
   "errors": {
-    "invalid-address": "유효한 XRP Ledger 주소를 입력하세요.",
+    "invalid-address": "유효한 {{ledgerName}} 주소를 입력하세요.",
     "failed": "지금은 이 활성화 트리를 불러올 수 없습니다."
   },
   "label-balance": "잔액",

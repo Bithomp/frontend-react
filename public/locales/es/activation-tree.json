@@ -1,12 +1,12 @@
 {
   "title": "Árbol de activación",
-  "description": "Explora quién activó una cartera de XRP Ledger, qué carteras activó después y cómo se propagó el valor por la red en {{explorerName}}.",
+  "description": "Explora quién activó una cartera de {{ledgerName}}, qué carteras activó después y cómo se propagó el valor por la red en {{explorerName}}.",
   "search-label": "Explorar una cartera",
   "search-title": "Address",
-  "search-placeholder": "Introduce una dirección XRP",
+  "search-placeholder": "Introduce una dirección {{nativeCurrency}}",
   "search-button": "Mostrar árbol",
   "search-hint": "La vista predeterminada muestra {{ancestors}} generaciones arriba y {{descendants}} generaciones abajo.",
-  "invalid-address": "Introduce una dirección válida de XRP Ledger.",
+  "invalid-address": "Introduce una dirección válida de {{ledgerName}}.",
   "genesis-title": "Empezar desde génesis",
   "genesis-description": "Elige una cartera de la era génesis para seguir una de las ramas de activación más antiguas visibles en la red.",
   "focus-title": "Árbol familiar de la cartera",
@@ -32,7 +32,7 @@
   "focus-tree": "Enfocar",
   "no-descendants": "No se encontraron descendientes para esta cartera en la profundidad cargada.",
   "errors": {
-    "invalid-address": "Introduce una dirección válida de XRP Ledger.",
+    "invalid-address": "Introduce una dirección válida de {{ledgerName}}.",
     "failed": "No pudimos cargar este árbol de activación ahora mismo."
   },
   "label-balance": "Saldo",

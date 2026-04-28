@@ -385,6 +385,13 @@ export default function Header({
               <IoCompassOutline className="menu-item-icon" />
               {explorerName} Explorer
             </Link>
+            {xahauNetwork && (
+              <Link href="/services/reward-auto-claim">
+                <IoCashOutline className="menu-item-icon" />
+                {t('menu.services.reward-auto-claim')}
+                <span className="menu-item-badge">NEW</span>
+              </Link>
+            )}
             <Link href="/services/send">
               <IoPaperPlaneOutline className="menu-item-icon" />
               {t('menu.services.send')}
