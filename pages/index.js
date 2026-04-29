@@ -294,11 +294,11 @@ export default function Home({
               </FeaturedCard>
             </div>
 
-            <div className="home-widget">
+            <div className="home-widget home-widget--reserved-card">
               <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
             </div>
 
-            <div className="home-widget">
+            <div className="home-widget home-widget--reserved-card">
               <Statistics
                 data={statistics}
                 setData={setStatistics}
@@ -307,11 +307,11 @@ export default function Home({
               />
             </div>
 
-            <div className="home-widget">
+            <div className="home-widget home-widget--reserved-card">
               <Statistics data={statistics} setData={setStatistics} mode="ledger" fetchOnMount={false} />
             </div>
 
-            <div className="home-widget">
+            <div className="home-widget home-widget--reserved-card">
               <Statistics data={statistics} setData={setStatistics} mode="network" fetchOnMount={false} />
             </div>
 

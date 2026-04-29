@@ -42,6 +42,10 @@
       left: 56px;
       font-size: 14px;
       font-weight: 700;
+
+      .brand-item-optional {
+        display: inline;
+      }
     }
     .brand-item-text {
       position: absolute;
@@ -88,6 +92,9 @@
         top: 10px;
         font-size: 14px;
         font-weight: 400;
+      }
+      .brand-item-title .brand-item-optional {
+        display: none;
       }
       .brand-item-text {
         display: none;

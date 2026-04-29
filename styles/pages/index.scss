@@ -36,6 +36,10 @@
   &--full-width {
     grid-column: 1 / -1;
   }
+
+  &--reserved-card {
+    min-height: 300px;
+  }
 }
 
 .home-statistics {
@@ -148,4 +152,3 @@
   50%  { background-color: var(--background-contrast); color: var(--text-oposite); }
   100%  { background-color: var(--background-main); color: var(--text-main); }
 }
-
