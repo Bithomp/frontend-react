@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Buscar en XRP Ledger — cuentas, transacciones, tokens, NFT",
-      "description": "Busca direcciones XRP, hashes de transacción, nombres de usuario, CTID, NFT, tokens, AMM y objetos del ledger en XRP Ledger.",
-      "heading": "Buscar en XRP Ledger"
+      "title": "Buscar en {{ledgerName}} — cuentas, transacciones, tokens, NFT",
+      "description": "Busca y explora direcciones de {{nativeCurrency}}, hashes de transacción, nombres de usuario, CTID, NFT, tokens, AMM y objetos del ledger en {{ledgerName}}.",
+      "heading": "Buscar en {{ledgerName}}"
     },
     "testnet": {
       "title": "Buscar en XRPL Testnet — cuentas, transacciones, tokens, NFT",
@@ -19,7 +19,7 @@
   "intro": {
     "subtitle": "Explora transacciones, cuentas, tokens y NFT de {{nativeCurrency}} de forma rápida y fiable en {{nativeCurrency}} Ledger.",
     "home-link-prefix": "¿Quieres estadísticas en vivo, herramientas de precio, top transferencias, validadores y enmiendas? Visita la",
-    "home-link-label": "página principal del explorador XRP"
+    "home-link-label": "página principal de {{explorerName}}"
   },
   "examples": {
     "title": "Ejemplos",

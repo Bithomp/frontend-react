@@ -164,7 +164,7 @@ export default function XRPXAHTaxes() {
           </p>
           <p>
             If you are not yet a Pro Subscriber, purchase your subscription{' '}
-            <Link href="https://bithomp.com/en/admin/subscriptions">HERE</Link>.
+            <Link href="https://bithomp.com/admin/subscriptions">HERE</Link>.
           </p>
           <p>
             <strong>Step 2:</strong>

@@ -1,109 +1,79 @@
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { useTranslation, Trans } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Link from 'next/link'
-import { isAddressOrUsername, isIdValid, isLedgerIndexValid, isValidCTID, performIdSearch } from '../../utils'
+import { isAddressOrUsername, isIdValid, isLedgerIndexValid, isValidCTID } from '../../utils'
+import { axiosServer, passHeaders } from '../../utils/axios'
 import SEO from '../../components/SEO'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|rar|tar)$/i
 
-export async function getStaticProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common']))
+const legacySearchTypeToRoute = {
+  transaction: '/tx/',
+  nftoken: '/nft/',
+  uriToken: '/nft/',
+  nftokenOffer: '/nft-offer/',
+  amm: '/amm/',
+  ledgerEntry: '/object/',
+  ledger: '/ledger/'
+}
+
+async function resolveLegacyExplorerDestination(slug, req) {
+  if (typeof slug !== 'string' || !slugRegex.test(slug) || forbiddenSlugsRegex.test(slug)) {
+    return null
+  }
+
+  if (isValidCTID(slug)) {
+    return '/tx/' + slug
+  }
+
+  if (isLedgerIndexValid(slug)) {
+    return '/ledger/' + slug
+  }
+
+  if (isAddressOrUsername(slug)) {
+    return '/account/' + encodeURIComponent(slug)
+  }
+
+  if (!isIdValid(slug)) {
+    return null
+  }
+
+  try {
+    const response = await axiosServer({
+      method: 'get',
+      url: 'v3/search/' + slug,
+      headers: passHeaders(req)
+    })
+
+    const routePrefix = legacySearchTypeToRoute[response?.data?.type]
+    if (!routePrefix) {
+      return null
     }
+
+    return routePrefix + slug
+  } catch (error) {
+    console.error(error)
+    return null
   }
 }
 
-export const getStaticPaths = async () => {
+export async function getServerSideProps(context) {
+  const { params, req } = context
+  const slug = params?.slug
+  const destination = await resolveLegacyExplorerDestination(slug, req)
+
+  if (destination) {
+    return {
+      redirect: {
+        destination,
+        permanent: true
+      }
+    }
+  }
+
   return {
-    paths: [],
-    fallback: 'blocking'
+    notFound: true
   }
 }
 
-export default function ExplorerRedirect() {
-  const router = useRouter()
-  const { t } = useTranslation()
-  const { slug } = router.query
-  const [errorMessage, setErrorMessage] = useState('')
-  const [processing, setProcessing] = useState(true)
-
-  useEffect(() => {
-    if (!router.isReady) return
-    if (typeof slug !== 'string') {
-      setProcessing(false)
-      return
-    }
-
-    const performIdSearching = async ({ searchFor }) => {
-      await performIdSearch({ searchFor, router, setErrorMessage })
-    }
-
-    if (slugRegex.test(slug)) {
-      if (forbiddenSlugsRegex.test(slug)) {
-        window.location.href = '/404'
-        return
-      }
-
-      if (isIdValid(slug)) {
-        performIdSearching({ searchFor: slug })
-        return
-      }
-
-      if (isValidCTID(slug)) {
-        router.replace('/tx/' + slug)
-        return
-      }
-
-      if (isLedgerIndexValid(slug)) {
-        router.replace('/ledger/' + slug)
-        return
-      }
-
-      if (isAddressOrUsername(slug)) {
-        router.replace('/account/' + encodeURI(slug))
-        return
-      }
-    }
-
-    setProcessing(false)
-  }, [router.isReady, slug, router])
-
-  if (processing) {
-    return (
-      <>
-        <SEO noindex />
-        <div className="content-text center">
-          <br />
-          <span className="waiting"></span>
-          <br />
-          {t('general.loading')}
-          <br />
-          <br />
-        </div>
-      </>
-    )
-  }
-
-  return (
-    <>
-      <SEO noindex />
-      <div className="content-text center">
-        <h1>{t('page-not-found.header')}</h1>
-        {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-        <p>
-          <Trans i18nKey="page-not-found.text">
-            Click{' '}
-            <Link href="/" className="bold">
-              here
-            </Link>{' '}
-            to check our landing page.
-          </Trans>
-        </p>
-      </div>
-    </>
-  )
+export default function ExplorerRedirectFallback() {
+  return <SEO noindex />
 }

@@ -51,7 +51,7 @@ export default function TopLinks(
       </span>{' '}
       💰 |{' '}
       {/*
-        <a href="https://bithomp.com/en/learn/xrp-xah-taxes" className="top-link orange">
+        <a href="https://bithomp.com/learn/xrp-xah-taxes" className="top-link orange">
           Tax reports
         </a>{' '}
         🧾

@@ -49,8 +49,14 @@ function applyLocale(pathname, locale) {
   return normalizeSlashes(`/${locale}${cleanPath}`)
 }
 
-function setUrlLocale(url, locale) {
-  url.locale = locale === 'en' ? 'default' : locale
+function permanentRedirect(url) {
+  return NextResponse.redirect(url, 308)
+}
+
+function buildRedirectUrl(req, pathname) {
+  const url = new URL(req.url)
+  url.pathname = pathname
+  return url
 }
 
 const isKnownSeoOrPreviewBot = (ua) =>
@@ -84,17 +90,13 @@ export async function middleware(req) {
   const ua = req.headers.get('user-agent') || ''
 
   if (rawPathname === '/default' || rawPathname.startsWith('/default/')) {
-    const url = req.nextUrl.clone()
-    url.pathname = stripLeadingLocale(rawPathname)
-    setUrlLocale(url, 'en')
-    return NextResponse.redirect(url)
+    const url = buildRedirectUrl(req, stripLeadingLocale(rawPathname))
+    return permanentRedirect(url)
   }
 
   if (rawPathname === '/en' || rawPathname.startsWith('/en/')) {
-    const url = req.nextUrl.clone()
-    url.pathname = stripLeadingLocale(rawPathname)
-    setUrlLocale(url, 'en')
-    return NextResponse.redirect(url)
+    const url = buildRedirectUrl(req, stripLeadingLocale(rawPathname))
+    return permanentRedirect(url)
   }
 
   if (isKnownSeoOrPreviewBot(ua)) return NextResponse.next()
@@ -120,48 +122,39 @@ export async function middleware(req) {
 
   // Redirect legacy paper wallet page to GitHub
   if (rawPathname.startsWith('/paperwallet')) {
-    return NextResponse.redirect(new URL('https://bithomp.github.io/xrp-paper-wallet/'))
+    return permanentRedirect(new URL('https://bithomp.github.io/xrp-paper-wallet/'))
   }
 
   // Redirect links that use removed locales
   for (const locale of removedLocales) {
     if (rawPathname.startsWith(`/${locale}/`)) {
-      const url = req.nextUrl.clone()
-      url.pathname = applyLocale(rawPathname, viewLocale)
-      setUrlLocale(url, viewLocale)
-      return NextResponse.redirect(url)
+      const url = buildRedirectUrl(req, applyLocale(rawPathname, viewLocale))
+      return permanentRedirect(url)
     }
 
     if (rawPathname === `/${locale}` && locale !== viewLocale) {
-      const url = req.nextUrl.clone()
-      url.pathname = applyLocale(rawPathname, viewLocale)
-      setUrlLocale(url, viewLocale)
-      return NextResponse.redirect(url)
+      const url = buildRedirectUrl(req, applyLocale(rawPathname, viewLocale))
+      return permanentRedirect(url)
     }
   }
 
   // Normalize locale according to cookie / detected locale
   if (normalizedReactLocale !== viewLocale) {
-    const url = req.nextUrl.clone()
+    const url = buildRedirectUrl(req, applyLocale(rawPathname, viewLocale))
 
     // Respect cookie locale but strip any old locale from the path
-    url.pathname = applyLocale(rawPathname, viewLocale)
-    setUrlLocale(url, viewLocale)
-
     if (url.searchParams.has('id')) {
       url.searchParams.delete('id')
     }
 
-    return NextResponse.redirect(url)
+    return permanentRedirect(url)
   }
 
   // Normalize double slashes even when no locale change is needed
   const normalizedPath = normalizeSlashes(rawPathname)
   if (normalizedPath !== rawPathname) {
-    const url = req.nextUrl.clone()
-    url.pathname = normalizedPath
-    // Keep locale as-is here
-    return NextResponse.redirect(url)
+    const url = buildRedirectUrl(req, normalizedPath)
+    return permanentRedirect(url)
   }
 
   return NextResponse.next()

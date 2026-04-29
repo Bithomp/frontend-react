@@ -125,7 +125,7 @@ export default function RLUSD() {
           <br />
           <p>
             <strong>
-              <a href="https://bithomp.com/en/amms?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
+              <a href="https://bithomp.com/amms?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
                 View RLUSD AMM Pools on XRPL
               </a>
             </strong>

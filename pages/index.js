@@ -93,26 +93,26 @@ export default function Home({
   const isEnglishDevnetHome = network === 'devnet' && isEnglishLikeLocale
 
   const pageTitle = isEnglishMainnetHome
-    ? 'XRP Explorer & XRP Ledger Tools — Bithomp | Search Transactions, Accounts, NFTs'
+    ? `${explorerName} | Search ${nativeCurrency} Transactions, Accounts, NFTs, and Ledger Data`
     : isEnglishTestnetHome
       ? 'XRPL Testnet Explorer & Faucet — Free Test XRP and RLUSD'
       : isEnglishDevnetHome
         ? 'XRPL Devnet Explorer & Faucet — Free Test XRP for Developers'
         : t('home.title', { explorerName, nativeCurrency })
   const pageDescription = isEnglishMainnetHome
-    ? 'XRP Explorer by Bithomp. Search XRP transactions, accounts, tokens, and NFTs, track balances, validate accounts, and explore the XRP Ledger.'
+    ? `${explorerName} lets you search and scan ${nativeCurrency} addresses, transactions, tokens, NFTs, balances, and on-chain activity on the ${ledgerName}. Trade, mint NFTs, manage AMMs, submit transactions, and use account tools.`
     : isEnglishTestnetHome
       ? 'XRPL Testnet explorer and faucet by Bithomp. Search testnet transactions, accounts, tokens, and NFTs, and get free test XRP and RLUSD for development.'
       : isEnglishDevnetHome
         ? 'XRPL Devnet explorer and faucet by Bithomp. Search devnet transactions, accounts, tokens, and NFTs, and get free test XRP for development.'
-        : t('home.description', { explorerName, nativeCurrency })
+        : t('home.description', { explorerName, nativeCurrency, ledgerName })
   const pageHeading = isEnglishMainnetHome
-    ? 'XRP Explorer and XRP Ledger Tools'
+    ? `${nativeCurrency} Explorer and Ledger Tools`
     : isEnglishTestnetHome
       ? 'XRPL Testnet Explorer and Faucet'
       : isEnglishDevnetHome
         ? 'XRPL Devnet Explorer and Faucet'
-        : t('home.h1', { nativeCurrency })
+        : t('home.h1', { nativeCurrency, ledgerName })
   const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
@@ -161,6 +161,11 @@ export default function Home({
               name: nativeCurrency + ' Explorer and Tools',
               alternateName: [
                 nativeCurrency + ' Explorer',
+                'XRPL Explorer',
+                'XRP Scan',
+                'Scan XRP Ledger',
+                'XRP Ledger Tracker',
+                'XRP Transaction Tracker',
                 explorerName + ' Explorer',
                 'Scan ' + nativeCurrency + ' Ledger'
               ],

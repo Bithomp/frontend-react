@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "XRP Ledger を検索 — アカウント、トランザクション、トークン、NFT",
-      "description": "XRP Ledger 上で XRP アドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、AMM、Ledger オブジェクトを検索できます。",
-      "heading": "XRP Ledger を検索"
+      "title": "{{ledgerName}} を検索 — アカウント、トランザクション、トークン、NFT",
+      "description": "{{ledgerName}} 上で {{nativeCurrency}} アドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、AMM、Ledger オブジェクトを検索して確認できます。",
+      "heading": "{{ledgerName}} を検索"
     },
     "testnet": {
       "title": "XRPL Testnet を検索 — アカウント、トランザクション、トークン、NFT",
@@ -19,7 +19,7 @@
   "intro": {
     "subtitle": "{{nativeCurrency}} のトランザクション、アカウント、トークン、NFT をすばやく信頼できる方法で検索できます。",
     "home-link-prefix": "ライブ統計、価格ツール、大口送金、バリデータ、Amendments を探していますか？",
-    "home-link-label": "XRP Explorer のホームページ"
+    "home-link-label": "{{explorerName}} のホームページ"
   },
   "examples": {
     "title": "例",

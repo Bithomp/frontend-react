@@ -166,27 +166,27 @@ export default function TypesOfAssets() {
           ) : (
             <ul>
               <li>
-                <Link href="https://bithomp.com/en/token/rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De/524C555344000000000000000000000000000000">
+                <Link href="https://bithomp.com/token/rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De/524C555344000000000000000000000000000000">
                   RLUSD issued by Ripple
                 </Link>
               </li>
               <li>
-                <Link href="https://bithomp.com/en/token/rGm7WCVp9gb4jZHWTEtGUr4dd74z2XuWhE/5553444300000000000000000000000000000000">
+                <Link href="https://bithomp.com/token/rGm7WCVp9gb4jZHWTEtGUr4dd74z2XuWhE/5553444300000000000000000000000000000000">
                   USDC issued by Circle
                 </Link>
               </li>
               <li>
-                <Link href="https://bithomp.com/en/token/rB3y9EPnq1ZrZP3aXgfyfdXQThzdXMrLMc/5553444200000000000000000000000000000000">
+                <Link href="https://bithomp.com/token/rB3y9EPnq1ZrZP3aXgfyfdXQThzdXMrLMc/5553444200000000000000000000000000000000">
                   USDB issued by Braza Bank
                 </Link>
               </li>
               <li>
-                <Link href="https://bithomp.com/en/token/rMkEuRii9w9uBMQDnWV5AA43gvYZR9JxVK/4555524F50000000000000000000000000000000">
+                <Link href="https://bithomp.com/token/rMkEuRii9w9uBMQDnWV5AA43gvYZR9JxVK/4555524F50000000000000000000000000000000">
                   EurØp issued by Schuman Financial
                 </Link>
               </li>
               <li>
-                <Link href="https://bithomp.com/en/token/rK67JczCpaYXVtfw3qJVmqwpSfa1bYTptw/5853474400000000000000000000000000000000">
+                <Link href="https://bithomp.com/token/rK67JczCpaYXVtfw3qJVmqwpSfa1bYTptw/5853474400000000000000000000000000000000">
                   XSGD issued by StraitsX
                 </Link>
               </li>
@@ -220,22 +220,22 @@ export default function TypesOfAssets() {
               <p>Examples of utility tokens:</p>
               <ul>
                 <li>
-                  <Link href="https://bithomp.com/en/token/rKDsnVfFMzdqrU8Bqno37d29L8ZW3hvrf8/5574696C69746558000000000000000000000000">
+                  <Link href="https://bithomp.com/token/rKDsnVfFMzdqrU8Bqno37d29L8ZW3hvrf8/5574696C69746558000000000000000000000000">
                     UtiliteX issued by eolas
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://bithomp.com/en/token/rrno7Nj4RkFJLzC4nRaZiLF5aHwcTVon3d/OXP">
+                  <Link href="https://bithomp.com/token/rrno7Nj4RkFJLzC4nRaZiLF5aHwcTVon3d/OXP">
                     OXP issued by bidds
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://bithomp.com/en/token/rCSCManTZ8ME9EoLrSHHYKW8PPwWMgkwr/CSC">
+                  <Link href="https://bithomp.com/token/rCSCManTZ8ME9EoLrSHHYKW8PPwWMgkwr/CSC">
                     CSC issued by CasinoCoin
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://bithomp.com/en/token/r421CokCfwPxabbdXzCJ77vHkw6eAUWXua/VVT">
+                  <Link href="https://bithomp.com/token/r421CokCfwPxabbdXzCJ77vHkw6eAUWXua/VVT">
                     VVT issued by Virovita Token
                   </Link>
                 </li>
@@ -267,12 +267,12 @@ export default function TypesOfAssets() {
               <p>Examples of XRPL memcoins</p>
               <ul>
                 <li>
-                  <Link href="https://bithomp.com/en/token/rhCAT4hRdi2Y9puNdkpMzxrdKa5wkppR62/46555A5A59000000000000000000000000000000">
+                  <Link href="https://bithomp.com/token/rhCAT4hRdi2Y9puNdkpMzxrdKa5wkppR62/46555A5A59000000000000000000000000000000">
                     FUZZY issued by Fuzzybear
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://bithomp.com/en/token/rJMtvf5B3GbuFMrqybh5wYVXEH4QE8VyU1/586F676500000000000000000000000000000000">
+                  <Link href="https://bithomp.com/token/rJMtvf5B3GbuFMrqybh5wYVXEH4QE8VyU1/586F676500000000000000000000000000000000">
                     Xoge
                   </Link>
                 </li>

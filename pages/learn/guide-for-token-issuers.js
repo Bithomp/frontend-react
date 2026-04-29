@@ -187,17 +187,17 @@ export default function GuideForTokenIssuers() {
           </p>
           <p>
             You can check the whole statistics about your token (supply, trustlines, holders, markets, etc.) on our
-            token explorer here 👉 : <code>https://bithomp.com/en/token/[ISSUER ADDRESS]/[CURRENCY CODE]</code>. Here,{' '}
+            token explorer here 👉 : <code>https://bithomp.com/token/[ISSUER ADDRESS]/[CURRENCY CODE]</code>. Here,{' '}
             <strong>[ISSUER ADDRESS]</strong> is the address of the account that issued the token, and{' '}
             <strong>[CURRENCY CODE]</strong> can be either: a character string such as "EUR" or "USD", “MAG”,
             “MyCurrency’, or a 160-bit hexadecimal string, such as "524C555344000000000000000000000000000000".
           </p>
           {xahauNetwork ? (
-            <Link href="https://xahauexplorer.com/en/token/rEvernodee8dJLaFsujS6q1EiXvZYmHXr8/EVR">
+            <Link href="https://xahauexplorer.com/token/rEvernodee8dJLaFsujS6q1EiXvZYmHXr8/EVR">
               View the example for EVR
             </Link>
           ) : (
-            <Link href="https://bithomp.com/en/token/rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De/524C555344000000000000000000000000000000">
+            <Link href="https://bithomp.com/token/rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De/524C555344000000000000000000000000000000">
               View the example for RLUSD
             </Link>
           )}
@@ -249,7 +249,7 @@ export default function GuideForTokenIssuers() {
                   <span role="img" aria-label="lamp">
                     👉
                   </span>{' '}
-                  <Link href="https://bithomp.com/en/services/amm/create">Create AMM Pool</Link>
+                  <Link href="https://bithomp.com/services/amm/create">Create AMM Pool</Link>
                 </p>
               </div>
 
