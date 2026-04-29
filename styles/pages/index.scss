@@ -47,6 +47,21 @@
   }
 }
 
+.home-widget-placeholder {
+  width: 100%;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--background-main), var(--card-bg));
+  border: 1px solid var(--card-border);
+
+  &--converter {
+    min-height: 152px;
+  }
+
+  &--chart {
+    min-height: 283px;
+  }
+}
+
 .home-statistics {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);

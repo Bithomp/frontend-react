@@ -170,6 +170,7 @@ const MyApp = ({ Component, pageProps }) => {
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [countryCode, setCountryCode] = useState('')
+  const [nonCriticalUiReady, setNonCriticalUiReady] = useState(false)
   const accountSchemaInitializedRef = useRef(false)
 
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
@@ -177,6 +178,36 @@ const MyApp = ({ Component, pageProps }) => {
   useEffect(() => {
     setIsClient(true)
     setIsOnline(navigator.onLine)
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    let cancelled = false
+    let timeoutId = null
+    let idleId = null
+
+    const markReady = () => {
+      if (!cancelled) {
+        setNonCriticalUiReady(true)
+      }
+    }
+
+    if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(markReady, { timeout: 1500 })
+    } else {
+      timeoutId = window.setTimeout(markReady, 1200)
+    }
+
+    return () => {
+      cancelled = true
+      if (idleId !== null && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId)
+      }
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId)
+      }
+    }
   }, [])
 
   // WalletConnect can fire a session_update with null namespaces, causing
@@ -764,7 +795,7 @@ const MyApp = ({ Component, pageProps }) => {
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}
-              {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
+              {nonCriticalUiReady && (networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
                 <WalletConnectModalSign
                   projectId={process.env.NEXT_PUBLIC_WALLETCONNECT}
                   metadata={getAppMetadata()}
@@ -805,7 +836,7 @@ const MyApp = ({ Component, pageProps }) => {
                 />
               )}
               <div className="content">
-                <TopProgressBar />
+                {nonCriticalUiReady && <TopProgressBar />}
                 {showTopAds && <TopLinks countryCode={countryCode} />}
                 <Component
                   {...pageProps}

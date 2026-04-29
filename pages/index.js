@@ -10,8 +10,6 @@ import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
 import Ads from '../components/Layout/Ads'
-import Converter from '../components/Home/Converter'
-import PriceChart from '../components/Home/PriceChart'
 import FeaturedCard from '../components/Home/FeaturedCard'
 import TeaserTopDapps from '../components/Home/TeaserTopDapps'
 import TeaserTopTokens from '../components/Home/TeaserTopTokens'
@@ -32,6 +30,14 @@ import {
   fetchTeaserAmendments
 } from '../utils/homeTeaserData'
 //not indexed
+const Converter = dynamic(() => import('../components/Home/Converter'), {
+  ssr: false,
+  loading: () => <div className="home-widget-placeholder home-widget-placeholder--converter" aria-hidden="true" />
+})
+const PriceChart = dynamic(() => import('../components/Home/PriceChart'), {
+  ssr: false,
+  loading: () => <div className="home-widget-placeholder home-widget-placeholder--chart" aria-hidden="true" />
+})
 const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false })
 const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
 
