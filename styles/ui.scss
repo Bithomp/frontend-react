@@ -592,7 +592,7 @@ table {
 .gray,
 .grey a,
 .gray a {
-  color: var(--text-secondary) !important;
+  color: color-mix(in srgb, var(--text-secondary) 35%, var(--text-contrast) 65%) !important;
 }
 
 .contrast {

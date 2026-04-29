@@ -1,6 +1,8 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { xahauNetwork } from '../utils'
 
+const normalizeDocumentLang = (locale) => (!locale || locale === 'default' ? 'en' : locale)
+
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const originalRenderPage = ctx.renderPage
@@ -25,8 +27,10 @@ class MyDocument extends Document {
   }
 
   render() {
+    const documentLocale = this.props.__NEXT_DATA__?.locale || this.props.locale
+
     return (
-      <Html>
+      <Html lang={normalizeDocumentLang(documentLocale)}>
         <Head>
           <link rel="icon" href={this.props.logoPath + '/favicon.ico'} />
           {/* <meta name="theme-color" content="#000000" /> */}

@@ -38,10 +38,10 @@ export default function HomeTeaser({
     <div className={`${styles.teaser} ${className}`.trim()}>
       <div className={styles.cardHeader}>
         <div className={styles.cardHeaderTitleWrap}>
-          <h3 className={styles.cardHeaderTitle}>
+          <h2 className={styles.cardHeaderTitle}>
             {t(title)}
             {titleSuffix ? <span className={styles.cardHeaderTitleSuffix}> {titleSuffix}</span> : null}
-          </h3>
+          </h2>
           {titleNote ? <span className={styles.cardHeaderNote}>{titleNote}</span> : null}
         </div>
         <Link href={href} className={styles.cardHeaderLink}>

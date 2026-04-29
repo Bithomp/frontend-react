@@ -8,6 +8,7 @@ module.exports = withBundleAnalyzer({
   compiler: {
     styledComponents: true
   },
+  productionBrowserSourceMaps: true,
   i18n,
   webpack(config) {
     config.module.rules.push({
@@ -55,7 +56,7 @@ module.exports = withBundleAnalyzer({
       }
     ]
   },
-  compress: false,
+  compress: true,
   async redirects() {
     return [
       {

@@ -144,15 +144,15 @@
   }
 
   .amendmentStatusVoting {
-    color: #9b6b00;
-    background: rgba(255, 184, 0, 0.12);
-    border-color: rgba(255, 184, 0, 0.35);
+    color: #3d2a00;
+    background: #ffd166;
+    border-color: #d4a017;
   }
 
   .amendmentStatusEnabled {
-    color: #1f7a3e;
-    background: rgba(47, 158, 68, 0.12);
-    border-color: rgba(47, 158, 68, 0.35);
+    color: #0d3b1f;
+    background: #8de1a8;
+    border-color: #2f9e44;
   }
 
   @media (max-width: 640px) {
@@ -429,11 +429,11 @@
 .cardHeaderActionButtonActive {
   background-color: var(--accent-icon);
   border-color: var(--accent-icon);
-  color: var(--text-contrast);
+  color: #001319;
   box-shadow: none;
 
   &:hover {
-    color: var(--text-contrast);
+    color: #001319;
     border-color: var(--accent-icon);
   }
 }

@@ -40,9 +40,10 @@ header {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: var(--accent-link);
+      color: color-mix(in srgb, var(--text-contrast) 86%, var(--accent-link) 14%);
       white-space: nowrap;
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 7px;
       padding: 2px 6px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
@@ -63,6 +64,7 @@ header {
 
       .header-fiat-rate-text.visible {
         visibility: visible;
+        color: inherit;
       }
     }
   }

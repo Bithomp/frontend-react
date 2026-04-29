@@ -39,6 +39,30 @@ const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true 
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
 const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
 
+const isLocalBrowserHost = () =>
+  typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname)
+
+const configureAxiosDefaults = () => {
+  const useLocalApi = process.env.NODE_ENV === 'development' || isLocalBrowserHost()
+
+  if (useLocalApi) {
+    axios.defaults.baseURL = server + '/api/'
+    axios.defaults.headers.common['x-bithomp-token'] = process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
+    return
+  }
+
+  axios.defaults.baseURL = server + '/api/cors/'
+  delete axios.defaults.headers.common['x-bithomp-token']
+}
+
+const getRealtimeServerUrl = () => {
+  if (process.env.NODE_ENV === 'development' || isLocalBrowserHost()) {
+    return server.replace('https://', 'wss://') + '/wss/?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
+  }
+
+  return wssServer
+}
+
 const getWalletId = ({ provider, address }) => {
   if (!provider || !address) return null
   return `${provider}:${address}`
@@ -208,6 +232,36 @@ const MyApp = ({ Component, pageProps }) => {
         window.clearTimeout(timeoutId)
       }
     }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    const getWalletConnectDialog = () => {
+      const walletConnectHost = document.querySelector('wcm-modal')
+      return walletConnectHost?.shadowRoot?.getElementById('wcm-modal') || null
+    }
+
+    const setWalletConnectDialogName = () => {
+      const walletConnectModal = getWalletConnectDialog()
+      if (!walletConnectModal) return
+      if (walletConnectModal.getAttribute('aria-label') || walletConnectModal.getAttribute('aria-labelledby')) return
+      walletConnectModal.setAttribute('aria-label', 'Wallet connection dialog')
+    }
+
+    setWalletConnectDialogName()
+
+    const observer = new MutationObserver(() => {
+      setWalletConnectDialogName()
+    })
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    })
+
+    return () => observer.disconnect()
   }, [])
 
   // WalletConnect can fire a session_update with null namespaces, causing
@@ -427,6 +481,8 @@ const MyApp = ({ Component, pageProps }) => {
 
   //check country
   useEffect(() => {
+    if (!nonCriticalUiReady) return
+
     async function fetchData() {
       // {"ip":"176.28.256.49","country":"SE"}
       const clientInfo = await axios('client/info')
@@ -435,7 +491,7 @@ const MyApp = ({ Component, pageProps }) => {
 
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [nonCriticalUiReady])
 
   useEffect(() => {
     // Always refresh when currency changes to avoid stale rates.
@@ -460,6 +516,10 @@ const MyApp = ({ Component, pageProps }) => {
   // WebSocket for liveFiatRate, statistics, and whale transactions
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    if (!nonCriticalUiReady) return undefined
+
+    const realtimeServerUrl = getRealtimeServerUrl()
+
     function sendData(currency) {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.send(
@@ -477,7 +537,7 @@ const MyApp = ({ Component, pageProps }) => {
     }
     function connect() {
       try {
-        wsRef.current = new window.WebSocket(wssServer)
+        wsRef.current = new window.WebSocket(realtimeServerUrl)
         wsRef.current.onopen = () => {
           sendData(selectedCurrencyRef.current)
         }
@@ -510,7 +570,7 @@ const MyApp = ({ Component, pageProps }) => {
       setStatistics(null)
       if (wsRef.current) wsRef.current.close()
     }
-  }, [])
+  }, [nonCriticalUiReady, setStatistics, setWhaleTransactions])
 
   useEffect(() => {
     // Unsubscribe from previous currency if it exists
@@ -736,12 +796,7 @@ const MyApp = ({ Component, pageProps }) => {
     }
   }
 
-  if (process.env.NODE_ENV === 'development') {
-    axios.defaults.headers.common['x-bithomp-token'] = process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
-    axios.defaults.baseURL = server + '/api/'
-  } else {
-    axios.defaults.baseURL = server + '/api/cors/'
-  }
+  configureAxiosDefaults()
 
   const pathname = router.pathname
   const pagesWithoutWrapper = ['/social-share']
@@ -835,7 +890,7 @@ const MyApp = ({ Component, pageProps }) => {
                   setSessionToken={setSessionToken}
                 />
               )}
-              <div className="content">
+              <main className="content">
                 {nonCriticalUiReady && <TopProgressBar />}
                 {showTopAds && <TopLinks countryCode={countryCode} />}
                 <Component
@@ -862,7 +917,7 @@ const MyApp = ({ Component, pageProps }) => {
                   setStatistics={setStatistics}
                   setWhaleTransactions={setWhaleTransactions}
                 />
-              </div>
+              </main>
               <Footer countryCode={countryCode} />
             </div>
           </ErrorBoundary>
