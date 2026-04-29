@@ -184,6 +184,7 @@ const MyApp = ({ Component, pageProps }) => {
   const wsRef = useRef(null)
   const selectedCurrencyRef = useRef(selectedCurrency)
   const previousCurrencyRef = useRef(selectedCurrency)
+  const lastFiatRatePathRef = useRef(null)
   const [proExpire, setProExpire] = useCookie('pro-expire')
   const [subscriptionExpired, setSubscriptionExpired] = useState(
     proExpire ? Number(proExpire) < new Date().getTime() : true
@@ -503,6 +504,14 @@ const MyApp = ({ Component, pageProps }) => {
   }, [selectedCurrency])
 
   useEffect(() => {
+    // Skip the initial mount because selectedCurrency already triggers the first fetch.
+    if (lastFiatRatePathRef.current === null) {
+      lastFiatRatePathRef.current = router.pathname
+      return
+    }
+
+    lastFiatRatePathRef.current = router.pathname
+
     // If WebSocket is not working or there is no actual value, update via API
     const shouldUpdateViaApi = !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !liveFiatRate
     if (shouldUpdateViaApi) {
@@ -511,7 +520,7 @@ const MyApp = ({ Component, pageProps }) => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname])
+  }, [liveFiatRate, router.pathname, selectedCurrency])
 
   // WebSocket for liveFiatRate, statistics, and whale transactions
   // eslint-disable-next-line react-hooks/exhaustive-deps

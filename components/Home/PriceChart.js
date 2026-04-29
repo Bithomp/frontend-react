@@ -205,9 +205,29 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
   const mountedRef = useRef(true)
   useEffect(() => {
     mountedRef.current = true
-    setRendered(true)
+    let timeoutId = null
+    let idleId = null
+
+    const markReady = () => {
+      if (mountedRef.current) {
+        setRendered(true)
+      }
+    }
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(markReady, { timeout: 1500 })
+    } else {
+      timeoutId = window.setTimeout(markReady, 600)
+    }
+
     return () => {
       mountedRef.current = false
+      if (idleId !== null && typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId)
+      }
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId)
+      }
     }
   }, [])
 
@@ -497,7 +517,22 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
 
   const series = useMemo(() => [{ name: '', data: seriesData }], [seriesData])
 
-  if (!rendered) return null
+  if (!rendered) {
+    return (
+      <div
+        className="home-price-chart"
+        aria-hidden="true"
+        style={{
+          height: chartHeight,
+          borderRadius: 16,
+          background:
+            theme === 'light'
+              ? 'linear-gradient(135deg, rgba(0, 130, 142, 0.08), rgba(0, 130, 142, 0.02))'
+              : 'linear-gradient(135deg, rgba(0, 177, 193, 0.12), rgba(0, 177, 193, 0.03))'
+        }}
+      />
+    )
+  }
 
   return (
     <>

@@ -427,14 +427,14 @@
 }
 
 .cardHeaderActionButtonActive {
-  background-color: var(--accent-icon);
-  border-color: var(--accent-icon);
-  color: #001319;
+  background-color: #005f68;
+  border-color: #005f68;
+  color: #ffffff;
   box-shadow: none;
 
   &:hover {
-    color: #001319;
-    border-color: var(--accent-icon);
+    color: #ffffff;
+    border-color: #005f68;
   }
 }
 
