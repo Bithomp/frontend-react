@@ -5,6 +5,11 @@
   }
 }
 
+.home-section-discovery {
+  content-visibility: auto;
+  contain-intrinsic-size: 2400px;
+}
+
 .home-dashboard {
   display: grid;
   grid-template-columns: 1fr;

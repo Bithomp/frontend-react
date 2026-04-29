@@ -208,7 +208,7 @@ export default function Home({
         {showAds && <Ads countryCode={countryCode} />}
       </section>
 
-      <section className="home-section">
+      <section className="home-section home-section-discovery">
         <div className="home-dashboard">
           {/* Begin: Discovery Widgets Grid */}
           <div className="home-widgets-grid">
