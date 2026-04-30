@@ -222,7 +222,8 @@
     align-items: center;
     min-width: 0;
 
-    img {
+    > img,
+    > span {
       margin-right: 8px;
       flex-shrink: 0;
     }

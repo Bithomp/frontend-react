@@ -1,6 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
@@ -20,16 +20,17 @@ import TeaserTopAmendments from '../components/Home/TeaserTopAmendments'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 import dynamic from 'next/dynamic'
-import { getFiatRateServer } from '../utils/axios'
-import {
-  fetchTeaserDapps,
-  fetchTeaserTokens,
-  fetchTeaserNftCollections,
-  fetchTeaserAmms,
-  fetchTeaserValidators,
-  fetchTeaserAmendments
-} from '../utils/homeTeaserData'
+import { currencyServer } from '../utils/axios'
 //not indexed
+const emptyHomeTeasers = {
+  dapps: [],
+  tokens: [],
+  nftCollections: [],
+  amms: [],
+  validators: [],
+  amendments: []
+}
+
 const Converter = dynamic(() => import('../components/Home/Converter'), {
   ssr: false,
   loading: () => <div className="home-widget-placeholder home-widget-placeholder--converter" aria-hidden="true" />
@@ -42,32 +43,15 @@ const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false }
 const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
 
 export async function getServerSideProps(context) {
-  const { locale, req } = context
-  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
-
-  // Fetch all teaser data in parallel
-  const [teaserDapps, teaserTokens, teaserNftCollections, teaserAmms, teaserValidators, teaserAmendments] =
-    await Promise.all([
-      xahauNetwork ? [] : fetchTeaserDapps(req, selectedCurrencyServer),
-      fetchTeaserTokens(req, selectedCurrencyServer),
-      xahauNetwork ? [] : fetchTeaserNftCollections(req, selectedCurrencyServer),
-      xahauNetwork ? [] : fetchTeaserAmms(req),
-      fetchTeaserValidators(req),
-      fetchTeaserAmendments(req)
-    ])
+  const { locale, req, res } = context
+  const selectedCurrencyServer = currencyServer(req)
+  res.setHeader('Cache-Control', 'private, no-cache, max-age=0, must-revalidate')
 
   return {
     props: {
-      fiatRateServer,
       selectedCurrencyServer,
       initialLocale: locale || 'en',
       isSsrMobile: getIsSsrMobile(context),
-      teaserDapps,
-      teaserTokens,
-      teaserNftCollections,
-      teaserAmms,
-      teaserValidators,
-      teaserAmendments,
       ...(await serverSideTranslations(locale, ['common', 'faucet', 'products']))
     }
   }
@@ -131,6 +115,60 @@ export default function Home({
   }
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
+  const [homeTeasers, setHomeTeasers] = useState({
+    ...emptyHomeTeasers,
+    dapps: teaserDapps,
+    tokens: teaserTokens,
+    nftCollections: teaserNftCollections,
+    amms: teaserAmms,
+    validators: teaserValidators,
+    amendments: teaserAmendments
+  })
+  const [teasersLoading, setTeasersLoading] = useState(true)
+  const loadedTeaserCurrencyRef = useRef('')
+
+  useEffect(() => {
+    if (!selectedCurrency || loadedTeaserCurrencyRef.current === selectedCurrency) return undefined
+
+    let cancelled = false
+    let timeoutId = null
+
+    setTeasersLoading(true)
+
+    const fetchTeasers = async () => {
+      try {
+        const response = await fetch('/api/home-teasers?currency=' + encodeURIComponent(selectedCurrency))
+        if (!response.ok) {
+          throw new Error('Failed to load homepage teasers')
+        }
+        const data = await response.json()
+        if (!cancelled) {
+          loadedTeaserCurrencyRef.current = selectedCurrency
+          setHomeTeasers({
+            ...emptyHomeTeasers,
+            ...data
+          })
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error(error)
+        }
+      } finally {
+        if (!cancelled) {
+          setTeasersLoading(false)
+        }
+      }
+    }
+
+    timeoutId = window.setTimeout(fetchTeasers, 4500)
+
+    return () => {
+      cancelled = true
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [selectedCurrency])
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
@@ -324,25 +362,25 @@ export default function Home({
             {/* Begin: Teaser Widgets - Each will be a HomeTeaser component */}
             {!xahauNetwork && (
               <div className="home-widget">
-                <TeaserTopDapps data={teaserDapps} isLoading={false} />
+                <TeaserTopDapps data={homeTeasers.dapps} isLoading={teasersLoading} />
               </div>
             )}
 
             {!xahauNetwork && (
               <div className="home-widget">
-                <TeaserTopNftCollections data={teaserNftCollections} isLoading={false} />
+                <TeaserTopNftCollections data={homeTeasers.nftCollections} isLoading={teasersLoading} />
               </div>
             )}
 
             <div className="home-widget">
-              <TeaserTopTokens data={teaserTokens} isLoading={false} />
+              <TeaserTopTokens data={homeTeasers.tokens} isLoading={teasersLoading} />
             </div>
 
             {!xahauNetwork && (
               <div className="home-widget">
                 <TeaserTopAmms
-                  data={teaserAmms}
-                  isLoading={false}
+                  data={homeTeasers.amms}
+                  isLoading={teasersLoading}
                   fiatRate={fiatRate}
                   selectedCurrency={selectedCurrency}
                 />
@@ -350,11 +388,11 @@ export default function Home({
             )}
 
             <div className="home-widget">
-              <TeaserTopValidators data={teaserValidators} isLoading={false} />
+              <TeaserTopValidators data={homeTeasers.validators} isLoading={teasersLoading} />
             </div>
 
             <div className="home-widget">
-              <TeaserTopAmendments data={teaserAmendments} isLoading={false} />
+              <TeaserTopAmendments data={homeTeasers.amendments} isLoading={teasersLoading} />
             </div>
           </div>
           {/* End: Discovery Widgets Grid */}

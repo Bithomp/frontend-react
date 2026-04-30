@@ -8,6 +8,35 @@ import { dappBySourceTag } from './transaction'
 import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
 import { nativeCurrency, devNet, xahauNetwork, showXahauNewAmendment } from './index'
 
+export const emptyHomeTeasers = {
+  dapps: [],
+  tokens: [],
+  nftCollections: [],
+  amms: [],
+  validators: [],
+  amendments: []
+}
+
+export const fetchHomeTeasers = async (req, selectedCurrency = 'usd') => {
+  const [dapps, tokens, nftCollections, amms, validators, amendments] = await Promise.all([
+    xahauNetwork ? [] : fetchTeaserDapps(req, selectedCurrency),
+    fetchTeaserTokens(req, selectedCurrency),
+    xahauNetwork ? [] : fetchTeaserNftCollections(req, selectedCurrency),
+    xahauNetwork ? [] : fetchTeaserAmms(req),
+    fetchTeaserValidators(req),
+    fetchTeaserAmendments(req)
+  ])
+
+  return {
+    dapps,
+    tokens,
+    nftCollections,
+    amms,
+    validators,
+    amendments
+  }
+}
+
 /**
  * Helper function to ensure we always get an array from API response
  * Handles different response structures: direct array, nested in .data, or wrapped object

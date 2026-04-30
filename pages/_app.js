@@ -15,10 +15,9 @@ const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { s
 
 import { IsSsrMobileContext } from '@/utils/mobile'
 import { getBackgroundImage } from '@/utils/backgroundImage'
-import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, networkId } from '@/utils'
+import { isValidUUID, network, server, siteName, useLocalStorage, useCookie, xahauNetwork, networkId } from '@/utils'
 import { useEmailLogin } from '@/hooks/useEmailLogin'
 
-import { getAppMetadata } from '@walletconnect/utils'
 const WalletConnectModalSign = dynamic(
   () => import('@walletconnect/modal-sign-react').then((mod) => mod.WalletConnectModalSign),
   { ssr: false }
@@ -61,6 +60,45 @@ const getRealtimeServerUrl = () => {
   }
 
   return wssServer
+}
+
+const getWalletConnectMetadata = () => ({
+  name: siteName || 'Bithomp',
+  description: 'Bithomp ledger explorer and wallet tools',
+  url: server,
+  icons: [server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/192.png']
+})
+
+const getErrorText = (value) => {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (typeof value.message === 'string') return value.message
+  try {
+    return JSON.stringify(value)
+  } catch (_) {
+    return ''
+  }
+}
+
+const isWalletConnectRelayError = (value) => {
+  const text = getErrorText(value)
+  const stack = String(value?.stack || '')
+  const haystack = `${text} ${stack}`.toLowerCase()
+
+  return (
+    haystack.includes('socket stalled when trying to connect') ||
+    haystack.includes('websocket connection failed') ||
+    haystack.includes('relay.walletconnect.org')
+  )
+}
+
+const isWalletConnectNamespaceError = (value) => {
+  const text = getErrorText(value)
+  const stack = String(value?.stack || '')
+  return (
+    text.includes('Cannot convert undefined or null to object') &&
+    (stack.includes('walletconnect') || stack.includes('@walletconnect'))
+  )
 }
 
 const getWalletId = ({ provider, address }) => {
@@ -218,7 +256,9 @@ const MyApp = ({ Component, pageProps }) => {
       }
     }
 
-    if ('requestIdleCallback' in window) {
+    if (window.location.pathname === '/') {
+      timeoutId = window.setTimeout(markReady, 5000)
+    } else if ('requestIdleCallback' in window) {
       idleId = window.requestIdleCallback(markReady, { timeout: 1500 })
     } else {
       timeoutId = window.setTimeout(markReady, 1200)
@@ -265,15 +305,23 @@ const MyApp = ({ Component, pageProps }) => {
     return () => observer.disconnect()
   }, [])
 
-  // WalletConnect can fire a session_update with null namespaces, causing
-  // Object.keys(null) inside their isValidUpdate — suppress it and clear stale storage.
+  // WalletConnect can emit async errors outside our connect() promise.
+  // Keep known relay stalls recoverable and clear storage for stale sessions.
   useEffect(() => {
     const handleWalletConnectError = (event) => {
-      const msg = event?.error?.message || event?.message || ''
-      if (!msg.includes('Cannot convert undefined or null to object')) return
-      const stack = event?.error?.stack || ''
-      if (!stack.includes('walletconnect') && !stack.includes('@walletconnect')) return
+      const error = event?.reason || event?.error || event?.message || event
+      const isNamespaceError = isWalletConnectNamespaceError(error)
+      const isRelayError = isWalletConnectRelayError(error)
+
+      if (!isNamespaceError && !isRelayError) return
       event.preventDefault()
+
+      if (isRelayError) {
+        console.warn('WalletConnect relay connection failed:', getErrorText(error))
+      }
+
+      if (!isNamespaceError) return
+
       const clearWC = (storage) => {
         if (!storage) return
         const toRemove = []
@@ -290,7 +338,11 @@ const MyApp = ({ Component, pageProps }) => {
       setWcSessions({})
     }
     window.addEventListener('error', handleWalletConnectError)
-    return () => window.removeEventListener('error', handleWalletConnectError)
+    window.addEventListener('unhandledrejection', handleWalletConnectError)
+    return () => {
+      window.removeEventListener('error', handleWalletConnectError)
+      window.removeEventListener('unhandledrejection', handleWalletConnectError)
+    }
   }, [])
 
   const router = useRouter()
@@ -528,6 +580,7 @@ const MyApp = ({ Component, pageProps }) => {
     if (!nonCriticalUiReady) return undefined
 
     const realtimeServerUrl = getRealtimeServerUrl()
+    let connectTimer = null
 
     function sendData(currency) {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -572,14 +625,15 @@ const MyApp = ({ Component, pageProps }) => {
       }
     }
     if (typeof window !== 'undefined' && navigator.onLine) {
-      connect()
+      connectTimer = window.setTimeout(connect, router.pathname === '/' ? 30000 : 0)
     }
     return () => {
       setWhaleTransactions(null)
       setStatistics(null)
+      if (connectTimer !== null) window.clearTimeout(connectTimer)
       if (wsRef.current) wsRef.current.close()
     }
-  }, [nonCriticalUiReady, setStatistics, setWhaleTransactions])
+  }, [nonCriticalUiReady, router.pathname, setStatistics, setWhaleTransactions])
 
   useEffect(() => {
     // Unsubscribe from previous currency if it exists
@@ -828,6 +882,15 @@ const MyApp = ({ Component, pageProps }) => {
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
   }
+  const hasWalletConnectWallet =
+    account?.wallet === 'walletconnect' || account?.wallets?.some((wallet) => wallet?.provider === 'walletconnect')
+  const shouldMountWalletConnect =
+    nonCriticalUiReady &&
+    (networkId === 0 || networkId === 1) &&
+    isClient &&
+    isOnline &&
+    !isBot &&
+    (signRequest || isValidUUID(uuid) || hasWalletConnectWallet)
 
   if (pagesWithoutWrapper.includes(pathname)) {
     return <Component />
@@ -859,10 +922,10 @@ const MyApp = ({ Component, pageProps }) => {
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}
-              {nonCriticalUiReady && (networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
+              {shouldMountWalletConnect && (
                 <WalletConnectModalSign
                   projectId={process.env.NEXT_PUBLIC_WALLETCONNECT}
-                  metadata={getAppMetadata()}
+                  metadata={getWalletConnectMetadata()}
                   modalOptions={{
                     // Explorer must be enabled for explorer* filters to apply
                     enableExplorer: true,

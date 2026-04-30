@@ -192,13 +192,29 @@ export const collectionThumbnail = (data) => {
     return ''
   }
   return (
-    <img
-      src={imageSrc}
-      width="32px"
-      height="32px"
-      style={{ borderRadius: '50% 20% / 10% 40%', verticalAlign: 'middle' }}
-      alt=""
-    />
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 32,
+        height: 32,
+        flexShrink: 0,
+        overflow: 'hidden',
+        borderRadius: '50% 20% / 10% 40%',
+        verticalAlign: 'middle'
+      }}
+    >
+      <img
+        src={imageSrc}
+        width="32"
+        height="32"
+        style={{ width: 32, height: 32, objectFit: 'contain', display: 'block' }}
+        loading="lazy"
+        decoding="async"
+        alt=""
+      />
+    </span>
   )
 }
 

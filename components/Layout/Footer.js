@@ -13,6 +13,8 @@ const SocialIcons = dynamic(() => import('./SocialIcons'), { ssr: false })
 const LogoAnimated = dynamic(() => import('./LogoAnimated'), { ssr: false })
 const ButtonScrollTop = dynamic(() => import('./ButtonScrollTop'), { ssr: false })
 
+const FooterLink = (props) => <Link prefetch={false} {...props} />
+
 export default function Footer(
   {
     //countryCode
@@ -29,49 +31,49 @@ export default function Footer(
       <div className="footer-menu">
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
-          <Link href="/about-us">{t('menu.company.about-us')}</Link>
-          <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
-          <Link href="/press">{t('menu.press')}</Link>
-          <Link href="/jobs">Join our team</Link>
+          <FooterLink href="/about-us">{t('menu.company.about-us')}</FooterLink>
+          <FooterLink href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</FooterLink>
+          <FooterLink href="/press">{t('menu.press')}</FooterLink>
+          <FooterLink href="/jobs">Join our team</FooterLink>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Get involved</span>
-          <Link href="/advertise">{t('menu.business.advertise')}</Link>
-          <Link
+          <FooterLink href="/advertise">{t('menu.business.advertise')}</FooterLink>
+          <FooterLink
             href="/admin/referrals"
             style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}
           >
             <span style={{ textDecoration: 'underline' }}>Affiliate program</span> <GrMoney />
-          </Link>
-          <Link href="/customer-support">{t('menu.customer-support')}</Link>
-          <Link href="/donate" style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
+          </FooterLink>
+          <FooterLink href="/customer-support">{t('menu.customer-support')}</FooterLink>
+          <FooterLink href="/donate" style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
             <span style={{ textDecoration: 'underline' }}>{t('menu.donate')}</span>{' '}
             <FaHeart style={{ color: '#e74c3c' }} />
-          </Link>
-          <Link
+          </FooterLink>
+          <FooterLink
             href="/the-chain-of-blocks-summit"
             style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}
           >
             <span style={{ textDecoration: 'underline' }}>Chain Of Blocks Summit</span> <MdLocationOn />
-          </Link>
+          </FooterLink>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
-          <Link href={xahauNetwork ? '/xahau-wallets' : '/xrp-wallets'}>
+          <FooterLink href={xahauNetwork ? '/xahau-wallets' : '/xrp-wallets'}>
             {xahauNetwork ? t('menu.learn-more.xahau-wallets') : t('menu.learn-more.xrp-wallets')}
-          </Link>
-          {!xahauNetwork && <Link href="/learn/xrpl-article">XRP, XRPL, Ripple</Link>}
-          <Link href="/learn/verified-domain">Verified domains</Link>
-          {!xahauNetwork && <Link href="/learn/ripple-usd">Ripple USD</Link>}
-          <Link href="/learn/nft-minting">How to Mint NFT</Link>
-          <Link href="/learn">See our learn page</Link>
+          </FooterLink>
+          {!xahauNetwork && <FooterLink href="/learn/xrpl-article">XRP, XRPL, Ripple</FooterLink>}
+          <FooterLink href="/learn/verified-domain">Verified domains</FooterLink>
+          {!xahauNetwork && <FooterLink href="/learn/ripple-usd">Ripple USD</FooterLink>}
+          <FooterLink href="/learn/nft-minting">How to Mint NFT</FooterLink>
+          <FooterLink href="/learn">See our learn page</FooterLink>
         </div>
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.legal')}</span>
-          <Link href="/disclaimer">{t('menu.disclaimer')}</Link>
-          <Link href="/privacy-policy">{t('menu.privacy-policy')}</Link>
-          <Link href="/terms-and-conditions">{t('menu.terms-and-conditions')}</Link>
+          <FooterLink href="/disclaimer">{t('menu.disclaimer')}</FooterLink>
+          <FooterLink href="/privacy-policy">{t('menu.privacy-policy')}</FooterLink>
+          <FooterLink href="/terms-and-conditions">{t('menu.terms-and-conditions')}</FooterLink>
         </div>
 
         {!xahauNetwork && (
