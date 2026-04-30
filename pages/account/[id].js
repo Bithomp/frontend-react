@@ -423,6 +423,9 @@ const hookNameText = (hookHash) => {
 
 const mptId = (node) => node?.MPTokenIssuanceID || node?.mpt_issuance_id || null
 
+const issuedTokenSpotPrice = (token) => Number(token?.priceNativeCurrencySpot || 0)
+const issuedTokenValueNative = (token) => Number(token?.supply || 0) * issuedTokenSpotPrice(token)
+
 export default function Account({
   initialData,
   initialErrorMessage,
@@ -2061,7 +2064,7 @@ export default function Account({
 
       try {
         const issuedTokensUrl =
-          `v2/trustlines/tokens?issuer=${data.address}&limit=100&currencyDetails=true&statistics=true&order=holdersHigh` +
+          `v2/trustlines/tokens?issuer=${data.address}&limit=100&currencyDetails=true&statistics=true&priceNativeCurrencySpot=true&order=holdersHigh` +
           (effectiveLedgerTimestamp
             ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
             : '')
@@ -2069,9 +2072,7 @@ export default function Account({
         const response = await axios.get(issuedTokensUrl)
         const fetchedIssuedTokens = Array.isArray(response?.data?.tokens) ? response.data.tokens : []
 
-        const sortedIssuedTokens = fetchedIssuedTokens.sort(
-          (a, b) => Number(b?.statistics?.marketcap || 0) - Number(a?.statistics?.marketcap || 0)
-        )
+        const sortedIssuedTokens = fetchedIssuedTokens.sort((a, b) => issuedTokenValueNative(b) - issuedTokenValueNative(a))
 
         setIssuedTokens(sortedIssuedTokens)
       } catch (error) {
@@ -7415,9 +7416,9 @@ export default function Account({
                   issuedTokens.map((token, index) => {
                     const tokenStats = token.statistics || {}
                     const tokenSupply = Number(token.supply || 0)
-                    const tokenPriceNative = Number(tokenStats.priceNativeCurrency || 0)
+                    const tokenPriceNative = issuedTokenSpotPrice(token)
                     const tokenPriceFiat = tokenPriceNative * (pageFiatRate || 0)
-                    const tokenMarketcap = Number(tokenStats.marketcap || 0)
+                    const tokenMarketcap = issuedTokenValueNative(token)
                     const tokenMarketcapFiat = tokenMarketcap * (pageFiatRate || 0)
                     const tokenVolume24h = Number(tokenStats.buyVolume || 0) + Number(tokenStats.sellVolume || 0)
                     const tokenVolume24hFiat = tokenVolume24h * tokenPriceNative * (pageFiatRate || 0)
