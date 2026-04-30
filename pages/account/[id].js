@@ -40,6 +40,8 @@ const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
 const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
 const SIGNER_ACCOUNTS_FETCH_LIMIT = 10
+const NFT_MINTER_ACCOUNTS_FETCH_LIMIT = 200
+const NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT = 10
 const OBJECT_PREVIEW_LIMIT = 5
 const OBJECT_LOAD_MORE_STEP = 5
 
@@ -113,6 +115,42 @@ const fetchSignerAccountsServer = async ({ address, req }) => {
   }
 }
 
+const normalizeNftMinterAccountsPayload = ({ payload, address, appendRows = [] }) => {
+  const seenAddresses = new Set(appendRows.map((row) => row.account))
+  const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+  const rows = accountRows.filter((row) => {
+    if (!row?.account || row?.nftokenMinter !== address || seenAddresses.has(row.account)) return false
+    seenAddresses.add(row.account)
+    return true
+  })
+
+  return {
+    rows,
+    marker: payload?.marker || null
+  }
+}
+
+const fetchNftMinterAccountsServer = async ({ address, req }) => {
+  const response = await axiosServer({
+    method: 'get',
+    url: `v2/accounts?nftokenMinter=${address}&limit=${NFT_MINTER_ACCOUNTS_FETCH_LIMIT}`,
+    headers: passHeaders(req)
+  })
+
+  const payload = response?.data || {}
+  if (payload?.result && payload.result !== 'success') {
+    throw new Error(payload?.message || 'Failed to load NFT minter accounts')
+  }
+
+  const { rows, marker } = normalizeNftMinterAccountsPayload({ payload, address })
+
+  return {
+    rows,
+    count: rows.length,
+    marker
+  }
+}
+
 const fetchActivatedAccountsServer = async ({ address, req, order = 'desc' }) => {
   const headers = passHeaders(req)
   const [accountsResult, summaryResult] = await Promise.allSettled([
@@ -174,6 +212,7 @@ export async function getServerSideProps(context) {
   let networkInfo = {}
   let initialErrorMessage = null
   let initialSignerAccountsData = null
+  let initialNftMinterAccountsData = null
   let initialActivatedAccountsData = null
   const { id, ledgerIndex, ledgerTimestamp } = query
   const ledgerTimestampValue = Array.isArray(ledgerTimestamp) ? ledgerTimestamp[0] : ledgerTimestamp
@@ -245,14 +284,18 @@ export async function getServerSideProps(context) {
         const signerPromise = initialData?.address
           ? fetchSignerAccountsServer({ address: initialData.address, req })
           : Promise.resolve(null)
+        const nftMinterPromise = initialData?.address
+          ? fetchNftMinterAccountsServer({ address: initialData.address, req })
+          : Promise.resolve(null)
         const activatedAccountsPromise =
           initialData?.address && !isHistoricalLedger
             ? fetchActivatedAccountsServer({ address: initialData.address, req })
             : Promise.resolve(null)
 
-        const [networkData, signerResult, activatedAccountsResult] = await Promise.allSettled([
+        const [networkData, signerResult, nftMinterResult, activatedAccountsResult] = await Promise.allSettled([
           networkPromise,
           signerPromise,
+          nftMinterPromise,
           activatedAccountsPromise
         ])
 
@@ -263,6 +306,10 @@ export async function getServerSideProps(context) {
 
         if (signerResult.status === 'fulfilled') {
           initialSignerAccountsData = signerResult.value
+        }
+
+        if (nftMinterResult.status === 'fulfilled') {
+          initialNftMinterAccountsData = nftMinterResult.value
         }
 
         if (activatedAccountsResult.status === 'fulfilled') {
@@ -289,6 +336,7 @@ export async function getServerSideProps(context) {
         initialData: initialData || {},
         initialErrorMessage: initialErrorMessage || null,
         initialSignerAccountsData,
+        initialNftMinterAccountsData,
         initialActivatedAccountsData,
         ...(await serverSideTranslations(locale, ['common', 'account']))
       }
@@ -302,6 +350,7 @@ export async function getServerSideProps(context) {
         isSsrMobile: getIsSsrMobile(context),
         initialErrorMessage: initialErrorMessage || null,
         initialSignerAccountsData,
+        initialNftMinterAccountsData,
         initialActivatedAccountsData,
         ...(await serverSideTranslations(locale, ['common', 'account']))
       }
@@ -378,6 +427,7 @@ export default function Account({
   initialData,
   initialErrorMessage,
   initialSignerAccountsData,
+  initialNftMinterAccountsData,
   initialActivatedAccountsData,
   selectedCurrency: selectedCurrencyApp,
   selectedCurrencyServer,
@@ -512,10 +562,18 @@ export default function Account({
   const [signerAccountsLoadingMore, setSignerAccountsLoadingMore] = useState(false)
   const [signerAccountsError, setSignerAccountsError] = useState(null)
   const [expandedSignerCard, setExpandedSignerCard] = useState(false)
+  const [nftMinterAccounts, setNftMinterAccounts] = useState(initialNftMinterAccountsData?.rows || [])
+  const [nftMinterAccountsTotal, setNftMinterAccountsTotal] = useState(initialNftMinterAccountsData?.count || 0)
+  const [nftMinterAccountsDisplayLimit, setNftMinterAccountsDisplayLimit] = useState(NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT)
+  const [nftMinterAccountsMarker, setNftMinterAccountsMarker] = useState(initialNftMinterAccountsData?.marker || null)
+  const [nftMinterAccountsLoadingMore, setNftMinterAccountsLoadingMore] = useState(false)
+  const [nftMinterAccountsError, setNftMinterAccountsError] = useState(null)
+  const [expandedNftMinterCard, setExpandedNftMinterCard] = useState(false)
   const nftOffersRequestTokenRef = useRef(0)
   const transactionsRequestTokenRef = useRef(0)
   const activatedAccountsRequestTokenRef = useRef(0)
   const signerAccountsRequestTokenRef = useRef(0)
+  const nftMinterAccountsRequestTokenRef = useRef(0)
   const activatedAccountsOrderHydratedRef = useRef(false)
   const refreshPageRef = useRef(refreshPage)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
@@ -1137,6 +1195,10 @@ export default function Account({
   const hasIssuedMpts = issuedMpts.length > 0
   const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
   const hasSignerAccountsSection = !!data?.address && (signerAccountsLoading || signerAccounts.length > 0)
+  const nftMinterAccountsPreview = nftMinterAccounts.slice(0, nftMinterAccountsDisplayLimit)
+  const hasMoreNftMinterAccountsLoaded = nftMinterAccounts.length > nftMinterAccountsPreview.length
+  const hasNftMinterAccountsSection =
+    !!data?.address && (nftMinterAccountsLoadingMore || !!nftMinterAccountsError || nftMinterAccounts.length > 0)
   const hasActivatedAccountsSection =
     !effectiveLedgerTimestamp &&
     (activatedAccountsLoading ||
@@ -1257,6 +1319,79 @@ export default function Account({
 
     const requestToken = signerAccountsRequestTokenRef.current
     fetchSignerAccountsPage({ requestToken, append: true })
+  }
+
+  useEffect(() => {
+    nftMinterAccountsRequestTokenRef.current += 1
+
+    if (!data?.address) {
+      setNftMinterAccounts([])
+      setNftMinterAccountsTotal(0)
+      setNftMinterAccountsDisplayLimit(NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT)
+      setNftMinterAccountsMarker(null)
+      setNftMinterAccountsLoadingMore(false)
+      setNftMinterAccountsError(null)
+      setExpandedNftMinterCard(false)
+      return
+    }
+
+    setNftMinterAccounts(initialNftMinterAccountsData?.rows || [])
+    setNftMinterAccountsTotal(initialNftMinterAccountsData?.count || 0)
+    setNftMinterAccountsDisplayLimit(NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT)
+    setNftMinterAccountsMarker(initialNftMinterAccountsData?.marker || null)
+    setNftMinterAccountsLoadingMore(false)
+    setNftMinterAccountsError(null)
+    setExpandedNftMinterCard(false)
+  }, [data?.address, initialNftMinterAccountsData])
+
+  const loadMoreNftMinterAccounts = async () => {
+    if (!data?.address || nftMinterAccountsLoadingMore) return
+
+    if (hasMoreNftMinterAccountsLoaded) {
+      setNftMinterAccountsDisplayLimit((prev) => prev + NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT)
+      return
+    }
+
+    if (!nftMinterAccountsMarker) return
+
+    nftMinterAccountsRequestTokenRef.current += 1
+    const requestToken = nftMinterAccountsRequestTokenRef.current
+
+    setNftMinterAccountsLoadingMore(true)
+    setNftMinterAccountsError(null)
+
+    try {
+      const response = await axios.get(
+        `v2/accounts?nftokenMinter=${data.address}&limit=${NFT_MINTER_ACCOUNTS_FETCH_LIMIT}&marker=${encodeURIComponent(nftMinterAccountsMarker)}`
+      )
+
+      if (nftMinterAccountsRequestTokenRef.current !== requestToken) return
+
+      const payload = response?.data || {}
+      if (payload?.result && payload.result !== 'success') {
+        throw new Error(payload?.message || 'Failed to load NFT minter accounts')
+      }
+
+      const { rows, marker } = normalizeNftMinterAccountsPayload({
+        payload,
+        address: data.address,
+        appendRows: nftMinterAccounts
+      })
+
+      setNftMinterAccounts((prev) => {
+        const mergedRows = [...prev, ...rows]
+        setNftMinterAccountsTotal(mergedRows.length)
+        return mergedRows
+      })
+      setNftMinterAccountsDisplayLimit((prev) => prev + NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT)
+      setNftMinterAccountsMarker(marker)
+    } catch (requestError) {
+      if (nftMinterAccountsRequestTokenRef.current !== requestToken) return
+      setNftMinterAccountsError(requestError?.message || 'Failed to load NFT minter accounts')
+    } finally {
+      if (nftMinterAccountsRequestTokenRef.current !== requestToken) return
+      setNftMinterAccountsLoadingMore(false)
+    }
   }
 
   const fetchActivatedAccountsPage = async ({ requestToken, markerValue = null, append = false } = {}) => {
@@ -3102,6 +3237,88 @@ export default function Account({
                                 disabled={signerAccountsLoadingMore}
                               >
                                 {signerAccountsLoadingMore ? (
+                                  <>
+                                    Loading
+                                    <span className="waiting inline" aria-hidden="true"></span>
+                                  </>
+                                ) : (
+                                  'Load more'
+                                )}
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {hasNftMinterAccountsSection && (
+                <div className="time-machine-card signer-accounts-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${expandedNftMinterCard ? 'active' : ''}`}
+                    onClick={() => setExpandedNftMinterCard((prev) => !prev)}
+                  >
+                    NFT minter
+                    <span className="account-control-collapsed" suppressHydrationWarning>
+                      {nftMinterAccountsError && nftMinterAccounts.length === 0 ? (
+                        ' unavailable'
+                      ) : (
+                        <>
+                          {' for '}
+                          <span className="bold">{fullNiceNumber(nftMinterAccountsTotal)}</span>
+                          {nftMinterAccountsMarker ? '+' : ''} {nftMinterAccountsTotal === 1 ? 'address' : 'addresses'}
+                        </>
+                      )}
+                    </span>
+                  </button>
+
+                  {expandedNftMinterCard && (
+                    <div className="time-machine-panel">
+                      {nftMinterAccountsError && nftMinterAccounts.length === 0 ? (
+                        <div className="detail-row">
+                          <span className="red">{nftMinterAccountsError}</span>
+                        </div>
+                      ) : nftMinterAccounts.length === 0 ? (
+                        <div className="detail-row">
+                          <span>No addresses found where this account is an NFT minter.</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="signer-rows-container">
+                            {nftMinterAccountsPreview.map((minterAccount, index) => (
+                              <div className="signer-row" key={`${minterAccount.account}-${index}`}>
+                                <span className="signer-row-index">{index + 1}</span>
+                                <div className="signer-row-address">
+                                  <AddressWithIconInline data={minterAccount} options={{ short: 6 }} name="account" />
+                                </div>
+                                <span className="signer-row-role">
+                                  <span className="grey">(NFT minter)</span>
+                                </span>
+                                <div className="signer-row-action">
+                                  <CopyButton text={minterAccount.account} />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {nftMinterAccountsError && (
+                            <div className="detail-row">
+                              <span className="red">{nftMinterAccountsError}</span>
+                            </div>
+                          )}
+
+                          {(hasMoreNftMinterAccountsLoaded || nftMinterAccountsMarker || nftMinterAccountsLoadingMore) && (
+                            <div className="center" style={{ marginTop: '12px' }}>
+                              <button
+                                type="button"
+                                className="button-outline"
+                                onClick={loadMoreNftMinterAccounts}
+                                disabled={nftMinterAccountsLoadingMore}
+                              >
+                                {nftMinterAccountsLoadingMore ? (
                                   <>
                                     Loading
                                     <span className="waiting inline" aria-hidden="true"></span>
