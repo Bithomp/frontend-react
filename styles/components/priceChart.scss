@@ -12,6 +12,45 @@
   }
 }
 
+.home-price-chart--placeholder {
+  box-sizing: border-box;
+  border-radius: 16px;
+  padding: 32px 5px 15px 58px;
+  background: linear-gradient(135deg, rgba(0, 177, 193, 0.08), rgba(0, 177, 193, 0.02));
+}
+
+.home-price-chart--placeholder-light {
+  background: linear-gradient(135deg, rgba(0, 130, 142, 0.08), rgba(0, 130, 142, 0.02));
+}
+
+.home-price-chart-placeholder-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.7);
+
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) {
+        top: percentage(($i - 1) / 5);
+      }
+    }
+  }
+}
+
+.light {
+  .home-price-chart-placeholder-grid {
+    span {
+      background: rgba(0, 0, 0, 0.35);
+    }
+  }
+}
+
 .apexcharts-toolbar {
   z-index: 1 !important;
   div[class*="-icon"] {

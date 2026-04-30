@@ -23,6 +23,20 @@ import dynamic from 'next/dynamic'
 import { currencyServer } from '../utils/axios'
 import { emptyHomeTeasers, fetchHomeTeasersClient } from '../utils/homeTeaserClientData'
 //not indexed
+const HomeTeaserPlaceholder = () => (
+  <div className="home-widget-placeholder home-widget-placeholder--teaser-card" aria-hidden="true">
+    <div className="home-widget-placeholder__header">
+      <span />
+      <span />
+    </div>
+    <div className="home-widget-placeholder__rows">
+      <span />
+      <span />
+      <span />
+    </div>
+  </div>
+)
+
 const Converter = dynamic(() => import('../components/Home/Converter'), {
   ssr: false,
   loading: () => <div className="home-widget-placeholder home-widget-placeholder--converter" aria-hidden="true" />
@@ -31,8 +45,14 @@ const PriceChart = dynamic(() => import('../components/Home/PriceChart'), {
   ssr: false,
   loading: () => <div className="home-widget-placeholder home-widget-placeholder--chart" aria-hidden="true" />
 })
-const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false })
-const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
+const Whales = dynamic(() => import('../components/Home/Whales'), {
+  ssr: false,
+  loading: HomeTeaserPlaceholder
+})
+const Statistics = dynamic(() => import('../components/Home/Statistics'), {
+  ssr: false,
+  loading: HomeTeaserPlaceholder
+})
 
 export async function getServerSideProps(context) {
   const { locale, req, res } = context

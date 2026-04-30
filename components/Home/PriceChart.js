@@ -15,6 +15,27 @@ const panicon = '/images/chart/panning.svg'
 
 /* ----------------------- small helpers ----------------------- */
 
+function PriceChartPlaceholder({ height, theme }) {
+  return (
+    <div
+      className={`home-price-chart home-price-chart--placeholder ${
+        theme === 'light' ? 'home-price-chart--placeholder-light' : ''
+      }`.trim()}
+      aria-hidden="true"
+      style={{ height }}
+    >
+      <div className="home-price-chart-placeholder-grid">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+  )
+}
+
 // Currency sign map
 const CURRENCY_SYMBOL = new Map([
   ['ars', '$'],
@@ -517,26 +538,13 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
 
   const series = useMemo(() => [{ name: '', data: seriesData }], [seriesData])
 
-  if (!rendered) {
-    return (
-      <div
-        className="home-price-chart"
-        aria-hidden="true"
-        style={{
-          height: chartHeight,
-          borderRadius: 16,
-          background:
-            theme === 'light'
-              ? 'linear-gradient(135deg, rgba(0, 130, 142, 0.08), rgba(0, 130, 142, 0.02))'
-              : 'linear-gradient(135deg, rgba(0, 177, 193, 0.12), rgba(0, 177, 193, 0.03))'
-        }}
-      />
-    )
+  if (!rendered || seriesData.length < 2) {
+    return <PriceChartPlaceholder height={chartHeight} theme={theme} />
   }
 
   return (
     <>
-      <div className="home-price-chart">
+      <div className="home-price-chart" style={{ minHeight: chartHeight }}>
         <Chart type="line" series={series} options={options} height={chartHeight} />
       </div>
     </>

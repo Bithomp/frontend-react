@@ -498,7 +498,8 @@
   }
 }
 
-.livePriceCard {
+.livePriceCard,
+.chartCard {
   @media (min-width: 768px) {
     min-height: 335px;
   }
