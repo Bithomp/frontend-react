@@ -11,6 +11,9 @@ export default function Avatar({ src, alt = 'avatar', size = 35, style = {} }) {
         borderRadius: '50%',
         width: size,
         height: size,
+        minWidth: size,
+        minHeight: size,
+        lineHeight: 0,
         overflow: 'hidden',
         verticalAlign: 'middle',
         border: theme === 'dark' ? '1px solid #444' : '1px solid #eee',
@@ -22,7 +25,14 @@ export default function Avatar({ src, alt = 'avatar', size = 35, style = {} }) {
         src={src + (src?.includes('?') ? '&' : '?') + 'hashIconZoom=12'}
         width={size}
         height={size}
-        style={{ verticalAlign: 'middle' }}
+        style={{
+          display: 'block',
+          width: '100%',
+          height: '100%',
+          borderRadius: '50%',
+          objectFit: 'cover',
+          verticalAlign: 'middle'
+        }}
       />
     </span>
   )

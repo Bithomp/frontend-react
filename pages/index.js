@@ -11,17 +11,19 @@ import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
 import Ads from '../components/Layout/Ads'
 import FeaturedCard from '../components/Home/FeaturedCard'
-import TeaserTopDapps from '../components/Home/TeaserTopDapps'
-import TeaserTopTokens from '../components/Home/TeaserTopTokens'
-import TeaserTopNftCollections from '../components/Home/TeaserTopNftCollections'
-import TeaserTopAmms from '../components/Home/TeaserTopAmms'
-import TeaserTopValidators from '../components/Home/TeaserTopValidators'
-import TeaserTopAmendments from '../components/Home/TeaserTopAmendments'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 import dynamic from 'next/dynamic'
 import { currencyServer } from '../utils/axios'
-import { emptyHomeTeasers, fetchHomeTeasersClient } from '../utils/homeTeaserClientData'
+import {
+  emptyHomeTeasers,
+  fetchTeaserAmendmentsClient,
+  fetchTeaserAmmsClient,
+  fetchTeaserDappsClient,
+  fetchTeaserNftCollectionsClient,
+  fetchTeaserTokensClient,
+  fetchTeaserValidatorsClient
+} from '../utils/homeTeaserClientData'
 //not indexed
 const HomeTeaserPlaceholder = () => (
   <div className="home-widget-placeholder home-widget-placeholder--teaser-card" aria-hidden="true">
@@ -33,9 +35,20 @@ const HomeTeaserPlaceholder = () => (
       <span />
       <span />
       <span />
+      <span />
+      <span />
     </div>
   </div>
 )
+
+const initialTeaserLoading = {
+  dapps: true,
+  tokens: true,
+  nftCollections: true,
+  amms: true,
+  validators: true,
+  amendments: true
+}
 
 const Converter = dynamic(() => import('../components/Home/Converter'), {
   ssr: false,
@@ -53,6 +66,85 @@ const Statistics = dynamic(() => import('../components/Home/Statistics'), {
   ssr: false,
   loading: HomeTeaserPlaceholder
 })
+const TeaserTopDapps = dynamic(() => import('../components/Home/TeaserTopDapps'), {
+  ssr: false,
+  loading: HomeTeaserPlaceholder
+})
+const TeaserTopTokens = dynamic(() => import('../components/Home/TeaserTopTokens'), {
+  ssr: false,
+  loading: HomeTeaserPlaceholder
+})
+const TeaserTopNftCollections = dynamic(() => import('../components/Home/TeaserTopNftCollections'), {
+  ssr: false,
+  loading: HomeTeaserPlaceholder
+})
+const TeaserTopAmms = dynamic(() => import('../components/Home/TeaserTopAmms'), {
+  ssr: false,
+  loading: HomeTeaserPlaceholder
+})
+const TeaserTopValidators = dynamic(() => import('../components/Home/TeaserTopValidators'), {
+  ssr: false,
+  loading: HomeTeaserPlaceholder
+})
+const TeaserTopAmendments = dynamic(() => import('../components/Home/TeaserTopAmendments'), {
+  ssr: false,
+  loading: HomeTeaserPlaceholder
+})
+
+function LazyHomeWidget({ children, placeholder, rootMargin = '0px 0px 120px 0px', minDelayMs = 0 }) {
+  const ref = useRef(null)
+  const [ready, setReady] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [canLoad, setCanLoad] = useState(minDelayMs <= 0)
+
+  useEffect(() => {
+    if (canLoad || minDelayMs <= 0) return undefined
+
+    const timeoutId = window.setTimeout(() => setCanLoad(true), minDelayMs)
+    const handleInteraction = () => setCanLoad(true)
+    const options = { passive: true, once: true }
+
+    window.addEventListener('pointerdown', handleInteraction, options)
+    window.addEventListener('touchstart', handleInteraction, options)
+    window.addEventListener('keydown', handleInteraction, { once: true })
+
+    return () => {
+      window.clearTimeout(timeoutId)
+      window.removeEventListener('pointerdown', handleInteraction)
+      window.removeEventListener('touchstart', handleInteraction)
+      window.removeEventListener('keydown', handleInteraction)
+    }
+  }, [canLoad, minDelayMs])
+
+  useEffect(() => {
+    if (ready || !isVisible || !canLoad) return undefined
+    setReady(true)
+  }, [canLoad, isVisible, ready])
+
+  useEffect(() => {
+    if (ready || isVisible) return undefined
+
+    const element = ref.current
+    if (!element || typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      setIsVisible(true)
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        setIsVisible(true)
+        observer.disconnect()
+      },
+      { rootMargin }
+    )
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [isVisible, ready, rootMargin])
+
+  return <div ref={ref}>{ready ? children : placeholder}</div>
+}
 
 export async function getServerSideProps(context) {
   const { locale, req, res } = context
@@ -77,6 +169,7 @@ export default function Home({
   fiatRate,
   selectedCurrencyServer,
   countryCode,
+  isSsrMobile,
   statistics,
   whaleTransactions,
   setStatistics,
@@ -136,47 +229,80 @@ export default function Home({
     validators: teaserValidators,
     amendments: teaserAmendments
   })
-  const [teasersLoading, setTeasersLoading] = useState(true)
+  const [teasersLoading, setTeasersLoading] = useState(initialTeaserLoading)
   const loadedTeaserCurrencyRef = useRef('')
 
   useEffect(() => {
     if (!selectedCurrency || loadedTeaserCurrencyRef.current === selectedCurrency) return undefined
 
     let cancelled = false
-    let timeoutId = null
+    const timeoutIds = []
+    const fastDelay = isSsrMobile ? 1200 : 900
+    const slowDelay = isSsrMobile ? 12000 : 4500
 
-    setTeasersLoading(true)
+    setHomeTeasers(emptyHomeTeasers)
+    setTeasersLoading(initialTeaserLoading)
 
-    const fetchTeasers = async () => {
-      try {
-        const data = await fetchHomeTeasersClient(selectedCurrency)
-        if (!cancelled) {
-          loadedTeaserCurrencyRef.current = selectedCurrency
-          setHomeTeasers({
-            ...emptyHomeTeasers,
-            ...data
-          })
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setHomeTeasers(emptyHomeTeasers)
-        }
-      } finally {
-        if (!cancelled) {
-          setTeasersLoading(false)
-        }
+    const tasks = [
+      {
+        key: 'amms',
+        delay: fastDelay,
+        fetcher: () => (xahauNetwork ? [] : fetchTeaserAmmsClient())
+      },
+      {
+        key: 'tokens',
+        delay: fastDelay,
+        fetcher: () => fetchTeaserTokensClient(selectedCurrency)
+      },
+      {
+        key: 'amendments',
+        delay: fastDelay,
+        fetcher: fetchTeaserAmendmentsClient
+      },
+      {
+        key: 'dapps',
+        delay: slowDelay,
+        fetcher: () => (xahauNetwork ? [] : fetchTeaserDappsClient(selectedCurrency))
+      },
+      {
+        key: 'validators',
+        delay: slowDelay,
+        fetcher: fetchTeaserValidatorsClient
+      },
+      {
+        key: 'nftCollections',
+        delay: slowDelay,
+        fetcher: () => (xahauNetwork ? [] : fetchTeaserNftCollectionsClient(selectedCurrency))
       }
+    ]
+
+    for (const task of tasks) {
+      const timeoutId = window.setTimeout(async () => {
+        try {
+          const data = await task.fetcher()
+          if (!cancelled) {
+            setHomeTeasers((current) => ({ ...current, [task.key]: data }))
+          }
+        } catch (error) {
+          if (!cancelled) {
+            setHomeTeasers((current) => ({ ...current, [task.key]: [] }))
+          }
+        } finally {
+          if (!cancelled) {
+            setTeasersLoading((current) => ({ ...current, [task.key]: false }))
+          }
+        }
+      }, task.delay)
+      timeoutIds.push(timeoutId)
     }
 
-    timeoutId = window.setTimeout(fetchTeasers, 4500)
+    loadedTeaserCurrencyRef.current = selectedCurrency
 
     return () => {
       cancelled = true
-      if (timeoutId !== null) {
-        window.clearTimeout(timeoutId)
-      }
+      timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId))
     }
-  }, [selectedCurrency])
+  }, [isSsrMobile, selectedCurrency])
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
@@ -253,8 +379,11 @@ export default function Home({
         <h1 className="center">{pageHeading}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
         {isEnglishMainnetHome && (
-          <p className="center">
-            Need direct lookup? Open the <Link href="/explorer" prefetch={false}>XRP Ledger search page</Link>.
+          <p className="center home-direct-lookup">
+            <span>Need direct lookup?</span>{' '}
+            <span className="home-direct-lookup-action">
+              Open the <Link href="/explorer" prefetch={false}>XRP Ledger search page</Link>.
+            </span>
           </p>
         )}
         {showAds && <Ads countryCode={countryCode} />}
@@ -264,144 +393,170 @@ export default function Home({
         <div className="home-dashboard">
           {/* Begin: Discovery Widgets Grid */}
           <div className="home-widgets-grid">
-            {/* Price Tools Section */}
-            <div className="home-widget">
-              <FeaturedCard className={styles.livePriceCard} title={t('home.price.header', { nativeCurrency })}>
-                <Converter
-                  selectedCurrency={selectedCurrency}
-                  setSelectedCurrency={setSelectedCurrency}
-                  chartPeriod={chartPeriod}
-                  fiatRate={fiatRate}
+            <div className="home-widget home-widget--compact-stat">
+              <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                <Statistics
+                  data={statistics}
+                  setData={setStatistics}
+                  title={t('home.stat.header', { ledgerName })}
+                  mode="activity"
                 />
-              </FeaturedCard>
+              </LazyHomeWidget>
+            </div>
+
+            <div className="home-widget home-widget--compact-stat">
+              <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                <Statistics data={statistics} setData={setStatistics} mode="ledger" fetchOnMount={false} />
+              </LazyHomeWidget>
+            </div>
+
+            <div className="home-widget home-widget--compact-stat">
+              <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                <Statistics data={statistics} setData={setStatistics} mode="network" fetchOnMount={false} />
+              </LazyHomeWidget>
             </div>
 
             <div className="home-widget">
-              <FeaturedCard
-                className={styles.chartCard}
-                title={t('home.price.chartHeader', { nativeCurrency })}
-                headerActions={
-                  <>
-                    {(selectedCurrency === 'eur' || selectedCurrency === 'usd') && (
+              <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
+              </LazyHomeWidget>
+            </div>
+
+            {!xahauNetwork && (
+              <div className="home-widget">
+                <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                  <TeaserTopAmms
+                    data={homeTeasers.amms}
+                    isLoading={teasersLoading.amms}
+                    fiatRate={fiatRate}
+                    selectedCurrency={selectedCurrency}
+                  />
+                </LazyHomeWidget>
+              </div>
+            )}
+
+            <div className="home-widget">
+              <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                <TeaserTopTokens data={homeTeasers.tokens} isLoading={teasersLoading.tokens} />
+              </LazyHomeWidget>
+            </div>
+
+            <div className="home-widget">
+              <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                <TeaserTopAmendments data={homeTeasers.amendments} isLoading={teasersLoading.amendments} />
+              </LazyHomeWidget>
+            </div>
+
+            <div className="home-widget">
+              <LazyHomeWidget placeholder={<div className="home-widget-placeholder home-widget-placeholder--converter" aria-hidden="true" />}>
+                <FeaturedCard className={styles.livePriceCard} title={t('home.price.header', { nativeCurrency })}>
+                  <Converter
+                    selectedCurrency={selectedCurrency}
+                    setSelectedCurrency={setSelectedCurrency}
+                    chartPeriod={chartPeriod}
+                    fiatRate={fiatRate}
+                  />
+                </FeaturedCard>
+              </LazyHomeWidget>
+            </div>
+
+            <div className="home-widget">
+              <LazyHomeWidget
+                placeholder={<div className="home-widget-placeholder home-widget-placeholder--chart" aria-hidden="true" />}
+                rootMargin="0px 0px 220px 0px"
+                minDelayMs={isSsrMobile ? 5000 : 0}
+              >
+                <FeaturedCard
+                  className={styles.chartCard}
+                  title={t('home.price.chartHeader', { nativeCurrency })}
+                  headerActions={
+                    <>
+                      {(selectedCurrency === 'eur' || selectedCurrency === 'usd') && (
+                        <button
+                          type="button"
+                          onClick={() => setChartPeriod('one_day')}
+                          className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_day' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                        >
+                          1D
+                        </button>
+                      )}
                       <button
                         type="button"
-                        onClick={() => setChartPeriod('one_day')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_day' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                        onClick={() => setChartPeriod('one_week')}
+                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_week' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
                       >
-                        1D
+                        1W
                       </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setChartPeriod('one_week')}
-                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_week' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                    >
-                      1W
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setChartPeriod('one_month')}
-                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_month' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                    >
-                      1M
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setChartPeriod('six_months')}
-                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'six_months' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                    >
-                      6M
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setChartPeriod('one_year')}
-                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_year' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                    >
-                      1Y
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setChartPeriod('ytd')}
-                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'ytd' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                    >
-                      YTD
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setChartPeriod('all')}
-                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'all' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                    >
-                      ALL
-                    </button>
-                  </>
-                }
-              >
-                <PriceChart
-                  currency={selectedCurrency}
-                  chartPeriod={chartPeriod}
-                  setChartPeriod={setChartPeriod}
-                  hideToolbar={true}
-                  liveFiatRate={fiatRate}
-                />
-              </FeaturedCard>
-            </div>
-
-            <div className="home-widget home-widget--reserved-card">
-              <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
-            </div>
-
-            <div className="home-widget home-widget--reserved-card">
-              <Statistics
-                data={statistics}
-                setData={setStatistics}
-                title={t('home.stat.header', { ledgerName })}
-                mode="activity"
-              />
-            </div>
-
-            <div className="home-widget home-widget--reserved-card">
-              <Statistics data={statistics} setData={setStatistics} mode="ledger" fetchOnMount={false} />
-            </div>
-
-            <div className="home-widget home-widget--reserved-card">
-              <Statistics data={statistics} setData={setStatistics} mode="network" fetchOnMount={false} />
-            </div>
-
-            {/* Begin: Teaser Widgets - Each will be a HomeTeaser component */}
-            {!xahauNetwork && (
-              <div className="home-widget">
-                <TeaserTopDapps data={homeTeasers.dapps} isLoading={teasersLoading} />
-              </div>
-            )}
-
-            {!xahauNetwork && (
-              <div className="home-widget">
-                <TeaserTopNftCollections data={homeTeasers.nftCollections} isLoading={teasersLoading} />
-              </div>
-            )}
-
-            <div className="home-widget">
-              <TeaserTopTokens data={homeTeasers.tokens} isLoading={teasersLoading} />
+                      <button
+                        type="button"
+                        onClick={() => setChartPeriod('one_month')}
+                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_month' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                      >
+                        1M
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setChartPeriod('six_months')}
+                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'six_months' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                      >
+                        6M
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setChartPeriod('one_year')}
+                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_year' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                      >
+                        1Y
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setChartPeriod('ytd')}
+                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'ytd' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                      >
+                        YTD
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setChartPeriod('all')}
+                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'all' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                      >
+                        ALL
+                      </button>
+                    </>
+                  }
+                >
+                  <PriceChart
+                    currency={selectedCurrency}
+                    chartPeriod={chartPeriod}
+                    setChartPeriod={setChartPeriod}
+                    hideToolbar={true}
+                    liveFiatRate={fiatRate}
+                  />
+                </FeaturedCard>
+              </LazyHomeWidget>
             </div>
 
             {!xahauNetwork && (
               <div className="home-widget">
-                <TeaserTopAmms
-                  data={homeTeasers.amms}
-                  isLoading={teasersLoading}
-                  fiatRate={fiatRate}
-                  selectedCurrency={selectedCurrency}
-                />
+                <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                  <TeaserTopDapps data={homeTeasers.dapps} isLoading={teasersLoading.dapps} />
+                </LazyHomeWidget>
               </div>
             )}
 
             <div className="home-widget">
-              <TeaserTopValidators data={homeTeasers.validators} isLoading={teasersLoading} />
+              <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                <TeaserTopValidators data={homeTeasers.validators} isLoading={teasersLoading.validators} />
+              </LazyHomeWidget>
             </div>
 
-            <div className="home-widget">
-              <TeaserTopAmendments data={homeTeasers.amendments} isLoading={teasersLoading} />
-            </div>
+            {!xahauNetwork && (
+              <div className="home-widget">
+                <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
+                  <TeaserTopNftCollections data={homeTeasers.nftCollections} isLoading={teasersLoading.nftCollections} />
+                </LazyHomeWidget>
+              </div>
+            )}
           </div>
           {/* End: Discovery Widgets Grid */}
         </div>

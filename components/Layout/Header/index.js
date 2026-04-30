@@ -80,10 +80,36 @@ import {
 import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
 import WalletProviderIcon from '../../UI/WalletProviderIcon'
-import { niceNumber } from '../../../utils/format'
-import { serviceUsernameOrAddressText } from '../../../utils/format'
 
 const Link = (props) => <NextLink {...props} prefetch={false} />
+
+const niceHeaderNumber = (value, currency, maxFractionDigits = 4) => {
+  const number = Number(value)
+  if (!Number.isFinite(number)) return value
+
+  return number.toLocaleString(undefined, {
+    style: currency ? 'currency' : undefined,
+    currency: currency ? currency.toUpperCase() : undefined,
+    maximumFractionDigits: maxFractionDigits,
+    minimumFractionDigits: 0
+  })
+}
+
+const shortHash = (value, length = 6) => {
+  if (!value) return ''
+  const text = value.toString()
+  return text.substr(0, length) + '...' + text.substr(-length)
+}
+
+const serviceUsernameOrAddressText = (data, name = 'address', options) => {
+  if (!data || !data[name]) return ''
+  const address = data[name]
+  const { service, username } = data[name + 'Details'] || {}
+  if (service) return service
+  if (username) return username
+  if (options?.fullAddress) return address
+  return shortHash(address)
+}
 
 const HIDE_SEARCH_HEADER = ['/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
@@ -368,7 +394,7 @@ export default function Header({
               aria-hidden={fiatRate > 0 ? 'false' : 'true'}
             >
               <span className={'header-fiat-rate-text' + (fiatRate > 0 ? ' visible' : '')}>
-                {fiatRate > 0 ? `${nativeCurrency} = ${niceNumber(fiatRate, null, selectedCurrency, 4)}` : ' '}
+                {fiatRate > 0 ? `${nativeCurrency} = ${niceHeaderNumber(fiatRate, selectedCurrency, 4)}` : ' '}
               </span>
             </span>
           )}

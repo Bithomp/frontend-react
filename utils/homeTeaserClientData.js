@@ -47,7 +47,7 @@ function extractArray(response, fallback = []) {
   return fallback
 }
 
-const fetchTeaserDappsClient = async (selectedCurrency = 'usd') => {
+export const fetchTeaserDappsClient = async (selectedCurrency = 'usd') => {
   try {
     const response = await axios(
       'v2/dapps?convertCurrencies=' + selectedCurrency + '&previousPeriod=true',
@@ -93,7 +93,7 @@ const fetchTeaserDappsClient = async (selectedCurrency = 'usd') => {
   }
 }
 
-const fetchTeaserTokensClient = async (selectedCurrency = 'usd') => {
+export const fetchTeaserTokensClient = async (selectedCurrency = 'usd') => {
   try {
     const response = await axios(
       'v2/trustlines/tokens?limit=5&order=rating&statistics=true&convertCurrencies=' + selectedCurrency,
@@ -105,7 +105,7 @@ const fetchTeaserTokensClient = async (selectedCurrency = 'usd') => {
   }
 }
 
-const fetchTeaserNftCollectionsClient = async (selectedCurrency = 'usd') => {
+export const fetchTeaserNftCollectionsClient = async (selectedCurrency = 'usd') => {
   try {
     const response = await axios(
       'v2/nft-volumes-extended?list=collections&period=week&limit=5&order=rating&convertCurrencies=' +
@@ -118,7 +118,7 @@ const fetchTeaserNftCollectionsClient = async (selectedCurrency = 'usd') => {
   }
 }
 
-const fetchTeaserAmmsClient = async () => {
+export const fetchTeaserAmmsClient = async () => {
   try {
     const response = await axios(
       'v2/amms?limit=5&order=currencyHigh&voteSlots=false&auctionSlot=false&holders=true&currency=' + nativeCurrency,
@@ -130,7 +130,7 @@ const fetchTeaserAmmsClient = async () => {
   }
 }
 
-const fetchTeaserValidatorsClient = async () => {
+export const fetchTeaserValidatorsClient = async () => {
   try {
     const [unlRes, validatorsRes] = await Promise.all([
       axios('v2/unl', { timeout: 5000 }),
@@ -172,7 +172,7 @@ const fetchTeaserValidatorsClient = async () => {
   }
 }
 
-const fetchTeaserAmendmentsClient = async () => {
+export const fetchTeaserAmendmentsClient = async () => {
   try {
     const [amendRes, featuresRes] = await Promise.all([
       axios('v2/amendment', { timeout: 5000 }),

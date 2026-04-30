@@ -816,6 +816,21 @@ header {
   }
 }
 
+.home-header-shell {
+  header {
+    .header-search-inline {
+      .search-block {
+        .search-box {
+          .search-button {
+            width: 28px;
+            height: 28px;
+          }
+        }
+      }
+    }
+  }
+}
+
 /* Collapse the second-line search row while scrolling (only where it becomes a 2nd row) */
 .header-collapsed {
   header {

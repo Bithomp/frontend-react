@@ -38,12 +38,25 @@
   width: 100%;
   min-width: 0;
 
+  > div {
+    height: 100%;
+  }
+
   &--full-width {
     grid-column: 1 / -1;
   }
 
   &--reserved-card {
     min-height: 300px;
+  }
+
+  &--compact-stat {
+    min-height: 0;
+    align-self: stretch;
+
+    .home-widget-placeholder--teaser-card {
+      min-height: 188px;
+    }
   }
 }
 
@@ -59,6 +72,46 @@
 
   &--chart {
     min-height: 241px;
+    position: relative;
+    overflow: hidden;
+    background: var(--card-bg);
+    --home-chart-placeholder-line: #3399ff;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 18px 14px 22px 34px;
+      border-bottom: 1px solid var(--card-border);
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent calc(20% - 1px),
+          var(--card-border) calc(20% - 1px),
+          var(--card-border) 20%
+        ),
+        repeating-linear-gradient(
+          to right,
+          transparent 0,
+          transparent calc(20% - 1px),
+          color-mix(in srgb, var(--card-border) 55%, transparent) calc(20% - 1px),
+          color-mix(in srgb, var(--card-border) 55%, transparent) 20%
+        );
+      opacity: 0.75;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 34px;
+      right: 14px;
+      top: 49%;
+      height: 4px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--home-chart-placeholder-line) 92%, transparent);
+      transform: skewY(-8deg);
+      opacity: 0.82;
+    }
   }
 
   &--teaser-card {
@@ -79,28 +132,7 @@
     padding-bottom: 12px;
 
     span {
-      height: 16px;
-      border-radius: 2px;
-      background: var(--background-secondary);
-    }
-
-    span:first-child {
-      width: min(180px, 60%);
-    }
-
-    span:last-child {
-      width: 54px;
-    }
-  }
-
-  &__rows {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-top: 8px;
-
-    span {
-      height: 16px;
+      height: 18px;
       border-radius: 2px;
       background: linear-gradient(
         90deg,
@@ -109,8 +141,56 @@
         var(--background-secondary) 100%
       );
       background-size: 200% 100%;
-      animation: home-placeholder-shimmer 2s infinite;
+      animation: home-placeholder-shimmer 2s ease-in-out infinite;
     }
+
+    span:first-child {
+      width: min(220px, 68%);
+    }
+
+    span:last-child {
+      width: 64px;
+    }
+  }
+
+  &__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    padding-top: 8px;
+
+    span {
+      width: 100%;
+      height: 30px;
+      border-radius: 6px;
+      background: linear-gradient(
+        90deg,
+        var(--background-secondary) 0%,
+        var(--background-main) 50%,
+        var(--background-secondary) 100%
+      );
+      background-size: 200% 100%;
+      animation: home-placeholder-shimmer 2s ease-in-out infinite;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-widget-placeholder__header span,
+  .home-widget-placeholder__rows span {
+    animation: none;
+  }
+}
+
+.home-direct-lookup-action {
+  display: inline-block;
+}
+
+@media (max-width: 560px) {
+  .home-direct-lookup-action {
+    display: block;
+    margin-top: 6px;
   }
 }
 
@@ -219,6 +299,63 @@
   }
 }
 
+.home-widget--compact-stat .home-statistics {
+  min-height: 188px;
+  height: 188px;
+  padding: 12px 16px;
+  gap: 6px;
+
+  .statistics-header {
+    padding-bottom: 8px;
+  }
+
+  .statistics-top-grid {
+    gap: 6px;
+  }
+
+  .statistics-top-item {
+    min-height: 43px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    justify-content: center;
+  }
+
+  .statistics-section {
+    padding-top: 0;
+  }
+
+  .statistics-row {
+    min-height: 19px;
+    padding: 1px 0;
+    line-height: 16px;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 24px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+.home-widget--compact-stat .home-statistics--activity {
+  gap: 12px;
+
+  .statistics-top-grid {
+    flex: 1;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .statistics-top-item {
+    min-height: 0;
+  }
+}
+
 @keyframes just-added {
   0%   { background-color: var(--background-main); color: var(--text-main); }
   50%  { background-color: var(--background-contrast); color: var(--text-oposite); }
@@ -228,8 +365,13 @@
 @keyframes home-placeholder-shimmer {
   0% {
     background-position: 200% 0;
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
   }
   100% {
     background-position: -200% 0;
+    opacity: 0.72;
   }
 }

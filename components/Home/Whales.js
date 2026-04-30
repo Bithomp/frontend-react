@@ -47,6 +47,7 @@ export default function Whales({ currency, data, setData }) {
       href="/whales"
       isLoading={!data}
       isEmpty={!data?.length}
+      className={styles.whaleCard}
     >
       {data?.slice(0, 7).map((tx) => (
         <HomeTeaseRow
@@ -56,11 +57,11 @@ export default function Whales({ currency, data, setData }) {
         >
           <div className={styles.timeAgo}>{formatTxTime(tx)}</div>
           <div className={`${styles.itemName} ${styles.whaleAddressCell}`}>
-            <AddressWithIconInline data={tx} name="sourceAddress" options={{ short: 3, noLink: true }} />
+            <AddressWithIconInline data={tx} name="sourceAddress" options={{ short: 4, noLink: true }} />
           </div>
           <div className={styles.whaleArrow}>→</div>
           <div className={`${styles.itemName} ${styles.whaleAddressCell}`}>
-            <AddressWithIconInline data={tx} name="destinationAddress" options={{ short: 3, noLink: true }} />
+            <AddressWithIconInline data={tx} name="destinationAddress" options={{ short: 4, noLink: true }} />
           </div>
           <div className={`${styles.metric} ${styles.whaleFiat}`}>
             {tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency) : ''}

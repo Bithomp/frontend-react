@@ -54,9 +54,9 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
   const hooksTx24h = niceNumber(transactions24h?.hooksEmitted || 0)
 
   return (
-    <div className="home-statistics">
+    <div className={`home-statistics home-statistics--${mode}`}>
       {title && mode === 'activity' && (
-        <div className={styles.cardHeader}>
+        <div className={`${styles.cardHeader} statistics-header`}>
           <div className={styles.cardHeaderTitleWrap}>
             <div className={`${styles.cardHeaderTitle} statistics-section-title`}>{title}</div>
             <span className={styles.cardHeaderNote}>24h</span>
@@ -87,7 +87,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
 
       {mode === 'ledger' && (
         <div className="statistics-section">
-          <div className={styles.cardHeader}>
+          <div className={`${styles.cardHeader} statistics-header`}>
             <div className={styles.cardHeaderTitleWrap}>
               <div className={`${styles.cardHeaderTitle} statistics-section-title`}>The last ledger</div>
             </div>
@@ -125,7 +125,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
 
       {mode === 'network' && (
         <div className="statistics-section">
-          <div className={styles.cardHeader}>
+          <div className={`${styles.cardHeader} statistics-header`}>
             <div className={styles.cardHeaderTitleWrap}>
               <div className={`${styles.cardHeaderTitle} statistics-section-title`}>Network</div>
             </div>
@@ -138,11 +138,15 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
           </div>
           <div className="statistics-row">
             <span>{t('home.stat.usernames')}</span>
-            <span>{registeredUsernames}</span>
+            <span>
+              <Link href="/username" prefetch={false}>{registeredUsernames}</Link>
+            </span>
           </div>
           <div className="statistics-row">
             <span>{t('home.stat.escrows')}</span>
-            <span>{escrowsCount}</span>
+            <span>
+              <Link href="/distribution?escrow=locked" prefetch={false}>{escrowsCount}</Link>
+            </span>
           </div>
           {!xahauNetwork && (
             <div className="statistics-row">

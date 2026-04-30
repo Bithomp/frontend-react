@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
@@ -30,7 +31,6 @@ import '../styles/components/nprogress.css'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
-import { ledgerwalletDisconnect } from '../utils/ledgerwallet'
 import { isUsernameValid } from '../utils'
 import { wssServer } from '../utils'
 
@@ -68,6 +68,72 @@ const getWalletConnectMetadata = () => ({
   url: server,
   icons: [server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/192.png']
 })
+
+const HeaderShell = ({ onActivate }) => (
+  <div className="home-header-shell">
+    <header>
+      <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
+        <Link
+          href="/"
+          prefetch={false}
+          aria-label="bithomp Main page"
+          style={{ display: 'inline-flex', alignItems: 'center', color: '#fff', textDecoration: 'none' }}
+        >
+          <img src="/images/logo-small.svg" alt="" width="36" height="36" style={{ marginTop: -2.5 }} />
+          <span style={{ fontSize: 27, lineHeight: '36px', marginLeft: 4, letterSpacing: 0 }}>bithomp</span>
+        </Link>
+        <span
+          className="header-fiat-rate large-logo default-rate"
+          aria-hidden="true"
+          style={{ marginLeft: 12 }}
+        >
+          <span className="header-fiat-rate-text"> </span>
+        </span>
+      </div>
+      <div className="header-search-inline">
+        <div className="search-block search-block-compact" style={{ backgroundColor: 'unset', height: 'auto' }}>
+          <div className="search-box search-box-compact" style={{ marginTop: 0 }}>
+            <input
+              aria-label="Search"
+              readOnly
+              onFocus={onActivate}
+              onPointerDown={onActivate}
+              placeholder="Search by Address / Transaction / NFT / Username"
+              style={{
+                width: '100%',
+                height: 30,
+                boxSizing: 'border-box',
+                background: '#000',
+                color: '#aaa',
+                border: '1px solid #00acc1',
+                borderRadius: '15px 0 0 15px',
+                padding: '0 42px 0 12px',
+                font: 'inherit'
+              }}
+            />
+            <button
+              type="button"
+              aria-label="Open search"
+              onClick={onActivate}
+              className="search-button"
+              style={{ border: 0 }}
+            >
+              <span className="search-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="header-burger">
+        <input type="checkbox" id="header-burger-shell" aria-label="Open menu" readOnly onClick={onActivate} />
+        <label htmlFor="header-burger-shell" className="header-burger-elements">
+          <div></div>
+          <div></div>
+          <div></div>
+        </label>
+      </div>
+    </header>
+  </div>
+)
 
 const getErrorText = (value) => {
   if (!value) return ''
@@ -257,7 +323,7 @@ const MyApp = ({ Component, pageProps }) => {
     }
 
     if (window.location.pathname === '/') {
-      timeoutId = window.setTimeout(markReady, 5000)
+      timeoutId = window.setTimeout(markReady, pageProps.isSsrMobile ? 3500 : 5000)
     } else if ('requestIdleCallback' in window) {
       idleId = window.requestIdleCallback(markReady, { timeout: 1500 })
     } else {
@@ -273,9 +339,10 @@ const MyApp = ({ Component, pageProps }) => {
         window.clearTimeout(timeoutId)
       }
     }
-  }, [])
+  }, [pageProps.isSsrMobile])
 
   useEffect(() => {
+    if (!nonCriticalUiReady) return undefined
     if (typeof window === 'undefined') return undefined
 
     const getWalletConnectDialog = () => {
@@ -303,7 +370,7 @@ const MyApp = ({ Component, pageProps }) => {
     })
 
     return () => observer.disconnect()
-  }, [])
+  }, [nonCriticalUiReady])
 
   // WalletConnect can emit async errors outside our connect() promise.
   // Keep known relay stalls recoverable and clear storage for stale sessions.
@@ -354,6 +421,8 @@ const MyApp = ({ Component, pageProps }) => {
   // Auto-flips below the trigger when there is not enough space above
   // (e.g. first rows of a table near the sticky header / filter bar).
   useEffect(() => {
+    if (!nonCriticalUiReady) return undefined
+
     const HEADER_H = 115 // conservative height of fixed header + filter bar
     const TIP_H = 160 // estimated max tooltip height used for threshold
     const GAP = 10
@@ -505,7 +574,7 @@ const MyApp = ({ Component, pageProps }) => {
       document.removeEventListener('mouseout', onOut)
       window.removeEventListener('scroll', onScroll, { capture: true })
     }
-  }, [])
+  }, [nonCriticalUiReady])
 
   useEffect(() => {
     if (!GA_ID) return
@@ -737,6 +806,7 @@ const MyApp = ({ Component, pageProps }) => {
       localStorage.removeItem('xamanUserToken')
     }
     if (targetWallet.provider === 'ledgerwallet') {
+      const { ledgerwalletDisconnect } = await import('../utils/ledgerwallet')
       await ledgerwalletDisconnect()
     }
 
@@ -892,6 +962,7 @@ const MyApp = ({ Component, pageProps }) => {
     !isBot &&
     (signRequest || isValidUUID(uuid) || hasWalletConnectWallet)
   const bodyBackgroundStyle = pageProps.isSsrMobile ? undefined : { backgroundImage: getBackgroundImage() }
+  const shouldDeferHomepageChrome = pageProps.isSsrMobile && pathname === '/' && !nonCriticalUiReady
 
   if (pagesWithoutWrapper.includes(pathname)) {
     return <Component />
@@ -904,23 +975,27 @@ const MyApp = ({ Component, pageProps }) => {
         <meta charSet="utf-8" />
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
-        {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
+        {GA_ID && (pathname !== '/' || nonCriticalUiReady) && <GoogleAnalytics gaId={GA_ID} />}
         <ThemeProvider>
           <ErrorBoundary>
             <div className="body" data-network={network} style={bodyBackgroundStyle}>
-              <Header
-                setSignRequest={setSignRequest}
-                account={account}
-                signOut={signOut}
-                setActiveWallet={setActiveWallet}
-                signOutPro={signOutPro}
-                selectedCurrency={selectedCurrency}
-                setSelectedCurrency={setSelectedCurrency}
-                countryCode={countryCode}
-                sessionToken={sessionToken}
-                fiatRate={liveFiatRate}
-                openEmailLogin={openEmailLogin}
-              />
+              {shouldDeferHomepageChrome ? (
+                <HeaderShell onActivate={() => setNonCriticalUiReady(true)} />
+              ) : (
+                <Header
+                  setSignRequest={setSignRequest}
+                  account={account}
+                  signOut={signOut}
+                  setActiveWallet={setActiveWallet}
+                  signOutPro={signOutPro}
+                  selectedCurrency={selectedCurrency}
+                  setSelectedCurrency={setSelectedCurrency}
+                  countryCode={countryCode}
+                  sessionToken={sessionToken}
+                  fiatRate={liveFiatRate}
+                  openEmailLogin={openEmailLogin}
+                />
+              )}
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}
               {shouldMountWalletConnect && (
@@ -991,7 +1066,7 @@ const MyApp = ({ Component, pageProps }) => {
                   setWhaleTransactions={setWhaleTransactions}
                 />
               </main>
-              <Footer countryCode={countryCode} />
+              {(pathname !== '/' || nonCriticalUiReady) && <Footer countryCode={countryCode} />}
             </div>
           </ErrorBoundary>
         </ThemeProvider>

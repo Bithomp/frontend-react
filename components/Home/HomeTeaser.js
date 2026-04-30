@@ -54,6 +54,8 @@ export default function HomeTeaser({
           <div className={styles.skeleton} />
           <div className={styles.skeleton} />
           <div className={styles.skeleton} />
+          <div className={styles.skeleton} />
+          <div className={styles.skeleton} />
         </div>
       ) : isEmpty ? (
         <div className={styles.emptyState}>{t('common.noData')}</div>

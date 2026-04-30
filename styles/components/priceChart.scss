@@ -17,6 +17,7 @@
   border-radius: 16px;
   padding: 32px 5px 15px 58px;
   background: linear-gradient(135deg, rgba(0, 177, 193, 0.08), rgba(0, 177, 193, 0.02));
+  --home-price-chart-placeholder-line: #3399ff;
 }
 
 .home-price-chart--placeholder-light {
@@ -40,6 +41,19 @@
         top: percentage(($i - 1) / 5);
       }
     }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 51%;
+    height: 4px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--home-price-chart-placeholder-line) 92%, transparent);
+    transform: skewY(-8deg);
+    opacity: 0.82;
   }
 }
 
