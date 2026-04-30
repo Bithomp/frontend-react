@@ -89,7 +89,6 @@ const fetchTeaserDappsClient = async (selectedCurrency = 'usd') => {
       .sort((a, b) => Number(b?.currentVolume ?? 0) - Number(a?.currentVolume ?? 0))
       .slice(0, 5)
   } catch (error) {
-    console.error('Error fetching teaser dapps:', error.message)
     return []
   }
 }
@@ -102,7 +101,6 @@ const fetchTeaserTokensClient = async (selectedCurrency = 'usd') => {
     )
     return extractArray(response)
   } catch (error) {
-    console.error('Error fetching teaser tokens:', error.message)
     return []
   }
 }
@@ -116,7 +114,6 @@ const fetchTeaserNftCollectionsClient = async (selectedCurrency = 'usd') => {
     )
     return extractArray(response)
   } catch (error) {
-    console.error('Error fetching teaser nft collections:', error.message)
     return []
   }
 }
@@ -129,7 +126,6 @@ const fetchTeaserAmmsClient = async () => {
     )
     return extractArray(response).slice(0, 5)
   } catch (error) {
-    console.error('Error fetching teaser amms:', error.message)
     return []
   }
 }
@@ -172,7 +168,6 @@ const fetchTeaserValidatorsClient = async () => {
       })
       .slice(0, 5)
   } catch (error) {
-    console.error('Error fetching teaser validators:', error.message)
     return []
   }
 }
@@ -240,7 +235,6 @@ const fetchTeaserAmendmentsClient = async () => {
 
     return [...newAmendments, ...enabledAmendments.slice(0, maxRows - newAmendments.length)]
   } catch (error) {
-    console.error('Error fetching teaser amendments:', error.message)
     return []
   }
 }

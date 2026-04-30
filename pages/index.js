@@ -139,7 +139,7 @@ export default function Home({
         }
       } catch (error) {
         if (!cancelled) {
-          console.error(error)
+          setHomeTeasers(emptyHomeTeasers)
         }
       } finally {
         if (!cancelled) {

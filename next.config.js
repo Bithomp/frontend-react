@@ -8,7 +8,7 @@ module.exports = withBundleAnalyzer({
   compiler: {
     styledComponents: true
   },
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
   i18n,
   webpack(config) {
     config.module.rules.push({
