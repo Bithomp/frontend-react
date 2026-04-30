@@ -21,16 +21,8 @@ import styles from '@/styles/components/home-teaser.module.scss'
 
 import dynamic from 'next/dynamic'
 import { currencyServer } from '../utils/axios'
+import { emptyHomeTeasers, fetchHomeTeasersClient } from '../utils/homeTeaserClientData'
 //not indexed
-const emptyHomeTeasers = {
-  dapps: [],
-  tokens: [],
-  nftCollections: [],
-  amms: [],
-  validators: [],
-  amendments: []
-}
-
 const Converter = dynamic(() => import('../components/Home/Converter'), {
   ssr: false,
   loading: () => <div className="home-widget-placeholder home-widget-placeholder--converter" aria-hidden="true" />
@@ -137,11 +129,7 @@ export default function Home({
 
     const fetchTeasers = async () => {
       try {
-        const response = await fetch('/api/home-teasers?currency=' + encodeURIComponent(selectedCurrency))
-        if (!response.ok) {
-          throw new Error('Failed to load homepage teasers')
-        }
-        const data = await response.json()
+        const data = await fetchHomeTeasersClient(selectedCurrency)
         if (!cancelled) {
           loadedTeaserCurrencyRef.current = selectedCurrency
           setHomeTeasers({
