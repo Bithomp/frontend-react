@@ -37,9 +37,23 @@
 .home-widget {
   width: 100%;
   min-width: 0;
+  align-self: stretch;
 
   > div {
     height: 100%;
+  }
+
+  &:not(.home-widget--compact-stat) {
+    display: flex;
+
+    > div {
+      display: flex;
+      width: 100%;
+    }
+
+    > div > div {
+      height: 100%;
+    }
   }
 
   &--full-width {
