@@ -891,6 +891,7 @@ const MyApp = ({ Component, pageProps }) => {
     isOnline &&
     !isBot &&
     (signRequest || isValidUUID(uuid) || hasWalletConnectWallet)
+  const bodyBackgroundStyle = pageProps.isSsrMobile ? undefined : { backgroundImage: getBackgroundImage() }
 
   if (pagesWithoutWrapper.includes(pathname)) {
     return <Component />
@@ -906,7 +907,7 @@ const MyApp = ({ Component, pageProps }) => {
         {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
         <ThemeProvider>
           <ErrorBoundary>
-            <div className="body" data-network={network} style={{ backgroundImage: getBackgroundImage() }}>
+            <div className="body" data-network={network} style={bodyBackgroundStyle}>
               <Header
                 setSignRequest={setSignRequest}
                 account={account}

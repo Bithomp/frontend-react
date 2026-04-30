@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useState, useEffect, useRef } from 'react'
@@ -82,6 +82,8 @@ import SearchBlock from '../SearchBlock'
 import WalletProviderIcon from '../../UI/WalletProviderIcon'
 import { niceNumber } from '../../../utils/format'
 import { serviceUsernameOrAddressText } from '../../../utils/format'
+
+const Link = (props) => <NextLink {...props} prefetch={false} />
 
 const HIDE_SEARCH_HEADER = ['/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']

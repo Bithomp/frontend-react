@@ -58,7 +58,7 @@ export default function Ads({}) {
           </div>
         </a>
       */}
-      <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer" aria-label="Buy XRP">
+      <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
         <div className="brand-item btcbit">
           <BtcBit className="brand-item-icon" />
           <div className="brand-item-title">Buy XRP</div>

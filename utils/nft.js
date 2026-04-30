@@ -181,8 +181,11 @@ export const collectionThumbnail = (data) => {
   const uri = image || video
   if (!uri) return ''
   let imageSrc = ''
+  const cdnThumbnail = cdnMediaVariant(uri, 'thumbnail')
   const ipfs = ipfsUrl(uri, 'thumbnail', 'our')
-  if (ipfs) {
+  if (cdnThumbnail) {
+    imageSrc = cdnThumbnail
+  } else if (ipfs) {
     imageSrc = ipfs
   } else if (typeof uri === 'string' && uri.slice(0, 8) === 'https://') {
     imageSrc = `https://cdn.${webSiteName}/thumbnail?url=${encodeURIComponent(stripText(uri))}`
@@ -216,6 +219,22 @@ export const collectionThumbnail = (data) => {
       />
     </span>
   )
+}
+
+const cdnMediaVariant = (uri, type) => {
+  if (!uri || (type !== 'thumbnail' && type !== 'preview')) return null
+  const url = stripText(uri.toString())
+  const cdnOrigin = `https://cdn.${webSiteName}`
+
+  if (url.startsWith(`${cdnOrigin}/image/`)) {
+    return url.replace(`${cdnOrigin}/image/`, `${cdnOrigin}/${type}/`)
+  }
+
+  if (url.startsWith(`${cdnOrigin}/image?`)) {
+    return url.replace(`${cdnOrigin}/image?`, `${cdnOrigin}/${type}?`)
+  }
+
+  return null
 }
 
 export const nftNameLink = (nft) => {
@@ -348,6 +367,10 @@ export const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => 
   } else if (uri.slice(0, 8) === 'https://') {
     if (type === 'video' && uri.toLowerCase().includes('youtube.com')) {
       return null
+    }
+    const cdnVariant = cdnMediaVariant(uri, type)
+    if (cdnVariant) {
+      return cdnVariant
     }
     if (flags?.mutable && type === 'image') {
       //mutable NFTs can have changing images, so we do not cache them

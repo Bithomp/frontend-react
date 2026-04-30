@@ -91,7 +91,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
             <div className={styles.cardHeaderTitleWrap}>
               <div className={`${styles.cardHeaderTitle} statistics-section-title`}>The last ledger</div>
             </div>
-            <Link href="/last-ledger-information" className={styles.cardHeaderLink}>
+            <Link href="/last-ledger-information" className={styles.cardHeaderLink} prefetch={false}>
               {t('common.viewAll')}
             </Link>
           </div>
@@ -114,7 +114,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
             <span>{t('home.stat.quorum')}</span>
             <span>
               {quorum} (
-              <Link href="/validators">
+              <Link href="/validators" prefetch={false}>
                 {proposers} {t('home.stat.proposers')}
               </Link>
               )
@@ -133,7 +133,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
           <div className="statistics-row">
             <span>{t('home.stat.accounts')}</span>
             <span>
-              <Link href="/activations?period=all">{createdAccounts}</Link>
+              <Link href="/activations?period=all" prefetch={false}>{createdAccounts}</Link>
             </span>
           </div>
           <div className="statistics-row">
@@ -148,14 +148,14 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
             <div className="statistics-row">
               <span>{t('home.stat.amms')}</span>
               <span>
-                <Link href="/amms">{ammsCount}</Link>
+                <Link href="/amms" prefetch={false}>{ammsCount}</Link>
               </span>
             </div>
           )}
           <div className="statistics-row">
             <span>{t('home.stat.nodes')}</span>
             <span>
-              <Link href="/nodes">{nodesCount}</Link>
+              <Link href="/nodes" prefetch={false}>{nodesCount}</Link>
             </span>
           </div>
           {xahauNetwork && (

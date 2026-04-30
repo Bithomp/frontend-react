@@ -85,7 +85,7 @@ export const LinkTx = ({ tx, icon, short, children, copy }) =>
 
 export const LedgerLink = ({ version, text, style, onClick }) =>
   version ? (
-    <Link href={`/ledger/${version}`} style={style} onClick={onClick}>
+    <Link href={`/ledger/${version}`} style={style} onClick={onClick} prefetch={false}>
       {text ? text : '#' + version}
     </Link>
   ) : (

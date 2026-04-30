@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next'
 
 import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
@@ -65,6 +65,8 @@ import { FaCode } from 'react-icons/fa'
 import { IoLogoBuffer } from 'react-icons/io'
 import { MdGavel, MdMenuBook } from 'react-icons/md'
 import { AiFillStar } from 'react-icons/ai'
+
+const Link = (props) => <NextLink {...props} prefetch={false} />
 
 const handleClick = (e) => {
   if (e.target.getAttribute('data-expanded') !== null) {

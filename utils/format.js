@@ -5,6 +5,7 @@ import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
 import Link from 'next/link'
 import { Trans } from 'next-i18next'
 
+import Avatar from '../components/UI/Avatar'
 import CopyButton from '../components/UI/CopyButton'
 import LinkIcon from '../public/images/link.svg'
 import { mpUrl } from './nft'
@@ -292,71 +293,26 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   const address = data[name]
   const size = 16
   const noLink = options?.noLink
-  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
-     <rect width="100%" height="100%" fill="#ffffff"/>
-     <text x="50%" y="50%" font-family="sans-serif" font-size="8" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
-      ;(
-     </text>
-   </svg>`
-  )}`
+  const alt = data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'
+  const icon = (
+    <Avatar
+      src={avatarServer + address}
+      alt={alt}
+      size={size}
+      style={{
+        verticalAlign: 'text-bottom',
+        marginRight: 3,
+        border: 0
+      }}
+    />
+  )
 
   return (
     <span className="no-brake">
       {noLink ? (
-        <div
-          style={{
-            height: size,
-            width: size,
-            verticalAlign: 'text-bottom',
-            marginRight: 3,
-            borderRadius: '50%',
-            overflow: 'hidden',
-            display: 'inline-block'
-          }}
-        >
-          <img
-            src={avatarServer + address + '?hashIconZoom=12' || placeholder}
-            alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
-            height={size}
-            width={size}
-            style={{
-              objectFit: 'cover'
-            }}
-            onError={(e) => {
-              e.target.onerror = null
-              e.target.src = placeholder
-            }}
-          />
-        </div>
+        icon
       ) : (
-        <Link href={'/account/' + address}>
-          <div
-            style={{
-              height: size,
-              width: size,
-              verticalAlign: 'text-bottom',
-              marginRight: 3,
-              borderRadius: '50%',
-              overflow: 'hidden',
-              display: 'inline-block'
-            }}
-          >
-            <img
-              src={avatarServer + address + '?hashIconZoom=12' || placeholder}
-              alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
-              height={size}
-              width={size}
-              style={{
-                objectFit: 'cover'
-              }}
-              onError={(e) => {
-                e.target.onerror = null
-                e.target.src = placeholder
-              }}
-            />
-          </div>
-        </Link>
+        <Link href={'/account/' + address}>{icon}</Link>
       )}
       {options?.showAddress ? (
         noLink ? (

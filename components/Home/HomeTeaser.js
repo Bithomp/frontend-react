@@ -44,7 +44,7 @@ export default function HomeTeaser({
           </h2>
           {titleNote ? <span className={styles.cardHeaderNote}>{titleNote}</span> : null}
         </div>
-        <Link href={href} className={styles.cardHeaderLink}>
+        <Link href={href} className={styles.cardHeaderLink} prefetch={false}>
           {t('common.viewAll')}
         </Link>
       </div>

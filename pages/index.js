@@ -254,7 +254,7 @@ export default function Home({
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
         {isEnglishMainnetHome && (
           <p className="center">
-            Need direct lookup? Open the <Link href="/explorer">XRP Ledger search page</Link>.
+            Need direct lookup? Open the <Link href="/explorer" prefetch={false}>XRP Ledger search page</Link>.
           </p>
         )}
         {showAds && <Ads countryCode={countryCode} />}
