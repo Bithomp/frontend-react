@@ -24,9 +24,9 @@ import { LedgerLink } from '../utils/links'
 let ws = null
 
 function sendData() {
-  if (ws.readyState) {
+  if (ws?.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ command: 'subscribe', streams: [xahauNetwork ? 'uritokens' : 'nftokens'], id: 1 }))
-  } else {
+  } else if (ws) {
     setTimeout(sendData, 1000)
   }
 }
@@ -36,8 +36,14 @@ export default function NftStatistics() {
 
   const [data, setData] = useState(null)
 
-  const connect = () => {
-    ws = new WebSocket(wssServer)
+  const connect = (shouldReconnect = () => true) => {
+    if (!wssServer || !/^wss?:\/\//.test(wssServer)) return
+
+    try {
+      ws = new WebSocket(wssServer)
+    } catch {
+      return
+    }
 
     ws.onopen = () => {
       sendData()
@@ -77,17 +83,25 @@ export default function NftStatistics() {
     }
 
     ws.onclose = () => {
-      connect()
+      if (shouldReconnect()) connect(shouldReconnect)
     }
   }
 
   useEffect(() => {
+    let active = true
+
     if (navigator.onLine) {
-      connect()
+      connect(() => active)
     }
+
     return () => {
+      active = false
       setData(null)
-      if (ws) ws.close()
+      if (ws) {
+        ws.onclose = null
+        ws.close()
+        ws = null
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
