@@ -171,8 +171,8 @@ export default function TomlCheckerPage() {
               style={{ width: '100%', marginBottom: 16 }}
             />
 
-            {siteKey && (
-              <div style={{ marginBottom: 16 }}>
+            <div className="turnstile-slot">
+              {siteKey && (
                 <Turnstile
                   key={turnstileResetKey}
                   siteKey={siteKey}
@@ -184,8 +184,8 @@ export default function TomlCheckerPage() {
                     language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
                   }}
                 />
-              </div>
-            )}
+              )}
+            </div>
 
             <button className="button-action" type="submit" disabled={loading || cooldownLeft > 0 || !siteKey}>
               {loading ? tt('checking') : tt('button')}
@@ -239,6 +239,13 @@ export default function TomlCheckerPage() {
       </div>
 
       <style jsx>{`
+        .turnstile-slot {
+          min-height: 65px;
+          margin-bottom: 16px;
+          display: flex;
+          align-items: center;
+        }
+
         .toml-checker-pre {
           margin: 8px 0 0;
           padding: 16px;
@@ -247,7 +254,9 @@ export default function TomlCheckerPage() {
           overflow-wrap: anywhere;
           overflow-x: auto;
           border-radius: 16px;
-          background: rgba(0, 0, 0, 0.04);
+          background: var(--code-bg);
+          border: 1px solid var(--code-border);
+          color: var(--code-text);
           font-size: 14px;
           line-height: 1.5;
         }

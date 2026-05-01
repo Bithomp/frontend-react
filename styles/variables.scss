@@ -50,6 +50,9 @@ body {
   --surface-loading-bg: color-mix(in srgb, var(--background-main) 72%, white 28%);
   --surface-group-bg: color-mix(in srgb, var(--background-secondary) 36%, transparent);
   --surface-group-border: color-mix(in srgb, var(--accent-link) 18%, transparent);
+  --code-bg: #eeeeee;
+  --code-text: #1f1f1e;
+  --code-border: color-mix(in srgb, var(--text-secondary) 12%, transparent);
 }
 body.dark {
   --background-header: #031B21;
@@ -101,6 +104,9 @@ body.dark {
   --surface-loading-bg: rgba(24, 27, 28, 0.82);
   --surface-group-bg: rgba(12, 23, 25, 0.62);
   --surface-group-border: rgba(102, 208, 218, 0.18);
+  --code-bg: rgba(255, 255, 255, 0.08);
+  --code-text: #d7e2e5;
+  --code-border: rgba(102, 208, 218, 0.18);
 }
   
 body[data-networkname*="xahau"] {

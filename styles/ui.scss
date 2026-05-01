@@ -165,7 +165,9 @@ code {
 }
 
 .code-highlight {
-  background-color: var(--background-input-readonly);
+  background-color: var(--code-bg);
+  border: 1px solid var(--code-border);
+  color: var(--code-text);
   word-break: break-all;
 }
 
@@ -1069,11 +1071,12 @@ pre {
   width: calc(100% - 10px);
   margin: 0;
   margin-bottom: 15px;
-  background-color: #eee;
+  background-color: var(--code-bg);
+  border: 1px solid var(--code-border);
   padding: 5px;
   white-space: pre-wrap;
   word-break: break-all;
-  color: rgb(31, 31, 30);
+  color: var(--code-text);
   transition: height 2s ease-in-out;
   .string {
     color: green;
