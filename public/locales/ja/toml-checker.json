@@ -21,6 +21,10 @@
     "captcha-required": "captcha を完了してください。",
     "domain-not-found": "そのドメイン、または TOML ファイルにアクセスできませんでした。ドメインを確認して再度お試しください。",
     "toml-not-found": "ドメインにはアクセスできますが、想定される .well-known の場所で {{tomlName}} が見つかりませんでした。",
+    "secure-connection-failed": "TOML ファイルを安全に取得できませんでした。ドメインの HTTPS/TLS 証明書を確認してください。",
+    "html-content": "想定される {{tomlName}} URL が TOML ファイルではなく HTML を返しました。",
+    "invalid-toml": "TOML ファイルは見つかりましたが、解析できませんでした。",
+    "invalid-toml-with-reason": "TOML ファイルは見つかりましたが、解析できませんでした: {{reason}}",
     "failed": "現在このドメインを確認できません。"
   }
 }

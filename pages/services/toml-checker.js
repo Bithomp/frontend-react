@@ -30,17 +30,50 @@ const formatResponse = (value) => {
   }
 }
 
-const getFriendlyError = (error, tt, t, tomlName) => {
-  const apiError = error?.response?.data?.error
-  const message = apiError || error?.message || ''
+const getParsedTomlError = (message, tt, tomlName) => {
+  const errorText = String(message || '').replace(/\\n/g, '\n')
+  const lowerError = errorText.toLowerCase()
 
-  if (message.includes('ENOTFOUND') || message.includes('getaddrinfo')) {
+  if (lowerError.includes('enotfound') || lowerError.includes('getaddrinfo') || lowerError.includes('could not resolve')) {
     return tt('errors.domain-not-found')
   }
 
-  if (error?.response?.status === 404 || message.includes('status code 404')) {
+  if (lowerError.includes('status code 404') || lowerError.includes(' 404') || lowerError === '404') {
     return tt('errors.toml-not-found', { tomlName })
   }
+
+  if (
+    lowerError.includes('ssl') ||
+    lowerError.includes('tls') ||
+    lowerError.includes('certificate') ||
+    lowerError.includes('unable_to_verify') ||
+    lowerError.includes('cert_has_expired') ||
+    lowerError.includes('self_signed')
+  ) {
+    return tt('errors.secure-connection-failed')
+  }
+
+  if (lowerError.includes('html content detected')) {
+    return tt('errors.html-content', { tomlName })
+  }
+
+  if (lowerError.includes('invalid toml')) {
+    return errorText.trim()
+  }
+
+  return ''
+}
+
+const getFriendlyError = (error, tt, t, tomlName) => {
+  const apiError = error?.response?.data?.error
+  const message = apiError || error?.message || ''
+  const parsedError = getParsedTomlError(message, tt, tomlName)
+
+  if (error?.response?.status === 404) {
+    return tt('errors.toml-not-found', { tomlName })
+  }
+
+  if (parsedError) return parsedError
 
   return apiError || t('error.' + message) || tt('errors.failed')
 }
@@ -151,13 +184,7 @@ export default function TomlCheckerPage() {
 
     if (data.error) {
       const dataError = String(data.error)
-      if (dataError.includes('ENOTFOUND') || dataError.includes('getaddrinfo')) {
-        setErrorMessage(tt('errors.domain-not-found'))
-      } else if (dataError.includes('404')) {
-        setErrorMessage(tt('errors.toml-not-found', { tomlName }))
-      } else {
-        setErrorMessage(data.error)
-      }
+      setErrorMessage(getParsedTomlError(dataError, tt, tomlName) || data.error)
       return
     }
 
@@ -218,7 +245,9 @@ export default function TomlCheckerPage() {
             </p>
           </form>
 
-          <div className={`toml-error red${errorMessage ? '' : ' empty'}`}>{errorMessage || ' '}</div>
+          <div className={`toml-error red${errorMessage ? '' : ' empty'}${errorMessage.includes('\n') ? ' code' : ''}`}>
+            {errorMessage || ' '}
+          </div>
         </div>
 
         {result && (
@@ -282,13 +311,20 @@ export default function TomlCheckerPage() {
         }
 
         .toml-error {
-          height: 1.4em;
+          min-height: 1.4em;
           margin-top: 16px;
           line-height: 1.4;
+          white-space: pre-wrap;
+          overflow-wrap: anywhere;
         }
 
         .toml-error.empty {
           visibility: hidden;
+        }
+
+        .toml-error.code {
+          font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+          line-height: 1.5;
         }
 
         .toml-checker-pre {

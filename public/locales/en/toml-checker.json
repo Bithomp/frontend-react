@@ -21,6 +21,10 @@
     "captcha-required": "Please complete the captcha.",
     "domain-not-found": "We could not reach that domain or find its TOML file. Please check the domain and try again.",
     "toml-not-found": "The domain is reachable, but we could not find {{tomlName}} at the expected .well-known location.",
+    "secure-connection-failed": "We could not securely fetch the TOML file. Check the domain HTTPS/TLS certificate.",
+    "html-content": "The expected {{tomlName}} URL returned HTML instead of a TOML file.",
+    "invalid-toml": "The TOML file was found, but it could not be parsed.",
+    "invalid-toml-with-reason": "The TOML file was found, but it could not be parsed: {{reason}}",
     "failed": "Unable to verify the domain right now."
   }
 }

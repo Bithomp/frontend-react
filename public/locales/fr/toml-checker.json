@@ -21,6 +21,10 @@
     "captcha-required": "Veuillez compléter le captcha.",
     "domain-not-found": "Nous n'avons pas pu joindre ce domaine ou trouver son fichier TOML. Vérifiez le domaine puis réessayez.",
     "toml-not-found": "Le domaine est joignable, mais {{tomlName}} est introuvable à l'emplacement .well-known attendu.",
+    "secure-connection-failed": "Impossible de récupérer le fichier TOML de façon sécurisée. Vérifiez le certificat HTTPS/TLS du domaine.",
+    "html-content": "L'URL {{tomlName}} attendue a renvoyé du HTML au lieu d'un fichier TOML.",
+    "invalid-toml": "Le fichier TOML a été trouvé, mais il n'a pas pu être analysé.",
+    "invalid-toml-with-reason": "Le fichier TOML a été trouvé, mais il n'a pas pu être analysé : {{reason}}",
     "failed": "Impossible de vérifier le domaine pour le moment."
   }
 }

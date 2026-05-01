@@ -21,6 +21,10 @@
     "captcha-required": "Selesaikan captcha terlebih dahulu.",
     "domain-not-found": "Kami tidak dapat menjangkau domain tersebut atau menemukan file TOML-nya. Periksa domain lalu coba lagi.",
     "toml-not-found": "Domain dapat dijangkau, tetapi kami tidak dapat menemukan {{tomlName}} di lokasi .well-known yang diharapkan.",
+    "secure-connection-failed": "Kami tidak dapat mengambil file TOML dengan aman. Periksa sertifikat HTTPS/TLS domain.",
+    "html-content": "URL {{tomlName}} yang diharapkan mengembalikan HTML, bukan file TOML.",
+    "invalid-toml": "File TOML ditemukan, tetapi tidak dapat diuraikan.",
+    "invalid-toml-with-reason": "File TOML ditemukan, tetapi tidak dapat diuraikan: {{reason}}",
     "failed": "Tidak dapat memverifikasi domain saat ini."
   }
 }

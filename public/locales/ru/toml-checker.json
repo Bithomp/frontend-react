@@ -21,6 +21,10 @@
     "captcha-required": "Пожалуйста, пройдите captcha.",
     "domain-not-found": "Не удалось открыть этот домен или найти его TOML файл. Проверьте домен и попробуйте снова.",
     "toml-not-found": "Домен доступен, но {{tomlName}} не найден в ожидаемом .well-known пути.",
+    "secure-connection-failed": "Не удалось безопасно загрузить TOML файл. Проверьте HTTPS/TLS сертификат домена.",
+    "html-content": "Ожидаемый URL {{tomlName}} вернул HTML вместо TOML файла.",
+    "invalid-toml": "TOML файл найден, но его не удалось распарсить.",
+    "invalid-toml-with-reason": "TOML файл найден, но его не удалось распарсить: {{reason}}",
     "failed": "Сейчас не удалось проверить домен."
   }
 }
