@@ -13,10 +13,7 @@
 .heroAura {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(11, 143, 181, 0.18), transparent 34%),
-    radial-gradient(circle at 80% 10%, rgba(255, 159, 67, 0.16), transparent 26%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.24));
+  background: var(--hero-aura-bg);
   pointer-events: none;
 }
 
@@ -45,6 +42,7 @@
   margin: 0 0 14px;
   font-size: clamp(32px, 4.5vw, 52px);
   line-height: 1;
+  color: var(--text-heading);
 }
 
 .heroCopy p {
@@ -52,7 +50,7 @@
   margin: 0;
   font-size: 16px;
   line-height: 1.55;
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .searchCard {
@@ -66,9 +64,9 @@
   padding: 18px;
   border-radius: 24px;
   box-sizing: border-box;
-  background: color-mix(in srgb, var(--background-main) 80%, white 20%);
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.08);
-  border: 1px solid color-mix(in srgb, var(--accent-link) 18%, transparent);
+  background: var(--surface-panel-bg);
+  box-shadow: var(--surface-panel-shadow);
+  border: 1px solid var(--surface-panel-border);
 }
 
 .searchCard :global(.input-title) {
@@ -121,7 +119,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .searchInput {
@@ -130,7 +128,7 @@
 
 .searchHint {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .treeShell,
@@ -146,15 +144,16 @@
 }
 
 .sectionHeader h2 {
-  margin: 0 0 6px;
+  margin: 0 0 12px;
   font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 700;
+  color: var(--text-heading);
 }
 
 .sectionHeader p {
   margin: 0;
   font-size: 15px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .ancestorsColumn {
@@ -248,9 +247,9 @@
 .childrenGroup {
   margin-top: 0;
   padding: 16px 12px;
-  border: 2px solid color-mix(in srgb, var(--accent-link) 18%, transparent);
+  border: 2px solid var(--surface-group-border);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+  background: var(--surface-group-bg);
 }
 
 .childrenRail {
@@ -298,12 +297,9 @@
   width: min(220px, calc(100vw - 52px));
   padding: 10px;
   border-radius: 20px;
-  background:
-    linear-gradient(160deg, color-mix(in srgb, var(--background-main) 92%, white 8%), color-mix(in srgb, var(--background-secondary) 82%, white 18%));
-  border: 1px solid color-mix(in srgb, var(--accent-link) 24%, transparent);
-  box-shadow:
-    0 22px 44px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  background: var(--surface-card-bg);
+  border: 1px solid var(--surface-card-border);
+  box-shadow: var(--surface-card-shadow);
 }
 
 .nodeCardClickable {
@@ -317,19 +313,15 @@
 .nodeCardClickable:hover,
 .nodeCardClickable:focus-visible {
   transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--accent-link) 42%, transparent);
-  box-shadow:
-    0 26px 50px rgba(0, 0, 0, 0.12),
-    0 0 0 2px color-mix(in srgb, var(--accent-link) 14%, transparent);
+  border-color: var(--surface-card-hover-border);
+  box-shadow: var(--surface-card-hover-shadow);
   outline: none;
 }
 
 .nodeCardFocus {
   width: min(272px, calc(100vw - 40px));
-  border-color: color-mix(in srgb, var(--accent-link) 52%, transparent);
-  box-shadow:
-    0 28px 56px rgba(0, 0, 0, 0.12),
-    0 0 0 2px color-mix(in srgb, var(--accent-link) 18%, transparent);
+  border-color: var(--surface-card-focus-border);
+  box-shadow: var(--surface-card-focus-shadow);
 }
 
 .nodeCardLoading {
@@ -341,7 +333,7 @@
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: radial-gradient(circle at top right, rgba(13, 173, 219, 0.22), transparent 32%);
+  background: var(--surface-card-glow);
 }
 
 .nodeLoadingOverlay {
@@ -353,7 +345,7 @@
   justify-content: center;
   gap: 10px;
   border-radius: inherit;
-  background: color-mix(in srgb, var(--background-main) 72%, white 28%);
+  background: var(--surface-loading-bg);
   backdrop-filter: blur(4px);
 }
 
@@ -449,7 +441,7 @@
 .nodeAddress {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   margin-top: 3px;
   overflow-wrap: anywhere;
 }
@@ -481,7 +473,7 @@
   min-width: 0;
   font-size: 14px;
   font-weight: 700;
-  color: var(--text-main);
+  color: var(--text-heading);
   white-space: nowrap;
 }
 
@@ -489,7 +481,7 @@
   min-width: 0;
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   white-space: nowrap;
   text-align: right;
 }
@@ -497,7 +489,7 @@
 .previewMuted {
   min-width: 0;
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
@@ -534,7 +526,7 @@
 .nodeDetails dt {
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   white-space: nowrap;
   padding-top: 1px;
 }
@@ -543,7 +535,7 @@
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-main);
+  color: var(--text-heading);
   overflow-wrap: anywhere;
 }
 
@@ -664,7 +656,7 @@
   margin-top: 8px;
   padding-top: 8px;
   font-size: 11px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   border-top: 1px solid color-mix(in srgb, var(--accent-link) 10%, transparent);
 }
 
@@ -728,7 +720,7 @@
   padding: 28px 20px;
   border-radius: 24px;
   background: color-mix(in srgb, var(--background-secondary) 68%, transparent);
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .genesisGrid {

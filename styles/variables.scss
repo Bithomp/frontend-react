@@ -13,6 +13,8 @@ body {
   --background-input-readonly: #e9ecef;
   --text-main: #333333;
   --text-secondary: #62636C;
+  --text-heading: var(--text-main);
+  --text-muted: var(--text-secondary);
   --text-contrast: white;
   --text-oposite: white;
   --accent-link: #00808E;
@@ -31,6 +33,23 @@ body {
   --card-border: var(--color-gray-200);
   --card-bg: white;
   --card-text: var(--color-gray-950);
+  --hero-aura-bg: radial-gradient(circle at 20% 20%, rgba(11, 143, 181, 0.18), transparent 34%),
+    radial-gradient(circle at 80% 10%, rgba(255, 159, 67, 0.16), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.24));
+  --surface-panel-bg: color-mix(in srgb, var(--background-main) 80%, white 20%);
+  --surface-panel-border: color-mix(in srgb, var(--accent-link) 18%, transparent);
+  --surface-panel-shadow: 0 18px 46px rgba(0, 0, 0, 0.08);
+  --surface-card-bg: linear-gradient(160deg, color-mix(in srgb, var(--background-main) 92%, white 8%), color-mix(in srgb, var(--background-secondary) 82%, white 18%));
+  --surface-card-border: color-mix(in srgb, var(--accent-link) 24%, transparent);
+  --surface-card-shadow: 0 22px 44px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  --surface-card-hover-border: color-mix(in srgb, var(--accent-link) 42%, transparent);
+  --surface-card-hover-shadow: 0 26px 50px rgba(0, 0, 0, 0.12), 0 0 0 2px color-mix(in srgb, var(--accent-link) 14%, transparent);
+  --surface-card-focus-border: color-mix(in srgb, var(--accent-link) 52%, transparent);
+  --surface-card-focus-shadow: 0 28px 56px rgba(0, 0, 0, 0.12), 0 0 0 2px color-mix(in srgb, var(--accent-link) 18%, transparent);
+  --surface-card-glow: radial-gradient(circle at top right, rgba(13, 173, 219, 0.22), transparent 32%);
+  --surface-loading-bg: color-mix(in srgb, var(--background-main) 72%, white 28%);
+  --surface-group-bg: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+  --surface-group-border: color-mix(in srgb, var(--accent-link) 18%, transparent);
 }
 body.dark {
   --background-header: #031B21;
@@ -45,6 +64,8 @@ body.dark {
   --background-input-readonly: #333333;
   --text-main: white;
   --text-secondary: #999999;
+  --text-heading: #E2E9EB;
+  --text-muted: #A2AAAE;
   --text-contrast: white;
   --text-oposite: black;
   --accent-link: #66D0DA;
@@ -63,6 +84,23 @@ body.dark {
   --card-border: var(--color-gray-800);
   --card-bg: black;
   --card-text: var(--color-gray-100);
+  --hero-aura-bg: radial-gradient(circle at 18% 18%, rgba(26, 115, 126, 0.24), transparent 34%),
+    radial-gradient(circle at 82% 8%, rgba(168, 132, 94, 0.18), transparent 28%),
+    linear-gradient(180deg, rgba(41, 52, 54, 0.58), rgba(8, 11, 11, 0.16));
+  --surface-panel-bg: rgba(32, 34, 34, 0.92);
+  --surface-panel-border: rgba(102, 208, 218, 0.2);
+  --surface-panel-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+  --surface-card-bg: linear-gradient(160deg, rgba(34, 37, 38, 0.98), rgba(24, 33, 35, 0.94));
+  --surface-card-border: rgba(102, 208, 218, 0.24);
+  --surface-card-shadow: 0 20px 42px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --surface-card-hover-border: rgba(102, 208, 218, 0.36);
+  --surface-card-hover-shadow: 0 24px 46px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(102, 208, 218, 0.1);
+  --surface-card-focus-border: rgba(102, 208, 218, 0.42);
+  --surface-card-focus-shadow: 0 26px 52px rgba(0, 0, 0, 0.32), 0 0 0 2px rgba(102, 208, 218, 0.12);
+  --surface-card-glow: radial-gradient(circle at top right, rgba(102, 208, 218, 0.12), transparent 34%);
+  --surface-loading-bg: rgba(24, 27, 28, 0.82);
+  --surface-group-bg: rgba(12, 23, 25, 0.62);
+  --surface-group-border: rgba(102, 208, 218, 0.18);
 }
   
 body[data-networkname*="xahau"] {
