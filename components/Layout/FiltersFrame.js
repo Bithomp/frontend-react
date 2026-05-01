@@ -26,18 +26,19 @@ function FilterIndicator({ filters }) {
   }
 
   const renderFilterValue = (key, value) => {
-    return capitalize(key) + ' = ' + shortHash(value)
+    const valueText = String(value)
+    const displayValue = valueText.length > 24 ? shortHash(valueText) : valueText
+    return capitalize(key) + ': ' + displayValue
   }
 
   return (
     <div className="center mb-2">
       <FaFilter />
       <span>
-        Filter applied:{' '}
+        Filters:{' '}
         {activeFilters.map(([key, value], index) => (
           <span key={key}>
-            {index > 0 && index === activeFilters.length - 1 ? ' and ' : ''}
-            {index > 0 && index < activeFilters.length - 1 ? ', ' : ''}
+            {index > 0 ? ' · ' : ''}
             {renderFilterValue(key, value)}
           </span>
         ))}
