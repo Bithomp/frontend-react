@@ -23,7 +23,7 @@
   "hide-details": "Weniger",
   "show-more-children": "{{count}} weitere anzeigen",
   "show-more-children-left": "{{count}} weitere anzeigen ({{left}} übrig)",
-  "show-children": "{{count}} Kinder anzeigen",
+  "show-children": "Kinder anzeigen",
   "hide-children": "Kinder ausblenden",
   "show-older-ancestors": "{{count}} ältere Vorfahren zeigen",
   "load-more-ancestors": "Weitere Vorfahren laden",

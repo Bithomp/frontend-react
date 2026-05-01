@@ -245,6 +245,14 @@
   padding-top: 22px;
 }
 
+.childrenGroup {
+  margin-top: 0;
+  padding: 16px 12px;
+  border: 2px solid color-mix(in srgb, var(--accent-link) 18%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+}
+
 .childrenRail {
   position: absolute;
   top: 1px;
@@ -582,10 +590,32 @@
   margin-top: 4px;
 }
 
-.nodeBranchControl {
-  position: relative;
-  z-index: 1;
-  margin-top: 8px;
+.nodeActionControl {
+  display: inline-flex;
+}
+
+.nodeActionControl .showMoreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid color-mix(in srgb, var(--accent-link) 32%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-link) 12%, transparent);
+  color: var(--accent-link);
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: none;
+  transition: background 0.15s ease;
+}
+
+.nodeActionControl .showMoreButton:hover,
+.nodeActionControl .showMoreButton:focus-visible {
+  transform: none;
+  border-color: color-mix(in srgb, var(--accent-link) 44%, transparent);
+  background: color-mix(in srgb, var(--accent-link) 20%, transparent);
+  box-shadow: none;
 }
 
 .nodeLink,

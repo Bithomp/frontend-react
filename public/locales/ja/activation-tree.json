@@ -23,7 +23,7 @@
   "hide-details": "閉じる",
   "show-more-children": "さらに {{count}} 件表示",
   "show-more-children-left": "さらに {{count}} 件表示（残り {{left}} 件）",
-  "show-children": "{{count}} 件の子を表示",
+  "show-children": "子を表示",
   "hide-children": "子を非表示",
   "show-older-ancestors": "古い祖先を {{count}} 件表示",
   "load-more-ancestors": "祖先をさらに読み込む",

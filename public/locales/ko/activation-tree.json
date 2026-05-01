@@ -23,7 +23,7 @@
   "hide-details": "접기",
   "show-more-children": "{{count}}개 더 보기",
   "show-more-children-left": "{{count}}개 더 보기 (남은 {{left}})",
-  "show-children": "자식 {{count}}개 보기",
+  "show-children": "자식 보기",
   "hide-children": "자식 숨기기",
   "show-older-ancestors": "더 오래된 조상 {{count}}개 보기",
   "load-more-ancestors": "조상 더 불러오기",

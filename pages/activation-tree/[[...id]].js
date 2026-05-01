@@ -21,8 +21,7 @@ import {
   userOrServiceName
 } from '../../utils/format'
 
-const DESCENDANT_DEPTH = 1
-const INITIAL_ANCESTOR_DEPTH = 1
+const TREE_DEPTH = 1
 const ANCESTOR_STEP = 5
 const INITIAL_VISIBLE_CHILDREN = 20
 const INITIAL_VISIBLE_ROOT_CHILDREN = 10
@@ -32,11 +31,6 @@ const safeNumber = (value) => {
   if (value === null || value === undefined || value === '') return null
   const parsed = Number(value)
   return Number.isFinite(parsed) ? parsed : null
-}
-
-const scaleDropsToNative = (value) => {
-  const parsed = safeNumber(value)
-  return parsed === null ? null : parsed / 1000000
 }
 
 const buildDetailsData = (raw) => {
@@ -79,12 +73,17 @@ const uniqueByAccount = (nodes) => {
   })
 }
 
-const decorateDescendantTree = (nodes) =>
+const getKnownChildrenCount = (node) => safeNumber(node?.children ?? node?.details?.children)
+
+const hasCheckedChildren = (node) => node?._childrenLoaded === true || node?.details?._childrenLoaded === true
+
+const decorateDescendantTree = (nodes, { childrenLoaded = false } = {}) =>
   (nodes || []).map((node) => {
-    const descendants = decorateDescendantTree(node.descendants || [])
+    const descendants = decorateDescendantTree(node.descendants || [], { childrenLoaded })
 
     return {
       ...node,
+      _childrenLoaded: childrenLoaded,
       details: buildDetailsData(node),
       descendants,
       totalDescendants: countDescendants(descendants)
@@ -115,20 +114,10 @@ const fetchApiPayload = async (url, req) => {
   return payload
 }
 
-const fetchGenesisServer = async (req) => {
-  const response = await axiosServer({
-    method: 'get',
-    url: 'v2/genesis',
-    headers: passHeaders(req)
-  })
-
-  return response?.data || {}
-}
-
 const accountPathParam = (account) => encodeURIComponent(account)
 
-const fetchDescendants = (account, req) =>
-  fetchApiPayload(`v2/account/${accountPathParam(account)}/descendants?depth=${DESCENDANT_DEPTH}`, req)
+const fetchDescendants = (account, req, depth = TREE_DEPTH) =>
+  fetchApiPayload(`v2/account/${accountPathParam(account)}/descendants?depth=${depth}`, req)
 const fetchAncestors = (account, depth, req) =>
   fetchApiPayload(`v2/account/${accountPathParam(account)}/ancestors?depth=${depth}`, req)
 
@@ -139,7 +128,7 @@ const getAccountUsername = (account) =>
   account?.username ||
   ''
 
-const buildTreeState = async (address, req, ancestorsDepth = INITIAL_ANCESTOR_DEPTH) => {
+const buildTreeState = async (address, req, ancestorsDepth = TREE_DEPTH) => {
   const [descendantsData, ancestorsData] = await Promise.all([
     fetchDescendants(address, req),
     fetchAncestors(address, ancestorsDepth, req)
@@ -201,8 +190,8 @@ export async function getServerSideProps(context) {
     }
   } else {
     try {
-      const genesisData = await fetchGenesisServer(req)
-      genesisStarters = genesisData?.genesis || []
+      const genesisData = await fetchDescendants('genesis', req)
+      genesisStarters = decorateDescendantTree(genesisData?.genesis || genesisData?.descendants || [])
     } catch {
       initialError = 'failed'
     }
@@ -214,8 +203,8 @@ export async function getServerSideProps(context) {
       initialError,
       rootData: sanitizeForProps(rootData || null),
       ancestors: sanitizeForProps(ancestors),
-      ancestorsDepth: sanitizeForProps(pageMode === 'tree' ? INITIAL_ANCESTOR_DEPTH : 0),
-      ancestorsHasMore: sanitizeForProps(pageMode === 'tree' ? ancestors.length >= INITIAL_ANCESTOR_DEPTH : false),
+      ancestorsDepth: sanitizeForProps(pageMode === 'tree' ? TREE_DEPTH : 0),
+      ancestorsHasMore: sanitizeForProps(pageMode === 'tree' ? ancestors.length >= TREE_DEPTH : false),
       descendantsTree: sanitizeForProps(descendantsTree),
       totalDescendants,
       genesisStarters: sanitizeForProps(genesisStarters),
@@ -329,15 +318,26 @@ function NodeCard({
         </div>
       )}
 
-      {address && (
+      {(address || branchControl) && (
         <div className={styles.nodeActions}>
-          <Link
-            href={`/account/${address}`}
-            className={`${styles.nodeLink} ${styles.nodeLinkSmall}`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            {t('open-account')}
-          </Link>
+          {address && (
+            <Link
+              href={`/account/${address}`}
+              className={`${styles.nodeLink} ${styles.nodeLinkSmall}`}
+              onClick={(event) => event.stopPropagation()}
+            >
+              {t('open-account')}
+            </Link>
+          )}
+          {branchControl && (
+            <div
+              className={styles.nodeActionControl}
+              onClick={(event) => event.stopPropagation()}
+              onKeyDown={(event) => event.stopPropagation()}
+            >
+              {branchControl}
+            </div>
+          )}
         </div>
       )}
 
@@ -397,16 +397,6 @@ function NodeCard({
               </Link>
             )}
           </div>
-
-          {branchControl && (
-            <div
-              className={styles.nodeBranchControl}
-              onClick={(event) => event.stopPropagation()}
-              onKeyDown={(event) => event.stopPropagation()}
-            >
-              {branchControl}
-            </div>
-          )}
         </>
       )}
     </div>
@@ -427,39 +417,112 @@ function ChildrenExpander({ hiddenCount, onExpand }) {
   )
 }
 
-function DescendantBranch({ node, level = 0, onFocusAddress, pendingFocusAddress }) {
-  const { t } = useTranslation('activation-tree')
+function DescendantBranch({
+  node,
+  level = 0,
+  onFocusAddress,
+  pendingFocusAddress,
+  nodeSubtitle,
+  nodeExtraClassName,
+  showCollapsedTime = false,
+  showFamilyCounts = true
+}) {
+  const { t } = useTranslation(['activation-tree', 'common'])
   const [visibleChildren, setVisibleChildren] = useState(INITIAL_VISIBLE_CHILDREN)
   const [branchExpanded, setBranchExpanded] = useState(false)
-  const orderedChildren = useMemo(() => sortNodesByInception(node?.descendants || []), [node?.descendants])
+  const [loadedChildren, setLoadedChildren] = useState(node?.descendants || [])
+  const [childrenLoaded, setChildrenLoaded] = useState(hasCheckedChildren(node) || getKnownChildrenCount(node) === 0)
+  const [isChildrenLoading, setIsChildrenLoading] = useState(false)
+  const address = node?.details?.address || node?.account || node?.address
+  const knownChildrenCount = getKnownChildrenCount(node)
+  const orderedChildren = useMemo(() => sortNodesByInception(loadedChildren), [loadedChildren])
   const shownChildren = orderedChildren.slice(0, visibleChildren)
   const hiddenCount = Math.max(0, orderedChildren.length - shownChildren.length)
+  const canToggleChildren = orderedChildren.length > 0 || !childrenLoaded
+  const nodeWithLoadedChildren = {
+    ...node,
+    children: childrenLoaded ? loadedChildren.length : node?.children,
+    descendants: loadedChildren
+  }
+  const showLoadedFamilyCounts =
+    showFamilyCounts && (childrenLoaded || orderedChildren.length > 0 || knownChildrenCount !== null)
+
+  useEffect(() => {
+    const nextChildren = node?.descendants || []
+    setLoadedChildren(nextChildren)
+    setChildrenLoaded(hasCheckedChildren(node) || getKnownChildrenCount(node) === 0)
+    setBranchExpanded(false)
+    setVisibleChildren(INITIAL_VISIBLE_CHILDREN)
+  }, [node])
+
+  const onToggleChildren = async (event) => {
+    event.stopPropagation()
+
+    if (branchExpanded) {
+      setBranchExpanded(false)
+      return
+    }
+
+    if (childrenLoaded) {
+      setBranchExpanded(orderedChildren.length > 0)
+      return
+    }
+
+    if (!address || isChildrenLoading) return
+
+    if (orderedChildren.length > 0) {
+      setBranchExpanded(true)
+    }
+
+    setIsChildrenLoading(true)
+    try {
+      const response = await fetchDescendants(address)
+      const nextChildren = decorateDescendantTree(response?.descendants || [], { childrenLoaded: true })
+      setLoadedChildren(nextChildren)
+      setChildrenLoaded(true)
+      setVisibleChildren(INITIAL_VISIBLE_CHILDREN)
+      setBranchExpanded((value) => value || nextChildren.length > 0)
+    } catch {
+      setChildrenLoaded(false)
+    } finally {
+      setIsChildrenLoading(false)
+    }
+  }
+
+  const branchToggle =
+    canToggleChildren && (
+      <button
+        type="button"
+        className={styles.showMoreButton}
+        onClick={onToggleChildren}
+        disabled={isChildrenLoading}
+        aria-busy={isChildrenLoading ? 'true' : undefined}
+      >
+        {isChildrenLoading
+          ? t('general.loading', { ns: 'common' })
+          : branchExpanded
+            ? t('hide-children')
+            : t('show-children')}
+      </button>
+    )
 
   return (
     <div className={styles.branch}>
       <NodeCard
-        node={node}
+        node={nodeWithLoadedChildren}
         isPendingFocus={pendingFocusAddress === node?.account}
         isLoading={pendingFocusAddress === node?.account}
         onFocusAddress={onFocusAddress}
-        branchControl={
-          !!orderedChildren.length &&
-          !branchExpanded && (
-            <button
-              type="button"
-              className={styles.showMoreButton}
-              onClick={() => setBranchExpanded((value) => !value)}
-            >
-              {t('show-children', { count: orderedChildren.length })}
-            </button>
-          )
-        }
+        subtitle={nodeSubtitle}
+        extraClassName={nodeExtraClassName}
+        showCollapsedTime={showCollapsedTime}
+        showFamilyCounts={showLoadedFamilyCounts}
+        branchControl={branchToggle}
       />
       {!!orderedChildren.length && branchExpanded && (
         <>
           <div className={styles.branchConnectorDown} />
-          <div className={styles.childrenWrap}>
-            <div className={styles.childrenRail} />
+          <div className={`${styles.childrenWrap} ${styles.childrenGroup}`}>
             <div className={styles.childrenRow}>
               {shownChildren.map((child) => (
                 <DescendantBranch
@@ -652,7 +715,7 @@ export default function ActivationTreePage({
       setTreeState((prev) => ({
         ...prev,
         ancestors: uniqueByAccount([...(prev.ancestors || []), ...loadedAncestors]),
-        ancestorsDepth: (prev.ancestorsDepth || INITIAL_ANCESTOR_DEPTH) + loadedAncestors.length,
+        ancestorsDepth: (prev.ancestorsDepth || TREE_DEPTH) + loadedAncestors.length,
         ancestorsHasMore: loadedAncestors.length >= ANCESTOR_STEP
       }))
     } catch {
@@ -750,27 +813,14 @@ export default function ActivationTreePage({
 
             <div className={styles.genesisGrid}>
               {treeState.genesisStarters.map((account) => (
-                <NodeCard
-                  key={account.address}
-                  node={{
-                    details: {
-                      address: account.address,
-                      genesisBalance: scaleDropsToNative(account.genesis_balance),
-                      balance: scaleDropsToNative(account.balance)
-                    },
-                    account: account.address,
-                    genesisBalance: scaleDropsToNative(account.genesis_balance),
-                    balance: scaleDropsToNative(account.balance),
-                    inception: account.inception,
-                    descendants: []
-                  }}
-                  subtitle={`#${account.genesis_index}`}
-                  extraClassName={styles.genesisCard}
-                  isPendingFocus={pendingFocusAddress === account.address}
-                  isLoading={pendingFocusAddress === account.address}
+                <DescendantBranch
+                  key={account.account || account.address || account.details?.address}
+                  node={account}
                   onFocusAddress={onFocusAddress}
-                  showFamilyCounts={false}
+                  pendingFocusAddress={pendingFocusAddress}
+                  nodeExtraClassName={styles.genesisCard}
                   showCollapsedTime={true}
+                  showFamilyCounts={true}
                 />
               ))}
             </div>

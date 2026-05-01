@@ -23,7 +23,7 @@
   "hide-details": "Lebih sedikit",
   "show-more-children": "Tampilkan {{count}} lagi",
   "show-more-children-left": "Tampilkan {{count}} lagi (tersisa {{left}})",
-  "show-children": "Tampilkan {{count}} anak",
+  "show-children": "Tampilkan anak",
   "hide-children": "Sembunyikan anak",
   "show-older-ancestors": "Tampilkan {{count}} leluhur yang lebih tua",
   "load-more-ancestors": "Muat lebih banyak leluhur",
