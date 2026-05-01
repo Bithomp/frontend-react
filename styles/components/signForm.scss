@@ -9,12 +9,16 @@
 
   .header {
     text-align: center;
-    padding-top: 60px;
+    padding: 60px 60px 0;
     font-size: 28px;
     font-weight: bold;
+    line-height: 1.2;
+    overflow-wrap: normal;
+    text-wrap: balance;
 
     @media only screen and (max-width: 480px) {
-      font-size: 24px;
+      padding: 60px 46px 0;
+      font-size: clamp(18px, 5vw, 22px);
     }
   }
 
