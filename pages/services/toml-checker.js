@@ -2,6 +2,7 @@ import axios from 'axios'
 import SEO from '../../components/SEO'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -29,12 +30,16 @@ const formatResponse = (value) => {
   }
 }
 
-const getFriendlyError = (error, tt, t) => {
+const getFriendlyError = (error, tt, t, tomlName) => {
   const apiError = error?.response?.data?.error
   const message = apiError || error?.message || ''
 
   if (message.includes('ENOTFOUND') || message.includes('getaddrinfo')) {
     return tt('errors.domain-not-found')
+  }
+
+  if (error?.response?.status === 404 || message.includes('status code 404')) {
+    return tt('errors.toml-not-found', { tomlName })
   }
 
   return apiError || t('error.' + message) || tt('errors.failed')
@@ -49,6 +54,7 @@ export async function getServerSideProps({ locale }) {
 }
 
 export default function TomlCheckerPage() {
+  const router = useRouter()
   const { t, i18n } = useTranslation(['common', 'toml-checker'])
   const tt = (key, options) => t(key, { ns: 'toml-checker', ...options })
   const tomlName = xahauNetwork ? 'xahau.toml' : 'xrp-ledger.toml'
@@ -61,6 +67,14 @@ export default function TomlCheckerPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const [result, setResult] = useState(null)
   const [cooldownUntil, setCooldownUntil] = useState(0)
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    const queryDomain = Array.isArray(router.query.domain) ? router.query.domain[0] : router.query.domain
+    const normalizedDomain = normalizeDomain(queryDomain)
+    if (normalizedDomain) setDomain(normalizedDomain)
+  }, [router.isReady, router.query.domain])
 
   useEffect(() => {
     let cancelled = false
@@ -107,6 +121,9 @@ export default function TomlCheckerPage() {
       return
     }
 
+    const nextQuery = { ...router.query, domain: normalizedDomain }
+    router.replace({ pathname: router.pathname, query: nextQuery }, undefined, { shallow: true, scroll: false })
+
     if (!turnstileToken) {
       setErrorMessage(tt('errors.captcha-required'))
       return
@@ -120,7 +137,7 @@ export default function TomlCheckerPage() {
         'cf-turnstile-response': turnstileToken
       })
       .catch((error) => {
-        setErrorMessage(getFriendlyError(error, tt, t))
+        setErrorMessage(getFriendlyError(error, tt, t, tomlName))
         return null
       })
 
@@ -133,11 +150,14 @@ export default function TomlCheckerPage() {
     if (!data) return
 
     if (data.error) {
-      setErrorMessage(
-        String(data.error).includes('ENOTFOUND') || String(data.error).includes('getaddrinfo')
-          ? tt('errors.domain-not-found')
-          : data.error
-      )
+      const dataError = String(data.error)
+      if (dataError.includes('ENOTFOUND') || dataError.includes('getaddrinfo')) {
+        setErrorMessage(tt('errors.domain-not-found'))
+      } else if (dataError.includes('404')) {
+        setErrorMessage(tt('errors.toml-not-found', { tomlName }))
+      } else {
+        setErrorMessage(data.error)
+      }
       return
     }
 
@@ -158,6 +178,8 @@ export default function TomlCheckerPage() {
         <div className="grey-box" style={{ maxWidth: 860, margin: '24px auto', textAlign: 'left' }}>
           <h4>{tt('check-title')}</h4>
           <p>{tt('check-description', { tomlName })}</p>
+          <p className="toml-help">{tt('toml-help', { ledgerName, tomlName })}</p>
+          <code className="toml-location">https://yourdomain.com/.well-known/{tomlName}</code>
 
           <form onSubmit={onSubmit}>
             <input
@@ -196,11 +218,7 @@ export default function TomlCheckerPage() {
             </p>
           </form>
 
-          {errorMessage && (
-            <div className="red" style={{ marginTop: 16 }}>
-              {errorMessage}
-            </div>
-          )}
+          <div className={`toml-error red${errorMessage ? '' : ' empty'}`}>{errorMessage || ' '}</div>
         </div>
 
         {result && (
@@ -244,6 +262,33 @@ export default function TomlCheckerPage() {
           margin-bottom: 16px;
           display: flex;
           align-items: center;
+        }
+
+        .toml-help {
+          margin-bottom: 8px;
+        }
+
+        .toml-location {
+          display: block;
+          width: fit-content;
+          max-width: 100%;
+          margin: 0 0 18px;
+          padding: 8px 10px;
+          border-radius: 8px;
+          background: var(--code-bg);
+          border: 1px solid var(--code-border);
+          color: var(--code-text);
+          overflow-wrap: anywhere;
+        }
+
+        .toml-error {
+          height: 1.4em;
+          margin-top: 16px;
+          line-height: 1.4;
+        }
+
+        .toml-error.empty {
+          visibility: hidden;
         }
 
         .toml-checker-pre {

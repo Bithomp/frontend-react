@@ -1,8 +1,9 @@
 {
   "title": "{{explorerName}} TOML-Checker",
-  "description": "Prüfen und validieren Sie {{tomlName}} für {{ledgerName}}-Domains mit {{explorerName}}.",
+  "description": "Prüfen und validieren Sie {{tomlName}} für {{ledgerName}}-Domains.",
   "check-title": "Domain prüfen",
   "check-description": "Geben Sie eine Domain ein, um die Datei {{tomlName}} abzurufen, zu decodieren und zu prüfen.",
+  "toml-help": "Die Datei {{tomlName}} ist eine auf der Domain gehostete TOML-Konfiguration, die die Verbindung zwischen einer Domain und {{ledgerName}}-Accounts, Validatoren und zugehörigen Diensten erklärt und bestätigt. Sie sollte öffentlich erreichbar sein unter:",
   "domain-placeholder": "Geben Sie eine Domain wie bithomp.com ein",
   "cooldown-note": "Zwischen den Prüfungen gilt ein Limit von 10 Sekunden.",
   "cooldown-left": "Bitte warten Sie {{seconds}} Sek., bevor Sie erneut prüfen.",
@@ -19,6 +20,7 @@
     "invalid-domain": "Bitte geben Sie eine gültige Domain ein.",
     "captcha-required": "Bitte füllen Sie das Captcha aus.",
     "domain-not-found": "Diese Domain oder ihre TOML-Datei konnte nicht erreicht werden. Bitte prüfen Sie die Domain und versuchen Sie es erneut.",
+    "toml-not-found": "Die Domain ist erreichbar, aber {{tomlName}} wurde am erwarteten .well-known-Pfad nicht gefunden.",
     "failed": "Die Domain kann derzeit nicht geprüft werden."
   }
 }

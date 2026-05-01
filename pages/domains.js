@@ -2,6 +2,7 @@ import { useTranslation, Trans } from 'next-i18next'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
+import { LuFileCheck2 } from 'react-icons/lu'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { AddressWithIconFilled } from '../utils/format'
@@ -233,6 +234,7 @@ export default function Domains({ setSignRequest }) {
                   <tr>
                     <th>{t('table.index')}</th>
                     <th>{t('table.domain')}</th>
+                    <th className="center">{t('table.toml-checker', { ns: 'domains' })}</th>
                     <th className="center">{t('table.addresses', { ns: 'domains' })}</th>
                   </tr>
                 </thead>
@@ -261,6 +263,18 @@ export default function Domains({ setSignRequest }) {
                           <td>{i + 1}</td>
                           <td>
                             <a href={'https://' + d.domain}>{d.domain}</a>
+                          </td>
+                          <td className="center no-brake">
+                            <span className="tooltip">
+                              <Link
+                                href={{ pathname: '/services/toml-checker', query: { domain: d.domain } }}
+                                className="toml-checker-icon-link"
+                                aria-label={t('table.check-toml-for-domain', { ns: 'domains', domain: d.domain })}
+                              >
+                                <LuFileCheck2 aria-hidden="true" />
+                              </Link>
+                              <span className="tooltiptext no-brake">{t('table.check-toml', { ns: 'domains' })}</span>
+                            </span>
                           </td>
                           <td>
                             {d.addresses.length === 1 ? (
@@ -309,8 +323,18 @@ export default function Domains({ setSignRequest }) {
                             <b>{i + 1}</b>
                           </td>
                           <td>
-                            <p className="bold">
-                              <a href={'https://' + d.domain}>{d.domain}</a>
+                            <p className="domain-mobile-row">
+                              <a className="bold" href={'https://' + d.domain}>
+                                {d.domain}
+                              </a>
+                              <Link
+                                href={{ pathname: '/services/toml-checker', query: { domain: d.domain } }}
+                                className="toml-checker-icon-link mobile"
+                                title={t('table.check-toml', { ns: 'domains' })}
+                                aria-label={t('table.check-toml-for-domain', { ns: 'domains', domain: d.domain })}
+                              >
+                                {t('table.check-toml', { ns: 'domains' })}
+                              </Link>
                             </p>
                             {d.addresses.length === 1 ? (
                               <AddressWithIconFilled data={d.addresses[0]} />
@@ -341,6 +365,46 @@ export default function Domains({ setSignRequest }) {
           <style jsx>{`
             .domains-page-content {
               margin: 20px;
+            }
+
+            .toml-checker-icon-link {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 28px;
+              height: 28px;
+              color: var(--accent-link);
+              vertical-align: middle;
+            }
+
+            .toml-checker-icon-link:hover {
+              color: var(--accent-link-hover);
+            }
+
+            .toml-checker-icon-link :global(svg) {
+              width: 20px;
+              height: 20px;
+            }
+
+            .domain-mobile-row {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 12px;
+              margin-bottom: 10px;
+            }
+
+            .domain-mobile-row > :global(a:first-child) {
+              min-width: 0;
+              overflow-wrap: anywhere;
+            }
+
+            .toml-checker-icon-link.mobile {
+              flex: 0 0 auto;
+              width: auto;
+              height: 22px;
+              font-size: 0.9em;
+              line-height: 1;
             }
 
             @media only screen and (max-width: 800px) {

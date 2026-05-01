@@ -14,6 +14,9 @@
   "verify-desc": "You can verify that everything is set properly with the tool: <0>TOML Checker</0>. The list on this page updates from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our list within 24h, then it's possible that we can not parse your TOML file.",
   "desc": "Below you can find the list of all verified domains on {{ledgerName}} (the page updates every day).",
   "table": {
+    "toml-checker": "TOML",
+    "check-toml": "Check TOML",
+    "check-toml-for-domain": "Check TOML for {{domain}}",
     "addresses": "Addresses"
   }
 }
