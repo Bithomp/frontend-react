@@ -683,7 +683,7 @@ export default function ActivationTreePage({
       const nextState = await buildTreeState(address)
       setTreeState(nextState)
 
-      router.replace(`/activation-tree/${address}`, undefined, { shallow: true, scroll: false })
+      router.push(`/activation-tree/${address}`, undefined, { shallow: true, scroll: false })
     } catch {
       setSearchError(t('errors.failed'))
     } finally {
