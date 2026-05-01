@@ -93,6 +93,10 @@
   box-sizing: border-box;
 }
 
+.searchCard :global(.search-button) {
+  border: none;
+}
+
 .searchCard :global(.address-input .react-select__single-value) {
   max-width: calc(100% - 12px);
   font-size: 13px;
@@ -661,6 +665,20 @@
     0 14px 28px rgba(0, 0, 0, 0.08),
     0 0 0 2px color-mix(in srgb, var(--accent-link) 10%, transparent);
   outline: none;
+}
+
+.showMoreButton:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.showMoreButton:disabled:hover,
+.showMoreButton:disabled:focus-visible {
+  transform: none;
+  border-color: color-mix(in srgb, var(--accent-link) 24%, transparent);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 @keyframes activation-tree-spin {

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
@@ -10,7 +10,7 @@ import AddressInput from '../../components/UI/AddressInput'
 import styles from '../../styles/pages/activation-tree.module.scss'
 
 import { axiosServer, passHeaders } from '../../utils/axios'
-import { explorerName, isAddressValid, ledgerName, nativeCurrency } from '../../utils'
+import { explorerName, ledgerName, nativeCurrency } from '../../utils'
 import {
   AddressWithIcon,
   dateFormat,
@@ -125,18 +125,19 @@ const fetchGenesisServer = async (req) => {
   return response?.data || {}
 }
 
-const resolveUsernameClient = async (value) => {
-  const response = await axios(`v2/username/${encodeURIComponent(value)}?username=true&service=true`)
-  const payload = response?.data
-  if (!payload?.address || payload?.error) {
-    throw new Error(payload?.error || payload?.message || 'Failed to resolve username')
-  }
-  return payload.address
-}
+const accountPathParam = (account) => encodeURIComponent(account)
 
-const fetchDescendants = (address, req) =>
-  fetchApiPayload(`v2/account/${address}/descendants?depth=${DESCENDANT_DEPTH}`, req)
-const fetchAncestors = (address, depth, req) => fetchApiPayload(`v2/account/${address}/ancestors?depth=${depth}`, req)
+const fetchDescendants = (account, req) =>
+  fetchApiPayload(`v2/account/${accountPathParam(account)}/descendants?depth=${DESCENDANT_DEPTH}`, req)
+const fetchAncestors = (account, depth, req) =>
+  fetchApiPayload(`v2/account/${accountPathParam(account)}/ancestors?depth=${depth}`, req)
+
+const getAccountUsername = (account) =>
+  account?.addressDetails?.username ||
+  account?.details?.addressDetails?.username ||
+  account?.accountDetails?.username ||
+  account?.username ||
+  ''
 
 const buildTreeState = async (address, req, ancestorsDepth = INITIAL_ANCESTOR_DEPTH) => {
   const [descendantsData, ancestorsData] = await Promise.all([
@@ -190,17 +191,13 @@ export async function getServerSideProps(context) {
   let genesisStarters = []
 
   if (address) {
-    if (!isAddressValid(address)) {
-      initialError = 'invalid-address'
-    } else {
-      try {
-        ;({ pageMode, initialError, rootData, ancestors, descendantsTree, totalDescendants } = await buildTreeState(
-          address,
-          req
-        ))
-      } catch (error) {
-        initialError = error?.message || 'failed'
-      }
+    try {
+      ;({ pageMode, initialError, rootData, ancestors, descendantsTree, totalDescendants } = await buildTreeState(
+        address,
+        req
+      ))
+    } catch (error) {
+      initialError = error?.message || 'failed'
     }
   } else {
     try {
@@ -580,11 +577,9 @@ export default function ActivationTreePage({
     genesisStarters
   })
   const [isTreeLoading, setIsTreeLoading] = useState(false)
+  const [isAncestorsLoading, setIsAncestorsLoading] = useState(false)
   const [pendingFocusAddress, setPendingFocusAddress] = useState('')
-  const [searchValue, setSearchValue] = useState(rootData?.address || '')
-  const [searchAddress, setSearchAddress] = useState(rootData?.address || '')
   const [searchError, setSearchError] = useState('')
-  const skipAutoSubmitRef = useRef(true)
   const rootHasGenesisBalance =
     safeNumber(treeState.rootData?.initialBalance) === null &&
     safeNumber(treeState.rootData?.genesisBalance ?? treeState.rootData?.genesis_balance) !== null
@@ -601,10 +596,7 @@ export default function ActivationTreePage({
       totalDescendants,
       genesisStarters
     })
-    setSearchValue(rootData?.address || '')
-    setSearchAddress(rootData?.address || '')
     setPendingFocusAddress('')
-    skipAutoSubmitRef.current = true
   }, [
     pageMode,
     initialError,
@@ -617,17 +609,6 @@ export default function ActivationTreePage({
     genesisStarters
   ])
 
-  useEffect(() => {
-    if (skipAutoSubmitRef.current) {
-      skipAutoSubmitRef.current = false
-      return
-    }
-
-    if (!isAddressValid(searchAddress) || searchAddress === treeState.rootData?.address) return
-
-    router.push(`/activation-tree/${searchAddress}`)
-  }, [router, searchAddress, treeState.rootData?.address])
-
   const onFocusAddress = async (address) => {
     if (!address || address === treeState.rootData?.address || isTreeLoading) return
 
@@ -638,8 +619,6 @@ export default function ActivationTreePage({
     try {
       const nextState = await buildTreeState(address)
       setTreeState(nextState)
-      setSearchValue(address)
-      setSearchAddress(address)
 
       router.replace(`/activation-tree/${address}`, undefined, { shallow: true, scroll: false })
     } catch {
@@ -651,8 +630,16 @@ export default function ActivationTreePage({
   }
 
   const onLoadMoreAncestors = async () => {
-    if (!treeState.rootData?.address || isTreeLoading || !treeState.ancestorsHasMore || rootHasGenesisBalance) return
+    if (
+      !treeState.rootData?.address ||
+      isTreeLoading ||
+      isAncestorsLoading ||
+      !treeState.ancestorsHasMore ||
+      rootHasGenesisBalance
+    )
+      return
 
+    setIsAncestorsLoading(true)
     setIsTreeLoading(true)
     setSearchError('')
 
@@ -671,6 +658,7 @@ export default function ActivationTreePage({
     } catch {
       setSearchError(t('errors.failed'))
     } finally {
+      setIsAncestorsLoading(false)
       setIsTreeLoading(false)
     }
   }
@@ -684,39 +672,41 @@ export default function ActivationTreePage({
     [t]
   )
   const searchPlaceholder = useMemo(() => t('search-placeholder', { nativeCurrency }), [t])
-  const invalidAddressText = useMemo(() => t('invalid-address', { ledgerName }), [t])
+  const addressInputData = useMemo(() => {
+    const address = treeState.rootData?.address
+    if (!address) return {}
 
-  const onSubmit = async (e) => {
-    e.preventDefault()
-    const rawValue = String(searchValue || '').trim()
-    const resolvedValue = String(searchAddress || '').trim()
-    const goToTree = (address) => router.push(`/activation-tree/${address}`)
+    const details =
+      treeState.rootData?.addressDetails || treeState.rootData?.details?.addressDetails || treeState.rootData?.accountDetails || {}
+    const username = getAccountUsername(treeState.rootData)
 
+    return {
+      address,
+      addressDetails: {
+        username,
+        service: details.service || treeState.rootData?.service?.name || treeState.rootData?.service?.domain
+      }
+    }
+  }, [treeState.rootData])
+
+  useEffect(() => {
+    const username = getAccountUsername(treeState.rootData)
+    const routeAccount = Array.isArray(router.query.id) ? router.query.id[0] : router.query.id
+
+    if (!username || !routeAccount || routeAccount === username) return
+
+    router.replace(`/activation-tree/${encodeURIComponent(username)}`, undefined, { shallow: true, scroll: false })
+  }, [router, treeState.rootData])
+
+  const goToTree = (account) => {
+    const rawValue = String(account || '').trim()
     if (!rawValue) {
-      setSearchError(invalidAddressText)
+      setSearchError('')
       return
     }
 
-    if (isAddressValid(resolvedValue)) {
-      setSearchError('')
-      goToTree(resolvedValue)
-      return
-    }
-
-    if (isAddressValid(rawValue)) {
-      setSearchError('')
-      goToTree(rawValue)
-      return
-    }
-
-    try {
-      const resolvedAddress = await resolveUsernameClient(rawValue)
-      setSearchError('')
-      setSearchAddress(resolvedAddress)
-      goToTree(resolvedAddress)
-    } catch {
-      setSearchError(invalidAddressText)
-    }
+    setSearchError('')
+    router.push(`/activation-tree/${encodeURIComponent(rawValue)}`)
   }
 
   return (
@@ -732,19 +722,22 @@ export default function ActivationTreePage({
               <p>{pageDescription}</p>
             </div>
 
-            <form className={styles.searchCard} onSubmit={onSubmit}>
+            <div className={styles.searchCard}>
               <label className={styles.searchLabel}>{t('search-label')}</label>
               <AddressInput
                 placeholder={searchPlaceholder}
                 title={t('search-title')}
-                setValue={setSearchAddress}
-                setInnerValue={setSearchValue}
+                setValue={goToTree}
+                rawData={addressInputData}
+                type="address"
+                skipUsernameResolveOnEnter={true}
+                preferUsernameOnSelect={true}
               />
               {searchError && <div className="red">{searchError}</div>}
               {!searchError && treeState.initialError && (
                 <div className="orange">{t(`errors.${treeState.initialError}`, { ledgerName })}</div>
               )}
-            </form>
+            </div>
           </div>
         </section>
 
@@ -791,8 +784,14 @@ export default function ActivationTreePage({
 
               {treeState.ancestorsHasMore && !rootHasGenesisBalance && (
                 <div className={styles.topExpandWrap}>
-                  <button type="button" className={styles.showMoreButton} onClick={onLoadMoreAncestors}>
-                    {t('load-more-ancestors')}
+                  <button
+                    type="button"
+                    className={styles.showMoreButton}
+                    onClick={onLoadMoreAncestors}
+                    disabled={isAncestorsLoading}
+                    aria-busy={isAncestorsLoading ? 'true' : undefined}
+                  >
+                    {isAncestorsLoading ? t('loading-ancestors') : t('load-more-ancestors')}
                   </button>
                 </div>
               )}
