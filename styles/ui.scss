@@ -638,6 +638,11 @@ table {
   }
 }
 
+.entity-icon-outline {
+  border: 1px solid var(--entity-icon-outline) !important;
+  box-sizing: border-box;
+}
+
 .button-action {
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;

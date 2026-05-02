@@ -175,7 +175,7 @@ export const nftThumbnail = (nft) => {
   )
 }
 
-export const collectionThumbnail = (data) => {
+export const collectionThumbnail = (data, options = {}) => {
   if (!data) return ''
   const { image, video } = data
   const uri = image || video
@@ -196,6 +196,7 @@ export const collectionThumbnail = (data) => {
   }
   return (
     <span
+      className="entity-icon-outline"
       style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -204,15 +205,17 @@ export const collectionThumbnail = (data) => {
         height: 32,
         flexShrink: 0,
         overflow: 'hidden',
-        borderRadius: '50% 20% / 10% 40%',
-        verticalAlign: 'middle'
+        borderRadius: options.round ? '50%' : '50% 20% / 10% 40%',
+        verticalAlign: 'middle',
+        background: '#fff',
+        boxSizing: 'border-box'
       }}
     >
       <img
         src={imageSrc}
         width="32"
         height="32"
-        style={{ width: 32, height: 32, objectFit: 'contain', display: 'block' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
         loading="lazy"
         decoding="async"
         alt=""

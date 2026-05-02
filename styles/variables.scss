@@ -23,6 +23,7 @@ body {
   --footer-link-hover: #66D0DA;
   --accent-icon: #00828E;
   --unaccent-icon: rgba(63, 163, 181, .5);
+  --entity-icon-outline: rgba(0, 0, 0, 0.16);
   --shadow: rgba(0, 0, 0, 0.2);
   --red: #D23A1C;
   --green: #0D742F;
@@ -77,6 +78,7 @@ body.dark {
   --footer-link: #66D0DA;
   --footer-link-hover: white;
   --unaccent-icon: rgba(0, 177, 193, .5);
+  --entity-icon-outline: #fff;
   --shadow: rgba(255, 255, 255, 0.3);
   --red: #E48977;
   --green: #62C683;

@@ -85,6 +85,7 @@ export const TokenImage = ({ token }) => {
 
   return (
     <div
+      className="entity-icon-outline"
       style={{
         height: size,
         width: size,
@@ -94,7 +95,7 @@ export const TokenImage = ({ token }) => {
         verticalAlign: 'text-bottom',
         marginRight: 3,
         backgroundColor: '#fff',
-        boxShadow: '0 0 0 1px #fff'
+        boxSizing: 'border-box'
       }}
     >
       <img
@@ -165,6 +166,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
     <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
       {/* back coin */}
       <img
+        className="entity-icon-outline"
         alt="asset"
         src={assetImageUrl}
         width={22}
@@ -176,12 +178,12 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
           borderRadius: '50%',
           objectFit: 'cover',
           backgroundColor: '#fff',
-          border: '1px solid #fff',
           boxSizing: 'border-box'
         }}
       />
       {/* front coin */}
       <img
+        className="entity-icon-outline"
         alt="asset 2"
         src={asset2ImageUrl}
         width={22}
@@ -194,13 +196,13 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
           objectFit: 'cover',
           zIndex: 2,
           backgroundColor: '#fff',
-          border: '1px solid #fff',
           boxSizing: 'border-box'
         }}
       />
     </div>
   ) : (
     <img
+      className="entity-icon-outline"
       alt="avatar"
       src={imageUrl}
       width="35"
@@ -209,7 +211,6 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
         borderRadius: '50%',
         objectFit: 'cover',
         backgroundColor: '#fff',
-        border: '1px solid #fff',
         boxSizing: 'border-box',
         verticalAlign: 'middle'
       }}
@@ -335,6 +336,7 @@ export const AddressWithIcon = ({ children, address }) => {
         <tr className="no-border">
           <td style={{ padding: 0, width: 35, height: 35 }}>
             <div
+              className="entity-icon-outline"
               style={{
                 width: 35,
                 height: 35,
@@ -342,7 +344,8 @@ export const AddressWithIcon = ({ children, address }) => {
                 overflow: 'hidden',
                 display: 'inline-block',
                 verticalAlign: 'middle',
-                lineHeight: 0
+                lineHeight: 0,
+                boxSizing: 'border-box'
               }}
             >
               <img
@@ -351,6 +354,9 @@ export const AddressWithIcon = ({ children, address }) => {
                 width="35"
                 height="35"
                 style={{
+                  display: 'block',
+                  width: '100%',
+                  height: '100%',
                   objectFit: 'cover'
                 }}
               />

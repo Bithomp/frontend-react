@@ -1,10 +1,12 @@
 import Image from 'next/image'
-import { useTheme } from '../Layout/ThemeContext'
 
-export default function Avatar({ src, alt = 'avatar', size = 35, style = {} }) {
-  const { theme } = useTheme()
+export default function Avatar({ src, alt = 'avatar', size = 35, style = {}, className = '' }) {
+  const customStyle = { ...style }
+  delete customStyle.border
+  delete customStyle.boxShadow
   return (
     <span
+      className={`entity-icon-outline ${className}`.trim()}
       style={{
         display: 'inline-block',
         background: 'white',
@@ -16,8 +18,7 @@ export default function Avatar({ src, alt = 'avatar', size = 35, style = {} }) {
         lineHeight: 0,
         overflow: 'hidden',
         verticalAlign: 'middle',
-        border: theme === 'dark' ? '1px solid #444' : '1px solid #eee',
-        ...style
+        ...customStyle
       }}
     >
       <Image
