@@ -35,6 +35,8 @@
 }
 
 .home-widget {
+  --home-teaser-min-height: 340px;
+
   width: 100%;
   min-width: 0;
   align-self: stretch;
@@ -65,27 +67,47 @@
   }
 
   &--compact-stat {
+    --home-teaser-min-height: 188px;
+
     min-height: 0;
     align-self: stretch;
 
     .home-widget-placeholder--teaser-card {
+      height: var(--home-teaser-min-height);
       min-height: 188px;
+      padding: 12px 16px;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .home-widget-placeholder__header {
+      padding-bottom: 8px;
+    }
+
+    .home-widget-placeholder__rows {
+      gap: 6px;
+      padding-top: 0;
+
+      span {
+        height: 19px;
+      }
     }
   }
 }
 
 .home-widget-placeholder {
+  box-sizing: border-box;
   width: 100%;
   border-radius: 10px;
   background: linear-gradient(135deg, var(--background-main), var(--card-bg));
   border: 1px solid var(--card-border);
 
   &--converter {
-    min-height: 152px;
+    min-height: var(--home-teaser-min-height, 300px);
   }
 
   &--chart {
-    min-height: 241px;
+    min-height: var(--home-teaser-min-height, 335px);
     position: relative;
     overflow: hidden;
     background: var(--card-bg);
@@ -130,7 +152,7 @@
 
   &--teaser-card {
     box-sizing: border-box;
-    min-height: 300px;
+    min-height: var(--home-teaser-min-height, 300px);
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -348,9 +370,11 @@ body.dark .home-direct-lookup a {
   }
 
   .statistics-row {
-    min-height: 19px;
-    padding: 1px 0;
-    line-height: 16px;
+    height: 24px;
+    min-height: 24px;
+    align-items: center;
+    padding: 0;
+    line-height: 18px;
 
     a {
       display: inline-flex;

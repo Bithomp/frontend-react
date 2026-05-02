@@ -16,7 +16,7 @@ export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
   const [difference, setDifference] = useState(null)
   const checkStatApi = async () => {
-    const response = await axios('v2/transactions/whale?limit=7')
+    const response = await axios('v2/transactions/whale?limit=8')
     const data = response.data
     if (data) {
       setData(data)
@@ -49,7 +49,7 @@ export default function Whales({ currency, data, setData }) {
       isEmpty={!data?.length}
       className={styles.whaleCard}
     >
-      {data?.slice(0, 7).map((tx) => (
+      {data?.slice(0, 8).map((tx) => (
         <HomeTeaseRow
           key={tx.hash}
           href={`/transaction/${tx.hash}`}

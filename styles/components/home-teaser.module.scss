@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 300px;
+  min-height: var(--home-teaser-min-height, 300px);
 
   .content {
     display: flex;
@@ -64,8 +64,8 @@
     cursor: pointer;
   }
 
-  .amendmentCard {
-    min-height: 320px;
+  &.amendmentCard {
+    min-height: var(--home-teaser-min-height, 320px);
   }
 
   .validatorPrimary {
