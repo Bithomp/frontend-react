@@ -19,7 +19,14 @@ import {
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
+import {
+  isAddressOrUsername,
+  nativeCurrency,
+  retinaImageSize,
+  tokenImageSrc,
+  validateCurrencyCode,
+  xahauNetwork
+} from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenTabs from '../../components/Tabs/TokenTabs'
 
@@ -492,7 +499,7 @@ export default function TokenPage({
             {/* Big Token Icon */}
             <img
               alt="token"
-              src={tokenImageSrc(token)}
+              src={tokenImageSrc(token, retinaImageSize(300))}
               className="token-image"
               style={{
                 width: 'calc(100% - 2px)',

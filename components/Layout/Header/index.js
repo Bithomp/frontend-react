@@ -12,7 +12,8 @@ import {
   ledgerSubName,
   network,
   useWidth,
-  avatarServer,
+  avatarSrc,
+  retinaImageSize,
   server
 } from '../../../utils'
 
@@ -786,7 +787,7 @@ export default function Header({
                   <>
                     <img
                       alt="avatar"
-                      src={avatarServer + address + '?hashIconZoom=12'}
+                      src={avatarSrc(address, { size: retinaImageSize(24), hashIconZoom: 12 })}
                       width="24"
                       height="24"
                       className="menu-avatar"
@@ -862,7 +863,7 @@ export default function Header({
                           >
                             <img
                               alt="avatar"
-                              src={avatarServer + walletItem.address + '?hashIconZoom=12'}
+                              src={avatarSrc(walletItem.address, { size: retinaImageSize(20), hashIconZoom: 12 })}
                               width="20"
                               height="20"
                               className="wallet-row-avatar"

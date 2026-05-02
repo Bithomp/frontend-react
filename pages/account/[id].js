@@ -24,6 +24,7 @@ import {
   isValidXAddress,
   isTagValid,
   isDomainValid,
+  retinaImageSize,
   stripDomain,
   timestampExpired,
   xahauNetwork
@@ -2854,7 +2855,11 @@ export default function Account({
               <div className="avatar-wrapper">
                 <div className={`avatar-image-mask ${accountDisplayUsername ? 'has-username' : ''}`}>
                   <img
-                    src={avatarSrc(data.address, refreshPage) + (refreshPage ? '&hashIconZoom=12' : '?hashIconZoom=12')}
+                    src={avatarSrc(data.address, {
+                      refreshPage,
+                      size: retinaImageSize(150),
+                      hashIconZoom: 12
+                    })}
                     alt="Avatar"
                     className="account-avatar"
                   />

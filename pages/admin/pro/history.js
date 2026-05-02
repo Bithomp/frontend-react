@@ -8,7 +8,7 @@ import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
-import { avatarServer, nativeCurrency, useWidth, xahauNetwork } from '../../../utils'
+import { avatarSrc, nativeCurrency, retinaImageSize, useWidth, xahauNetwork } from '../../../utils'
 import {
   addressLink,
   amountFormat,
@@ -902,7 +902,12 @@ export default function History({
                             <tbody>
                               <tr>
                                 <td style={{ padding: 0 }}>
-                                  <img alt="avatar" src={avatarServer + address.address} width="40" height="40" />
+                                  <img
+                                    alt="avatar"
+                                    src={avatarSrc(address.address, { size: retinaImageSize(40), hashIconZoom: 12 })}
+                                    width="40"
+                                    height="40"
+                                  />
                                 </td>
                                 <td style={{ padding: '0 0 0 5px' }}>
                                   <b className="orange">{address.name}</b> -{' '}

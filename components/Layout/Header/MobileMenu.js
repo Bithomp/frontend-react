@@ -1,7 +1,7 @@
 import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
+import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarSrc, retinaImageSize } from '../../../utils'
 
 import WalletProviderIcon from '../../UI/WalletProviderIcon'
 
@@ -106,7 +106,7 @@ export default function MobileMenu({
             <>
               <img
                 alt="avatar"
-                src={avatarServer + address + '?hashIconZoom=12'}
+                src={avatarSrc(address, { size: retinaImageSize(24), hashIconZoom: 12 })}
                 width="24"
                 height="24"
                 className="menu-avatar"

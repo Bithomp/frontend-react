@@ -680,7 +680,29 @@ export const webSiteName =
 
 export const avatarServer = 'https://cdn.' + webSiteName + '/avatar/'
 
-export const avatarSrc = (address, refreshPage) => {
+export const retinaImageSize = (size) => {
+  const numericSize = Number(size)
+  return Number.isFinite(numericSize) && numericSize > 0 ? Math.ceil(numericSize * 2) : undefined
+}
+
+export const appendImageParams = (src, params = {}) => {
+  if (!src) return ''
+
+  const searchParams = new URLSearchParams()
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      searchParams.set(key, String(value))
+    }
+  })
+
+  const query = searchParams.toString()
+  if (!query) return src
+
+  return src + (src.includes('?') ? '&' : '?') + query
+}
+
+export const avatarSrc = (address, options) => {
   /*
     1) if in blacklist - alert image
     2) if bithomp image, show it 
@@ -690,20 +712,33 @@ export const avatarSrc = (address, refreshPage) => {
     6) otherwise show hashicon
   */
   if (!address) return ''
-  return avatarServer + address + (refreshPage ? '?' + refreshPage : '')
+
+  const params =
+    options && typeof options === 'object'
+      ? {
+          refresh: options.refreshPage,
+          size: options.size,
+          hashIconZoom: options.hashIconZoom
+        }
+      : { refresh: options }
+
+  return appendImageParams(avatarServer + address, params)
 }
 
-export const tokenImageSrc = (token) => {
+export const tokenImageSrc = (token, size) => {
   if (!token) return ''
   const mptId = token?.mptId || token?.mptokenIssuanceID || token?.MPTokenIssuanceID || token?.mpt_issuance_id
-  if (mptId) return mptokenImageSrc(mptId)
+  if (mptId) return mptokenImageSrc(mptId, size)
   if ((!token.issuer && token.currency === nativeCurrency) || typeof token === 'string')
     return nativeCurrenciesImages[nativeCurrency]
-  return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency + '?hashIconZoom=12'
+  return appendImageParams(avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency, {
+    size,
+    hashIconZoom: 12
+  })
 }
 
-export const mptokenImageSrc = (mptid) => {
-  return avatarServer.replace('/avatar/', '/mptoken/') + mptid + '?hashIconZoom=12'
+export const mptokenImageSrc = (mptid, size) => {
+  return appendImageParams(avatarServer.replace('/avatar/', '/mptoken/') + mptid, { size, hashIconZoom: 12 })
 }
 
 export const networksIds = {

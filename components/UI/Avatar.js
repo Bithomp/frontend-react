@@ -1,9 +1,12 @@
 import Image from 'next/image'
+import { appendImageParams, retinaImageSize } from '../../utils'
 
 export default function Avatar({ src, alt = 'avatar', size = 35, style = {}, className = '' }) {
   const customStyle = { ...style }
   delete customStyle.border
   delete customStyle.boxShadow
+  const imageSrc = appendImageParams(src, { size: retinaImageSize(size), hashIconZoom: 12 })
+
   return (
     <span
       className={`entity-icon-outline ${className}`.trim()}
@@ -23,7 +26,7 @@ export default function Avatar({ src, alt = 'avatar', size = 35, style = {}, cla
     >
       <Image
         alt={alt}
-        src={src + (src?.includes('?') ? '&' : '?') + 'hashIconZoom=12'}
+        src={imageSrc}
         width={size}
         height={size}
         style={{

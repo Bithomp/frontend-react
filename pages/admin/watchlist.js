@@ -7,7 +7,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
-import { avatarServer, isAddressValid, isIdValid, isValidNftXls20, useWidth, xahauNetwork } from '../../utils'
+import { avatarSrc, isAddressValid, isIdValid, isValidNftXls20, retinaImageSize, useWidth, xahauNetwork } from '../../utils'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import { MdDelete } from 'react-icons/md'
@@ -287,7 +287,12 @@ export default function Watchlist({
                                 <tbody>
                                   <tr>
                                     <td style={{ padding: 0 }}>
-                                      <img alt="avatar" src={avatarServer + a.entity} width="40" height="40" />
+                                      <img
+                                        alt="avatar"
+                                        src={avatarSrc(a.entity, { size: retinaImageSize(40), hashIconZoom: 12 })}
+                                        width="40"
+                                        height="40"
+                                      />
                                     </td>
                                     <td style={{ padding: '0 0 0 10px' }}>
                                       <b className="orange">{a.name}</b>
@@ -329,7 +334,12 @@ export default function Watchlist({
                         {addresses.map((a, i) => (
                           <tr key={i}>
                             <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                              <img alt="avatar" src={avatarServer + a.entity} width="30" height="30" />
+                              <img
+                                alt="avatar"
+                                src={avatarSrc(a.entity, { size: retinaImageSize(30), hashIconZoom: 12 })}
+                                width="30"
+                                height="30"
+                              />
                               <br />
                               <br />
                               {i + 1}

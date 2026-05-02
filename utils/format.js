@@ -10,14 +10,15 @@ import CopyButton from '../components/UI/CopyButton'
 import LinkIcon from '../public/images/link.svg'
 import { mpUrl } from './nft'
 import {
-  avatarServer,
+  avatarSrc,
   devNet,
   nativeCurrency,
   nativeCurrenciesImages,
   stripText,
   xls14NftValue,
   tokenImageSrc,
-  mptokenImageSrc
+  mptokenImageSrc,
+  retinaImageSize
 } from '.'
 import { scaleAmount, subtract } from './calc'
 import { LinkAmm, LinkToken } from './links'
@@ -74,6 +75,7 @@ export const NiceNativeBalance = ({ amount }) => {
 
 export const TokenImage = ({ token }) => {
   const size = 16
+  const imageSize = retinaImageSize(size)
   const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
      <rect width="100%" height="100%" fill="#ffffff"/>
@@ -99,7 +101,7 @@ export const TokenImage = ({ token }) => {
       }}
     >
       <img
-        src={tokenImageSrc(token)}
+        src={tokenImageSrc(token, imageSize)}
         alt="token"
         height={size}
         width={size}
@@ -132,13 +134,15 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
 
   const { currencyDetails, issuer, mptId, currency } = token
   const disableTokenLink = options?.disableTokenLink
+  const iconSize = retinaImageSize(35)
+  const lpAssetIconSize = retinaImageSize(22)
 
-  let imageUrl = avatarServer + issuer
+  let imageUrl = avatarSrc(issuer, { size: iconSize, hashIconZoom: 12 })
 
   if (mptId) {
-    imageUrl = mptokenImageSrc(mptId)
+    imageUrl = mptokenImageSrc(mptId, iconSize)
   } else {
-    imageUrl = tokenImageSrc(token)
+    imageUrl = tokenImageSrc(token, iconSize)
   }
 
   if (!issuer) {
@@ -151,8 +155,8 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
   // LP token - show 2 icons
   if (currencyDetails?.asset && currencyDetails?.asset2) {
     doubleIcon = true
-    assetImageUrl = tokenImageSrc(currencyDetails.asset)
-    asset2ImageUrl = tokenImageSrc(currencyDetails.asset2)
+    assetImageUrl = tokenImageSrc(currencyDetails.asset, lpAssetIconSize)
+    asset2ImageUrl = tokenImageSrc(currencyDetails.asset2, lpAssetIconSize)
   }
 
   const tokenText =
@@ -297,7 +301,7 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   const alt = data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'
   const icon = (
     <Avatar
-      src={avatarServer + address}
+      src={avatarSrc(address)}
       alt={alt}
       size={size}
       style={{
@@ -329,7 +333,9 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
 }
 
 export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = address ? avatarServer + address + '?hashIconZoom=12' : nativeCurrenciesImages[nativeCurrency]
+  let imageUrl = address
+    ? avatarSrc(address, { size: retinaImageSize(35), hashIconZoom: 12 })
+    : nativeCurrenciesImages[nativeCurrency]
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
