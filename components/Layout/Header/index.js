@@ -765,17 +765,17 @@ export default function Header({
           </MenuDropDown>
         </div>
 
-        {width ? (
-          <div className={'header-search-inline ' + (hideSearchInHeader ? 'hide-search-inline' : '')}>
+        <div className={'header-search-inline ' + (hideSearchInHeader ? 'hide-search-inline' : '')}>
+          {width ? (
             <SearchBlock
               compact={true}
-              //searchPlaceholderText="Search..."
+              searchPlaceholderText={width < 730 ? t('home.search-placeholder-short') : t('home.search-placeholder')}
               tab="account"
             />
-          </div>
-        ) : (
-          ''
-        )}
+          ) : (
+            <div className="header-search-reserved" aria-hidden="true" />
+          )}
+        </div>
 
         <div className="header-menu-right">
           <MenuDropDown

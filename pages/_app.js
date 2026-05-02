@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
-import { appWithTranslation } from 'next-i18next'
+import { appWithTranslation, useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
@@ -16,8 +16,21 @@ const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { s
 
 import { IsSsrMobileContext } from '@/utils/mobile'
 import { getBackgroundImage } from '@/utils/backgroundImage'
-import { isValidUUID, network, server, siteName, useLocalStorage, useCookie, xahauNetwork, networkId } from '@/utils'
+import {
+  isValidUUID,
+  network,
+  server,
+  siteName,
+  useLocalStorage,
+  useCookie,
+  xahauNetwork,
+  networkId,
+  nativeCurrency
+} from '@/utils'
 import { useEmailLogin } from '@/hooks/useEmailLogin'
+import LogoAnimated from '../components/Layout/LogoAnimated'
+import Header from '../components/Layout/Header'
+import SearchBlock from '../components/Layout/SearchBlock'
 
 const WalletConnectModalSign = dynamic(
   () => import('@walletconnect/modal-sign-react').then((mod) => mod.WalletConnectModalSign),
@@ -34,7 +47,6 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import { isUsernameValid } from '../utils'
 import { wssServer } from '../utils'
 
-const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
 const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
 
@@ -69,71 +81,69 @@ const getWalletConnectMetadata = () => ({
   icons: [server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/192.png']
 })
 
-const HeaderShell = ({ onActivate }) => (
-  <div className="home-header-shell">
-    <header>
-      <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
-        <Link
-          href="/"
-          prefetch={false}
-          aria-label="bithomp Main page"
-          style={{ display: 'inline-flex', alignItems: 'center', color: '#fff', textDecoration: 'none' }}
-        >
-          <img src="/images/logo-small.svg" alt="" width="36" height="36" style={{ marginTop: -2.5 }} />
-          <span style={{ fontSize: 27, lineHeight: '36px', marginLeft: 4, letterSpacing: 0 }}>bithomp</span>
-        </Link>
-        <span
-          className="header-fiat-rate large-logo default-rate"
-          aria-hidden="true"
-          style={{ marginLeft: 12 }}
-        >
-          <span className="header-fiat-rate-text"> </span>
-        </span>
-      </div>
-      <div className="header-search-inline">
-        <div className="search-block search-block-compact" style={{ backgroundColor: 'unset', height: 'auto' }}>
-          <div className="search-box search-box-compact" style={{ marginTop: 0 }}>
-            <input
-              aria-label="Search"
-              readOnly
-              onFocus={onActivate}
-              onPointerDown={onActivate}
-              placeholder="Search by Address / Transaction / NFT / Username"
-              style={{
-                width: '100%',
-                height: 30,
-                boxSizing: 'border-box',
-                background: '#000',
-                color: '#aaa',
-                border: '1px solid #00acc1',
-                borderRadius: '15px 0 0 15px',
-                padding: '0 42px 0 12px',
-                font: 'inherit'
-              }}
-            />
-            <button
-              type="button"
-              aria-label="Open search"
-              onClick={onActivate}
-              className="search-button"
-              style={{ border: 0 }}
-            >
-              <span className="search-icon" aria-hidden="true"></span>
-            </button>
+const formatShellRate = (value, currency) => {
+  const number = Number(value)
+  if (!Number.isFinite(number) || number <= 0 || !currency) return ''
+
+  return number.toLocaleString(undefined, {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+    maximumFractionDigits: 4,
+    minimumFractionDigits: 0
+  })
+}
+
+const HeaderShell = ({ onActivate, selectedCurrency, fiatRate }) => {
+  const { t } = useTranslation()
+  const rateText = formatShellRate(fiatRate, selectedCurrency)
+  const isBithomp = server.includes('bithomp')
+
+  return (
+    <div className="home-header-shell">
+      <header>
+        <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
+          <Link href="/" prefetch={false} aria-label="bithomp Main page" className="header-shell-logo-link">
+            {isBithomp ? (
+              <span className="header-shell-logo-bithomp">
+                <LogoAnimated />
+              </span>
+            ) : (
+              <img
+                src={`/images/${xahauNetwork ? 'xahauexplorer' : 'xrplexplorer'}/long.svg`}
+                alt=""
+                className="header-shell-logo-image"
+              />
+            )}
+          </Link>
+          <span
+            className={`header-fiat-rate large-logo ${xahauNetwork ? 'xahau-rate' : 'default-rate'} ${
+              rateText ? '' : 'is-loading'
+            }`.trim()}
+            suppressHydrationWarning
+            aria-hidden={rateText ? 'false' : 'true'}
+          >
+            <span className={`header-fiat-rate-text${rateText ? ' visible' : ''}`}>
+              {rateText ? `${nativeCurrency} = ${rateText}` : ' '}
+            </span>
+          </span>
+        </div>
+        <div className="header-search-inline">
+          <div onFocus={onActivate} onPointerDown={onActivate}>
+            <SearchBlock compact={true} searchPlaceholderText={t('home.search-placeholder-short')} tab="account" />
           </div>
         </div>
-      </div>
-      <div className="header-burger">
-        <input type="checkbox" id="header-burger-shell" aria-label="Open menu" readOnly onClick={onActivate} />
-        <label htmlFor="header-burger-shell" className="header-burger-elements">
-          <div></div>
-          <div></div>
-          <div></div>
-        </label>
-      </div>
-    </header>
-  </div>
-)
+        <div className="header-burger">
+          <input type="checkbox" id="header-burger" aria-label="Open menu" readOnly onClick={onActivate} />
+          <label htmlFor="header-burger" className="header-burger-elements">
+            <div></div>
+            <div></div>
+            <div></div>
+          </label>
+        </div>
+      </header>
+    </div>
+  )
+}
 
 const getErrorText = (value) => {
   if (!value) return ''
@@ -980,7 +990,11 @@ const MyApp = ({ Component, pageProps }) => {
           <ErrorBoundary>
             <div className="body" data-network={network} style={bodyBackgroundStyle}>
               {shouldDeferHomepageChrome ? (
-                <HeaderShell onActivate={() => setNonCriticalUiReady(true)} />
+                <HeaderShell
+                  onActivate={() => setNonCriticalUiReady(true)}
+                  selectedCurrency={selectedCurrency}
+                  fiatRate={liveFiatRate}
+                />
               ) : (
                 <Header
                   setSignRequest={setSignRequest}
