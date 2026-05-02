@@ -669,7 +669,13 @@ export default function MobileMenu({
               <AiFillStar style={{ marginBottom: '-2px' }} /> {t('menu.sponsored.title')}
             </div>
             <div className="mobile-menu__submenu">
-              <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
+              <a
+                href="https://bithomp.com/go/fm-buy"
+                target="_blank"
+                rel="noreferrer"
+                className="mobile-menu-item"
+                aria-label={`${t('menu.sponsored.buy')} sponsor link`}
+              >
                 <IoCashOutline style={itemIconStyle} />
                 {t('menu.sponsored.buy')}
               </a>

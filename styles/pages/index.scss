@@ -201,6 +201,15 @@
   display: inline-block;
 }
 
+.home-direct-lookup a {
+  color: #006f7a;
+  font-weight: 600;
+}
+
+body.dark .home-direct-lookup a {
+  color: var(--accent-link);
+}
+
 @media (max-width: 560px) {
   .home-direct-lookup-action {
     display: block;

@@ -1,7 +1,12 @@
 import Router from 'next/router'
 import NProgress from 'nprogress'
 
-NProgress.configure({ showSpinner: false })
+NProgress.configure({
+  showSpinner: false,
+  barSelector: '.bar',
+  spinnerSelector: '.spinner',
+  template: '<div class="bar" aria-hidden="true"><div class="peg"></div></div><div class="spinner" aria-hidden="true"><div class="spinner-icon"></div></div>'
+})
 
 let timer
 let state

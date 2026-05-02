@@ -83,6 +83,7 @@ export default function Footer(
               href="https://bithomp.com/go/fm-buy"
               target="_blank"
               rel="noreferrer"
+              aria-label={`${t('menu.sponsored.buy')} sponsor link`}
               style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}
             >
               <span style={{ textDecoration: 'underline' }}>{t('menu.sponsored.buy')}</span> <FaShoppingBag />
