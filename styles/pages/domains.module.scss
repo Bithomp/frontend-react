@@ -1,0 +1,34 @@
+.domainWithFavicon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  vertical-align: middle;
+}
+
+.domainWithFavicon a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.domainFavicon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.domainMobileRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.domainMobileRow .domainWithFavicon {
+  flex: 1 1 auto;
+}

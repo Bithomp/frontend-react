@@ -7,18 +7,46 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { AddressWithIconFilled } from '../utils/format'
 import { getIsSsrMobile } from '../utils/mobile'
-import { useWidth, xahauNetwork, explorerName, ledgerName } from '../utils'
+import { useWidth, xahauNetwork, explorerName, ledgerName, webSiteName } from '../utils'
 
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import RadioOptions from '../components/UI/RadioOptions'
+import styles from '../styles/pages/domains.module.scss'
 
 const DOMAINS_LIMIT = 100
+const DOMAIN_FAVICON_SIZE = 16
+const DOMAIN_FAVICON_CDN_SIZE = DOMAIN_FAVICON_SIZE * 2
 
 const sourceFilterOptions = [
   { value: 'exclude', label: 'Exclude' },
   { value: 'include', label: 'Include' }
 ]
+
+const domainFaviconSrc = (domain) => {
+  if (!domain) return ''
+  return `https://cdn.${webSiteName}/favicons/${encodeURIComponent(domain)}?size=${DOMAIN_FAVICON_CDN_SIZE}`
+}
+
+const DomainLink = ({ domain }) => (
+  <span className={styles.domainWithFavicon}>
+    <a className="bold" href={'https://' + domain}>
+      {domain}
+    </a>
+    <img
+      className={`${styles.domainFavicon} entity-icon-outline`}
+      src={domainFaviconSrc(domain)}
+      alt=""
+      width={DOMAIN_FAVICON_SIZE}
+      height={DOMAIN_FAVICON_SIZE}
+      loading="lazy"
+      aria-hidden="true"
+      onError={(e) => {
+        e.currentTarget.style.display = 'none'
+      }}
+    />
+  </span>
+)
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -262,7 +290,7 @@ export default function Domains({ setSignRequest }) {
                         <tr key={i} style={{ borderBottom: '1px solid var(--accent-link)' }}>
                           <td>{i + 1}</td>
                           <td>
-                            <a href={'https://' + d.domain}>{d.domain}</a>
+                            <DomainLink domain={d.domain} />
                           </td>
                           <td className="center no-brake">
                             <span className="tooltip">
@@ -323,10 +351,8 @@ export default function Domains({ setSignRequest }) {
                             <b>{i + 1}</b>
                           </td>
                           <td>
-                            <p className="domain-mobile-row">
-                              <a className="bold" href={'https://' + d.domain}>
-                                {d.domain}
-                              </a>
+                            <p className={styles.domainMobileRow}>
+                              <DomainLink domain={d.domain} />
                               <Link
                                 href={{ pathname: '/services/toml-checker', query: { domain: d.domain } }}
                                 className="toml-checker-icon-link mobile"
@@ -384,19 +410,6 @@ export default function Domains({ setSignRequest }) {
             .toml-checker-icon-link :global(svg) {
               width: 20px;
               height: 20px;
-            }
-
-            .domain-mobile-row {
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              gap: 12px;
-              margin-bottom: 10px;
-            }
-
-            .domain-mobile-row > :global(a:first-child) {
-              min-width: 0;
-              overflow-wrap: anywhere;
             }
 
             .toml-checker-icon-link.mobile {
