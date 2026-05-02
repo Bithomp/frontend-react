@@ -45,6 +45,11 @@ const NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT = 10
 const OBJECT_PREVIEW_LIMIT = 5
 const OBJECT_LOAD_MORE_STEP = 5
 
+const tomlCheckerHref = (domain) => ({
+  pathname: '/services/toml-checker',
+  query: { domain }
+})
+
 const isPositiveBalance = (balance) => balance !== '0' && balance?.[0] !== '-'
 
 const isNegativeBalance = (balance) => balance !== '0' && balance?.[0] === '-'
@@ -408,6 +413,7 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
+import { LuFileCheck2 } from 'react-icons/lu'
 import { MdDeleteForever, MdMoneyOff, MdNorth, MdQrCode2, MdSouth, MdVerified } from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
@@ -2611,6 +2617,18 @@ export default function Account({
         </span>
       </span>
     ) : null
+    const domainTomlAction =
+      isValidDomain && data.verifiedDomain ? (
+        <Link
+          href={tomlCheckerHref(domainText)}
+          prefetch={false}
+          className="tooltip activated-tree-link toml-checker-link"
+          aria-label={`View TOML for ${domainText}`}
+        >
+          <LuFileCheck2 className="toml-checker-icon" aria-hidden="true" focusable="false" />
+          <span className="tooltiptext no-brake">View TOML</span>
+        </Link>
+      ) : null
 
     pushPublicRow(
       'Domain',
@@ -2625,15 +2643,9 @@ export default function Account({
             {domainText}
           </a>{' '}
           {data.verifiedDomain && (
-            <span
-              className="blue tooltip"
-              style={{
-                display: 'inline-block',
-                verticalAlign: 'middle'
-              }}
-            >
-              <MdVerified />
-              <span className="tooltiptext right small no-brake">TOML Verified Domain</span>
+            <span className="blue tooltip verified-domain-status-icon" role="img" aria-label="TOML verified domain">
+              <MdVerified aria-hidden="true" />
+              <span className="tooltiptext small no-brake">TOML Verified Domain</span>
             </span>
           )}{' '}
           {showUnverified && (
@@ -2651,7 +2663,8 @@ export default function Account({
           <code className="code-highlight">{data.ledgerInfo.domain}</code>
           {domainActionButtons}
         </>
-      )
+      ),
+      domainTomlAction
     )
   }
 
@@ -10215,6 +10228,14 @@ export default function Account({
           text-decoration: underline;
         }
 
+        .verified-domain-status-icon {
+          display: inline-flex;
+          align-items: center;
+          vertical-align: middle;
+          line-height: 1;
+          transform: translateY(6px);
+        }
+
         .activated-line {
           display: inline-flex;
           flex-wrap: wrap;
@@ -10261,6 +10282,11 @@ export default function Account({
         }
 
         .activated-tree-icon {
+          font-size: 16px;
+          display: block;
+        }
+
+        .toml-checker-icon {
           font-size: 16px;
           display: block;
         }
