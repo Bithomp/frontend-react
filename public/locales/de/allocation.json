@@ -4,7 +4,7 @@
   "max-supply": "Maximales Angebot",
   "current-supply": "Aktuelles Angebot",
   "circulating": "Umlaufmenge",
-  "circulating-note": "Maximum minus verbrannt, hinterlegt & blockiert.",
+  "circulating-note": "Maximum minus verbrannt, Escrow und Blackhole",
   "distribution-link": "{{currency}} Verteilung",
   "burned": "Verbrannt",
   "of-max": "vom Maximum",
@@ -16,19 +16,19 @@
   "col-percent": "Anteil",
   "updated-at": "Zuletzt aktualisiert",
   "category": {
-    "escrowRipple": "Ripple Treuhand",
+    "escrowRipple": "Ripple Escrow",
     "ripple": "Ripple",
-    "escrowService": "Dienst-Treuhand",
-    "escrowRest": "Sonstige Treuhand",
+    "escrowService": "Service Escrow",
+    "escrowRest": "Sonstige Escrow",
     "rest": "Aktive Wallets",
-    "service": "Bekannte Dienste",
+    "service": "Bekannte Services",
     "amm": "AMM-Pools",
     "notActive1": "Inaktiv 1–2 Jahre",
     "notActive2": "Inaktiv 2–3 Jahre",
     "notActive3": "Inaktiv 3–5 Jahre",
     "notActive5": "Inaktiv 5–10 Jahre",
     "notActive10": "Inaktiv 10+ Jahre",
-    "blackholed": "Blackholed-Konten"
+    "blackholed": "Blackholed"
   },
   "group": {
     "inactive-short": "Inaktiv 1–5 Jahre",

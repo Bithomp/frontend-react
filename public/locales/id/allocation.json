@@ -4,7 +4,7 @@
   "max-supply": "Pasokan Maksimum",
   "current-supply": "Pasokan Saat Ini",
   "circulating": "Pasokan Beredar",
-  "circulating-note": "Maksimum dikurangi yang dibakar, dititipkan & diblokir.",
+  "circulating-note": "Maksimum dikurangi yang terbakar, dalam escrow dan blackholed.",
   "distribution-link": "Distribusi {{currency}}",
   "burned": "Dibakar",
   "of-max": "dari maksimum",

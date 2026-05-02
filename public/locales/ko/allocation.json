@@ -4,7 +4,7 @@
   "max-supply": "최대 공급량",
   "current-supply": "현재 공급량",
   "circulating": "유통 공급량",
-  "circulating-note": "최대량에서 소각, 에스크로 및 블랙홀 처리된 양을 뺀 값.",
+  "circulating-note": "소각된 양, 에스크로 및 블랙홀 처리된 양을 제외한 최대량.",
   "distribution-link": "{{currency}} 분배",
   "burned": "소각됨",
   "of-max": "최대 대비",
@@ -28,7 +28,7 @@
     "notActive3": "비활성 3–5년",
     "notActive5": "비활성 5–10년",
     "notActive10": "비활성 10년 이상",
-    "blackholed": "블랙홀"
+    "blackholed": "블랙홀드 계정"
   },
   "group": {
     "inactive-short": "비활성 1–5년",
