@@ -1,8 +1,9 @@
 {
   "title": "{{explorerName}} TOML 검사기",
-  "description": "{{explorerName}}에서 {{ledgerName}} 도메인의 {{tomlName}}을 확인하고 검증하세요.",
+  "description": "{{ledgerName}} 도메인의 {{tomlName}}을 확인하고 검증하세요.",
   "check-title": "도메인 확인",
   "check-description": "도메인을 입력해 {{tomlName}} 파일을 가져오고, 디코딩하고, 검사하세요.",
+  "toml-help": "{{tomlName}} 파일은 도메인에 호스팅되는 TOML 구성으로, 도메인과 {{ledgerName}} 계정, 검증인, 관련 서비스의 연결을 선언하고 검증합니다. 다음 위치에서 공개적으로 접근 가능해야 합니다:",
   "domain-placeholder": "bithomp.com 같은 도메인을 입력하세요",
   "cooldown-note": "각 검사 사이에는 10초 제한이 있습니다.",
   "cooldown-left": "다음 검사 전 {{seconds}}초 기다려 주세요.",
@@ -19,6 +20,11 @@
     "invalid-domain": "유효한 도메인을 입력하세요.",
     "captcha-required": "캡차를 완료해 주세요.",
     "domain-not-found": "해당 도메인이나 TOML 파일에 접근할 수 없습니다. 도메인을 확인한 뒤 다시 시도해 주세요.",
+    "toml-not-found": "도메인에는 접근할 수 있지만 예상한 .well-known 위치에서 {{tomlName}}을 찾을 수 없습니다.",
+    "secure-connection-failed": "TOML 파일을 안전하게 가져올 수 없습니다. 도메인의 HTTPS/TLS 인증서를 확인해 주세요.",
+    "html-content": "예상한 {{tomlName}} URL이 TOML 파일 대신 HTML을 반환했습니다.",
+    "invalid-toml": "TOML 파일을 찾았지만 파싱할 수 없습니다.",
+    "invalid-toml-with-reason": "TOML 파일을 찾았지만 파싱할 수 없습니다: {{reason}}",
     "failed": "지금은 도메인을 확인할 수 없습니다."
   }
 }

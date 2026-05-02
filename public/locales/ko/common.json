@@ -34,6 +34,7 @@
     "services": {
       "services": "서비스",
       "send": "결제 보내기",
+      "reward-auto-claim": "Reward Auto Claim",
       "add-token": "토큰 추가 (Trustline)",
       "account-settings": "계정 설정",
       "toml-checker": "TOML 검사기",
@@ -78,7 +79,8 @@
       "amendments": "수정사항",
       "unl-report": "UNL report",
       "genesis": "Genesis 계정",
-      "allocation": "{{currency}} 배분"
+      "allocation": "{{currency}} 배분",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "개발자",

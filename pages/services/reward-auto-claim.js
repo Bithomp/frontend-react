@@ -260,7 +260,11 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
   if (!xahauNetwork) {
     return (
       <>
-        <SEO title="Auto Claim Rewards" description="Xahau only" />
+        <SEO
+          title="Reward Auto Claim"
+          description="Automate Xahau reward claiming with Hook and CronSet on Bithomp."
+          noindex={true}
+        />
         <div className="content-center">
           <h1 className="center">Auto-claim rewards</h1>
           <p className="center red">This page is available only on Xahau network.</p>
@@ -271,7 +275,10 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
   return (
     <div className={rewardAutoClaim}>
-      <SEO title="Auto-claim rewards" description="Automate reward claiming via Hook + CronSet on Xahau." />
+      <SEO
+        title="Reward Auto Claim"
+        description="Automate Xahau reward claiming with Hook, CronSet, and guided account checks on Bithomp."
+      />
 
       <div className="content-text content-center">
         <h1 className="center">Auto-claim Xahau rewards</h1>

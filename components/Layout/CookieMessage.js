@@ -12,7 +12,7 @@ export default function Footer() {
       {showCookie && showCookie !== 'false' && (
         <div className="footer-cookie center">
           {t('footer.cookie.we-use-cookie')}{' '}
-          <Link href="/privacy-policy" className="hover-oposite">
+          <Link href="/privacy-policy" className="hover-oposite" prefetch={false}>
             {t('menu.privacy-policy')}
           </Link>
           .

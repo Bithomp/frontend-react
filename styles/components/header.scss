@@ -40,9 +40,10 @@ header {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: var(--accent-link);
+      color: color-mix(in srgb, var(--text-contrast) 86%, var(--accent-link) 14%);
       white-space: nowrap;
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 7px;
       padding: 2px 6px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
@@ -63,6 +64,7 @@ header {
 
       .header-fiat-rate-text.visible {
         visibility: visible;
+        color: inherit;
       }
     }
   }
@@ -139,6 +141,18 @@ header {
           justify-content: center;
           vertical-align: middle;
           flex-shrink: 0;
+        }
+
+        .menu-item-badge {
+          margin-left: auto;
+          padding: 2px 8px;
+          border-radius: 999px;
+          background: #ff8a00;
+          color: #fff;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          line-height: 1.4;
         }
       }
 
@@ -383,10 +397,6 @@ header {
           transition: background-color 0.5s;
           color: var(--text-main);
 
-          &.search-input-placeholder {
-            padding-left: 10px !important;
-          }
-
           &.search-input-select {
             padding: 0 !important;
             width: 100% !important;
@@ -544,6 +554,12 @@ header {
           }
         }
       }
+    }
+
+    .header-search-reserved {
+      height: 28px;
+      width: 100%;
+      box-sizing: border-box;
     }
   }
 
@@ -708,6 +724,18 @@ header {
       height: 24px;
       margin-right: 5px;
     }
+
+    .menu-item-badge {
+      margin-left: auto;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #ff8a00;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.4;
+    }
   }
 
   .mobile-menu__submenu {
@@ -787,6 +815,79 @@ header {
 
   .mobile-menu {
     transform: translateX(0);
+  }
+}
+
+.home-header-shell {
+  header {
+    .header-shell-logo-link {
+      display: inline-block;
+      width: auto;
+      height: auto;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .header-shell-logo-bithomp {
+      display: block;
+      height: 46px;
+      width: 125px;
+      margin-top: -2.5px;
+
+      svg {
+        display: block;
+      }
+    }
+
+    .header-shell-logo-image {
+      display: block;
+      height: 46px;
+      width: auto;
+      margin-top: -2.5px;
+    }
+
+    .header-fiat-rate {
+      &.is-loading {
+        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.16);
+
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.12) 50%,
+            transparent 100%
+          );
+          transform: translateX(-100%);
+          animation: header-shell-shimmer 1.6s ease-in-out infinite;
+        }
+      }
+    }
+
+    .header-search-inline {
+      .search-block {
+        .search-box {
+          .search-button {
+            border: 0;
+            padding: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes header-shell-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }
 
@@ -935,7 +1036,7 @@ header {
 
 @media only screen and (max-width: 1760px) and (min-width: 1370px) {
   header {
-    justify-content: space-between;
+    justify-content: flex-start;
 
     .header-menu-right {
       margin-left: 0;
@@ -991,7 +1092,7 @@ header {
 /* Desktop: keep logo left, right menu right, equal internal gaps */
 @media only screen and (min-width: 1760px) {
   header {
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 0 20px;
   }
 

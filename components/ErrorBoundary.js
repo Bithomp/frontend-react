@@ -1,6 +1,6 @@
 import React from 'react'
-import axios from 'axios'
 import Mailto from 'react-protected-mailto'
+import { reportErrorNotification } from '../utils/errorReporting'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -12,45 +12,17 @@ class ErrorBoundary extends React.Component {
     return { hasError: true }
   }
 
-  componentDidCatch(error) {
-    //componentDidCatch(error, errorInfo)
-    const knownErrorMessages = [
-      'String.prototype.search called on null or undefined',
-      "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
-      'Node.removeChild: The node to be removed is not a child of this node',
-      "Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.",
-      "Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
-      'The operation is insecure.',
-      'The object can not be found here.',
-      "null is not an object (evaluating 'localStorage.getItem')",
-      "Cannot read properties of null (reading 'getItem')",
-      "Cannot read properties of null (reading 'createImageData')",
-      'Cannot convert undefined or null to object',
-      "Failed to execute 'createScriptURL' on 'TrustedTypePolicy': The provided callback is no longer runnable.",
-      "can't access property \"resetSeries\", this.series is null"
-    ]
-
-    if (process.env.NODE_ENV === 'development') {
-      // do not report errors on localhost
-      return
-    }
-
-    if (knownErrorMessages.includes(error.message)) {
-      // Ignore known errors
-      return
-    }
-    // send error details to backend
-    axios
-      .post('/client/ntf', {
-        message: error.message,
-        //stack: error.stack,
-        //componentStack: errorInfo.componentStack,
-        url: window.location.href,
-        userAgent: navigator.userAgent
-      })
-      .catch(() => {
-        // ignore errors in error reporting
-      })
+  componentDidCatch(error, errorInfo) {
+    void reportErrorNotification({
+      source: 'frontend',
+      error,
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      extra: {
+        componentStack: errorInfo?.componentStack
+      },
+      ignoreKnownClientErrors: true
+    })
   }
 
   render() {

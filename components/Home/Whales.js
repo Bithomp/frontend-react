@@ -1,5 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef } from 'react'
-import { useTranslation } from 'next-i18next'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 import { AddressWithIconInline, shortNiceNumber } from '../../utils/format'
@@ -16,12 +15,8 @@ const formatTxTime = (tx) => {
 export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
   const [difference, setDifference] = useState(null)
-  const [sourceColWidth, setSourceColWidth] = useState(null)
-  const sourceCellRefs = useRef([])
-  const { i18n } = useTranslation()
-
   const checkStatApi = async () => {
-    const response = await axios('v2/transactions/whale?limit=7')
+    const response = await axios('v2/transactions/whale?limit=8')
     const data = response.data
     if (data) {
       setData(data)
@@ -45,44 +40,28 @@ export default function Whales({ currency, data, setData }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useLayoutEffect(() => {
-    const rowCount = data?.slice(0, 7)?.length || 0
-    const sourceWidth = sourceCellRefs.current.slice(0, rowCount).reduce((max, el) => {
-      if (!el) return max
-      return Math.max(max, Math.ceil(el.scrollWidth))
-    }, 0)
-    setSourceColWidth(sourceWidth || null)
-  }, [data, i18n.language])
-
   return (
     <HomeTeaser
       title="menu.network.top-transfers-24h"
       titleNote="24h"
       href="/whales"
-      isLoading={false}
+      isLoading={!data}
       isEmpty={!data?.length}
+      className={styles.whaleCard}
     >
-      {data?.slice(0, 7).map((tx, index) => (
+      {data?.slice(0, 8).map((tx) => (
         <HomeTeaseRow
           key={tx.hash}
           href={`/transaction/${tx.hash}`}
           className={`${styles.whaleRow} ${difference?.includes(tx) ? 'just-added' : ''}`}
-          style={{
-            '--whale-source-col': sourceColWidth ? `${sourceColWidth}px` : undefined
-          }}
         >
           <div className={styles.timeAgo}>{formatTxTime(tx)}</div>
-          <div
-            ref={(el) => {
-              sourceCellRefs.current[index] = el
-            }}
-            className={`${styles.itemName} ${styles.whaleAddressCell}`}
-          >
-            <AddressWithIconInline data={tx} name="sourceAddress" options={{ short: 3, noLink: true }} />
+          <div className={`${styles.itemName} ${styles.whaleAddressCell}`}>
+            <AddressWithIconInline data={tx} name="sourceAddress" options={{ short: 4, noLink: true }} />
           </div>
           <div className={styles.whaleArrow}>→</div>
           <div className={`${styles.itemName} ${styles.whaleAddressCell}`}>
-            <AddressWithIconInline data={tx} name="destinationAddress" options={{ short: 3, noLink: true }} />
+            <AddressWithIconInline data={tx} name="destinationAddress" options={{ short: 4, noLink: true }} />
           </div>
           <div className={`${styles.metric} ${styles.whaleFiat}`}>
             {tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency) : ''}

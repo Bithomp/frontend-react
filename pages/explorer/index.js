@@ -1,9 +1,8 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import Head from 'next/head'
 import Link from 'next/link'
 
-import { server, explorerName, nativeCurrency, network } from '../../utils'
+import { explorerName, nativeCurrency, network, ledgerName } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import SEO from '../../components/SEO'
@@ -20,22 +19,6 @@ export async function getServerSideProps(context) {
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'explorer']))
     }
-  }
-}
-
-const ldJsonWebsite = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: nativeCurrency + ' Explorer',
-  alternateName: [nativeCurrency + ' Explorer', explorerName + ' Explorer', 'Scan ' + nativeCurrency + ' Ledger'],
-  url: server,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: server + '/explorer/{search_term_string}'
-    },
-    'query-input': 'required name=search_term_string'
   }
 }
 
@@ -147,21 +130,21 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
   const isEnglishDevnetExplorer = network === 'devnet' && isEnglishLikeLocale
 
   const pageTitle = isEnglishMainnetExplorer
-    ? tt('seo.mainnet.title')
+    ? tt('seo.mainnet.title', { ledgerName, nativeCurrency })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.title')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.title')
         : t('explorer.header.main', { explorerName })
   const pageDescription = isEnglishMainnetExplorer
-    ? tt('seo.mainnet.description')
+    ? tt('seo.mainnet.description', { ledgerName, nativeCurrency })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.description')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.description')
         : tt('intro.subtitle', { nativeCurrency })
   const pageHeading = isEnglishMainnetExplorer
-    ? tt('seo.mainnet.heading')
+    ? tt('seo.mainnet.heading', { ledgerName, nativeCurrency })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.heading')
       : isEnglishDevnetExplorer
@@ -184,9 +167,6 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
         description={pageDescription}
         descriptionWithNetwork="true"
       />
-      <Head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
-      </Head>
 
       <section className="home-section">
         <h1 className="center">{pageHeading}</h1>
@@ -194,7 +174,7 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
         {isEnglishMainnetExplorer && (
           <p className="center">
             {tt('intro.home-link-prefix')}{' '}
-            <Link href="/">{tt('intro.home-link-label')}</Link>.
+            <Link href="/">{tt('intro.home-link-label', { explorerName })}</Link>.
           </p>
         )}
         <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} type="explorer" />

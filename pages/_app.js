@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
-import { appWithTranslation } from 'next-i18next'
+import { appWithTranslation, useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
@@ -15,10 +16,22 @@ const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { s
 
 import { IsSsrMobileContext } from '@/utils/mobile'
 import { getBackgroundImage } from '@/utils/backgroundImage'
-import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, networkId } from '@/utils'
+import {
+  isValidUUID,
+  network,
+  server,
+  siteName,
+  useLocalStorage,
+  useCookie,
+  xahauNetwork,
+  networkId,
+  nativeCurrency
+} from '@/utils'
 import { useEmailLogin } from '@/hooks/useEmailLogin'
+import LogoAnimated from '../components/Layout/LogoAnimated'
+import Header from '../components/Layout/Header'
+import SearchBlock from '../components/Layout/SearchBlock'
 
-import { getAppMetadata } from '@walletconnect/utils'
 const WalletConnectModalSign = dynamic(
   () => import('@walletconnect/modal-sign-react').then((mod) => mod.WalletConnectModalSign),
   { ssr: false }
@@ -31,13 +44,138 @@ import '../styles/components/nprogress.css'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
-import { ledgerwalletDisconnect } from '../utils/ledgerwallet'
 import { isUsernameValid } from '../utils'
 import { wssServer } from '../utils'
 
-const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
 const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
+
+const isLocalBrowserHost = () =>
+  typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname)
+
+const configureAxiosDefaults = () => {
+  const useLocalApi = process.env.NODE_ENV === 'development' || isLocalBrowserHost()
+
+  if (useLocalApi) {
+    axios.defaults.baseURL = server + '/api/'
+    axios.defaults.headers.common['x-bithomp-token'] = process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
+    return
+  }
+
+  axios.defaults.baseURL = server + '/api/cors/'
+  delete axios.defaults.headers.common['x-bithomp-token']
+}
+
+const getRealtimeServerUrl = () => {
+  if (process.env.NODE_ENV === 'development' || isLocalBrowserHost()) {
+    return server.replace('https://', 'wss://') + '/wss/?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
+  }
+
+  return wssServer
+}
+
+const getWalletConnectMetadata = () => ({
+  name: siteName || 'Bithomp',
+  description: 'Bithomp ledger explorer and wallet tools',
+  url: server,
+  icons: [server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/192.png']
+})
+
+const formatShellRate = (value, currency) => {
+  const number = Number(value)
+  if (!Number.isFinite(number) || number <= 0 || !currency) return ''
+
+  return number.toLocaleString(undefined, {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+    maximumFractionDigits: 4,
+    minimumFractionDigits: 0
+  })
+}
+
+const HeaderShell = ({ onActivate, selectedCurrency, fiatRate }) => {
+  const { t } = useTranslation()
+  const rateText = formatShellRate(fiatRate, selectedCurrency)
+  const isBithomp = server.includes('bithomp')
+
+  return (
+    <div className="home-header-shell">
+      <header>
+        <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
+          <Link href="/" prefetch={false} aria-label="bithomp Main page" className="header-shell-logo-link">
+            {isBithomp ? (
+              <span className="header-shell-logo-bithomp">
+                <LogoAnimated />
+              </span>
+            ) : (
+              <img
+                src={`/images/${xahauNetwork ? 'xahauexplorer' : 'xrplexplorer'}/long.svg`}
+                alt=""
+                className="header-shell-logo-image"
+              />
+            )}
+          </Link>
+          <span
+            className={`header-fiat-rate large-logo ${xahauNetwork ? 'xahau-rate' : 'default-rate'} ${
+              rateText ? '' : 'is-loading'
+            }`.trim()}
+            suppressHydrationWarning
+            aria-hidden={rateText ? 'false' : 'true'}
+          >
+            <span className={`header-fiat-rate-text${rateText ? ' visible' : ''}`}>
+              {rateText ? `${nativeCurrency} = ${rateText}` : ' '}
+            </span>
+          </span>
+        </div>
+        <div className="header-search-inline">
+          <div onFocus={onActivate} onPointerDown={onActivate}>
+            <SearchBlock compact={true} searchPlaceholderText={t('home.search-placeholder-short')} tab="account" />
+          </div>
+        </div>
+        <div className="header-burger">
+          <input type="checkbox" id="header-burger" aria-label="Open menu" readOnly onClick={onActivate} />
+          <label htmlFor="header-burger" className="header-burger-elements">
+            <div></div>
+            <div></div>
+            <div></div>
+          </label>
+        </div>
+      </header>
+    </div>
+  )
+}
+
+const getErrorText = (value) => {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (typeof value.message === 'string') return value.message
+  try {
+    return JSON.stringify(value)
+  } catch (_) {
+    return ''
+  }
+}
+
+const isWalletConnectRelayError = (value) => {
+  const text = getErrorText(value)
+  const stack = String(value?.stack || '')
+  const haystack = `${text} ${stack}`.toLowerCase()
+
+  return (
+    haystack.includes('socket stalled when trying to connect') ||
+    haystack.includes('websocket connection failed') ||
+    haystack.includes('relay.walletconnect.org')
+  )
+}
+
+const isWalletConnectNamespaceError = (value) => {
+  const text = getErrorText(value)
+  const stack = String(value?.stack || '')
+  return (
+    text.includes('Cannot convert undefined or null to object') &&
+    (stack.includes('walletconnect') || stack.includes('@walletconnect'))
+  )
+}
 
 const getWalletId = ({ provider, address }) => {
   if (!provider || !address) return null
@@ -160,6 +298,7 @@ const MyApp = ({ Component, pageProps }) => {
   const wsRef = useRef(null)
   const selectedCurrencyRef = useRef(selectedCurrency)
   const previousCurrencyRef = useRef(selectedCurrency)
+  const lastFiatRatePathRef = useRef(null)
   const [proExpire, setProExpire] = useCookie('pro-expire')
   const [subscriptionExpired, setSubscriptionExpired] = useState(
     proExpire ? Number(proExpire) < new Date().getTime() : true
@@ -170,6 +309,7 @@ const MyApp = ({ Component, pageProps }) => {
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [countryCode, setCountryCode] = useState('')
+  const [nonCriticalUiReady, setNonCriticalUiReady] = useState(false)
   const accountSchemaInitializedRef = useRef(false)
 
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
@@ -179,15 +319,86 @@ const MyApp = ({ Component, pageProps }) => {
     setIsOnline(navigator.onLine)
   }, [])
 
-  // WalletConnect can fire a session_update with null namespaces, causing
-  // Object.keys(null) inside their isValidUpdate — suppress it and clear stale storage.
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    let cancelled = false
+    let timeoutId = null
+    let idleId = null
+
+    const markReady = () => {
+      if (!cancelled) {
+        setNonCriticalUiReady(true)
+      }
+    }
+
+    if (window.location.pathname === '/') {
+      timeoutId = window.setTimeout(markReady, pageProps.isSsrMobile ? 3500 : 5000)
+    } else if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(markReady, { timeout: 1500 })
+    } else {
+      timeoutId = window.setTimeout(markReady, 1200)
+    }
+
+    return () => {
+      cancelled = true
+      if (idleId !== null && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId)
+      }
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [pageProps.isSsrMobile])
+
+  useEffect(() => {
+    if (!nonCriticalUiReady) return undefined
+    if (typeof window === 'undefined') return undefined
+
+    const getWalletConnectDialog = () => {
+      const walletConnectHost = document.querySelector('wcm-modal')
+      return walletConnectHost?.shadowRoot?.getElementById('wcm-modal') || null
+    }
+
+    const setWalletConnectDialogName = () => {
+      const walletConnectModal = getWalletConnectDialog()
+      if (!walletConnectModal) return
+      if (walletConnectModal.getAttribute('aria-label') || walletConnectModal.getAttribute('aria-labelledby')) return
+      walletConnectModal.setAttribute('aria-label', 'Wallet connection dialog')
+    }
+
+    setWalletConnectDialogName()
+
+    const observer = new MutationObserver(() => {
+      setWalletConnectDialogName()
+    })
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    })
+
+    return () => observer.disconnect()
+  }, [nonCriticalUiReady])
+
+  // WalletConnect can emit async errors outside our connect() promise.
+  // Keep known relay stalls recoverable and clear storage for stale sessions.
   useEffect(() => {
     const handleWalletConnectError = (event) => {
-      const msg = event?.error?.message || event?.message || ''
-      if (!msg.includes('Cannot convert undefined or null to object')) return
-      const stack = event?.error?.stack || ''
-      if (!stack.includes('walletconnect') && !stack.includes('@walletconnect')) return
+      const error = event?.reason || event?.error || event?.message || event
+      const isNamespaceError = isWalletConnectNamespaceError(error)
+      const isRelayError = isWalletConnectRelayError(error)
+
+      if (!isNamespaceError && !isRelayError) return
       event.preventDefault()
+
+      if (isRelayError) {
+        console.warn('WalletConnect relay connection failed:', getErrorText(error))
+      }
+
+      if (!isNamespaceError) return
+
       const clearWC = (storage) => {
         if (!storage) return
         const toRemove = []
@@ -204,7 +415,11 @@ const MyApp = ({ Component, pageProps }) => {
       setWcSessions({})
     }
     window.addEventListener('error', handleWalletConnectError)
-    return () => window.removeEventListener('error', handleWalletConnectError)
+    window.addEventListener('unhandledrejection', handleWalletConnectError)
+    return () => {
+      window.removeEventListener('error', handleWalletConnectError)
+      window.removeEventListener('unhandledrejection', handleWalletConnectError)
+    }
   }, [])
 
   const router = useRouter()
@@ -216,6 +431,8 @@ const MyApp = ({ Component, pageProps }) => {
   // Auto-flips below the trigger when there is not enough space above
   // (e.g. first rows of a table near the sticky header / filter bar).
   useEffect(() => {
+    if (!nonCriticalUiReady) return undefined
+
     const HEADER_H = 115 // conservative height of fixed header + filter bar
     const TIP_H = 160 // estimated max tooltip height used for threshold
     const GAP = 10
@@ -367,7 +584,7 @@ const MyApp = ({ Component, pageProps }) => {
       document.removeEventListener('mouseout', onOut)
       window.removeEventListener('scroll', onScroll, { capture: true })
     }
-  }, [])
+  }, [nonCriticalUiReady])
 
   useEffect(() => {
     if (!GA_ID) return
@@ -396,6 +613,8 @@ const MyApp = ({ Component, pageProps }) => {
 
   //check country
   useEffect(() => {
+    if (!nonCriticalUiReady) return
+
     async function fetchData() {
       // {"ip":"176.28.256.49","country":"SE"}
       const clientInfo = await axios('client/info')
@@ -404,7 +623,7 @@ const MyApp = ({ Component, pageProps }) => {
 
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [nonCriticalUiReady])
 
   useEffect(() => {
     // Always refresh when currency changes to avoid stale rates.
@@ -416,6 +635,14 @@ const MyApp = ({ Component, pageProps }) => {
   }, [selectedCurrency])
 
   useEffect(() => {
+    // Skip the initial mount because selectedCurrency already triggers the first fetch.
+    if (lastFiatRatePathRef.current === null) {
+      lastFiatRatePathRef.current = router.pathname
+      return
+    }
+
+    lastFiatRatePathRef.current = router.pathname
+
     // If WebSocket is not working or there is no actual value, update via API
     const shouldUpdateViaApi = !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !liveFiatRate
     if (shouldUpdateViaApi) {
@@ -424,11 +651,16 @@ const MyApp = ({ Component, pageProps }) => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname])
+  }, [liveFiatRate, router.pathname, selectedCurrency])
 
   // WebSocket for liveFiatRate, statistics, and whale transactions
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    if (!nonCriticalUiReady) return undefined
+
+    const realtimeServerUrl = getRealtimeServerUrl()
+    let connectTimer = null
+
     function sendData(currency) {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.send(
@@ -446,7 +678,7 @@ const MyApp = ({ Component, pageProps }) => {
     }
     function connect() {
       try {
-        wsRef.current = new window.WebSocket(wssServer)
+        wsRef.current = new window.WebSocket(realtimeServerUrl)
         wsRef.current.onopen = () => {
           sendData(selectedCurrencyRef.current)
         }
@@ -472,14 +704,15 @@ const MyApp = ({ Component, pageProps }) => {
       }
     }
     if (typeof window !== 'undefined' && navigator.onLine) {
-      connect()
+      connectTimer = window.setTimeout(connect, router.pathname === '/' ? 30000 : 0)
     }
     return () => {
       setWhaleTransactions(null)
       setStatistics(null)
+      if (connectTimer !== null) window.clearTimeout(connectTimer)
       if (wsRef.current) wsRef.current.close()
     }
-  }, [])
+  }, [nonCriticalUiReady, router.pathname, setStatistics, setWhaleTransactions])
 
   useEffect(() => {
     // Unsubscribe from previous currency if it exists
@@ -583,6 +816,7 @@ const MyApp = ({ Component, pageProps }) => {
       localStorage.removeItem('xamanUserToken')
     }
     if (targetWallet.provider === 'ledgerwallet') {
+      const { ledgerwalletDisconnect } = await import('../utils/ledgerwallet')
       await ledgerwalletDisconnect()
     }
 
@@ -705,12 +939,7 @@ const MyApp = ({ Component, pageProps }) => {
     }
   }
 
-  if (process.env.NODE_ENV === 'development') {
-    axios.defaults.headers.common['x-bithomp-token'] = process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
-    axios.defaults.baseURL = server + '/api/'
-  } else {
-    axios.defaults.baseURL = server + '/api/cors/'
-  }
+  configureAxiosDefaults()
 
   const pathname = router.pathname
   const pagesWithoutWrapper = ['/social-share']
@@ -733,6 +962,17 @@ const MyApp = ({ Component, pageProps }) => {
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
   }
+  const hasWalletConnectWallet =
+    account?.wallet === 'walletconnect' || account?.wallets?.some((wallet) => wallet?.provider === 'walletconnect')
+  const shouldMountWalletConnect =
+    nonCriticalUiReady &&
+    (networkId === 0 || networkId === 1) &&
+    isClient &&
+    isOnline &&
+    !isBot &&
+    (signRequest || isValidUUID(uuid) || hasWalletConnectWallet)
+  const bodyBackgroundStyle = pageProps.isSsrMobile ? undefined : { backgroundImage: getBackgroundImage() }
+  const shouldDeferHomepageChrome = pageProps.isSsrMobile && pathname === '/' && !nonCriticalUiReady
 
   if (pagesWithoutWrapper.includes(pathname)) {
     return <Component />
@@ -745,29 +985,37 @@ const MyApp = ({ Component, pageProps }) => {
         <meta charSet="utf-8" />
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
-        {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
+        {GA_ID && (pathname !== '/' || nonCriticalUiReady) && <GoogleAnalytics gaId={GA_ID} />}
         <ThemeProvider>
           <ErrorBoundary>
-            <div className="body" data-network={network} style={{ backgroundImage: getBackgroundImage() }}>
-              <Header
-                setSignRequest={setSignRequest}
-                account={account}
-                signOut={signOut}
-                setActiveWallet={setActiveWallet}
-                signOutPro={signOutPro}
-                selectedCurrency={selectedCurrency}
-                setSelectedCurrency={setSelectedCurrency}
-                countryCode={countryCode}
-                sessionToken={sessionToken}
-                fiatRate={liveFiatRate}
-                openEmailLogin={openEmailLogin}
-              />
+            <div className="body" data-network={network} style={bodyBackgroundStyle}>
+              {shouldDeferHomepageChrome ? (
+                <HeaderShell
+                  onActivate={() => setNonCriticalUiReady(true)}
+                  selectedCurrency={selectedCurrency}
+                  fiatRate={liveFiatRate}
+                />
+              ) : (
+                <Header
+                  setSignRequest={setSignRequest}
+                  account={account}
+                  signOut={signOut}
+                  setActiveWallet={setActiveWallet}
+                  signOutPro={signOutPro}
+                  selectedCurrency={selectedCurrency}
+                  setSelectedCurrency={setSelectedCurrency}
+                  countryCode={countryCode}
+                  sessionToken={sessionToken}
+                  fiatRate={liveFiatRate}
+                  openEmailLogin={openEmailLogin}
+                />
+              )}
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}
-              {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
+              {shouldMountWalletConnect && (
                 <WalletConnectModalSign
                   projectId={process.env.NEXT_PUBLIC_WALLETCONNECT}
-                  metadata={getAppMetadata()}
+                  metadata={getWalletConnectMetadata()}
                   modalOptions={{
                     // Explorer must be enabled for explorer* filters to apply
                     enableExplorer: true,
@@ -804,8 +1052,8 @@ const MyApp = ({ Component, pageProps }) => {
                   setSessionToken={setSessionToken}
                 />
               )}
-              <div className="content">
-                <TopProgressBar />
+              <main className="content">
+                {nonCriticalUiReady && <TopProgressBar />}
                 {showTopAds && <TopLinks countryCode={countryCode} />}
                 <Component
                   {...pageProps}
@@ -831,8 +1079,8 @@ const MyApp = ({ Component, pageProps }) => {
                   setStatistics={setStatistics}
                   setWhaleTransactions={setWhaleTransactions}
                 />
-              </div>
-              <Footer countryCode={countryCode} />
+              </main>
+              {(pathname !== '/' || nonCriticalUiReady) && <Footer countryCode={countryCode} />}
             </div>
           </ErrorBoundary>
         </ThemeProvider>

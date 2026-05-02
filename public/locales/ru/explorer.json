@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Поиск по XRP Ledger — адреса, транзакции, токены, NFT",
-      "description": "Ищите XRP-адреса, хэши транзакций, usernames, CTID, NFT, токены, AMM и объекты ledger в XRP Ledger.",
-      "heading": "Поиск по XRP Ledger"
+      "title": "Поиск по {{ledgerName}} — адреса, транзакции, токены, NFT",
+      "description": "Ищите и просматривайте адреса {{nativeCurrency}}, хэши транзакций, usernames, CTID, NFT, токены, AMM и объекты ledger в {{ledgerName}}.",
+      "heading": "Поиск по {{ledgerName}}"
     },
     "testnet": {
       "title": "Поиск по XRPL Testnet — адреса, транзакции, токены, NFT",
@@ -19,7 +19,7 @@
   "intro": {
     "subtitle": "Просматривайте транзакции, адреса, токены и NFT в {{nativeCurrency}} Ledger быстро и удобно.",
     "home-link-prefix": "Нужны живая статистика, ценовые инструменты, крупные переводы, валидаторы и amendments? Откройте",
-    "home-link-label": "главную страницу XRP Explorer"
+    "home-link-label": "главную страницу {{explorerName}}"
   },
   "examples": {
     "title": "Примеры",

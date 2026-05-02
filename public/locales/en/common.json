@@ -34,6 +34,7 @@
     "services": {
       "services": "Services",
       "send": "Send payment",
+      "reward-auto-claim": "Reward Auto Claim",
       "add-token": "Add token (Trustline)",
       "account-settings": "Account settings",
       "toml-checker": "TOML Checker",
@@ -78,7 +79,8 @@
       "amendments": "Amendments",
       "unl-report": "UNL report",
       "genesis": "Genesis accounts",
-      "allocation": "{{currency}} Allocation"
+      "allocation": "{{currency}} Allocation",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "Developers",
@@ -189,9 +191,9 @@
     }
   },
   "home": {
-    "title": "XRP Ledger Explorer & Tools — {{explorerName}} | Search {{nativeCurrency}} Transactions, Accounts, NFTs",
-    "description": "Bithomp: XRP Ledger explorer and tools. Search transactions, accounts, and NFTs. Track balances, validate accounts, check NFT holdings, and analyze the {{nativeCurrency}} Ledger. Plus: rate converters, tools, statistics, and more.",
-    "h1": "{{nativeCurrency}} Ledger Explorer and Tools",
+    "title": "{{explorerName}} | Search {{nativeCurrency}} Transactions, Accounts, NFTs, and Ledger Data",
+    "description": "{{explorerName}} lets you search and scan {{nativeCurrency}} addresses, transactions, tokens, NFTs, balances, and on-chain activity on the {{ledgerName}}. Trade, mint NFTs, manage AMMs, submit transactions, and use account tools.",
+    "h1": "{{nativeCurrency}} Explorer and Ledger Tools",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
     "price": {

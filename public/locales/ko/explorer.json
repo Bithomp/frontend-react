@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "XRP Ledger 검색 — 계정, 거래, 토큰, NFT",
-      "description": "XRP Ledger에서 XRP 주소, 거래 해시, 사용자명, CTID, NFT, 토큰, AMM, 레저 객체를 검색하세요.",
-      "heading": "XRP Ledger 검색"
+      "title": "{{ledgerName}} 검색 — 계정, 거래, 토큰, NFT",
+      "description": "{{ledgerName}}에서 {{nativeCurrency}} 주소, 거래 해시, 사용자명, CTID, NFT, 토큰, AMM, 레저 객체를 검색하고 살펴보세요.",
+      "heading": "{{ledgerName}} 검색"
     },
     "testnet": {
       "title": "XRPL Testnet 검색 — 계정, 거래, 토큰, NFT",
@@ -19,7 +19,7 @@
   "intro": {
     "subtitle": "{{nativeCurrency}} 거래, 계정, 토큰, NFT를 빠르고 신뢰할 수 있게 검색하세요.",
     "home-link-prefix": "실시간 통계, 가격 도구, 대형 전송, 검증자, amendments를 찾고 계신가요? 방문해 보세요:",
-    "home-link-label": "XRP Explorer 홈페이지"
+    "home-link-label": "{{explorerName}} 홈페이지"
   },
   "examples": {
     "title": "예시",

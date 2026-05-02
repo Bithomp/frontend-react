@@ -38,19 +38,21 @@ export default function HomeTeaser({
     <div className={`${styles.teaser} ${className}`.trim()}>
       <div className={styles.cardHeader}>
         <div className={styles.cardHeaderTitleWrap}>
-          <h3 className={styles.cardHeaderTitle}>
+          <h2 className={styles.cardHeaderTitle}>
             {t(title)}
             {titleSuffix ? <span className={styles.cardHeaderTitleSuffix}> {titleSuffix}</span> : null}
-          </h3>
+          </h2>
           {titleNote ? <span className={styles.cardHeaderNote}>{titleNote}</span> : null}
         </div>
-        <Link href={href} className={styles.cardHeaderLink}>
+        <Link href={href} className={styles.cardHeaderLink} prefetch={false}>
           {t('common.viewAll')}
         </Link>
       </div>
 
       {isLoading ? (
         <div className={styles.loadingPlaceholder}>
+          <div className={styles.skeleton} />
+          <div className={styles.skeleton} />
           <div className={styles.skeleton} />
           <div className={styles.skeleton} />
           <div className={styles.skeleton} />

@@ -93,11 +93,12 @@
     }
     .search-button {
       position: absolute;
-      width: 34px;
-      height: 34px;
-      top: 3px;
-      right: 3px;
+      width: 38px;
+      height: 38px;
+      top: 1px;
+      right: 1px;
       background-color: var(--accent-icon);
+      border-radius: 0 9px 9px 0;
       cursor: pointer;
       transition: opacity 0.5s;
       z-index: 3;

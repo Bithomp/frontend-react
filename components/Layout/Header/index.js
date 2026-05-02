@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useState, useEffect, useRef } from 'react'
@@ -80,8 +80,36 @@ import {
 import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
 import WalletProviderIcon from '../../UI/WalletProviderIcon'
-import { niceNumber } from '../../../utils/format'
-import { serviceUsernameOrAddressText } from '../../../utils/format'
+
+const Link = (props) => <NextLink {...props} prefetch={false} />
+
+const niceHeaderNumber = (value, currency, maxFractionDigits = 4) => {
+  const number = Number(value)
+  if (!Number.isFinite(number)) return value
+
+  return number.toLocaleString(undefined, {
+    style: currency ? 'currency' : undefined,
+    currency: currency ? currency.toUpperCase() : undefined,
+    maximumFractionDigits: maxFractionDigits,
+    minimumFractionDigits: 0
+  })
+}
+
+const shortHash = (value, length = 6) => {
+  if (!value) return ''
+  const text = value.toString()
+  return text.substr(0, length) + '...' + text.substr(-length)
+}
+
+const serviceUsernameOrAddressText = (data, name = 'address', options) => {
+  if (!data || !data[name]) return ''
+  const address = data[name]
+  const { service, username } = data[name + 'Details'] || {}
+  if (service) return service
+  if (username) return username
+  if (options?.fullAddress) return address
+  return shortHash(address)
+}
 
 const HIDE_SEARCH_HEADER = ['/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
@@ -366,7 +394,7 @@ export default function Header({
               aria-hidden={fiatRate > 0 ? 'false' : 'true'}
             >
               <span className={'header-fiat-rate-text' + (fiatRate > 0 ? ' visible' : '')}>
-                {fiatRate > 0 ? `${nativeCurrency} = ${niceNumber(fiatRate, null, selectedCurrency, 4)}` : ' '}
+                {fiatRate > 0 ? `${nativeCurrency} = ${niceHeaderNumber(fiatRate, selectedCurrency, 4)}` : ' '}
               </span>
             </span>
           )}
@@ -385,6 +413,13 @@ export default function Header({
               <IoCompassOutline className="menu-item-icon" />
               {explorerName} Explorer
             </Link>
+            {xahauNetwork && (
+              <Link href="/services/reward-auto-claim">
+                <IoCashOutline className="menu-item-icon" />
+                {t('menu.services.reward-auto-claim')}
+                <span className="menu-item-badge">NEW</span>
+              </Link>
+            )}
             <Link href="/services/send">
               <IoPaperPlaneOutline className="menu-item-icon" />
               {t('menu.services.send')}
@@ -408,6 +443,7 @@ export default function Header({
             <Link href="/services/toml-checker">
               <IoCodeSlashOutline className="menu-item-icon" />
               {t('menu.services.toml-checker')}
+              <span className="menu-item-badge">NEW</span>
             </Link>
             <Link href="/faucet">
               <IoFlashOutline className="menu-item-icon" />
@@ -654,6 +690,12 @@ export default function Header({
             <Link href="/allocation">
               <IoPieChartOutline className="menu-item-icon" />
               {t('menu.network.allocation', { currency: nativeCurrency })}
+              <span className="menu-item-badge">NEW</span>
+            </Link>
+            <Link href="/activation-tree">
+              <IoGitBranchOutline className="menu-item-icon" />
+              {t('menu.network.activation-tree')}
+              <span className="menu-item-badge">NEW</span>
             </Link>
           </MenuDropDown>
 
@@ -670,6 +712,7 @@ export default function Header({
             <Link href="/services/toml-checker">
               <IoDocumentTextOutline className="menu-item-icon" />
               {t('menu.services.toml-checker')}
+              <span className="menu-item-badge">NEW</span>
             </Link>
             <Link href="/learn/image-services">
               <IoImagesOutline className="menu-item-icon" />
@@ -722,17 +765,17 @@ export default function Header({
           </MenuDropDown>
         </div>
 
-        {width ? (
-          <div className={'header-search-inline ' + (hideSearchInHeader ? 'hide-search-inline' : '')}>
+        <div className={'header-search-inline ' + (hideSearchInHeader ? 'hide-search-inline' : '')}>
+          {width ? (
             <SearchBlock
               compact={true}
-              //searchPlaceholderText="Search..."
+              searchPlaceholderText={width < 730 ? t('home.search-placeholder-short') : t('home.search-placeholder')}
               tab="account"
             />
-          </div>
-        ) : (
-          ''
-        )}
+          ) : (
+            <div className="header-search-reserved" aria-hidden="true" />
+          )}
+        </div>
 
         <div className="header-menu-right">
           <MenuDropDown

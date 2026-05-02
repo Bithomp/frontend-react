@@ -15,6 +15,27 @@ const panicon = '/images/chart/panning.svg'
 
 /* ----------------------- small helpers ----------------------- */
 
+function PriceChartPlaceholder({ height, theme }) {
+  return (
+    <div
+      className={`home-price-chart home-price-chart--placeholder ${
+        theme === 'light' ? 'home-price-chart--placeholder-light' : ''
+      }`.trim()}
+      aria-hidden="true"
+      style={{ height }}
+    >
+      <div className="home-price-chart-placeholder-grid">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+  )
+}
+
 // Currency sign map
 const CURRENCY_SYMBOL = new Map([
   ['ars', '$'],
@@ -205,9 +226,29 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
   const mountedRef = useRef(true)
   useEffect(() => {
     mountedRef.current = true
-    setRendered(true)
+    let timeoutId = null
+    let idleId = null
+
+    const markReady = () => {
+      if (mountedRef.current) {
+        setRendered(true)
+      }
+    }
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(markReady, { timeout: 1500 })
+    } else {
+      timeoutId = window.setTimeout(markReady, 600)
+    }
+
     return () => {
       mountedRef.current = false
+      if (idleId !== null && typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId)
+      }
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId)
+      }
     }
   }, [])
 
@@ -497,11 +538,13 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
 
   const series = useMemo(() => [{ name: '', data: seriesData }], [seriesData])
 
-  if (!rendered) return null
+  if (!rendered || seriesData.length < 2) {
+    return <PriceChartPlaceholder height={chartHeight} theme={theme} />
+  }
 
   return (
     <>
-      <div className="home-price-chart">
+      <div className="home-price-chart" style={{ minHeight: chartHeight }}>
         <Chart type="line" series={series} options={options} height={chartHeight} />
       </div>
     </>

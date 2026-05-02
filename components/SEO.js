@@ -19,7 +19,8 @@ export default function SEO({
 
   description = description || title
 
-  const normalizedPath = router.asPath === '/' ? '' : router.asPath
+  const cleanPath = (router.asPath || '/').split('#')[0].split('?')[0]
+  const normalizedPath = cleanPath === '/' ? '' : cleanPath
   const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
   const canonical = isEnglishLikeLocale ? server + normalizedPath : `${server}/${router.locale}${normalizedPath}`
 
@@ -82,7 +83,7 @@ export default function SEO({
   }
 
   // don't add the slash after language, otherwise redirects and it is bad for SEO
-  let path = router.asPath !== '/' ? router.asPath : ''
+  let path = cleanPath !== '/' ? cleanPath : ''
 
   let languageAlternates = [
     { hrefLang: 'x-default', href: server + path },

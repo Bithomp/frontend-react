@@ -717,11 +717,22 @@ export const networksIds = {
 }
 
 const WssServer = () => {
-  let token = ''
-  if (process.env.NODE_ENV === 'development') {
-    token = '?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
+  if (!server) return ''
+
+  try {
+    const url = new URL(server.includes('://') ? server : `https://${server}`)
+    url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:'
+    url.pathname = '/wss/'
+    url.search = ''
+
+    if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY) {
+      url.searchParams.set('x-bithomp-token', process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY)
+    }
+
+    return url.toString()
+  } catch {
+    return ''
   }
-  return server?.replace('https://', 'wss://') + '/wss/' + token
 }
 export const wssServer = WssServer()
 

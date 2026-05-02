@@ -1,8 +1,9 @@
 {
   "title": "Vérificateur TOML {{explorerName}}",
-  "description": "Vérifiez et validez {{tomlName}} pour les domaines {{ledgerName}} avec {{explorerName}}.",
+  "description": "Vérifiez et validez {{tomlName}} pour les domaines {{ledgerName}}.",
   "check-title": "Vérifier un domaine",
   "check-description": "Saisissez un domaine pour récupérer, décoder et inspecter son fichier {{tomlName}}.",
+  "toml-help": "Le fichier {{tomlName}} est une configuration TOML hébergée par le domaine qui déclare et vérifie l'association entre un domaine et des comptes, validateurs et services liés à {{ledgerName}}. Il doit être accessible publiquement à l'adresse :",
   "domain-placeholder": "Saisissez un domaine comme bithomp.com",
   "cooldown-note": "Une limite de 10 secondes s'applique entre chaque vérification.",
   "cooldown-left": "Veuillez attendre {{seconds}} s avant la prochaine vérification.",
@@ -19,6 +20,11 @@
     "invalid-domain": "Veuillez saisir un domaine valide.",
     "captcha-required": "Veuillez compléter le captcha.",
     "domain-not-found": "Nous n'avons pas pu joindre ce domaine ou trouver son fichier TOML. Vérifiez le domaine puis réessayez.",
+    "toml-not-found": "Le domaine est joignable, mais {{tomlName}} est introuvable à l'emplacement .well-known attendu.",
+    "secure-connection-failed": "Impossible de récupérer le fichier TOML de façon sécurisée. Vérifiez le certificat HTTPS/TLS du domaine.",
+    "html-content": "L'URL {{tomlName}} attendue a renvoyé du HTML au lieu d'un fichier TOML.",
+    "invalid-toml": "Le fichier TOML a été trouvé, mais il n'a pas pu être analysé.",
+    "invalid-toml-with-reason": "Le fichier TOML a été trouvé, mais il n'a pas pu être analysé : {{reason}}",
     "failed": "Impossible de vérifier le domaine pour le moment."
   }
 }

@@ -34,6 +34,7 @@
     "services": {
       "services": "Сервисы",
       "send": "Отправить платеж",
+      "reward-auto-claim": "Reward Auto Claim",
       "add-token": "Добавить токен (Trustline)",
       "account-settings": "Настройки аккаунта",
       "toml-checker": "Проверка TOML",
@@ -78,7 +79,8 @@
       "amendments": "Поправки",
       "unl-report": "UNL репорт",
       "genesis": "Генезис аккаунты",
-      "allocation": "Распределение {{currency}}"
+      "allocation": "Распределение {{currency}}",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "Разработчикам",

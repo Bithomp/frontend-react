@@ -34,6 +34,7 @@
     "services": {
       "services": "Dienste",
       "send": "Zahlung senden",
+      "reward-auto-claim": "Reward Auto Claim",
       "add-token": "Token hinzufügen (Trustline)",
       "account-settings": "Kontoeinstellungen",
       "toml-checker": "TOML-Checker",
@@ -78,7 +79,8 @@
       "amendments": "Änderungen",
       "unl-report": "UNL report",
       "genesis": "Genesis Konten",
-      "allocation": "{{currency}} Verteilung"
+      "allocation": "{{currency}} Verteilung",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "Entwickler",

@@ -1,8 +1,9 @@
 {
   "title": "{{explorerName}} TOML Checker",
-  "description": "Check and validate {{tomlName}} for {{ledgerName}} domains with {{explorerName}}.",
+  "description": "Check and validate {{tomlName}} for {{ledgerName}} domains.",
   "check-title": "Check a domain",
   "check-description": "Enter a domain to fetch, decode, and inspect its {{tomlName}} file.",
+  "toml-help": "The {{tomlName}} file is a domain-hosted TOML configuration that declares and verifies the association between a domain and {{ledgerName}} accounts, validators, and related services. It should be publicly accessible at:",
   "domain-placeholder": "Enter a domain like bithomp.com",
   "cooldown-note": "There is a 10-second limit between checks.",
   "cooldown-left": "Please wait {{seconds}}s before the next check.",
@@ -19,6 +20,11 @@
     "invalid-domain": "Please enter a valid domain.",
     "captcha-required": "Please complete the captcha.",
     "domain-not-found": "We could not reach that domain or find its TOML file. Please check the domain and try again.",
+    "toml-not-found": "The domain is reachable, but we could not find {{tomlName}} at the expected .well-known location.",
+    "secure-connection-failed": "We could not securely fetch the TOML file. Check the domain HTTPS/TLS certificate.",
+    "html-content": "The expected {{tomlName}} URL returned HTML instead of a TOML file.",
+    "invalid-toml": "The TOML file was found, but it could not be parsed.",
+    "invalid-toml-with-reason": "The TOML file was found, but it could not be parsed: {{reason}}",
     "failed": "Unable to verify the domain right now."
   }
 }

@@ -34,6 +34,7 @@
     "services": {
       "services": "Layanan",
       "send": "Kirim pembayaran",
+      "reward-auto-claim": "Reward Auto Claim",
       "add-token": "Tambah token (Trustline)",
       "account-settings": "Pengaturan akun",
       "toml-checker": "Pemeriksa TOML",
@@ -78,7 +79,8 @@
       "amendments": "Perubahan",
       "unl-report": "Laporan UNL",
       "genesis": "Akun Awal",
-      "allocation": "Alokasi {{currency}}"
+      "allocation": "Alokasi {{currency}}",
+      "activation-tree": "Activation Tree"
     },
     "developers": {
       "developers": "Pengembang",
@@ -125,7 +127,7 @@
     "signout": "Keluar",
     "choose-app": "Pilih aplikasi masuk",
     "login-with": "Masuk dengan {{appName}}",
-    "sign-with": "Tanda tangan dengan {{appName}}",
+    "sign-with": "Tanda tangan via {{appName}}",
     "amount": {
       "set-price": "Tetapkan harga",
       "enter-amount": "Masukkan jumlah"

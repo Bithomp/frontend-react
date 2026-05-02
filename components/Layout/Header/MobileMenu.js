@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next'
 
 import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
@@ -65,6 +65,8 @@ import { FaCode } from 'react-icons/fa'
 import { IoLogoBuffer } from 'react-icons/io'
 import { MdGavel, MdMenuBook } from 'react-icons/md'
 import { AiFillStar } from 'react-icons/ai'
+
+const Link = (props) => <NextLink {...props} prefetch={false} />
 
 const handleClick = (e) => {
   if (e.target.getAttribute('data-expanded') !== null) {
@@ -222,6 +224,13 @@ export default function MobileMenu({
             <IoCompassOutline style={itemIconStyle} />
             {explorerName} Explorer
           </Link>
+          {xahauNetwork && (
+            <Link href="/services/reward-auto-claim" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <IoCashOutline style={itemIconStyle} />
+              {t('menu.services.reward-auto-claim')}
+              <span className="menu-item-badge">NEW</span>
+            </Link>
+          )}
           <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoPaperPlaneOutline style={itemIconStyle} />
             {t('menu.services.send')}
@@ -245,6 +254,7 @@ export default function MobileMenu({
           <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCodeSlashOutline style={itemIconStyle} />
             {t('menu.services.toml-checker')}
+            <span className="menu-item-badge">NEW</span>
           </Link>
           <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoFlashOutline style={itemIconStyle} />
@@ -504,6 +514,12 @@ export default function MobileMenu({
           <Link href="/allocation" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoPieChartOutline style={itemIconStyle} />
             {t('menu.network.allocation', { currency: nativeCurrency })}
+            <span className="menu-item-badge">NEW</span>
+          </Link>
+          <Link href="/activation-tree" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <IoGitBranchOutline style={itemIconStyle} />
+            {t('menu.network.activation-tree')}
+            <span className="menu-item-badge">NEW</span>
           </Link>
         </div>
 
@@ -518,6 +534,7 @@ export default function MobileMenu({
           <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoDocumentTextOutline style={itemIconStyle} />
             {t('menu.services.toml-checker')}
+            <span className="menu-item-badge">NEW</span>
           </Link>
           <Link href="/learn/image-services" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoImagesOutline style={itemIconStyle} />
@@ -652,7 +669,13 @@ export default function MobileMenu({
               <AiFillStar style={{ marginBottom: '-2px' }} /> {t('menu.sponsored.title')}
             </div>
             <div className="mobile-menu__submenu">
-              <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
+              <a
+                href="https://bithomp.com/go/fm-buy"
+                target="_blank"
+                rel="noreferrer"
+                className="mobile-menu-item"
+                aria-label={`${t('menu.sponsored.buy')} sponsor link`}
+              >
                 <IoCashOutline style={itemIconStyle} />
                 {t('menu.sponsored.buy')}
               </a>

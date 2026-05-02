@@ -9,6 +9,7 @@ import { getIsSsrMobile } from '../utils/mobile'
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
   const { escrow, currency, currencyIssuer } = query
+  const initialEscrowMode = ['short', 'locked'].includes(escrow) ? escrow : 'none'
 
   let data = null
 
@@ -18,7 +19,7 @@ export async function getServerSideProps(context) {
   if (currency && currencyIssuer) {
     url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}?summary=true&convertCurrencies=${serverCurrency}&currencyDetails=true`
   } else {
-    url = 'v2/addresses/richlist' + (escrow ? `?escrow=${escrow}` : '')
+    url = 'v2/addresses/richlist' + (initialEscrowMode !== 'none' ? `?escrow=${initialEscrowMode}` : '')
   }
 
   try {
@@ -41,6 +42,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       queryToken: token || null,
+      initialEscrowMode,
       initialRawData: data || null,
       initialData: data?.addresses || data?.trustlines || [],
       isSsrMobile: getIsSsrMobile(context),
@@ -66,7 +68,7 @@ import {
 import TokenSelector from '../components/UI/TokenSelector'
 import { useSearchParams } from 'next/navigation'
 
-export default function Distribution({ selectedCurrency, fiatRate, initialRawData, initialData, queryToken }) {
+export default function Distribution({ selectedCurrency, fiatRate, initialRawData, initialData, queryToken, initialEscrowMode }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
   const searchParams = useSearchParams()
@@ -90,7 +92,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
   const [rawData, setRawData] = useState(initialRawData || {})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [escrowMode, setEscrowMode] = useState('none') // 'none', 'short', 'locked'
+  const [escrowMode, setEscrowMode] = useState(initialEscrowMode || 'none') // 'none', 'short', 'locked'
   const [filtersHide, setFiltersHide] = useState(false)
   const [token, setToken] = useState(queryToken)
 

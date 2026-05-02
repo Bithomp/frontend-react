@@ -2,6 +2,13 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect, memo, useRef } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import dayjs from 'dayjs'
+import 'dayjs/locale/de'
+import 'dayjs/locale/es'
+import 'dayjs/locale/fr'
+import 'dayjs/locale/id'
+import 'dayjs/locale/ja'
+import 'dayjs/locale/ko'
+import 'dayjs/locale/ru'
 import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
 import ReactCountryFlag from 'react-country-flag'
 import { useTheme } from '../components/Layout/ThemeContext'
@@ -12,7 +19,7 @@ import CheckBox from '../components/UI/CheckBox'
 import Avatar from '../components/UI/Avatar'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
-import { devNet, useWidth, xahauNetwork, countriesTranslated, avatarServer } from '../utils'
+import { devNet, useWidth, xahauNetwork, countriesTranslated, avatarServer, normalizeLocale } from '../utils'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 
@@ -23,6 +30,18 @@ import VerifiedIcon from '../public/images/verified.svg'
 import Link from 'next/link'
 
 dayjs.extend(relativeTimePlugin)
+
+const relativeTimeLocales = new Set(['de', 'en', 'es', 'fr', 'id', 'ja', 'ko', 'ru'])
+
+const relativeTimeLocale = (locale) => {
+  const lang = normalizeLocale(locale).slice(0, 2)
+  return relativeTimeLocales.has(lang) ? lang : 'en'
+}
+
+const formatLastSeenAgo = (lastSeenTime, nowSec, locale) =>
+  dayjs((lastSeenTime - 1) * 1000)
+    .locale(relativeTimeLocale(locale))
+    .from(dayjs(nowSec * 1000).locale(relativeTimeLocale(locale)))
 
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
@@ -189,8 +208,6 @@ const buildValidatorsState = (initialData, amendment, locale) => {
   let dataU = initialData.unl
   if (!dataU?.validators) return null
 
-  const lang = locale || 'en'
-
   const compare = (a, b) => compareValidators(a, b, amendment)
 
   let validatorsList = (dataU.validators || []).map((v) => ({ ...v, unl: true }))
@@ -209,9 +226,7 @@ const buildValidatorsState = (initialData, amendment, locale) => {
     for (let i = 0; i < dataV.length; i++) {
       const v = dataV[i]
       if (v?.publicKey && v?.lastSeenTime) {
-        const text = dayjs((v.lastSeenTime - 1) * 1000)
-          .locale(lang)
-          .from(dayjs(nowSec * 1000))
+        const text = formatLastSeenAgo(v.lastSeenTime, nowSec, locale)
         timeAgoMap[v.publicKey] = {
           text,
           isLate: nowSec - (devNet ? 40 : 10) > v.lastSeenTime,
@@ -364,9 +379,7 @@ const buildTimeAgoMap = (list, lang) => {
   const nowSec = Math.floor(Date.now() / 1000)
   ;(list || []).forEach((v) => {
     if (!v?.publicKey || !v?.lastSeenTime) return
-    const text = dayjs((v.lastSeenTime - 1) * 1000)
-      .locale(lang || 'en')
-      .from(dayjs(nowSec * 1000))
+    const text = formatLastSeenAgo(v.lastSeenTime, nowSec, lang)
     map[v.publicKey] = {
       text,
       isLate: nowSec - (devNet ? 40 : 10) > v.lastSeenTime,
@@ -419,19 +432,17 @@ export default function Validators({ amendment, initialData, initialProcessed, i
 
   useEffect(() => {
     if (!timeAgoInitializedRef.current) return
-    if (!timeAgoMap || Object.keys(timeAgoMap).length === 0) return
     setTimeAgoMap((prev) => {
+      if (!prev || Object.keys(prev).length === 0) return prev
       const next = {}
       Object.entries(prev).forEach(([key, value]) => {
         if (!value?.lastSeenTime || !value?.at) return
-        const text = dayjs((value.lastSeenTime - 1) * 1000)
-          .locale(i18n.language || 'en')
-          .from(dayjs(value.at * 1000))
+        const text = formatLastSeenAgo(value.lastSeenTime, value.at, i18n.language)
         next[key] = { ...value, text }
       })
       return next
     })
-  }, [i18n.language, timeAgoMap])
+  }, [i18n.language])
 
   const showTime = ({ time, id }) => {
     if (!time) return 'N/A'

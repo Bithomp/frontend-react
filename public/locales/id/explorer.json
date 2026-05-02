@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Cari di XRP Ledger — akun, transaksi, token, NFT",
-      "description": "Cari alamat XRP, hash transaksi, username, CTID, NFT, token, AMM, dan objek ledger di XRP Ledger.",
-      "heading": "Cari di XRP Ledger"
+      "title": "Cari di {{ledgerName}} — akun, transaksi, token, NFT",
+      "description": "Cari dan telusuri alamat {{nativeCurrency}}, hash transaksi, username, CTID, NFT, token, AMM, dan objek ledger di {{ledgerName}}.",
+      "heading": "Cari di {{ledgerName}}"
     },
     "testnet": {
       "title": "Cari di XRPL Testnet — akun, transaksi, token, NFT",
@@ -19,7 +19,7 @@
   "intro": {
     "subtitle": "Jelajahi transaksi, akun, token, dan NFT {{nativeCurrency}} dengan cepat dan tepercaya di {{nativeCurrency}} Ledger.",
     "home-link-prefix": "Ingin statistik live, alat harga, transfer teratas, validator, dan amendments? Kunjungi",
-    "home-link-label": "beranda XRP Explorer"
+    "home-link-label": "beranda {{explorerName}}"
   },
   "examples": {
     "title": "Contoh",

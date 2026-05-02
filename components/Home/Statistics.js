@@ -54,9 +54,9 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
   const hooksTx24h = niceNumber(transactions24h?.hooksEmitted || 0)
 
   return (
-    <div className="home-statistics">
+    <div className={`home-statistics home-statistics--${mode}`}>
       {title && mode === 'activity' && (
-        <div className={styles.cardHeader}>
+        <div className={`${styles.cardHeader} statistics-header`}>
           <div className={styles.cardHeaderTitleWrap}>
             <div className={`${styles.cardHeaderTitle} statistics-section-title`}>{title}</div>
             <span className={styles.cardHeaderNote}>24h</span>
@@ -87,11 +87,11 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
 
       {mode === 'ledger' && (
         <div className="statistics-section">
-          <div className={styles.cardHeader}>
+          <div className={`${styles.cardHeader} statistics-header`}>
             <div className={styles.cardHeaderTitleWrap}>
               <div className={`${styles.cardHeaderTitle} statistics-section-title`}>The last ledger</div>
             </div>
-            <Link href="/last-ledger-information" className={styles.cardHeaderLink}>
+            <Link href="/last-ledger-information" className={styles.cardHeaderLink} prefetch={false}>
               {t('common.viewAll')}
             </Link>
           </div>
@@ -114,7 +114,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
             <span>{t('home.stat.quorum')}</span>
             <span>
               {quorum} (
-              <Link href="/validators">
+              <Link href="/validators" prefetch={false}>
                 {proposers} {t('home.stat.proposers')}
               </Link>
               )
@@ -125,7 +125,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
 
       {mode === 'network' && (
         <div className="statistics-section">
-          <div className={styles.cardHeader}>
+          <div className={`${styles.cardHeader} statistics-header`}>
             <div className={styles.cardHeaderTitleWrap}>
               <div className={`${styles.cardHeaderTitle} statistics-section-title`}>Network</div>
             </div>
@@ -133,29 +133,33 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
           <div className="statistics-row">
             <span>{t('home.stat.accounts')}</span>
             <span>
-              <Link href="/activations?period=all">{createdAccounts}</Link>
+              <Link href="/activations?period=all" prefetch={false}>{createdAccounts}</Link>
             </span>
           </div>
           <div className="statistics-row">
             <span>{t('home.stat.usernames')}</span>
-            <span>{registeredUsernames}</span>
+            <span>
+              <Link href="/username" prefetch={false}>{registeredUsernames}</Link>
+            </span>
           </div>
           <div className="statistics-row">
             <span>{t('home.stat.escrows')}</span>
-            <span>{escrowsCount}</span>
+            <span>
+              <Link href="/distribution?escrow=locked" prefetch={false}>{escrowsCount}</Link>
+            </span>
           </div>
           {!xahauNetwork && (
             <div className="statistics-row">
               <span>{t('home.stat.amms')}</span>
               <span>
-                <Link href="/amms">{ammsCount}</Link>
+                <Link href="/amms" prefetch={false}>{ammsCount}</Link>
               </span>
             </div>
           )}
           <div className="statistics-row">
             <span>{t('home.stat.nodes')}</span>
             <span>
-              <Link href="/nodes">{nodesCount}</Link>
+              <Link href="/nodes" prefetch={false}>{nodesCount}</Link>
             </span>
           </div>
           {xahauNetwork && (

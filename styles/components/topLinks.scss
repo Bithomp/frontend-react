@@ -4,12 +4,26 @@
   background-color: var(--background-header);
   text-align: center;
   line-height: 29px;
+  min-height: 31px;
   z-index: 1;
   position: relative;
   color: var(--text-contrast);
+  padding: 0 8px;
   .top-link {
     color: var(--text-contrast);
     font-weight: 400;
+  }
+
+  .top-links-optional {
+    display: inline;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .top-links {
+    .top-links-optional {
+      display: none;
+    }
   }
 }
 

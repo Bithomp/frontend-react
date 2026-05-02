@@ -11,7 +11,18 @@ import { IoSearch } from 'react-icons/io5'
 let typingTimer
 
 const AddressInput = forwardRef(function AddressInput(
-  { placeholder, title, setValue, rawData, type, disabled, hideButton, setInnerValue },
+  {
+    placeholder,
+    title,
+    setValue,
+    rawData,
+    type,
+    disabled,
+    hideButton,
+    setInnerValue,
+    skipUsernameResolveOnEnter,
+    preferUsernameOnSelect
+  },
   forwardedRef
 ) {
   const { t } = useTranslation()
@@ -126,11 +137,17 @@ const AddressInput = forwardRef(function AddressInput(
     else clearAll()
 
     if (e.key === 'Enter' && isAddressOrUsername(valueInp)) {
-      //request one address/username and set link, check if it's valid
       clearTimeout(typingTimer)
       setSearchingSuggestions(false)
       setSearchSuggestions([])
 
+      if (skipUsernameResolveOnEnter) {
+        if (setValue) setValue(valueInp)
+        setInputValue(valueInp)
+        return
+      }
+
+      //request one address/username and set link, check if it's valid
       let url = 'v2/username/' + valueInp
       if (isAddressValid(valueInp)) url = 'v2/address/' + valueInp
 
@@ -196,7 +213,7 @@ const AddressInput = forwardRef(function AddressInput(
       return
     }
 
-    if (setValue) setValue(option.address)
+    if (setValue) setValue(preferUsernameOnSelect && option.username ? option.username : option.address)
     setInputValue(option.address)
     setLink(
       userOrServiceLink(
@@ -315,7 +332,7 @@ const AddressInput = forwardRef(function AddressInput(
             />
 
             <div className="form-input__btns">
-              <button className="form-input__clear" onClick={clearAll}>
+              <button type="button" className="form-input__clear" onClick={clearAll}>
                 <IoMdClose />
               </button>
               {!hideButton && (
@@ -337,7 +354,7 @@ const AddressInput = forwardRef(function AddressInput(
               ref={fallbackInputRef} // IMPORTANT: allow focus before mount
             />
             <div className="form-input__btns">
-              <button className="form-input__clear" onClick={clearAll}>
+              <button type="button" className="form-input__clear" onClick={clearAll}>
                 <IoMdClose />
               </button>
               {!hideButton && (

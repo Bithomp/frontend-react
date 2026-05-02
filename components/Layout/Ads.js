@@ -6,12 +6,10 @@ import Nexo from '../../public/images/sponsored/nexo.svg'
 //import Stake from '../../public/images/sponsored/stake.svg'
 //import Doppler from '../../public/images/sponsored/doppler.svg'
 import { useState, useEffect } from 'react'
-import { useIsMobile } from '../../utils/mobile'
 
 //countryCode
 export default function Ads({}) {
   const { theme } = useTheme()
-  const isMobile = useIsMobile(970)
 
   const [rendered, setRendered] = useState(false)
 
@@ -60,7 +58,7 @@ export default function Ads({}) {
           </div>
         </a>
       */}
-      <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
+      <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer" aria-label="Buy XRP advertiser link">
         <div className="brand-item btcbit">
           <BtcBit className="brand-item-icon" />
           <div className="brand-item-title">Buy XRP</div>
@@ -70,7 +68,9 @@ export default function Ads({}) {
       <a href="https://bithomp.com/go/earn-xrp" target="_blank" rel="noreferrer">
         <div className="brand-item nexo">
           <Nexo className="brand-item-icon" fill={color} />
-          <div className="brand-item-title">Earn {!isMobile && '12%'} on XRP</div>
+          <div className="brand-item-title">
+            Earn <span className="brand-item-optional">12% </span>on XRP
+          </div>
           <div className="brand-item-text">Buy or transfer XRP to Nexo and maximize your yield.</div>
         </div>
       </a>

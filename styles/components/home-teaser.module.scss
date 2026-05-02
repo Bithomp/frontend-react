@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 300px;
+  min-height: var(--home-teaser-min-height, 300px);
 
   .content {
     display: flex;
@@ -64,8 +64,8 @@
     cursor: pointer;
   }
 
-  .amendmentCard {
-    min-height: 320px;
+  &.amendmentCard {
+    min-height: var(--home-teaser-min-height, 320px);
   }
 
   .validatorPrimary {
@@ -144,15 +144,15 @@
   }
 
   .amendmentStatusVoting {
-    color: #9b6b00;
-    background: rgba(255, 184, 0, 0.12);
-    border-color: rgba(255, 184, 0, 0.35);
+    color: #3d2a00;
+    background: #ffd166;
+    border-color: #d4a017;
   }
 
   .amendmentStatusEnabled {
-    color: #1f7a3e;
-    background: rgba(47, 158, 68, 0.12);
-    border-color: rgba(47, 158, 68, 0.35);
+    color: #0d3b1f;
+    background: #8de1a8;
+    border-color: #2f9e44;
   }
 
   @media (max-width: 640px) {
@@ -222,7 +222,8 @@
     align-items: center;
     min-width: 0;
 
-    img {
+    > img,
+    > span {
       margin-right: 8px;
       flex-shrink: 0;
     }
@@ -253,12 +254,19 @@
   }
 
   .whaleRow {
-    grid-template-columns: var(--whale-time-col, max-content) var(--whale-source-col, max-content) auto minmax(0, 1fr) auto;
+    grid-template-columns: 40px minmax(94px, 1fr) 18px minmax(94px, 1fr) 78px;
+    gap: 10px;
+    padding: 5.5px 0;
     cursor: pointer;
 
     @media (max-width: 640px) {
+      grid-template-columns: 38px minmax(0, 1fr) 14px minmax(0, 1fr) 66px;
       gap: 8px;
     }
+  }
+
+  &.whaleCard {
+    height: 100%;
   }
 
   .whaleAddressCell {
@@ -266,22 +274,42 @@
     overflow: hidden;
     text-overflow: clip;
     white-space: nowrap;
+
+    :global(.no-brake) {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      min-width: 0;
+      vertical-align: middle;
+    }
+
+    :global(.no-brake > span:first-child) {
+      flex: 0 0 auto;
+      margin-right: 4px !important;
+    }
   }
 
   .whaleArrow {
     font-size: 13px;
     color: var(--text-secondary);
     text-align: center;
-    width: 14px;
+    width: 18px;
+    justify-self: center;
+    line-height: 1;
   }
 
   .whaleFiat {
-    min-width: 0;
-    max-width: 100%;
+    width: 78px;
+    min-width: 78px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     justify-self: end;
+
+    @media (max-width: 640px) {
+      width: 66px;
+      min-width: 66px;
+    }
   }
 
   .timeAgo {
@@ -298,12 +326,14 @@
   .loadingPlaceholder {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    flex: 1;
     padding: 8px 0;
   }
 
   .skeleton {
-    height: 16px;
+    width: 100%;
+    height: 30px;
     background: linear-gradient(
       90deg,
       var(--background-secondary) 0%,
@@ -311,8 +341,8 @@
       var(--background-secondary) 100%
     );
     background-size: 200% 100%;
-    animation: shimmer 2s infinite;
-    border-radius: 2px;
+    animation: shimmer 2s ease-in-out infinite;
+    border-radius: 6px;
   }
 
   .emptyState {
@@ -329,9 +359,20 @@
 @keyframes shimmer {
   0% {
     background-position: 200% 0;
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
   }
   100% {
     background-position: -200% 0;
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teaser .skeleton {
+    animation: none;
   }
 }
 
@@ -427,14 +468,14 @@
 }
 
 .cardHeaderActionButtonActive {
-  background-color: var(--accent-icon);
-  border-color: var(--accent-icon);
-  color: var(--text-contrast);
+  background-color: #005f68;
+  border-color: #005f68;
+  color: #ffffff;
   box-shadow: none;
 
   &:hover {
-    color: var(--text-contrast);
-    border-color: var(--accent-icon);
+    color: #ffffff;
+    border-color: #005f68;
   }
 }
 
@@ -497,7 +538,8 @@
   }
 }
 
-.livePriceCard {
+.livePriceCard,
+.chartCard {
   @media (min-width: 768px) {
     min-height: 335px;
   }

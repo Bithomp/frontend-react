@@ -75,6 +75,18 @@ const getErrorMessage = (error) => {
 
 const isNoMatchingKeyError = (error) => getErrorMessage(error).includes('No matching key')
 
+const isWalletConnectRelayError = (error) => {
+  const message = getErrorMessage(error).toLowerCase()
+  const stack = String(error?.stack || '').toLowerCase()
+  const haystack = `${message} ${stack}`
+
+  return (
+    haystack.includes('socket stalled when trying to connect') ||
+    haystack.includes('websocket connection failed') ||
+    haystack.includes('relay.walletconnect.org')
+  )
+}
+
 const clearWalletConnectStorage = () => {
   if (typeof window === 'undefined') return
 
@@ -246,10 +258,7 @@ export function WalletConnect({
         setSessions((previousSessions) => upsertSessionByTopic(previousSessions, sessionNew))
       } catch (err) {
         const errMessage = getErrorMessage(err)
-        if (
-          errMessage.includes('WebSocket connection failed') ||
-          errMessage.includes('Socket stalled when trying to connect')
-        ) {
+        if (isWalletConnectRelayError(err)) {
           console.warn('WebSocket connection failed')
         } else if (isNoMatchingKeyError(err)) {
           handleNoMatchingKeyError()
@@ -358,12 +367,27 @@ export function WalletConnect({
 
   useEffect(() => {
     const onUnhandledRejection = (event) => {
+      if (isWalletConnectRelayError(event?.reason)) {
+        event.preventDefault()
+        console.warn('WalletConnect relay connection failed:', getErrorMessage(event?.reason))
+        setAwaiting(false)
+        setStatus('WalletConnect relay is not responding. Please try again.')
+        return
+      }
       if (!isNoMatchingKeyError(event?.reason)) return
       event.preventDefault()
       handleNoMatchingKeyError()
     }
 
     const onWindowError = (event) => {
+      const error = event?.error || event?.message
+      if (isWalletConnectRelayError(error)) {
+        event.preventDefault()
+        console.warn('WalletConnect relay connection failed:', getErrorMessage(error))
+        setAwaiting(false)
+        setStatus('WalletConnect relay is not responding. Please try again.')
+        return true
+      }
       if (!isNoMatchingKeyError(event?.error) && !isNoMatchingKeyError(event?.message)) return
       event.preventDefault()
       handleNoMatchingKeyError()

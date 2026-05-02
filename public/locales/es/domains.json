@@ -14,6 +14,9 @@
   "verify-desc": "Puedes verificar que todo está correctamente configurado con la herramienta: <0>Comprobador TOML</0>. La lista de esta página se actualiza de 3am a 4am (horario de Stockholm), si tu dominio está verificado por la herramienta, pero no está en la nuestra lista en 24h, entonces es posible que no podamos leer el fichero TOML.",
   "desc": "Abajo puedes encontrar la lista de dominios verificados en {{ledgerName}} (la página se actualiza cada día).",
   "table": {
+    "toml-checker": "TOML",
+    "check-toml": "Comprobar TOML",
+    "check-toml-for-domain": "Comprobar TOML de {{domain}}",
     "addresses": "Direcciones"
   }
 }

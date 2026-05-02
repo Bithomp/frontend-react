@@ -97,10 +97,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   if (!searchPlaceholderText) {
-    searchPlaceholderText =
-      isSsrMobile || (windowWidth && windowWidth < 730)
-        ? t('home.search-placeholder-short')
-        : t('home.search-placeholder')
+    searchPlaceholderText = isSsrMobile ? t('home.search-placeholder-short') : t('home.search-placeholder')
   }
 
   // Clear search field on route change

@@ -1,8 +1,9 @@
 {
   "title": "Comprobador TOML de {{explorerName}}",
-  "description": "Comprueba y valida {{tomlName}} para dominios de {{ledgerName}} con {{explorerName}}.",
+  "description": "Comprueba y valida {{tomlName}} para dominios de {{ledgerName}}.",
   "check-title": "Comprobar un dominio",
   "check-description": "Introduce un dominio para obtener, decodificar e inspeccionar su archivo {{tomlName}}.",
+  "toml-help": "El archivo {{tomlName}} es una configuración TOML alojada en el dominio que declara y verifica la asociación entre un dominio y cuentas, validadores y servicios relacionados de {{ledgerName}}. Debe estar disponible públicamente en:",
   "domain-placeholder": "Introduce un dominio como bithomp.com",
   "cooldown-note": "Hay un límite de 10 segundos entre comprobaciones.",
   "cooldown-left": "Espera {{seconds}} s antes de la siguiente comprobación.",
@@ -19,6 +20,11 @@
     "invalid-domain": "Introduce un dominio válido.",
     "captcha-required": "Completa el captcha.",
     "domain-not-found": "No pudimos acceder a ese dominio o encontrar su archivo TOML. Revisa el dominio e inténtalo de nuevo.",
+    "toml-not-found": "El dominio responde, pero no pudimos encontrar {{tomlName}} en la ubicación .well-known esperada.",
+    "secure-connection-failed": "No pudimos obtener el archivo TOML de forma segura. Revisa el certificado HTTPS/TLS del dominio.",
+    "html-content": "La URL esperada de {{tomlName}} devolvió HTML en lugar de un archivo TOML.",
+    "invalid-toml": "El archivo TOML se encontró, pero no se pudo analizar.",
+    "invalid-toml-with-reason": "El archivo TOML se encontró, pero no se pudo analizar: {{reason}}",
     "failed": "No se puede verificar el dominio ahora mismo."
   }
 }

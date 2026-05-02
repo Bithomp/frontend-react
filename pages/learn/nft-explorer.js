@@ -68,7 +68,7 @@ export default function NftExplorer() {
               <p>
                 <strong>NFT with music and video</strong>
                 <br />
-                <a href="https://bithomp.com/en/nft/00083A988FAD76FECCD5D023F7A2D7710CF6297C622492EE977719F105777A85">
+                <a href="https://bithomp.com/nft/00083A988FAD76FECCD5D023F7A2D7710CF6297C622492EE977719F105777A85">
                   View NFT
                 </a>
               </p>
@@ -76,7 +76,7 @@ export default function NftExplorer() {
               <p>
                 <strong>360° panoramic NFTs</strong>
                 <br />
-                <a href="https://bithomp.com/en/nft/00080000B1BC39057B636558C3BACD1FF6FBF014D1F546440F5A5DA503D92A7D">
+                <a href="https://bithomp.com/nft/00080000B1BC39057B636558C3BACD1FF6FBF014D1F546440F5A5DA503D92A7D">
                   View NFT
                 </a>
               </p>
@@ -84,7 +84,7 @@ export default function NftExplorer() {
               <p>
                 <strong>Animated NFTs</strong>
                 <br />
-                <a href="https://bithomp.com/en/nft/000800009724F745111A1ED69C10F9CE5FA8215BD6D66D79CE14A86100000009">
+                <a href="https://bithomp.com/nft/000800009724F745111A1ED69C10F9CE5FA8215BD6D66D79CE14A86100000009">
                   View NFT
                 </a>
               </p>

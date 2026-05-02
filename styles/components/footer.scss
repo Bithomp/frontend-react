@@ -66,6 +66,7 @@ footer {
     clear: both;
     line-height: 20px;
     font-size: 14px;
+    color: color-mix(in srgb, var(--text-contrast) 88%, var(--footer-link) 12%);
   }
 }
 
@@ -84,6 +85,24 @@ footer {
   padding: 20px;
   background-color: var(--background-contrast);
   color: var(--text-oposite);
+
+  a {
+    color: #fff;
+
+    &:hover {
+      color: var(--footer-link);
+    }
+  }
+
+  .button-action {
+    background: #005460;
+    border-color: #005460;
+    color: #fff;
+  }
+}
+
+.slogan {
+  color: color-mix(in srgb, var(--text-contrast) 82%, var(--footer-link) 18%) !important;
 }
 
 @media only screen and (max-width: 1024px) {

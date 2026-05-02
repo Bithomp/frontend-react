@@ -47,6 +47,7 @@ const pages = [
   { loc: 'distribution', changefreq: 'always', priority: '0.7' },
 
   { loc: 'genesis', changefreq: 'weekly', priority: '0.6' },
+  { loc: 'activation-tree', changefreq: 'weekly', priority: '0.6' },
   { loc: 'build-unl', changefreq: 'yearly', priority: '0.6' },
   { loc: 'advertise', changefreq: 'yearly', priority: '0.6' },
   { loc: 'eaas', changefreq: 'yearly', priority: '0.6' },
@@ -68,6 +69,7 @@ if (xahauNetwork) {
   pages.push(
     { loc: 'governance', changefreq: 'hourly', priority: '0.9' },
     { loc: 'unl-report', changefreq: 'always', priority: '0.5' },
+    { loc: 'services/reward-auto-claim', changefreq: 'monthly', priority: '0.8' },
     { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.9' },
     { loc: 'xahau-wallets', changefreq: 'monthly', priority: '0.8' }
   )
@@ -145,6 +147,7 @@ function generateSiteMap(posts) {
     'services/account-settings',
     'services/account-delete',
     'services/toml-checker',
+    'services/reward-auto-claim',
     'services/amm/deposit',
     'services/amm/create',
     'services/amm/withdraw',

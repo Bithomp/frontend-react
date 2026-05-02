@@ -1,8 +1,9 @@
 {
   "title": "{{explorerName}} TOMLチェッカー",
-  "description": "{{explorerName}} で {{ledgerName}} ドメインの {{tomlName}} を確認・検証します。",
+  "description": "{{ledgerName}} ドメインの {{tomlName}} を確認・検証します。",
   "check-title": "ドメインを確認",
   "check-description": "ドメインを入力して {{tomlName}} ファイルを取得、デコード、確認します。",
+  "toml-help": "{{tomlName}} はドメインでホストされる TOML 設定ファイルで、ドメインと {{ledgerName}} のアカウント、バリデータ、関連サービスとの関連付けを宣言して検証します。次の場所で公開されている必要があります:",
   "domain-placeholder": "bithomp.com のようなドメインを入力",
   "cooldown-note": "確認のたびに 10 秒の待機時間があります。",
   "cooldown-left": "次の確認まで {{seconds}} 秒お待ちください。",
@@ -19,6 +20,11 @@
     "invalid-domain": "有効なドメインを入力してください。",
     "captcha-required": "captcha を完了してください。",
     "domain-not-found": "そのドメイン、または TOML ファイルにアクセスできませんでした。ドメインを確認して再度お試しください。",
+    "toml-not-found": "ドメインにはアクセスできますが、想定される .well-known の場所で {{tomlName}} が見つかりませんでした。",
+    "secure-connection-failed": "TOML ファイルを安全に取得できませんでした。ドメインの HTTPS/TLS 証明書を確認してください。",
+    "html-content": "想定される {{tomlName}} URL が TOML ファイルではなく HTML を返しました。",
+    "invalid-toml": "TOML ファイルは見つかりましたが、解析できませんでした。",
+    "invalid-toml-with-reason": "TOML ファイルは見つかりましたが、解析できませんでした: {{reason}}",
     "failed": "現在このドメインを確認できません。"
   }
 }
