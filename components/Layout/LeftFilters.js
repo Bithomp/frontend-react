@@ -5,6 +5,7 @@ import { CSVLink } from 'react-csv'
 import { useTranslation } from 'next-i18next'
 
 import DownloadIcon from '../../public/images/download.svg'
+import { useWidth } from '../../utils'
 
 export default function LeftFilters({
   children,
@@ -18,6 +19,7 @@ export default function LeftFilters({
   onlyCsv
 }) {
   const { t } = useTranslation()
+  const width = useWidth()
 
   const [rendered, setRendered] = useState(false)
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
@@ -32,12 +34,16 @@ export default function LeftFilters({
 
   // Prevent body scroll when filters are open
   useEffect(() => {
-    if (filtersHide) {
+    if (filtersHide && width > 0 && width <= 1300) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
     }
-  }, [filtersHide])
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [filtersHide, width])
 
   const toggleFilters = () => {
     if (setFiltersHide) {
