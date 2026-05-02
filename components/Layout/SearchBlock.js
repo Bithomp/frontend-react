@@ -62,6 +62,7 @@ const IndicatorsWithClear = (props) => {
 import {
   isAddressOrUsername,
   isIdValid,
+  useWidth,
   isValidCTID,
   decodeCTID,
   localePath,
@@ -86,6 +87,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
   const searchParams = useSearchParams()
   const router = useRouter()
   const searchInput = useRef(null)
+  const windowWidth = useWidth()
 
   const { id } = router.query
 
