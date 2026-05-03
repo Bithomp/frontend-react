@@ -1,5 +1,5 @@
 import React from 'react'
-import { TData } from '../Table'
+import { TData, TransactionValue } from './TData'
 
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, amountFormat, nftIdLink } from '../../utils/format'
@@ -94,7 +94,7 @@ const uritokenChanges = (changes, nftokens, txType) => {
                       nftChnages[i].status === 'added' ? 'green' : nftChnages[i].status === 'removed' ? 'red' : 'orange'
                     }
                   >
-                    {nftChnages[i].status}
+                    <TransactionValue value={nftChnages[i].status} />
                   </span>{' '}
                   NFT
                 </TData>
@@ -120,7 +120,7 @@ const uritokenChanges = (changes, nftokens, txType) => {
           <tr>
             <TData className="bold">
               <br />
-              NFT Transfer
+              <TransactionValue value="NFT Transfer" />
             </TData>
             <TData>
               <br />

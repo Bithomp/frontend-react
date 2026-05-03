@@ -1,4 +1,4 @@
-import { TData } from '../Table'
+import { TData } from './TData'
 import { AddressWithIconFilled, amountFormat, expirationExpired, tokenToFiat, shortHash } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'

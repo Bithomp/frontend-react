@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { TData } from '../Table'
+import { TData } from './TData'
 import { TransactionCard } from './TransactionCard'
 import CopyButton from '../UI/CopyButton'
 import { AddressWithIconFilled, CurrencyWithIcon, shortHash } from '../../utils/format'

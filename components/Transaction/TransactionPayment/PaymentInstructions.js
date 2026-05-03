@@ -1,6 +1,6 @@
 import { nativeCurrency } from '../../../utils'
 import { amountFormat } from '../../../utils/format'
-import { TData } from '../../Table'
+import { TData } from '../TData'
 
 export default function PaymentInstructions({ data, sourceBalanceChanges }) {
   const { outcome, specification, tx } = data

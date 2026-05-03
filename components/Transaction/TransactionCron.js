@@ -1,4 +1,4 @@
-import { TData } from '../Table'
+import { TData } from './TData'
 import { useTranslation } from 'next-i18next'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, duration, fullDateAndTime, showFlags } from '../../utils/format'

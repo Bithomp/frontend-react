@@ -617,6 +617,10 @@ export const dappBySourceTag = (sourceTag) => {
 export const memoNode = (memos, type = 'tr', options = {}) => {
   let output = []
   const showOnlyHiddenMemos = type === 'additional'
+  const label = (value) => {
+    if (value === 'Memo') return options?.memoLabel || value
+    return options?.labels?.[value] || (options?.label ? options.label(value) : value)
+  }
   const renderDetailRow = (key, label, content, alignTop = false) => (
     <div key={key} className={'detail-row' + (alignTop ? ' tx-detail-change-row' : '')}>
       <span>{label}</span>
@@ -706,7 +710,7 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
 
     const getMemoLabel = () => {
       memoLabelIndex += 1
-      return memoLabelTotal > 1 ? 'Memo ' + memoLabelIndex : 'Memo'
+      return memoLabelTotal > 1 ? label('Memo') + ' ' + memoLabelIndex : label('Memo')
     }
 
     for (let j = 0; j < normalizedMemos.length; j++) {
@@ -796,15 +800,15 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
               output.push(
                 <React.Fragment key={'jwt' + j}>
                   <tr>
-                    <TData>JWT Header</TData>
+                    <TData>{label('JWT Header')}</TData>
                     <TData>{decodeJsonMemo(pieces[0], { code: 'base64' })}</TData>
                   </tr>
                   <tr>
-                    <TData>JWT Payload</TData>
+                    <TData>{label('JWT Payload')}</TData>
                     <TData>{decodeJsonMemo(pieces[1], { code: 'base64' })}</TData>
                   </tr>
                   <tr>
-                    <TData>JWT Signature</TData>
+                    <TData>{label('JWT Signature')}</TData>
                     <TData>
                       <pre>{pieces[2]}</pre>
                     </TData>
@@ -816,19 +820,19 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
                 <React.Fragment key={'jwt' + j}>
                   {renderDetailRow(
                     'jwt-h-' + j,
-                    'JWT Header:',
+                    label('JWT Header') + ':',
                     <span className="brake">{decodeJsonMemo(pieces[0], { code: 'base64' })}</span>,
                     true
                   )}
                   {renderDetailRow(
                     'jwt-p-' + j,
-                    'JWT Payload:',
+                    label('JWT Payload') + ':',
                     <span className="brake">{decodeJsonMemo(pieces[1], { code: 'base64' })}</span>,
                     true
                   )}
                   {renderDetailRow(
                     'jwt-s-' + j,
-                    'JWT Signature:',
+                    label('JWT Signature') + ':',
                     <span className="brake">
                       <pre>{pieces[2]}</pre>
                     </span>,
@@ -839,15 +843,15 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
             } else {
               output.push(
                 <React.Fragment key={'jwt' + j}>
-                  JWT Header:
+                  {label('JWT Header')}:
                   <br />
                   {decodeJsonMemo(pieces[0], { code: 'base64' })}
                   <br />
-                  JWT Payload:
+                  {label('JWT Payload')}:
                   <br />
                   {decodeJsonMemo(pieces[1], { code: 'base64' })}
                   <br />
-                  JWT Signature:
+                  {label('JWT Signature')}:
                   <br />
                   <pre>{pieces[2]}</pre>
                   <br />
@@ -908,7 +912,7 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
           if (type === 'tr') {
             output.push(
               <tr key="a3">
-                <TData>Client web</TData>
+                <TData>{label('Client web')}</TData>
                 <TData>
                   <a href={'https://' + clientname} rel="nofollow">
                     {clientname}
@@ -920,7 +924,7 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
             output.push(
               renderDetailRow(
                 'a3-' + j,
-                'Client web:',
+                label('Client web') + ':',
                 <a
                   href={'https://' + clientname}
                   rel="nofollow"
@@ -934,7 +938,7 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
           } else {
             output.push(
               <React.Fragment key="a3">
-                Client web:{' '}
+                {label('Client web')}:{' '}
                 <a href={'https://' + clientname} rel="nofollow">
                   {clientname}
                 </a>

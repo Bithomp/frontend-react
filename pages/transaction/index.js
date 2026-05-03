@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SearchBlock from '../../components/Layout/SearchBlock'
@@ -9,7 +10,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(context.locale, ['common']))
+      ...(await serverSideTranslations(context.locale, ['common', 'transaction']))
     }
   }
 }
@@ -19,11 +20,17 @@ const Container = ({ children }) => {
 }
 
 const TransactionSearch = () => {
+  const { t } = useTranslation('transaction')
+
   return (
     <>
-      <SEO page="Transaction search" title="Tranasction search" description="Transaction details" />
+      <SEO
+        page={t('seo.searchPage')}
+        title={t('seo.searchTitle')}
+        description={t('seo.searchDescription')}
+      />
       <Container>
-        <h1 className="center">Transaction search</h1>
+        <h1 className="center">{t('search.title')}</h1>
         <SearchBlock tab="transaction" type="explorer" />
       </Container>
     </>

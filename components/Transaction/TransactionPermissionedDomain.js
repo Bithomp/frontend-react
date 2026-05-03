@@ -1,4 +1,4 @@
-import { TData } from '../Table'
+import { TData, TransactionValue } from './TData'
 import React from 'react'
 
 import { TransactionCard } from './TransactionCard'
@@ -27,7 +27,8 @@ export const TransactionPermissionedDomain = ({ data, pageFiatRate, selectedCurr
             </tr>
             <tr>
               <TData className="bold">
-                Accepted credential{specification.acceptedCredentials.length > 1 ? ' ' + (i + 1) : ''}
+                <TransactionValue value="Accepted credential" />
+                {specification.acceptedCredentials.length > 1 ? ' ' + (i + 1) : ''}
               </TData>
               <TData></TData>
             </tr>

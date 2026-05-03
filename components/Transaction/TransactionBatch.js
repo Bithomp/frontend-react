@@ -1,5 +1,5 @@
 import React from 'react'
-import { TData } from '../Table'
+import { TData } from './TData'
 
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, amountFormat, tokenToFiat, showFlags } from '../../utils/format'

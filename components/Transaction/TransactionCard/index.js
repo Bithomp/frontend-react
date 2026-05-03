@@ -1,10 +1,10 @@
 import React from 'react'
 import CopyButton from '../../UI/CopyButton'
 import { useState } from 'react'
-import { i18n, useTranslation } from 'next-i18next'
+import { i18n, Trans, useTranslation } from 'next-i18next'
 
 import { LedgerLink, LinkTx } from '../../../utils/links'
-import { TData } from '../../Table'
+import { TData } from '../TData'
 import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
@@ -54,6 +54,7 @@ export const TransactionCard = ({
   children
 }) => {
   const { t } = useTranslation()
+  const { t: txT } = useTranslation('transaction')
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
   const [showAdditionalData, setShowAdditionalData] = useState(false)
@@ -72,8 +73,9 @@ export const TransactionCard = ({
         if (networksIds[CTIDnetworkId]) {
           errorMessage = (
             <>
-              This transaction is from the <span className="bold">{networksIds[CTIDnetworkId].name}</span> network,
-              check the details:
+              {txT('messages.invalidNetworkKnown.prefix')}{' '}
+              <span className="bold">{networksIds[CTIDnetworkId].name}</span>{' '}
+              {txT('messages.invalidNetworkKnown.suffix')}
               <br />
               <br />
               <a href={networksIds[CTIDnetworkId].server + localePath('/tx/' + id, i18n.language)}>
@@ -125,11 +127,21 @@ export const TransactionCard = ({
   }
 
   const dapp = dappBySourceTag(tx?.SourceTag)
+  const memoLabels = {
+    memoLabel: txT('labels.Memo'),
+    labels: {
+      'JWT Header': txT('labels.JWT Header'),
+      'JWT Payload': txT('labels.JWT Payload'),
+      'JWT Signature': txT('labels.JWT Signature'),
+      'Client web': txT('labels.Client web')
+    },
+    label: (value) => txT(`labels.${value}`, { defaultValue: value })
+  }
 
   return (
     <>
       <div className="tx-body">
-        <h1 className="tx-header">Transaction Details</h1>
+        <h1 className="tx-header">{txT('details.title')}</h1>
         <div className="card-block">
           {id === tx?.hash && (
             <p className="center">
@@ -144,12 +156,14 @@ export const TransactionCard = ({
                 <p className="center">
                   {isSuccessful ? (
                     <>
-                      The transaction was <b className="green">successful</b> and validated in the ledger{' '}
+                      {txT('messages.successful.prefix')} <b className="green">{txT('status.successful')}</b>{' '}
+                      {txT('messages.successful.suffix')}{' '}
                       <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
                     </>
                   ) : (
                     <>
-                      The transaction <b className="red">FAILED</b> and included to the ledger{' '}
+                      {txT('messages.failed.prefix')} <b className="red">{txT('status.failed')}</b>{' '}
+                      {txT('messages.failed.suffix')}{' '}
                       <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
                     </>
                   )}
@@ -158,11 +172,11 @@ export const TransactionCard = ({
                 !validated &&
                 tx && (
                   <p className="center red bold">
-                    The transaction is not yet validated.
+                    {txT('messages.notValidated')}
                     {tx?.LastLedgerSequence && (
                       <>
                         <br />
-                        It won't be validated if Ledger already passed the Ledger #{tx.LastLedgerSequence}.
+                        {txT('messages.notValidatedAfterLedger', { ledger: tx.LastLedgerSequence })}
                       </>
                     )}
                   </p>
@@ -182,7 +196,7 @@ export const TransactionCard = ({
                     <tr>
                       <TData>Batch</TData>
                       <TData>
-                        <span className="bold orange">Inner transaction</span>
+                        <span className="bold orange">{txT('labels.Inner transaction')}</span>
                       </TData>
                     </tr>
                   )}
@@ -190,7 +204,11 @@ export const TransactionCard = ({
                     <TData>{t('table.type')}</TData>
                     <TData>
                       <span className="bold">
-                        {specification?.domainID && <span className="orange bold">Permissioned </span>}{' '}
+                        {specification?.domainID && (
+                          <>
+                            <span className="orange bold">{txT('labels.Permissioned')}</span>{' '}
+                          </>
+                        )}
                         {txTypeSpecial || tx?.TransactionType}
                       </span>
                     </TData>
@@ -243,7 +261,7 @@ export const TransactionCard = ({
                       })}
                       {isInsufFee && tx?.Fee && (
                         <div className="orange" style={{ fontSize: '0.9em', marginTop: '2px' }}>
-                          It was specified to spend {amountFormat(tx?.Fee)} as transaction fee.
+                          {txT('messages.specifiedFee', { fee: amountFormat(tx?.Fee) })}
                         </div>
                       )}
                     </TData>
@@ -295,13 +313,14 @@ export const TransactionCard = ({
                       <tr>
                         <TData>Memos note</TData>
                         <TData className="orange">
-                          Memos were added by the third party{' '}
-                          {addressUsernameOrServiceLink(specification?.source, 'address')} that finished the Escrow.
+                          {txT('messages.memosThirdParty.prefix')}{' '}
+                          {addressUsernameOrServiceLink(specification?.source, 'address')}{' '}
+                          {txT('messages.memosThirdParty.suffix')}
                         </TData>
                       </tr>
                     )}
 
-                  {specification?.memos && memoNode(specification.memos)}
+                  {specification?.memos && memoNode(specification.memos, 'tr', memoLabels)}
                   {tx?.AccountTxnID && (
                     <tr>
                       <TData
@@ -322,7 +341,7 @@ export const TransactionCard = ({
                     <tr>
                       <TData>
                         {specification.delegate?.address === specification.signer.address && (
-                          <span className="bold orange">Delegate </span>
+                          <span className="bold orange">{txT('labels.Delegate')} </span>
                         )}
                         Signer
                       </TData>
@@ -348,8 +367,9 @@ export const TransactionCard = ({
                           <TData>
                             {filteredBalanceChanges?.length > 1 && (
                               <>
-                                There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that
-                                were affected by this transaction.
+                                {txT('messages.affectedAccounts.prefix')}{' '}
+                                <span className="bold">{filteredBalanceChanges.length}</span>{' '}
+                                {txT('messages.affectedAccounts.suffix')}
                               </>
                             )}
                           </TData>
@@ -361,17 +381,17 @@ export const TransactionCard = ({
                           return (
                             <tr key={index}>
                               <TData>
-                                Account {index + 1}
+                                {txT('labels.Account')} {index + 1}
                                 {change.address === tx.Account && (
                                   <span className="bold">
                                     <br />
-                                    Initiator
+                                    {txT('labels.Initiator')}
                                   </span>
                                 )}
                                 {gateway && (
                                   <span className="bold">
                                     <br />
-                                    {niceCurrency(change.balanceChanges[0].currency)} issuer
+                                    {niceCurrency(change.balanceChanges[0].currency)} {txT('labels.issuer')}
                                   </span>
                                 )}
                               </TData>
@@ -408,12 +428,15 @@ export const TransactionCard = ({
                   {!tx?.TransactionType.includes('AMM') && outcome?.exchanges?.length > 0 && (
                     <>
                       <tr>
-                        <TData style={{ verticalAlign: 'top' }}>Exchange{outcome?.exchanges?.length > 1 && 's'}</TData>
+                        <TData style={{ verticalAlign: 'top' }}>
+                          {outcome?.exchanges?.length > 1 ? txT('labels.Exchanges') : txT('labels.Exchange')}
+                        </TData>
                         <TData>
                           {outcome?.exchanges?.length > 1 && (
                             <>
-                              There are <span className="bold">{outcome?.exchanges?.length}</span> exchnages that
-                              occured within this transaction.
+                              {txT('messages.exchanges.prefix')}{' '}
+                              <span className="bold">{outcome?.exchanges?.length}</span>{' '}
+                              {txT('messages.exchanges.suffix')}
                               <br />
                               <br />
                             </>
@@ -434,13 +457,13 @@ export const TransactionCard = ({
                     <TData>Show more</TData>
                     <TData>
                       <span className="link" onClick={() => setShowAdditionalData(!showAdditionalData)}>
-                        Additional data
+                        {txT('actions.additionalData')}
                       </span>{' '}
                       |{' '}
                       {!(filteredBalanceChanges?.length > 2 || notFullySupported) && (
                         <>
                           <span className="link" onClick={() => setShowBalanceChanges(!showBalanceChanges)}>
-                            Balance changes
+                            {txT('actions.balanceChanges')}
                           </span>{' '}
                           |{' '}
                         </>
@@ -450,13 +473,13 @@ export const TransactionCard = ({
                       </span>{' '}
                       |{' '}
                       <span className="link" onClick={() => setShowRawMeta(!showRawMeta)}>
-                        Tx Metadata
+                        {txT('actions.txMetadata')}
                       </span>
                     </TData>
                   </tr>
                   {showAdditionalData && (
                     <>
-                      {specification?.memos && memoNode(specification.memos, 'additional')}
+                      {specification?.memos && memoNode(specification.memos, 'additional', memoLabels)}
                       {tx.SetFlag !== undefined && (
                         <tr>
                           <TData>Set flag</TData>
@@ -480,7 +503,11 @@ export const TransactionCard = ({
                           {tx.TicketSequence ? (
                             <tr>
                               <TData tooltip="The sequence number of the ticket to use in place of a Sequence number.">
-                                <span className="bold">Ticket</span> sequence
+                                <Trans
+                                  i18nKey="labels.ticketSequenceRich"
+                                  ns="transaction"
+                                  components={{ bold: <span className="bold" /> }}
+                                />
                               </TData>
                               <TData>{tx.TicketSequence}</TData>
                             </tr>
@@ -529,7 +556,8 @@ export const TransactionCard = ({
                             {waitLedgers && (
                               <>
                                 {' '}
-                                ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
+                                ({waitLedgers}{' '}
+                                {waitLedgers === 1 ? txT('labels.ledger') : txT('labels.ledgers')})
                               </>
                             )}
                           </TData>

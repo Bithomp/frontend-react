@@ -1,4 +1,4 @@
-import { TData } from '../../Table'
+import { TData } from '../TData'
 import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,

@@ -1,4 +1,4 @@
-import { TData } from '../Table'
+import { TData, TransactionValue } from './TData'
 
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled } from '../../utils/format'
@@ -23,7 +23,7 @@ export const TransactionSetRegularKey = ({ data, pageFiatRate, selectedCurrency 
           {hasNewRegularKey ? (
             <AddressWithIconFilled data={{ ...specification, regularKey }} name="regularKey" />
           ) : (
-            <span className="orange">removed</span>
+            <span className="orange"><TransactionValue value="removed" /></span>
           )}
         </TData>
       </tr>

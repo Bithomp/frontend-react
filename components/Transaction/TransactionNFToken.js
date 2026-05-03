@@ -1,5 +1,5 @@
 import React from 'react'
-import { TData } from '../Table'
+import { TData, TransactionValue } from './TData'
 
 import { TransactionCard } from './TransactionCard'
 import {
@@ -147,7 +147,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
                       nftChnages[i].status === 'added' ? 'green' : nftChnages[i].status === 'removed' ? 'red' : 'orange'
                     }
                   >
-                    {nftChnages[i].status}
+                    <TransactionValue value={nftChnages[i].status} />
                   </span>{' '}
                   NFT
                 </TData>
@@ -167,7 +167,13 @@ const nftokenChanges = (changes, nftokens, txType) => {
               <tr key="nft-modify-header">
                 <TData className="bold">
                   <br />
-                  {txType === 'NFTokenModify' ? 'Modified NFT' : 'NFT Data ' + (nftChnages.length > 1 ? i + 1 : '')}
+                  {txType === 'NFTokenModify' ? (
+                    <TransactionValue value="Modified NFT" />
+                  ) : (
+                    <>
+                      <TransactionValue value="NFT Data" /> {nftChnages.length > 1 ? i + 1 : ''}
+                    </>
+                  )}
                 </TData>
                 <TData>
                   <br />

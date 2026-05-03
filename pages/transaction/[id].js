@@ -114,13 +114,14 @@ export async function getServerSideProps(context) {
       initialErrorMessage: initialErrorMessage || null,
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'transaction']))
     }
   }
 }
 
 export default function Transaction({ data, selectedCurrency, selectedCurrencyServer, initialErrorMessage }) {
   const { t } = useTranslation()
+  const { t: txT } = useTranslation('transaction')
   const effectiveSelectedCurrency = selectedCurrency || selectedCurrencyServer
 
   const [pageFiatRate, setPageFiatRate] = useState(0)
@@ -142,7 +143,7 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
     return (
       <center>
         <br />
-        {initialErrorMessage || 'No data received. Are you online?'}
+        {initialErrorMessage || txT('errors.noData')}
         <br />
         <br />
       </center>
@@ -216,7 +217,7 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
       <SEO
         page="Transaction"
         title={t('explorer.header.transaction') + ' ' + txHash}
-        description={'Transaction details for tx: ' + txHash}
+        description={txT('seo.detailsDescription', { txHash })}
       />
       <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={effectiveSelectedCurrency} />
     </>

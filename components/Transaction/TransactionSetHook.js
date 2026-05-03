@@ -1,5 +1,5 @@
 import { AddressWithIconFilled } from '../../utils/format'
-import { TData } from '../Table'
+import { TData } from './TData'
 import CopyButton from '../UI/CopyButton'
 
 import { TransactionCard } from './TransactionCard'

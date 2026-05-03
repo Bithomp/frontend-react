@@ -1,4 +1,4 @@
-import { TData } from '../Table'
+import { TData, TransactionValue } from './TData'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, fullDateAndTime } from '../../utils/format'
 import { decode } from '../../utils'
@@ -127,7 +127,7 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
               <TData>Flag</TData>
               <TData>
                 <span className={outcome.credentialChanges.flags.accepted ? 'green' : 'red'}>
-                  {outcome.credentialChanges.flags.accepted ? 'Accepted' : 'Not accepted'}
+                  <TransactionValue value={outcome.credentialChanges.flags.accepted ? 'Accepted' : 'Not accepted'} />
                 </span>
               </TData>
             </tr>

@@ -1,4 +1,4 @@
-import { TData } from '../Table'
+import { TData } from './TData'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, shortHash } from '../../utils/format'
 import { localePath, networkId, networksIds } from '../../utils'

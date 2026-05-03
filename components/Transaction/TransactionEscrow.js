@@ -1,4 +1,4 @@
-import { TData } from '../Table'
+import { TData } from './TData'
 import { AddressWithIconFilled, amountFormat, fullDateAndTime, tokenToFiat } from '../../utils/format'
 import { addressBalanceChanges } from '../../utils/transaction'
 
