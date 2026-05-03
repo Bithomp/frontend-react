@@ -1,0 +1,7 @@
+{
+  "button": {
+    "set-did": "Atur DID",
+    "update-did": "Perbarui DID",
+    "delete-did": "Hapus DID"
+  }
+}

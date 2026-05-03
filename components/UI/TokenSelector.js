@@ -253,7 +253,7 @@ export default function TokenSelector({
 
   // Helper to get token display name
   const getTokenDisplayName = (token) => {
-    if (!token || !token.currency) return 'Select Token'
+    if (!token || !token.currency) return t('token-selector.select-token')
     if (!token.issuer) return nativeCurrency
 
     const issuerDetails = token.issuerDetails || {}
@@ -303,7 +303,7 @@ export default function TokenSelector({
             {/* Text */}
             <div className="token-selector-label">
               <span className="token-selector-code">
-                {value && value.currency ? getTokenDisplayName(value) : 'Select Token'}
+                {value && value.currency ? getTokenDisplayName(value) : t('token-selector.select-token')}
               </span>
             </div>
             {/* Chevron */}
@@ -324,7 +324,9 @@ export default function TokenSelector({
                   <div className="token-selector-modal-container">
                     <div className="token-selector-modal-header">
                       <h3 className="token-selector-modal-title">
-                        {destinationAddress ? 'Select Token (Destination can hold)' : 'Select Token'}
+                        {destinationAddress
+                          ? t('token-selector.select-token-destination')
+                          : t('token-selector.select-token')}
                       </h3>
                       <IoMdClose className="token-selector-modal-close" onClick={() => setIsOpen(false)} />
                     </div>
@@ -333,7 +335,7 @@ export default function TokenSelector({
                       <div className="form-input__wrap">
                         <input
                           className="simple-input"
-                          placeholder="Search by currency, issuer, or username"
+                          placeholder={t('token-selector.search-placeholder')}
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           autoFocus
@@ -373,7 +375,9 @@ export default function TokenSelector({
                                           color: 'var(--text-secondary)'
                                         }}
                                       >
-                                        {shortNiceNumber(token.holders, 0)} holders
+                                        {t('token-selector.holders', {
+                                          value: shortNiceNumber(token.holders, 0)
+                                        })}
                                       </span>
                                     )}
                                   </span>
@@ -388,7 +392,7 @@ export default function TokenSelector({
                           ))}
                           {searchResults.length >= limit && (
                             <p className="center orange">
-                              More than {limit} results found. Please specify an issuer to narrow down the search.
+                              {t('token-selector.more-results', { count: limit })}
                             </p>
                           )}
                         </div>
@@ -396,7 +400,7 @@ export default function TokenSelector({
                         <div className="token-selector-modal-empty">{t('general.no-data')}</div>
                       ) : destinationAddress ? (
                         <div className="token-selector-modal-empty">
-                          No trustlines found for this destination address.
+                          {t('token-selector.no-destination-trustlines')}
                         </div>
                       ) : null}
                     </div>

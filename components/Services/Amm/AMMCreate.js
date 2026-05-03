@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Trans, useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { multiply } from '../../../utils/calc'
 import CheckBox from '../../UI/CheckBox'
@@ -16,6 +17,8 @@ export default function AMMCreateForm({
   queryCurrency2,
   queryCurrency2Issuer
 }) {
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const [asset1, setAsset1] = useState({ currency: queryCurrency || nativeCurrency, issuer: queryCurrencyIssuer || '' })
   const [asset2, setAsset2] = useState({
     currency: queryCurrency2 || nativeCurrency,
@@ -34,27 +37,27 @@ export default function AMMCreateForm({
     setTxResult(null)
     setError('')
     if (asset1.currency === asset2.currency) {
-      setError('The selected assets cannot be the same. Please choose two different assets to proceed.')
+      setError(ts('amm.errors.sameAssets'))
       return
     }
     if (!asset1Amount || isNaN(parseFloat(asset1Amount)) || parseFloat(asset1Amount) <= 0) {
-      setError('Please enter a valid amount for asset 1.')
+      setError(ts('amm.errors.asset1Amount'))
       return
     }
     if (!asset2Amount || isNaN(parseFloat(asset2Amount)) || parseFloat(asset2Amount) <= 0) {
-      setError('Please enter a valid amount for asset 2.')
+      setError(ts('amm.errors.asset2Amount'))
       return
     }
     if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1)) {
-      setError('Please enter a valid trading fee between 0 and 1 (percent).')
+      setError(ts('amm.errors.tradingFee'))
       return
     }
     if (!agreeToRisks) {
-      setError('Please agree to the risks.')
+      setError(ts('amm.errors.risks'))
       return
     }
     if (!agreeToTerms) {
-      setError('Please agree to the terms and conditions.')
+      setError(ts('amm.errors.terms'))
       return
     }
 
@@ -125,8 +128,8 @@ export default function AMMCreateForm({
         <div className="flex flex-col sm:gap-4 sm:flex-row">
           <div className="flex-1">
             <FormInput
-              title="Asset 1 Amount"
-              placeholder="Amount"
+              title={ts('amm.fields.asset1Amount')}
+              placeholder={ts('amm.fields.amount')}
               setInnerValue={setAsset1Amount}
               defaultValue={asset1Amount}
               onKeyPress={typeNumberOnly}
@@ -134,7 +137,7 @@ export default function AMMCreateForm({
             />
           </div>
           <div className="w-full sm:w-1/2">
-            <span className="input-title">Asset 1 Currency</span>
+            <span className="input-title">{ts('amm.fields.asset1Currency')}</span>
             <TokenSelector value={asset1} onChange={setAsset1} />
           </div>
         </div>
@@ -142,8 +145,8 @@ export default function AMMCreateForm({
         <div className="flex flex-col sm:gap-4 sm:flex-row">
           <div className="flex-1">
             <FormInput
-              title="Asset 2 Amount"
-              placeholder="Amount"
+              title={ts('amm.fields.asset2Amount')}
+              placeholder={ts('amm.fields.amount')}
               setInnerValue={setAsset2Amount}
               defaultValue={asset2Amount}
               onKeyPress={typeNumberOnly}
@@ -151,14 +154,14 @@ export default function AMMCreateForm({
             />
           </div>
           <div className="w-full sm:w-1/2">
-            <span className="input-title">Asset 2 Currency</span>
+            <span className="input-title">{ts('amm.fields.asset2Currency')}</span>
             <TokenSelector value={asset2} onChange={setAsset2} />
           </div>
         </div>
         <br />
         <FormInput
-          title="Trading Fee (0 - 1%)"
-          placeholder="Fee in percent (max 1)"
+          title={ts('amm.fields.tradingFee')}
+          placeholder={ts('amm.fields.tradingFeePlaceholder')}
           setInnerValue={setTradingFee}
           defaultValue={tradingFee}
           onKeyPress={typeNumberOnly}
@@ -166,18 +169,14 @@ export default function AMMCreateForm({
         />
         <br />
         <CheckBox checked={agreeToRisks} setChecked={setAgreeToRisks} name="amm-create-risks">
-          <span className="orange bold">
-            I acknowledge and understand the risks associated with XRPL AMMs, including impermanent loss, fund
-            withdrawal risks, market volatility, and the impact of creating unbalanced pools. I agree to participate at
-            my own risk.
-          </span>
+          <span className="orange bold">{ts('amm.create.risks')}</span>
         </CheckBox>
         <CheckBox checked={agreeToTerms} setChecked={setAgreeToTerms} name="amm-create-terms">
-          I agree with the{' '}
-          <Link href="/terms-and-conditions" target="_blank">
-            Terms and conditions
-          </Link>
-          .
+          <Trans
+            i18nKey="shared.agree-terms"
+            ns="services"
+            components={[<Link key="0" href="/terms-and-conditions" target="_blank" />]}
+          />
         </CheckBox>
         {error && (
           <>
@@ -186,9 +185,9 @@ export default function AMMCreateForm({
           </>
         )}
         <br />
-        <div className="center">
+        <div className="center service-form-actions">
           <button className="button-action" onClick={onSubmit}>
-            Create AMM
+            {ts('amm.actions.create')}
           </button>
         </div>
       </div>
@@ -197,19 +196,19 @@ export default function AMMCreateForm({
         <>
           {txResult.status === 'tesSUCCESS' ? (
             <div className="center">
-              <h4>Transaction Successful</h4>
+              <h4>{ts('shared.transaction-successful')}</h4>
               <p>
-                Hash: <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
+                {ts('amm.fields.hash')}: <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
               </p>
               <p>
-                <strong>AMM ID: </strong>
+                <strong>{ts('amm.fields.ammId')}: </strong>
                 <LinkAmm ammId={txResult.ammId} hash={true} copy={true} />
               </p>
             </div>
           ) : (
             <div className="center">
               <p>
-                Hash: <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
+                {ts('amm.fields.hash')}: <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
               </p>
             </div>
           )}

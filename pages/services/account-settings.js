@@ -20,14 +20,14 @@ import AddressInput from '../../components/UI/AddressInput'
 import { IoToggleOutline, IoDocumentTextOutline, IoPersonOutline } from 'react-icons/io5'
 import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
-import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -53,7 +53,8 @@ const ASF_FLAGS = {
 }
 
 export default function AccountSettings({ account, setSignRequest, sessionToken, subscriptionExpired }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -85,7 +86,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   const [tickSizeValidation, setTickSizeValidation] = useState({ isValid: true, message: '' })
 
   const validateInput = (value, options = {}) => {
-    const { allowEmpty = true, evenLength = true, minChars, exactChars, successMessage = 'Valid input' } = options
+    const { allowEmpty = true, evenLength = true, minChars, exactChars, successMessage = ts('account-settings.validInput') } = options
 
     const trimmed = value.trim()
 
@@ -96,14 +97,14 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     if (!isHexString(trimmed.toUpperCase())) {
       return {
         isValid: false,
-        message: 'Must contain only hexadecimal characters (0-9, a-f, A-F)'
+        message: ts('account-settings.hexOnly')
       }
     }
 
     if (evenLength && trimmed.length % 2 !== 0) {
       return {
         isValid: false,
-        message: 'Must have an even number of characters (pairs of hex digits)'
+        message: ts('account-settings.evenHex')
       }
     }
 
@@ -111,14 +112,14 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
       if (trimmed.length !== exactChars) {
         return {
           isValid: false,
-          message: `Must be exactly ${exactChars} characters (current: ${trimmed.length})`
+          message: ts('account-settings.exactChars', { count: exactChars, current: trimmed.length })
         }
       }
     } else if (typeof minChars === 'number') {
       if (trimmed.length < minChars) {
         return {
           isValid: false,
-          message: `Must be at least ${minChars} characters (${minChars / 2} bytes)`
+          message: ts('account-settings.minChars', { count: minChars, bytes: minChars / 2 })
         }
       }
     }
@@ -136,14 +137,14 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     if (!validPrefixes.includes(firstByte)) {
       return {
         isValid: false,
-        message: `First byte must be 02 or 03 for secp256k1 keys, or ED for Ed25519 keys. Current: 0x${firstByte}`
+        message: ts('account-settings.firstByte', { byte: firstByte })
       }
     }
     return validateInput(value, {
       allowEmpty: true,
       evenLength: true,
       exactChars: 66,
-      successMessage: 'Valid 66-character hex string'
+      successMessage: ts('account-settings.valid66')
     })
   }
 
@@ -152,7 +153,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
       allowEmpty: true,
       evenLength: true,
       exactChars: 64,
-      successMessage: 'Valid 64-character hex string'
+      successMessage: ts('account-settings.valid64')
     })
   }
 
@@ -168,36 +169,36 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     if (isNaN(numValue)) {
       return {
         isValid: false,
-        message: 'Must be a valid number'
+        message: ts('account-settings.validNumber')
       }
     }
 
     if (!Number.isInteger(numValue)) {
       return {
         isValid: false,
-        message: 'Must be a whole number (integer)'
+        message: ts('account-settings.wholeNumber')
       }
     }
 
     if (numValue < 0) {
       return {
         isValid: false,
-        message: 'Must be 0 or positive'
+        message: ts('account-settings.positive')
       }
     }
 
     if (numValue === 0) {
-      return { isValid: true, message: 'Valid (will clear tick size)' }
+      return { isValid: true, message: ts('account-settings.clearTick') }
     }
 
     if (numValue < 3 || numValue > 15) {
       return {
         isValid: false,
-        message: 'Must be between 3 and 15 (or 0 to clear)'
+        message: ts('account-settings.tickRange')
       }
     }
 
-    return { isValid: true, message: 'Valid tick size' }
+    return { isValid: true, message: ts('account-settings.validTick') }
   }
 
   // Track which flag descriptions are expanded (for Read more functionality)
@@ -232,92 +233,92 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   const flagDetails = {
     // TF Flags
     requireDestTag: {
-      name: 'Destination Tag',
-      status: (value) => (value ? 'Required' : 'Not Required'),
-      actionText: (value) => (value ? "Don't Require" : 'Require'),
-      description: 'If enabled, incoming transactions must include a Destination Tag.',
+      name: ts('account-settings.flagsObj.requireDestTag.name'),
+      status: (value) => (value ? ts('account-settings.required') : ts('account-settings.notRequired')),
+      actionText: (value) => (value ? ts('account-settings.dontRequire') : ts('account-settings.require')),
+      description: ts('account-settings.flagsObj.requireDestTag.description'),
       isDefault: (value) => !value
     },
     requireAuth: {
-      name: 'Authorization',
-      status: (value) => (value ? 'Required' : 'Not Required'),
-      actionText: (value) => (value ? "Don't Require" : 'Require'),
-      description:
-        'If enabled, trustlines to this account require authorization before they can hold tokens. Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists.',
+      name: ts('account-settings.flagsObj.requireAuth.name'),
+      status: (value) => (value ? ts('account-settings.required') : ts('account-settings.notRequired')),
+      actionText: (value) => (value ? ts('account-settings.dontRequire') : ts('account-settings.require')),
+      description: ts('account-settings.flagsObj.requireAuth.description'),
       isDefault: (value) => !value
     },
     disallowXRP: {
-      name: 'Incoming ' + nativeCurrency,
-      status: (value) => (value ? 'Disallowed' : 'Allowed'),
-      actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      description: `If enabled, this means the account does not accept ${nativeCurrency} payments. \nNote: This setting is not enforced by the protocol, so ${nativeCurrency} can still be sent to the account.`,
+      name: ts('account-settings.flagsObj.disallowXRP.name', { nativeCurrency }),
+      status: (value) =>
+        value
+          ? ts('account-settings.flagsObj.disallowXRP.statusBlocked')
+          : ts('account-settings.flagsObj.disallowXRP.statusAllowed'),
+      actionText: (value) => (value ? ts('account-settings.allow') : ts('account-settings.disallow')),
+      description: ts('account-settings.flagsObj.disallowXRP.description', { nativeCurrency }),
       isDefault: (value) => !value
     },
     // ASF Flags - Basic
     disallowIncomingCheck: {
-      name: 'Incoming Checks',
-      status: (value) => (value ? 'Disallowed' : 'Allowed'),
-      actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      description: 'If enabled, other accounts cannot create Checks with this account as the destination.',
+      name: ts('account-settings.flagsObj.disallowIncomingCheck.name'),
+      status: (value) => (value ? ts('account-settings.disallowed') : ts('account-settings.allowed')),
+      actionText: (value) => (value ? ts('account-settings.allow') : ts('account-settings.disallow')),
+      description: ts('account-settings.flagsObj.disallowIncomingCheck.description'),
       isDefault: (value) => !value
     },
     disallowIncomingPayChan: {
-      name: 'Incoming Payment Channels',
-      status: (value) => (value ? 'Disallowed' : 'Allowed'),
-      actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      description: 'If enabled, other accounts cannot create Payment Channels with this account as the destination.',
+      name: ts('account-settings.flagsObj.disallowIncomingPayChan.name'),
+      status: (value) => (value ? ts('account-settings.disallowed') : ts('account-settings.allowed')),
+      actionText: (value) => (value ? ts('account-settings.allow') : ts('account-settings.disallow')),
+      description: ts('account-settings.flagsObj.disallowIncomingPayChan.description'),
       isDefault: (value) => !value
     },
     disallowIncomingTrustline: {
-      name: 'Incoming Trustlines',
-      status: (value) => (value ? 'Disallowed' : 'Allowed'),
-      actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      description: 'If enabled, other accounts cannot create trustlines to this account.',
+      name: ts('account-settings.flagsObj.disallowIncomingTrustline.name'),
+      status: (value) => (value ? ts('account-settings.disallowed') : ts('account-settings.allowed')),
+      actionText: (value) => (value ? ts('account-settings.allow') : ts('account-settings.disallow')),
+      description: ts('account-settings.flagsObj.disallowIncomingTrustline.description'),
       isDefault: (value) => !value
     },
     depositAuth: {
-      name: 'Deposit Authorization',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? 'Disable' : 'Enable'),
-      description: 'If enabled, this account can only receive funds from accounts it has pre-authorized.',
+      name: ts('account-settings.flagsObj.depositAuth.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? ts('account-settings.disable') : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.depositAuth.description'),
       isDefault: (value) => !value
     },
     disallowIncomingNFTokenOffer: {
-      name: 'Incoming NFT Offers',
-      status: (value) => (value ? 'Disallowed' : 'Allowed'),
-      actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      description: 'If enabled, other accounts cannot create NFT offers with this account as the destination.',
+      name: ts('account-settings.flagsObj.disallowIncomingNFTokenOffer.name'),
+      status: (value) => (value ? ts('account-settings.disallowed') : ts('account-settings.allowed')),
+      actionText: (value) => (value ? ts('account-settings.allow') : ts('account-settings.disallow')),
+      description: ts('account-settings.flagsObj.disallowIncomingNFTokenOffer.description'),
       isDefault: (value) => !value
     },
     disallowIncomingRemit: {
-      name: 'Incoming Remit',
-      status: (value) => (value ? 'Disallowed' : 'Allowed'),
-      actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      description: 'If enabled, other accounts cannot send Remit transactions to this account.',
+      name: ts('account-settings.flagsObj.disallowIncomingRemit.name'),
+      status: (value) => (value ? ts('account-settings.disallowed') : ts('account-settings.allowed')),
+      actionText: (value) => (value ? ts('account-settings.allow') : ts('account-settings.disallow')),
+      description: ts('account-settings.flagsObj.disallowIncomingRemit.description'),
       isDefault: (value) => !value
     },
     tshCollect: {
-      name: 'Transactional Stakeholder (TSH) Collect',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? 'Disable' : 'Enable'),
-      description: 'If enabled, this account can collect TSH rewards from transactions.',
+      name: ts('account-settings.flagsObj.tshCollect.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? ts('account-settings.disable') : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.tshCollect.description'),
       isDefault: (value) => !value
     },
     allowTrustLineClawback: {
-      name: 'Trustline Clawback',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? '' : 'Enable'),
-      description:
-        'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trustlines.',
+      name: ts('account-settings.flagsObj.allowTrustLineClawback.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? '' : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.allowTrustLineClawback.description'),
       isDefault: (value) => !value,
       isPermanent: true
     },
     allowTrustLineLocking: {
-      name: 'Trustline Locking',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? '' : 'Enable'),
-      description:
-        "Allow Trustline tokens issued by this account to be held in escrow. If not enabled, tokens issued by this account can't be escrowed. After you enable this flag, it cannot be disabled.",
+      name: ts('account-settings.flagsObj.allowTrustLineLocking.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? '' : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.allowTrustLineLocking.description'),
       isDefault: (value) => !value,
       //isAdvanced: true,
       isPermanent: true
@@ -325,38 +326,35 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
 
     //Advanced
     defaultRipple: {
-      name: 'Default rippling',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? 'Disable' : 'Enable'),
-      description:
-        'This a setting that Token issuers need to enable. If enabled, allows rippling on all trustlines by default. This affect how payments flow through your account.',
+      name: ts('account-settings.flagsObj.defaultRipple.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? ts('account-settings.disable') : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.defaultRipple.description'),
       isDefault: (value) => !value, // Rippling DISABLED is the default state (orange highlight when enabled)
       isAdvanced: true
     },
     disableMaster: {
-      name: 'Master Key',
-      status: (value) => (value ? 'Disabled' : 'Enabled'),
-      actionText: (value) => (value ? 'Enable' : 'Disable'),
-      description: `Disabling the master key pair removes one method of authorizing transactions. You should be sure you can use one of the other ways of authorizing transactions, such as with a regular key or by multi-signing, before you disable the master key pair. (For example, if you assigned a regular key pair, make sure that you can successfully submit transactions with that regular key.) Due to the decentralized nature of the ${explorerName}, no one can restore access to your account if you cannot use the remaining ways of authorizing transactions.\nYou should do this if your account\'s master key pair may have been compromised, or if you want to make multi-signing the only way to submit transactions from your account.\nTo disable the master key pair, you must use the master key pair. However, you can re-enable the master key pair using any other method of authorizing transactions.`,
+      name: ts('account-settings.flagsObj.disableMaster.name'),
+      status: (value) => (value ? ts('account-settings.disabled') : ts('account-settings.enabled')),
+      actionText: (value) => (value ? ts('account-settings.enable') : ts('account-settings.disable')),
+      description: ts('account-settings.flagsObj.disableMaster.description', { explorerName }),
       isDefault: (value) => !value,
       isAdvanced: true,
       isHighRisk: true
     },
     globalFreeze: {
-      name: 'Global Freeze',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? 'Disable' : 'Enable'),
-      description:
-        'If enabled, freezes all tokens issued by this account, preventing them from being transferred. This affects all trustlines for tokens you have issued. Cannot be enabled if No Freeze is active. Use with caution as it impacts all token holders.',
+      name: ts('account-settings.flagsObj.globalFreeze.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? ts('account-settings.disable') : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.globalFreeze.description'),
       isDefault: (value) => !value,
       isAdvanced: true
     },
     noFreeze: {
-      name: 'No Freeze',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? '' : 'Enable'),
-      description:
-        'If enabled, permanently gives up the ability to freeze tokens issued by this account. This setting cannot be reversed.',
+      name: ts('account-settings.flagsObj.noFreeze.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? '' : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.noFreeze.description'),
       isDefault: (value) => !value,
       isAdvanced: true,
       isPermanent: true
@@ -397,7 +395,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
         setFlags(newFlags)
         setLoading(false)
       } catch (error) {
-        setErrorMessage('Error fetching account data')
+        setErrorMessage(ts('account-settings.errFetch'))
         setLoading(false)
       }
     }
@@ -410,7 +408,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
 
   const handleSetNftTokenMinter = () => {
     if (!isAddressValid(nftTokenMinter.trim())) {
-      setErrorMessage('Please enter a valid NFTokenMinter address.')
+      setErrorMessage(ts('account-settings.errNft'))
       return
     }
 
@@ -424,7 +422,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('NFTokenMinter set successfully.')
+        setSuccessMessage(ts('account-settings.successNftSet'))
         setErrorMessage('')
         setCurrentNftTokenMinter(nftTokenMinter.trim())
         setNftTokenMinter('')
@@ -455,7 +453,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('NFTokenMinter cleared successfully.')
+        setSuccessMessage(ts('account-settings.successNftClear'))
         setErrorMessage('')
         setCurrentNftTokenMinter('')
         setNftTokenMinter('')
@@ -484,7 +482,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('Domain set successfully.')
+        setSuccessMessage(ts('account-settings.successDomainSet'))
         setErrorMessage('')
         setCurrentDomain(domainInput.trim())
         setAccountData((prev) => {
@@ -509,7 +507,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('Domain cleared successfully.')
+        setSuccessMessage(ts('account-settings.successDomainClear'))
         setErrorMessage('')
         setCurrentDomain('')
         setDomainInput('')
@@ -529,7 +527,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     const input = emailHashInput.trim()
     let valueHex = ''
     if (!input) {
-      setErrorMessage('Please enter an email or a 32-character hex MD5 hash.')
+      setErrorMessage(ts('account-settings.errEmailEmpty'))
       return
     }
     if (/^[0-9a-fA-F]{32}$/.test(input)) {
@@ -537,7 +535,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     } else if (isEmailValid(input)) {
       valueHex = md5(input)
     } else {
-      setErrorMessage('Enter a valid email or a 32-character hex MD5 hash.')
+      setErrorMessage(ts('account-settings.errEmail'))
       return
     }
     const tx = {
@@ -548,7 +546,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('EmailHash set successfully.')
+        setSuccessMessage(ts('account-settings.successEmailSet'))
         setErrorMessage('')
         setCurrentEmailHash(valueHex)
         setAccountData((prev) => {
@@ -573,7 +571,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('EmailHash cleared successfully.')
+        setSuccessMessage(ts('account-settings.successEmailClear'))
         setErrorMessage('')
         setCurrentEmailHash('')
         setEmailHashInput('')
@@ -592,7 +590,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   const handleSetMessageKey = () => {
     const value = messageKeyInput.trim()
     if (!value) {
-      setErrorMessage('MessageKey cannot be empty. Please enter a hex-encoded public key.')
+      setErrorMessage(ts('account-settings.errMessageKeyEmpty'))
       return
     }
 
@@ -609,7 +607,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('MessageKey set successfully.')
+        setSuccessMessage(ts('account-settings.successMessageKeySet'))
         setErrorMessage('')
         setCurrentMessageKey(value.toUpperCase())
         setAccountData((prev) => {
@@ -634,7 +632,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('MessageKey cleared successfully.')
+        setSuccessMessage(ts('account-settings.successMessageKeyClear'))
         setErrorMessage('')
         setCurrentMessageKey('')
         setMessageKeyInput('')
@@ -653,7 +651,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   const handleSetTickSize = () => {
     const value = Number(tickSizeInput)
     if (isNaN(value) || !(value === 0 || (value >= 3 && value <= 15))) {
-      setErrorMessage('TickSize must be 0 to clear or an integer between 3 and 15.')
+      setErrorMessage(ts('account-settings.errTick'))
       return
     }
     const tx = {
@@ -664,7 +662,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('TickSize updated successfully.')
+        setSuccessMessage(ts('account-settings.successTick'))
         setErrorMessage('')
         setCurrentTickSize(value === 0 ? null : value)
         if (value === 0) setTickSizeInput('')
@@ -687,7 +685,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   const handleSetWalletLocator = () => {
     const value = walletLocatorInput.trim()
     if (!value) {
-      setErrorMessage('WalletLocator cannot be empty. Please enter a 64-character hexadecimal string.')
+      setErrorMessage(ts('account-settings.errWalletEmpty'))
       return
     }
 
@@ -704,7 +702,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('WalletLocator set successfully.')
+        setSuccessMessage(ts('account-settings.successWalletSet'))
         setErrorMessage('')
         setCurrentWalletLocator(value.toUpperCase())
         setAccountData((prev) => {
@@ -729,7 +727,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('WalletLocator cleared successfully.')
+        setSuccessMessage(ts('account-settings.successWalletClear'))
         setErrorMessage('')
         setCurrentWalletLocator('')
         setWalletLocatorInput('')
@@ -747,17 +745,17 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
 
   const handleFlagToggle = (flag) => {
     if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
+      setErrorMessage(ts('account-settings.errSignIn'))
       return
     }
 
     if (!accountData?.ledgerInfo) {
-      setErrorMessage('Error fetching account data')
+      setErrorMessage(ts('account-settings.errFetch'))
       return
     }
 
     if (flagDetails?.[flag]?.isAdvanced && !isPro) {
-      setErrorMessage('Advanced options are available only to logged-in Bithomp Pro subscribers.')
+      setErrorMessage(ts('account-settings.errPro'))
       return
     }
 
@@ -766,7 +764,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
 
     const flagNum = ASF_FLAGS[flag]
     if (typeof flagNum !== 'number') {
-      setErrorMessage(`Unknown flag: ${flag}`)
+      setErrorMessage(ts('account-settings.errUnknownFlag', { flag }))
       return
     }
 
@@ -777,13 +775,13 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
       !currentValue
     ) {
       setErrorMessage(
-        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
+        ts('account-settings.errOwnerDir')
       )
       return
     }
 
     if (flag === 'globalFreeze' && flags?.noFreeze) {
-      setErrorMessage('Cannot change Global Freeze when No Freeze is enabled')
+      setErrorMessage(ts('account-settings.errGlobalFreeze'))
       return
     }
 
@@ -796,7 +794,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('Settings updated successfully.')
+        setSuccessMessage(ts('account-settings.successSettings'))
         setErrorMessage('')
 
         setFlags((prev) => ({ ...(prev || {}), [flag]: newValue }))
@@ -848,24 +846,23 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
       !currentValue
     ) {
       buttonDisabled = true
-      disabledReason =
-        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
+      disabledReason = ts('account-settings.errOwnerDir')
     }
 
     if (flag === 'globalFreeze' && flags?.noFreeze) {
       buttonDisabled = true
-      disabledReason = 'Cannot change Global Freeze when No Freeze is enabled'
+      disabledReason = ts('account-settings.errGlobalFreeze')
     }
 
     if (flagData?.isAdvanced && !isPro) {
       buttonDisabled = true
-      if (!disabledReason) disabledReason = 'Advanced options are available only to logged-in Bithomp Pro subscribers.'
+      if (!disabledReason) disabledReason = ts('account-settings.errPro')
     }
 
     const showButton = !(flagData?.isPermanent && currentValue)
 
     const buttonTooltip = !account?.address
-      ? 'Sign in to manage settings'
+      ? ts('account-settings.signInManage')
       : buttonDisabled && disabledReason
         ? disabledReason
         : ''
@@ -899,7 +896,9 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
               </button>
             )}
 
-          {flagData?.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
+          {flagData?.isPermanent && currentValue && (
+            <span className="permanent-flag">{ts('account-settings.permanent')}</span>
+          )}
         </div>
 
         <div className={`flag-description ${isHighRisk || flagData?.isPermanent ? 'warning' : ''}`}>
@@ -920,7 +919,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 color: 'inherit'
               }}
             >
-              {isExpanded ? 'Read less' : 'Read more'}
+              {isExpanded ? ts('account-settings.readLess') : ts('account-settings.readMore')}
             </span>
           )}
         </div>
@@ -933,10 +932,10 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   if (account?.address && loading) {
     return (
       <>
-        <SEO title="Account settings" description="Manage your account settings" />
+        <SEO title={ts('account-settings.title')} description={ts('account-settings.description')} />
         <div className="content-center">
-          <h1 className="center">Account settings</h1>
-          <AccountServiceTabs tab="account-settings" />
+          <ServicesTabs category="account" tab="account-settings" />
+          <h1 className="center">{ts('account-settings.title')}</h1>
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -950,15 +949,15 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   return (
     <>
       <div className={accountSettings}>
-        <SEO title="Account settings" description="Manage your account settings." />
+        <SEO title={ts('account-settings.title')} description={ts('account-settings.description')} />
         <div className="content-center">
-          <h1 className="center">Account settings</h1>
-          <AccountServiceTabs tab="account-settings" />
+          <ServicesTabs category="account" tab="account-settings" />
+          <h1 className="center">{ts('account-settings.title')}</h1>
           <p className="center">
             {account?.address ? (
-              `Manage your account settings on the ${explorerName}.`
+              ts('account-settings.signedIn', { explorerName })
             ) : (
-              'Sign in to your account to manage your account settings.'
+              ts('account-settings.signedOut')
             )}
           </p>
 
@@ -966,7 +965,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
             <div className="center" style={{ marginTop: '0.6rem' }}>
               <button className="button-action" onClick={() => setSignRequest({})}>
                 <FaWallet style={{ fontSize: 14, marginRight: 6 }} />
-                Connect wallet
+                {ts('account-settings.connect')}
               </button>
             </div>
           )}
@@ -981,7 +980,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
               <span className="section-icon">
                 <IoToggleOutline size={15} />
               </span>
-              <span className="section-title">Account Flags</span>
+              <span className="section-title">{ts('account-settings.flags')}</span>
             </div>
 
             {flagGroups.basic.map((flag) => renderFlagItem(flag))}
@@ -991,7 +990,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
               <span className="section-icon">
                 <IoDocumentTextOutline size={15} />
               </span>
-              <span className="section-title">Account Fields</span>
+              <span className="section-title">{ts('account-settings.fields')}</span>
             </div>
             <div>
               <div className="flag-item">
@@ -999,21 +998,21 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                   <div className="flag-info">
                     <span className="flag-name">Domain</span>
                     {account?.address && (
-                      <span className="flag-status">{currentDomain ? currentDomain : 'Not Set'}</span>
+                      <span className="flag-status">{currentDomain ? currentDomain : ts('account-settings.notSet')}</span>
                     )}
                   </div>
                   <div className="flag-info-buttons">
                     {currentDomain &&
                       withTooltip(
-                        !account?.address ? 'Sign in to manage settings' : '',
+                        !account?.address ? ts('account-settings.signInManage') : '',
                         <button className="button-action thin" onClick={handleClearDomain} disabled={!account?.address}>
-                          Clear
+                          {ts('account-settings.clear')}
                         </button>
                       )}
                     {withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : '',
+                      !account?.address ? ts('account-settings.signInManage') : '',
                       <button className="button-action thin" onClick={handleSetDomain} disabled={!account?.address}>
-                        Set
+                        {ts('account-settings.set')}
                       </button>
                     )}
                   </div>
@@ -1027,7 +1026,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                     type="text"
                     disabled={!account?.address}
                   />
-                  <small>Enter your domain. It will be stored on-ledger.</small>
+                  <small>{ts('account-settings.domainHelp')}</small>
                 </div>
               </div>
 
@@ -1036,25 +1035,27 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                   <div className="flag-info">
                     <span className="flag-name">EmailHash</span>
                     {account?.address && (
-                      <span className="flag-status">{currentEmailHash ? currentEmailHash : 'Not Set'}</span>
+                      <span className="flag-status">
+                        {currentEmailHash ? currentEmailHash : ts('account-settings.notSet')}
+                      </span>
                     )}
                   </div>
                   <div className="flag-info-buttons">
                     {currentEmailHash &&
                       withTooltip(
-                        !account?.address ? 'Sign in to manage settings' : '',
+                        !account?.address ? ts('account-settings.signInManage') : '',
                         <button
                           className="button-action thin"
                           onClick={handleClearEmailHash}
                           disabled={!account?.address}
                         >
-                          Clear
+                          {ts('account-settings.clear')}
                         </button>
                       )}
                     {withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : '',
+                      !account?.address ? ts('account-settings.signInManage') : '',
                       <button className="button-action thin" onClick={handleSetEmailHash} disabled={!account?.address}>
-                        Set
+                        {ts('account-settings.set')}
                       </button>
                     )}
                   </div>
@@ -1062,13 +1063,13 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 <div className="nft-minter-input">
                   <input
                     className="input-text"
-                    placeholder="Email or 32 hex characters (MD5)"
+                    placeholder={ts('account-settings.emailPlaceholder')}
                     value={emailHashInput}
                     onChange={(e) => setEmailHashInput(e.target.value)}
                     type="text"
                     disabled={!account?.address}
                   />
-                  <small>Enter an email or a 32-character hex MD5. Leave empty and press Clear to remove.</small>
+                  <small>{ts('account-settings.emailHelp')}</small>
                 </div>
               </div>
 
@@ -1076,23 +1077,27 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 <div className="flag-header">
                   <div className="flag-info">
                     <span className="flag-name">MessageKey</span>
-                    {account?.address && <span className="flag-status">{currentMessageKey ? 'Set' : 'Not Set'}</span>}
+                    {account?.address && (
+                      <span className="flag-status">
+                        {currentMessageKey ? ts('account-settings.setStatus') : ts('account-settings.notSet')}
+                      </span>
+                    )}
                   </div>
                   <div className="flag-info-buttons">
                     {currentMessageKey &&
                       withTooltip(
-                        !account?.address ? 'Sign in to manage settings' : '',
+                        !account?.address ? ts('account-settings.signInManage') : '',
                         <button
                           className="button-action thin"
                           onClick={handleClearMessageKey}
                           disabled={!account?.address}
                         >
-                          Clear
+                          {ts('account-settings.clear')}
                         </button>
                       )}
                     {withTooltip(
                       !account?.address
-                        ? 'Sign in to manage settings'
+                        ? ts('account-settings.signInManage')
                         : messageKeyInput && !messageKeyValidation.isValid
                           ? messageKeyValidation.message
                           : '',
@@ -1101,7 +1106,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                         onClick={handleSetMessageKey}
                         disabled={!account?.address || (messageKeyInput && !messageKeyValidation.isValid)}
                       >
-                        Set
+                        {ts('account-settings.set')}
                       </button>
                     )}
                   </div>
@@ -1126,10 +1131,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                     disabled={!account?.address}
                     maxLength={66}
                   />
-                  <small>
-                    Provide a hex-encoded public key (exactly 66 characters/33 bytes). First byte must be 0x02 or 0x03
-                    for secp256k1 keys, or 0xED for Ed25519 keys. Used for encrypted messaging.
-                  </small>
+                  <small>{ts('account-settings.messageKeyHelp')}</small>
                   {messageKeyInput && messageKeyValidation.message && (
                     <div
                       className={`validation-message ${
@@ -1147,13 +1149,13 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                   <div className="flag-info">
                     <span className="flag-name">TickSize</span>
                     {account?.address && (
-                      <span className="flag-status">{currentTickSize ? currentTickSize : 'Not Set'}</span>
+                      <span className="flag-status">{currentTickSize ? currentTickSize : ts('account-settings.notSet')}</span>
                     )}
                   </div>
                   <div className="flag-info-buttons">
                     {withTooltip(
                       !account?.address
-                        ? 'Sign in to manage settings'
+                        ? ts('account-settings.signInManage')
                         : tickSizeInput && !tickSizeValidation.isValid
                           ? tickSizeValidation.message
                           : '',
@@ -1162,7 +1164,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                         onClick={handleSetTickSize}
                         disabled={!account?.address || (tickSizeInput && !tickSizeValidation.isValid)}
                       >
-                        Set
+                        {ts('account-settings.set')}
                       </button>
                     )}
                   </div>
@@ -1176,7 +1178,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                           ? 'input-valid'
                           : ''
                     }`}
-                    placeholder="0 to clear, or 3-15"
+                    placeholder={ts('account-settings.tickPlaceholder')}
                     value={tickSizeInput}
                     onChange={(e) => {
                       const value = e.target.value
@@ -1187,7 +1189,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                     inputMode="numeric"
                     disabled={!account?.address}
                   />
-                  <small>Controls significant digits for order book prices. 0 clears.</small>
+                  <small>{ts('account-settings.tickHelp')}</small>
                   {tickSizeInput && tickSizeValidation.message && (
                     <div
                       className={`validation-message ${
@@ -1205,24 +1207,26 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                   <div className="flag-info">
                     <span className="flag-name">WalletLocator</span>
                     {account?.address && (
-                      <span className="flag-status">{currentWalletLocator ? 'Set' : 'Not Set'}</span>
+                      <span className="flag-status">
+                        {currentWalletLocator ? ts('account-settings.setStatus') : ts('account-settings.notSet')}
+                      </span>
                     )}
                   </div>
                   <div className="flag-info-buttons">
                     {currentWalletLocator &&
                       withTooltip(
-                        !account?.address ? 'Sign in to manage settings' : '',
+                        !account?.address ? ts('account-settings.signInManage') : '',
                         <button
                           className="button-action thin"
                           onClick={handleClearWalletLocator}
                           disabled={!account?.address}
                         >
-                          Clear
+                          {ts('account-settings.clear')}
                         </button>
                       )}
                     {withTooltip(
                       !account?.address
-                        ? 'Sign in to manage settings'
+                        ? ts('account-settings.signInManage')
                         : walletLocatorInput && !walletLocatorValidation.isValid
                           ? walletLocatorValidation.message
                           : '',
@@ -1231,7 +1235,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                         onClick={handleSetWalletLocator}
                         disabled={!account?.address || (walletLocatorInput && !walletLocatorValidation.isValid)}
                       >
-                        Set
+                        {ts('account-settings.set')}
                       </button>
                     )}
                   </div>
@@ -1256,7 +1260,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                     disabled={!account?.address}
                     maxLength={64}
                   />
-                  <small>Optional 64-character hexadecimal hash locator for your wallet application.</small>
+                  <small>{ts('account-settings.walletHelp')}</small>
                   {walletLocatorInput && walletLocatorValidation.message && (
                     <div
                       className={`validation-message ${
@@ -1276,50 +1280,52 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                     <div className="flag-info">
                       <span className="flag-name">NFTokenMinter</span>
                       {account?.address && (
-                        <span className="flag-status">{currentNftTokenMinter ? currentNftTokenMinter : 'Not Set'}</span>
+                        <span className="flag-status">
+                          {currentNftTokenMinter ? currentNftTokenMinter : ts('account-settings.notSet')}
+                        </span>
                       )}
                     </div>
                     <div className="flag-info-buttons">
                       {currentNftTokenMinter &&
                         withTooltip(
-                          !account?.address ? 'Sign in to manage settings' : '',
+                          !account?.address ? ts('account-settings.signInManage') : '',
                           <button
                             className="button-action thin"
                             onClick={handleClearNftTokenMinter}
                             disabled={!account?.address}
                           >
-                            Clear
+                            {ts('account-settings.clear')}
                           </button>
                         )}
                       {withTooltip(
                         !account?.address
-                          ? 'Sign in to manage settings'
+                          ? ts('account-settings.signInManage')
                           : !nftTokenMinter.trim()
-                            ? 'Enter an NFTokenMinter address first'
+                            ? ts('account-settings.enterNftFirst')
                             : '',
                         <button
                           className="button-action thin"
                           onClick={handleSetNftTokenMinter}
                           disabled={!account?.address || !nftTokenMinter.trim()}
                         >
-                          Set
+                          {ts('account-settings.set')}
                         </button>
                       )}
                     </div>
                   </div>
                   <div className="nft-minter-input">
                     <AddressInput
-                      title="Update to a new NFTokenMinter"
-                      placeholder="Enter NFTokenMinter address"
+                      title={ts('account-settings.nftTitle')}
+                      placeholder={ts('account-settings.nftPlaceholder')}
                       setInnerValue={setNftTokenMinter}
                       disabled={!account?.address}
                       hideButton={true}
                       type="address"
                     />
-                    <small>Enter the address that will be authorized to mint NFTokens for this account</small>
+                    <small>{ts('account-settings.nftHelp')}</small>
                   </div>
                   {currentNftTokenMinter && (
-                    <small>To change the authorized minter, first clear the current one, then set a new one.</small>
+                    <small>{ts('account-settings.nftChangeHelp')}</small>
                   )}
                 </div>
               )}
@@ -1330,12 +1336,12 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
             {account?.address ? (
               <Link href={`/account/${account.address}`} className="button-action">
                 <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
-                View my account page
+                {ts('account-settings.view')}
               </Link>
             ) : (
               <button className="button-action" onClick={() => setSignRequest({})}>
                 <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
-                Sign in to your account
+                {ts('account-settings.signIn')}
               </button>
             )}
           </div>

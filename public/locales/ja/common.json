@@ -21,12 +21,25 @@
     "start-issuer": "入力して発行者を検索してください",
     "more-than-results": "{{count}}件を超える結果があります。検索を絞り込むため、さらに入力してください。"
   },
+  "token-selector": {
+    "select-token": "トークンを選択",
+    "select-token-destination": "トークンを選択（宛先が保有可能）",
+    "search-placeholder": "通貨、発行者、またはユーザー名で検索",
+    "holders": "{{value}} ホルダー",
+    "more-results": "{{count}}件を超える結果が見つかりました。検索を絞り込むには発行者を指定してください。",
+    "no-destination-trustlines": "この宛先アドレスのトラストラインが見つかりません。"
+  },
   "menu": {
     "tokens": "トークン",
     "amm": {
       "amm": "AMM",
       "pools": "AMMプール",
-      "explorer": "AMMエクスプローラ"
+      "explorer": "AMMエクスプローラ",
+      "learn": "AMMとは？",
+      "deposit": "AMM入金",
+      "withdraw": "AMM出金",
+      "vote": "AMM投票",
+      "create": "AMM作成"
     },
     "company": {
       "about-us": "私たちについて"
@@ -34,7 +47,7 @@
     "services": {
       "services": "サービス",
       "send": "支払いを送信",
-      "reward-auto-claim": "Reward Auto Claim",
+      "reward-auto-claim": "報酬の自動請求",
       "add-token": "トークンを追加 (Trustline)",
       "account-settings": "アカウント設定",
       "toml-checker": "TOMLチェッカー",
@@ -80,15 +93,15 @@
       "unl-report": "UNLレポート",
       "genesis": "ジェネシスアカウント",
       "allocation": "{{currency}} 配分",
-      "activation-tree": "Activation Tree"
+      "activation-tree": "アクティベーションツリー"
     },
     "developers": {
       "developers": "開発者",
       "account-generation": "アカウントの作成",
-      "faucet": "Faucet",
+      "faucet": "フォーセット",
       "api": "API"
     },
-    "legal": "Legal",
+    "legal": "法務",
     "disclaimer": "免責事項",
     "privacy-policy": "プライバシーポリシー",
     "terms-and-conditions": "利用規約",
@@ -336,7 +349,7 @@
     "nft": {
       "add-another-sell-offer": "追加の販売オファー",
       "transfer": "NFTの送信",
-      "update-sell-offer": "Update the sell offer",
+      "update-sell-offer": "売却オファーを更新",
       "cancel-sell-offer-for": "{{amount}}の売却オファーをキャンセル",
       "cancel-buy-offer-for": "{{amount}}の購入オファーをキャンセル",
       "cancel-transfer": "NFTのトランスファーをキャンセル",
@@ -364,7 +377,7 @@
     "viewer": "ビュワー",
     "developer-mode": "開発者モード",
     "search": "検索",
-    "of-many": "of many",
+    "of-many": "多数のうち",
     "of": "of",
     "sort-by": "Sort by",
     "change-filters": "フィルターを調整して、検索条件に合った結果を確認してみましょう！"
@@ -372,7 +385,7 @@
   "form": {
     "error": {
       "destination-tag-invalid": "宛先タグが無効です。",
-      "price-empty": "Please enter an amount.",
+      "price-empty": "数量を入力してください。",
       "address-empty": "アドレスを入力してください。",
       "address-invalid": "正しいアドレスを入力してください。",
       "domain-empty": "ドメインを入力してください。",
@@ -456,11 +469,11 @@
     "destination-tag": "宛先タグ",
     "uri": "URI",
     "mints": "Mints",
-    "view": "View",
+    "view": "表示",
     "period": "期間",
     "mint-period": "ミント期間",
     "burn-period": "バーン期間",
-    "warning": "Warning",
+    "warning": "警告",
     "sequence": "シーケンス",
     "version": "バージョン",
     "domain": "ドメイン",

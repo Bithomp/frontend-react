@@ -1,4 +1,4 @@
-import { i18n, useTranslation } from 'next-i18next'
+import { i18n, Trans, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import {
@@ -21,6 +21,7 @@ import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
 import ExpirationSelect from '../../components/UI/ExpirationSelect'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../utils/format'
 import { LinkTx, LinkAccount } from '../../utils/links'
@@ -40,7 +41,8 @@ export default function IssueCheck({
   feeQuery,
   sourceTagQuery
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const router = useRouter()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
@@ -117,7 +119,7 @@ export default function IssueCheck({
   const handleFeeChange = (value) => {
     setFee(value)
     if (Number(value) > 1) {
-      setFeeError('Maximum fee is 1 ' + nativeCurrency)
+      setFeeError(ts('shared.errors.max-fee', { nativeCurrency }))
     } else {
       setFeeError('')
     }
@@ -136,34 +138,34 @@ export default function IssueCheck({
     }
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      setError('Please enter a valid amount.')
+      setError(ts('shared.errors.valid-amount'))
       return
     }
 
     if (destinationTag && !isTagValid(destinationTag)) {
-      setError('Please enter a valid destination tag.')
+      setError(ts('shared.errors.valid-destination-tag'))
       return
     }
 
     if ((fee || sourceTag || invoiceID) && (!sessionToken || subscriptionExpired)) {
       setError(
-        'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
+        ts('shared.errors.advanced-pro')
       )
       return
     }
 
     if (sourceTag && !isTagValid(sourceTag)) {
-      setError('Please enter a valid source tag.')
+      setError(ts('shared.errors.valid-source-tag'))
       return
     }
 
     if (invoiceID && !isIdValid(invoiceID)) {
-      setError('Please enter a valid invoice ID.')
+      setError(ts('check.errors.invoice-id'))
       return
     }
 
     if (!agreeToSiteTerms) {
-      setError('Please agree to the Terms and conditions')
+      setError(ts('shared.errors.terms'))
       return
     }
 
@@ -236,20 +238,21 @@ export default function IssueCheck({
 
   return (
     <>
-      <SEO title="Issue Check" description="Create a deferred payment Check" />
+      <SEO title={ts('check.title')} description={ts('check.description')} />
       <div className="content-text content-center">
-        <h1 className="center">Issue Check</h1>
+        <ServicesTabs category="payments" tab="check" />
+        <h1 className="center">{ts('check.title')}</h1>
         <p className="center">
-          A check lets you send funds that the recipient can claim later.{" "}
+          {ts('check.intro')}{' '}
           <Link href="/learn/checks" target="_blank" rel="noreferrer">
-            Learn more about checks on {explorerName}.
+            {ts('check.learn', { explorerName })}
           </Link>
         </p>
         <NetworkTabs />
         <div>
           <AddressInput
             title={t('table.destination')}
-            placeholder="Destination address"
+            placeholder={ts('shared.destination-address')}
             name="destination"
             hideButton={true}
             setInnerValue={setAddress}
@@ -268,7 +271,7 @@ export default function IssueCheck({
           <div className="form-spacing" />
           <FormInput
             title={t('table.amount')}
-            placeholder={'Enter amount in ' + nativeCurrency}
+            placeholder={ts('shared.enter-amount')}
             setInnerValue={setAmount}
             hideButton={true}
             onKeyPress={typeNumberOnly}
@@ -282,10 +285,10 @@ export default function IssueCheck({
           <FormInput
             title={
               <>
-                {t('table.memo')} (<span className="orange">It will be public</span>)
+                {t('table.memo')} (<span className="orange">{ts('shared.it-will-be-public')}</span>)
               </>
             }
-            placeholder="Enter a memo (optional)"
+            placeholder={ts('shared.enter-memo-optional')}
             setInnerValue={setMemo}
             hideButton={true}
             defaultValue={memo}
@@ -294,7 +297,7 @@ export default function IssueCheck({
           />
           <div className="form-spacing" />
           <div>
-            <span className="input-title">Expiration</span>
+            <span className="input-title">{ts('check.expiration')}</span>
             <ExpirationSelect onChange={onExpirationChange} value={expiration} />
           </div>
           <CheckBox
@@ -307,16 +310,18 @@ export default function IssueCheck({
             }}
             name="advanced-check"
           >
-            Advanced options
+            {ts('send.advanced-options')}
             {!sessionToken ? (
               <>
                 {' '}
                 <span className="orange">
-                  (available to{' '}
-                  <span className="link" onClick={() => openEmailLogin()}>
-                    logged-in
-                  </span>{' '}
-                  Bithomp Pro subscribers)
+                      (
+                      <Trans
+                        i18nKey="shared.advanced-pro"
+                        ns="services"
+                        components={[<span key="0" className="link" onClick={() => openEmailLogin()} />]}
+                      />
+                      )
                 </span>
               </>
             ) : (
@@ -324,8 +329,11 @@ export default function IssueCheck({
                 <>
                   {' '}
                   <span className="orange">
-                    Your Bithomp Pro subscription has expired.{' '}
-                    <Link href="/admin/subscriptions">Renew your subscription</Link>
+                    <Trans
+                      i18nKey="shared.subscription-expired"
+                      ns="services"
+                      components={[<Link key="0" href="/admin/subscriptions" />]}
+                    />
                   </span>
                 </>
               )
@@ -335,8 +343,8 @@ export default function IssueCheck({
             <>
               <br />
               <FormInput
-                title="Fee"
-                placeholder={'Enter fee in ' + nativeCurrency}
+                title={ts('shared.fee')}
+                placeholder={ts('shared.enter-fee', { nativeCurrency })}
                 setInnerValue={handleFeeChange}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -351,8 +359,8 @@ export default function IssueCheck({
               {feeError && <div className="red">{feeError}</div>}
               <div className="form-spacing" />
               <FormInput
-                title="Source Tag"
-                placeholder="Enter source tag"
+                title={ts('shared.source-tag')}
+                placeholder={ts('shared.enter-source-tag')}
                 setInnerValue={setSourceTag}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -363,8 +371,8 @@ export default function IssueCheck({
               />
               <div className="form-spacing" />
               <FormInput
-                title="Invoice ID"
-                placeholder="Enter invoice ID"
+                title={ts('shared.invoice-id')}
+                placeholder={ts('shared.enter-invoice-id')}
                 setInnerValue={setInvoiceID}
                 hideButton={true}
                 defaultValue={invoiceID}
@@ -376,11 +384,11 @@ export default function IssueCheck({
           )}
           <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-            I agree with the{' '}
-            <Link href="/terms-and-conditions" target="_blank">
-              Terms and conditions
-            </Link>
-            .
+            <Trans
+              i18nKey="shared.agree-terms"
+              ns="services"
+              components={[<Link key="0" href="/terms-and-conditions" target="_blank" />]}
+            />
           </CheckBox>
           {error && (
             <>
@@ -389,16 +397,16 @@ export default function IssueCheck({
             </>
           )}
           <br />
-          <div className="center">
+          <div className="center service-form-actions">
             <button className="button-action" onClick={handleIssueCheck}>
-              Issue Check
+              {ts('check.title')}
             </button>
           </div>
           {txResult?.status === 'tesSUCCESS' && (
             <>
               <br />
               <div>
-                <h3 className="center">Transaction Successful</h3>
+                <h3 className="center">{ts('shared.transaction-successful')}</h3>
                 <div>
                   <p>
                     <strong>{t('table.date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
@@ -409,7 +417,7 @@ export default function IssueCheck({
                     <CopyButton text={txResult.destination} />
                   </p>
                   <p>
-                    <strong>Max amount:</strong> {txResult.amount}
+                    <strong>{ts('check.max-amount')}:</strong> {txResult.amount}
                   </p>
                   {txResult.destinationTag && (
                     <p>
@@ -418,12 +426,12 @@ export default function IssueCheck({
                   )}
                   {txResult.sourceTag && (
                     <p>
-                      <strong>Source tag:</strong> {txResult.sourceTag}
+                      <strong>{ts('shared.source-tag-result')}:</strong> {txResult.sourceTag}
                     </p>
                   )}
                   {txResult.fee && (
                     <p>
-                      <strong>Fee:</strong> {txResult.fee}
+                      <strong>{ts('shared.fee')}:</strong> {txResult.fee}
                     </p>
                   )}
                   {txResult.sequence && (
@@ -438,13 +446,13 @@ export default function IssueCheck({
                   )}
                   {txResult.invoiceID && (
                     <p>
-                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceID)}{' '}
+                      <strong>{ts('shared.invoice-id')}:</strong> {shortHash(txResult.invoiceID)}{' '}
                       <CopyButton text={txResult.invoiceID} />
                     </p>
                   )}
                   {txResult.expiration && (
                     <p>
-                      <strong>Expiration:</strong> {timeFromNow(txResult.expiration, i18n, 'ripple')} (
+                      <strong>{ts('check.expiration')}:</strong> {timeFromNow(txResult.expiration, i18n, 'ripple')} (
                       {fullDateAndTime(txResult.expiration, 'ripple')})
                     </p>
                   )}
@@ -467,7 +475,7 @@ export const getServerSideProps = async (context) => {
   const { address, amount, destinationTag, expiration, invoiceId, memo, fee, sourceTag } = query || {}
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'services'])),
       isSsrMobile: getIsSsrMobile(context),
       addressQuery: address || '',
       amountQuery: amount || '',

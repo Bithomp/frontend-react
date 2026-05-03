@@ -1,0 +1,42 @@
+{
+  "header": "{{ledgerName}} 거버넌스 게임",
+  "summary": "<1>{{ countTables }}</1>개의 좌석이 있습니다.",
+  "reward-rate": "보상률: <1>{{ rewardRate }}</1>.",
+  "reward-delay": "보상 지연: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }}초).",
+  "button": {
+    "show-main-table": "메인 테이블 보기",
+    "vote-seat": "좌석에 투표",
+    "vote-reward-rate": "보상률에 투표",
+    "vote-reward-delay": "보상 지연에 투표",
+    "vote-hook": "Hook에 투표"
+  },
+  "table": {
+    "cast-first-vote": "첫 투표하기",
+    "members": "멤버",
+    "seat": "좌석",
+    "no-seat": "좌석 없음",
+    "layer": "레이어",
+    "hooks": "Hooks",
+    "place": "위치",
+    "hook": "Hook",
+    "target": "대상",
+    "votes": "투표",
+    "voter": "투표자",
+    "rate": "비율",
+    "value": "값",
+    "delay": "지연",
+    "in-seconds": "초 단위",
+    "seat-votes": "좌석 투표",
+    "seat-votes-count": "좌석 투표 수",
+    "reward-rate-votes": "보상률 투표",
+    "reward-rate-votes-count": "보상률 투표 수",
+    "reward-delay-votes": "보상 지연 투표",
+    "reward-delay-votes-count": "보상 지연 투표 수",
+    "hook-votes": "Hook 투표",
+    "hook-votes-count": "Hook 투표 수",
+    "text": {
+      "vacate-seat": "좌석 비우기",
+      "vacate-place": "위치 비우기"
+    }
+  }
+}

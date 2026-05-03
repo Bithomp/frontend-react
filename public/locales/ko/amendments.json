@@ -1,8 +1,8 @@
 {
   "soon": "과반수가 찬성하는 수정안",
-  "new": "New amendments",
-  "not-available": "Not available amendments",
-  "obsolete": "Obsolete amendments",
+  "new": "새 수정안",
+  "not-available": "사용할 수 없는 수정안",
+  "obsolete": "폐기된 수정안",
   "enabled": "활성화된 수정사항",
   "majority": "다수",
   "eta": "예상되는 활성화 시간"

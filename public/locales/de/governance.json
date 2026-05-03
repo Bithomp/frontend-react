@@ -1,5 +1,5 @@
 {
-  "header": "{{ledgerName}} Governance Game",
+  "header": "{{ledgerName}} Governance-Spiel",
   "summary": "Es gibt <1>{{ countTables }}</1> Sitze.",
   "reward-rate": "Vergütungssatz: <1>{{ rewardRate }}</1>.",
   "reward-delay": "Verzögerung Vergütung: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} Sekunden).",
@@ -35,8 +35,8 @@
     "hook-votes": "Hook Abstimmungen",
     "hook-votes-count": "Hook Stimmenzahl",
     "text": {
-      "vacate-seat": "Vacate the seat",
-      "vacate-place": "Vacate the place"
+      "vacate-seat": "Sitz freigeben",
+      "vacate-place": "Platz freigeben"
     }
   }
 }

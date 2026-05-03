@@ -33,6 +33,10 @@
     "reward-delay-votes": "Usulan Penundaan Hadiah",
     "reward-delay-votes-count": "Jumlah Usulan Penundaan Hadiah",
     "hook-votes": "Usulan Hook",
-    "hook-votes-count": "Jumlah Usulan Hook"
+    "hook-votes-count": "Jumlah Usulan Hook",
+    "text": {
+      "vacate-seat": "Kosongkan kursi",
+      "vacate-place": "Kosongkan tempat"
+    }
   }
 }

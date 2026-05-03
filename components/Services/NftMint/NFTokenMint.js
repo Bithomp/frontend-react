@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Trans, useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { encode, server, addAndRemoveQueryParams, nativeCurrency, isNativeCurrency } from '../../../utils'
 import { isValidTaxon } from '../../../utils/nft'
@@ -28,6 +29,8 @@ export default function NFTokenMint({
   issuerQuery,
   mintForOtherQuery
 }) {
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const router = useRouter()
   const [uri, setUri] = useState(uriQuery)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
@@ -223,29 +226,29 @@ export default function NFTokenMint({
 
   const onSubmit = async () => {
     if (!uri) {
-      setErrorMessage('Please enter URI')
+      setErrorMessage(ts('nft-mint.errors.uri'))
       uriRef?.focus()
       return
     }
 
     if (!agreeToSiteTerms) {
-      setErrorMessage('Please agree to the Terms and conditions')
+      setErrorMessage(ts('nft-mint.errors.terms'))
       return
     }
 
     if (!agreeToPrivacyPolicy) {
-      setErrorMessage('Please agree to the Privacy policy')
+      setErrorMessage(ts('nft-mint.errors.privacy'))
       return
     }
 
     if (!isValidTaxon(taxon)) {
-      setErrorMessage('Please enter a valid Taxon value')
+      setErrorMessage(ts('nft-mint.errors.taxon'))
       taxonRef?.focus()
       return
     }
 
     if (mintForOtherAccount && (!issuer || !issuer.trim())) {
-      setErrorMessage('Please enter an Issuer address when minting for another account.')
+      setErrorMessage(ts('nft-mint.errors.issuer'))
       return
     }
 
@@ -284,7 +287,7 @@ export default function NFTokenMint({
     if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) >= 0) {
       // Validate that if tfOnlyXRP flag is set, only XRP can be used
       if (flags.tfOnlyXRP && selectedToken.currency !== nativeCurrency) {
-        setErrorMessage('Cannot create sell offer in tokens when "Only XRP" flag is enabled')
+        setErrorMessage(ts('nft-mint.errors.onlyXrpSell'))
         return
       }
 
@@ -324,7 +327,7 @@ export default function NFTokenMint({
         {!minted && (
           <>
             {/* URI */}
-            <span className="input-title">URI that points to the data or metadata associated with the NFT:</span>
+            <span className="input-title">{ts('nft-mint.uriLabel')}</span>
             <div className="input-validation">
               <input
                 placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
@@ -342,9 +345,7 @@ export default function NFTokenMint({
 
             {/* NFT Taxon */}
             <br />
-            <span className="input-title">
-              NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):
-            </span>
+            <span className="input-title">{ts('nft-mint.taxonLabel')}</span>
             <div className="input-validation ">
               <input
                 placeholder="0"
@@ -372,7 +373,7 @@ export default function NFTokenMint({
                 }}
                 name="transferable"
               >
-                Transferable (can be transferred to others)
+                {ts('nft-mint.transferable')}
               </CheckBox>
             </div>
 
@@ -380,7 +381,7 @@ export default function NFTokenMint({
             {flags.tfTransferable && (
               <>
                 <br />
-                <span className="input-title">Royalty (paid to the issuer, 0-50%):</span>
+                <span className="input-title">{ts('nft-mint.royalty')}</span>
                 <div className="input-validation">
                   <input
                     placeholder="0"
@@ -397,21 +398,21 @@ export default function NFTokenMint({
             {/* Mutable */}
             <div>
               <CheckBox checked={flags.tfMutable} setChecked={() => handleFlagChange('tfMutable')} name="mutable">
-                Mutable (URI can be updated)
+                {ts('nft-mint.mutable')}
               </CheckBox>
             </div>
 
             {/* Only XRP */}
             <div>
               <CheckBox checked={flags.tfOnlyXRP} setChecked={() => handleFlagChange('tfOnlyXRP')} name="only-xrp">
-                Only XRP (can only be sold for XRP)
+                {ts('nft-mint.onlyXrp')}
               </CheckBox>
             </div>
 
             {/* Burnable */}
             <div>
               <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
-                Burnable (can be destroyed by the issuer)
+                {ts('nft-mint.burnable')}
               </CheckBox>
             </div>
 
@@ -431,14 +432,14 @@ export default function NFTokenMint({
                 name="create-sell-offer"
                 disabled={!account?.address}
               >
-                Create a Sell offer
+                {ts('nft-mint.createSellOffer')}
               </CheckBox>
               {!account?.address && (
                 <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
                   <span className="link" onClick={() => setSignRequest({})}>
-                    Login first
+                    {ts('nft-mint.loginFirst')}
                   </span>{' '}
-                  if you want to add the sell offer in the same transaction.
+                  {ts('nft-mint.loginSellOffer')}
                 </div>
               )}
             </div>
@@ -450,7 +451,9 @@ export default function NFTokenMint({
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <div className="flex-1">
                     <span className="input-title">
-                      Initial listing price {flags.tfOnlyXRP ? 'in XRP' : ''} (Amount):
+                      {ts('nft-mint.initialListingPrice', {
+                        suffix: flags.tfOnlyXRP ? ts('nft-mint.inXrp') : ''
+                      })}
                     </span>
                     <div className="input-validation">
                       <input
@@ -465,7 +468,7 @@ export default function NFTokenMint({
                   </div>
                   {!flags.tfOnlyXRP && (
                     <div className="w-full sm:w-1/2">
-                      <span className="input-title">Currency</span>
+                      <span className="input-title">{ts('nft-mint.currency')}</span>
                       <TokenSelector
                         value={selectedToken}
                         onChange={onTokenChange}
@@ -476,8 +479,8 @@ export default function NFTokenMint({
                 </div>
                 <br />
                 <AddressInput
-                  title="Destination (optional - account to receive the NFT):"
-                  placeholder="Destination address"
+                  title={ts('nft-mint.destinationTitle', { status: ts('nft-mint.destinationOptional') })}
+                  placeholder={ts('nft-mint.destinationPlaceholder')}
                   setInnerValue={onDestinationChange}
                   name="destination"
                   hideButton={true}
@@ -486,7 +489,7 @@ export default function NFTokenMint({
                 />
                 <br />
                 <div>
-                  <span className="input-title">Offer expiration</span>
+                  <span className="input-title">{ts('nft-mint.offerExpiration')}</span>
                   <ExpirationSelect onChange={onExpirationChange} value={expiration} />
                 </div>
               </>
@@ -504,7 +507,7 @@ export default function NFTokenMint({
                 }}
                 name="mint-for-other"
               >
-                Mint on behalf of another account
+                {ts('nft-mint.mintForOther')}
               </CheckBox>
             </div>
 
@@ -512,8 +515,8 @@ export default function NFTokenMint({
               <>
                 <br />
                 <AddressInput
-                  title="Issuer address (account you're minting for):"
-                  placeholder="Issuer address"
+                  title={ts('nft-mint.issuerTitle')}
+                  placeholder={ts('nft-mint.issuerPlaceholder')}
                   setInnerValue={onIssuerChange}
                   rawData={issuer ? { address: issuer } : {}}
                   name="issuer"
@@ -521,7 +524,7 @@ export default function NFTokenMint({
                   type="address"
                 />
                 <span className="orange">
-                  Note: You must be authorized as a minter for this account, or the transaction will fail.
+                  {ts('nft-mint.authorizedMinterNote')}
                 </span>
               </>
             )}
@@ -531,11 +534,11 @@ export default function NFTokenMint({
             {/* Terms and Privacy */}
             <div>
               <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-                I agree with the{' '}
-                <Link href="/terms-and-conditions" target="_blank">
-                  Terms and conditions
-                </Link>
-                .
+                <Trans
+                  i18nKey="shared.agree-terms"
+                  ns="services"
+                  components={[<Link key="0" href="/terms-and-conditions" target="_blank" />]}
+                />
               </CheckBox>
             </div>
 
@@ -544,18 +547,18 @@ export default function NFTokenMint({
                 checked={agreeToPrivacyPolicy}
                 setChecked={setAgreeToPrivacyPolicy}
                 name="agree-to-privacy-policy"
-              >
-                I agree with the{' '}
-                <Link href="/privacy-policy" target="_blank">
-                  Privacy policy
-                </Link>
-                .
-              </CheckBox>
+            >
+                <Trans
+                  i18nKey="nft-mint.privacyAgree"
+                  ns="services"
+                  components={[<Link key="0" href="/privacy-policy" target="_blank" />]}
+                />
+            </CheckBox>
             </div>
 
-            <p className="center">
+            <p className="center service-form-actions">
               <button className="button-action" onClick={onSubmit} name="submit-button">
-                Mint NFT
+                {ts('nft-mint.mintButton')}
               </button>
             </p>
           </>
@@ -563,7 +566,7 @@ export default function NFTokenMint({
 
         {minted && (
           <>
-            <p>The NFT was successfully minted:</p>
+            <p>{ts('nft-mint.success')}</p>
             <p>
               <Link href={'/nft/' + minted} className="brake">
                 {server}/nft/{minted}
@@ -571,7 +574,7 @@ export default function NFTokenMint({
             </p>
             <div className="center">
               <button className="button-action" onClick={() => setMinted('')} name="mint-another-nft">
-                Mint another NFT
+                {ts('nft-mint.mintAnother')}
               </button>
             </div>
           </>

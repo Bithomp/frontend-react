@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { sha512 } from 'crypto-hash'
@@ -36,7 +36,8 @@ export default function URITokenMint({
   currencyIssuerQuery,
   destinationQuery
 }) {
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const router = useRouter()
 
   const [uri, setUri] = useState(uriQuery)
@@ -101,7 +102,7 @@ export default function URITokenMint({
   }
 
   const getMetadata = async () => {
-    setMetadataStatus('Trying to load the metadata from URI...')
+    setMetadataStatus(ts('nft-mint.metadataLoading'))
     const nftType = xahauNetwork ? 'xls35' : 'xls20'
     const response = await axios.get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=' + nftType).catch(() => {
       console.log("ERROR: can't get nft metadata")
@@ -122,13 +123,13 @@ export default function URITokenMint({
           // 2 minutes
           setUpdate(true)
           setMetadataStatus(
-            'Trying to load the metadata from URI... (' +
-              Math.ceil((Date.now() - startTime) / 1000 / 5) +
-              '/24 attempts)'
+            ts('nft-mint.metadataLoadingAttempt', {
+              attempt: Math.ceil((Date.now() - startTime) / 1000 / 5)
+            })
           )
         } else {
           setUpdate(false)
-          setMetadataStatus('Load failed')
+          setMetadataStatus(ts('nft-mint.metadataLoadFailed'))
         }
       }
     }
@@ -140,7 +141,7 @@ export default function URITokenMint({
       getMetadata()
       startTime = Date.now()
     } else {
-      setMetadataStatus('Please enter URI :)')
+      setMetadataStatus(ts('nft-mint.metadataEnterUri'))
       uriRef?.focus()
     }
   }
@@ -172,36 +173,36 @@ export default function URITokenMint({
 
   const onSubmit = async () => {
     if (!uri) {
-      setErrorMessage('Please enter URI')
+      setErrorMessage(ts('nft-mint.errors.uri'))
       uriRef?.focus()
       return
     }
 
     if (digest && !isIdValid(digest)) {
-      setErrorMessage('Please enter a valid Digest')
+      setErrorMessage(ts('nft-mint.errors.digest'))
       digestRef?.focus()
       return
     }
 
     if (!agreeToSiteTerms) {
-      setErrorMessage('Please agree to the Terms and conditions')
+      setErrorMessage(ts('nft-mint.errors.terms'))
       return
     }
 
     if (!agreeToPrivacyPolicy) {
-      setErrorMessage('Please agree to the Privacy policy')
+      setErrorMessage(ts('nft-mint.errors.privacy'))
       return
     }
 
     if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) < 0) {
-      setErrorMessage('Please enter a valid Amount')
+      setErrorMessage(ts('nft-mint.errors.amount'))
       return
     }
 
     // Remit: Mint and Send
     if (mintAndSend) {
       if (!destination?.trim()) {
-        setErrorMessage('Destination is required for Mint and Send (Remit)')
+        setErrorMessage(ts('nft-mint.errors.destinationRemit'))
         return
       }
       // Remit transaction (per Xahau docs)
@@ -249,7 +250,7 @@ export default function URITokenMint({
         if (destination?.trim()) {
           request.Amount = '0'
         } else {
-          setErrorMessage('Please specify a Destination or change the Amount')
+          setErrorMessage(ts('nft-mint.errors.destinationOrAmount'))
           return
         }
       } else if (parseFloat(amount) > 0) {
@@ -266,7 +267,7 @@ export default function URITokenMint({
           }
         }
       } else {
-        setErrorMessage('Please enter a valid Amount')
+        setErrorMessage(ts('nft-mint.errors.amount'))
         return
       }
 
@@ -343,7 +344,7 @@ export default function URITokenMint({
       if (metadata && isValidJson(metadata)) {
         checkDigest(metadata)
       } else {
-        setMetadataError('Please enter valid JSON')
+        setMetadataError(ts('nft-mint.errors.json'))
       }
     }
   }
@@ -363,7 +364,7 @@ export default function URITokenMint({
       <div className="page-services-nft-mint content-center">
         {!minted && (
           <>
-            <p>URI that points to the data or metadata associated with the NFT:</p>
+            <p>{ts('nft-mint.uriLabel')}</p>
             <div className="input-validation">
               <input
                 placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
@@ -382,15 +383,12 @@ export default function URITokenMint({
             {!uriValidDigest && (
               <>
                 <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest">
-                  Add <b>Digest</b> (recommended)
+                  <Trans i18nKey="nft-mint.addDigest" ns="services" components={[<b key="0" />]} />
                 </CheckBox>
 
                 {calculateDigest && (
                   <>
-                    <p>
-                      The digest is calculated from the metadata. It is used to verify that the URI and the metadata
-                      have not been tampered with.
-                    </p>
+                    <p>{ts('nft-mint.digestHelp')}</p>
 
                     <button
                       className="button-action thin"
@@ -398,7 +396,7 @@ export default function URITokenMint({
                       style={{ marginBottom: '10px' }}
                       name="load-metadata-button"
                     >
-                      Load metadata
+                      {ts('nft-mint.loadMetadata')}
                     </button>
 
                     <b className="orange" style={{ marginLeft: '20px' }}>
@@ -406,11 +404,11 @@ export default function URITokenMint({
                     </b>
 
                     <p>
-                      Metadata: <b className="orange">{metadataError}</b>
+                      {ts('nft-mint.metadataLabel')} <b className="orange">{metadataError}</b>
                     </p>
                     <textarea
                       value={metadata}
-                      placeholder="Paste your JSON metadata here"
+                      placeholder={ts('nft-mint.metadataPlaceholder')}
                       onChange={onMetadataChange}
                       className="input-text"
                       autoFocus={true}
@@ -424,10 +422,10 @@ export default function URITokenMint({
 
             {(calculateDigest || uriValidDigest) && (
               <>
-                <p>Digest:</p>
+                <p>{ts('nft-mint.digestLabel')}</p>
                 <div className="input-validation">
                   <input
-                    placeholder="Digest"
+                    placeholder={ts('nft-mint.digestPlaceholder')}
                     value={digest}
                     onChange={onDigestChange}
                     className="input-text"
@@ -445,7 +443,7 @@ export default function URITokenMint({
             )}
 
             <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
-              Burnable
+              {ts('nft-mint.burnableShort')}
             </CheckBox>
 
             {/* Mint and Send (Remit) Option */}
@@ -459,11 +457,11 @@ export default function URITokenMint({
               }}
               name="mint-and-send-remit"
             >
-              Mint and Send (Remit)
+              {ts('nft-mint.mintAndSend')}
             </CheckBox>
             {mintAndSend && (
               <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
-                You will pay the Object Reserve in XAH for the NFT to be held on the Destination account.
+                {ts('nft-mint.mintAndSendReserve')}
               </div>
             )}
 
@@ -481,14 +479,14 @@ export default function URITokenMint({
                 name="create-sell-offer"
                 disabled={!account?.address || mintAndSend}
               >
-                Create a Sell offer
+                {ts('nft-mint.createSellOffer')}
               </CheckBox>
               {!account?.address && (
                 <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
                   <span className="link" onClick={() => setSignRequest({})}>
-                    Login first
+                    {ts('nft-mint.loginFirst')}
                   </span>{' '}
-                  if you want to add the sell offer in the same transaction.
+                  {ts('nft-mint.loginSellOffer')}
                 </div>
               )}
             </div>
@@ -499,7 +497,9 @@ export default function URITokenMint({
                 <br />
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <div className="flex-1">
-                    <span className="input-title">Initial listing price (Amount):</span>
+                    <span className="input-title">
+                      {ts('nft-mint.initialListingPrice', { suffix: '' })}
+                    </span>
                     <div className="input-validation">
                       <input
                         placeholder="0.0"
@@ -517,7 +517,7 @@ export default function URITokenMint({
                     </div>
                   </div>
                   <div className="w-full sm:w-1/2">
-                    <span className="input-title">Currency</span>
+                    <span className="input-title">{ts('nft-mint.currency')}</span>
                     <TokenSelector
                       value={selectedToken}
                       onChange={onTokenChange}
@@ -533,8 +533,10 @@ export default function URITokenMint({
               <>
                 <br />
                 <AddressInput
-                  title={'Destination (' + (mintAndSend ? 'required' : 'optional') + ' - account to receive the NFT)'}
-                  placeholder="Destination address"
+                  title={ts('nft-mint.destinationTitle', {
+                    status: mintAndSend ? ts('nft-mint.destinationRequired') : ts('nft-mint.destinationOptional')
+                  })}
+                  placeholder={ts('nft-mint.destinationPlaceholder')}
                   setInnerValue={onDestinationChange}
                   name="destination"
                   hideButton={true}
@@ -545,11 +547,11 @@ export default function URITokenMint({
             <br />
 
             <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-              I agree with the{' '}
-              <Link href="/terms-and-conditions" target="_blank">
-                Terms and conditions
-              </Link>
-              .
+              <Trans
+                i18nKey="shared.agree-terms"
+                ns="services"
+                components={[<Link key="0" href="/terms-and-conditions" target="_blank" />]}
+              />
             </CheckBox>
 
             <CheckBox
@@ -557,16 +559,16 @@ export default function URITokenMint({
               setChecked={setAgreeToPrivacyPolicy}
               name="agree-to-privacy-policy"
             >
-              I agree with the{' '}
-              <Link href="/privacy-policy" target="_blank">
-                Privacy policy
-              </Link>
-              .
+              <Trans
+                i18nKey="nft-mint.privacyAgree"
+                ns="services"
+                components={[<Link key="0" href="/privacy-policy" target="_blank" />]}
+              />
             </CheckBox>
 
-            <p className="center">
+            <p className="center service-form-actions">
               <button className="button-action" onClick={onSubmit} name="submit-button">
-                Mint NFT
+                {ts('nft-mint.mintButton')}
               </button>
             </p>
           </>
@@ -574,7 +576,7 @@ export default function URITokenMint({
 
         {minted && (
           <>
-            The NFT was successfully minted:
+            {ts('nft-mint.success')}
             <br />
             <Link href={'/nft/' + minted} className="brake">
               {server}/nft/{minted}
@@ -583,7 +585,7 @@ export default function URITokenMint({
             <br />
             <center>
               <button className="button-action" onClick={() => setMinted('')} name="mint-another-nft">
-                Mint another NFT
+                {ts('nft-mint.mintAnother')}
               </button>
             </center>
           </>

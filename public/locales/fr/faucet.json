@@ -1,6 +1,6 @@
 {
   "get-free": "Obtiens des gratuits",
-  "error-occured:": "Une erreur est survenue",
+  "error-occured": "Une erreur est survenue",
   "try-later": "Vous avez déjà essayé aujourd'hui. Revenez dans {{time}}.",
   "experience-fast-transactions": "Découvrez à quel point il est rapide et facile d'effectuer des transactions sur le réseau {{explorerName}} !",
   "last-ledger-index-find-on-landing-page": "<strong>Dernier index du registre.</strong> Retrouvez-le dans les statistiques de la <1>page d’accueil.</1>",

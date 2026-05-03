@@ -1,0 +1,13 @@
+{
+  "dropdown": {
+    "priceHigh": "Harga tertinggi ke terendah",
+    "priceLow": "Harga terendah ke tertinggi",
+    "soldNew": "Penjualan terbaru",
+    "soldOld": "Penjualan terlama",
+    "mintedNew": "Mint terbaru",
+    "mintedOld": "Mint terlama",
+    "rating": "Paling banyak dilihat",
+    "offerCreatedNew": "Penawaran terbaru",
+    "offerCreatedOld": "Penawaran terlama"
+  }
+}

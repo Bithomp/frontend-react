@@ -21,12 +21,25 @@
     "start-issuer": "Tippen Sie, um nach Issuern zu suchen",
     "more-than-results": "Mehr als {{count}} Ergebnisse. Bitte geben Sie mehr ein, um die Suche einzugrenzen."
   },
+  "token-selector": {
+    "select-token": "Token auswählen",
+    "select-token-destination": "Token auswählen (Zieladresse kann ihn halten)",
+    "search-placeholder": "Nach Währung, Issuer oder Username suchen",
+    "holders": "{{value}} Inhaber",
+    "more-results": "Mehr als {{count}} Ergebnisse gefunden. Bitte geben Sie einen Issuer an, um die Suche einzugrenzen.",
+    "no-destination-trustlines": "Keine Trustlines für diese Zieladresse gefunden."
+  },
   "menu": {
     "tokens": "Token",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer"
+      "explorer": "AMM explorer",
+      "learn": "Was ist AMM?",
+      "deposit": "AMM-Einzahlung",
+      "withdraw": "AMM-Auszahlung",
+      "vote": "AMM-Abstimmung",
+      "create": "AMM erstellen"
     },
     "company": {
       "about-us": "Über uns"
@@ -34,7 +47,7 @@
     "services": {
       "services": "Dienste",
       "send": "Zahlung senden",
-      "reward-auto-claim": "Reward Auto Claim",
+      "reward-auto-claim": "Automatische Belohnungsanforderung",
       "add-token": "Token hinzufügen (Trustline)",
       "account-settings": "Kontoeinstellungen",
       "toml-checker": "TOML-Checker",
@@ -77,10 +90,10 @@
       "toml-checker": "TOML-Checker",
       "validators": "Validatoren",
       "amendments": "Änderungen",
-      "unl-report": "UNL report",
+      "unl-report": "UNL-Bericht",
       "genesis": "Genesis Konten",
       "allocation": "{{currency}} Verteilung",
-      "activation-tree": "Activation Tree"
+      "activation-tree": "Aktivierungsbaum"
     },
     "developers": {
       "developers": "Entwickler",
@@ -355,7 +368,7 @@
     "loading": "Lade...",
     "filters": "Filter",
     "login-to-bithomp-pro": "Das Laden weiterer Daten ist für <2>eingeloggte</2> Bithomp Pro-Abonnenten verfügbar.",
-    "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
+    "renew-bithomp-pro": "Ihr Bithomp Pro-Abonnement ist abgelaufen. <1>Abonnement erneuern</1>.",
     "load-failed": "Laden fehlgeschlagen",
     "all-issuers": "Alle Emittenten",
     "no-expiration": "Nie",
@@ -385,8 +398,8 @@
       "password-invalid": "Bitte geben Sie ein gültiges Passwort ein."
     },
     "placeholder": {
-      "destination-tag": "Enter the Destination tag (if it is required)",
-      "uri": "Enter the URI"
+      "destination-tag": "Destination Tag eingeben (falls erforderlich)",
+      "uri": "URI eingeben"
     }
   },
   "error": {
@@ -456,7 +469,7 @@
     "destination-tag": "DestinationTag",
     "uri": "URI",
     "mints": "Mints",
-    "view": "View",
+    "view": "Anzeigen",
     "period": "Periode",
     "mint-period": "Mint Periode",
     "burn-period": "Burn Periode",
@@ -513,7 +526,7 @@
     "flags": "Markierungen",
     "count": "Betrag",
     "nfts": "NFTs",
-    "minted": "Minted",
+    "minted": "Geprägt",
     "transferred": "Transferiert",
     "burned": "Vernichtet",
     "attributes": "Attribute",
@@ -587,7 +600,7 @@
     "issuers": "Emittenten",
     "marketplaces": "Marktplätze",
     "brokers": "Vermittler",
-    "charts:": "Diagramme",
+    "charts": "Diagramme",
     "collections": "Kollektionen",
     "image": "Bild",
     "video": "Video",
@@ -619,7 +632,7 @@
     "header": {
       "main": "{{explorerName}} Explorer",
       "sub": "Scanne {{nativeCurrency}}-Transaktionen, -Konten, -Token und NFTs – der schnelle und vertrauenswürdige Weg, das {{nativeCurrency}} Ledger zu erkunden.",
-      "amm": "AMM pool information",
+      "amm": "AMM-Pool-Informationen",
       "object": "Objektinformation",
       "account": "Kontoinformation",
       "transaction": "Information zur Transaktion",
@@ -627,7 +640,8 @@
       "nfts": "NFTs",
       "nft-offer": "NFT Angebot",
       "nft-offers": "NFT Angebote",
-      "nft-volumes": "NFT sales volumes"
+      "nft-volumes": "NFT-Verkaufsvolumen",
+      "topNftCollections": "Top NFT-Sammlungen"
     },
     "enter-address": "Geben Sie eine Adresse oder einen Benutzernamen ein",
     "searching-tx-nft-nftoffer": "Suchen nach Trans / NFT ID / NFT Angebot",

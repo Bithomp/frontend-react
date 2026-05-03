@@ -1,8 +1,9 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 import SEO from '../../../components/SEO'
 import AMMDepositForm from '../../../components/Services/Amm/AMMDeposit'
 import { getIsSsrMobile } from '../../../utils/mobile'
-import AmmTabs from '../../../components/Tabs/AmmTabs'
+import ServicesTabs from '../../../components/Tabs/ServicesTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -15,7 +16,7 @@ export const getServerSideProps = async (context) => {
       queryCurrency2: currency2 || null,
       queryCurrency2Issuer: currency2Issuer || null,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -27,12 +28,14 @@ export default function AMMCreate({
   queryCurrency2,
   queryCurrency2Issuer
 }) {
+  const { t } = useTranslation(['common', 'services'])
+
   return (
     <>
-      <SEO title="Deposits assets into an AMM Pool" description="Add liquidity to an Automated Market Maker Pool" />
+      <SEO title={t('amm.deposit-title', { ns: 'services' })} description={t('amm.deposit-description', { ns: 'services' })} />
       <div className="page-services-amm content-center">
-        <h1 className="center">Deposit assets into an AMM Pool</h1>
-        <AmmTabs tab="deposit" />
+        <ServicesTabs category="amm" tab="deposit" />
+        <h1 className="center">{t('amm.deposit-title', { ns: 'services' })}</h1>
         <AMMDepositForm
           setSignRequest={setSignRequest}
           queryCurrency={queryCurrency}

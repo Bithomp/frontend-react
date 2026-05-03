@@ -13,14 +13,14 @@ import { IoLayersOutline, IoDocumentTextOutline, IoSkullOutline, IoPersonOutline
 import { IoIosRocket } from 'react-icons/io'
 import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
-import AccountServiceTabs from '../../components/Tabs/AccountServiceTabs'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -44,7 +44,8 @@ export default function TokenIssuerSettings({
   subscriptionExpired,
   openEmailLogin
 }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -75,9 +76,10 @@ export default function TokenIssuerSettings({
       setSuccessMessage,
       setErrorMessage,
       customMessages: {
-        SetRegularKey: 'Regular key set successfully.'
+        SetRegularKey: ts('token-issuer-settings-page.success.regularKey')
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getAvailableFlags = () => {
@@ -99,55 +101,49 @@ export default function TokenIssuerSettings({
 
   const flagDetails = {
     requireAuth: {
-      name: 'Authorization',
-      status: (value) => (value ? 'Required' : 'Not Required'),
-      actionText: (value) => (value ? "Don't Require" : 'Require'),
-      description:
-        'If enabled, trustlines to this account require authorization before they can hold tokens. Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists.',
+      name: ts('account-settings.flagsObj.requireAuth.name'),
+      status: (value) => (value ? ts('account-settings.required') : ts('account-settings.notRequired')),
+      actionText: (value) => (value ? ts('account-settings.dontRequire') : ts('account-settings.require')),
+      description: ts('account-settings.flagsObj.requireAuth.description'),
       isDefault: (value) => !value
     },
     allowTrustLineClawback: {
-      name: 'Trustline Clawback',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? '' : 'Enable'),
-      description:
-        'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trustlines.',
+      name: ts('account-settings.flagsObj.allowTrustLineClawback.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? '' : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.allowTrustLineClawback.description'),
       isDefault: (value) => !value,
       isPermanent: true
     },
     allowTrustLineLocking: {
-      name: 'Trustline Locking',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? '' : 'Enable'),
-      description:
-        "Allow Trustline tokens issued by this account to be held in escrow. If not enabled, tokens issued by this account can't be escrowed. After you enable this flag, it cannot be disabled.",
+      name: ts('account-settings.flagsObj.allowTrustLineLocking.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? '' : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.allowTrustLineLocking.description'),
       isDefault: (value) => !value,
       isPermanent: true
     },
     defaultRipple: {
-      name: 'Default Rippling',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? 'Disable' : 'Enable'),
-      description:
-        'This a setting that Token issuers need to enable. If enabled, allows rippling on all trustlines by default. This affects how payments flow through your account.',
+      name: ts('account-settings.flagsObj.defaultRipple.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? ts('account-settings.disable') : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.defaultRipple.description'),
       isDefault: (value) => !value,
       isHighRisk: true
     },
     globalFreeze: {
-      name: 'Global Freeze',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? 'Disable' : 'Enable'),
-      description:
-        'If enabled, freezes all tokens issued by this account, preventing them from being transferred. This affects all trustlines for tokens you have issued. Cannot be enabled if No Freeze is active. Use with caution as it impacts all token holders.',
+      name: ts('account-settings.flagsObj.globalFreeze.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? ts('account-settings.disable') : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.globalFreeze.description'),
       isDefault: (value) => !value,
       isHighRisk: true
     },
     noFreeze: {
-      name: 'No Freeze',
-      status: (value) => (value ? 'Enabled' : 'Disabled'),
-      actionText: (value) => (value ? '' : 'Enable'),
-      description:
-        'If enabled, permanently gives up the ability to freeze tokens issued by this account. This setting cannot be reversed.',
+      name: ts('account-settings.flagsObj.noFreeze.name'),
+      status: (value) => (value ? ts('account-settings.enabled') : ts('account-settings.disabled')),
+      actionText: (value) => (value ? '' : ts('account-settings.enable')),
+      description: ts('account-settings.flagsObj.noFreeze.description'),
       isDefault: (value) => !value,
       isPermanent: true
     }
@@ -188,7 +184,7 @@ export default function TokenIssuerSettings({
         setFlags(newFlags)
         setLoading(false)
       } catch (error) {
-        setErrorMessage('Error fetching account data')
+        setErrorMessage(ts('token-issuer-settings-page.errors.fetch'))
         setLoading(false)
       }
     }
@@ -200,15 +196,15 @@ export default function TokenIssuerSettings({
 
   const handleFlagToggle = (flag) => {
     if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
+      setErrorMessage(ts('token-issuer-settings-page.errors.signIn'))
       return
     }
     if (!accountData?.ledgerInfo) {
-      setErrorMessage('Error fetching account data')
+      setErrorMessage(ts('token-issuer-settings-page.errors.fetch'))
       return
     }
     if (!isPro) {
-      setErrorMessage('Token Issuer Settings are available only to logged-in Bithomp Pro subscribers.')
+      setErrorMessage(ts('token-issuer-settings-page.errors.proOnly'))
       return
     }
 
@@ -217,7 +213,7 @@ export default function TokenIssuerSettings({
     const flagNum = ASF_FLAGS[flag]
 
     if (typeof flagNum !== 'number') {
-      setErrorMessage(`Unknown flag: ${flag}`)
+      setErrorMessage(ts('token-issuer-settings-page.errors.unknownFlag', { flag }))
       return
     }
 
@@ -227,13 +223,13 @@ export default function TokenIssuerSettings({
       !currentValue
     ) {
       setErrorMessage(
-        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
+        ts('account-settings.errOwnerDir')
       )
       return
     }
 
     if (flag === 'globalFreeze' && flags?.noFreeze) {
-      setErrorMessage('Cannot change Global Freeze when No Freeze is enabled')
+      setErrorMessage(ts('account-settings.errGlobalFreeze'))
       return
     }
 
@@ -246,7 +242,7 @@ export default function TokenIssuerSettings({
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('Settings updated successfully.')
+        setSuccessMessage(ts('token-issuer-settings-page.success.settings'))
         setErrorMessage('')
         setFlags((prev) => ({ ...(prev || {}), [flag]: newValue }))
         setAccountData((prev) => {
@@ -274,7 +270,7 @@ export default function TokenIssuerSettings({
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('Domain set successfully.')
+        setSuccessMessage(ts('token-issuer-settings-page.success.domainSet'))
         setErrorMessage('')
         setCurrentDomain(domainInput.trim())
         setAccountData((prev) => {
@@ -296,7 +292,7 @@ export default function TokenIssuerSettings({
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('Domain cleared successfully.')
+        setSuccessMessage(ts('token-issuer-settings-page.success.domainClear'))
         setErrorMessage('')
         setCurrentDomain('')
         setDomainInput('')
@@ -317,7 +313,7 @@ export default function TokenIssuerSettings({
   const handleSetTransferRate = () => {
     const percent = Number(transferRateInput)
     if (isNaN(percent) || percent < 0 || percent > 100) {
-      setErrorMessage('Please enter a valid TransferRate percentage between 0 and 100.')
+      setErrorMessage(ts('token-issuer-settings-page.errors.transferRate'))
       return
     }
     const rate = Math.round(1000000000 + percent * 10000000)
@@ -329,7 +325,7 @@ export default function TokenIssuerSettings({
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('TransferRate set successfully.')
+        setSuccessMessage(ts('token-issuer-settings-page.success.transferRateSet'))
         setErrorMessage('')
         setCurrentTransferRate(rate)
         setAccountData((prev) => {
@@ -351,7 +347,7 @@ export default function TokenIssuerSettings({
     setSignRequest({
       request: tx,
       callback: () => {
-        setSuccessMessage('TransferRate cleared successfully.')
+        setSuccessMessage(ts('token-issuer-settings-page.success.transferRateClear'))
         setErrorMessage('')
         setCurrentTransferRate(null)
         setTransferRateInput('')
@@ -377,7 +373,7 @@ export default function TokenIssuerSettings({
         RegularKey: BLACKHOLE_ADDRESS
       },
       callback: () => {
-        setSuccessMessage('Blackhole regular key set. Proceed to Step 2 to disable the master key.')
+        setSuccessMessage(ts('account-control.success.blackholeKeySet'))
         setErrorMessage('')
         setAccountData((prev) =>
           prev ? { ...prev, ledgerInfo: { ...prev.ledgerInfo, regularKey: BLACKHOLE_ADDRESS } } : prev
@@ -394,9 +390,7 @@ export default function TokenIssuerSettings({
         SetFlag: 4
       },
       callback: () => {
-        setSuccessMessage(
-          'Account has been blackholed. No one, including you, can ever sign transactions for it again.'
-        )
+        setSuccessMessage(ts('account-control.success.blackholed'))
         setErrorMessage('')
         setAccountData((prev) =>
           prev
@@ -455,8 +449,8 @@ export default function TokenIssuerSettings({
     if (!isPro) {
       buttonDisabled = true
       disabledReason = !sessionToken
-        ? 'Available only to logged-in Bithomp Pro subscribers.'
-        : 'Your Bithomp Pro subscription has expired.'
+        ? ts('token-issuer-settings-page.availablePro')
+        : ts('account-control.proExpired')
     }
 
     if (
@@ -466,19 +460,18 @@ export default function TokenIssuerSettings({
     ) {
       buttonDisabled = true
       if (!disabledReason)
-        disabledReason =
-          'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
+        disabledReason = ts('account-settings.errOwnerDir')
     }
 
     if (flag === 'globalFreeze' && flags?.noFreeze) {
       buttonDisabled = true
-      if (!disabledReason) disabledReason = 'Cannot change Global Freeze when No Freeze is enabled'
+      if (!disabledReason) disabledReason = ts('account-settings.errGlobalFreeze')
     }
 
     const showButton = !(flagData?.isPermanent && currentValue)
 
     const buttonTooltip = !account?.address
-      ? 'Sign in to manage settings'
+      ? ts('token-issuer-settings-page.signInManage')
       : buttonDisabled && disabledReason
         ? disabledReason
         : ''
@@ -510,7 +503,9 @@ export default function TokenIssuerSettings({
               </button>
             )}
 
-          {flagData?.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
+          {flagData?.isPermanent && currentValue && (
+            <span className="permanent-flag">{ts('token-issuer-settings-page.permanent')}</span>
+          )}
         </div>
 
         <div className={`flag-description ${isHighRisk || flagData?.isPermanent ? 'warning' : ''}`}>
@@ -531,7 +526,7 @@ export default function TokenIssuerSettings({
                 color: 'inherit'
               }}
             >
-              {isExpanded ? 'Read less' : 'Read more'}
+              {isExpanded ? ts('token-issuer-settings-page.readLess') : ts('token-issuer-settings-page.readMore')}
             </span>
           )}
         </div>
@@ -544,32 +539,32 @@ export default function TokenIssuerSettings({
   // ── Derived values for blackhole ─────────────────────────────────────────────
 
   const actionLockReason = !account?.address
-    ? 'Sign in to your account to enable this function.'
+    ? ts('account-control.errors.signInTooltip')
     : !isPro
       ? !sessionToken
-        ? 'Log in to Bithomp Pro to enable this function.'
-        : 'Subscribe to Bithomp Pro to enable this function.'
+        ? ts('account-control.errors.proLoginTooltip')
+        : ts('account-control.errors.proSubscribeTooltip')
       : ''
 
   const blackholeStep1Done = regularKey === BLACKHOLE_ADDRESS
   const blackholeStep1DisabledReason =
     actionLockReason ||
-    (!confirmBlackhole ? 'Confirm the checkbox first.' : '') ||
-    (blackholeStep1Done ? 'Regular Key is already set to the blackhole address.' : '')
+    (!confirmBlackhole ? ts('account-control.errors.confirmCheckbox') : '') ||
+    (blackholeStep1Done ? ts('account-control.errors.regularAlreadyBlackhole') : '')
   const blackholeStep2DisabledReason =
     actionLockReason ||
-    (!blackholeStep1Done ? 'Complete Step 1 first.' : '') ||
-    (!confirmBlackhole ? 'Confirm the checkbox first.' : '')
+    (!blackholeStep1Done ? ts('account-control.errors.completeStep1') : '') ||
+    (!confirmBlackhole ? ts('account-control.errors.confirmCheckbox') : '')
 
   // ── Loading ──────────────────────────────────────────────────────────────────
 
   if (account?.address && loading) {
     return (
       <>
-        <SEO title="Token Issuer Settings" description="Manage token issuer settings" />
+        <SEO title={ts('token-issuer-settings-page.title')} description={ts('token-issuer-settings-page.description')} />
         <div className="content-center">
-          <h1 className="center">Token Issuer Settings</h1>
-          <AccountServiceTabs tab="token-issuer-settings" />
+          <ServicesTabs category="account" tab="token-issuer-settings" />
+          <h1 className="center">{ts('token-issuer-settings-page.title')}</h1>
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -584,17 +579,17 @@ export default function TokenIssuerSettings({
     <>
       <div className={accountSettings}>
         <SEO
-          title="Token Issuer Settings"
-          description="Manage required authorization, rippling, freeze and other token issuer settings."
+          title={ts('token-issuer-settings-page.title')}
+          description={ts('token-issuer-settings-page.description')}
         />
         <div className="content-center">
-          <h1 className="center">Token Issuer Settings</h1>
-          <AccountServiceTabs tab="token-issuer-settings" />
+          <ServicesTabs category="account" tab="token-issuer-settings" />
+          <h1 className="center">{ts('token-issuer-settings-page.title')}</h1>
           <p className="center">
             {account?.address ? (
-              `Configure your token issuance settings on the ${explorerName}.`
+              ts('token-issuer-settings-page.introSignedIn', { explorerName })
             ) : (
-              'Sign in to your account to manage Token Issuer Settings.'
+              ts('token-issuer-settings-page.introSignedOut')
             )}
           </p>
 
@@ -602,7 +597,7 @@ export default function TokenIssuerSettings({
             <div className="center" style={{ marginTop: '0.6rem' }}>
               <button className="button-action" onClick={() => setSignRequest({})}>
                 <FaWallet style={{ fontSize: 14, marginRight: 6 }} />
-                Connect wallet
+                {ts('account-control.connectWallet')}
               </button>
             </div>
           )}
@@ -616,19 +611,19 @@ export default function TokenIssuerSettings({
               {!sessionToken ? (
                 <>
                   <p style={{ marginBottom: '0.45rem' }}>
-                    Token Issuer Settings are available to logged-in Bithomp Pro subscribers.
+                    {ts('token-issuer-settings-page.proNotice')}
                   </p>
                   <div style={{ marginTop: '0.75rem', marginBottom: '0.35rem' }}>
                     <button className="button-action" onClick={() => openEmailLogin?.()} style={{ padding: '10px 16px' }}>
                       <IoIosRocket style={{ fontSize: 16, marginRight: 6, marginBottom: 1 }} />
-                      Log in to Bithomp Pro
+                      {ts('account-control.proLoginButton')}
                     </button>
                   </div>
                 </>
               ) : (
                 <>
-                  Your Bithomp Pro subscription has expired.{' '}
-                  <Link href="/admin/subscriptions">Renew your subscription</Link>
+                  {ts('account-control.proExpired')}{' '}
+                  <Link href="/admin/subscriptions">{ts('account-control.renew')}</Link>
                 </>
               )}
             </div>
@@ -640,9 +635,9 @@ export default function TokenIssuerSettings({
               <span className="section-icon">
                 <IoLayersOutline size={15} />
               </span>
-              <span className="section-title">Token Issuer Flags</span>
+              <span className="section-title">{ts('token-issuer-settings-page.flagsTitle')}</span>
               <span className="section-badge badge-warn" style={{ fontSize: 10 }}>
-                Pro only
+                {ts('token-issuer-settings-page.proOnly')}
               </span>
             </div>
 
@@ -653,7 +648,7 @@ export default function TokenIssuerSettings({
               <span className="section-icon">
                 <IoDocumentTextOutline size={15} />
               </span>
-              <span className="section-title">Token Issuer Fields</span>
+              <span className="section-title">{ts('token-issuer-settings-page.fieldsTitle')}</span>
             </div>
 
             <div>
@@ -666,7 +661,7 @@ export default function TokenIssuerSettings({
                       <span className="flag-status">
                         {currentTransferRate && currentTransferRate > 0
                           ? `${Math.round(((currentTransferRate - 1000000000) / 10000000) * 100) / 100}%`
-                          : 'Not Set'}
+                          : ts('account-control.notSet')}
                       </span>
                     )}
                   </div>
@@ -674,23 +669,23 @@ export default function TokenIssuerSettings({
                     {currentTransferRate &&
                       currentTransferRate > 0 &&
                       withTooltip(
-                        !account?.address ? 'Sign in to manage settings' : !isPro ? actionLockReason : '',
+                        !account?.address ? ts('token-issuer-settings-page.signInManage') : !isPro ? actionLockReason : '',
                         <button
                           className="button-action thin"
                           onClick={handleClearTransferRate}
                           disabled={!account?.address || !isPro}
                         >
-                          Clear
+                          {ts('account-settings.clear')}
                         </button>
                       )}
                     {withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : !isPro ? actionLockReason : '',
+                      !account?.address ? ts('token-issuer-settings-page.signInManage') : !isPro ? actionLockReason : '',
                       <button
                         className="button-action thin"
                         onClick={handleSetTransferRate}
                         disabled={!account?.address || !isPro}
                       >
-                        Set
+                        {ts('account-settings.set')}
                       </button>,
                       'left'
                     )}
@@ -706,7 +701,7 @@ export default function TokenIssuerSettings({
                     inputMode="decimal"
                     disabled={!account?.address || !isPro}
                   />
-                  <small>Percentage fee issuer charges on transfers of issued tokens.</small>
+                  <small>{ts('token-issuer-settings-page.transferRateHelp')}</small>
                 </div>
               </div>
 
@@ -716,29 +711,29 @@ export default function TokenIssuerSettings({
                   <div className="flag-info">
                     <span className="flag-name">Domain</span>
                     {account?.address && (
-                      <span className="flag-status">{currentDomain ? currentDomain : 'Not Set'}</span>
+                      <span className="flag-status">{currentDomain ? currentDomain : ts('account-control.notSet')}</span>
                     )}
                   </div>
                   <div className="flag-info-buttons">
                     {currentDomain &&
                       withTooltip(
-                        !account?.address ? 'Sign in to manage settings' : !isPro ? actionLockReason : '',
+                        !account?.address ? ts('token-issuer-settings-page.signInManage') : !isPro ? actionLockReason : '',
                         <button
                           className="button-action thin"
                           onClick={handleClearDomain}
                           disabled={!account?.address || !isPro}
                         >
-                          Clear
+                          {ts('account-settings.clear')}
                         </button>
                       )}
                     {withTooltip(
-                      !account?.address ? 'Sign in to manage settings' : !isPro ? actionLockReason : '',
+                      !account?.address ? ts('token-issuer-settings-page.signInManage') : !isPro ? actionLockReason : '',
                       <button
                         className="button-action thin"
                         onClick={handleSetDomain}
                         disabled={!account?.address || !isPro}
                       >
-                        Set
+                        {ts('account-settings.set')}
                       </button>,
                       'left'
                     )}
@@ -753,7 +748,7 @@ export default function TokenIssuerSettings({
                     type="text"
                     disabled={!account?.address || !isPro}
                   />
-                  <small>Enter your domain. It will be stored on-ledger.</small>
+                  <small>{ts('token-issuer-settings-page.domainHelp')}</small>
                 </div>
               </div>
             </div>
@@ -763,31 +758,27 @@ export default function TokenIssuerSettings({
               <span className="section-icon">
                 <IoSkullOutline size={15} />
               </span>
-              <span className="section-title">Blackhole Account</span>
-              {isBlackholed && <span className="section-badge badge-danger">Blackholed</span>}
+              <span className="section-title">{ts('account-control.blackholeTitle')}</span>
+              {isBlackholed && <span className="section-badge badge-danger">{ts('account-control.blackholed')}</span>}
             </div>
             <div className="flag-item">
               <div className="flag-description warning">
-                <strong>⚠ This is irreversible.</strong> Blackholing permanently removes the ability for anyone —
-                including you — to sign transactions from this account. The account can still <em>receive</em> funds,
-                but they can never be moved out. Used to create provably unspendable accounts (e.g. to lock tokens
-                forever or prove an issuer has surrendered control).
+                <strong>⚠</strong> {ts('account-control.blackholeWarning')}
               </div>
 
               <div className="flag-description" style={{ marginBottom: '0.25rem', marginTop: '0.75rem' }}>
-                <strong>How it works:</strong>
+                <strong>{ts('account-control.howItWorks')}</strong>
                 <ol style={{ marginTop: '0.4rem', paddingLeft: '1.2rem', lineHeight: 1.7 }}>
                   <li>
-                    Set the Regular Key to <code>{BLACKHOLE_ADDRESS}</code> — the all-zeros address for which no private
-                    key exists.
+                    {ts('account-control.blackholeStep1Help', { address: BLACKHOLE_ADDRESS })}
                   </li>
-                  <li>Disable the Master Key.</li>
+                  <li>{ts('account-control.blackholeStep2Help')}</li>
                 </ol>
               </div>
 
               {isBlackholed ? (
                 <p className="orange bold" style={{ marginTop: '0.5rem' }}>
-                  This account is already blackholed.
+                  {ts('account-control.alreadyBlackholed')}
                 </p>
               ) : (
                 <>
@@ -797,18 +788,16 @@ export default function TokenIssuerSettings({
                     style={{ marginTop: '0.75rem', marginBottom: '0.75rem', fontSize: 14 }}
                   >
                     <span>
-                      I understand blackholing is <strong>permanent and irreversible</strong>. No one will ever be able
-                      to sign transactions from this account again, and any funds sent here will be locked forever with
-                      no way for anyone to access or recover them.
+                      {ts('account-control.blackholeConfirm')}
                     </span>
                   </CheckBox>
 
                   <div className="blackhole-steps">
                     <div className={`step-row${blackholeStep1Done ? ' step-done' : ''}`}>
                       <span className={`step-number${blackholeStep1Done ? ' done' : ''}`}>1</span>
-                      <span className="step-label">Set Regular Key to blackhole address</span>
+                      <span className="step-label">{ts('account-control.blackholeStep1')}</span>
                       <span className={`step-status ${blackholeStep1Done ? 'done' : 'pending'}`}>
-                        {blackholeStep1Done ? 'Done' : 'Pending'}
+                        {blackholeStep1Done ? ts('account-control.done') : ts('account-control.pending')}
                       </span>
                       {!blackholeStep1Done &&
                         withActionTooltip(
@@ -824,7 +813,7 @@ export default function TokenIssuerSettings({
                               flexShrink: 0
                             }}
                           >
-                            Set key
+                            {ts('account-control.setKey')}
                           </button>,
                           blackholeStep1DisabledReason,
                           'left'
@@ -832,9 +821,9 @@ export default function TokenIssuerSettings({
                     </div>
                     <div className={`step-row${masterKeyDisabled ? ' step-done' : ''}`}>
                       <span className={`step-number${masterKeyDisabled ? ' done' : ''}`}>2</span>
-                      <span className="step-label">Disable Master Key</span>
+                      <span className="step-label">{ts('account-control.blackholeStep2')}</span>
                       <span className={`step-status ${masterKeyDisabled ? 'done' : 'pending'}`}>
-                        {masterKeyDisabled ? 'Done' : 'Pending'}
+                        {masterKeyDisabled ? ts('account-control.done') : ts('account-control.pending')}
                       </span>
                       {!masterKeyDisabled &&
                         withActionTooltip(
@@ -850,7 +839,7 @@ export default function TokenIssuerSettings({
                               flexShrink: 0
                             }}
                           >
-                            Disable
+                            {ts('account-control.disable')}
                           </button>,
                           blackholeStep2DisabledReason,
                           'left'
@@ -866,12 +855,12 @@ export default function TokenIssuerSettings({
             {account?.address ? (
               <Link href={`/account/${account.address}`} className="button-action">
                 <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
-                View my account page
+                {ts('account-control.viewAccount')}
               </Link>
             ) : (
               <button className="button-action" onClick={() => setSignRequest({})}>
                 <IoPersonOutline style={{ fontSize: 15, marginRight: 6 }} />
-                Sign in to your account
+                {ts('account-control.signInAccount')}
               </button>
             )}
           </div>

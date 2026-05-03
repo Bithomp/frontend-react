@@ -1,0 +1,7 @@
+{
+  "button": {
+    "set-did": "DIDを設定",
+    "update-did": "DIDを更新",
+    "delete-did": "DIDを削除"
+  }
+}

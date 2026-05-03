@@ -21,12 +21,25 @@
     "start-issuer": "Start typing to search for issuers",
     "more-than-results": "More than {{count}} results. Please type more to narrow your search."
   },
+  "token-selector": {
+    "select-token": "Select token",
+    "select-token-destination": "Select token (destination can hold)",
+    "search-placeholder": "Search by currency, issuer, or username",
+    "holders": "{{value}} holders",
+    "more-results": "More than {{count}} results found. Please specify an issuer to narrow down the search.",
+    "no-destination-trustlines": "No trustlines found for this destination address."
+  },
   "menu": {
     "tokens": "Tokens",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer"
+      "explorer": "AMM explorer",
+      "learn": "What is AMM?",
+      "deposit": "AMM Deposit",
+      "withdraw": "AMM Withdraw",
+      "vote": "AMM Vote",
+      "create": "AMM Create"
     },
     "company": {
       "about-us": "About us"
@@ -627,7 +640,8 @@
       "nfts": "NFTs",
       "nft-offer": "NFT offer",
       "nft-offers": "NFT offers",
-      "nft-volumes": "NFT sales volumes"
+      "nft-volumes": "NFT sales volumes",
+      "topNftCollections": "Top NFT Collections"
     },
     "enter-address": "Enter an address or a username",
     "searching-tx-nft-nftoffer": "Searching for Tx / NFT ID / NFT Offer",

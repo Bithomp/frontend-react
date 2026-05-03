@@ -1,0 +1,7 @@
+{
+  "button": {
+    "set-did": "Définir un DID",
+    "update-did": "Mettre à jour le DID",
+    "delete-did": "Supprimer le DID"
+  }
+}

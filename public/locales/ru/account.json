@@ -1,0 +1,7 @@
+{
+  "button": {
+    "set-did": "Установить DID",
+    "update-did": "Обновить DID",
+    "delete-did": "Удалить DID"
+  }
+}

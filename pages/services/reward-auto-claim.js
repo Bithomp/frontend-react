@@ -44,7 +44,7 @@ export const getServerSideProps = async (context) => {
     props: {
       isSsrMobile: getIsSsrMobile(context),
       networkInfo,
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }

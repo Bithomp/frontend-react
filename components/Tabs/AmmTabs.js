@@ -1,18 +1,21 @@
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import Tabs from '.'
 
 export default function AmmTabs({ tab, params }) {
   const router = useRouter()
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key) => t(key, { ns: 'services' })
 
   let tabList = [
-    { value: 'amms', label: 'AMM Pools' },
-    { value: 'deposit', label: 'AMM Deposit' },
-    { value: 'withdraw', label: 'AMM Withdraw' },
-    { value: 'vote', label: 'AMM Vote' }
+    { value: 'amms', label: ts('amm.tabs.pools') },
+    { value: 'deposit', label: ts('amm.tabs.deposit') },
+    { value: 'withdraw', label: ts('amm.tabs.withdraw') },
+    { value: 'vote', label: ts('amm.tabs.vote') }
   ]
 
   if (tab !== 'amm') {
-    tabList.push({ value: 'create', label: 'AMM Create' })
+    tabList.push({ value: 'create', label: ts('amm.tabs.create') })
   }
 
   const tabChange = (newTab) => {

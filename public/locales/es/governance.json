@@ -35,8 +35,8 @@
     "hook-votes": "Votos del Hook ",
     "hook-votes-count": "Conteo de votos del Hook",
     "text": {
-      "vacate-seat": "Vacate the seat",
-      "vacate-place": "Vacate the place"
+      "vacate-seat": "Dejar el asiento",
+      "vacate-place": "Dejar el lugar"
     }
   }
 }

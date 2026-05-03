@@ -35,6 +35,9 @@
       border-radius: 10px;
       background: transparent;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       padding: 6px 10px;
       color: var(--tab-text);
       font-size: 13px;
@@ -65,7 +68,7 @@
       }
 
       > span {
-        display: inline-block;
+        display: block;
         max-width: min(30vw, 220px);
         white-space: nowrap;
         overflow: hidden;
@@ -86,6 +89,28 @@
       min-width: 0;
       width: auto;
     }
+  }
+}
+
+.services-tabs {
+  margin: 8px 0 18px;
+
+  .tabs {
+    margin-top: 0;
+    margin-bottom: 8px;
+
+    + .tabs {
+      margin-bottom: 14px;
+    }
+  }
+
+  .tabs-list[aria-label="serviceCategories"] {
+    border-color: color-mix(in srgb, var(--accent-link) 18%, transparent);
+    background: color-mix(in srgb, var(--bg-elements) 52%, transparent);
+  }
+
+  .tabs-list[aria-label="servicePages"] {
+    background: transparent;
   }
 }
 

@@ -21,12 +21,25 @@
     "start-issuer": "발행자를 검색하려면 입력하세요",
     "more-than-results": "{{count}}개 이상의 결과가 있습니다. 검색 범위를 좁히려면 더 입력하세요."
   },
+  "token-selector": {
+    "select-token": "토큰 선택",
+    "select-token-destination": "토큰 선택(수신 주소가 보유 가능)",
+    "search-placeholder": "통화, 발행자 또는 사용자 이름으로 검색",
+    "holders": "{{value}} 보유자",
+    "more-results": "{{count}}개 이상의 결과를 찾았습니다. 검색 범위를 좁히려면 발행자를 지정하세요.",
+    "no-destination-trustlines": "이 수신 주소에 대한 트러스트라인을 찾을 수 없습니다."
+  },
   "menu": {
     "tokens": "토큰",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer"
+      "explorer": "AMM explorer",
+      "learn": "AMM이란?",
+      "deposit": "AMM 예치",
+      "withdraw": "AMM 출금",
+      "vote": "AMM 투표",
+      "create": "AMM 생성"
     },
     "company": {
       "about-us": "우리에 대해"
@@ -34,7 +47,7 @@
     "services": {
       "services": "서비스",
       "send": "결제 보내기",
-      "reward-auto-claim": "Reward Auto Claim",
+      "reward-auto-claim": "보상 자동 청구",
       "add-token": "토큰 추가 (Trustline)",
       "account-settings": "계정 설정",
       "toml-checker": "TOML 검사기",
@@ -77,10 +90,10 @@
       "toml-checker": "TOML 검사기",
       "validators": "벨리데이터",
       "amendments": "수정사항",
-      "unl-report": "UNL report",
+      "unl-report": "UNL 보고서",
       "genesis": "Genesis 계정",
       "allocation": "{{currency}} 배분",
-      "activation-tree": "Activation Tree"
+      "activation-tree": "활성화 트리"
     },
     "developers": {
       "developers": "개발자",
@@ -133,7 +146,7 @@
       "enter-amount": "금액을 압력하세요"
     },
     "expiration": "만료",
-    "target-table": "Target table",
+    "target-table": "대상 테이블",
     "statuses": {
       "check-app": "{{appName}} app의 절차를 따라주세요."
     },
@@ -155,13 +168,13 @@
       "my-nft-offers": "내 NFT 제안"
     },
     "confirm": {
-      "set-did": "Setting a DID",
+      "set-did": "DID 설정",
       "set-domain": "도메인을 설정합니다",
       "set-avatar": "아바타를 설정",
-      "nft-create-transfer-offer-header": "NFT transfer",
+      "nft-create-transfer-offer-header": "NFT 전송",
       "nft-transfer": "저는 그 NFT를 무료로 목적지 계정에 제공하고 있습니다. <2>목적지 계정은 NFT 전송을 수락해야 합니다</2>.",
       "nft-accept-sell-offer-header": "NFT 구매",
-      "nft-accept-buy-offer-header": "Selling NFT",
+      "nft-accept-buy-offer-header": "NFT 판매",
       "nft-create-sell-offer-header": "출품(판매)",
       "nft-create-buy-offer-header": "구매 제안을 준비하세요",
       "nft-accept-offer": "{{webSiteName}}는 탈중앙화 마켓플레이스에 대한 액세스를 제공하는 것일 뿐, NFT의 진위 여부 및 정당성을 검증하거나 보증하는 것이 아님을 인정합니다. 본인은 <4>이용약관</4>을 읽었으며, {{webSiteName}}에서 NFT를 구매, 판매 또는 사용하는 모든 조건에 동의합니다.",
@@ -300,7 +313,7 @@
     "email": "이메일 주소:",
     "url": "웹사이트/앱 URL",
     "description": "프로젝트 설명 및 API 사용 세부 정보:",
-    "success": "Thank you. The API token was sent to your e-mail.",
+    "success": "감사합니다. API 토큰이 이메일로 전송되었습니다.",
     "error": {
       "url-empty": "사이트/앱 URL을 입력하세요",
       "url-invalid": "유효한 URL을 입력하세요",
@@ -343,7 +356,7 @@
       "accept-transfer": "NFT 변환 허용",
       "buy-for-amount-on": "{{service}}에서 {{amount}}에 구매",
       "buy-for-amount": "{{amount}} 구매",
-      "sell-for-amount": "Sell for {{amount}}",
+      "sell-for-amount": "{{amount}}에 판매",
       "make-offer": "제안하기",
       "list-for-sale": "판매 리스트",
       "burn": "NFT를 소각하세요"
@@ -527,7 +540,7 @@
     "buyers": "구매자",
     "raw-data": "최초 데이터",
     "username": "사용자명",
-    "floor-now": "Floor (now)",
+    "floor-now": "현재 최저가",
     "related-lists": "연관된 리스트",
     "by-issuer": "발행자에 의한",
     "by-owner": "소유자에 의한",
@@ -628,7 +641,7 @@
       "nfts": "NFTs",
       "nft-offer": "NFT 제안",
       "nft-offers": "NFT 제안",
-      "nft-volumes": "NFT sales volumes"
+      "nft-volumes": "NFT 판매량"
     },
     "enter-address": "XRPL 주소 또는 사용자명으로 로그인하세요",
     "searching-tx-nft-nftoffer": "Tx/NFT ID/NFT 제안 검색하기",

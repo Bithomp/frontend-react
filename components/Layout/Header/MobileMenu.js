@@ -320,23 +320,23 @@ export default function MobileMenu({
               </Link>
               <Link href="/learn/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoHelpCircleOutline style={itemIconStyle} />
-                What is AMM?
+                {t('menu.amm.learn')}
               </Link>
               <Link href="/services/amm/deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoArrowDownCircleOutline style={itemIconStyle} />
-                AMM Deposit
+                {t('menu.amm.deposit')}
               </Link>
               <Link href="/services/amm/withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoArrowUpCircleOutline style={itemIconStyle} />
-                AMM Withdraw
+                {t('menu.amm.withdraw')}
               </Link>
               <Link href="/services/amm/vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoCheckboxOutline style={itemIconStyle} />
-                AMM Vote
+                {t('menu.amm.vote')}
               </Link>
               <Link href="/services/amm/create" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoBuildOutline style={itemIconStyle} />
-                AMM Create
+                {t('menu.amm.create')}
               </Link>
               <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoCompassOutline style={itemIconStyle} />

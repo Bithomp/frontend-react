@@ -17,6 +17,8 @@
   "ancestors": "Vorfahren",
   "children": "Kinder",
   "child-count_one": "{{count}} Kind",
+  "child-count_few": "{{count}} Kinder",
+  "child-count_many": "{{count}} Kinder",
   "child-count_other": "{{count}} Kinder",
   "descendants": "Nachkommen",
   "show-details": "Details",

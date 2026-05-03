@@ -21,12 +21,25 @@
     "start-issuer": "Mulai ketik untuk mencari penerbit",
     "more-than-results": "Lebih dari {{count}} hasil. Ketik lebih banyak untuk mempersempit pencarian Anda."
   },
+  "token-selector": {
+    "select-token": "Pilih token",
+    "select-token-destination": "Pilih token (alamat tujuan dapat menyimpannya)",
+    "search-placeholder": "Cari berdasarkan mata uang, penerbit, atau username",
+    "holders": "{{value}} pemegang",
+    "more-results": "Ditemukan lebih dari {{count}} hasil. Tentukan penerbit untuk mempersempit pencarian.",
+    "no-destination-trustlines": "Tidak ada trustline untuk alamat tujuan ini."
+  },
   "menu": {
     "tokens": "Token",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer"
+      "explorer": "AMM explorer",
+      "learn": "Apa itu AMM?",
+      "deposit": "Deposit AMM",
+      "withdraw": "Withdraw AMM",
+      "vote": "Vote AMM",
+      "create": "Buat AMM"
     },
     "company": {
       "about-us": "Tentang"
@@ -34,7 +47,7 @@
     "services": {
       "services": "Layanan",
       "send": "Kirim pembayaran",
-      "reward-auto-claim": "Reward Auto Claim",
+      "reward-auto-claim": "Klaim hadiah otomatis",
       "add-token": "Tambah token (Trustline)",
       "account-settings": "Pengaturan akun",
       "toml-checker": "Pemeriksa TOML",
@@ -67,7 +80,7 @@
     "network": {
       "blockchain": "Blockchain",
       "nodes": "Node",
-      "governance": "Governance",
+      "governance": "Tata kelola",
       "activations": "Akun yang Telah Aktif (grafik)",
       "distribution": "Distribusi {{currency}}",
       "last-ledger-information": "Informasi Ledger Terbaru",
@@ -80,7 +93,7 @@
       "unl-report": "Laporan UNL",
       "genesis": "Akun Awal",
       "allocation": "Alokasi {{currency}}",
-      "activation-tree": "Activation Tree"
+      "activation-tree": "Pohon aktivasi"
     },
     "developers": {
       "developers": "Pengembang",
@@ -300,7 +313,7 @@
     "email": "Alamat surel Anda:",
     "url": "URL situs/aplikasi Anda:",
     "description": "Deskripsi Proyek dan Detail Penggunaan API:",
-    "success": "Thank you. The API token was sent to your e-mail.",
+    "success": "Terima kasih. Token API telah dikirim ke e-mail Anda.",
     "error": {
       "url-empty": "Silakan masukkan URL situs/aplikasi Anda.",
       "url-invalid": "Silakan masukkan URL yang valid.",
@@ -343,7 +356,7 @@
       "accept-transfer": "Terima Transfer NFT",
       "buy-for-amount-on": "Beli seharga {{amount}} di {{service}}",
       "buy-for-amount": "Beli seharga {{amount}}",
-      "sell-for-amount": "Sell for {{amount}}",
+      "sell-for-amount": "Jual seharga {{amount}}",
       "make-offer": "Buat Penawaran",
       "list-for-sale": "Daftar untuk dijual",
       "burn": "Hapus NFT ini"
@@ -363,7 +376,7 @@
     "no-media": "Tidak ada media ditemukan",
     "viewer": "Pelihat",
     "developer-mode": "Mode Pengembang",
-    "search": "Search",
+    "search": "Cari",
     "of-many": "dari banyak",
     "of": "dari",
     "sort-by": "Urutkan berdasarkan",
@@ -432,7 +445,7 @@
     "currencyIssuer is invalid": "Alamat penerbit mata uang tidak valid",
     "Token information is not found": "Kami tidak dapat menemukan informasi apa pun untuk ID tersebut",
     "No nfts information is found": "Maaf, terjadi kesalahan, silakan cari yang lain.",
-    "Address is not valid": "Invalid address"
+    "Address is not valid": "Alamat tidak valid"
   },
   "units": {
     "seconds-short": "d",
@@ -456,11 +469,11 @@
     "destination-tag": "Destination tag",
     "uri": "URI",
     "mints": "Mints",
-    "view": "View",
+    "view": "Lihat",
     "period": "Periode",
     "mint-period": "Periode Mint",
     "burn-period": "Periode Burn",
-    "warning": "Warning",
+    "warning": "Peringatan",
     "sequence": "Urutan",
     "version": "Versi",
     "domain": "Domain",
@@ -538,7 +551,7 @@
     "marketplace": "Pasar",
     "public-key": "Kunci Publik",
     "text": {
-      "private-offer": "Private offer",
+      "private-offer": "Penawaran privat",
       "show-extended-statistics": "Tampilkan statistik tambahan",
       "include-without-media-data": "Sertakan NFT tanpa media",
       "include-burned-nfts": "Sertakan NFT yang dihapus",
@@ -607,10 +620,10 @@
     "bids": "Bid",
     "all-tokens": "Semua Token",
     "single-token": "Token Tunggal",
-    "mintedNew": "Latest",
-    "mintedOld": "Oldest",
-    "existing": "Existing",
-    "burned": "Dihapus"
+    "mintedNew": "Terbaru",
+    "mintedOld": "Terlama",
+    "existing": "Ada",
+    "burned": "Dibakar"
   },
   "xaman": {
     "new-qr": "Dapatkan kode QR baru"
@@ -620,15 +633,15 @@
       "main": "Penjelajah {{explorerName}}",
       "sub": "Jelajahi transaksi, akun, token, dan NFT {{nativeCurrency}} — cara yang cepat dan tepercaya untuk menelusuri {{nativeCurrency}} Ledger.",
       "topNftCollections": "Koleksi NFT Teratas",
-      "amm": "AMM pool information",
-      "object": "Object information",
-      "account": "Account information",
-      "transaction": "Transaction information",
+      "amm": "Informasi pool AMM",
+      "object": "Informasi objek",
+      "account": "Informasi akun",
+      "transaction": "Informasi transaksi",
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "Penawaran NFT",
       "nft-offers": "Penawaran NFT",
-      "nft-volumes": "NFT sales volumes"
+      "nft-volumes": "Volume penjualan NFT"
     },
     "enter-address": "Masukkan alamat XRPL atau username",
     "searching-tx-nft-nftoffer": "Mencari Tx / ID NFT / Tawaran NFT",
@@ -641,7 +654,7 @@
     "different-network": "Transaksi ini berasal dari jaringan <1>{{networkNameOrId}}</1>",
     "check-tx-on-different-explorer": "periksa detailnya <2><0>di sini</0></2>.",
     "not-supported-network": "yang tidak didukung.",
-    "no-slashes": "The search should not contain slashes."
+    "no-slashes": "Pencarian tidak boleh berisi garis miring."
   },
   "nft-explorer": {
     "header": "Penjelajah NFT"

@@ -1,8 +1,9 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 import SEO from '../../../components/SEO'
 import AMMWithdrawForm from '../../../components/Services/Amm/AMMWithdraw'
 import { getIsSsrMobile } from '../../../utils/mobile'
-import AmmTabs from '../../../components/Tabs/AmmTabs'
+import ServicesTabs from '../../../components/Tabs/ServicesTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -15,7 +16,7 @@ export const getServerSideProps = async (context) => {
       queryCurrency2: currency2 || null,
       queryCurrency2Issuer: currency2Issuer || null,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -27,15 +28,17 @@ export default function AMMCreate({
   queryCurrency2,
   queryCurrency2Issuer
 }) {
+  const { t } = useTranslation(['common', 'services'])
+
   return (
     <>
       <SEO
-        title="Withdraw assets from an AMM Pool"
-        description="Get back your assets from an Automated Market Maker Pool"
+        title={t('amm.withdraw-title', { ns: 'services' })}
+        description={t('amm.withdraw-description', { ns: 'services' })}
       />
       <div className="page-services-amm content-center">
-        <h1 className="center">Withdraw assets into an AMM Pool</h1>
-        <AmmTabs tab="withdraw" />
+        <ServicesTabs category="amm" tab="withdraw" />
+        <h1 className="center">{t('amm.withdraw-heading', { ns: 'services' })}</h1>
         <AMMWithdrawForm
           setSignRequest={setSignRequest}
           queryCurrency={queryCurrency}

@@ -512,23 +512,23 @@ export default function Header({
               </Link>
               <Link href="/learn/amm">
                 <IoHelpCircleOutline className="menu-item-icon" />
-                What is AMM?
+                {t('menu.amm.learn')}
               </Link>
               <Link href="/services/amm/deposit">
                 <IoArrowDownCircleOutline className="menu-item-icon" />
-                AMM Deposit
+                {t('menu.amm.deposit')}
               </Link>
               <Link href="/services/amm/withdraw">
                 <IoArrowUpCircleOutline className="menu-item-icon" />
-                AMM Withdraw
+                {t('menu.amm.withdraw')}
               </Link>
               <Link href="/services/amm/vote">
                 <IoCheckboxOutline className="menu-item-icon" />
-                AMM Vote
+                {t('menu.amm.vote')}
               </Link>
               <Link href="/services/amm/create">
                 <IoBuildOutline className="menu-item-icon" />
-                AMM Create
+                {t('menu.amm.create')}
               </Link>
               <Link href="/amm">
                 <IoCompassOutline className="menu-item-icon" />

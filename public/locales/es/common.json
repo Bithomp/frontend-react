@@ -21,20 +21,33 @@
     "start-issuer": "Empieza a escribir para buscar emisores",
     "more-than-results": "Más de {{count}} resultados. Escribe más para acotar tu búsqueda."
   },
+  "token-selector": {
+    "select-token": "Seleccionar token",
+    "select-token-destination": "Seleccionar token (el destino puede recibirlo)",
+    "search-placeholder": "Buscar por moneda, emisor o username",
+    "holders": "{{value}} titulares",
+    "more-results": "Se encontraron más de {{count}} resultados. Especifica un emisor para acotar la búsqueda.",
+    "no-destination-trustlines": "No se encontraron trustlines para esta dirección de destino."
+  },
   "menu": {
     "tokens": "Tokens",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer"
+      "explorer": "AMM explorer",
+      "learn": "¿Qué es AMM?",
+      "deposit": "Depósito AMM",
+      "withdraw": "Retiro AMM",
+      "vote": "Voto AMM",
+      "create": "Crear AMM"
     },
     "company": {
-      "about-us": "About us"
+      "about-us": "Sobre nosotros"
     },
     "services": {
       "services": "Servicios",
       "send": "Enviar pago",
-      "reward-auto-claim": "Reward Auto Claim",
+      "reward-auto-claim": "Reclamo automático de recompensas",
       "add-token": "Agregar token (Trustline)",
       "account-settings": "Configuración de cuenta",
       "toml-checker": "Comprobador TOML",
@@ -80,7 +93,7 @@
       "unl-report": "Reporte UNL",
       "genesis": "Cuentas iniciales",
       "allocation": "Distribución de {{currency}}",
-      "activation-tree": "Activation Tree"
+      "activation-tree": "Árbol de activación"
     },
     "developers": {
       "developers": "Desarrolladores",
@@ -226,7 +239,7 @@
       },
       "escrows": "Escrows",
       "amms": "AMM pools",
-      "nodes:": "Nodos"
+      "nodes": "Nodos"
     },
     "teaser": {
       "topDapps": "Top Dapps",
@@ -372,7 +385,7 @@
   "form": {
     "error": {
       "destination-tag-invalid": "Por favor, introduce una marca de destino válida.",
-      "price-empty": "Please enter an amount.",
+      "price-empty": "Introduce una cantidad.",
       "address-empty": "Por favor, introduce una dirección.",
       "address-invalid": "Por favor, introduce una dirección válida.",
       "domain-empty": "Por favor, introduce un dominio web.",
@@ -456,7 +469,7 @@
     "destination-tag": "Marca de destino",
     "uri": "URI",
     "mints": "Acuñaciones",
-    "view": "View",
+    "view": "Ver",
     "period": "Periodo",
     "mint-period": "Periodo de acuñación",
     "burn-period": "Periodo de quema",
@@ -472,7 +485,7 @@
     "name": "Nombre",
     "sender": "Remitente",
     "memo": "Memo",
-    "balance": "Balance",
+    "balance": "Saldo",
     "transaction": "Transacción",
     "owner": "Dueño",
     "owners-now": "Dueños (ahora)",
@@ -538,7 +551,7 @@
     "marketplace": "Mercado",
     "public-key": "Clave pública",
     "text": {
-      "private-offer": "Private offer",
+      "private-offer": "Oferta privada",
       "show-extended-statistics": "Mostrar estadísticas ampliadas",
       "include-without-media-data": "Incluir NFTs sin contenido",
       "include-burned-nfts": "Incluir NFTs quemados",
@@ -607,10 +620,10 @@
     "bids": "Ofertas",
     "all-tokens": "Todos los tokens",
     "single-token": "Token único",
-    "mintedNew": "Latest",
-    "mintedOld": "Oldest",
-    "existing": "Existing",
-    "burned": "Burned"
+    "mintedNew": "Más recientes",
+    "mintedOld": "Más antiguos",
+    "existing": "Existentes",
+    "burned": "Quemados"
   },
   "xaman": {
     "new-qr": "Genera un nuevo código QR"
@@ -628,7 +641,7 @@
       "nfts": "NFTs",
       "nft-offer": "Ofertas NFT",
       "nft-offers": "Ofertas NFT",
-      "nft-volumes": "NFT sales volumes"
+      "nft-volumes": "Volúmenes de ventas NFT"
     },
     "enter-address": "Introduce una dirección XRPL o nombre de usuario",
     "searching-tx-nft-nftoffer": "Buscando for Tx / NFT ID / Oferta NFT",

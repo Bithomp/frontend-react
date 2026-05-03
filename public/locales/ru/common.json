@@ -21,12 +21,25 @@
     "start-issuer": "Начните вводить, чтобы найти эмитентов",
     "more-than-results": "Найдено более {{count}} результатов. Введите больше символов, чтобы сузить поиск."
   },
+  "token-selector": {
+    "select-token": "Выберите токен",
+    "select-token-destination": "Выберите токен (доступен получателю)",
+    "search-placeholder": "Поиск по валюте, эмитенту или username",
+    "holders": "{{value}} держателей",
+    "more-results": "Найдено более {{count}} результатов. Укажите эмитента, чтобы сузить поиск.",
+    "no-destination-trustlines": "Для этого адреса назначения trustline не найдены."
+  },
   "menu": {
     "tokens": "Токены",
     "amm": {
       "amm": "АММ",
       "pools": "АММ пулы",
-      "explorer": "АММ эксплорер"
+      "explorer": "АММ эксплорер",
+      "learn": "Что такое АММ?",
+      "deposit": "АММ депозит",
+      "withdraw": "АММ вывод",
+      "vote": "АММ голосование",
+      "create": "Создать АММ"
     },
     "company": {
       "about-us": "О нас"
@@ -34,7 +47,7 @@
     "services": {
       "services": "Сервисы",
       "send": "Отправить платеж",
-      "reward-auto-claim": "Reward Auto Claim",
+      "reward-auto-claim": "Автополучение наград",
       "add-token": "Добавить токен (Trustline)",
       "account-settings": "Настройки аккаунта",
       "toml-checker": "Проверка TOML",
@@ -80,7 +93,7 @@
       "unl-report": "UNL репорт",
       "genesis": "Генезис аккаунты",
       "allocation": "Распределение {{currency}}",
-      "activation-tree": "Activation Tree"
+      "activation-tree": "Дерево активаций"
     },
     "developers": {
       "developers": "Разработчикам",

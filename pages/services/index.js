@@ -36,7 +36,7 @@ import { LuCoins, LuFileCheck2 } from 'react-icons/lu'
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -71,7 +71,7 @@ function Section({ title, items }) {
 }
 
 export default function ServicesPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'services'])
   const [q, setQ] = useState('')
 
   // Build sections (no stacks)
@@ -97,8 +97,8 @@ export default function ServicesPage() {
       items: [
         { href: '/services/trustline', title: t('menu.services.add-token'), icon: TbShieldCheck },
         { href: '/services/send', title: t('menu.services.send'), icon: TbSend },
-        { href: '/services/check', title: 'Issue Check', icon: MdOutlineFactCheck },
-        { href: '/services/escrow', title: 'Create Escrow', icon: MdOutlineLockClock }
+        { href: '/services/check', title: t('check.title', { ns: 'services' }), icon: MdOutlineFactCheck },
+        { href: '/services/escrow', title: t('escrow.title', { ns: 'services' }), icon: MdOutlineLockClock }
       ]
     }
 
@@ -107,10 +107,10 @@ export default function ServicesPage() {
       id: 'amm',
       title: '🌊 AMM',
       items: [
-        { href: '/services/amm/deposit', title: 'AMM Deposit', icon: RiArrowDownCircleLine },
-        { href: '/services/amm/withdraw', title: 'AMM Withdraw', icon: RiArrowUpCircleLine },
-        { href: '/services/amm/vote', title: 'AMM Vote', icon: RiCheckboxCircleLine },
-        { href: '/services/amm/create', title: 'AMM Create', icon: RiAddCircleLine }
+        { href: '/services/amm/deposit', title: t('amm.tabs.deposit', { ns: 'services' }), icon: RiArrowDownCircleLine },
+        { href: '/services/amm/withdraw', title: t('amm.tabs.withdraw', { ns: 'services' }), icon: RiArrowUpCircleLine },
+        { href: '/services/amm/vote', title: t('amm.tabs.vote', { ns: 'services' }), icon: RiCheckboxCircleLine },
+        { href: '/services/amm/create', title: t('amm.tabs.create', { ns: 'services' }), icon: RiAddCircleLine }
       ]
     }
 
@@ -187,7 +187,7 @@ export default function ServicesPage() {
             <input
               className={'input-text ' + styles.search}
               type="text"
-              placeholder="Search by service name..."
+              placeholder={t('services-page.search-placeholder', { ns: 'services' })}
               value={q}
               onChange={(e) => setQ(e.target.value)}
               aria-label="Search services"

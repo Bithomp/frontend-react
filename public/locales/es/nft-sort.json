@@ -1,0 +1,13 @@
+{
+  "dropdown": {
+    "priceHigh": "Precio de mayor a menor",
+    "priceLow": "Precio de menor a mayor",
+    "soldNew": "Ventas recientes",
+    "soldOld": "Ventas más antiguas",
+    "mintedNew": "Mints más recientes",
+    "mintedOld": "Mints más antiguos",
+    "rating": "Más vistos",
+    "offerCreatedNew": "Ofertas más recientes",
+    "offerCreatedOld": "Ofertas más antiguas"
+  }
+}

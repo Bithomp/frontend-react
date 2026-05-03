@@ -17,6 +17,8 @@
   "ancestors": "祖先",
   "children": "子",
   "child-count_one": "{{count}} 人の子",
+  "child-count_few": "{{count}} 人の子",
+  "child-count_many": "{{count}} 人の子",
   "child-count_other": "{{count}} 人の子",
   "descendants": "子孫",
   "show-details": "詳細",

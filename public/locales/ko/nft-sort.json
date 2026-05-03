@@ -1,0 +1,13 @@
+{
+  "dropdown": {
+    "priceHigh": "가격 높은 순",
+    "priceLow": "가격 낮은 순",
+    "soldNew": "최근 판매",
+    "soldOld": "오래된 판매",
+    "mintedNew": "최신 민트",
+    "mintedOld": "오래된 민트",
+    "rating": "가장 많이 본 순",
+    "offerCreatedNew": "최신 오퍼",
+    "offerCreatedOld": "오래된 오퍼"
+  }
+}

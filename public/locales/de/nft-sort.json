@@ -1,0 +1,13 @@
+{
+  "dropdown": {
+    "priceHigh": "Preis absteigend",
+    "priceLow": "Preis aufsteigend",
+    "soldNew": "Neueste Verkäufe",
+    "soldOld": "Älteste Verkäufe",
+    "mintedNew": "Neueste Mints",
+    "mintedOld": "Älteste Mints",
+    "rating": "Meist angesehen",
+    "offerCreatedNew": "Neueste Angebote",
+    "offerCreatedOld": "Älteste Angebote"
+  }
+}

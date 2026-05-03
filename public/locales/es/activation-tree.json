@@ -17,6 +17,8 @@
   "ancestors": "ancestros",
   "children": "hijos",
   "child-count_one": "{{count}} hijo",
+  "child-count_few": "{{count}} hijos",
+  "child-count_many": "{{count}} hijos",
   "child-count_other": "{{count}} hijos",
   "descendants": "descendientes",
   "show-details": "Detalles",

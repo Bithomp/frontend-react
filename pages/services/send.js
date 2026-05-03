@@ -1,4 +1,4 @@
-import { i18n, useTranslation } from 'next-i18next'
+import { i18n, Trans, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { addAndRemoveQueryParams } from '../../utils'
@@ -34,6 +34,7 @@ import Link from 'next/link'
 import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import TokenSelector from '../../components/UI/TokenSelector'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -52,7 +53,7 @@ export const getServerSideProps = async (context) => {
       isSsrMobile: getIsSsrMobile(context),
       currencyQuery: currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || '',
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -74,7 +75,8 @@ export default function Send({
   currencyQuery,
   currencyIssuerQuery
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const router = useRouter()
 
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
@@ -230,7 +232,7 @@ export default function Send({
           setDestinationRemitDisabled(false)
         }
       } catch (error) {
-        setError('Error fetching destination account data')
+        setError(ts('shared.errors.destination-fetch'))
         setDestinationStatus(0)
         setAgreeToSendToFlagged(false)
         setRequireDestTag(false)
@@ -247,7 +249,7 @@ export default function Send({
     setFee(value)
 
     if (Number(value) > 1) {
-      setFeeError('Maximum fee is 1 ' + nativeCurrency)
+      setFeeError(ts('shared.errors.max-fee', { nativeCurrency }))
     } else {
       setFeeError('')
     }
@@ -263,25 +265,25 @@ export default function Send({
     }
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      setError('Please enter a valid amount.')
+      setError(ts('shared.errors.valid-amount'))
       return
     }
 
     // Check if destination requires a tag but none is provided
     if (requireDestTag && !destinationTag) {
-      setError('This destination account requires a destination tag. Please enter a destination tag.')
+      setError(ts('shared.errors.destination-tag-required'))
       return
     }
 
     if (destinationTag && !isTagValid(destinationTag)) {
-      setError('Please enter a valid destination tag.')
+      setError(ts('shared.errors.valid-destination-tag'))
       return
     }
 
     // Check remit validation for Xahau
     if (xahauNetwork && useRemit) {
       if (destinationRemitDisabled) {
-        setError('Cannot use Remit: Destination account has incoming remit disabled.')
+        setError(ts('send.remit.error-disabled'))
         return
       }
     }
@@ -289,38 +291,38 @@ export default function Send({
     // Check if advanced options are being used without proper subscription
     if ((fee || sourceTag || invoiceId) && (!sessionToken || subscriptionExpired)) {
       setError(
-        'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
+        ts('shared.errors.advanced-pro')
       )
       return
     }
 
     if (Number(fee) > 1) {
-      setError('Maximum fee is 1 ' + nativeCurrency)
+      setError(ts('shared.errors.max-fee', { nativeCurrency }))
       return
     }
 
     if (sourceTag && !isTagValid(sourceTag)) {
-      setError('Please enter a valid source tag.')
+      setError(ts('shared.errors.valid-source-tag'))
       return
     }
 
     if (invoiceId && !isIdValid(invoiceId)) {
-      setError('Invoice ID must be a 64-character hexadecimal string.')
+      setError(ts('shared.errors.invoice-id'))
       return
     }
 
     if (!agreeToSiteTerms) {
-      setError('Please agree to the Terms and conditions')
+      setError(ts('shared.errors.terms'))
       return
     }
 
     if (isNonActive && !agreeToSendToNonActive) {
-      setError('Please acknowledge that you understand the risks of sending to a non-activated account')
+      setError(ts('shared.errors.acknowledge-non-active'))
       return
     }
 
     if (destinationStatus === 3) {
-      setError('This account has been flagged as FRAUD. Sending is not allowed.')
+      setError(ts('shared.errors.fraud-blocked'))
       return
     }
 
@@ -433,8 +435,8 @@ export default function Send({
   return (
     <>
       <SEO
-        title="Send payment"
-        description="Send a payment to a destination address"
+        title={ts('send.title')}
+        description={ts('send.description')}
         image={{
           width: 1200,
           height: 630,
@@ -443,12 +445,13 @@ export default function Send({
         twitterImage={{ file: 'previews/630x630/services/send.png' }}
       />
       <div className="content-text content-center">
-        <h1 className="center">Send payment</h1>
+        <ServicesTabs category="payments" tab="send" />
+        <h1 className="center">{ts('send.title')}</h1>
 
         <div>
           <AddressInput
             title={t('table.destination')}
-            placeholder="Destination address"
+            placeholder={ts('shared.destination-address')}
             name="destination"
             hideButton={true}
             setValue={(value) => {
@@ -468,28 +471,27 @@ export default function Send({
                 <strong>
                   ⚠️{' '}
                   {destinationStatus === 1
-                    ? 'Spam Alert'
+                    ? ts('send.flagged.spam-title')
                     : destinationStatus === 2
-                      ? 'Potential Fraud Alert'
-                      : 'Fraud Alert'}
+                      ? ts('send.flagged.potential-fraud-title')
+                      : ts('send.flagged.fraud-title')}
                 </strong>
                 <br />
                 {destinationStatus === 1 && (
                   <>
-                    This account has been flagged for spam. Proceed with caution.
+                    {ts('send.flagged.spam')}
                     <br />
                   </>
                 )}
                 {destinationStatus === 2 && (
                   <>
-                    This account has been flagged as potentially involved in fraud, scams, or phishing.{' '}
-                    <strong>Proceed with caution.</strong>
+                    <Trans i18nKey="send.flagged.potential-fraud" ns="services" components={[<strong key="0" />]} />
                     <br />
                   </>
                 )}
                 {destinationStatus === 3 && (
                   <>
-                    <strong>This account has been flagged as FRAUD. Sending is not allowed.</strong>
+                    <Trans i18nKey="send.flagged.fraud" ns="services" components={[<strong key="0" />]} />
                     <br />
                   </>
                 )}
@@ -498,7 +500,7 @@ export default function Send({
                   target="_blank"
                   style={{ color: '#ff6b6b', textDecoration: 'underline' }}
                 >
-                  Learn more about flagged accounts
+                  {ts('send.flagged.learn-more')}
                 </Link>
               </div>
             </div>
@@ -509,16 +511,15 @@ export default function Send({
             <div>
               <div className="form-spacing" />
               <div className="orange center p-2 rounded-md border border-orange-200 mb-4 sm:mb-0">
-                <strong>⚠️ Non-Activated Account</strong>
+                <strong>⚠️ {ts('send.non-active.title')}</strong>
                 <br />
-                You are attempting to send funds to a non-activated account.
+                {ts('send.non-active.line1')}
                 <br />
-                This account has never been used and currently has a zero balance.
+                {ts('send.non-active.line2')}
                 <br />
-                <strong>Proceed with caution.</strong>
+                <strong>{ts('send.non-active.proceed')}</strong>
                 <br />
-                If you continue, {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate the
-                account on the ledger.
+                {ts('send.non-active.reserve', { amount: amountFormat(networkInfo?.reserveBase || '1000000') })}
               </div>
             </div>
           )}
@@ -528,13 +529,13 @@ export default function Send({
             <div>
               <div className="form-spacing" />
               <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
-                <strong>🚫 Remit Not Available</strong>
+                <strong>🚫 {ts('send.remit.not-available')}</strong>
                 <br />
-                This destination account has incoming remit disabled.
+                {ts('send.remit.disabled-account')}
                 <br />
-                <strong>You cannot use Remit to send tokens to this account.</strong>
+                <strong>{ts('send.remit.cannot-use')}</strong>
                 <br />
-                Please uncheck the "Use Remit" option or choose a different destination.
+                {ts('send.remit.choose-other')}
               </div>
             </div>
           )}
@@ -547,7 +548,7 @@ export default function Send({
                 {requireDestTag ? (
                   <>
                     {' '}
-                    (<span className="orange bold">required</span>)
+                    (<span className="orange bold">{ts('shared.required')}</span>)
                   </>
                 ) : (
                   ''
@@ -569,10 +570,10 @@ export default function Send({
                 name="use-remit"
                 disabled={destinationRemitDisabled && !useRemit}
               >
-                Use Remit
-                <span className="orange"> - Send any token and pay for destination reserves.</span>
+                {ts('send.remit.use')}
+                <span className="orange">{ts('send.remit.hint')}</span>
                 {destinationRemitDisabled && (
-                  <span className="red"> (Disabled - destination has incoming remit disabled)</span>
+                  <span className="red">{ts('send.remit.disabled')}</span>
                 )}
               </CheckBox>
 
@@ -580,22 +581,19 @@ export default function Send({
                 <>
                   <br />
                   <div className="grey p-2 rounded-md border border-grey-200 mb-4 sm:mb-0">
-                    <strong>ℹ️ Remit Transaction</strong>
+                    <strong>ℹ️ {ts('send.remit.title')}</strong>
                     <br />
                     <br />
-                    When using Remit, you can send any token to the destination account, even if they don't have a
-                    trustline for it.
+                    {ts('send.remit.description')}
                     <br />
                     <br />
-                    <strong>Note:</strong> You will pay for the destination account's reserve requirements if the
-                    account needs to be activated.
+                    <strong>{ts('send.remit.note')}</strong> {ts('send.remit.note-text')}
                     <br />
                     <br />
-                    <strong>Token Selection:</strong> All available tokens (including native XAH) are shown since remit
-                    allows sending any token regardless of trustlines.
+                    <strong>{ts('send.remit.token-selection')}</strong> {ts('send.remit.token-selection-text')}
                     <br />
                     <br />
-                    This feature is only available on the Xahau network.
+                    {ts('send.remit.xahau-only')}
                   </div>
                 </>
               )}
@@ -606,7 +604,7 @@ export default function Send({
             <div className="flex-1">
               <FormInput
                 title={t('table.amount')}
-                placeholder="Enter amount"
+                placeholder={ts('shared.enter-amount')}
                 setInnerValue={setAmount}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -618,14 +616,14 @@ export default function Send({
                 textUnder={
                   selectedToken?.transferFee && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0 ? (
                     <span className="grey">
-                      To receive ≈ {formatXDigits(parseFloat(amount) / selectedToken.transferFee, 11)}
+                      {ts('shared.to-receive', { amount: formatXDigits(parseFloat(amount) / selectedToken.transferFee, 11) })}
                     </span>
                   ) : null
                 }
               />
             </div>
             <div className="flex-1" style={{ marginBottom: 20 }}>
-              <span className="input-title">Currency</span>
+              <span className="input-title">{ts('shared.currency')}</span>
               <TokenSelector
                 value={selectedToken}
                 onChange={onTokenChange}
@@ -635,7 +633,7 @@ export default function Send({
               />
               {selectedToken.transferFee ? (
                 <div style={{ marginTop: 8 }}>
-                  <span className="orange">Issuer fee: {transferRateToPercent(selectedToken.transferFee)}</span>
+                  <span className="orange">{ts('shared.issuer-fee', { fee: transferRateToPercent(selectedToken.transferFee) })}</span>
                 </div>
               ) : null}
             </div>
@@ -644,10 +642,10 @@ export default function Send({
           <FormInput
             title={
               <>
-                {t('table.memo')} (<span className="orange">It will be public</span>)
+                {t('table.memo')} (<span className="orange">{ts('shared.it-will-be-public')}</span>)
               </>
             }
-            placeholder="Enter a memo (optional)"
+            placeholder={ts('shared.enter-memo-optional')}
             setInnerValue={setMemo}
             hideButton={true}
             defaultValue={memo}
@@ -665,16 +663,18 @@ export default function Send({
             }}
             name="advanced-payment"
           >
-            Advanced Payment Options
+            {ts('send.advanced-options')}
             {!sessionToken ? (
               <>
                 {' '}
                 <span className="orange">
-                  (available to{' '}
-                  <span className="link" onClick={() => openEmailLogin()}>
-                    logged-in
-                  </span>{' '}
-                  Bithomp Pro subscribers)
+                  (
+                  <Trans
+                    i18nKey="shared.advanced-pro"
+                    ns="services"
+                    components={[<span key="0" className="link" onClick={() => openEmailLogin()} />]}
+                  />
+                  )
                 </span>
               </>
             ) : (
@@ -682,8 +682,11 @@ export default function Send({
                 <>
                   {' '}
                   <span className="orange">
-                    Your Bithomp Pro subscription has expired.{' '}
-                    <Link href="/admin/subscriptions">Renew your subscription</Link>
+                    <Trans
+                      i18nKey="shared.subscription-expired"
+                      ns="services"
+                      components={[<Link key="0" href="/admin/subscriptions" />]}
+                    />
                   </span>
                 </>
               )
@@ -694,8 +697,8 @@ export default function Send({
             <>
               <br />
               <FormInput
-                title="Fee"
-                placeholder={'Enter fee in ' + nativeCurrency}
+                title={ts('shared.fee')}
+                placeholder={ts('shared.enter-fee', { nativeCurrency })}
                 setInnerValue={handleFeeChange}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -710,8 +713,8 @@ export default function Send({
               {feeError && <div className="red">{feeError}</div>}
               <div className="form-spacing" />
               <FormInput
-                title="Source Tag"
-                placeholder="Enter source tag"
+                title={ts('shared.source-tag')}
+                placeholder={ts('shared.enter-source-tag')}
                 setInnerValue={setSourceTag}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -722,8 +725,8 @@ export default function Send({
               />
               <div className="form-spacing" />
               <FormInput
-                title="Invoice ID"
-                placeholder="Enter invoice ID"
+                title={ts('shared.invoice-id')}
+                placeholder={ts('shared.enter-invoice-id')}
                 setInnerValue={setInvoiceId}
                 hideButton={true}
                 defaultValue={invoiceId}
@@ -736,18 +739,18 @@ export default function Send({
 
           <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-            I agree with the{' '}
-            <Link href="/terms-and-conditions" target="_blank">
-              Terms and conditions
-            </Link>
-            .
+            <Trans
+              i18nKey="shared.agree-terms"
+              ns="services"
+              components={[<Link key="0" href="/terms-and-conditions" target="_blank" />]}
+            />
           </CheckBox>
 
           {/* Show additional checkbox for flagged accounts (only for status 1 and 2) */}
           {(destinationStatus === 1 || destinationStatus === 2) && (
             <div className="orange">
               <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
-                I understand the risks and I want to proceed with sending funds to this flagged account
+                {ts('send.flagged.agree')}
               </CheckBox>
             </div>
           )}
@@ -760,8 +763,7 @@ export default function Send({
                 setChecked={setAgreeToSendToNonActive}
                 name="agree-to-non-active"
               >
-                I understand that {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate this
-                account and I want to proceed
+                {ts('send.non-active.agree', { amount: amountFormat(networkInfo?.reserveBase || '1000000') })}
               </CheckBox>
             </div>
           )}
@@ -773,9 +775,9 @@ export default function Send({
               <br />
             </>
           )}
-          <div className="center">
+          <div className="center service-form-actions">
             <button className="button-action" onClick={handleSend} disabled={destinationStatus === 3}>
-              Send Payment
+              {ts('send.button')}
             </button>
           </div>
           {txResult?.status === 'tesSUCCESS' && (
@@ -783,10 +785,9 @@ export default function Send({
               <br />
               <div>
                 <div className="grey" style={{ marginBottom: 14 }}>
-                  To mint a token (by sending a payment to a distribution account that already has a trustline to you),
-                  you must be logged in with the issuer address.
+                  {ts('send.mint-note')}
                 </div>
-                <h3 className="center">Transaction Successful</h3>
+                <h3 className="center">{ts('shared.transaction-successful')}</h3>
                 <div>
                   <p>
                     <strong>{t('table.date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
@@ -806,11 +807,11 @@ export default function Send({
                   )}
                   {txResult.sourceTag && (
                     <p>
-                      <strong>Source Tag:</strong> {txResult.sourceTag}
+                      <strong>{ts('shared.source-tag-result')}:</strong> {txResult.sourceTag}
                     </p>
                   )}
                   <p>
-                    <strong>Fee:</strong> {txResult.fee}
+                    <strong>{ts('shared.fee')}:</strong> {txResult.fee}
                   </p>
                   <p>
                     <strong>{t('table.sequence')}:</strong> #{txResult.sequence}
@@ -826,13 +827,13 @@ export default function Send({
                   </p>
                   {txResult.invoiceId && (
                     <p>
-                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceId)}{' '}
+                      <strong>{ts('shared.invoice-id')}:</strong> {shortHash(txResult.invoiceId)}{' '}
                       <CopyButton text={txResult.invoiceId} />
                     </p>
                   )}
                   {txResult.transactionType === 'Remit' && (
                     <p>
-                      <strong>Transaction Type:</strong> <span className="bold">Remit</span>
+                      <strong>{ts('shared.transaction-type')}:</strong> <span className="bold">Remit</span>
                     </p>
                   )}
                 </div>

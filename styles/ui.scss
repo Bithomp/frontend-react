@@ -518,6 +518,27 @@ table {
   text-align: center !important;
 }
 
+.service-form-actions {
+  margin-top: 12px;
+}
+
+.trustline-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.trustline-copy-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
 .left {
   text-align: left !important;
 }

@@ -21,12 +21,25 @@
     "start-issuer": "Commencez à saisir pour rechercher des émetteurs",
     "more-than-results": "Plus de {{count}} résultats. Veuillez saisir davantage pour affiner votre recherche."
   },
+  "token-selector": {
+    "select-token": "Sélectionner un token",
+    "select-token-destination": "Sélectionner un token (le destinataire peut le détenir)",
+    "search-placeholder": "Rechercher par devise, émetteur ou username",
+    "holders": "{{value}} détenteurs",
+    "more-results": "Plus de {{count}} résultats trouvés. Veuillez préciser un émetteur pour affiner la recherche.",
+    "no-destination-trustlines": "Aucune trustline trouvée pour cette adresse de destination."
+  },
   "menu": {
     "tokens": "Tokens",
     "amm": {
       "amm": "AMM",
       "pools": "Pools AMM",
-      "explorer": "Explorateur AMM"
+      "explorer": "Explorateur AMM",
+      "learn": "Qu’est-ce qu’un AMM ?",
+      "deposit": "Dépôt AMM",
+      "withdraw": "Retrait AMM",
+      "vote": "Vote AMM",
+      "create": "Créer AMM"
     },
     "company": {
       "about-us": "À propos de nous"
@@ -34,7 +47,7 @@
     "services": {
       "services": "Services",
       "send": "Envoyer un paiement",
-      "reward-auto-claim": "Reward Auto Claim",
+      "reward-auto-claim": "Réclamation automatique des récompenses",
       "add-token": "Ajouter un token (Trustline)",
       "account-settings": "Paramètres du compte",
       "toml-checker": "Vérificateur TOML",
@@ -80,7 +93,7 @@
       "unl-report": "Rapport UNL",
       "genesis": "Comptes Genesis",
       "allocation": "Distribution de {{currency}}",
-      "activation-tree": "Activation Tree"
+      "activation-tree": "Arbre d'activation"
     },
     "developers": {
       "developers": "Développeurs",

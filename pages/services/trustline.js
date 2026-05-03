@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import {
@@ -24,9 +24,10 @@ import Link from 'next/link'
 import { multiply } from '../../utils/calc'
 import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
-import { amountFormat } from '../../utils/format'
+import { amountFormat, niceCurrency } from '../../utils/format'
 import { addAndRemoveQueryParams } from '../../utils'
 import { useRouter } from 'next/router'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -57,7 +58,7 @@ export const getServerSideProps = async (context) => {
       authorizedQuery: authorized || '',
       deepFreezeQuery: deepFreeze || '',
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -76,7 +77,8 @@ export default function TrustSet({
   authorizedQuery,
   deepFreezeQuery
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const router = useRouter()
   const [error, setError] = useState('')
   const [mode, setMode] = useState(modeQuery === 'advanced' ? 'advanced' : 'simple') // 'simple' or 'advanced'
@@ -260,6 +262,11 @@ export default function TrustSet({
   }
 
   const [shareCopied, setShareCopied] = useState(false)
+  const selectedTokenName =
+    mode === 'simple' && selectedToken?.currency
+      ? selectedToken.currencyDetails?.currency || niceCurrency(selectedToken.currency)
+      : ''
+
   const handleShare = async () => {
     try {
       const url = buildShareUrl()
@@ -267,7 +274,7 @@ export default function TrustSet({
       setShareCopied(true)
       setTimeout(() => setShareCopied(false), 2000)
     } catch (e) {
-      setError('Failed to copy the link')
+      setError(ts('shared.errors.copy-link'))
     }
   }
 
@@ -315,7 +322,7 @@ export default function TrustSet({
       }
     } else {
       if (!selectedToken.issuer || !selectedToken.currency) {
-        setError('Please select a token.')
+        setError(ts('trustline.errors.select-token'))
         return
       }
     }
@@ -331,25 +338,25 @@ export default function TrustSet({
     // In advanced mode, validate the manually entered limit
     if (mode === 'advanced') {
       if (!limit || isNaN(parseFloat(limit)) || parseFloat(limit) < 0) {
-        setError('Please enter a valid limit (must be 0 or positive).')
+        setError(ts('trustline.errors.valid-limit'))
         return
       }
     }
 
     // Validate QualityIn
     if (qualityIn && (isNaN(parseFloat(qualityIn)) || parseFloat(qualityIn) < 0)) {
-      setError('QualityIn must be a valid positive number.')
+      setError(ts('trustline.errors.quality-in'))
       return
     }
 
     // Validate QualityOut
     if (qualityOut && (isNaN(parseFloat(qualityOut)) || parseFloat(qualityOut) < 0)) {
-      setError('QualityOut must be a valid positive number.')
+      setError(ts('trustline.errors.quality-out'))
       return
     }
 
     if (!agreeToSiteTerms) {
-      setError('Please agree to the Terms and conditions')
+      setError(ts('shared.errors.terms'))
       return
     }
 
@@ -420,8 +427,8 @@ export default function TrustSet({
   return (
     <>
       <SEO
-        title="Set Trustline"
-        description="Trustset: Set a Trustline to an address"
+        title={ts('trustline.title')}
+        description={ts('trustline.description')}
         image={{
           width: 1200,
           height: 630,
@@ -430,20 +437,20 @@ export default function TrustSet({
         twitterImage={{ file: 'previews/630x630/services/trustline.png' }}
       />
       <div className="content-text content-center">
-        <h1 className="center">Set/Update Trust (Trustlines)</h1>
-        <p className="center">Create or modify a Trustline linking two accounts.</p>
+        <ServicesTabs category="payments" tab="trustline" />
+        <h1 className="center">{ts('trustline.heading')}</h1>
 
         <p className="center">
-          Trustlines are structures in the {explorerName} for holding tokens. Trustlines enforce the rule that you
-          cannot cause someone else to hold a token they don't want.{' '}
-          <Link href="/learn/trustlines" target="_blank" rel="noreferrer">
-            Learn more about {explorerName} Trustlines
-          </Link>
-          .
+          <Trans
+            i18nKey="trustline.learn-text"
+            ns="services"
+            values={{ explorerName }}
+            components={[<Link key="0" href="/learn/trustlines" target="_blank" rel="noreferrer" />]}
+          />
         </p>
 
         <div className="center">
-          <Link href="/tokens">View TOP Tokens</Link>
+          <Link href="/tokens">{ts('trustline.view-top-tokens')}</Link>
           <br />
           <br />
         </div>
@@ -459,7 +466,7 @@ export default function TrustSet({
                 onChange={() => setMode('simple')}
                 id="trustlineModeSimple"
               />
-              <label htmlFor="trustlineModeSimple">Simple</label>
+              <label htmlFor="trustlineModeSimple">{ts('trustline.simple')}</label>
             </div>
             <div className="radio-input" style={{ marginLeft: 20 }}>
               <input
@@ -469,18 +476,18 @@ export default function TrustSet({
                 onChange={() => setMode('advanced')}
                 id="trustlineModeAdvanced"
               />
-              <label htmlFor="trustlineModeAdvanced">Advanced</label>
+              <label htmlFor="trustlineModeAdvanced">{ts('trustline.advanced')}</label>
             </div>
           </div>
           {mode === 'simple' ? (
             // Simple Mode
             <div>
               <span className="input-title">
-                Token
+                {ts('trustline.token')}
                 {tokenSupply && selectedToken.currency && (
                   <span className="grey">
-                    {' '}
-                    - the Limit will be set to the total supply:{' '}
+                    {' - '}
+                    {ts('trustline.limit-total-supply')}{' '}
                     {amountFormat({ value: tokenSupply, currency: selectedToken.currency }, { short: true })}
                   </span>
                 )}
@@ -494,14 +501,12 @@ export default function TrustSet({
               {selectedToken.description && (
                 <div style={{ marginTop: 10 }}>
                   <span className="grey">
-                    <b>Description (by the Token issuer):</b> {selectedToken.description}
+                    <b>{ts('trustline.issuer-description')}</b> {selectedToken.description}
                   </span>
                   <br />
                   <br />
                   <span className="orange">
-                    We do not take responsibility for the accuracy of the token descriptions or related information.
-                    Users should always do their own research (DYOR). The content is for informational purposes only,
-                    not financial advice.
+                    {ts('trustline.token-info-warning')}
                   </span>
                 </div>
               )}
@@ -509,9 +514,10 @@ export default function TrustSet({
           ) : (
             // Advanced Mode
             <div>
+              <p className="center">{ts('trustline.intro')}</p>
               <AddressInput
-                title="Counterparty"
-                placeholder="Issuer address"
+                title={ts('trustline.counterparty')}
+                placeholder={ts('trustline.issuer-address')}
                 name="issuer"
                 hideButton={true}
                 setInnerValue={setIssuer}
@@ -520,8 +526,8 @@ export default function TrustSet({
               />
               <div className="form-spacing" />
               <FormInput
-                title="Currency code"
-                placeholder="Currency code (e.g., USD, myCurrency or HEX)"
+                title={ts('trustline.currency-code')}
+                placeholder={ts('trustline.currency-placeholder')}
                 setInnerValue={(value) => {
                   if (value.length <= 40) {
                     setCurrency({ currency: value })
@@ -538,8 +544,8 @@ export default function TrustSet({
             <>
               <div className="form-spacing" />
               <FormInput
-                title="Limit (The maximum amount you want to trust)"
-                placeholder="Enter the maximum amount you want to trust"
+                title={ts('trustline.limit')}
+                placeholder={ts('trustline.limit-placeholder')}
                 setInnerValue={setLimit}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -551,12 +557,12 @@ export default function TrustSet({
             <>
               <div className="form-spacing" />
               <div>
-                <b>Rippling</b> - Controls indirect movement of your funds. (Disallow unless you are a token issuer)
+                <b>{ts('trustline.rippling')}</b> - {ts('trustline.rippling-text')}
                 <RadioOptions
                   tabList={[
-                    { value: 'none', label: 'No change' },
-                    { value: 'clear', label: 'Allow' },
-                    { value: 'set', label: 'Disallow' }
+                    { value: 'none', label: ts('trustline.no-change') },
+                    { value: 'clear', label: ts('trustline.allow') },
+                    { value: 'set', label: ts('trustline.disallow') }
                   ]}
                   tab={noRippleState}
                   setTab={setNoRippleState}
@@ -565,13 +571,12 @@ export default function TrustSet({
               </div>
               <br />
               <div>
-                <b>Freeze</b> - Freezes the counterparty's ability to send the frozen currencies to others, but the
-                counterparty can still send them directly to the issuer.
+                <b>{ts('trustline.freeze')}</b> - {ts('trustline.freeze-text')}
                 <RadioOptions
                   tabList={[
-                    { value: 'none', label: 'No change' },
-                    { value: 'set', label: 'Freeze' },
-                    { value: 'clear', label: 'Unfreeze' }
+                    { value: 'none', label: ts('trustline.no-change') },
+                    { value: 'set', label: ts('trustline.freeze') },
+                    { value: 'clear', label: ts('trustline.unfreeze') }
                   ]}
                   tab={freezeState}
                   setTab={setFreezeState}
@@ -582,14 +587,12 @@ export default function TrustSet({
                 <>
                   <br />
                   <div>
-                    <b>Deep Freeze</b> - The counterparty cannot receive funds until or unless their Trustline is
-                    unfrozen. It requires that the issuer implement a standard freeze on the Trustline before enacting a
-                    Deep Freeze. The issuer cannot enact a Deep Freeze if they have enabled No Freeze on their account.
+                    <b>{ts('trustline.deep-freeze')}</b> - {ts('trustline.deep-freeze-text')}
                     <RadioOptions
                       tabList={[
-                        { value: 'none', label: 'No change' },
-                        { value: 'set', label: 'Deep Freeze' },
-                        { value: 'clear', label: 'Clear Deep Freeze' }
+                        { value: 'none', label: ts('trustline.no-change') },
+                        { value: 'set', label: ts('trustline.deep-freeze') },
+                        { value: 'clear', label: ts('trustline.clear-deep-freeze') }
                       ]}
                       tab={deepFreezeState}
                       setTab={setDeepFreezeState}
@@ -600,12 +603,12 @@ export default function TrustSet({
               )}
               <br />
               <div>
-                <b>Authorize</b> - Grants the counterparty permission to hold currency issued by this account.{' '}
-                <span className="orange bold">Once enabled, it cannot be revoked.</span>
+                <b>{ts('trustline.authorize')}</b> - {ts('trustline.authorize-text')}{' '}
+                <span className="orange bold">{ts('trustline.authorize-warning')}</span>
                 <RadioOptions
                   tabList={[
-                    { value: 'none', label: 'No change' },
-                    { value: 'set', label: 'Authorize' }
+                    { value: 'none', label: ts('trustline.no-change') },
+                    { value: 'set', label: ts('trustline.authorize') }
                   ]}
                   tab={authorizedState}
                   setTab={setAuthorizedState}
@@ -614,24 +617,23 @@ export default function TrustSet({
               </div>
               <br />
               <p>
-                <strong>Quality</strong> — the exchange rate for this trustline.
+                <strong>{ts('trustline.quality')}</strong> — {ts('trustline.quality-text')}
               </p>
               <ul>
                 <li>
-                  <strong>QualityIn</strong>: % of incoming funds kept by the sender.
+                  <strong>QualityIn</strong>: {ts('trustline.quality-in-text')}
                 </li>
                 <li>
-                  <strong>QualityOut</strong>: % of outgoing funds kept by the issuer.
+                  <strong>QualityOut</strong>: {ts('trustline.quality-out-text')}
                 </li>
               </ul>
               <p>
-                <em>Example:</em> If QualityIn or QualityOut is set to 1%, then for every 100 units sent, 1 unit is
-                retained and 99 reach the recipient.
+                <em>{ts('trustline.quality-example')}</em> {ts('trustline.quality-example-text')}
               </p>
-              <p>These are separate from token transfer fees.</p>
+              <p>{ts('trustline.quality-separate')}</p>
               <FormInput
-                title="Quality in (%)"
-                placeholder="Exchange rate (0 = face value)"
+                title={ts('trustline.quality-in')}
+                placeholder={ts('trustline.quality-placeholder')}
                 setInnerValue={setQualityIn}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -639,8 +641,8 @@ export default function TrustSet({
               />
               <div className="form-spacing" />
               <FormInput
-                title="Quality out (%)"
-                placeholder="Exchange rate (0 = face value)"
+                title={ts('trustline.quality-out')}
+                placeholder={ts('trustline.quality-placeholder')}
                 setInnerValue={setQualityOut}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -650,10 +652,11 @@ export default function TrustSet({
             </>
           )}
           <CheckBox checked={agreeToSiteTerms} setChecked={() => setAgreeToSiteTerms(!agreeToSiteTerms)}>
-            I agree to the{' '}
-            <Link href="/terms-and-conditions" target="_blank">
-              Terms and conditions
-            </Link>
+            <Trans
+              i18nKey="shared.agree-terms"
+              ns="services"
+              components={[<Link key="0" href="/terms-and-conditions" target="_blank" />]}
+            />
           </CheckBox>
           <br />
           {error && (
@@ -662,19 +665,23 @@ export default function TrustSet({
               <br />
             </>
           )}
-          <div className="center">
-            <button className="button-action" onClick={handleShare} style={{ minWidth: '120px', marginRight: 10 }}>
-              {shareCopied ? 'Link copied' : 'Share'}
-            </button>
+          <div className="center service-form-actions trustline-actions">
             <button className="button-action" onClick={handleTrustSet} style={{ minWidth: '120px' }}>
-              Create Trustline
+              {mode === 'simple' ? ts('trustline.add-token-button') : ts('trustline.create-button')}
+            </button>
+            <button type="button" className="button-outline trustline-copy-link" onClick={handleShare}>
+              {shareCopied
+                ? ts('trustline.link-copied')
+                : selectedTokenName
+                ? ts('trustline.copy-link-token', { token: selectedTokenName })
+                : ts('trustline.copy-link')}
             </button>
           </div>
           {txResult?.status === 'tesSUCCESS' && (
             <>
-              <h3 className="center">Transaction Successful</h3>
+              <h3 className="center">{ts('shared.transaction-successful')}</h3>
               <p>
-                <strong>Transaction Hash:</strong> <LinkTx tx={txResult.hash} short={12} />
+                <strong>{ts('trustline.transaction-hash')}:</strong> <LinkTx tx={txResult.hash} short={12} />
                 <CopyButton text={txResult.hash} />
               </p>
             </>

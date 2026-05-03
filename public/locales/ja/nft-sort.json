@@ -1,0 +1,13 @@
+{
+  "dropdown": {
+    "priceHigh": "価格の高い順",
+    "priceLow": "価格の低い順",
+    "soldNew": "最近の販売",
+    "soldOld": "古い販売",
+    "mintedNew": "最新のミント",
+    "mintedOld": "古いミント",
+    "rating": "閲覧数の多い順",
+    "offerCreatedNew": "新しいオファー",
+    "offerCreatedOld": "古いオファー"
+  }
+}

@@ -1,4 +1,4 @@
-import { i18n, useTranslation } from 'next-i18next'
+import { i18n, Trans, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import {
@@ -20,6 +20,7 @@ import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenSelector from '../../components/UI/TokenSelector'
 import {
@@ -58,7 +59,8 @@ export default function CreateEscrow({
   currencyQuery,
   currencyIssuerQuery
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const router = useRouter()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
@@ -155,7 +157,7 @@ export default function CreateEscrow({
   const handleFeeChange = (value) => {
     setFee(value)
     if (Number(value) > 1) {
-      setFeeError('Maximum fee is 1 ' + nativeCurrency)
+      setFeeError(ts('shared.errors.max-fee', { nativeCurrency }))
     } else {
       setFeeError('')
     }
@@ -171,22 +173,22 @@ export default function CreateEscrow({
     }
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      setError('Please enter a valid amount.')
+      setError(ts('shared.errors.valid-amount'))
       return
     }
 
     if (destinationTag && !isTagValid(destinationTag)) {
-      setError('Please enter a valid destination tag.')
+      setError(ts('shared.errors.valid-destination-tag'))
       return
     }
 
     if ((fee || sourceTag || condition) && (!sessionToken || subscriptionExpired)) {
-      setError('Advanced options (fee, source tag, condition) are available only to logged-in Bithomp Pro subscribers.')
+      setError(ts('escrow.errors.advanced-pro'))
       return
     }
 
     if (sourceTag && !isTagValid(sourceTag)) {
-      setError('Please enter a valid source tag.')
+      setError(ts('shared.errors.valid-source-tag'))
       return
     }
 
@@ -194,44 +196,44 @@ export default function CreateEscrow({
     // Valid combinations: FinishAfter only, FinishAfter+CancelAfter, FinishAfter+Condition,
     // FinishAfter+Condition+CancelAfter, or Condition+CancelAfter
     if (!finishAfter && !condition) {
-      setError('You must specify either a unlock time or a condition (or both).')
+      setError(ts('escrow.errors.unlock-or-condition'))
       return
     }
 
     if (condition && !finishAfter && !cancelAfter) {
-      setError('A conditional escrow must have either a unlock time or an expiration time (or both).')
+      setError(ts('escrow.errors.conditional-time'))
       return
     }
 
     if (condition && condition.length % 2 !== 0) {
-      setError('Condition must be a valid hexadecimal string.')
+      setError(ts('escrow.errors.condition-hex'))
       return
     }
 
     if (condition && !condition.match(/^[0-9A-Fa-f]*$/)) {
-      setError('Condition must contain only hexadecimal characters.')
+      setError(ts('escrow.errors.condition-characters'))
       return
     }
 
     const now = Math.floor(Date.now() / 1000)
 
     if (finishAfter && finishAfter <= now) {
-      setError('Unlock time must be in the future.')
+      setError(ts('escrow.errors.unlock-future'))
       return
     }
 
     if (cancelAfter && cancelAfter <= now) {
-      setError('Cancel time must be in the future.')
+      setError(ts('escrow.errors.cancel-future'))
       return
     }
 
     if (finishAfter && cancelAfter && cancelAfter <= finishAfter) {
-      setError('Cancel time must be after unlock time.')
+      setError(ts('escrow.errors.cancel-after-unlock'))
       return
     }
 
     if (!agreeToSiteTerms) {
-      setError('Please agree to the Terms and conditions')
+      setError(ts('shared.errors.terms'))
       return
     }
 
@@ -243,7 +245,7 @@ export default function CreateEscrow({
       } else {
         // IMPORTANT: Escrow for IOU requires a trustline at destination (no partial payment escape hatch like Payment)
         if (!selectedToken?.issuer || !selectedToken?.currency) {
-          setError('Please select a valid token (currency + issuer).')
+          setError(ts('shared.errors.valid-token'))
           return
         }
         amountData = {
@@ -326,20 +328,21 @@ export default function CreateEscrow({
       setCondition(generatedCondition)
       setFulfillment(generatedFulfillment)
     } catch (err) {
-      setError('Failed to generate condition')
+      setError(ts('escrow.errors.generate-condition'))
     }
   }
 
   return (
     <>
-      <SEO title="Create Escrow" description="Create an Escrow transaction" />
+      <SEO title={ts('escrow.title')} description={ts('escrow.description')} />
       <div className="content-text content-center">
-        <h1 className="center">Create Escrow</h1>
+        <ServicesTabs category="payments" tab="escrow" />
+        <h1 className="center">{ts('escrow.title')}</h1>
         <p>
-          On this page, you can create an escrow to securely lock {nativeCurrency} until time-based or condition-based
-          requirements are met. View our guide:{' '}
+          {ts('escrow.intro', { nativeCurrency })}{' '}
+          {ts('escrow.view-guide')}{' '}
           <Link href="/learn/create-escrow" target="_blank" rel="noreferrer">
-            How to Create Escrows on {explorerName}
+            {ts('escrow.guide-link', { explorerName })}
           </Link>
           .
         </p>
@@ -348,7 +351,7 @@ export default function CreateEscrow({
         <div>
           <AddressInput
             title={t('table.destination')}
-            placeholder="Destination address"
+            placeholder={ts('shared.destination-address')}
             name="destination"
             hideButton={true}
             setValue={(value) => {
@@ -373,7 +376,7 @@ export default function CreateEscrow({
             <div className="flex-1">
               <FormInput
                 title={t('table.amount')}
-                placeholder="Enter amount"
+                placeholder={ts('shared.enter-amount')}
                 setInnerValue={setAmount}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -385,14 +388,14 @@ export default function CreateEscrow({
                 textUnder={
                   selectedToken?.transferFee && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0 ? (
                     <span className="grey">
-                      To receive ≈ {formatXDigits(parseFloat(amount) / selectedToken.transferFee, 11)}
+                      {ts('shared.to-receive', { amount: formatXDigits(parseFloat(amount) / selectedToken.transferFee, 11) })}
                     </span>
                   ) : null
                 }
               />
             </div>
             <div className="flex-1" style={{ marginBottom: 20 }}>
-              <span className="input-title">Currency</span>
+              <span className="input-title">{ts('shared.currency')}</span>
               <TokenSelector
                 value={selectedToken}
                 onChange={onTokenChange}
@@ -403,7 +406,7 @@ export default function CreateEscrow({
               />
               {selectedToken.transferFee ? (
                 <div style={{ marginTop: 8 }}>
-                  <span className="orange">Issuer fee: {transferRateToPercent(selectedToken.transferFee)}</span>
+                  <span className="orange">{ts('shared.issuer-fee', { fee: transferRateToPercent(selectedToken.transferFee) })}</span>
                 </div>
               ) : null}
             </div>
@@ -411,10 +414,10 @@ export default function CreateEscrow({
           <FormInput
             title={
               <>
-                {t('table.memo')} (<span className="orange">It will be public</span>)
+                {t('table.memo')} (<span className="orange">{ts('shared.it-will-be-public')}</span>)
               </>
             }
-            placeholder="Enter a memo (optional)"
+            placeholder={ts('shared.enter-memo-optional')}
             setInnerValue={setMemo}
             hideButton={true}
             defaultValue={memo}
@@ -424,7 +427,7 @@ export default function CreateEscrow({
           <div className="form-spacing" />
 
           <span className="input-title">
-            Unlock after <span className="grey">(when funds can be released)</span>
+            <Trans i18nKey="escrow.unlock-after" ns="services" components={[<span key="0" className="grey" />]} />
           </span>
           <DatePicker
             selected={finishAfter ? new Date(finishAfter * 1000) : null}
@@ -440,7 +443,7 @@ export default function CreateEscrow({
           />
 
           <span className="input-title">
-            Cancel after <span className="grey">(when escrow expires)</span>
+            <Trans i18nKey="escrow.cancel-after" ns="services" components={[<span key="0" className="grey" />]} />
           </span>
           <DatePicker
             selected={cancelAfter ? new Date(cancelAfter * 1000) : null}
@@ -470,16 +473,18 @@ export default function CreateEscrow({
             }}
             name="advanced-escrow"
           >
-            Advanced options
+            {ts('escrow.advanced-options')}
             {!sessionToken ? (
               <>
                 {' '}
-                <span className="orange">
-                  (available to{' '}
-                  <span className="link" onClick={() => openEmailLogin()}>
-                    logged-in
-                  </span>{' '}
-                  Bithomp Pro subscribers)
+                  <span className="orange">
+                  (
+                  <Trans
+                    i18nKey="shared.advanced-pro"
+                    ns="services"
+                    components={[<span key="0" className="link" onClick={() => openEmailLogin()} />]}
+                  />
+                  )
                 </span>
               </>
             ) : (
@@ -487,8 +492,11 @@ export default function CreateEscrow({
                 <>
                   {' '}
                   <span className="orange">
-                    Your Bithomp Pro subscription has expired.{' '}
-                    <Link href="/admin/subscriptions"> Renew your subscription</Link>
+                    <Trans
+                      i18nKey="shared.subscription-expired"
+                      ns="services"
+                      components={[<Link key="0" href="/admin/subscriptions" />]}
+                    />
                   </span>
                 </>
               )
@@ -499,8 +507,8 @@ export default function CreateEscrow({
             <>
               <br />
               <FormInput
-                title="Condition"
-                placeholder="PREIMAGE-SHA-256"
+                title={ts('escrow.condition')}
+                placeholder={ts('escrow.condition-placeholder')}
                 setInnerValue={setCondition}
                 hideButton={true}
                 defaultValue={condition}
@@ -513,30 +521,30 @@ export default function CreateEscrow({
                 onClick={handleGenerateCondition}
                 disabled={!sessionToken || subscriptionExpired}
               >
-                Generate a random Condition
+                {ts('escrow.generate-condition')}
               </button>
               <br />
               <br />
               {fulfillment && (
                 <>
                   <div>
-                    Fulfillment:
+                    {ts('escrow.fulfillment')}:
                     <div className="form-spacing" />
                     <span className="brake bold">{fulfillment}</span> <CopyButton text={fulfillment} />
                   </div>
                   <br />
                   <div className="red bold">
-                    We do not save/keep the Fulfillment. Please copy and save it securely.
+                    {ts('escrow.fulfillment-warning')}
                     <br />
                     <br />
-                    <b>If you lose it, you won't be able to release the funds.</b>
+                    <b>{ts('escrow.condition-warning')}</b>
                   </div>
                   <br />
                 </>
               )}
               <FormInput
-                title="Source Tag"
-                placeholder="Enter source tag"
+                title={ts('shared.source-tag')}
+                placeholder={ts('shared.enter-source-tag')}
                 setInnerValue={setSourceTag}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -545,8 +553,8 @@ export default function CreateEscrow({
               />
               <div className="form-spacing" />
               <FormInput
-                title="Fee"
-                placeholder={'Enter fee in ' + nativeCurrency}
+                title={ts('shared.fee')}
+                placeholder={ts('shared.enter-fee', { nativeCurrency })}
                 setInnerValue={handleFeeChange}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -564,11 +572,11 @@ export default function CreateEscrow({
 
           <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-            I agree with the{' '}
-            <Link href="/terms-and-conditions" target="_blank">
-              Terms and conditions
-            </Link>
-            .
+            <Trans
+              i18nKey="shared.agree-terms"
+              ns="services"
+              components={[<Link key="0" href="/terms-and-conditions" target="_blank" />]}
+            />
           </CheckBox>
           {error && (
             <>
@@ -577,9 +585,9 @@ export default function CreateEscrow({
             </>
           )}
           <br />
-          <div className="center">
+          <div className="center service-form-actions">
             <button className="button-action" onClick={handleCreateEscrow}>
-              Create Escrow
+              {ts('escrow.title')}
             </button>
           </div>
 
@@ -587,7 +595,7 @@ export default function CreateEscrow({
             <>
               <br />
               <div>
-                <h3 className="center">Escrow Created Successfully</h3>
+                <h3 className="center">{ts('escrow.created')}</h3>
                 <div>
                   <p>
                     <strong>{t('table.date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
@@ -607,36 +615,36 @@ export default function CreateEscrow({
                   )}
                   {txResult.sourceTag && (
                     <p>
-                      <strong>Source Tag:</strong> {txResult.sourceTag}
+                      <strong>{ts('shared.source-tag-result')}:</strong> {txResult.sourceTag}
                     </p>
                   )}
                   <p>
-                    <strong>Fee:</strong> {txResult.fee}
+                    <strong>{ts('shared.fee')}:</strong> {txResult.fee}
                   </p>
                   <p>
                     <strong>{t('table.sequence')}:</strong> #{txResult.sequence}
                   </p>
                   {txResult.finishAfter && (
                     <p>
-                      <strong>Unlock:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
+                      <strong>{ts('escrow.unlock')}:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
                       {fullDateAndTime(txResult.finishAfter, 'ripple')})
                     </p>
                   )}
                   {txResult.cancelAfter && (
                     <p>
-                      <strong>Cancel After:</strong> {timeFromNow(txResult.cancelAfter, i18n, 'ripple')} (
+                      <strong>{ts('escrow.cancel-after-result')}:</strong> {timeFromNow(txResult.cancelAfter, i18n, 'ripple')} (
                       {fullDateAndTime(txResult.cancelAfter, 'ripple')})
                     </p>
                   )}
                   {txResult.condition && (
                     <p>
-                      <strong>Condition:</strong> {shortHash(txResult.condition)}{' '}
+                      <strong>{ts('escrow.condition')}:</strong> {shortHash(txResult.condition)}{' '}
                       <CopyButton text={txResult.condition} />
                     </p>
                   )}
                   {txResult.fulfillment && (
                     <p>
-                      <strong>Fulfillment:</strong> {shortHash(txResult.fulfillment)}{' '}
+                      <strong>{ts('escrow.fulfillment')}:</strong> {shortHash(txResult.fulfillment)}{' '}
                       <CopyButton text={txResult.fulfillment} />
                     </p>
                   )}
@@ -677,7 +685,7 @@ export const getServerSideProps = async (context) => {
   } = query || {}
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'services'])),
       isSsrMobile: getIsSsrMobile(context),
       addressQuery: address || '',
       amountQuery: amount || '',

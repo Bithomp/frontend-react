@@ -1,0 +1,7 @@
+{
+  "button": {
+    "set-did": "DID 설정",
+    "update-did": "DID 업데이트",
+    "delete-did": "DID 삭제"
+  }
+}

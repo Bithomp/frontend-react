@@ -17,6 +17,8 @@
   "ancestors": "leluhur",
   "children": "anak",
   "child-count_one": "{{count}} anak",
+  "child-count_few": "{{count}} anak",
+  "child-count_many": "{{count}} anak",
   "child-count_other": "{{count}} anak",
   "descendants": "keturunan",
   "show-details": "Detail",

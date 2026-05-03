@@ -1,0 +1,5 @@
+{
+  "header": "UNL 보고서",
+  "desc": "Ledger <1>#{{ledgerIndex}}</1>의 UNL 보고서, ledger entry: 61E32E...6F28DC.",
+  "summary": "<1>{{activeValidators}}</1>개의 활성 검증자가 있습니다."
+}

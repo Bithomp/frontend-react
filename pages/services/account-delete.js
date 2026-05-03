@@ -1,4 +1,4 @@
-import { i18n, useTranslation } from 'next-i18next'
+import { i18n, Trans, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { addAndRemoveQueryParams, explorerName } from '../../utils'
@@ -16,6 +16,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -29,7 +30,7 @@ export const getServerSideProps = async (context) => {
       feeQuery: fee || '',
       sourceTagQuery: sourceTag || '',
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -47,7 +48,8 @@ export default function AccountDelete({
   openEmailLogin,
   signOut
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'services'])
+  const ts = (key, options) => t(key, { ns: 'services', ...options })
   const router = useRouter()
 
   const [accountData, setAccountData] = useState(null)
@@ -93,7 +95,7 @@ export default function AccountDelete({
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response?.data)
       } catch (error) {
-        setErrorMessage('Error fetching account data')
+        setErrorMessage(ts('account-delete.errors.fetch'))
       }
     }
 
@@ -175,7 +177,7 @@ export default function AccountDelete({
 
         setRequireDestTag(!!data?.ledgerInfo?.flags?.requireDestTag)
       } catch (error) {
-        setError('Error fetching destination account data')
+        setErrorMessage(ts('account-delete.errors.fetchDestination'))
         setDestinationStatus(0)
         setAgreeToSendToFlagged(false)
         setRequireDestTag(false)
@@ -191,9 +193,9 @@ export default function AccountDelete({
     setFee(value)
 
     if (Number(value) > 1) {
-      setFeeError('Maximum fee is 1 ' + nativeCurrency)
+      setFeeError(ts('account-delete.errors.maximumFee', { nativeCurrency }))
     } else if (Number(value) < requiredFee / 1000000) {
-      setFeeError('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
+      setFeeError(ts('account-delete.errors.minimumFee', { fee: requiredFee / 1000000, nativeCurrency }))
     } else {
       setFeeError('')
     }
@@ -204,56 +206,56 @@ export default function AccountDelete({
     setTxResult(null)
 
     if (!address || !isAddressValid(address)) {
-      setErrorMessage('Please enter a valid Destination address.')
+      setErrorMessage(ts('account-delete.errors.validDestination'))
       return
     }
 
     // Check if destination requires a tag but none is provided
     if (requireDestTag && !destinationTag) {
-      setErrorMessage('This destination account requires a destination tag. Please enter a destination tag.')
+      setErrorMessage(ts('account-delete.errors.destTagRequired'))
       return
     }
 
     // Check if advanced options are being used without proper subscription
     if ((fee || sourceTag || destinationTag) && (!sessionToken || subscriptionExpired)) {
       setErrorMessage(
-        'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
+        ts('account-delete.errors.advancedPro')
       )
       return
     }
 
     if (fee && Number(fee) < requiredFee / 1000000) {
-      setErrorMessage('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency + ' ' + fee + ' ' + requiredFee)
+      setErrorMessage(ts('account-delete.errors.minimumFee', { fee: requiredFee / 1000000, nativeCurrency }))
       return
     }
 
     if (Number(fee) > 1) {
-      setErrorMessage('Maximum fee is 1 ' + nativeCurrency)
+      setErrorMessage(ts('account-delete.errors.maximumFee', { nativeCurrency }))
       return
     }
 
     if (destinationTag && !isTagValid(destinationTag)) {
-      setErrorMessage('Please enter a valid destination tag.')
+      setErrorMessage(ts('account-delete.errors.validDestinationTag'))
       return
     }
 
     if (sourceTag && !isTagValid(sourceTag)) {
-      setErrorMessage('Please enter a valid source tag.')
+      setErrorMessage(ts('account-delete.errors.validSourceTag'))
       return
     }
 
     if (!agreeToSiteTerms) {
-      setErrorMessage('Please agree to the Terms and conditions')
+      setErrorMessage(ts('account-delete.errors.terms'))
       return
     }
 
     if (isNonActive) {
-      setErrorMessage('You can send funds only to already activated account.')
+      setErrorMessage(ts('account-delete.errors.nonActive'))
       return
     }
 
     if (destinationStatus === 3) {
-      setErrorMessage('This account has been flagged as FRAUD. Sending is not allowed.')
+      setErrorMessage(ts('account-delete.errors.fraud'))
       return
     }
 
@@ -298,7 +300,7 @@ export default function AccountDelete({
         callback: (result) => {
           const status = result.meta?.TransactionResult
           if (status !== 'tesSUCCESS') {
-            setError(errorCodeDescription(status))
+            setErrorMessage(errorCodeDescription(status))
           } else {
             setTxResult({
               status,
@@ -318,20 +320,20 @@ export default function AccountDelete({
         }
       })
     } catch (err) {
-      setError(err.message)
+      setErrorMessage(err.message)
     }
   }
 
   return (
     <>
-      <SEO title="Account delete" description="Delete your account by sending all funds to another account." />
+      <SEO title={ts('account-delete.title')} description={ts('account-delete.description')} />
       <div className="content-text content-center">
-        <h1 className="center red">Account delete</h1>
+        <ServicesTabs category="account" tab="account-delete" />
+        <h1 className="center red">{ts('account-delete.title')}</h1>
 
         {!txResult && accountData?.ledgerInfo?.deleted ? (
           <>
-            The account <span className="bold">{account?.address}</span> has already been deleted on the {explorerName}{' '}
-            Ledger.
+            {ts('account-delete.alreadyDeleted', { address: account?.address, explorerName })}
             <br />
             <br />
             <center>
@@ -343,20 +345,17 @@ export default function AccountDelete({
         ) : (
           <>
             <p>
-              An Account delete transaction permanently deletes an account and any objects it owns on the {explorerName}{' '}
-              Ledger, if possible, and transfers the account’s remaining {nativeCurrency} to a specified destination
-              account.
+              {ts('account-delete.intro', { explorerName, nativeCurrency })}
             </p>
             <p>
-              The fee to execute this transaction is{' '}
-              <span className="bold">{amountFormat(requiredFee, { noSpace: true })}</span>. This is a protocol
-              requirement of the {explorerName} Ledger, and the {amountFormat(requiredFee, { noSpace: true })} is
-              permanently burned as part of the process.
+              {ts('account-delete.feeInfo', {
+                fee: amountFormat(requiredFee, { noSpace: true }),
+                explorerName
+              })}
             </p>
 
             <p className="red bold">
-              ⚠️ Attention: Do NOT use an exchange or custodial wallet as the destination address. You may permanently
-              lose your funds.
+              ⚠️ {ts('account-delete.warning')}
             </p>
 
             <div>
@@ -367,7 +366,7 @@ export default function AccountDelete({
                     hideButton={true}
                     title={
                       <>
-                        <span className="red">Deleting account</span> [
+                        <span className="red">{ts('account-delete.deleting')}</span> [
                         <span onClick={signOut} className="link bold">
                           {t('signin.signout')}
                         </span>
@@ -382,7 +381,7 @@ export default function AccountDelete({
 
               <AddressInput
                 title={t('table.destination')}
-                placeholder="Destination address"
+                placeholder={ts('account-delete.destinationPlaceholder')}
                 name="destination"
                 hideButton={true}
                 setValue={(value) => {
@@ -401,28 +400,27 @@ export default function AccountDelete({
                     <strong>
                       ⚠️{' '}
                       {destinationStatus === 1
-                        ? 'Spam Alert'
+                        ? ts('account-delete.spamAlert')
                         : destinationStatus === 2
-                        ? 'Potential Fraud Alert'
-                        : 'Fraud Alert'}
+                        ? ts('account-delete.potentialFraudAlert')
+                        : ts('account-delete.fraudAlert')}
                     </strong>
                     <br />
                     {destinationStatus === 1 && (
                       <>
-                        This account has been flagged for spam. Proceed with caution.
+                        {ts('account-delete.spamWarning')}
                         <br />
                       </>
                     )}
                     {destinationStatus === 2 && (
                       <>
-                        This account has been flagged as potentially involved in fraud, scams, or phishing.{' '}
-                        <strong>Proceed with caution.</strong>
+                        {ts('account-delete.potentialFraudWarning')}
                         <br />
                       </>
                     )}
                     {destinationStatus === 3 && (
                       <>
-                        <strong>This account has been flagged as FRAUD. Sending is not allowed.</strong>
+                        <strong>{ts('account-delete.fraudWarning')}</strong>
                         <br />
                       </>
                     )}
@@ -431,7 +429,7 @@ export default function AccountDelete({
                       target="_blank"
                       style={{ color: '#ff6b6b', textDecoration: 'underline' }}
                     >
-                      Learn more about flagged accounts
+                      {ts('account-delete.learnFlagged')}
                     </Link>
                   </div>
                 </div>
@@ -442,9 +440,9 @@ export default function AccountDelete({
                 <div>
                   <div className="form-spacing" />
                   <div className="orange center p-2 rounded-md border border-orange-200 mb-4 sm:mb-0">
-                    <strong>⚠️ Non-activated account</strong>
+                    <strong>⚠️ {ts('account-delete.non-active-title')}</strong>
                     <br />
-                    You can not send funds to a non-activated account.
+                    {ts('account-delete.nonActiveWarning')}
                   </div>
                 </div>
               )}
@@ -452,10 +450,10 @@ export default function AccountDelete({
               <FormInput
                 title={
                   <>
-                    {t('table.memo')} (<span className="orange">It will be public</span>)
+                    {t('table.memo')} (<span className="orange">{ts('account-delete.publicMemo')}</span>)
                   </>
                 }
-                placeholder="Enter a memo (optional)"
+                placeholder={ts('account-delete.memoPlaceholder')}
                 setInnerValue={setMemo}
                 hideButton={true}
                 defaultValue={memo}
@@ -472,16 +470,16 @@ export default function AccountDelete({
                 }}
                 name="advanced-options"
               >
-                Advanced options
+                {ts('account-delete.advancedOptions')}
                 {!sessionToken ? (
                   <>
                     {' '}
                     <span className="orange">
-                      (available to{' '}
+                      ({ts('account-delete.advancedPro')}{' '}
                       <span className="link" onClick={() => openEmailLogin()}>
-                        logged-in
+                        {t('signin.signin')}
                       </span>{' '}
-                      Bithomp Pro subscribers)
+                      )
                     </span>
                   </>
                 ) : (
@@ -489,8 +487,8 @@ export default function AccountDelete({
                     <>
                       {' '}
                       <span className="orange">
-                        Your Bithomp Pro subscription has expired.{' '}
-                        <Link href="/admin/subscriptions">Renew your subscription</Link>
+                        {ts('account-control.proExpired')}{' '}
+                        <Link href="/admin/subscriptions">{ts('account-control.renew')}</Link>
                       </span>
                     </>
                   )
@@ -506,13 +504,12 @@ export default function AccountDelete({
                         {t('table.destination-tag')}
                         <br />
                         <span className="red">
-                          I acknowledge that the destination account MUST NOT be an exchange or custodial wallet, as
-                          this may lead to a loss of funds.
+                          {ts('account-delete.destinationTagWarning')}
                         </span>
                         {requireDestTag ? (
                           <>
                             {' '}
-                            (<span className="orange bold">required</span>)
+                            (<span className="orange bold">{ts('account-delete.required')}</span>)
                           </>
                         ) : (
                           ''
@@ -528,8 +525,8 @@ export default function AccountDelete({
                   />
                   <br />
                   <FormInput
-                    title={'Fee in ' + nativeCurrency}
-                    placeholder={'Enter fee in ' + nativeCurrency}
+                    title={ts('account-delete.feeTitle', { nativeCurrency })}
+                    placeholder={ts('account-delete.feePlaceholder', { nativeCurrency })}
                     setInnerValue={handleFeeChange}
                     hideButton={true}
                     onKeyPress={typeNumberOnly}
@@ -544,8 +541,8 @@ export default function AccountDelete({
                   {feeError && <div className="red">{feeError}</div>}
                   <div className="form-spacing" />
                   <FormInput
-                    title="Source tag"
-                    placeholder="Enter source tag"
+                    title={ts('account-delete.sourceTag')}
+                    placeholder={ts('account-delete.sourceTagPlaceholder')}
                     setInnerValue={setSourceTag}
                     hideButton={true}
                     onKeyPress={typeNumberOnly}
@@ -559,18 +556,18 @@ export default function AccountDelete({
 
               <br />
               <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-                I agree with the{' '}
-                <Link href="/terms-and-conditions" target="_blank">
-                  Terms and conditions
-                </Link>
-                .
+                <Trans
+                  i18nKey="account-delete.agreeTerms"
+                  ns="services"
+                  components={[<Link key="0" href="/terms-and-conditions" target="_blank" />]}
+                />
               </CheckBox>
 
               {/* Show additional checkbox for flagged accounts (only for status 1 and 2) */}
               {(destinationStatus === 1 || destinationStatus === 2 || isNonActive) && (
                 <div className="orange">
                   <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
-                    I understand the risks and I want to proceed with sending funds to this flagged account
+                    {ts('account-delete.agreeFlagged')}
                   </CheckBox>
                 </div>
               )}
@@ -582,21 +579,21 @@ export default function AccountDelete({
                   <br />
                 </>
               )}
-              <div className="center">
+              <div className="center service-form-actions">
                 <button
                   className="button-action"
                   onClick={handleSend}
                   disabled={destinationStatus === 3}
                   style={{ backgroundColor: '#ff4d4d' }}
                 >
-                  Delete my account
+                  {ts('account-delete.deleteButton')}
                 </button>
               </div>
               {txResult?.status === 'tesSUCCESS' && (
                 <>
                   <br />
                   <div>
-                    <h3 className="center">Transaction Successful</h3>
+                    <h3 className="center">{ts('account-delete.transactionSuccessful')}</h3>
                     <div>
                       <p>
                         <strong>{t('table.date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
@@ -613,11 +610,11 @@ export default function AccountDelete({
                       )}
                       {txResult.sourceTag && (
                         <p>
-                          <strong>Source Tag:</strong> {txResult.sourceTag}
+                          <strong>{ts('account-delete.sourceTag')}:</strong> {txResult.sourceTag}
                         </p>
                       )}
                       <p>
-                        <strong>Fee:</strong> {txResult.fee}
+                        <strong>{ts('shared.fee')}:</strong> {txResult.fee}
                       </p>
                       <p>
                         <strong>{t('table.sequence')}:</strong> #{txResult.sequence}

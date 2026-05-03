@@ -1,8 +1,10 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { xahauNetwork } from '../../utils'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import URITokenMint from '../../components/Services/NftMint/URITokenMint'
 import NFTokenMint from '../../components/Services/NftMint/NFTokenMint'
 import Link from 'next/link'
@@ -46,7 +48,7 @@ export const getServerSideProps = async (context) => {
       issuerQuery: issuer || '',
       mintForOtherQuery: mintForOther || '',
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
@@ -71,16 +73,18 @@ export default function NftMint({
   issuerQuery,
   mintForOtherQuery
 }) {
+  const { t } = useTranslation(['common', 'services'])
+
   return (
     <>
-      <SEO title="NFT Mint" description="Mint a New NFT, Free." />
+      <SEO title={t('nft-mint.title', { ns: 'services' })} description={t('nft-mint.description', { ns: 'services' })} />
       <div className="page-services-nft-mint content-center">
-        <h1 className="center">Mint a new NFT</h1>
+        <ServicesTabs category="nft" tab="nft-mint" />
+        <h1 className="center">{t('nft-mint.heading', { ns: 'services' })}</h1>
         <p>
-          You can use this page to create a new NFT, a unique digital asset that can be used in a variety of
-          applications. View our guide:{' '}
+          {t('nft-mint.intro', { ns: 'services' })} {t('nft-mint.viewGuide', { ns: 'services' })}{' '}
           <Link href="/learn/nft-minting" target="_blank" rel="noreferrer">
-            How to mint NFTs
+            {t('nft-mint.guideLink', { ns: 'services' })}
           </Link>
           .
         </p>

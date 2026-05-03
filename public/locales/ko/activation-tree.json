@@ -17,6 +17,8 @@
   "ancestors": "조상",
   "children": "자식",
   "child-count_one": "자식 {{count}}명",
+  "child-count_few": "자식 {{count}}명",
+  "child-count_many": "자식 {{count}}명",
   "child-count_other": "자식 {{count}}명",
   "descendants": "후손",
   "show-details": "상세",
