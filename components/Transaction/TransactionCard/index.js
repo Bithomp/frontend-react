@@ -158,13 +158,13 @@ export const TransactionCard = ({
                     <>
                       {txT('messages.successful.prefix')} <b className="green">{txT('status.successful')}</b>{' '}
                       {txT('messages.successful.suffix')}{' '}
-                      <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                      <LedgerLink version={outcome.ledgerIndex} /> ({txT('labels.index')}: {outcome.indexInLedger}).
                     </>
                   ) : (
                     <>
                       {txT('messages.failed.prefix')} <b className="red">{txT('status.failed')}</b>{' '}
                       {txT('messages.failed.suffix')}{' '}
-                      <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                      <LedgerLink version={outcome.ledgerIndex} /> ({txT('labels.index')}: {outcome.indexInLedger}).
                     </>
                   )}
                 </p>
@@ -343,7 +343,7 @@ export const TransactionCard = ({
                         {specification.delegate?.address === specification.signer.address && (
                           <span className="bold orange">{txT('labels.Delegate')} </span>
                         )}
-                        Signer
+                        {txT('labels.Signer')}
                       </TData>
                       <TData>
                         <AddressWithIconFilled data={specification.signer} name="address" />
@@ -353,7 +353,7 @@ export const TransactionCard = ({
                   {specification?.signers &&
                     specification?.signers.map((signer, index) => (
                       <tr key={index}>
-                        <TData>Signer {index + 1}:</TData>
+                        <TData>{txT('labels.signerNumber', { number: index + 1 })}</TData>
                         <TData>
                           <AddressWithIconFilled data={signer} name="address" />
                         </TData>
@@ -366,11 +366,12 @@ export const TransactionCard = ({
                           <TData>Affected accounts</TData>
                           <TData>
                             {filteredBalanceChanges?.length > 1 && (
-                              <>
-                                {txT('messages.affectedAccounts.prefix')}{' '}
-                                <span className="bold">{filteredBalanceChanges.length}</span>{' '}
-                                {txT('messages.affectedAccounts.suffix')}
-                              </>
+                              <Trans
+                                i18nKey="messages.affectedAccounts.summary"
+                                ns="transaction"
+                                count={filteredBalanceChanges.length}
+                                components={{ bold: <span className="bold" /> }}
+                              />
                             )}
                           </TData>
                         </tr>
@@ -434,9 +435,12 @@ export const TransactionCard = ({
                         <TData>
                           {outcome?.exchanges?.length > 1 && (
                             <>
-                              {txT('messages.exchanges.prefix')}{' '}
-                              <span className="bold">{outcome?.exchanges?.length}</span>{' '}
-                              {txT('messages.exchanges.suffix')}
+                              <Trans
+                                i18nKey="messages.exchanges.summary"
+                                ns="transaction"
+                                count={outcome.exchanges.length}
+                                components={{ bold: <span className="bold" /> }}
+                              />
                               <br />
                               <br />
                             </>

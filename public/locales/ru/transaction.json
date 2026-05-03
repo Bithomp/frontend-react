@@ -21,7 +21,7 @@
   "actions": {
     "additionalData": "Дополнительные данные",
     "balanceChanges": "Изменения баланса",
-    "txMetadata": "Метаданные TX"
+    "txMetadata": "Метаданные"
   },
   "messages": {
     "invalidNetworkKnown": {
@@ -45,12 +45,29 @@
     },
     "affectedAccounts": {
       "prefix": "Всего",
-      "suffix": "аккаунтов затронуто этой транзакцией."
+      "suffix": "аккаунтов затронуто этой транзакцией.",
+      "summary_one": "Всего <bold>{{count}}</bold> аккаунт затронут этой транзакцией.",
+      "summary_few": "Всего <bold>{{count}}</bold> аккаунта затронуто этой транзакцией.",
+      "summary_many": "Всего <bold>{{count}}</bold> аккаунтов затронуто этой транзакцией.",
+      "summary_other": "Всего <bold>{{count}}</bold> аккаунта затронуто этой транзакцией."
     },
     "exchanges": {
       "prefix": "Всего",
-      "suffix": "обменов произошло в этой транзакции."
+      "suffix": "обменов произошло в этой транзакции.",
+      "summary_one": "Всего <bold>{{count}}</bold> обмен произошел в этой транзакции.",
+      "summary_few": "Всего <bold>{{count}}</bold> обмена произошло в этой транзакции.",
+      "summary_many": "Всего <bold>{{count}}</bold> обменов произошло в этой транзакции.",
+      "summary_other": "Всего <bold>{{count}}</bold> обмена произошло в этой транзакции."
     }
+  },
+  "exchange": {
+    "exchanged": "обменял",
+    "for": "на",
+    "with": "с",
+    "byAmm": "через AMM",
+    "byOffer": "через ордер",
+    "byType": "через {{type}}",
+    "rates": "Курсы"
   },
   "labels": {
     "&nbsp;": "&nbsp;",
@@ -108,7 +125,7 @@
     "Executor": "Исполнитель",
     "Expiration": "Истечение",
     "Failure": "Ошибка",
-    "Fill or Kill": "Fill or Kill",
+    "Fill or Kill": "Исполнить полностью или отменить",
     "Flag": "Флаг",
     "Flags": "Флаги",
     "Flags value": "Значение флагов",
@@ -119,7 +136,7 @@
     "Holder": "Держатель",
     "Hook account": "Hook аккаунт",
     "Hook hash (created)": "Хэш Hook (создан)",
-    "Immediate or Cancel": "Immediate or Cancel",
+    "Immediate or Cancel": "Немедленно или отменить",
     "Incoming NFT offer": "Входящий NFT offer",
     "Incoming Remit": "Входящий Remit",
     "Incoming check": "Входящий чек",
@@ -133,9 +150,13 @@
     "Invoiced TX": "TX счета",
     "Issuer": "Эмитент",
     "issuer": "эмитент",
+    "index": "индекс",
     "Issuer Fee (Transfer rate)": "Комиссия эмитента (transfer rate)",
-    "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.",
-    "It was instructed to disregard any direct paths from the source account to the destination account.": "It was instructed to disregard any direct paths from the source account to the destination account.",
+    "It was instructed to spend up to {{amount}}.": "Было указано потратить до {{amount}}.",
+    "It was instructed to deliver at least {{amount}}.": "Было указано доставить минимум {{amount}}.",
+    "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "Было указано провести этот платеж, даже если вся сумма не может быть доставлена из-за нехватки ликвидности или средств на аккаунте отправителя.",
+    "It was instructed to disregard any direct paths from the source account to the destination account.": "Было указано игнорировать прямые пути от аккаунта отправителя к аккаунту получателя.",
+    "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "Было указано использовать только пути, где все конвертации имеют курс не хуже чем 1 {{sourceCurrency}} = {{amount}}.",
     "LP Token In": "LP токен вход",
     "LP Token Out": "LP токен выход",
     "Last ledger": "Последний леджер",
@@ -189,6 +210,8 @@
     "Set flag": "Установить флаг",
     "Show more": "Показать еще",
     "Signer": "Подписант",
+    "signerNumber": "Подписант {{number}}:",
+    "signerNumberNoColon": "Подписант {{number}}",
     "Signer quorum": "Кворум подписантов",
     "Source": "Отправитель",
     "Source tag": "Тег отправителя",
@@ -198,9 +221,12 @@
     "Subject": "Субъект",
     "Taker gets": "Taker получает",
     "Taker pays": "Taker платит",
-    "This Escrow was finished by the third party (not by Source or Destination), anyone can finish time-based escrow when the time passed.": "This escrow was finished by a third party (not by source or destination). Anyone can finish a time-based escrow after the time has passed.",
-    "This Offer does not consume Offers that exactly match it, and instead becomes an Offer object in the ledger. It still consumes Offers that cross it.": "This offer does not consume offers that exactly match it, and instead becomes an offer object in the ledger. It still consumes offers that cross it.",
-    "This offer is an Immediate or Cancel order, meaning it will execute only against existing matching offers in the ledger at the time of submission. It does not create a standing offer. Any portion of the offer that cannot be immediately filled is canceled. If no matches are found, the offer does nothing but still completes successfully.": "This offer is an immediate-or-cancel order. It executes only against existing matching offers at submission time and does not create a standing offer.",
+    "This Escrow was finished by the third party (not by Source or Destination), anyone can finish time-based escrow when the time passed.": "Этот escrow был завершен третьей стороной (не отправителем и не получателем). Любой может завершить escrow с временным условием после наступления времени.",
+    "This Offer does not consume Offers that exactly match it, and instead becomes an Offer object in the ledger. It still consumes Offers that cross it.": "Этот ордер не исполняется против ордеров, которые точно ему соответствуют, а становится объектом Offer в леджере. При этом он все равно исполняется против пересекающихся ордеров.",
+    "This offer is an Immediate or Cancel order, meaning it will execute only against existing matching offers in the ledger at the time of submission. It does not create a standing offer. Any portion of the offer that cannot be immediately filled is canceled. If no matches are found, the offer does nothing but still completes successfully.": "Этот ордер типа Immediate or Cancel исполняется только против уже существующих подходящих ордеров в момент отправки и не создает постоянный ордер.",
+    "This offer is a Fill or Kill order, meaning it will only execute if it can be fully filled immediately. It does not create a standing offer in the ledger. If the full amount cannot be exchanged at the time of submission, the offer is automatically canceled.": "Этот ордер типа Fill or Kill исполняется только если может быть полностью исполнен сразу, и не создает постоянный ордер.",
+    "The owner must be able to spend the entire {{amount}}.": "Владелец должен иметь возможность потратить всю сумму {{amount}}.",
+    "The owner must receive {{amount}}.": "Владелец должен получить {{amount}}.",
     "Tick size": "Tick size",
     "Topic": "Тема",
     "Trading fee": "Торговая комиссия",
@@ -221,6 +247,7 @@
     "Unauthorize": "Отозвать авторизацию",
     "Wallet locator": "Wallet locator",
     "Wallet size": "Размер wallet",
+    "Weight": "Вес",
     "Withdrawn": "Выведено",
     "XRPL NFT": "XRPL NFT",
     "burnable": "сжигаемый",

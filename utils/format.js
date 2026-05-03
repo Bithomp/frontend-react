@@ -97,15 +97,20 @@ export const TokenImage = ({ token }) => {
         verticalAlign: 'text-bottom',
         marginRight: 3,
         backgroundColor: '#fff',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        lineHeight: 0
       }}
     >
       <img
         src={tokenImageSrc(token, imageSize)}
-        alt="token"
+        alt=""
+        aria-hidden="true"
         height={size}
         width={size}
         style={{
+          display: 'block',
+          width: '100%',
+          height: '100%',
           objectFit: 'cover'
         }}
         onError={(e) => {
@@ -298,11 +303,10 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   const address = data[name]
   const size = 16
   const noLink = options?.noLink
-  const alt = data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'
   const icon = (
     <Avatar
       src={avatarSrc(address)}
-      alt={alt}
+      alt=""
       size={size}
       style={{
         verticalAlign: 'text-bottom',

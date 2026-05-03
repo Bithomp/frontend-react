@@ -2,8 +2,11 @@ import { TData } from './TData'
 
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled } from '../../utils/format'
+import { useTranslation } from 'next-i18next'
 
 export const TransactionSignerListSet = ({ data, pageFiatRate, selectedCurrency }) => {
+  const { t: txT } = useTranslation('transaction')
+
   if (!data) return null
   const { specification } = data
 
@@ -22,9 +25,9 @@ export const TransactionSignerListSet = ({ data, pageFiatRate, selectedCurrency 
       {specification?.signerEntries?.map((entry, index) => (
         <tr key={index}>
           <TData>
-            Signer {index + 1}
+            {txT('labels.signerNumberNoColon', { number: index + 1 })}
             <br />
-            Weight: <span className="bold">{entry.signerWeight}</span>
+            {txT('labels.Weight')}: <span className="bold">{entry.signerWeight}</span>
           </TData>
           <TData>
             <AddressWithIconFilled data={entry} name="account" />

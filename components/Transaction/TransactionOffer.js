@@ -10,9 +10,18 @@ import {
   timeFromNow
 } from '../../utils/format'
 import { addressBalanceChanges } from '../../utils/transaction'
-import { i18n } from 'next-i18next'
+import { i18n, useTranslation } from 'next-i18next'
+
+const PASSIVE_DESCRIPTION =
+  'This Offer does not consume Offers that exactly match it, and instead becomes an Offer object in the ledger. It still consumes Offers that cross it.'
+const IMMEDIATE_OR_CANCEL_DESCRIPTION =
+  'This offer is an Immediate or Cancel order, meaning it will execute only against existing matching offers in the ledger at the time of submission. It does not create a standing offer. Any portion of the offer that cannot be immediately filled is canceled. If no matches are found, the offer does nothing but still completes successfully.'
+const FILL_OR_KILL_DESCRIPTION =
+  'This offer is a Fill or Kill order, meaning it will only execute if it can be fully filled immediately. It does not create a standing offer in the ledger. If the full amount cannot be exchanged at the time of submission, the offer is automatically canceled.'
 
 export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
+  const { t: txT } = useTranslation('transaction')
+
   if (!data) return null
 
   const { tx, specification, outcome } = data
@@ -178,22 +187,14 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
       {passive && (
         <tr>
           <TData>Passive</TData>
-          <TData>
-            This Offer does not consume Offers that exactly match it, and instead becomes an Offer object in the ledger.
-            It still consumes Offers that cross it.
-          </TData>
+          <TData>{txT(`labels.${PASSIVE_DESCRIPTION}`)}</TData>
         </tr>
       )}
 
       {specification?.flags?.immediateOrCancel && (
         <tr>
           <TData>Immediate or Cancel</TData>
-          <TData>
-            This offer is an Immediate or Cancel order, meaning it will execute only against existing matching offers in
-            the ledger at the time of submission. It does not create a standing offer. Any portion of the offer that
-            cannot be immediately filled is canceled. If no matches are found, the offer does nothing but still
-            completes successfully.
-          </TData>
+          <TData>{txT(`labels.${IMMEDIATE_OR_CANCEL_DESCRIPTION}`)}</TData>
         </tr>
       )}
 
@@ -201,16 +202,16 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData>Fill or Kill</TData>
           <TData>
-            This offer is a Fill or Kill order, meaning it will only execute if it can be fully filled immediately. It
-            does not create a standing offer in the ledger. If the full amount cannot be exchanged at the time of
-            submission, the offer is automatically canceled.
+            {txT(`labels.${FILL_OR_KILL_DESCRIPTION}`)}
             <br />
             <span className="bold">
               {direction === 'Sell'
-                ? 'The owner must be able to spend the entire ' +
-                  amountFormat(takerGets, { precise: true, noSpace: true }) +
-                  '.'
-                : 'The owner must receive ' + amountFormat(takerPays, { precise: true, noSpace: true }) + '.'}
+                ? txT('labels.The owner must be able to spend the entire {{amount}}.', {
+                    amount: amountFormat(takerGets, { precise: true, noSpace: true })
+                  })
+                : txT('labels.The owner must receive {{amount}}.', {
+                    amount: amountFormat(takerPays, { precise: true, noSpace: true })
+                  })}
             </span>
           </TData>
         </tr>
