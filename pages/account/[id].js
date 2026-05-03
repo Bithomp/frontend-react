@@ -27,6 +27,7 @@ import {
   retinaImageSize,
   stripDomain,
   timestampExpired,
+  webSiteName,
   xahauNetwork
 } from '../../utils'
 import { TESTNET_RLUSD_CURRENCY, TESTNET_RLUSD_ISSUER } from '../../utils/faucet'
@@ -45,11 +46,37 @@ const NFT_MINTER_ACCOUNTS_FETCH_LIMIT = 200
 const NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT = 10
 const OBJECT_PREVIEW_LIMIT = 5
 const OBJECT_LOAD_MORE_STEP = 5
+const DOMAIN_FAVICON_SIZE = 16
+const DOMAIN_FAVICON_CDN_SIZE = DOMAIN_FAVICON_SIZE * 2
 
 const tomlCheckerHref = (domain) => ({
   pathname: '/services/toml-checker',
   query: { domain }
 })
+
+const domainFaviconSrc = (domain) => {
+  if (!domain) return ''
+  return `https://cdn.${webSiteName}/favicons/${encodeURIComponent(domain)}?size=${DOMAIN_FAVICON_CDN_SIZE}`
+}
+
+const DomainFavicon = ({ domain }) => {
+  const [loaded, setLoaded] = useState(false)
+
+  return (
+    <img
+      className={`${domainStyles.domainFavicon} entity-icon-outline`}
+      src={domainFaviconSrc(domain)}
+      alt=""
+      width={DOMAIN_FAVICON_SIZE}
+      height={DOMAIN_FAVICON_SIZE}
+      loading="lazy"
+      aria-hidden="true"
+      style={loaded ? undefined : { display: 'none' }}
+      onLoad={() => setLoaded(true)}
+      onError={() => setLoaded(false)}
+    />
+  )
+}
 
 const isPositiveBalance = (balance) => balance !== '0' && balance?.[0] !== '-'
 
@@ -418,6 +445,7 @@ import { LuFileCheck2 } from 'react-icons/lu'
 import { MdDeleteForever, MdMoneyOff, MdNorth, MdQrCode2, MdSouth, MdVerified } from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
+import domainStyles from '../../styles/pages/domains.module.scss'
 
 const hookNames = {
   '805351CE26FB79DA00647CEFED502F7E15C2ACCCE254F11DEFEDDCE241F8E9CA': 'Claim Rewards'
@@ -2634,7 +2662,8 @@ export default function Account({
     pushPublicRow(
       'Domain',
       isValidDomain ? (
-        <span>
+        <span className={domainStyles.domainWithFavicon}>
+          <DomainFavicon domain={domainText} />
           <a
             href={`https://${domainText}`}
             className={data.verifiedDomain ? 'green bold' : ''}
@@ -2642,13 +2671,13 @@ export default function Account({
             rel="noopener nofollow"
           >
             {domainText}
-          </a>{' '}
+          </a>
           {data.verifiedDomain && (
             <span className="blue tooltip verified-domain-status-icon" role="img" aria-label="TOML verified domain">
-              <MdVerified aria-hidden="true" />
+              <MdVerified aria-hidden="true" style={{ position: 'relative', top: 2 }} />
               <span className="tooltiptext small no-brake">TOML Verified Domain</span>
             </span>
-          )}{' '}
+          )}
           {showUnverified && (
             <>
               <span className="grey">(unverified)</span>{' '}
@@ -10233,14 +10262,6 @@ export default function Account({
           text-decoration: underline;
         }
 
-        .verified-domain-status-icon {
-          display: inline-flex;
-          align-items: center;
-          vertical-align: middle;
-          line-height: 1;
-          transform: translateY(6px);
-        }
-
         .activated-line {
           display: inline-flex;
           flex-wrap: wrap;
@@ -10294,6 +10315,7 @@ export default function Account({
         .toml-checker-icon {
           font-size: 16px;
           display: block;
+          transform: translateY(1px);
         }
 
         .activated-by {
