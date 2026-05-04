@@ -21,6 +21,10 @@
     "start-issuer": "Mulai ketik untuk mencari penerbit",
     "more-than-results": "Lebih dari {{count}} hasil. Ketik lebih banyak untuk mempersempit pencarian Anda."
   },
+  "aria": {
+    "main-page": "Halaman utama Bithomp",
+    "open-menu": "Buka menu"
+  },
   "token-selector": {
     "select-token": "Pilih token",
     "select-token-destination": "Pilih token (alamat tujuan dapat menyimpannya)",
@@ -31,6 +35,17 @@
   },
   "menu": {
     "tokens": "Token",
+    "badges": {
+      "new": "BARU"
+    },
+    "explorer": "Explorer {{explorerName}}",
+    "token-menu": {
+      "multi-purpose": "Token Multi-Purpose",
+      "top-holders": "Holder teratas",
+      "set-trust": "Atur Trustline",
+      "issue-token-guide": "Cara menerbitkan token",
+      "issuer-guide": "Panduan untuk penerbit token"
+    },
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -79,6 +94,7 @@
     },
     "network": {
       "blockchain": "Blockchain",
+      "dapps": "Dapps",
       "nodes": "Node",
       "governance": "Tata kelola",
       "activations": "Akun yang Telah Aktif (grafik)",
@@ -99,7 +115,25 @@
       "developers": "Pengembang",
       "account-generation": "Generasi Akun",
       "faucet": "Faucet",
-      "api": "API"
+      "api": "API",
+      "images": "Gambar Token/NFT/Alamat",
+      "bithomp-tools": "Alat Bithomp"
+    },
+    "wallet": {
+      "connect-wallet": "Hubungkan wallet",
+      "my-account-settings": "Pengaturan akun saya",
+      "connected-wallets": "Wallet terhubung",
+      "active": "Aktif",
+      "disconnect": "Putuskan",
+      "connect-another-wallet": "Hubungkan wallet lain"
+    },
+    "pro": {
+      "profile": "Profil",
+      "watchlist": "Daftar pantauan",
+      "subscriptions": "Langganan",
+      "referrals": "Referral",
+      "my-addresses": "Alamat saya",
+      "api-management": "Manajemen API"
     },
     "legal": "Hukum",
     "disclaimer": "Penyangkalan",
@@ -111,13 +145,19 @@
     "sponsored": {
       "title": "Disponsori",
       "buy": "Beli XRP",
-      "earn": "Dapatkan dari XRP"
+      "earn": "Dapatkan dari XRP",
+      "link-label": "Tautan sponsor: {{title}}"
     },
     "learn-more": {
       "title": "Pelajari lebih lanjut",
       "buy-wallet": "Beli Wallet",
       "xrp-wallets": "Wallet XRP",
-      "xahau-wallets": "Wallet Xahau"
+      "xahau-wallets": "Wallet Xahau",
+      "xrpl-ripple": "XRP, XRPL, Ripple",
+      "verified-domains": "Domain terverifikasi",
+      "ripple-usd": "Ripple USD",
+      "nft-minting": "Cara mint NFT",
+      "learn-page": "Lihat halaman belajar kami"
     }
   },
   "components": {
@@ -199,6 +239,11 @@
     }
   },
   "footer": {
+    "why-our-explorer": "Mengapa explorer kami",
+    "join-team": "Bergabung dengan tim kami",
+    "get-involved": "Ikut terlibat",
+    "affiliate-program": "Program afiliasi",
+    "slogan": "Bithomp — Explorer XRP Ledger sejak 2015",
     "cookie": {
       "we-use-cookie": "Kami menggunakan cookie dan teknologi serupa untuk meningkatkan pengalaman Anda di situs kami."
     }

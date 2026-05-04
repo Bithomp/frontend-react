@@ -21,6 +21,10 @@
     "start-issuer": "Начните вводить, чтобы найти эмитентов",
     "more-than-results": "Найдено более {{count}} результатов. Введите больше символов, чтобы сузить поиск."
   },
+  "aria": {
+    "main-page": "Главная страница Bithomp",
+    "open-menu": "Открыть меню"
+  },
   "token-selector": {
     "select-token": "Выберите токен",
     "select-token-destination": "Выберите токен (доступен получателю)",
@@ -31,6 +35,17 @@
   },
   "menu": {
     "tokens": "Токены",
+    "badges": {
+      "new": "НОВОЕ"
+    },
+    "explorer": "{{explorerName}} Эксплорер",
+    "token-menu": {
+      "multi-purpose": "Многоцелевые токены",
+      "top-holders": "Крупнейшие держатели",
+      "set-trust": "Настроить Trustline",
+      "issue-token-guide": "Как выпустить токен",
+      "issuer-guide": "Гайд для эмитентов токенов"
+    },
     "amm": {
       "amm": "АММ",
       "pools": "АММ пулы",
@@ -79,6 +94,7 @@
     },
     "network": {
       "blockchain": "Блокчейн",
+      "dapps": "Dapps",
       "nodes": "Ноды",
       "governance": "Правление",
       "activations": "Активированные адреса (график)",
@@ -99,7 +115,25 @@
       "developers": "Разработчикам",
       "account-generation": "Генерация аккаунта",
       "faucet": "Раздача тестовых монет",
-      "api": "API"
+      "api": "API",
+      "images": "Изображения токенов/NFT/адресов",
+      "bithomp-tools": "Инструменты Bithomp"
+    },
+    "wallet": {
+      "connect-wallet": "Подключить кошелек",
+      "my-account-settings": "Настройки моего аккаунта",
+      "connected-wallets": "Подключенные кошельки",
+      "active": "Активный",
+      "disconnect": "Отключить",
+      "connect-another-wallet": "Подключить другой кошелек"
+    },
+    "pro": {
+      "profile": "Профиль",
+      "watchlist": "Список наблюдения",
+      "subscriptions": "Подписки",
+      "referrals": "Рефералы",
+      "my-addresses": "Мои адреса",
+      "api-management": "Управление API"
     },
     "legal": "Документы",
     "disclaimer": "Отказ от ответственности",
@@ -111,13 +145,19 @@
     "sponsored": {
       "title": "Реклама",
       "buy": "Купить XRP",
-      "earn": "XRP вклады"
+      "earn": "XRP вклады",
+      "link-label": "Рекламная ссылка: {{title}}"
     },
     "learn-more": {
       "title": "Узнать больше",
       "buy-wallet": "Купить кошелек",
       "xrp-wallets": "XRP кошельки",
-      "xahau-wallets": "Xahau кошельки"
+      "xahau-wallets": "Xahau кошельки",
+      "xrpl-ripple": "XRP, XRPL, Ripple",
+      "verified-domains": "Проверенные домены",
+      "ripple-usd": "Ripple USD",
+      "nft-minting": "Как создать NFT",
+      "learn-page": "Перейти к обучающим материалам"
     }
   },
   "components": {
@@ -199,6 +239,11 @@
     }
   },
   "footer": {
+    "why-our-explorer": "Почему наш эксплорер",
+    "join-team": "Присоединиться к команде",
+    "get-involved": "Принять участие",
+    "affiliate-program": "Партнерская программа",
+    "slogan": "Bithomp — XRP Ledger Эксплорер с 2015 года",
     "cookie": {
       "we-use-cookie": "Мы используем файлы cookie и аналогичные технологии, чтобы вам было проще и удобнее пользоваться нашим сайтом."
     }

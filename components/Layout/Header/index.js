@@ -364,7 +364,7 @@ export default function Header({
     >
       <header>
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
-          <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
+          <Link href="/" aria-label={t('aria.main-page')} style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
             {showLargeLogo ? (
               xahauNetwork ? (
                 <div style={{ height: 46, width: 220, marginTop: -2.5 }}>
@@ -412,13 +412,13 @@ export default function Header({
           >
             <Link href="/explorer">
               <IoCompassOutline className="menu-item-icon" />
-              {explorerName} Explorer
+              {t('menu.explorer', { explorerName })}
             </Link>
             {xahauNetwork && (
               <Link href="/services/reward-auto-claim">
                 <IoCashOutline className="menu-item-icon" />
                 {t('menu.services.reward-auto-claim')}
-                <span className="menu-item-badge">NEW</span>
+                <span className="menu-item-badge">{t('menu.badges.new')}</span>
               </Link>
             )}
             <Link href="/services/send">
@@ -442,9 +442,9 @@ export default function Header({
               {t('menu.services.account-settings')}
             </Link>
             <Link href="/services/toml-checker">
-              <IoCodeSlashOutline className="menu-item-icon" />
-              {t('menu.services.toml-checker')}
-              <span className="menu-item-badge">NEW</span>
+                <IoCodeSlashOutline className="menu-item-icon" />
+                {t('menu.services.toml-checker')}
+              <span className="menu-item-badge">{t('menu.badges.new')}</span>
             </Link>
             <Link href="/faucet">
               <IoFlashOutline className="menu-item-icon" />
@@ -470,7 +470,7 @@ export default function Header({
             {!xahauNetwork && (
               <Link href="/mpts">
                 <IoLayersOutline className="menu-item-icon" />
-                Multi-Purpose {t('menu.tokens')}
+                {t('menu.token-menu.multi-purpose')}
               </Link>
             )}
             <Link
@@ -482,19 +482,19 @@ export default function Header({
               }
             >
               <IoTrophyOutline className="menu-item-icon" />
-              TOP Holders
+              {t('menu.token-menu.top-holders')}
             </Link>
             <Link href="/services/trustline">
               <IoLinkOutline className="menu-item-icon" />
-              Set Trust (Trustline)
+              {t('menu.token-menu.set-trust')}
             </Link>
             <Link href="/learn/issue-a-token">
               <IoDocumentTextOutline className="menu-item-icon" />
-              How to Issue a Token
+              {t('menu.token-menu.issue-token-guide')}
             </Link>
             <Link href="/learn/guide-for-token-issuers">
               <IoBookOutline className="menu-item-icon" />
-              Guide for Token Issuers
+              {t('menu.token-menu.issuer-guide')}
             </Link>
           </MenuDropDown>
 
@@ -630,7 +630,7 @@ export default function Header({
           >
             <Link href="/dapps">
               <RiPuzzleLine className="menu-item-icon" />
-              Dapps
+              {t('menu.network.dapps')}
             </Link>
             {xahauNetwork && (
               <Link href="/governance">
@@ -691,12 +691,12 @@ export default function Header({
             <Link href="/allocation">
               <IoPieChartOutline className="menu-item-icon" />
               {t('menu.network.allocation', { currency: nativeCurrency })}
-              <span className="menu-item-badge">NEW</span>
+              <span className="menu-item-badge">{t('menu.badges.new')}</span>
             </Link>
             <Link href="/activation-tree">
               <IoGitBranchOutline className="menu-item-icon" />
               {t('menu.network.activation-tree')}
-              <span className="menu-item-badge">NEW</span>
+              <span className="menu-item-badge">{t('menu.badges.new')}</span>
             </Link>
           </MenuDropDown>
 
@@ -713,11 +713,11 @@ export default function Header({
             <Link href="/services/toml-checker">
               <IoDocumentTextOutline className="menu-item-icon" />
               {t('menu.services.toml-checker')}
-              <span className="menu-item-badge">NEW</span>
+              <span className="menu-item-badge">{t('menu.badges.new')}</span>
             </Link>
             <Link href="/learn/image-services">
               <IoImagesOutline className="menu-item-icon" />
-              Token/NFT/Address Images
+              {t('menu.developers.images')}
             </Link>
             {network === 'mainnet' && (
               <>
@@ -731,7 +731,7 @@ export default function Header({
                 </a>
                 <a href={'https://test.bithomp.com/tools/'}>
                   <IoBuildOutline className="menu-item-icon" />
-                  Bithomp tools
+                  {t('menu.developers.bithomp-tools')}
                 </a>
               </>
             )}
@@ -747,7 +747,7 @@ export default function Header({
                 </Link>
                 <a href={'/tools/'}>
                   <IoBuildOutline className="menu-item-icon" />
-                  Bithomp tools
+                  {t('menu.developers.bithomp-tools')}
                 </a>
               </>
             )}
@@ -814,7 +814,7 @@ export default function Header({
                 className="link"
               >
                 <IoWalletOutline className="menu-item-icon" />
-                Connect Wallet
+                {t('menu.wallet.connect-wallet')}
               </span>
             )}
             {displayName && (
@@ -829,16 +829,16 @@ export default function Header({
                 </Link>
                 <Link href="/services/send">
                   <IoPaperPlaneOutline className="menu-item-icon" />
-                  Send payment
+                  {t('menu.services.send')}
                 </Link>
                 <Link href="/services/account-settings/">
                   <IoSettingsOutline className="menu-item-icon" />
-                  Account settings
+                  {t('menu.services.account-settings')}
                 </Link>
                 {!!wallets.length && (
                   <>
                     <hr className="hr" />
-                    <div className="wallets-title center">Connected wallets</div>
+                    <div className="wallets-title center">{t('menu.wallet.connected-wallets')}</div>
                     {orderedWallets.map((walletItem) => {
                       const isActiveWallet = walletItem.id === activeWalletId
 
@@ -872,7 +872,7 @@ export default function Header({
                             <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>
                               {isActiveWallet && (
                                 <>
-                                  ●<span className="wallet-active-tooltip">Active</span>
+                                  ●<span className="wallet-active-tooltip">{t('menu.wallet.active')}</span>
                                 </>
                               )}
                             </span>
@@ -881,8 +881,8 @@ export default function Header({
                             <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} />
                           </span>
                           <span className="link wallet-disconnect" onClick={() => signOut(walletItem.id)}>
-                            <IoLogOutOutline aria-label="Disconnect" />
-                            <span className="wallet-disconnect-tooltip">Disconnect</span>
+                            <IoLogOutOutline aria-label={t('menu.wallet.disconnect')} />
+                            <span className="wallet-disconnect-tooltip">{t('menu.wallet.disconnect')}</span>
                           </span>
                         </div>
                       )
@@ -910,7 +910,7 @@ export default function Header({
                   className="link"
                 >
                   <IoWalletOutline className="menu-item-icon" />
-                  Connect another wallet
+                  {t('menu.wallet.connect-another-wallet')}
                 </span>
               </>
             )}
@@ -924,27 +924,27 @@ export default function Header({
                 <hr />
                 <Link href="/admin">
                   <IoPersonOutline className="menu-item-icon" />
-                  {displayName ? proName : 'Profile'}
+                  {displayName ? proName : t('menu.pro.profile')}
                 </Link>
                 <Link href="/admin/watchlist">
                   <IoStarOutline className="menu-item-icon" />
-                  Watchlist
+                  {t('menu.pro.watchlist')}
                 </Link>
                 <Link href="/admin/subscriptions">
                   <IoCardOutline className="menu-item-icon" />
-                  Subscriptions
+                  {t('menu.pro.subscriptions')}
                 </Link>
                 <Link href="/admin/referrals">
                   <IoPeopleOutline className="menu-item-icon" />
-                  Referrals
+                  {t('menu.pro.referrals')}
                 </Link>
                 <Link href="/admin/pro">
                   <IoLocationOutline className="menu-item-icon" />
-                  My addresses
+                  {t('menu.pro.my-addresses')}
                 </Link>
                 <Link href="/admin/api">
                   <IoKeyOutline className="menu-item-icon" />
-                  API management
+                  {t('menu.pro.api-management')}
                 </Link>
                 <span onClick={signOutPro} className="link">
                   <IoLogOutOutline className="menu-item-icon" />

@@ -21,6 +21,10 @@
     "start-issuer": "발행자를 검색하려면 입력하세요",
     "more-than-results": "{{count}}개 이상의 결과가 있습니다. 검색 범위를 좁히려면 더 입력하세요."
   },
+  "aria": {
+    "main-page": "Bithomp 메인 페이지",
+    "open-menu": "메뉴 열기"
+  },
   "token-selector": {
     "select-token": "토큰 선택",
     "select-token-destination": "토큰 선택(수신 주소가 보유 가능)",
@@ -31,6 +35,17 @@
   },
   "menu": {
     "tokens": "토큰",
+    "badges": {
+      "new": "신규"
+    },
+    "explorer": "{{explorerName}} 탐색기",
+    "token-menu": {
+      "multi-purpose": "다목적 토큰",
+      "top-holders": "상위 보유자",
+      "set-trust": "Trustline 설정",
+      "issue-token-guide": "토큰 발행 방법",
+      "issuer-guide": "토큰 발행자 가이드"
+    },
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -79,6 +94,7 @@
     },
     "network": {
       "blockchain": "블록체인",
+      "dapps": "Dapps",
       "nodes": "노드",
       "governance": "거버넌스",
       "activations": "활성화된 계정 (차트)",
@@ -99,7 +115,25 @@
       "developers": "개발자",
       "account-generation": "계정 일반화",
       "faucet": "퍼셋",
-      "api": "API"
+      "api": "API",
+      "images": "토큰/NFT/주소 이미지",
+      "bithomp-tools": "Bithomp 도구"
+    },
+    "wallet": {
+      "connect-wallet": "지갑 연결",
+      "my-account-settings": "내 계정 설정",
+      "connected-wallets": "연결된 지갑",
+      "active": "활성",
+      "disconnect": "연결 해제",
+      "connect-another-wallet": "다른 지갑 연결"
+    },
+    "pro": {
+      "profile": "프로필",
+      "watchlist": "관심 목록",
+      "subscriptions": "구독",
+      "referrals": "추천",
+      "my-addresses": "내 주소",
+      "api-management": "API 관리"
     },
     "legal": "정책",
     "disclaimer": "면책조항",
@@ -111,13 +145,19 @@
     "sponsored": {
       "title": "지원받음",
       "buy": "XRP 구매",
-      "earn": "XRP 수익창출"
+      "earn": "XRP 수익창출",
+      "link-label": "스폰서 링크: {{title}}"
     },
     "learn-more": {
       "title": "더 알아보기",
       "buy-wallet": "지갑 구매",
       "xrp-wallets": "XRP 지갑",
-      "xahau-wallets": "Xahau 지갑"
+      "xahau-wallets": "Xahau 지갑",
+      "xrpl-ripple": "XRP, XRPL, Ripple",
+      "verified-domains": "검증된 도메인",
+      "ripple-usd": "Ripple USD",
+      "nft-minting": "NFT 민팅 방법",
+      "learn-page": "학습 페이지 보기"
     }
   },
   "components": {
@@ -199,6 +239,11 @@
     }
   },
   "footer": {
+    "why-our-explorer": "우리 탐색기의 장점",
+    "join-team": "팀에 합류하기",
+    "get-involved": "참여하기",
+    "affiliate-program": "제휴 프로그램",
+    "slogan": "Bithomp — 2015년부터 이어온 XRP Ledger 탐색기",
     "cookie": {
       "we-use-cookie": "쿠키를 사용합니다"
     }

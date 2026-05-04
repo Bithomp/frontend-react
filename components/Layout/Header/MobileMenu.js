@@ -136,11 +136,11 @@ export default function MobileMenu({
               </Link>
               <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoPaperPlaneOutline style={itemIconStyle} />
-                Send payment
+                {t('menu.services.send')}
               </Link>
               <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoSettingsOutline style={itemIconStyle} />
-                My account settings
+                {t('menu.wallet.my-account-settings')}
               </Link>
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -190,23 +190,23 @@ export default function MobileMenu({
           {proLoggedIn && (
             <>
               <Link href="/admin/watchlist" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> Watchlist
+                <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> {t('menu.pro.watchlist')}
               </Link>
 
               <Link href="/admin/subscriptions" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <GrMoney style={iconStyle} /> Subscriptions
+                <GrMoney style={iconStyle} /> {t('menu.pro.subscriptions')}
               </Link>
 
               <Link href="/admin/referrals" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <FaUserFriends style={iconStyle} /> Referrals
+                <FaUserFriends style={iconStyle} /> {t('menu.pro.referrals')}
               </Link>
 
               <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> My addresses
+                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> {t('menu.pro.my-addresses')}
               </Link>
 
               <Link href="/admin/api" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <IoStatsChart style={iconStyle} /> API management
+                <IoStatsChart style={iconStyle} /> {t('menu.pro.api-management')}
               </Link>
 
               <span onClick={signOutPro} className="mobile-menu-item">
@@ -222,13 +222,13 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           <Link href="/explorer" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCompassOutline style={itemIconStyle} />
-            {explorerName} Explorer
+            {t('menu.explorer', { explorerName })}
           </Link>
           {xahauNetwork && (
             <Link href="/services/reward-auto-claim" className="mobile-menu-item" onClick={mobileMenuToggle}>
               <IoCashOutline style={itemIconStyle} />
               {t('menu.services.reward-auto-claim')}
-              <span className="menu-item-badge">NEW</span>
+              <span className="menu-item-badge">{t('menu.badges.new')}</span>
             </Link>
           )}
           <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -254,7 +254,7 @@ export default function MobileMenu({
           <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCodeSlashOutline style={itemIconStyle} />
             {t('menu.services.toml-checker')}
-            <span className="menu-item-badge">NEW</span>
+            <span className="menu-item-badge">{t('menu.badges.new')}</span>
           </Link>
           <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoFlashOutline style={itemIconStyle} />
@@ -277,7 +277,7 @@ export default function MobileMenu({
           {!xahauNetwork && (
             <Link href="/mpts" className="mobile-menu-item" onClick={mobileMenuToggle}>
               <IoLayersOutline style={itemIconStyle} />
-              Multi-Purpose {t('menu.tokens')}
+              {t('menu.token-menu.multi-purpose')}
             </Link>
           )}
           <Link
@@ -291,19 +291,19 @@ export default function MobileMenu({
             onClick={mobileMenuToggle}
           >
             <IoTrophyOutline style={itemIconStyle} />
-            TOP Holders
+            {t('menu.token-menu.top-holders')}
           </Link>
           <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoLinkOutline style={itemIconStyle} />
-            Set Trust (Trustline)
+            {t('menu.token-menu.set-trust')}
           </Link>
           <Link href="/learn/issue-a-token" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoDocumentTextOutline style={itemIconStyle} />
-            How to Issue a Token
+            {t('menu.token-menu.issue-token-guide')}
           </Link>
           <Link href="/learn/guide-for-token-issuers" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoBookOutline style={itemIconStyle} />
-            Guide for Token Issuers
+            {t('menu.token-menu.issuer-guide')}
           </Link>
         </div>
 
@@ -454,7 +454,7 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           <Link href="/dapps" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <RiPuzzleLine style={itemIconStyle} />
-            Dapps
+            {t('menu.network.dapps')}
           </Link>
           {xahauNetwork && (
             <Link href="/governance" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -514,12 +514,12 @@ export default function MobileMenu({
           <Link href="/allocation" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoPieChartOutline style={itemIconStyle} />
             {t('menu.network.allocation', { currency: nativeCurrency })}
-            <span className="menu-item-badge">NEW</span>
+            <span className="menu-item-badge">{t('menu.badges.new')}</span>
           </Link>
           <Link href="/activation-tree" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoGitBranchOutline style={itemIconStyle} />
             {t('menu.network.activation-tree')}
-            <span className="menu-item-badge">NEW</span>
+            <span className="menu-item-badge">{t('menu.badges.new')}</span>
           </Link>
         </div>
 
@@ -534,11 +534,11 @@ export default function MobileMenu({
           <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoDocumentTextOutline style={itemIconStyle} />
             {t('menu.services.toml-checker')}
-            <span className="menu-item-badge">NEW</span>
+            <span className="menu-item-badge">{t('menu.badges.new')}</span>
           </Link>
           <Link href="/learn/image-services" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoImagesOutline style={itemIconStyle} />
-            Token/NFT/Address Images
+            {t('menu.developers.images')}
           </Link>
           {devNet && (
             <>
@@ -552,7 +552,7 @@ export default function MobileMenu({
               </Link>
               <a href={'/tools/'} className="mobile-menu-item">
                 <IoBuildOutline style={itemIconStyle} />
-                Bithomp tools
+                {t('menu.developers.bithomp-tools')}
               </a>
               <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoRocketOutline style={itemIconStyle} />
@@ -584,7 +584,7 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           <Link href="/learn/the-bithomp-explorer-advantages" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCompassOutline style={itemIconStyle} />
-            Why Our Explorer
+            {t('footer.why-our-explorer')}
           </Link>
           <Link href="/about-us" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoInformationCircleOutline style={itemIconStyle} />
@@ -640,26 +640,26 @@ export default function MobileMenu({
           {!xahauNetwork && (
             <Link href="/learn/xrpl-article" className="mobile-menu-item" onClick={mobileMenuToggle}>
               <IoBookOutline style={itemIconStyle} />
-              XRP, XRPL, Ripple
+              {t('menu.learn-more.xrpl-ripple')}
             </Link>
           )}
           <Link href="/learn/verified-domain" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoGlobeOutline style={itemIconStyle} />
-            Verified domains
+            {t('menu.learn-more.verified-domains')}
           </Link>
           {!xahauNetwork && (
             <Link href="/learn/ripple-usd" className="mobile-menu-item" onClick={mobileMenuToggle}>
               <IoCashOutline style={itemIconStyle} />
-              Ripple USD
+              {t('menu.learn-more.ripple-usd')}
             </Link>
           )}
           <Link href="/learn/nft-minting" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoImagesOutline style={itemIconStyle} />
-            How to Mint NFT
+            {t('menu.learn-more.nft-minting')}
           </Link>
           <Link href="/learn" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoAppsOutline style={itemIconStyle} />
-            See our learn page
+            {t('menu.learn-more.learn-page')}
           </Link>
         </div>
 
@@ -674,7 +674,7 @@ export default function MobileMenu({
                 target="_blank"
                 rel="noreferrer"
                 className="mobile-menu-item"
-                aria-label={`${t('menu.sponsored.buy')} sponsor link`}
+                aria-label={t('menu.sponsored.link-label', { title: t('menu.sponsored.buy') })}
               >
                 <IoCashOutline style={itemIconStyle} />
                 {t('menu.sponsored.buy')}

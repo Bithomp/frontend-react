@@ -32,18 +32,18 @@ export default function Footer(
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
           <FooterLink href="/about-us">{t('menu.company.about-us')}</FooterLink>
-          <FooterLink href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</FooterLink>
+          <FooterLink href="/learn/the-bithomp-explorer-advantages">{t('footer.why-our-explorer')}</FooterLink>
           <FooterLink href="/press">{t('menu.press')}</FooterLink>
-          <FooterLink href="/jobs">Join our team</FooterLink>
+          <FooterLink href="/jobs">{t('footer.join-team')}</FooterLink>
         </div>
         <div className="footer-menu-column">
-          <span className="footer-menu-header">Get involved</span>
+          <span className="footer-menu-header">{t('footer.get-involved')}</span>
           <FooterLink href="/advertise">{t('menu.business.advertise')}</FooterLink>
           <FooterLink
             href="/admin/referrals"
             style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}
           >
-            <span style={{ textDecoration: 'underline' }}>Affiliate program</span> <GrMoney />
+            <span style={{ textDecoration: 'underline' }}>{t('footer.affiliate-program')}</span> <GrMoney />
           </FooterLink>
           <FooterLink href="/customer-support">{t('menu.customer-support')}</FooterLink>
           <FooterLink href="/donate" style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
@@ -62,11 +62,11 @@ export default function Footer(
           <FooterLink href={xahauNetwork ? '/xahau-wallets' : '/xrp-wallets'}>
             {xahauNetwork ? t('menu.learn-more.xahau-wallets') : t('menu.learn-more.xrp-wallets')}
           </FooterLink>
-          {!xahauNetwork && <FooterLink href="/learn/xrpl-article">XRP, XRPL, Ripple</FooterLink>}
-          <FooterLink href="/learn/verified-domain">Verified domains</FooterLink>
-          {!xahauNetwork && <FooterLink href="/learn/ripple-usd">Ripple USD</FooterLink>}
-          <FooterLink href="/learn/nft-minting">How to Mint NFT</FooterLink>
-          <FooterLink href="/learn">See our learn page</FooterLink>
+          {!xahauNetwork && <FooterLink href="/learn/xrpl-article">{t('menu.learn-more.xrpl-ripple')}</FooterLink>}
+          <FooterLink href="/learn/verified-domain">{t('menu.learn-more.verified-domains')}</FooterLink>
+          {!xahauNetwork && <FooterLink href="/learn/ripple-usd">{t('menu.learn-more.ripple-usd')}</FooterLink>}
+          <FooterLink href="/learn/nft-minting">{t('menu.learn-more.nft-minting')}</FooterLink>
+          <FooterLink href="/learn">{t('menu.learn-more.learn-page')}</FooterLink>
         </div>
 
         <div className="footer-menu-column">
@@ -83,7 +83,7 @@ export default function Footer(
               href="https://bithomp.com/go/fm-buy"
               target="_blank"
               rel="noreferrer"
-              aria-label={`${t('menu.sponsored.buy')} sponsor link`}
+              aria-label={t('menu.sponsored.link-label', { title: t('menu.sponsored.buy') })}
               style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}
             >
               <span style={{ textDecoration: 'underline' }}>{t('menu.sponsored.buy')}</span> <FaShoppingBag />
@@ -134,7 +134,7 @@ export default function Footer(
 
       {!xahauNetwork && !devNet && (
         <div style={{ marginLeft: 20, marginBottom: 20 }} className="grey slogan">
-          Bithomp — XRP Ledger Explorer since 2015
+          {t('footer.slogan')}
         </div>
       )}
     </footer>

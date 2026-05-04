@@ -21,6 +21,10 @@
     "start-issuer": "入力して発行者を検索してください",
     "more-than-results": "{{count}}件を超える結果があります。検索を絞り込むため、さらに入力してください。"
   },
+  "aria": {
+    "main-page": "Bithompメインページ",
+    "open-menu": "メニューを開く"
+  },
   "token-selector": {
     "select-token": "トークンを選択",
     "select-token-destination": "トークンを選択（宛先が保有可能）",
@@ -31,6 +35,17 @@
   },
   "menu": {
     "tokens": "トークン",
+    "badges": {
+      "new": "新規"
+    },
+    "explorer": "{{explorerName}}エクスプローラ",
+    "token-menu": {
+      "multi-purpose": "多目的トークン",
+      "top-holders": "上位保有者",
+      "set-trust": "Trustlineを設定",
+      "issue-token-guide": "トークンの発行方法",
+      "issuer-guide": "トークン発行者向けガイド"
+    },
     "amm": {
       "amm": "AMM",
       "pools": "AMMプール",
@@ -79,6 +94,7 @@
     },
     "network": {
       "blockchain": "ブロックチェーン",
+      "dapps": "Dapps",
       "nodes": "ノード",
       "governance": "ガバナンス",
       "activations": "アクティブアカウント(チャート)",
@@ -99,7 +115,25 @@
       "developers": "開発者",
       "account-generation": "アカウントの作成",
       "faucet": "フォーセット",
-      "api": "API"
+      "api": "API",
+      "images": "トークン/NFT/アドレス画像",
+      "bithomp-tools": "Bithompツール"
+    },
+    "wallet": {
+      "connect-wallet": "ウォレットを接続",
+      "my-account-settings": "自分のアカウント設定",
+      "connected-wallets": "接続済みウォレット",
+      "active": "有効",
+      "disconnect": "切断",
+      "connect-another-wallet": "別のウォレットを接続"
+    },
+    "pro": {
+      "profile": "プロフィール",
+      "watchlist": "ウォッチリスト",
+      "subscriptions": "サブスクリプション",
+      "referrals": "紹介",
+      "my-addresses": "自分のアドレス",
+      "api-management": "API管理"
     },
     "legal": "法務",
     "disclaimer": "免責事項",
@@ -111,13 +145,19 @@
     "sponsored": {
       "title": "スポンサー",
       "buy": "XRPを購入",
-      "earn": "XRPで稼ぐ"
+      "earn": "XRPで稼ぐ",
+      "link-label": "スポンサーリンク: {{title}}"
     },
     "learn-more": {
       "title": "もっと学ぶ",
       "buy-wallet": "ウォレットを購入",
       "xrp-wallets": "XRPウォレット",
-      "xahau-wallets": "Xahauウォレット"
+      "xahau-wallets": "Xahauウォレット",
+      "xrpl-ripple": "XRP、XRPL、Ripple",
+      "verified-domains": "検証済みドメイン",
+      "ripple-usd": "Ripple USD",
+      "nft-minting": "NFTのミント方法",
+      "learn-page": "学習ページを見る"
     }
   },
   "components": {
@@ -199,6 +239,11 @@
     }
   },
   "footer": {
+    "why-our-explorer": "このエクスプローラの特長",
+    "join-team": "チームに参加する",
+    "get-involved": "参加する",
+    "affiliate-program": "アフィリエイトプログラム",
+    "slogan": "Bithomp — 2015年からのXRP Ledgerエクスプローラ",
     "cookie": {
       "we-use-cookie": "本サイトでは、お客様の当社サイトでの体験を向上させるために、クッキーと同様の技術を使用しています。"
     }

@@ -102,7 +102,7 @@ const HeaderShell = ({ onActivate, selectedCurrency, fiatRate }) => {
     <div className="home-header-shell">
       <header>
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
-          <Link href="/" prefetch={false} aria-label="bithomp Main page" className="header-shell-logo-link">
+          <Link href="/" prefetch={false} aria-label={t('aria.main-page')} className="header-shell-logo-link">
             {isBithomp ? (
               <span className="header-shell-logo-bithomp">
                 <LogoAnimated />
@@ -133,7 +133,7 @@ const HeaderShell = ({ onActivate, selectedCurrency, fiatRate }) => {
           </div>
         </div>
         <div className="header-burger">
-          <input type="checkbox" id="header-burger" aria-label="Open menu" readOnly onClick={onActivate} />
+          <input type="checkbox" id="header-burger" aria-label={t('aria.open-menu')} readOnly onClick={onActivate} />
           <label htmlFor="header-burger" className="header-burger-elements">
             <div></div>
             <div></div>

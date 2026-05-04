@@ -21,6 +21,10 @@
     "start-issuer": "Start typing to search for issuers",
     "more-than-results": "More than {{count}} results. Please type more to narrow your search."
   },
+  "aria": {
+    "main-page": "Bithomp main page",
+    "open-menu": "Open menu"
+  },
   "token-selector": {
     "select-token": "Select token",
     "select-token-destination": "Select token (destination can hold)",
@@ -31,6 +35,17 @@
   },
   "menu": {
     "tokens": "Tokens",
+    "badges": {
+      "new": "NEW"
+    },
+    "explorer": "{{explorerName}} Explorer",
+    "token-menu": {
+      "multi-purpose": "Multi-Purpose Tokens",
+      "top-holders": "Top holders",
+      "set-trust": "Set Trust (Trustline)",
+      "issue-token-guide": "How to Issue a Token",
+      "issuer-guide": "Guide for Token Issuers"
+    },
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -79,6 +94,7 @@
     },
     "network": {
       "blockchain": "Blockchain",
+      "dapps": "Dapps",
       "nodes": "Nodes",
       "governance": "Governance",
       "activations": "Activated accounts (chart)",
@@ -99,7 +115,25 @@
       "developers": "Developers",
       "account-generation": "Account generation",
       "faucet": "Faucet",
-      "api": "API"
+      "api": "API",
+      "images": "Token/NFT/Address Images",
+      "bithomp-tools": "Bithomp tools"
+    },
+    "wallet": {
+      "connect-wallet": "Connect Wallet",
+      "my-account-settings": "My account settings",
+      "connected-wallets": "Connected wallets",
+      "active": "Active",
+      "disconnect": "Disconnect",
+      "connect-another-wallet": "Connect another wallet"
+    },
+    "pro": {
+      "profile": "Profile",
+      "watchlist": "Watchlist",
+      "subscriptions": "Subscriptions",
+      "referrals": "Referrals",
+      "my-addresses": "My addresses",
+      "api-management": "API management"
     },
     "legal": "Legal",
     "disclaimer": "Disclaimer",
@@ -111,13 +145,19 @@
     "sponsored": {
       "title": "Sponsored",
       "buy": "Buy XRP",
-      "earn": "Earn on XRP"
+      "earn": "Earn on XRP",
+      "link-label": "{{title}} sponsor link"
     },
     "learn-more": {
       "title": "Learn more",
       "buy-wallet": "Buy a Wallet",
       "xrp-wallets": "XRP Wallets",
-      "xahau-wallets": "Xahau Wallets"
+      "xahau-wallets": "Xahau Wallets",
+      "xrpl-ripple": "XRP, XRPL, Ripple",
+      "verified-domains": "Verified domains",
+      "ripple-usd": "Ripple USD",
+      "nft-minting": "How to Mint NFT",
+      "learn-page": "See our learn page"
     }
   },
   "components": {
@@ -199,6 +239,11 @@
     }
   },
   "footer": {
+    "why-our-explorer": "Why Our Explorer",
+    "join-team": "Join our team",
+    "get-involved": "Get involved",
+    "affiliate-program": "Affiliate program",
+    "slogan": "Bithomp — XRP Ledger Explorer since 2015",
     "cookie": {
       "we-use-cookie": "We use cookies and similar technologies to improve your experience on our site."
     }
