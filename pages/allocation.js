@@ -118,10 +118,16 @@ export default function Allocation({ initialData, errorMessage }) {
   const circulatingSupply = totalCoins - deducted
   const subtitleSupply = xahauNetwork ? circulatingSupply : maxCoins
 
+  // ApexCharts keeps tooltip callbacks internally, so key the chart by actual translated text.
+  const chartLabels = distribution.map((d) => categoryLabel(d.category, t))
+  const chartCenterLabel = xahauNetwork
+    ? t('circulating', { ns: 'allocation' })
+    : t('chart-center-label', { ns: 'allocation' })
+  const chartTextKey = `${i18n.language || 'en'}-${chartCenterLabel}-${chartLabels.join('|')}`
+
   // Build donut chart data
   const { chartSeries, chartOptions } = useMemo(() => {
     const chartSeries = distribution.map((d) => parseFloat(d.percentage))
-    const chartLabels = distribution.map((d) => categoryLabel(d.category, t))
     const chartColors = distribution.map((d) => CATEGORY_COLORS[d.category] || '#888888')
 
     const chartOptions = {
@@ -157,9 +163,7 @@ export default function Allocation({ initialData, errorMessage }) {
               total: {
                 show: true,
                 showAlways: true,
-                label: xahauNetwork
-                  ? t('circulating', { ns: 'allocation' })
-                  : t('chart-center-label', { ns: 'allocation' }),
+                label: chartCenterLabel,
                 fontSize: '13px',
                 color: textColor,
                 formatter: () =>
@@ -195,7 +199,7 @@ export default function Allocation({ initialData, errorMessage }) {
     }
     return { chartSeries, chartOptions }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDark, data, totalCoins])
+  }, [isDark, data, totalCoins, chartTextKey])
 
   // Build lookup and grouped table rows, sorted by descending amount
   const distMap = Object.fromEntries(distribution.map((d) => [d.category, d]))
@@ -300,7 +304,13 @@ export default function Allocation({ initialData, errorMessage }) {
               {/* Donut chart */}
               <div className="grey-box allocation-chart-box">
                 <h3 className="center allocation-section-title">{t('chart-title', { ns: 'allocation' })}</h3>
-                <Chart options={chartOptions} series={chartSeries} type="donut" height={400} />
+                <Chart
+                  key={`allocation-chart-${theme}-${chartTextKey}`}
+                  options={chartOptions}
+                  series={chartSeries}
+                  type="donut"
+                  height={400}
+                />
               </div>
 
               {/* Legend + table */}
