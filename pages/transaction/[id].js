@@ -114,7 +114,7 @@ export async function getServerSideProps(context) {
       initialErrorMessage: initialErrorMessage || null,
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'transaction']))
+      ...(await serverSideTranslations(locale, ['common', 'transaction', 'transaction-errors']))
     }
   }
 }

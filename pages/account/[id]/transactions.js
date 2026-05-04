@@ -167,7 +167,7 @@ export async function getServerSideProps(context) {
       orderQuery: order || 'newest',
       filterSpamQuery: filterSpam || 'true',
       selectedCurrencyServer,
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'transaction', 'transaction-errors']))
     }
   }
 }

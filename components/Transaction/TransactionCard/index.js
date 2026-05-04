@@ -55,6 +55,7 @@ export const TransactionCard = ({
 }) => {
   const { t } = useTranslation()
   const { t: txT } = useTranslation('transaction')
+  const { t: txErrorT } = useTranslation('transaction-errors')
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
   const [showAdditionalData, setShowAdditionalData] = useState(false)
@@ -230,18 +231,18 @@ export const TransactionCard = ({
                   {outcome && !isSuccessful && (
                     <>
                       <tr>
-                        <TData className="bold">Failure</TData>
+                        <TData className="bold">{txT('labels.Failure')}</TData>
                         <TData className="red bold">{shortErrorCode(outcome.result)}</TData>
                       </tr>
                       <tr>
-                        <TData className="bold">Description</TData>
-                        <TData className="orange bold">{errorCodeDescription(outcome.result)}</TData>
+                        <TData className="bold">{txT('labels.Description')}</TData>
+                        <TData className="orange bold">{errorCodeDescription(outcome.result, txErrorT)}</TData>
                       </tr>
                     </>
                   )}
                   {validated && (
                     <tr>
-                      <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
+                      <TData>{isSuccessful ? txT('labels.Validated') : txT('labels.Rejected')}</TData>
                       <TData>
                         {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
                       </TData>
@@ -249,7 +250,7 @@ export const TransactionCard = ({
                   )}
                   {children}
                   <tr>
-                    <TData>Ledger fee</TData>
+                    <TData>{txT('labels.Ledger fee')}</TData>
                     <TData>
                       <span className="bold">
                         {amountFormat(isInsufFee && actualBurnedFeeAmount ? actualBurnedFeeAmount : tx?.Fee)}
@@ -311,7 +312,7 @@ export const TransactionCard = ({
                     specification?.source?.address !== outcome?.escrowChanges?.destination?.address &&
                     isSuccessful && (
                       <tr>
-                        <TData>Memos note</TData>
+                        <TData>{txT('labels.Memos note')}</TData>
                         <TData className="orange">
                           {txT('messages.memosThirdParty.prefix')}{' '}
                           {addressUsernameOrServiceLink(specification?.source, 'address')}{' '}
@@ -518,7 +519,7 @@ export const TransactionCard = ({
                           ) : (
                             <tr>
                               <TData tooltip="The sequence number of the account sending the transaction.">
-                                Sequence
+                                {txT('labels.Sequence')}
                               </TData>
                               <TData>#{tx.Sequence}</TData>
                             </tr>
@@ -530,7 +531,7 @@ export const TransactionCard = ({
                           tx.TransactionType !== 'Payment' &&
                           !tx.TransactionType?.includes('Check'))) && (
                         <tr>
-                          <TData>Source tag</TData>
+                          <TData>{txT('labels.Source tag')}</TData>
                           <TData>{tx?.SourceTag}</TData>
                         </tr>
                       )}

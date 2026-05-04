@@ -17,7 +17,7 @@ import {
   memoNode
 } from '../../../utils/transaction'
 import { isTagValid, useWidth } from '../../../utils'
-import { i18n } from 'next-i18next'
+import { i18n, useTranslation } from 'next-i18next'
 import CopyButton from '../../UI/CopyButton'
 import { useIsMobile } from '../../../utils/mobile'
 import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
@@ -54,6 +54,8 @@ import Link from 'next/link'
 */
 
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency, icon }) => {
+  const { t: txT } = useTranslation('transaction')
+  const { t: txErrorT } = useTranslation('transaction-errors')
   const width = useWidth()
   const { specification, tx, outcome, fiatRates } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
@@ -117,11 +119,11 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         )}
         {outcome && !isSuccessful && (
           <>
-            <span className="bold">Failure: </span>
+            <span className="bold">{txT('labels.Failure')}: </span>
             <span className="red bold">{shortErrorCode(outcome.result)}</span>
             <br />
-            <span className="bold">Description: </span>
-            <span className="orange bold">{errorCodeDescription(outcome.result)}</span>
+            <span className="bold">{txT('labels.Description')}: </span>
+            <span className="orange bold">{errorCodeDescription(outcome.result, txErrorT)}</span>
             <br />
           </>
         )}
@@ -149,13 +151,13 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         )}
         {!rippling && isTagValid(tx.DestinationTag) && (
           <>
-            Destination tag: <span className="bold">{tx.DestinationTag}</span>
+            {txT('labels.Destination tag')}: <span className="bold">{tx.DestinationTag}</span>
             <br />
           </>
         )}
         {!rippling && isTagValid(tx.SourceTag) && !dapp && (
           <>
-            Source tag: <span className="bold">{tx.SourceTag}</span>
+            {txT('labels.Source tag')}: <span className="bold">{tx.SourceTag}</span>
             <br />
           </>
         )}

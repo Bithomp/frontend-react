@@ -371,7 +371,7 @@ export async function getServerSideProps(context) {
         initialSignerAccountsData,
         initialNftMinterAccountsData,
         initialActivatedAccountsData,
-        ...(await serverSideTranslations(locale, ['common', 'account']))
+        ...(await serverSideTranslations(locale, ['common', 'account', 'transaction-errors']))
       }
     }
   } else {
@@ -385,7 +385,7 @@ export async function getServerSideProps(context) {
         initialSignerAccountsData,
         initialNftMinterAccountsData,
         initialActivatedAccountsData,
-        ...(await serverSideTranslations(locale, ['common', 'account']))
+        ...(await serverSideTranslations(locale, ['common', 'account', 'transaction-errors']))
       }
     }
   }
@@ -480,6 +480,7 @@ export default function Account({
   refreshPage
 }) {
   const { t, i18n } = useTranslation()
+  const { t: txErrorT } = useTranslation('transaction-errors')
   const router = useRouter()
   const { Canvas } = useQRCode()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
@@ -6689,7 +6690,7 @@ export default function Account({
                                   <div className="detail-row tx-fail-description-row">
                                     <span>Error:</span>
                                     <span className="orange tx-fail-description-text">
-                                      {errorCodeDescription(failedStatusText) || failedStatusText}
+                                      {errorCodeDescription(failedStatusText, txErrorT) || failedStatusText}
                                     </span>
                                   </div>
                                 </>

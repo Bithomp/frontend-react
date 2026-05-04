@@ -1587,9 +1587,9 @@ export default function SignForm({
 
                     {!erase && (
                       <span className="halv">
-                        <span className="input-title">Address</span>
+                        <span className="input-title">{t('table.address')}</span>
                         <input
-                          placeholder="Enter address"
+                          placeholder={t('search.enter-address')}
                           onChange={(e) => onSeatValueChange(e.target.value)}
                           className="input-text"
                           spellCheck="false"
