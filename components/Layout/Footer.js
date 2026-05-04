@@ -34,7 +34,6 @@ export default function Footer(
           <FooterLink href="/about-us">{t('menu.company.about-us')}</FooterLink>
           <FooterLink href="/learn/the-bithomp-explorer-advantages">{t('footer.why-our-explorer')}</FooterLink>
           <FooterLink href="/press">{t('menu.press')}</FooterLink>
-          <FooterLink href="/jobs">{t('footer.join-team')}</FooterLink>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('footer.get-involved')}</span>

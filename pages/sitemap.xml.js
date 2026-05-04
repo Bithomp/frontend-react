@@ -99,7 +99,6 @@ if (network === 'mainnet') {
   pages.push(
     { loc: 'the-chain-of-blocks-summit', changefreq: 'monthly', priority: '1' },
     { loc: 'press', changefreq: 'yearly', priority: '0.4' },
-    { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
     { loc: 'learn', changefreq: 'weekly', priority: '0.7' },
     { loc: 'learn/understanding-the-bithomp-explorer', changefreq: 'monthly', priority: '0.8' },
     { loc: 'learn/verified-domain', changefreq: 'monthly', priority: '0.5' },
@@ -134,7 +133,6 @@ function generateSiteMap(posts) {
     'privacy-policy',
     'terms-and-conditions',
     'disclaimer',
-    'jobs',
     'xrp-xah-taxes',
     'object',
     'about-us',
