@@ -22,7 +22,6 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import {
   isAddressOrUsername,
   nativeCurrency,
-  retinaImageSize,
   tokenImageSrc,
   validateCurrencyCode,
   xahauNetwork
@@ -499,7 +498,7 @@ export default function TokenPage({
             {/* Big Token Icon */}
             <img
               alt="token"
-              src={tokenImageSrc(token, retinaImageSize(300))}
+              src={tokenImageSrc(token)}
               className="token-image"
               style={{
                 width: 'calc(100% - 2px)',
