@@ -403,7 +403,12 @@ export default function Home({
 
             <div className="home-widget">
               <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
-                <TeaserTopTokens data={homeTeasers.tokens} isLoading={teasersLoading.tokens} />
+                <TeaserTopTokens
+                  data={homeTeasers.tokens}
+                  isLoading={teasersLoading.tokens}
+                  fiatRate={fiatRate}
+                  selectedCurrency={selectedCurrency}
+                />
               </LazyHomeWidget>
             </div>
 

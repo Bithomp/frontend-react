@@ -47,6 +47,12 @@ function extractArray(response, fallback = []) {
   return fallback
 }
 
+const mergeNativeTokenOnTop = (tokens, nativeToken) => {
+  const list = Array.isArray(tokens) ? tokens : []
+  const filtered = list.filter((token) => !(token?.currency === nativeCurrency && !token?.issuer))
+  return nativeToken ? [nativeToken, ...filtered].slice(0, 5) : filtered.slice(0, 5)
+}
+
 export const fetchTeaserDappsClient = async (selectedCurrency = 'usd') => {
   try {
     const response = await axios(
@@ -95,11 +101,23 @@ export const fetchTeaserDappsClient = async (selectedCurrency = 'usd') => {
 
 export const fetchTeaserTokensClient = async (selectedCurrency = 'usd') => {
   try {
-    const response = await axios(
-      'v2/trustlines/tokens?limit=5&order=rating&statistics=true&convertCurrencies=' + selectedCurrency,
-      { timeout: 5000 }
-    )
-    return extractArray(response)
+    const [tokensResult, nativeResult] = await Promise.allSettled([
+      axios('v2/trustlines/tokens?limit=5&order=rating&statistics=true&convertCurrencies=' + selectedCurrency, {
+        timeout: 5000
+      }),
+      axios(`v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${selectedCurrency}`, { timeout: 5000 })
+    ])
+
+    if (tokensResult.status === 'rejected') {
+      return []
+    }
+
+    const nativeToken =
+      nativeResult.status === 'fulfilled' && nativeResult.value?.data && !nativeResult.value.data?.error
+        ? nativeResult.value.data
+        : null
+
+    return mergeNativeTokenOnTop(extractArray(tokensResult.value), nativeToken)
   } catch (error) {
     return []
   }

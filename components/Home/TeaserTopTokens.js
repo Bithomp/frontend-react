@@ -4,10 +4,11 @@ import { nativeCurrency } from '../../utils'
 import Delta from '../UI/Delta'
 import styles from '@/styles/components/home-teaser.module.scss'
 
-export default function TeaserTopTokens({ data = [], isLoading = false }) {
+export default function TeaserTopTokens({ data = [], isLoading = false, fiatRate, selectedCurrency }) {
   const topTokens = data?.slice(0, 5) || []
 
-  const getSelectedCurrency = (token) => Object.keys(token?.statistics?.priceFiats || {})[0] || null
+  const getSelectedCurrency = (token) =>
+    selectedCurrency || Object.keys(token?.statistics?.priceFiats || {})[0] || null
   const getTokenHref = (token) => {
     if (!token) return null
     if (token.mptId) return `/token/${token.mptId}`
@@ -17,25 +18,32 @@ export default function TeaserTopTokens({ data = [], isLoading = false }) {
   }
 
   const getPrice = (token) => {
-    const selectedCurrency = getSelectedCurrency(token)
-    const fiatPrice = selectedCurrency ? token?.statistics?.priceFiats?.[selectedCurrency] : null
+    const currency = getSelectedCurrency(token)
+    const fiatPrice = currency ? token?.statistics?.priceFiats?.[currency] : null
 
     if (fiatPrice != null) {
-      return shortNiceNumber(fiatPrice, 4, 1, selectedCurrency)
+      return shortNiceNumber(fiatPrice, 4, 1, currency)
     }
 
-    const nativePrice = Number(token?.statistics?.priceNativeCurrency || 0)
+    const nativePrice = Number(token?.statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1))
+    const fallbackFiatPrice = nativePrice * Number(fiatRate || 0)
+
+    if (currency && Number.isFinite(fallbackFiatPrice) && fallbackFiatPrice > 0) {
+      return shortNiceNumber(fallbackFiatPrice, 4, 1, currency)
+    }
+
     return nativePrice ? `${shortNiceNumber(nativePrice, 4, 1)} ${nativeCurrency}` : 'N/A'
   }
 
   const getVolume = (token) => {
-    const selectedCurrency = getSelectedCurrency(token)
+    const currency = getSelectedCurrency(token)
     const totalVolume = Number(token?.statistics?.buyVolume || 0) + Number(token?.statistics?.sellVolume || 0)
-    const nativePrice = Number(token?.statistics?.priceNativeCurrency || 0)
-    const volumeFiat = totalVolume * nativePrice
+    const fiatPrice = currency ? Number(token?.statistics?.priceFiats?.[currency]) : 0
+    const nativePrice = Number(token?.statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1))
+    const volumeFiat = totalVolume * (fiatPrice || nativePrice * Number(fiatRate || 0))
 
-    if (selectedCurrency && Number.isFinite(volumeFiat) && volumeFiat > 0) {
-      return shortNiceNumber(volumeFiat, 2, 1, selectedCurrency)
+    if (currency && Number.isFinite(volumeFiat) && volumeFiat > 0) {
+      return shortNiceNumber(volumeFiat, 2, 1, currency)
     }
 
     return totalVolume ? `${shortNiceNumber(totalVolume, 2, 1)} ${token?.currency || nativeCurrency}` : 'N/A'

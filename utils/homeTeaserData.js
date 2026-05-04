@@ -46,6 +46,12 @@ function extractArray(response, fallback = []) {
   return fallback
 }
 
+const mergeNativeTokenOnTop = (tokens, nativeToken) => {
+  const list = Array.isArray(tokens) ? tokens : []
+  const filtered = list.filter((token) => !(token?.currency === nativeCurrency && !token?.issuer))
+  return nativeToken ? [nativeToken, ...filtered].slice(0, 5) : filtered.slice(0, 5)
+}
+
 /**
  * Fetch top dapps using /dapps filtering, but rank teaser rows by 24h volume.
  */
@@ -107,13 +113,32 @@ export const fetchTeaserDapps = async (req, selectedCurrency = 'usd') => {
  */
 export const fetchTeaserTokens = async (req, selectedCurrency = 'usd') => {
   try {
-    const response = await axiosServer({
-      method: 'get',
-      url: 'v2/trustlines/tokens?limit=5&order=rating&statistics=true&convertCurrencies=' + selectedCurrency,
-      headers: passHeaders(req),
-      timeout: 5000
-    })
-    return extractArray(response)
+    const headers = passHeaders(req)
+    const [tokensResult, nativeResult] = await Promise.allSettled([
+      axiosServer({
+        method: 'get',
+        url: 'v2/trustlines/tokens?limit=5&order=rating&statistics=true&convertCurrencies=' + selectedCurrency,
+        headers,
+        timeout: 5000
+      }),
+      axiosServer({
+        method: 'get',
+        url: `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${selectedCurrency}`,
+        headers,
+        timeout: 5000
+      })
+    ])
+
+    if (tokensResult.status === 'rejected') {
+      return []
+    }
+
+    const nativeToken =
+      nativeResult.status === 'fulfilled' && nativeResult.value?.data && !nativeResult.value.data?.error
+        ? nativeResult.value.data
+        : null
+
+    return mergeNativeTokenOnTop(extractArray(tokensResult.value), nativeToken)
   } catch (error) {
     console.error('Error fetching teaser tokens:', error.message)
     return []
