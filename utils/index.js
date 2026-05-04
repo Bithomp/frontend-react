@@ -682,7 +682,10 @@ export const avatarServer = 'https://cdn.' + webSiteName + '/avatar/'
 
 export const retinaImageSize = (size) => {
   const numericSize = Number(size)
-  return Number.isFinite(numericSize) && numericSize > 0 ? Math.ceil(numericSize * 2) : undefined
+  if (!Number.isFinite(numericSize) || numericSize <= 0) return undefined
+
+  const imageSize = Math.ceil(numericSize * 2)
+  return imageSize <= 400 ? imageSize : undefined
 }
 
 export const appendImageParams = (src, params = {}) => {
