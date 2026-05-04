@@ -152,15 +152,24 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
 
   const { tx } = data
   const transactionSeo = buildTransactionSeo(data, effectiveSelectedCurrency)
+  const transactionPreviewParams = {
+    type: transactionSeo.type,
+    status: transactionSeo.status
+  }
   const transactionPreviewImage = {
     width: 1200,
+    height: 630,
+    file: server + '/nextapi/tx-preview?' + new URLSearchParams(transactionPreviewParams).toString()
+  }
+  const transactionTwitterImage = {
+    width: 630,
     height: 630,
     file:
       server +
       '/nextapi/tx-preview?' +
       new URLSearchParams({
-        type: transactionSeo.type,
-        status: transactionSeo.status
+        ...transactionPreviewParams,
+        shape: 'square'
       }).toString()
   }
 
@@ -232,7 +241,7 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
         title={transactionSeo.title}
         description={transactionSeo.description}
         image={transactionPreviewImage}
-        twitterImage={transactionPreviewImage}
+        twitterImage={transactionTwitterImage}
       />
       <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={effectiveSelectedCurrency} />
     </>

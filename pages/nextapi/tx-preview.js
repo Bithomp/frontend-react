@@ -24,12 +24,35 @@ export async function getServerSideProps({ query, res }) {
   const { getTransactionTypeLabel } = await import('../../utils/transaction')
   const type = String(query.type || 'Transaction').slice(0, 40)
   const status = String(query.status || 'success')
+  const square = query.shape === 'square'
   const label = escapeSvg(getTransactionTypeLabel(type))
   const style = txStyle(type)
   const statusText = status === 'failed' ? 'Failed transaction' : status === 'pending' ? 'Pending transaction' : 'Validated transaction'
   const statusColor = status === 'failed' ? '#ff9f43' : status === 'pending' ? '#b0bec5' : '#66e3bb'
 
-  const svg = `
+  const svg = square
+    ? `
+    <svg width="630" height="630" viewBox="0 0 630 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="630" height="630" fill="#071416"/>
+      <path d="M0 116L158 0H630V630H0V116Z" fill="${style.dark}" opacity="0.56"/>
+      <path d="M0 438L158 334L315 438L472 334L630 438V630H0V438Z" fill="${style.accent}" opacity="0.14"/>
+      <circle cx="504" cy="118" r="136" fill="${style.accent}" opacity="0.15"/>
+      <circle cx="504" cy="118" r="82" fill="${style.accent}" opacity="0.12"/>
+
+      <g transform="translate(65 62)">
+        <rect x="0" y="0" width="154" height="154" rx="36" fill="#0d2226" stroke="${style.accent}" stroke-width="5"/>
+        <circle cx="77" cy="77" r="45" fill="${style.accent}" opacity="0.22"/>
+        <text x="77" y="90" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="${style.accent}">${escapeSvg(style.mark)}</text>
+      </g>
+
+      <text x="65" y="280" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="6" fill="${style.accent}">BITHOMP</text>
+      <text x="65" y="360" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#ffffff">${label}</text>
+      <text x="65" y="414" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
+      <text x="65" y="535" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#b7cacc">XRP Ledger transaction preview</text>
+      <rect x="65" y="568" width="500" height="2" fill="${style.accent}" opacity="0.42"/>
+    </svg>
+  `
+    : `
     <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="1200" height="630" fill="#071416"/>
       <path d="M0 126L240 0H1200V630H0V126Z" fill="${style.dark}" opacity="0.52"/>
