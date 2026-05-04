@@ -71,9 +71,14 @@ export default function TeaserTopNftCollections({ data = [], isLoading = false, 
         const sales = collection.sales || 0
         const volumeCurrency = Object.keys(collection.volumesInConvertCurrencies || {})[0]
         const volume = volumeCurrency ? collection.volumesInConvertCurrencies?.[volumeCurrency] : null
+        const collectionHref = collection.collection ? `/nft-collection/${collection.collection}` : null
 
         return (
-          <HomeTeaseRow key={collection.issuer || collection.collection || index} className={styles.rowNftSlightTall}>
+          <HomeTeaseRow
+            key={collection.issuer || collection.collection || index}
+            href={collectionHref}
+            className={styles.rowNftSlightTall}
+          >
             <div className={styles.collectionNameCell}>
               {collection.collectionDetails ? collectionThumbnail(collection.collectionDetails) : null}
               <div className={styles.collectionNameText}>{collectionName}</div>

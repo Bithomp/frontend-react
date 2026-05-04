@@ -87,7 +87,7 @@ export default function TeaserTopAmms({ data = [], isLoading = false, fiatRate, 
         const tvl = Number.isFinite(half1) && half1 > 0 ? shortNiceNumber(half1 * 2, 2, 1, selectedCurrency) : 'N/A'
 
         return (
-          <HomeTeaseRow key={amm.account || index}>
+          <HomeTeaseRow key={amm.account || index} href={amm?.ammID ? `/amm/${amm.ammID}` : null}>
             <div className={styles.itemName}>
               <CurrencyWithIcon token={lpToken} hideIssuer options={{ disableTokenLink: true }} />
             </div>

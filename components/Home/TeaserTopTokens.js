@@ -8,6 +8,13 @@ export default function TeaserTopTokens({ data = [], isLoading = false }) {
   const topTokens = data?.slice(0, 5) || []
 
   const getSelectedCurrency = (token) => Object.keys(token?.statistics?.priceFiats || {})[0] || null
+  const getTokenHref = (token) => {
+    if (!token) return null
+    if (token.mptId) return `/token/${token.mptId}`
+    if (token.issuer) return `/token/${token.issuer}/${token.currency}`
+    if (token.currency) return `/token/${token.currency}`
+    return null
+  }
 
   const getPrice = (token) => {
     const selectedCurrency = getSelectedCurrency(token)
@@ -46,9 +53,14 @@ export default function TeaserTopTokens({ data = [], isLoading = false }) {
         const selectedCurrency = getSelectedCurrency(token)
         const currentPrice = selectedCurrency ? token?.statistics?.priceFiats?.[selectedCurrency] : null
         const previousPrice = selectedCurrency ? token?.statistics?.priceFiats24h?.[selectedCurrency] : null
+        const tokenHref = getTokenHref(token)
 
         return (
-          <HomeTeaseRow key={token.issuer + token.currency || index} className={styles.rowSlightCompact}>
+          <HomeTeaseRow
+            key={token.issuer + token.currency || index}
+            href={tokenHref}
+            className={styles.rowSlightCompact}
+          >
             <div className={styles.itemName}>
               <CurrencyWithIcon token={token} hideIssuer options={{ disableTokenLink: true }} />
             </div>

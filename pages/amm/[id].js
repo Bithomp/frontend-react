@@ -62,7 +62,7 @@ export async function getServerSideProps(context) {
       initialErrorMessage: errorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await getFiatRateServer(req)),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'services']))
     }
   }
 }
