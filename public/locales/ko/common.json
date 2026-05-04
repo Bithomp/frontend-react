@@ -287,11 +287,12 @@
     },
     "teaser": {
       "topDapps": "상위 Dapps",
-      "topNftCollections": "이번 주 상위 NFT 컬렉션",
+      "topNftCollections": "상위 NFT 컬렉션",
       "topTokens": "상위 토큰",
       "topAmms": "상위 AMM 풀",
       "topValidators": "검증자",
-      "topAmendments": "최신 수정 사항"
+      "topAmendments": "최신 수정 사항",
+      "refresh": "데이터 새로고침"
     }
   },
   "last-ledger-information": {

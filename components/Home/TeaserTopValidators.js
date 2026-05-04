@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react'
 import ReactCountryFlag from 'react-country-flag'
 import HomeTeaser, { HomeTeaseRow } from './HomeTeaser'
 import { shortHash } from '../../utils/format'
 import { avatarServer, xahauNetwork } from '../../utils'
 import Avatar from '../UI/Avatar'
+import { fetchTeaserValidatorsClient } from '../../utils/homeTeaserClientData'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 const validatorName = (v) => v.principals?.[0]?.name || shortHash(v.publicKey, 6)
@@ -16,9 +18,61 @@ const validatorVersion = (version) => {
 }
 
 export default function TeaserTopValidators({ data = [], isLoading = false }) {
+  const [items, setItems] = useState(data)
+  const [isInitialLoading, setIsInitialLoading] = useState(!data?.length || isLoading)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const loading = isInitialLoading && !items?.length
+  const showRefresh = isInitialLoading || isRefreshing || !items?.length
+
+  useEffect(() => {
+    if (data?.length) {
+      setItems(data)
+      setIsInitialLoading(false)
+    }
+  }, [data])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadData = async () => {
+      setIsInitialLoading(true)
+      try {
+        const latest = await fetchTeaserValidatorsClient()
+        if (!cancelled) {
+          setItems(latest)
+        }
+      } finally {
+        if (!cancelled) {
+          setIsInitialLoading(false)
+        }
+      }
+    }
+
+    loadData()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const refreshData = async () => {
+    setIsRefreshing(true)
+    try {
+      setItems(await fetchTeaserValidatorsClient())
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
+
   return (
-    <HomeTeaser title="home.teaser.topValidators" href="/validators" isLoading={isLoading} isEmpty={!data?.length}>
-      {data?.map((validator) => (
+    <HomeTeaser
+      title="home.teaser.topValidators"
+      href="/validators"
+      isLoading={loading}
+      isRefreshing={isRefreshing || isInitialLoading}
+      onRefresh={showRefresh ? refreshData : null}
+      isEmpty={!items?.length}
+    >
+      {items?.map((validator) => (
         <HomeTeaseRow key={validator.publicKey} href={`/validator/${validator.publicKey}`} className={styles.validatorRow}>
           <div className={styles.validatorPrimary}>
             <Avatar

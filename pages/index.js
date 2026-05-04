@@ -18,11 +18,7 @@ import { currencyServer } from '../utils/axios'
 import {
   emptyHomeTeasers,
   fetchTeaserAmendmentsClient,
-  fetchTeaserAmmsClient,
-  fetchTeaserDappsClient,
-  fetchTeaserNftCollectionsClient,
-  fetchTeaserTokensClient,
-  fetchTeaserValidatorsClient
+  fetchTeaserTokensClient
 } from '../utils/homeTeaserClientData'
 //not indexed
 const HomeTeaserPlaceholder = () => (
@@ -42,11 +38,7 @@ const HomeTeaserPlaceholder = () => (
 )
 
 const initialTeaserLoading = {
-  dapps: true,
   tokens: true,
-  nftCollections: true,
-  amms: true,
-  validators: true,
   amendments: true
 }
 
@@ -238,17 +230,11 @@ export default function Home({
     let cancelled = false
     const timeoutIds = []
     const fastDelay = isSsrMobile ? 1200 : 900
-    const slowDelay = isSsrMobile ? 12000 : 4500
 
     setHomeTeasers(emptyHomeTeasers)
     setTeasersLoading(initialTeaserLoading)
 
     const tasks = [
-      {
-        key: 'amms',
-        delay: fastDelay,
-        fetcher: () => (xahauNetwork ? [] : fetchTeaserAmmsClient())
-      },
       {
         key: 'tokens',
         delay: fastDelay,
@@ -258,21 +244,6 @@ export default function Home({
         key: 'amendments',
         delay: fastDelay,
         fetcher: fetchTeaserAmendmentsClient
-      },
-      {
-        key: 'dapps',
-        delay: slowDelay,
-        fetcher: () => (xahauNetwork ? [] : fetchTeaserDappsClient(selectedCurrency))
-      },
-      {
-        key: 'validators',
-        delay: slowDelay,
-        fetcher: fetchTeaserValidatorsClient
-      },
-      {
-        key: 'nftCollections',
-        delay: slowDelay,
-        fetcher: () => (xahauNetwork ? [] : fetchTeaserNftCollectionsClient(selectedCurrency))
       }
     ]
 
@@ -425,12 +396,7 @@ export default function Home({
             {!xahauNetwork && (
               <div className="home-widget">
                 <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
-                  <TeaserTopAmms
-                    data={homeTeasers.amms}
-                    isLoading={teasersLoading.amms}
-                    fiatRate={fiatRate}
-                    selectedCurrency={selectedCurrency}
-                  />
+                  <TeaserTopAmms fiatRate={fiatRate} selectedCurrency={selectedCurrency} />
                 </LazyHomeWidget>
               </div>
             )}
@@ -539,21 +505,21 @@ export default function Home({
             {!xahauNetwork && (
               <div className="home-widget">
                 <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
-                  <TeaserTopDapps data={homeTeasers.dapps} isLoading={teasersLoading.dapps} />
+                  <TeaserTopDapps selectedCurrency={selectedCurrency} />
                 </LazyHomeWidget>
               </div>
             )}
 
             <div className="home-widget">
               <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
-                <TeaserTopValidators data={homeTeasers.validators} isLoading={teasersLoading.validators} />
+                <TeaserTopValidators />
               </LazyHomeWidget>
             </div>
 
             {!xahauNetwork && (
               <div className="home-widget">
                 <LazyHomeWidget placeholder={<HomeTeaserPlaceholder />}>
-                  <TeaserTopNftCollections data={homeTeasers.nftCollections} isLoading={teasersLoading.nftCollections} />
+                  <TeaserTopNftCollections selectedCurrency={selectedCurrency} />
                 </LazyHomeWidget>
               </div>
             )}

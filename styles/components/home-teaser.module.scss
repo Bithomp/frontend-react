@@ -332,8 +332,9 @@
   }
 
   .skeleton {
+    flex: 1 1 0;
     width: 100%;
-    height: 30px;
+    min-height: 30px;
     background: linear-gradient(
       90deg,
       var(--background-secondary) 0%,
@@ -370,8 +371,22 @@
   }
 }
 
+@keyframes teaser-refresh-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .teaser .skeleton {
+    animation: none;
+  }
+
+  .cardRefreshIconSpinning {
     animation: none;
   }
 }
@@ -433,6 +448,53 @@
     color: var(--link-hover);
     text-decoration: underline;
   }
+}
+
+.cardHeaderControls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+}
+
+.cardRefreshButton {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background-color: var(--background-secondary);
+  color: var(--link-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--link-color);
+    color: var(--link-hover);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.78;
+  }
+}
+
+.cardRefreshIcon {
+  width: 13px;
+  height: 13px;
+}
+
+.cardRefreshIconSpinning {
+  animation: teaser-refresh-spin 0.8s linear infinite;
 }
 
 .cardHeaderActions {

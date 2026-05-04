@@ -287,11 +287,12 @@
     },
     "teaser": {
       "topDapps": "Top Dapps",
-      "topNftCollections": "Koleksi NFT Top Minggu Ini",
+      "topNftCollections": "Koleksi NFT Teratas",
       "topTokens": "Top Token",
       "topAmms": "Top Pool AMM",
       "topValidators": "Validator",
-      "topAmendments": "Amandemen Terbaru"
+      "topAmendments": "Amandemen Terbaru",
+      "refresh": "Perbarui data"
     }
   },
   "last-ledger-information": {

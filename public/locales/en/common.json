@@ -291,7 +291,8 @@
       "topTokens": "Top Tokens",
       "topAmms": "Top AMM Pools by TVL",
       "topValidators": "Validators",
-      "topAmendments": "Latest Amendments"
+      "topAmendments": "Latest Amendments",
+      "refresh": "Refresh data"
     }
   },
   "last-ledger-information": {

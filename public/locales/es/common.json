@@ -287,11 +287,12 @@
     },
     "teaser": {
       "topDapps": "Top Dapps",
-      "topNftCollections": "Top Colecciones NFT esta semana",
+      "topNftCollections": "Top Colecciones NFT",
       "topTokens": "Top Tokens",
       "topAmms": "Top Pools AMM",
       "topValidators": "Validadores",
-      "topAmendments": "Últimas Enmiendas"
+      "topAmendments": "Últimas Enmiendas",
+      "refresh": "Actualizar datos"
     }
   },
   "last-ledger-information": {

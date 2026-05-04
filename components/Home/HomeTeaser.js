@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
+import { FaArrowsRotate } from 'react-icons/fa6'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 /**
@@ -28,11 +29,14 @@ export default function HomeTeaser({
   titleNote = '',
   titleSuffix = '',
   isLoading = false,
+  isRefreshing = false,
+  onRefresh = null,
   isEmpty = false,
   children,
   className = ''
 }) {
   const { t } = useTranslation()
+  const refreshTitle = t('home.teaser.refresh')
 
   return (
     <div className={`${styles.teaser} ${className}`.trim()}>
@@ -44,9 +48,25 @@ export default function HomeTeaser({
           </h2>
           {titleNote ? <span className={styles.cardHeaderNote}>{titleNote}</span> : null}
         </div>
-        <Link href={href} className={styles.cardHeaderLink} prefetch={false}>
-          {t('common.viewAll')}
-        </Link>
+        <div className={styles.cardHeaderControls}>
+          {onRefresh ? (
+            <button
+              type="button"
+              className={styles.cardRefreshButton}
+              onClick={onRefresh}
+              aria-label={refreshTitle}
+              title={refreshTitle}
+              disabled={isRefreshing}
+            >
+              <FaArrowsRotate
+                className={`${styles.cardRefreshIcon} ${isRefreshing ? styles.cardRefreshIconSpinning : ''}`.trim()}
+              />
+            </button>
+          ) : null}
+          <Link href={href} className={styles.cardHeaderLink} prefetch={false}>
+            {t('common.viewAll')}
+          </Link>
+        </div>
       </div>
 
       {isLoading ? (

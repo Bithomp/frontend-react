@@ -287,11 +287,12 @@
     },
     "teaser": {
       "topDapps": "トップDapps",
-      "topNftCollections": "今週のトップNFTコレクション",
+      "topNftCollections": "トップNFTコレクション",
       "topTokens": "トップトークン",
       "topAmms": "トップAMMプール",
       "topValidators": "バリデーター",
-      "topAmendments": "最新の修正案"
+      "topAmendments": "最新の修正案",
+      "refresh": "データを更新"
     }
   },
   "last-ledger-information": {

@@ -1,15 +1,68 @@
 import { useTranslation } from 'next-i18next'
+import { useEffect, useState } from 'react'
 import HomeTeaser, { HomeTeaseRow } from './HomeTeaser'
 import { shortNiceNumber, niceCurrency, CurrencyWithIcon } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
+import { fetchTeaserAmmsClient } from '../../utils/homeTeaserClientData'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 export default function TeaserTopAmms({ data = [], isLoading = false, fiatRate, selectedCurrency }) {
   const { t } = useTranslation()
-  const topAmms = data?.slice(0, 5) || []
+  const [items, setItems] = useState(data)
+  const [isInitialLoading, setIsInitialLoading] = useState(!data?.length || isLoading)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const topAmms = items?.slice(0, 5) || []
+  const loading = isInitialLoading && !topAmms.length
+  const showRefresh = isInitialLoading || isRefreshing || !topAmms.length
+
+  useEffect(() => {
+    if (data?.length) {
+      setItems(data)
+      setIsInitialLoading(false)
+    }
+  }, [data])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadData = async () => {
+      setIsInitialLoading(true)
+      try {
+        const latest = await fetchTeaserAmmsClient()
+        if (!cancelled) {
+          setItems(latest)
+        }
+      } finally {
+        if (!cancelled) {
+          setIsInitialLoading(false)
+        }
+      }
+    }
+
+    loadData()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const refreshData = async () => {
+    setIsRefreshing(true)
+    try {
+      setItems(await fetchTeaserAmmsClient())
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
 
   return (
-    <HomeTeaser title="home.teaser.topAmms" href="/amms" isLoading={isLoading} isEmpty={!topAmms.length}>
+    <HomeTeaser
+      title="home.teaser.topAmms"
+      href="/amms"
+      isLoading={loading}
+      isRefreshing={isRefreshing || isInitialLoading}
+      onRefresh={showRefresh ? refreshData : null}
+      isEmpty={!topAmms.length}
+    >
       {topAmms.map((amm, index) => {
         const asset1 = niceCurrency(amm?.amount?.currency || nativeCurrency)
         const asset2 = niceCurrency(amm?.amount2?.currency || nativeCurrency)

@@ -1,16 +1,63 @@
 import { useTranslation } from 'next-i18next'
+import { useEffect, useState } from 'react'
 import HomeTeaser, { HomeTeaseRow } from './HomeTeaser'
 import { shortNiceNumber } from '../../utils/format'
 import { dappBySourceTag } from '../../utils/transaction'
 import DappLogo from '../Dapps/DappLogo'
 import { DAPPS_META } from '../../utils/dapps'
+import { fetchTeaserDappsClient } from '../../utils/homeTeaserClientData'
 import Delta from '../UI/Delta'
 import styles from '@/styles/components/home-teaser.module.scss'
 
-export default function TeaserTopDapps({ data = [], isLoading = false }) {
+export default function TeaserTopDapps({ data = [], isLoading = false, selectedCurrency }) {
   const { t } = useTranslation()
-  const topDapps = data?.slice(0, 5) || []
+  const [items, setItems] = useState(data)
+  const [isInitialLoading, setIsInitialLoading] = useState(!data?.length || isLoading)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const topDapps = items?.slice(0, 5) || []
+  const loading = isInitialLoading && !topDapps.length
+  const showRefresh = isInitialLoading || isRefreshing || !topDapps.length
   const dappsMeta = DAPPS_META?.[0] || {}
+
+  useEffect(() => {
+    if (data?.length) {
+      setItems(data)
+      setIsInitialLoading(false)
+    }
+  }, [data])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadData = async () => {
+      setIsInitialLoading(true)
+      setItems([])
+      try {
+        const latest = await fetchTeaserDappsClient(selectedCurrency)
+        if (!cancelled) {
+          setItems(latest)
+        }
+      } finally {
+        if (!cancelled) {
+          setIsInitialLoading(false)
+        }
+      }
+    }
+
+    loadData()
+    return () => {
+      cancelled = true
+    }
+  }, [selectedCurrency])
+
+  const refreshData = async () => {
+    setIsRefreshing(true)
+    try {
+      setItems(await fetchTeaserDappsClient(selectedCurrency))
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
 
   const getVolume = (dapp) => {
     if (dapp?.currentVolume == null) {
@@ -24,7 +71,9 @@ export default function TeaserTopDapps({ data = [], isLoading = false }) {
       title="home.teaser.topDapps"
       titleNote="24h"
       href="/dapps"
-      isLoading={isLoading}
+      isLoading={loading}
+      isRefreshing={isRefreshing || isInitialLoading}
+      onRefresh={showRefresh ? refreshData : null}
       isEmpty={!topDapps.length}
     >
       {topDapps.map((dapp, index) => (

@@ -287,11 +287,12 @@
     },
     "teaser": {
       "topDapps": "Топ Dapps",
-      "topNftCollections": "Топ коллекции NFT на этой неделе",
+      "topNftCollections": "Топ коллекции NFT",
       "topTokens": "Топ токены",
       "topAmms": "Топ пулы AMM",
       "topValidators": "Валидаторы",
-      "topAmendments": "Последние поправки"
+      "topAmendments": "Последние поправки",
+      "refresh": "Обновить данные"
     }
   },
   "last-ledger-information": {

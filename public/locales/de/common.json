@@ -291,7 +291,8 @@
       "topTokens": "Top Token",
       "topAmms": "Top AMM-Pools",
       "topValidators": "Validatoren",
-      "topAmendments": "Letzte Änderungen"
+      "topAmendments": "Letzte Änderungen",
+      "refresh": "Daten aktualisieren"
     }
   },
   "last-ledger-information": {

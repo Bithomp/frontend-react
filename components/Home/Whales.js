@@ -15,11 +15,20 @@ const formatTxTime = (tx) => {
 export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
   const [difference, setDifference] = useState(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const showRefresh = isRefreshing || !data?.length
   const checkStatApi = async () => {
-    const response = await axios('v2/transactions/whale?limit=8')
-    const data = response.data
-    if (data) {
-      setData(data)
+    setIsRefreshing(true)
+    try {
+      const response = await axios('v2/transactions/whale?limit=8')
+      const data = response.data
+      if (data) {
+        setData(data)
+      }
+    } catch (error) {
+      // Keep the current list visible if the refresh request fails.
+    } finally {
+      setIsRefreshing(false)
     }
   }
 
@@ -46,6 +55,8 @@ export default function Whales({ currency, data, setData }) {
       titleNote="24h"
       href="/whales"
       isLoading={!data}
+      isRefreshing={isRefreshing || !data}
+      onRefresh={showRefresh ? checkStatApi : null}
       isEmpty={!data?.length}
       className={styles.whaleCard}
     >
