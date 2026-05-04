@@ -2526,9 +2526,9 @@ export default function Account({
   )
 
   const publicDataRows = []
-  const pushPublicRow = (label, value, action = null) => {
+  const pushPublicRow = (label, value, action = null, options = {}) => {
     if (!value) return
-    publicDataRows.push({ label, value, action, key: `${label}-${publicDataRows.length}` })
+    publicDataRows.push({ label, value, action, fullWidth: !!options.fullWidth, key: `${label}-${publicDataRows.length}` })
   }
 
   const xamanThirdPartyProfile = data?.xamanMeta?.thirdPartyProfiles?.[0]
@@ -2594,7 +2594,9 @@ export default function Account({
       'PayString',
       <span className="blue">
         {data.payString} <CopyButton text={data.payString} />
-      </span>
+      </span>,
+      null,
+      { fullWidth: true }
     )
   }
 
@@ -2662,39 +2664,42 @@ export default function Account({
     pushPublicRow(
       'Domain',
       isValidDomain ? (
-        <span className={domainStyles.domainWithFavicon}>
-          <DomainFavicon domain={domainText} />
-          <a
-            href={`https://${domainText}`}
-            className={data.verifiedDomain ? 'green bold' : ''}
-            target="_blank"
-            rel="noopener nofollow"
-          >
-            {domainText}
-          </a>
-          {data.verifiedDomain && (
-            <span className="blue tooltip verified-domain-status-icon" role="img" aria-label="TOML verified domain">
-              <MdVerified aria-hidden="true" style={{ position: 'relative', top: 2 }} />
-              <span className="tooltiptext small no-brake">TOML Verified Domain</span>
-            </span>
-          )}
+        <>
+          <span className={domainStyles.domainWithFavicon}>
+            <DomainFavicon domain={domainText} />
+            <a
+              href={`https://${domainText}`}
+              className={data.verifiedDomain ? 'green bold' : ''}
+              target="_blank"
+              rel="noopener nofollow"
+            >
+              {domainText}
+            </a>
+            {data.verifiedDomain && (
+              <span className="blue tooltip verified-domain-status-icon" role="img" aria-label="TOML verified domain">
+                <MdVerified aria-hidden="true" style={{ position: 'relative', top: 2 }} />
+                <span className="tooltiptext small no-brake">TOML Verified Domain</span>
+              </span>
+            )}
+          </span>
           {showUnverified && (
-            <>
+            <span className="account-domain-status-inline">
               <span className="grey">(unverified)</span>{' '}
               <Link href="/domains" className="link">
                 Verify
               </Link>
-            </>
+            </span>
           )}
           {domainActionButtons}
-        </span>
+        </>
       ) : (
         <>
           <code className="code-highlight">{data.ledgerInfo.domain}</code>
           {domainActionButtons}
         </>
       ),
-      domainTomlAction
+      domainTomlAction,
+      { fullWidth: true }
     )
   }
 
@@ -2766,7 +2771,8 @@ export default function Account({
       >
         <TbBinaryTree className="activated-tree-icon" aria-hidden="true" focusable="false" />
         <span className="tooltiptext no-brake">Family tree</span>
-      </Link>
+      </Link>,
+      { fullWidth: true }
     )
   }
 
@@ -3193,7 +3199,10 @@ export default function Account({
               <div className="public-data">
                 <div className="info-rows">
                   {publicDataRows.map((row) => (
-                    <div className="info-row" key={row.key}>
+                    <div
+                      className={`info-row ${row.fullWidth || publicDataRows.length === 1 ? 'info-row-full' : ''}`}
+                      key={row.key}
+                    >
                       <span className="info-row-head">
                         <span className="label">{row.label}</span>
                         {row.action}
@@ -9494,6 +9503,10 @@ export default function Account({
           gap: 6px;
         }
 
+        .info-row-full {
+          grid-column: 1 / -1;
+        }
+
         .info-row .label {
           color: var(--text-secondary, #7a7a7a);
           font-size: 11px;
@@ -10259,6 +10272,13 @@ export default function Account({
 
         .account-domain a:hover {
           text-decoration: underline;
+        }
+
+        .account-domain-status-inline {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin-left: 2px;
         }
 
         .activated-line {
