@@ -10,6 +10,7 @@
   "of-max": "of max",
   "chart-center-label": "Max Supply",
   "chart-title": "Distribution by Category",
+  "chart-tap-hint": "Tap a chart segment to see details",
   "breakdown-title": "Breakdown",
   "col-category": "Category",
   "col-amount": "Amount",

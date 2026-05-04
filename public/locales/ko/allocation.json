@@ -10,6 +10,7 @@
   "of-max": "최대 대비",
   "chart-center-label": "최대 공급량",
   "chart-title": "카테고리별 분포",
+  "chart-tap-hint": "차트 구간을 탭하면 세부 정보를 볼 수 있습니다",
   "breakdown-title": "세부 내역",
   "col-category": "카테고리",
   "col-amount": "금액",

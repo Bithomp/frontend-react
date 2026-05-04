@@ -10,6 +10,7 @@
   "of-max": "最大比",
   "chart-center-label": "最大供給量",
   "chart-title": "カテゴリ別分布",
+  "chart-tap-hint": "グラフのセグメントをタップすると詳細を表示します",
   "breakdown-title": "内訳",
   "col-category": "カテゴリ",
   "col-amount": "金額",

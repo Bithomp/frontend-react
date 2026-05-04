@@ -10,6 +10,7 @@
   "of-max": "del máximo",
   "chart-center-label": "Suministro máximo",
   "chart-title": "Distribución por categoría",
+  "chart-tap-hint": "Toca un segmento del gráfico para ver detalles",
   "breakdown-title": "Desglose",
   "col-category": "Categoría",
   "col-amount": "Cantidad",

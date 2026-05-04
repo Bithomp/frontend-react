@@ -8,7 +8,7 @@ import Link from 'next/link'
 import SEO from '../components/SEO'
 import { nativeCurrency, xahauNetwork } from '../utils'
 import { fullDateAndTime, shortNiceNumber, timeFromNow } from '../utils/format'
-import { getIsSsrMobile } from '../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../utils/mobile'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { useTheme } from '../components/Layout/ThemeContext'
 
@@ -98,6 +98,8 @@ export default function Allocation({ initialData, errorMessage }) {
   const { theme } = useTheme()
   const [data] = useState(initialData)
   const [expanded, setExpanded] = useState({})
+  const [selectedChartIndex, setSelectedChartIndex] = useState(null)
+  const isMobile = useIsMobile(768)
 
   const toggleGroup = (key) => setExpanded((prev) => ({ ...prev, [key]: !prev[key] }))
 
@@ -134,6 +136,14 @@ export default function Allocation({ initialData, errorMessage }) {
       chart: {
         type: 'donut',
         background: 'transparent',
+        events: {
+          dataPointSelection: (_event, _chartContext, config) => {
+            if (!isMobile) return
+            const index = Number.isInteger(config?.dataPointIndex) ? config.dataPointIndex : config?.seriesIndex
+            if (!Number.isInteger(index)) return
+            setSelectedChartIndex((prev) => (prev === index ? null : index))
+          }
+        },
         animations: {
           enabled: true,
           speed: 600,
@@ -156,6 +166,7 @@ export default function Allocation({ initialData, errorMessage }) {
       stroke: { width: 2, colors: [isDark ? '#111' : '#fff'] },
       plotOptions: {
         pie: {
+          expandOnClick: isMobile,
           donut: {
             size: '62%',
             labels: {
@@ -186,6 +197,7 @@ export default function Allocation({ initialData, errorMessage }) {
         }
       },
       tooltip: {
+        enabled: !isMobile,
         theme: 'dark',
         y: {
           formatter: (val, opts) => {
@@ -199,7 +211,12 @@ export default function Allocation({ initialData, errorMessage }) {
     }
     return { chartSeries, chartOptions }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDark, data, totalCoins, chartTextKey])
+  }, [isDark, data, totalCoins, chartTextKey, isMobile])
+
+  const selectedChartItem =
+    isMobile && Number.isInteger(selectedChartIndex) && distribution[selectedChartIndex]
+      ? distribution[selectedChartIndex]
+      : null
 
   // Build lookup and grouped table rows, sorted by descending amount
   const distMap = Object.fromEntries(distribution.map((d) => [d.category, d]))
@@ -305,12 +322,33 @@ export default function Allocation({ initialData, errorMessage }) {
               <div className="grey-box allocation-chart-box">
                 <h3 className="center allocation-section-title">{t('chart-title', { ns: 'allocation' })}</h3>
                 <Chart
-                  key={`allocation-chart-${theme}-${chartTextKey}`}
+                  key={`allocation-chart-${theme}-${isMobile ? 'tap' : 'hover'}-${chartTextKey}`}
                   options={chartOptions}
                   series={chartSeries}
                   type="donut"
                   height={400}
                 />
+                {isMobile && (
+                  <div className="allocation-chart-tap-detail" aria-live="polite">
+                    {selectedChartItem ? (
+                      <>
+                        <span className="allocation-chart-tap-label">
+                          <span
+                            className="allocation-color-dot"
+                            style={{ background: CATEGORY_COLORS[selectedChartItem.category] || '#888888' }}
+                          />
+                          {categoryLabel(selectedChartItem.category, t)}
+                        </span>
+                        <span className="allocation-chart-tap-value">
+                          {formatBillions(dropsToXrp(selectedChartItem.amount))} {nativeCurrency} (
+                          {parseFloat(selectedChartItem.percentage).toFixed(4)}%)
+                        </span>
+                      </>
+                    ) : (
+                      <span className="grey">{t('chart-tap-hint', { ns: 'allocation' })}</span>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Legend + table */}

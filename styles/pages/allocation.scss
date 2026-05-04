@@ -218,6 +218,56 @@
     vertical-align: middle;
   }
 
+  .allocation-chart-tap-detail {
+    min-height: 48px;
+    margin-top: 8px;
+    padding: 9px 12px;
+    border: 1px solid var(--card-border, rgba(0, 0, 0, 0.12));
+    border-radius: 6px;
+    background: var(--background-input);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.86rem;
+    line-height: 1.3;
+
+    body.dark & {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .allocation-color-dot {
+      margin-right: 6px;
+    }
+  }
+
+  .allocation-chart-tap-label {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    font-weight: 600;
+  }
+
+  .allocation-chart-tap-value {
+    flex: 0 0 auto;
+    color: var(--accent-link);
+    font-weight: 700;
+    text-align: right;
+  }
+
+  @media only screen and (max-width: 480px) {
+    .allocation-chart-tap-detail {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .allocation-chart-tap-value {
+      text-align: left;
+    }
+  }
+
   .allocation-updated {
     font-size: 0.78rem;
     color: var(--text-secondary);

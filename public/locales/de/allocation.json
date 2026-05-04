@@ -10,6 +10,7 @@
   "of-max": "vom Maximum",
   "chart-center-label": "Maximales Angebot",
   "chart-title": "Verteilung nach Kategorie",
+  "chart-tap-hint": "Tippen Sie auf ein Diagrammsegment, um Details zu sehen",
   "breakdown-title": "Aufschlüsselung",
   "col-category": "Kategorie",
   "col-amount": "Betrag",
