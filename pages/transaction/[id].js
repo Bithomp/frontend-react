@@ -34,6 +34,8 @@ import {
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
+import { buildTransactionSeo } from '../../utils/transaction/seo'
+import { server } from '../../utils'
 
 const collectMptIssuanceIds = (txData) => {
   const ids = new Set()
@@ -120,7 +122,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Transaction({ data, selectedCurrency, selectedCurrencyServer, initialErrorMessage }) {
-  const { t } = useTranslation()
   const { t: txT } = useTranslation('transaction')
   const effectiveSelectedCurrency = selectedCurrency || selectedCurrencyServer
 
@@ -149,7 +150,19 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
       </center>
     )
 
-  const { txHash, tx } = data
+  const { tx } = data
+  const transactionSeo = buildTransactionSeo(data, effectiveSelectedCurrency)
+  const transactionPreviewImage = {
+    width: 1200,
+    height: 630,
+    file:
+      server +
+      '/nextapi/tx-preview?' +
+      new URLSearchParams({
+        type: transactionSeo.type,
+        status: transactionSeo.status
+      }).toString()
+  }
 
   let TransactionComponent = null
   const txType = tx?.TransactionType
@@ -216,8 +229,10 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
     <>
       <SEO
         page="Transaction"
-        title={t('explorer.header.transaction') + ' ' + txHash}
-        description={txT('seo.detailsDescription', { txHash })}
+        title={transactionSeo.title}
+        description={transactionSeo.description}
+        image={transactionPreviewImage}
+        twitterImage={transactionPreviewImage}
       />
       <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={effectiveSelectedCurrency} />
     </>
