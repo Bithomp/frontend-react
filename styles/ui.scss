@@ -332,6 +332,7 @@ table {
   --table-divider: color-mix(in srgb, var(--accent-link) 22%, var(--button-additional));
   --table-row-divider: color-mix(in srgb, var(--accent-link) 14%, var(--button-additional));
   --table-surface: var(--card-bg);
+  --table-row-hover: color-mix(in srgb, var(--accent-link) 18%, var(--table-surface));
   &.table-details {
     border: 1px solid var(--button-additional);
     box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
@@ -412,7 +413,7 @@ table {
     }
     > tbody > tr {
       &:hover {
-        background-color: var(--unaccent-icon);
+        background-color: var(--table-row-hover);
       }
       th {
         text-align: left;
@@ -615,7 +616,16 @@ table {
 .gray,
 .grey a,
 .gray a {
-  color: color-mix(in srgb, var(--text-secondary) 35%, var(--text-contrast) 65%) !important;
+  color: var(--text-muted) !important;
+}
+
+body.dark {
+  .grey,
+  .gray,
+  .grey a,
+  .gray a {
+    color: color-mix(in srgb, var(--text-secondary) 35%, var(--text-contrast) 65%) !important;
+  }
 }
 
 .contrast {
