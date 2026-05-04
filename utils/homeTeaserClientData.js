@@ -193,7 +193,7 @@ export const fetchTeaserValidatorsClient = async () => {
 export const fetchTeaserAmendmentsClient = async () => {
   try {
     const [amendRes, featuresRes] = await Promise.all([
-      axios('v2/amendment', { timeout: 5000 }),
+      axios('v2/amendments', { timeout: 5000 }),
       axios('v2/features', { timeout: 5000 })
     ])
 

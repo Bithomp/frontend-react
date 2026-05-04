@@ -240,7 +240,7 @@ export const fetchTeaserValidators = async (req) => {
 export const fetchTeaserAmendments = async (req) => {
   try {
     const [amendRes, featuresRes] = await Promise.all([
-      axiosServer({ method: 'get', url: 'v2/amendment', headers: passHeaders(req), timeout: 5000 }),
+      axiosServer({ method: 'get', url: 'v2/amendments', headers: passHeaders(req), timeout: 5000 }),
       axiosServer({ method: 'get', url: 'v2/features', headers: passHeaders(req), timeout: 5000 })
     ])
 
