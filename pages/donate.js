@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useIsMobile, getIsSsrMobile } from '../utils/mobile'
 import { fullDateAndTime, amountFormat, addressUsernameOrServiceLink } from '../utils/format'
-import { encode, stripText } from '../utils'
+import { encode, nativeCurrency, stripText } from '../utils'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -129,7 +129,7 @@ export default function Donate({ setSignRequest }) {
                   className="button-action thin donate-amount-button"
                   onClick={() => onDonate(amount)}
                 >
-                  {amount} XRP
+                  {amount} {nativeCurrency}
                 </button>
               ))}
             </div>
