@@ -202,13 +202,13 @@ export default function TomlCheckerPage() {
         <h1 className="center">{tt('title', { explorerName })}</h1>
         <p className="center">{tt('description', { explorerName, ledgerName, tomlName })}</p>
 
-        <div className="grey-box" style={{ maxWidth: 860, margin: '24px auto', textAlign: 'left' }}>
+        <div className="grey-box toml-checker-box" style={{ maxWidth: 860, margin: '24px auto', textAlign: 'left' }}>
           <h4>{tt('check-title')}</h4>
           <p>{tt('check-description', { tomlName })}</p>
           <p className="toml-help">{tt('toml-help', { ledgerName, tomlName })}</p>
           <code className="toml-location">https://yourdomain.com/.well-known/{tomlName}</code>
 
-          <form onSubmit={onSubmit}>
+          <form className="toml-checker-form" onSubmit={onSubmit}>
             <input
               className="input-text"
               type="text"
@@ -217,7 +217,6 @@ export default function TomlCheckerPage() {
               onChange={(e) => setDomain(e.target.value)}
               autoComplete="off"
               spellCheck="false"
-              style={{ width: '100%', marginBottom: 16 }}
             />
 
             <div className="turnstile-slot">
@@ -251,15 +250,15 @@ export default function TomlCheckerPage() {
         </div>
 
         {result && (
-          <div className="grey-box" style={{ maxWidth: 860, margin: '24px auto', textAlign: 'left' }}>
+          <div className="grey-box toml-checker-box" style={{ maxWidth: 860, margin: '24px auto', textAlign: 'left' }}>
             <h4>{tt('result-title')}</h4>
 
-            <div style={{ marginBottom: 16 }}>
+            <div className="toml-result-field" style={{ marginBottom: 16 }}>
               <b>{tt('fields.domain')}</b>
               <div>{result.domain || '-'}</div>
             </div>
 
-            <div style={{ marginBottom: 16 }}>
+            <div className="toml-result-field" style={{ marginBottom: 16 }}>
               <b>{tt('fields.tomlfile')}</b>
               <div>
                 {result.tomlfile ? (
@@ -286,11 +285,29 @@ export default function TomlCheckerPage() {
       </div>
 
       <style jsx>{`
+        .toml-checker-box {
+          box-sizing: border-box;
+          max-width: 100%;
+        }
+
+        .toml-checker-form {
+          min-width: 0;
+        }
+
+        .toml-checker-form :global(.input-text) {
+          box-sizing: border-box;
+          width: 100%;
+          max-width: 100%;
+          margin-bottom: 16px;
+        }
+
         .turnstile-slot {
           min-height: 65px;
           margin-bottom: 16px;
           display: flex;
           align-items: center;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .toml-help {
@@ -308,6 +325,15 @@ export default function TomlCheckerPage() {
           border: 1px solid var(--code-border);
           color: var(--code-text);
           overflow-wrap: anywhere;
+        }
+
+        .toml-result-field {
+          min-width: 0;
+        }
+
+        .toml-result-field a {
+          overflow-wrap: anywhere;
+          word-break: break-word;
         }
 
         .toml-error {
@@ -328,6 +354,8 @@ export default function TomlCheckerPage() {
         }
 
         .toml-checker-pre {
+          box-sizing: border-box;
+          max-width: 100%;
           margin: 8px 0 0;
           padding: 16px;
           white-space: pre-wrap;
@@ -340,6 +368,19 @@ export default function TomlCheckerPage() {
           color: var(--code-text);
           font-size: 14px;
           line-height: 1.5;
+        }
+
+        @media only screen and (max-width: 800px) {
+          .toml-checker-box {
+            width: 100%;
+            margin-right: 0 !important;
+            margin-left: 0 !important;
+          }
+
+          .toml-checker-pre {
+            padding: 12px;
+            font-size: 13px;
+          }
         }
       `}</style>
     </>
