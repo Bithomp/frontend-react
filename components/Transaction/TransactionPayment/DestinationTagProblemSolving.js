@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { TData } from '../TData'
 import { useEffect, useState } from 'react'
+import { Trans } from 'next-i18next'
 import { addressUsernameOrServiceLink } from '../../../utils/format'
 
 export default function DestinationTagProblemSolving({ specification, pageFiatRate }) {
@@ -28,27 +29,44 @@ export default function DestinationTagProblemSolving({ specification, pageFiatRa
 
   const destUser = (
     <>
-      {!thereIsAName && 'Service: ('}
-      {addressUsernameOrServiceLink(specification.destination, 'address')}
-      {!thereIsAName && ')'}
+      {addressUsernameOrServiceLink(specification.destination, 'address', thereIsAName ? {} : { short: 6 })}
     </>
   )
   const tagSpecified = specification?.destination?.tag || specification?.destination?.tag === 0
+  const recipientType = thereIsAName ? 'known' : 'unknown'
+  const tagType = tagSpecified ? 'short' : 'missing'
+  const DestinationUser = () => destUser
+  const DestinationUserBold = () => <span className="bold">{destUser}</span>
+  const translationComponents = {
+    destUser: <DestinationUser />,
+    destUserBold: <DestinationUserBold />,
+    redTag: <span className="red bold" />,
+    bold: <span className="bold" />,
+    boldTag: <span className="bold" />
+  }
 
   return (
     <tr>
       <TData className="bold orange">Problem solving</TData>
       <TData>
-        This payment was sent to {destUser} {tagSpecified ? 'with a short (that can be wrong)' : 'without a'}{' '}
-        <span className="red bold">Destination Tag</span>.
+        <Trans
+          i18nKey={`messages.destinationTagProblem.sent.${recipientType}.${tagType}`}
+          ns="transaction"
+          components={translationComponents}
+        />
         <br />
-        <span className="bold">Destination tag</span> is used to identify customers.{' '}
-        <span className="bold">{destUser}</span> received that payment, but <span className="bold">{destUser}</span>{' '}
-        does not know to whom it belongs to, as there is {tagSpecified ? 'a short (that can be wrong)' : 'no'}{' '}
-        <span className="bold">Destination Tag</span> (USER ID) specified.
+        <Trans
+          i18nKey={`messages.destinationTagProblem.explanation.${recipientType}.${tagType}`}
+          ns="transaction"
+          components={translationComponents}
+        />
         <br />
         <span className="red">
-          Contact <span className="bold">{destUser}</span> customer support to solve this issue.
+          <Trans
+            i18nKey={`messages.destinationTagProblem.contact.${recipientType}`}
+            ns="transaction"
+            components={translationComponents}
+          />
         </span>
       </TData>
     </tr>

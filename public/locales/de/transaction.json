@@ -58,6 +58,32 @@
       "summary_few": "Es gab <bold>{{count}}</bold> Tauschvorgänge innerhalb dieser Transaktion.",
       "summary_many": "Es gab <bold>{{count}}</bold> Tauschvorgänge innerhalb dieser Transaktion.",
       "summary_other": "Es gab <bold>{{count}}</bold> Tauschvorgänge innerhalb dieser Transaktion."
+    },
+    "destinationTagProblem": {
+      "sent": {
+        "known": {
+          "short": "Diese Zahlung wurde an <destUser/> mit einem kurzen (möglicherweise falschen) <redTag>Destination Tag</redTag> gesendet.",
+          "missing": "Diese Zahlung wurde an <destUser/> ohne <redTag>Destination Tag</redTag> gesendet."
+        },
+        "unknown": {
+          "short": "Diese Zahlung wurde an die Service-Adresse <destUser/> mit einem kurzen (möglicherweise falschen) <redTag>Destination Tag</redTag> gesendet.",
+          "missing": "Diese Zahlung wurde an die Service-Adresse <destUser/> ohne <redTag>Destination Tag</redTag> gesendet."
+        }
+      },
+      "explanation": {
+        "known": {
+          "short": "Der <bold>Destination Tag</bold> wird verwendet, um Kunden zu identifizieren. <destUserBold/> hat diese Zahlung erhalten, kann sie aber keinem Kunden zuordnen, weil ein kurzer (möglicherweise falscher) <boldTag>Destination Tag</boldTag> (USER ID) angegeben wurde.",
+          "missing": "Der <bold>Destination Tag</bold> wird verwendet, um Kunden zu identifizieren. <destUserBold/> hat diese Zahlung erhalten, kann sie aber keinem Kunden zuordnen, weil kein <boldTag>Destination Tag</boldTag> (USER ID) angegeben wurde."
+        },
+        "unknown": {
+          "short": "Der <bold>Destination Tag</bold> wird von Diensten verwendet, um Kunden zu identifizieren. Die Zahlung ist bei der Service-Adresse <destUserBold/> angekommen, aber der Dienst kann sie keinem Kunden zuordnen, weil ein kurzer (möglicherweise falscher) <boldTag>Destination Tag</boldTag> (USER ID) angegeben wurde.",
+          "missing": "Der <bold>Destination Tag</bold> wird von Diensten verwendet, um Kunden zu identifizieren. Die Zahlung ist bei der Service-Adresse <destUserBold/> angekommen, aber der Dienst kann sie keinem Kunden zuordnen, weil kein <boldTag>Destination Tag</boldTag> (USER ID) angegeben wurde."
+        }
+      },
+      "contact": {
+        "known": "Wende dich an den Kundensupport von <destUserBold/>, um dieses Problem zu lösen.",
+        "unknown": "Wende dich an den Kundensupport des empfangenden Dienstes und gib diese Transaktion an, um das Problem zu lösen."
+      }
     }
   },
   "exchange": {

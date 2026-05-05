@@ -58,6 +58,32 @@
       "summary_few": "Il y a <bold>{{count}}</bold> échanges effectués dans cette transaction.",
       "summary_many": "Il y a <bold>{{count}}</bold> échanges effectués dans cette transaction.",
       "summary_other": "Il y a <bold>{{count}}</bold> échanges effectués dans cette transaction."
+    },
+    "destinationTagProblem": {
+      "sent": {
+        "known": {
+          "short": "Ce paiement a été envoyé à <destUser/> avec un <redTag>Destination Tag</redTag> court (qui peut être incorrect).",
+          "missing": "Ce paiement a été envoyé à <destUser/> sans <redTag>Destination Tag</redTag>."
+        },
+        "unknown": {
+          "short": "Ce paiement a été envoyé à l’adresse du service destinataire <destUser/> avec un <redTag>Destination Tag</redTag> court (qui peut être incorrect).",
+          "missing": "Ce paiement a été envoyé à l’adresse du service destinataire <destUser/> sans <redTag>Destination Tag</redTag>."
+        }
+      },
+      "explanation": {
+        "known": {
+          "short": "Le <bold>Destination Tag</bold> sert à identifier les clients. <destUserBold/> a reçu ce paiement, mais ne peut pas déterminer à quel client il appartient, car un <boldTag>Destination Tag</boldTag> (USER ID) court (qui peut être incorrect) a été indiqué.",
+          "missing": "Le <bold>Destination Tag</bold> sert à identifier les clients. <destUserBold/> a reçu ce paiement, mais ne peut pas déterminer à quel client il appartient, car aucun <boldTag>Destination Tag</boldTag> (USER ID) n’a été indiqué."
+        },
+        "unknown": {
+          "short": "Les services utilisent le <bold>Destination Tag</bold> pour identifier les clients. Le paiement est arrivé à l’adresse du service <destUserBold/>, mais le service ne peut pas déterminer à quel client il appartient, car un <boldTag>Destination Tag</boldTag> (USER ID) court (qui peut être incorrect) a été indiqué.",
+          "missing": "Les services utilisent le <bold>Destination Tag</bold> pour identifier les clients. Le paiement est arrivé à l’adresse du service <destUserBold/>, mais le service ne peut pas déterminer à quel client il appartient, car aucun <boldTag>Destination Tag</boldTag> (USER ID) n’a été indiqué."
+        }
+      },
+      "contact": {
+        "known": "Contactez le support client de <destUserBold/> pour résoudre ce problème.",
+        "unknown": "Contactez le support du service destinataire et fournissez cette transaction pour résoudre le problème."
+      }
     }
   },
   "exchange": {

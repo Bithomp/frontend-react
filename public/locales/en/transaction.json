@@ -58,6 +58,32 @@
       "summary_few": "There are <bold>{{count}}</bold> exchanges that occurred within this transaction.",
       "summary_many": "There are <bold>{{count}}</bold> exchanges that occurred within this transaction.",
       "summary_other": "There are <bold>{{count}}</bold> exchanges that occurred within this transaction."
+    },
+    "destinationTagProblem": {
+      "sent": {
+        "known": {
+          "short": "This payment was sent to <destUser/> with a short (that can be wrong) <redTag>Destination Tag</redTag>.",
+          "missing": "This payment was sent to <destUser/> without a <redTag>Destination Tag</redTag>."
+        },
+        "unknown": {
+          "short": "This payment was sent to the receiving service address <destUser/> with a short (that can be wrong) <redTag>Destination Tag</redTag>.",
+          "missing": "This payment was sent to the receiving service address <destUser/> without a <redTag>Destination Tag</redTag>."
+        }
+      },
+      "explanation": {
+        "known": {
+          "short": "<bold>Destination tag</bold> is used to identify customers. <destUserBold/> received that payment, but <destUserBold/> does not know which customer it belongs to, because a short (that can be wrong) <boldTag>Destination Tag</boldTag> (USER ID) was specified.",
+          "missing": "<bold>Destination tag</bold> is used to identify customers. <destUserBold/> received that payment, but <destUserBold/> does not know which customer it belongs to, because no <boldTag>Destination Tag</boldTag> (USER ID) was specified."
+        },
+        "unknown": {
+          "short": "<bold>Destination tag</bold> is used by services to identify customers. The payment reached the service address <destUserBold/>, but the service cannot determine which customer it belongs to, because a short (that can be wrong) <boldTag>Destination Tag</boldTag> (USER ID) was specified.",
+          "missing": "<bold>Destination tag</bold> is used by services to identify customers. The payment reached the service address <destUserBold/>, but the service cannot determine which customer it belongs to, because no <boldTag>Destination Tag</boldTag> (USER ID) was specified."
+        }
+      },
+      "contact": {
+        "known": "Contact <destUserBold/> customer support to solve this issue.",
+        "unknown": "Contact the receiving service's customer support and provide this transaction to solve the issue."
+      }
     }
   },
   "exchange": {

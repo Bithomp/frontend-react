@@ -58,6 +58,32 @@
       "summary_few": "Ada <bold>{{count}}</bold> pertukaran yang terjadi dalam transaksi ini.",
       "summary_many": "Ada <bold>{{count}}</bold> pertukaran yang terjadi dalam transaksi ini.",
       "summary_other": "Ada <bold>{{count}}</bold> pertukaran yang terjadi dalam transaksi ini."
+    },
+    "destinationTagProblem": {
+      "sent": {
+        "known": {
+          "short": "Pembayaran ini dikirim ke <destUser/> dengan <redTag>Destination Tag</redTag> pendek (yang mungkin salah).",
+          "missing": "Pembayaran ini dikirim ke <destUser/> tanpa <redTag>Destination Tag</redTag>."
+        },
+        "unknown": {
+          "short": "Pembayaran ini dikirim ke alamat layanan penerima <destUser/> dengan <redTag>Destination Tag</redTag> pendek (yang mungkin salah).",
+          "missing": "Pembayaran ini dikirim ke alamat layanan penerima <destUser/> tanpa <redTag>Destination Tag</redTag>."
+        }
+      },
+      "explanation": {
+        "known": {
+          "short": "<bold>Destination Tag</bold> digunakan untuk mengidentifikasi pelanggan. <destUserBold/> menerima pembayaran ini, tetapi tidak dapat menentukan milik pelanggan mana, karena <boldTag>Destination Tag</boldTag> (USER ID) yang pendek (dan mungkin salah) telah ditentukan.",
+          "missing": "<bold>Destination Tag</bold> digunakan untuk mengidentifikasi pelanggan. <destUserBold/> menerima pembayaran ini, tetapi tidak dapat menentukan milik pelanggan mana, karena tidak ada <boldTag>Destination Tag</boldTag> (USER ID) yang ditentukan."
+        },
+        "unknown": {
+          "short": "<bold>Destination Tag</bold> digunakan layanan untuk mengidentifikasi pelanggan. Pembayaran sampai ke alamat layanan <destUserBold/>, tetapi layanan tidak dapat menentukan milik pelanggan mana, karena <boldTag>Destination Tag</boldTag> (USER ID) yang pendek (dan mungkin salah) telah ditentukan.",
+          "missing": "<bold>Destination Tag</bold> digunakan layanan untuk mengidentifikasi pelanggan. Pembayaran sampai ke alamat layanan <destUserBold/>, tetapi layanan tidak dapat menentukan milik pelanggan mana, karena tidak ada <boldTag>Destination Tag</boldTag> (USER ID) yang ditentukan."
+        }
+      },
+      "contact": {
+        "known": "Hubungi dukungan pelanggan <destUserBold/> untuk menyelesaikan masalah ini.",
+        "unknown": "Hubungi dukungan pelanggan layanan penerima dan berikan transaksi ini untuk menyelesaikan masalah."
+      }
     }
   },
   "exchange": {

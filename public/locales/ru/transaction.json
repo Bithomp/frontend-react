@@ -58,6 +58,32 @@
       "summary_few": "Всего <bold>{{count}}</bold> обмена произошло в этой транзакции.",
       "summary_many": "Всего <bold>{{count}}</bold> обменов произошло в этой транзакции.",
       "summary_other": "Всего <bold>{{count}}</bold> обмена произошло в этой транзакции."
+    },
+    "destinationTagProblem": {
+      "sent": {
+        "known": {
+          "short": "Этот платеж был отправлен получателю <destUser/> с коротким (возможно неверным) <redTag>Destination Tag</redTag>.",
+          "missing": "Этот платеж был отправлен получателю <destUser/> без <redTag>Destination Tag</redTag>."
+        },
+        "unknown": {
+          "short": "Этот платеж был отправлен на сервисный адрес <destUser/> с коротким (возможно неверным) <redTag>Destination Tag</redTag>.",
+          "missing": "Этот платеж был отправлен на сервисный адрес <destUser/> без <redTag>Destination Tag</redTag>."
+        }
+      },
+      "explanation": {
+        "known": {
+          "short": "<bold>Destination Tag</bold> используется для идентификации клиентов. <destUserBold/> получил этот платеж, но не может определить, какому клиенту он принадлежит, потому что был указан короткий (возможно неверный) <boldTag>Destination Tag</boldTag> (USER ID).",
+          "missing": "<bold>Destination Tag</bold> используется для идентификации клиентов. <destUserBold/> получил этот платеж, но не может определить, какому клиенту он принадлежит, потому что <boldTag>Destination Tag</boldTag> (USER ID) не был указан."
+        },
+        "unknown": {
+          "short": "<bold>Destination Tag</bold> используется сервисами для идентификации клиентов. Платеж дошел до сервисного адреса <destUserBold/>, но сервис не может определить, какому клиенту он принадлежит, потому что был указан короткий (возможно неверный) <boldTag>Destination Tag</boldTag> (USER ID).",
+          "missing": "<bold>Destination Tag</bold> используется сервисами для идентификации клиентов. Платеж дошел до сервисного адреса <destUserBold/>, но сервис не может определить, какому клиенту он принадлежит, потому что <boldTag>Destination Tag</boldTag> (USER ID) не был указан."
+        }
+      },
+      "contact": {
+        "known": "Свяжитесь со службой поддержки <destUserBold/>, чтобы решить эту проблему.",
+        "unknown": "Свяжитесь со службой поддержки сервиса-получателя и передайте им эту транзакцию, чтобы решить проблему."
+      }
     }
   },
   "exchange": {

@@ -58,6 +58,32 @@
       "summary_few": "<bold>{{count}}</bold>件の交換がこのトランザクション内で発生しました。",
       "summary_many": "<bold>{{count}}</bold>件の交換がこのトランザクション内で発生しました。",
       "summary_other": "<bold>{{count}}</bold>件の交換がこのトランザクション内で発生しました。"
+    },
+    "destinationTagProblem": {
+      "sent": {
+        "known": {
+          "short": "この支払いは、短い（誤っている可能性がある）<redTag>Destination Tag</redTag>付きで <destUser/> に送信されました。",
+          "missing": "この支払いは <redTag>Destination Tag</redTag> なしで <destUser/> に送信されました。"
+        },
+        "unknown": {
+          "short": "この支払いは、短い（誤っている可能性がある）<redTag>Destination Tag</redTag>付きで受取サービスのアドレス <destUser/> に送信されました。",
+          "missing": "この支払いは <redTag>Destination Tag</redTag> なしで受取サービスのアドレス <destUser/> に送信されました。"
+        }
+      },
+      "explanation": {
+        "known": {
+          "short": "<bold>Destination Tag</bold> は顧客を識別するために使われます。<destUserBold/> はこの支払いを受け取りましたが、短い（誤っている可能性がある）<boldTag>Destination Tag</boldTag>（USER ID）が指定されているため、どの顧客の支払いか判断できません。",
+          "missing": "<bold>Destination Tag</bold> は顧客を識別するために使われます。<destUserBold/> はこの支払いを受け取りましたが、<boldTag>Destination Tag</boldTag>（USER ID）が指定されていないため、どの顧客の支払いか判断できません。"
+        },
+        "unknown": {
+          "short": "<bold>Destination Tag</bold> はサービスが顧客を識別するために使います。支払いはサービスのアドレス <destUserBold/> に届きましたが、短い（誤っている可能性がある）<boldTag>Destination Tag</boldTag>（USER ID）が指定されているため、サービス側ではどの顧客の支払いか判断できません。",
+          "missing": "<bold>Destination Tag</bold> はサービスが顧客を識別するために使います。支払いはサービスのアドレス <destUserBold/> に届きましたが、<boldTag>Destination Tag</boldTag>（USER ID）が指定されていないため、サービス側ではどの顧客の支払いか判断できません。"
+        }
+      },
+      "contact": {
+        "known": "この問題を解決するには、<destUserBold/> のカスタマーサポートに連絡してください。",
+        "unknown": "この問題を解決するには、受取サービスのカスタマーサポートに連絡し、このトランザクションを伝えてください。"
+      }
     }
   },
   "exchange": {
