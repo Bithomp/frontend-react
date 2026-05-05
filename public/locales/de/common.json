@@ -248,9 +248,9 @@
     }
   },
   "home": {
-    "title": "{{nativeCurrency}} Ledger Explorer & Tools — {{explorerName}} | Suche {{nativeCurrency}} Transaktionen, Konten, NFTs",
-    "description": "{{explorerName}}: {{nativeCurrency}} Ledger Explorer und Tools. Suche nach Transaktionen, Konten und NFTs. Verfolge Guthaben, validiere Konten, pruefe NFT-Bestaende und analysiere das {{nativeCurrency}} Ledger. Plus: Kursumrechner, Tools, Statistiken und mehr.",
-    "h1": "{{nativeCurrency}} Ledger Explorer und Tools",
+    "title": "{{homeExplorerName}} | Suche {{nativeCurrency}} Transaktionen, Konten, NFTs und Ledger-Daten",
+    "description": "{{homeExplorerAttribution}}: Suche nach {{nativeCurrency}} Adressen, Transaktionen, Token, NFTs, Guthaben und On-Chain-Aktivität im {{ledgerName}}. Nutze Trading, NFT-Minting, AMMs, Transaktionen und Konto-Tools.",
+    "h1": "{{homeExplorerName}} und Ledger-Tools",
     "search-placeholder": "Suche nach Adresse / Transaktion / NFT / Benutzername / PayString / Angebot",
     "search-placeholder-short": "Suche nach Adresse / Transaktion",
     "price": {

@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Search {{ledgerName}} — Accounts, Transactions, Tokens, NFTs",
-      "description": "Search and scan {{nativeCurrency}} addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, AMMs, and ledger objects on the {{ledgerName}}.",
-      "heading": "Search {{ledgerName}}"
+      "title": "{{explorerSearchName}} Search — Accounts, Transactions, Tokens, NFTs",
+      "description": "Use {{explorerSearchAttribution}} to search {{nativeCurrency}} addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, AMMs, and ledger objects on {{ledgerName}}.",
+      "heading": "{{explorerSearchName}} Search"
     },
     "testnet": {
       "title": "Search XRPL Testnet — Accounts, Transactions, Tokens, NFTs",

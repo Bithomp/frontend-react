@@ -2,7 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 
-import { explorerName, nativeCurrency, network, ledgerName } from '../../utils'
+import { explorerName, nativeCurrency, network, ledgerName, siteName, xahauNetwork } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import SEO from '../../components/SEO'
@@ -124,27 +124,34 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
   const { t } = useTranslation()
   const { t: tt } = useTranslation('explorer')
   const isEnglishLikeLocale = !initialLocale || initialLocale === 'default' || initialLocale === 'en'
-  const isEnglishMainnetExplorer =
-    network === 'mainnet' && isEnglishLikeLocale
+  const isPrimaryExplorer = network === 'mainnet' || network === 'xahau'
   const isEnglishTestnetExplorer = network === 'testnet' && isEnglishLikeLocale
   const isEnglishDevnetExplorer = network === 'devnet' && isEnglishLikeLocale
+  const explorerSearchName = xahauNetwork ? siteName : `${nativeCurrency} Explorer`
+  const explorerSearchAttribution = xahauNetwork ? explorerSearchName : `${explorerSearchName} by ${siteName}`
 
-  const pageTitle = isEnglishMainnetExplorer
-    ? tt('seo.mainnet.title', { ledgerName, nativeCurrency })
+  const pageTitle = isPrimaryExplorer
+    ? tt('seo.mainnet.title', { ledgerName, nativeCurrency, explorerSearchName, explorerSearchAttribution, siteName })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.title')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.title')
         : t('explorer.header.main', { explorerName })
-  const pageDescription = isEnglishMainnetExplorer
-    ? tt('seo.mainnet.description', { ledgerName, nativeCurrency })
+  const pageDescription = isPrimaryExplorer
+    ? tt('seo.mainnet.description', {
+        ledgerName,
+        nativeCurrency,
+        explorerSearchName,
+        explorerSearchAttribution,
+        siteName
+      })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.description')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.description')
         : tt('intro.subtitle', { nativeCurrency })
-  const pageHeading = isEnglishMainnetExplorer
-    ? tt('seo.mainnet.heading', { ledgerName, nativeCurrency })
+  const pageHeading = isPrimaryExplorer
+    ? tt('seo.mainnet.heading', { ledgerName, nativeCurrency, explorerSearchName, explorerSearchAttribution, siteName })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.heading')
       : isEnglishDevnetExplorer
@@ -171,7 +178,7 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
       <section className="home-section">
         <h1 className="center">{pageHeading}</h1>
         <p className="center">{tt('intro.subtitle', { nativeCurrency })}</p>
-        {isEnglishMainnetExplorer && (
+        {isPrimaryExplorer && (
           <p className="center">
             {tt('intro.home-link-prefix')}{' '}
             <Link href="/">{tt('intro.home-link-label', { explorerName })}</Link>.

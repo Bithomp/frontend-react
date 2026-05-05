@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Поиск по {{ledgerName}} — адреса, транзакции, токены, NFT",
-      "description": "Ищите и просматривайте адреса {{nativeCurrency}}, хэши транзакций, usernames, CTID, NFT, токены, AMM и объекты ledger в {{ledgerName}}.",
-      "heading": "Поиск по {{ledgerName}}"
+      "title": "Поиск {{explorerSearchName}} — аккаунты, транзакции, токены, NFT",
+      "description": "Используйте {{explorerSearchAttribution}}, чтобы искать {{nativeCurrency}} адреса, хэши транзакций, usernames, CTID, NFT, токены, AMM и объекты ledger в {{ledgerName}}.",
+      "heading": "Поиск {{explorerSearchName}}"
     },
     "testnet": {
       "title": "Поиск по XRPL Testnet — адреса, транзакции, токены, NFT",

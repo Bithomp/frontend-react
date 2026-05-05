@@ -5,7 +5,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { server, explorerName, nativeCurrency, xahauNetwork, ledgerName, network } from '../utils'
+import { server, explorerName, nativeCurrency, xahauNetwork, ledgerName, network, siteName } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -178,28 +178,30 @@ export default function Home({
   const isEnglishMainnetHome = network === 'mainnet' && !xahauNetwork && isEnglishLikeLocale
   const isEnglishTestnetHome = network === 'testnet' && isEnglishLikeLocale
   const isEnglishDevnetHome = network === 'devnet' && isEnglishLikeLocale
+  const homeExplorerName = xahauNetwork ? siteName : `${nativeCurrency} Explorer`
+  const homeExplorerAttribution = xahauNetwork ? homeExplorerName : `${homeExplorerName} by ${siteName}`
 
   const pageTitle = isEnglishMainnetHome
-    ? `${explorerName} | Search ${nativeCurrency} Transactions, Accounts, NFTs, and Ledger Data`
+    ? `${homeExplorerName} | Search ${nativeCurrency} Transactions, Accounts, NFTs, and Ledger Data`
     : isEnglishTestnetHome
       ? 'XRPL Testnet Explorer & Faucet — Free Test XRP and RLUSD'
       : isEnglishDevnetHome
         ? 'XRPL Devnet Explorer & Faucet — Free Test XRP for Developers'
-        : t('home.title', { explorerName, nativeCurrency })
+        : t('home.title', { homeExplorerName, siteName, nativeCurrency })
   const pageDescription = isEnglishMainnetHome
-    ? `${explorerName} lets you search and scan ${nativeCurrency} addresses, transactions, tokens, NFTs, balances, and on-chain activity on the ${ledgerName}. Trade, mint NFTs, manage AMMs, submit transactions, and use account tools.`
+    ? `${homeExplorerName} by ${siteName} lets you search and scan ${nativeCurrency} addresses, transactions, tokens, NFTs, balances, and on-chain activity on the ${ledgerName}. Trade, mint NFTs, manage AMMs, submit transactions, and use account tools.`
     : isEnglishTestnetHome
       ? 'XRPL Testnet explorer and faucet by Bithomp. Search testnet transactions, accounts, tokens, and NFTs, and get free test XRP and RLUSD for development.'
       : isEnglishDevnetHome
         ? 'XRPL Devnet explorer and faucet by Bithomp. Search devnet transactions, accounts, tokens, and NFTs, and get free test XRP for development.'
-        : t('home.description', { explorerName, nativeCurrency, ledgerName })
+        : t('home.description', { homeExplorerAttribution, homeExplorerName, siteName, nativeCurrency, ledgerName })
   const pageHeading = isEnglishMainnetHome
     ? `${nativeCurrency} Explorer and Ledger Tools`
     : isEnglishTestnetHome
       ? 'XRPL Testnet Explorer and Faucet'
       : isEnglishDevnetHome
         ? 'XRPL Devnet Explorer and Faucet'
-        : t('home.h1', { nativeCurrency, ledgerName })
+        : t('home.h1', { homeExplorerName, nativeCurrency, ledgerName })
   const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
@@ -282,7 +284,7 @@ export default function Home({
       <LogoJsonLd logo={imagePath + 'longDark.svg'} url={server} />
       <SocialProfileJsonLd
         type="Organization"
-        name={xahauNetwork ? 'XAHAU Explorer' : 'XRP Explorer'}
+        name={homeExplorerName}
         url={server}
         sameAs={
           xahauNetwork
@@ -307,17 +309,19 @@ export default function Home({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
-              name: nativeCurrency + ' Explorer and Tools',
-              alternateName: [
-                nativeCurrency + ' Explorer',
-                'XRPL Explorer',
-                'XRP Scan',
-                'Scan XRP Ledger',
-                'XRP Ledger Tracker',
-                'XRP Transaction Tracker',
-                explorerName + ' Explorer',
-                'Scan ' + nativeCurrency + ' Ledger'
-              ],
+              name: homeExplorerName + ' and Tools',
+              alternateName: xahauNetwork
+                ? [siteName, 'Xahau Ledger Explorer', 'Xahau Transaction Tracker', 'Scan Xahau Ledger']
+                : [
+                    nativeCurrency + ' Explorer',
+                    'XRPL Explorer',
+                    'XRP Scan',
+                    'Scan XRP Ledger',
+                    'XRP Ledger Tracker',
+                    'XRP Transaction Tracker',
+                    explorerName + ' Explorer',
+                    'Scan ' + nativeCurrency + ' Ledger'
+                  ],
               url: server,
               potentialAction: {
                 '@type': 'SearchAction',

@@ -248,9 +248,9 @@
     }
   },
   "home": {
-    "title": "Penjelajah & Alat {{nativeCurrency}} Ledger — {{explorerName}} | Cari transaksi, akun, dan NFT",
-    "description": "{{explorerName}}: penjelajah dan alat untuk {{nativeCurrency}} Ledger. Cari transaksi, akun, dan NFT. Lacak saldo, validasi akun, periksa kepemilikan NFT, dan analisis {{nativeCurrency}} Ledger. Plus: konverter harga, alat, statistik, dan lainnya.",
-    "h1": "Penjelajah {{nativeCurrency}} Ledger dan Alat",
+    "title": "{{homeExplorerName}} | Cari transaksi, akun, NFT, dan data ledger",
+    "description": "{{homeExplorerAttribution}} memungkinkan Anda mencari dan menelusuri alamat {{nativeCurrency}}, transaksi, token, NFT, saldo, dan aktivitas on-chain di {{ledgerName}}. Trading, mint NFT, kelola AMM, kirim transaksi, dan gunakan alat akun.",
+    "h1": "{{homeExplorerName}} dan alat ledger",
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
     "price": {
