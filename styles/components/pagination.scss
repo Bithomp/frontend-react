@@ -3,6 +3,9 @@
   background-color: var(--background-input);
   transition: background-color .5s, color .5s;
   border: 1px solid var(--unaccent-icon);
+  border-radius: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
   color: var(--text-main) !important;
   @media screen and (max-width: 920px) and (min-width: 440px) {
     margin-right: 0px;

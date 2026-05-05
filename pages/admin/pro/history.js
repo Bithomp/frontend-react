@@ -46,8 +46,24 @@ const showAmount = (amount) => {
   return amountFormat(amount, { short: true, maxFractionDigits: 6 })
 }
 
-const showFiat = (fiat, selectedCurrency) => {
-  if (!fiat && fiat !== 0) return ''
+const getSelectedFiatValue = (fiats, selectedCurrency) => {
+  if (!fiats || !selectedCurrency) return null
+
+  const keys = [selectedCurrency, selectedCurrency.toLowerCase(), selectedCurrency.toUpperCase()]
+  for (const key of keys) {
+    if (fiats[key] === undefined || fiats[key] === null) continue
+
+    const value = typeof fiats[key] === 'object' ? fiats[key].value : fiats[key]
+    const numberValue = Number(value)
+    if (Number.isFinite(numberValue)) return numberValue
+  }
+
+  return null
+}
+
+const showFiat = (fiats, selectedCurrency) => {
+  const fiat = getSelectedFiatValue(fiats, selectedCurrency)
+  if (fiat === null) return ''
   return (
     <span className={'no-brake ' + (fiat > 0 ? 'green' : fiat < 0 ? 'red' : '')}>
       {shortNiceNumber(fiat, 2, 3, selectedCurrency)}
@@ -406,6 +422,13 @@ const platformList = [
   { value: 'SUMM', label: 'SUMM' }
 ]
 
+const shouldKeepAfterDustFilter = (activity, selectedCurrency) => {
+  const fiatValue = getSelectedFiatValue(activity?.amountInFiats, selectedCurrency)
+  if (fiatValue === null) return true
+
+  return Math.abs(fiatValue) >= 0.004
+}
+
 export default function History({
   queryAddress,
   selectedCurrency,
@@ -425,14 +448,12 @@ export default function History({
   const [verifiedAddresses, setVerifiedAddresses] = useState([])
   const [addressesToCheck, setAddressesToCheck] = useState(queryAddress ? [queryAddress] : [])
   const [period, setPeriod] = useState('all')
-  const [order, setOrder] = useState('desc')
+  const [order, setOrder] = useState('DESC')
   const [filtersHide, setFiltersHide] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [currentList, setCurrentList] = useState([])
   const [rendered, setRendered] = useState(false)
   const [removeDust, setRemoveDust] = useState(false)
-  const [filteredActivities, setFilteredActivities] = useState([])
   const [platformCSVExport, setPlatformCSVExport] = useState('Koinly')
 
   const platformCSVHeaders = useMemo(
@@ -577,37 +598,38 @@ export default function History({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (filteredActivities.length > 0) {
-      if (rowsPerPage === -1) {
-        setCurrentList(filteredActivities)
-      } else {
-        setCurrentList(filteredActivities.slice(page * rowsPerPage, (page + 1) * rowsPerPage))
-      }
-    } else {
-      setCurrentList([])
-    }
-    if ((page + 2) * rowsPerPage > filteredActivities.length && data?.marker) {
-      getProAddressHistory({ marker: data.marker })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filteredActivities = useMemo(() => {
+    if (!activities) return []
+    if (!removeDust) return activities
+
+    // Hide tiny fiat-only movements without changing backend order.
+    return activities.filter((activity) => shouldKeepAfterDustFilter(activity, selectedCurrency))
+  }, [activities, removeDust, selectedCurrency])
+
+  const currentList = useMemo(() => {
+    if (filteredActivities.length === 0) return []
+    if (rowsPerPage === -1) return filteredActivities
+    const lastPage = Math.max(0, Math.ceil(filteredActivities.length / rowsPerPage) - 1)
+    const visiblePage = Math.min(page, lastPage)
+    return filteredActivities.slice(visiblePage * rowsPerPage, (visiblePage + 1) * rowsPerPage)
   }, [filteredActivities, page, rowsPerPage])
 
   useEffect(() => {
-    if (!activities) return
-    if (removeDust) {
-      //remove records which are lower than 0.004 in fiat currency
-      setFilteredActivities(
-        activities.filter(
-          (activity) =>
-            Math.abs(parseFloat(activity.amountInFiats?.[selectedCurrency])) >= 0.004 || activity.amount?.currency
-        )
-      )
-    } else {
-      setFilteredActivities(activities)
+    if (rowsPerPage === -1) {
+      if (page !== 0) setPage(0)
+      return
+    }
+
+    const lastPage = Math.max(0, Math.ceil(filteredActivities.length / rowsPerPage) - 1)
+    if (page > lastPage) setPage(lastPage)
+  }, [filteredActivities.length, page, rowsPerPage])
+
+  useEffect(() => {
+    if (rowsPerPage !== -1 && (page + 2) * rowsPerPage > filteredActivities.length && data?.marker) {
+      getProAddressHistory({ marker: data.marker })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activities, removeDust])
+  }, [filteredActivities.length, page, rowsPerPage, data?.marker])
 
   let csvHeaders = [
     { label: '#', key: 'index' },
@@ -851,8 +873,8 @@ export default function History({
                 { value: 'fiatAmountLow', label: 'FIAT: low to high' },
                 { value: 'fiatAmountHigh', label: 'FIAT: high to low' }
               ]}
-              count={activities?.length || 0}
-              total={data?.total || 0}
+              count={filteredActivities?.length || 0}
+              total={removeDust ? filteredActivities?.length || 0 : data?.total || 0}
               hasMore={data?.marker}
               data={filteredActivities || []}
               csvHeaders={csvHeaders}
@@ -938,7 +960,14 @@ export default function History({
                   <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
                 </div>
                 <div>
-                  <CheckBox checked={removeDust} outline setChecked={setRemoveDust}>
+                  <CheckBox
+                    checked={removeDust}
+                    outline
+                    setChecked={(checked) => {
+                      setRemoveDust(checked)
+                      setPage(0)
+                    }}
+                  >
                     Remove dust transactions
                   </CheckBox>
                 </div>
@@ -1034,7 +1063,7 @@ export default function History({
                                   <td className="right" style={{ width: 110 }}>
                                     {showAmount(a.amount)}
                                     <br />
-                                    {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency) || <br />}
+                                    {showFiat(a.amountInFiats, selectedCurrency) || <br />}
                                   </td>
                                 </tr>
                               ))}
@@ -1071,7 +1100,7 @@ export default function History({
                                     </p>
                                     <p>
                                       {selectedCurrency.toUpperCase()} equavalent:{' '}
-                                      {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency)}
+                                      {showFiat(a.amountInFiats, selectedCurrency)}
                                     </p>
                                     {a.memo && (
                                       <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>
