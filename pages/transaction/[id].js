@@ -157,11 +157,6 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
     status: transactionSeo.status
   }
   const transactionPreviewImage = {
-    width: 1200,
-    height: 630,
-    file: server + '/nextapi/tx-preview?' + new URLSearchParams(transactionPreviewParams).toString()
-  }
-  const transactionTwitterImage = {
     width: 630,
     height: 630,
     file:
@@ -172,6 +167,7 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
         shape: 'square'
       }).toString()
   }
+  const transactionTwitterImage = transactionPreviewImage
 
   let TransactionComponent = null
   const txType = tx?.TransactionType
