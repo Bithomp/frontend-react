@@ -759,6 +759,18 @@ body.dark {
     min-width: unset;
   }
 
+  &.secondary {
+    background: color-mix(in srgb, var(--accent-link) 8%, transparent);
+    border-color: color-mix(in srgb, var(--accent-link) 38%, transparent);
+    color: var(--accent-link);
+    text-shadow: none;
+
+    &:hover {
+      background: color-mix(in srgb, var(--accent-link) 14%, transparent);
+      color: var(--accent-link) !important;
+    }
+  }
+
   &.wide {
     width: 100%;
   }

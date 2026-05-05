@@ -411,8 +411,7 @@ export default function History({
   selectedCurrency,
   setSelectedCurrency,
   sessionToken,
-  openEmailLogin,
-  isSsrMobile
+  openEmailLogin
 }) {
   const router = useRouter()
   const width = useWidth()
@@ -826,14 +825,12 @@ export default function History({
 
         <AdminTabs name="mainTabs" tab="pro" />
 
-        <div className="tabs-inline" style={{ marginTop: -10 }}>
+        <div className="tabs-inline tabs-with-action">
           <ProTabs tab="balance-changes" />
-
-          {isSsrMobile ? <br /> : ''}
 
           <Link
             href="/learn/xrp-xah-taxes"
-            style={isSsrMobile ? { display: 'inline-block', marginBottom: 20 } : { marginRight: -70 }}
+            className="button-action thin narrow secondary tabs-inline-action"
             target="_blank"
             rel="noreferrer"
           >

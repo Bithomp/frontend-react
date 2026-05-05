@@ -77,8 +77,7 @@ export default function Pro({
   refreshPage,
   subscriptionExpired,
   sessionToken,
-  openEmailLogin,
-  isSsrMobile
+  openEmailLogin
 }) {
   const width = useWidth()
 
@@ -216,12 +215,12 @@ export default function Pro({
 
   const addressButtons = (address, options) => {
     return (
-      <>
+      <div className={`pro-address-actions${options?.mobile ? ' mobile' : ''}`}>
         {address.crawler && (
           <Link className="button-action narrow thin" href={'/admin/pro/history?address=' + address.address}>
             {options?.mobile ? 'View history' : 'View'}
           </Link>
-        )}{' '}
+        )}
         {!(address.crawler && address.crawler.status !== 'paused') && (
           <button
             className="button-action narrow thin"
@@ -233,7 +232,7 @@ export default function Pro({
             Enable
           </button>
         )}
-      </>
+      </div>
     )
   }
 
@@ -245,14 +244,12 @@ export default function Pro({
 
         <AdminTabs name="mainTabs" tab="pro" />
 
-        <div className="tabs-inline" style={{ marginTop: -10 }}>
+        <div className="tabs-inline tabs-with-action">
           <ProTabs tab="addresses" />
-
-          {isSsrMobile ? <br /> : ''}
 
           <Link
             href="/learn/xrp-xah-taxes"
-            style={isSsrMobile ? { display: 'inline-block', marginBottom: 20 } : { marginLeft: 15, marginRight: -75 }}
+            className="button-action thin narrow secondary tabs-inline-action"
             target="_blank"
             rel="noreferrer"
           >
@@ -345,9 +342,8 @@ export default function Pro({
                                   </tbody>
                                 </table>
                               </td>
-                              <td className="right">
-                                {crawlerStatus(a.crawler)}
-                                <div style={{ height: 5, width: '100%' }}></div>
+                              <td className="center pro-balance-history-cell">
+                                <div className="pro-crawler-status">{crawlerStatus(a.crawler)}</div>
                                 {addressButtons(a)}
                               </td>
                               <td className="left">

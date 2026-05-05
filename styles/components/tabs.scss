@@ -90,6 +90,23 @@
       width: auto;
     }
   }
+
+  &.tabs-with-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    margin: -10px 0 20px;
+
+    .tabs {
+      flex: 0 1 auto;
+    }
+  }
+
+  .tabs-inline-action {
+    flex: 0 0 auto;
+  }
 }
 
 .services-tabs {

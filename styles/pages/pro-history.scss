@@ -6,3 +6,28 @@
     }
   }
 }
+
+.pro-balance-history-cell {
+  min-width: 120px;
+}
+
+.pro-crawler-status {
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.pro-address-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  &.mobile {
+    justify-content: flex-start;
+  }
+
+  .button-action.thin {
+    min-width: 72px;
+  }
+}
