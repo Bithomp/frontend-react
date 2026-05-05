@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -95,6 +95,57 @@ const wcWalletIcons = [
   { id: 'girin', name: 'Girin', src: '/images/wallets/square-logos/girin.png' },
   { id: 'uphodl', name: 'Uphodl', src: '/images/wallets/square-logos/uphodl.png' }
 ]
+
+const WalletTile = memo(function WalletTile({
+  name,
+  alt,
+  src,
+  onClick,
+  disabled,
+  width,
+  height,
+  extraIcons,
+  iconsOnly,
+  isMobile
+}) {
+  const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
+
+  return (
+    <div
+      className={`signin-app-logo${disabled ? ' disabled' : ''}`}
+      onClick={disabled ? undefined : onClick}
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled ? 'true' : 'false'}
+      onKeyDown={(e) => {
+        if (disabled) return
+        if (e.key === 'Enter' || e.key === ' ') onClick?.()
+      }}
+      title={disabled ? `${name} is not supported in this environment` : name}
+    >
+      <div className="signin-app-inner">
+        {!iconsOnly && src ? <Image alt={alt} src={src} width={width} height={height} /> : null}
+
+        {Array.isArray(extraIcons) && extraIcons.length > 0 && (
+          <div className={`signin-app-wallets ${iconsOnly ? 'icons-only' : ''}`}>
+            {extraIcons.slice(0, 4).map((w) => (
+              <Image
+                key={w.id || w}
+                alt={w.name || String(w)}
+                src={w.src}
+                width={iconSize}
+                height={iconSize}
+                draggable={false}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="signin-app-name">{name}</div>
+      </div>
+    </div>
+  )
+})
 
 export default function SignForm({
   setSignRequest,
@@ -1341,45 +1392,6 @@ export default function SignForm({
     : formError
       ? 'Please complete all required fields correctly.'
       : ''
-  const WalletTile = ({ name, alt, src, onClick, disabled, width, height, extraIcons, iconsOnly }) => {
-    const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
-
-    return (
-      <div
-        className={`signin-app-logo${disabled ? ' disabled' : ''}`}
-        onClick={disabled ? undefined : onClick}
-        role="button"
-        tabIndex={disabled ? -1 : 0}
-        aria-disabled={disabled ? 'true' : 'false'}
-        onKeyDown={(e) => {
-          if (disabled) return
-          if (e.key === 'Enter' || e.key === ' ') onClick?.()
-        }}
-        title={disabled ? `${name} is not supported in this environment` : name}
-      >
-        <div className="signin-app-inner">
-          {!iconsOnly && src ? <Image alt={alt} src={src} width={width} height={height} /> : null}
-
-          {Array.isArray(extraIcons) && extraIcons.length > 0 && (
-            <div className={`signin-app-wallets ${iconsOnly ? 'icons-only' : ''}`}>
-              {extraIcons.slice(0, 4).map((w) => (
-                <Image
-                  key={w.id || w}
-                  alt={w.name || String(w)}
-                  src={w.src}
-                  width={iconSize}
-                  height={iconSize}
-                  draggable={false}
-                />
-              ))}
-            </div>
-          )}
-
-          <div className="signin-app-name">{name}</div>
-        </div>
-      </div>
-    )
-  }
   return (
     <>
       {(networkId === 0 || networkId === 1) && (
@@ -1717,6 +1729,7 @@ export default function SignForm({
                           disabled={false}
                           extraIcons={wcWalletIcons}
                           iconsOnly={true}
+                          isMobile={isMobile}
                         />
                       )}
 
@@ -1768,15 +1781,17 @@ export default function SignForm({
                         />
                       )}
 
-                      <WalletTile
-                        name="Xyra (Popup wallet)"
-                        alt="Xyra"
-                        src="/images/wallets/xyra.svg"
-                        width={48}
-                        height={48}
-                        onClick={() => txSend({ wallet: 'xyra' })}
-                        disabled={false}
-                      />
+                      {!isMobile && (
+                        <WalletTile
+                          name="Xyra (Popup wallet)"
+                          alt="Xyra"
+                          src="/images/wallets/xyra.svg"
+                          width={48}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'xyra' })}
+                          disabled={false}
+                        />
+                      )}
                     </div>
                   </>
                 ) : screen === 'ledgerwallet-addresses' ? (

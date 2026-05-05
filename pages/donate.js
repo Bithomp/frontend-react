@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useIsMobile, getIsSsrMobile } from '../utils/mobile'
 import { fullDateAndTime, amountFormat, addressUsernameOrServiceLink } from '../utils/format'
-import { stripText } from '../utils'
+import { encode, stripText } from '../utils'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -21,11 +21,34 @@ export async function getServerSideProps(context) {
 import CopyButton from '../components/UI/CopyButton'
 import SEO from '../components/SEO'
 
-export default function Donate() {
+const DONATION_ADDRESS = 'rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3'
+const DONATION_DESTINATION_TAG = 1
+const DONATION_AMOUNTS = [1, 5, 10, 25, 100]
+
+export default function Donate({ setSignRequest }) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
 
   const [data, setData] = useState(null)
+
+  const onDonate = (amount) => {
+    setSignRequest({
+      request: {
+        TransactionType: 'Payment',
+        Destination: DONATION_ADDRESS,
+        DestinationTag: DONATION_DESTINATION_TAG,
+        Amount: String(amount * 1000000),
+        Memos: [
+          {
+            Memo: {
+              MemoData: encode('Bithomp donation')
+            }
+          }
+        ]
+      },
+      receipt: true
+    })
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -90,26 +113,26 @@ export default function Donate() {
             <br />
             {t('donate.address')}:
             <br />
-            <b style={{ wordBreak: 'break-word' }}>rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3</b>{' '}
-            <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" />
+            <b style={{ wordBreak: 'break-word' }}>{DONATION_ADDRESS}</b> <CopyButton text={DONATION_ADDRESS} />
             <br />
             <br />
             {t('table.destination-tag')}:
             <br />
-            <b>1</b> <CopyButton text="1" />
-            {isMobile && (
-              <>
-                <br />
-                <br />
-                <a
-                  className="button-action wide center"
-                  href="xumm://xumm.app/detect/request:rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3?dt=1&deeplink=true&afterQr=true"
+            <b>{DONATION_DESTINATION_TAG}</b> <CopyButton text={String(DONATION_DESTINATION_TAG)} />
+            <br />
+            <br />
+            <div className="donate-amount-buttons">
+              {DONATION_AMOUNTS.map((amount) => (
+                <button
+                  key={amount}
+                  type="button"
+                  className="button-action thin donate-amount-button"
+                  onClick={() => onDonate(amount)}
                 >
-                  <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="xaman" height={24} width={24} />
-                  {t('donate.donate-with-xaman')}
-                </a>
-              </>
-            )}
+                  {amount} XRP
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <br />
@@ -175,6 +198,20 @@ export default function Donate() {
           </>
         )}
       </div>
+      <style jsx>{`
+        .donate-amount-buttons {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 8px;
+        }
+
+        .donate-amount-button {
+          min-width: 72px;
+          margin: 0;
+          text-align: center;
+        }
+      `}</style>
     </>
   )
 }
