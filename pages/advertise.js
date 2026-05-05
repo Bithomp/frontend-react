@@ -6,6 +6,7 @@ import SEO from '../components/SEO'
 
 import { getIsSsrMobile } from '../utils/mobile'
 import { ledgerName } from '../utils'
+import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -50,16 +51,20 @@ export default function Advertise() {
           sizes="100vw"
           style={{ width: '100%', height: 'auto' }}
         />
-        <br />
-        <br />
-        <h3>Account and Transaction Explorer Text Ad</h3>
         <p>
-          Each XRPL account and transaction explorer page features a clean, unobtrusive display of your sponsored ad
-          text.
+          The banner is also displayed on the <Link href="/faucet">Faucet</Link> and{' '}
+          <Link href="/explorer">Explorer</Link> pages.
+        </p>
+        <br />
+        <br />
+        <h3>Header Link Placement</h3>
+        <p>
+          Get maximum visibility with a header link displayed across almost every page of the website, including
+          high-traffic sections like account and transaction pages, NFT Explorer, tokens, services, and more.
         </p>
         <Image
-          src="/images/advertise/old-pages-footer.png"
-          alt="Transaction Explorer Text Ad"
+          src="/images/advertise/header-account-page.png"
+          alt="Account Page Text Ad"
           width="0"
           height="0"
           sizes="100vw"
@@ -67,12 +72,32 @@ export default function Advertise() {
         />
         <br />
         <br />
-        <h3>NFT Explorer Header Text Ad</h3>
+        <Image
+          src="/images/advertise/header-nft-explorer.png"
+          alt="NFT Explorer Text Ad"
+          width="0"
+          height="0"
+          sizes="100vw"
+          style={{ width: '100%', height: 'auto' }}
+        />
+        <br />
+        <br />
+        <Image
+          src="/images/advertise/header-token-page.png"
+          alt="Tokens Page Text Ad"
+          width="0"
+          height="0"
+          sizes="100vw"
+          style={{ width: '100%', height: 'auto' }}
+        />
+        <br />
+        <br />
+        <h3>Footer Menu Placement</h3>
         <p>
-          Place your advertisement on the top of all our NFT Explorer pages to connect with the NFT community's users.
+          Place your advertisement in the footer menu, ensuring constant visibility across all pages of the website.
         </p>
         <Image
-          src="/images/advertise/new-pages-header.png"
+          src="/images/advertise/footer-menu.png"
           alt="NFT Explorer Header Text Ad"
           width="0"
           height="0"
