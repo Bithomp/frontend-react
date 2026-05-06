@@ -7908,18 +7908,17 @@ export default function Account({
                         const checkKey = `${check?.index || 'check'}-${activeChecksTab}-${index}`
                         const isExpanded = expandedCheckKey === checkKey
                         const counterpartAddress = activeChecksTab === 'sent' ? check?.Destination : check?.Account
-                        const sendMaxToken =
-                          typeof check?.SendMax === 'object' && check?.SendMax !== null
-                            ? check.SendMax
-                            : { currency: nativeCurrency }
-                        const sendMaxRawValue =
-                          typeof check?.SendMax === 'object' && check?.SendMax !== null
-                            ? check?.SendMax?.value
-                            : check?.SendMax
-                        const sendMaxAmountOnly =
-                          typeof check?.SendMax === 'object' && check?.SendMax !== null
-                            ? fullNiceNumber(sendMaxRawValue)
-                            : fullNiceNumber((Number(sendMaxRawValue) || 0) / 1000000)
+                        const isSendMaxTokenObject = typeof check?.SendMax === 'object' && check?.SendMax !== null
+                        const sendMaxToken = isSendMaxTokenObject ? check.SendMax : { currency: nativeCurrency }
+                        const sendMaxRawValue = isSendMaxTokenObject ? check?.SendMax?.value : check?.SendMax
+                        const sendMaxDisplayValue = isSendMaxTokenObject
+                          ? sendMaxRawValue
+                          : (Number(sendMaxRawValue) || 0) / 1000000
+                        const sendMaxAmountOnly = fullNiceNumber(sendMaxDisplayValue)
+                        const isReceivedCheck = activeChecksTab === 'received'
+                        const collapsedSendMaxText = isReceivedCheck
+                          ? `+${shortNiceNumber(sendMaxDisplayValue)}`
+                          : sendMaxAmountOnly
                         const sentAtValue = check?.previousTxAt || check?.createdAt
                         const sentAtText = sentAtValue ? timeFromNow(sentAtValue, i18n) : '-'
                         const expirationValue = check?.expiration || check?.Expiration
@@ -7971,12 +7970,16 @@ export default function Account({
                                 <CurrencyWithIcon token={sendMaxToken} options={{ disableTokenLink: true }} />
                               </div>
                               <div className="asset-value">
-                                <div className="asset-amount">{sendMaxAmountOnly}</div>
+                                <div className={`asset-amount ${isReceivedCheck ? 'grey' : ''}`}>{collapsedSendMaxText}</div>
                               </div>
                             </div>
 
                             {isExpanded && (
                               <div className="asset-details">
+                                <div className="detail-row">
+                                  <span>Amount:</span>
+                                  <span>{sendMaxAmountOnly}</span>
+                                </div>
                                 <div className="detail-row">
                                   <span>Sent:</span>
                                   <span>{sentAtText}</span>
@@ -8623,7 +8626,7 @@ export default function Account({
                           })()
                           const collapsedAmountDirection = (() => {
                             if (nftOffersTab === 'received') return { sign: '-', className: 'red' }
-                            if (nftOffersTab === 'owned') return { sign: '+', className: 'orange' }
+                            if (nftOffersTab === 'owned') return { sign: '+', className: 'grey' }
 
                             // Created offers: buy offer means you pay; sell offer means you receive.
                             return offerType === 'Buy'
