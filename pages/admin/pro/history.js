@@ -1003,7 +1003,7 @@ export default function History({
                 {addressesToCheck.length > 0 && (
                   <>
                     {!width || width > 800 ? (
-                      <table className="table-large no-border no-hover" style={width > 800 ? { width: 780 } : {}}>
+                      <table className="table-large no-hover" style={width > 800 ? { width: 780 } : {}}>
                         <thead>
                           <tr>
                             <th className="center">#</th>

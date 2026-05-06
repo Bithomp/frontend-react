@@ -335,13 +335,17 @@ table {
   --table-row-hover: color-mix(in srgb, var(--accent-link) 18%, var(--table-surface));
   &.table-details {
     border: 1px solid var(--button-additional);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
     box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
     width: 100%;
     margin-bottom: 15px;
+    overflow: hidden;
     > thead {
       tr {
         th {
-          padding: 5px;
+          padding: 8px 10px;
           color: var(--text-secondary);
           border-bottom: 1px solid var(--button-additional);
           box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
@@ -354,7 +358,7 @@ table {
     tbody {
       tr {
         td, th {
-          padding: 5px;
+          padding: 7px 10px;
           > &:nth-child(2) {
             word-break: break-word;
           }
@@ -401,6 +405,7 @@ table {
       width: calc(100% - 30px);
     }
     > thead > tr > th {
+      padding: 9px 10px;
       font-size: 12px;
       background: color-mix(in srgb, var(--background-secondary) 92%, transparent);
       border-bottom: 1px solid var(--table-divider);
