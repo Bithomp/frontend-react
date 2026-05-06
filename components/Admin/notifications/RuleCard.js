@@ -1,62 +1,93 @@
+import { MdDelete, MdEdit, MdHistory } from 'react-icons/md'
+
 import Card from '@/components/UI/Card'
 
 const operatorMap = {
-    '$eq': 'is',
-    '$ne': 'is not',
-    '$gt': '>',
-    '$gte': '>=',
-    '$lt': '<',
-    '$lte': '<=',
-    '$in': 'in',
-    '$nin': 'not in'
-};
+  $eq: 'is',
+  $ne: 'is not',
+  $gt: '>',
+  $gte: '>=',
+  $lt: '<',
+  $lte: '<=',
+  $in: 'in',
+  $nin: 'not in'
+}
 
 function formatCondition(field, opObj) {
-    if (typeof opObj !== 'object' || opObj === null) return '';
-    return Object.entries(opObj)
-        .map(([op, value]) => {
-            let opStr = operatorMap[op] || op;
-            let valStr = Array.isArray(value) ? `[${value.join(', ')}]` : String(value);
-            return `${field} ${opStr} ${valStr}`;
-        })
-        .join(' and ');
+  if (typeof opObj !== 'object' || opObj === null) return ''
+  return Object.entries(opObj)
+    .map(([op, value]) => {
+      const opStr = operatorMap[op] || op
+      const valStr = Array.isArray(value) ? `[${value.join(', ')}]` : String(value)
+      return `${field} ${opStr} ${valStr}`
+    })
+    .join(' and ')
 }
 
 function parseConditions(conditions) {
-    if (!conditions || typeof conditions !== 'object') return '';
-    let parts = [];
+  if (!conditions || typeof conditions !== 'object') return ''
+  const parts = []
 
-    for (const [key, value] of Object.entries(conditions)) {
-        if (key === '$or' && Array.isArray(value)) {
-            const orParts = value.map((sub) => parseConditions(sub)).filter(Boolean);
-            if (orParts.length) {
-                parts.push(`(${orParts.join(' OR ')})`);
-            }
-        } else if (typeof value === 'object' && value !== null) {
-            parts.push(formatCondition(key, value));
-        }
+  for (const [key, value] of Object.entries(conditions)) {
+    if (key === '$or' && Array.isArray(value)) {
+      const orParts = value.map((sub) => parseConditions(sub)).filter(Boolean)
+      if (orParts.length) {
+        parts.push(`(${orParts.join(' OR ')})`)
+      }
+    } else if (typeof value === 'object' && value !== null) {
+      parts.push(formatCondition(key, value))
     }
+  }
 
-    return parts.filter(Boolean).join(' AND ');
+  return parts.filter(Boolean).join(' AND ')
 }
 
-export default function RuleCard({ rule }) {
-    return (
-        <Card>
-            <div className="font-bold text-lg mb-2 capitalize">
-                {rule.name || `Rule #${rule.id}`}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1 flex flex-col sm:flex-row sm:items-center">
-                <span>
-                    Event: <span className="font-bold">{rule.event || 'N/A'}</span>
-                </span>
-                <span className="sm:ml-4">
-                    Send to: <span className="font-mono font-bold">{rule.channel?.name || rule.channel?.type || 'Unknown'}</span>
-                </span>
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                If: <span className="text-xs font-bold">{parseConditions(rule.settings.rules) || 'N/A'}</span>
-            </div>
-        </Card>
-    )
+export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit, onExecutions, rule }) {
+  return (
+    <Card className="notification-card">
+      <div className="notification-card-header">
+        <div className="notification-rule-title">{rule.name || `Rule #${rule.id}`}</div>
+        <div className="notification-card-actions">
+          {onExecutions && (
+            <button
+              aria-label="Show notification executions"
+              className="icon-button"
+              disabled={loadingExecutions}
+              onClick={() => onExecutions(rule)}
+              type="button"
+            >
+              <MdHistory />
+            </button>
+          )}
+          {onEdit && (
+            <button aria-label="Edit notification rule" className="icon-button" onClick={() => onEdit(rule)} type="button">
+              <MdEdit />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              aria-label="Delete notification rule"
+              className="icon-button notification-delete-button"
+              disabled={deleting}
+              onClick={() => onDelete(rule)}
+              type="button"
+            >
+              <MdDelete />
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="notification-rule-meta">
+        <span>
+          Event: <strong>{rule.event || 'N/A'}</strong>
+        </span>
+        <span>
+          Send to: <strong>{rule.channel?.name || rule.channel?.type || 'Unknown'}</strong>
+        </span>
+      </div>
+      <div className="notification-rule-condition">
+        If: <strong>{parseConditions(rule.settings?.rules) || 'N/A'}</strong>
+      </div>
+    </Card>
+  )
 }

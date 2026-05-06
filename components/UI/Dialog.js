@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import styles from '../../styles/components/dialog.module.css';
+import { dialogWrapper } from '../../styles/components/dialog.module.scss';
+
+const dialogSizes = new Set(['small', 'medium', 'large', 'xlarge']);
 
 export default function Dialog({ 
     isOpen, 
@@ -47,46 +49,51 @@ export default function Dialog({
 
     if (!isOpen || !portalTarget) return null;
 
+    const dialogSize = dialogSizes.has(size) ? size : 'medium';
+
     const dialogContent = (
-        <div className={styles.backdrop} onClick={handleBackdropClick}>
-            <div 
-                ref={dialogRef}
-                className={`${styles.dialog} ${styles[size]}`}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby={title ? "dialog-title" : undefined}
-            >
-                <div className={styles.header}>
-                    {title && (
-                        <h2 id="dialog-title" className={styles.title}>
-                            {title}
-                        </h2>
-                    )}
-                    {showCloseButton && (
-                        <button
-                            type="button"
-                            className={styles.closeButton}
-                            onClick={onClose}
-                            aria-label="Close dialog"
-                        >
-                            <svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+        <div className={dialogWrapper}>
+            <div className="dialog-backdrop" onClick={handleBackdropClick}>
+                <div
+                    ref={dialogRef}
+                    className={`dialog-box ${dialogSize}`}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby={title ? "dialog-title" : undefined}
+                >
+                    <div className="dialog-header">
+                        {title && (
+                            <h2 id="dialog-title" className="dialog-title">
+                                {title}
+                            </h2>
+                        )}
+                        {showCloseButton && (
+                            <button
+                                type="button"
+                                className="dialog-close-button"
+                                onClick={onClose}
+                                aria-label="Close dialog"
                             >
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    )}
-                </div>
-                <div className={styles.content}>
-                    {children}
+                                <svg
+                                    className="dialog-close-icon"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                    <div className="dialog-content">
+                        {children}
+                    </div>
                 </div>
             </div>
         </div>
