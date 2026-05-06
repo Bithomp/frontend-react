@@ -516,7 +516,7 @@ export default function Account({
   const [expandedNftCardKey, setExpandedNftCardKey] = useState(null)
   const [expandedNftOfferKey, setExpandedNftOfferKey] = useState(null)
   const [nftTab, setNftTab] = useState('owned')
-  const [nftOffersTab, setNftOffersTab] = useState('received')
+  const [nftOffersTab, setNftOffersTab] = useState('owned')
   const [createdNftOffers, setCreatedNftOffers] = useState([])
   const [receivedPrivateNftOffers, setReceivedPrivateNftOffers] = useState([])
   const [ownedNftOffers, setOwnedNftOffers] = useState([])
@@ -613,6 +613,7 @@ export default function Account({
   const activatedAccountsRequestTokenRef = useRef(0)
   const signerAccountsRequestTokenRef = useRef(0)
   const nftMinterAccountsRequestTokenRef = useRef(0)
+  const nftOffersTabTouchedRef = useRef(false)
   const activatedAccountsOrderHydratedRef = useRef(false)
   const refreshPageRef = useRef(refreshPage)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
@@ -1728,7 +1729,8 @@ export default function Account({
     setExpandedTransactionKey(null)
     setShowNftDataDetails(false)
     setNftTab('owned')
-    setNftOffersTab('received')
+    nftOffersTabTouchedRef.current = false
+    setNftOffersTab('owned')
     setTokenTab('all')
     setNftDisplayLimit(NFT_INITIAL_LIMIT)
     setNftMarkers({ owned: null, minted: null, burned: null, sold: null })
@@ -1799,20 +1801,28 @@ export default function Account({
 
   useEffect(() => {
     const availableOfferTabs = []
+    if (hasOwnedNftOffers) {
+      availableOfferTabs.push('owned')
+    }
     if (hasReceivedPrivateNftOffers) {
       availableOfferTabs.push('received')
     }
     if (hasCreatedNftOffers) {
       availableOfferTabs.push('created')
     }
-    if (hasOwnedNftOffers) {
-      availableOfferTabs.push('owned')
-    }
 
-    if (availableOfferTabs.length > 0 && !availableOfferTabs.includes(nftOffersTab)) {
-      setNftOffersTab(availableOfferTabs[0])
+    if (availableOfferTabs.length === 0) return
+
+    const preferredOfferTab = availableOfferTabs[0]
+    if (!availableOfferTabs.includes(nftOffersTab) || (!nftOffersTabTouchedRef.current && nftOffersTab !== preferredOfferTab)) {
+      setNftOffersTab(preferredOfferTab)
     }
   }, [nftOffersTab, hasReceivedPrivateNftOffers, hasCreatedNftOffers, hasOwnedNftOffers])
+
+  const selectNftOffersTab = (tab) => {
+    nftOffersTabTouchedRef.current = true
+    setNftOffersTab(tab)
+  }
 
   useEffect(() => {
     setExpandedIssuedToken(null)
@@ -8462,11 +8472,20 @@ export default function Account({
 
                 <div className="nft-tab-row nft-tab-row-outside">
                   <div className="nft-tab-switch nft-offers-tab-switch">
+                    {hasOwnedNftOffers && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
+                        onClick={() => selectNftOffersTab('owned')}
+                      >
+                        For owned{nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
+                      </button>
+                    )}
                     {hasReceivedPrivateNftOffers && (
                       <button
                         type="button"
                         className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
-                        onClick={() => setNftOffersTab('received')}
+                        onClick={() => selectNftOffersTab('received')}
                       >
                         Private{nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
                       </button>
@@ -8475,18 +8494,9 @@ export default function Account({
                       <button
                         type="button"
                         className={`nft-tab-btn ${nftOffersTab === 'created' ? 'active' : ''}`}
-                        onClick={() => setNftOffersTab('created')}
+                        onClick={() => selectNftOffersTab('created')}
                       >
                         Created{nftOffersTabCountLabels.created ? ` (${nftOffersTabCountLabels.created})` : ''}
-                      </button>
-                    )}
-                    {hasOwnedNftOffers && (
-                      <button
-                        type="button"
-                        className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
-                        onClick={() => setNftOffersTab('owned')}
-                      >
-                        For owned{nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
                       </button>
                     )}
                   </div>
@@ -8613,7 +8623,7 @@ export default function Account({
                           })()
                           const collapsedAmountDirection = (() => {
                             if (nftOffersTab === 'received') return { sign: '-', className: 'red' }
-                            if (nftOffersTab === 'owned') return { sign: '+', className: 'green' }
+                            if (nftOffersTab === 'owned') return { sign: '+', className: 'orange' }
 
                             // Created offers: buy offer means you pay; sell offer means you receive.
                             return offerType === 'Buy'
@@ -8736,11 +8746,13 @@ export default function Account({
                                     </div>
                                   )}
                                   {expirationRelative && (
-                                    <div className="detail-row">
+                                    <div className="detail-row nft-offer-expiration-row">
                                       <span>Expires:</span>
-                                      <span>
+                                      <span className="nft-offer-expiration-time">
                                         {expirationRelative}
-                                        {expirationExact && <span className="fiat-line"> ({expirationExact})</span>}
+                                        {expirationExact && (
+                                          <span className="nft-offer-expiration-exact"> ({expirationExact})</span>
+                                        )}
                                       </span>
                                     </div>
                                   )}
@@ -10976,6 +10988,16 @@ export default function Account({
 
         .nft-offers-content {
           margin-top: 6px;
+        }
+
+        .nft-offer-expiration-row > span:last-child {
+          word-break: normal;
+          overflow-wrap: normal;
+        }
+
+        .nft-offer-expiration-exact {
+          display: inline-block;
+          white-space: nowrap;
         }
 
         .nft-asset-info {
