@@ -43,5 +43,8 @@
   "label-activation-balance": "Баланс при активации",
   "label-genesis-balance": "Genesis-баланс",
   "label-activated": "Активирован",
+  "label-service": "Сервис",
+  "label-username": "Username",
+  "label-nickname": "Никнейм",
   "label-children": "Дети"
 }

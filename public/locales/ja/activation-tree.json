@@ -43,5 +43,8 @@
   "label-activation-balance": "アクティベーション時の残高",
   "label-genesis-balance": "Genesis 残高",
   "label-activated": "アクティベート日",
+  "label-service": "サービス",
+  "label-username": "ユーザー名",
+  "label-nickname": "ニックネーム",
   "label-children": "子の数"
 }

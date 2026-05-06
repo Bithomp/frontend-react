@@ -43,5 +43,8 @@
   "label-activation-balance": "Saldo saat aktivasi",
   "label-genesis-balance": "Saldo genesis",
   "label-activated": "Diaktifkan",
+  "label-service": "Layanan",
+  "label-username": "Username",
+  "label-nickname": "Nama panggilan",
   "label-children": "Anak"
 }

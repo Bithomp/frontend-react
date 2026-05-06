@@ -43,5 +43,8 @@
   "label-activation-balance": "Activation balance",
   "label-genesis-balance": "Genesis balance",
   "label-activated": "Activated",
+  "label-service": "Service",
+  "label-username": "Username",
+  "label-nickname": "Nickname",
   "label-children": "Children"
 }

@@ -43,5 +43,8 @@
   "label-activation-balance": "Saldo de activación",
   "label-genesis-balance": "Saldo génesis",
   "label-activated": "Activado",
+  "label-service": "Servicio",
+  "label-username": "Nombre de usuario",
+  "label-nickname": "Apodo",
   "label-children": "Hijos"
 }

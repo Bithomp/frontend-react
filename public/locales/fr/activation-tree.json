@@ -43,5 +43,8 @@
   "label-activation-balance": "Solde d'activation",
   "label-genesis-balance": "Solde Genesis",
   "label-activated": "Activé",
+  "label-service": "Service",
+  "label-username": "Nom d'utilisateur",
+  "label-nickname": "Surnom",
   "label-children": "Enfants"
 }

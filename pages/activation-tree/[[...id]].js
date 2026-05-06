@@ -35,18 +35,17 @@ const safeNumber = (value) => {
 
 const buildDetailsData = (raw) => {
   if (!raw) return null
-  const address = raw?.accountDetails?.address || raw?.address || raw?.account
+  const accountDetails = raw?.accountDetails || {}
+  const address = accountDetails.address || raw?.address || raw?.account
   if (!address) return null
-  const username = raw?.accountDetails?.username || raw?.username || raw?.addressDetails?.username || null
-  const service =
-    raw?.accountDetails?.service || raw?.service?.name || raw?.service?.domain || raw?.addressDetails?.service || null
 
   return {
     ...raw,
     address,
     addressDetails: {
-      service,
-      username
+      service: accountDetails.service || null,
+      username: accountDetails.username || null,
+      nickname: accountDetails.nickname || null
     }
   }
 }
@@ -143,8 +142,8 @@ const buildTreeState = async (address, req, ancestorsDepth = TREE_DEPTH) => {
     ancestorsData?.genesis_balance
   const rootHasGenesisBalance = initialBalance == null && safeNumber(genesisBalance) !== null
   const rootData = buildDetailsData({
-    account: descendantsData?.account ?? ancestorsData?.account ?? address,
-    accountDetails: descendantsData?.accountDetails ?? ancestorsData?.accountDetails ?? { address },
+    account: descendantsData?.parent ?? ancestorsData?.account ?? address,
+    accountDetails: descendantsData?.parentDetails ?? ancestorsData?.accountDetails ?? { address },
     initialBalance,
     genesisBalance,
     balance: descendantsData?.balance ?? ancestorsData?.balance,
@@ -242,9 +241,11 @@ function NodeCard({
   const apiChildrenCount = Math.max(0, safeNumber(node?.children ?? data?.children) ?? 0)
   const childrenCount = descendantsCount && descendantsCount > 0 ? descendantsCount : apiChildrenCount
   const isClickable = Boolean(address) && !isVisuallyFocused && typeof onFocusAddress === 'function'
-  const serviceName = data?.service?.name || data?.service?.domain || data?.addressDetails?.service || null
-  const username = data?.username || data?.addressDetails?.username || null
-  const hasCustomLabel = Boolean(serviceName || username)
+  const { service: serviceName, username, nickname } = data?.addressDetails || {}
+  const displayName =
+    userOrServiceName({ service: serviceName, username }) ||
+    (nickname ? <span className="orange bold">{nickname}</span> : shortHash(address, 8))
+  const hasCustomLabel = Boolean(serviceName || username || nickname)
 
   const onActivate = () => {
     if (!isClickable) return
@@ -279,9 +280,7 @@ function NodeCard({
       <div className={styles.nodeTop}>
         <AddressWithIcon address={address}>
           <div className={`${styles.nodeText} ${!hasCustomLabel ? styles.nodeTextSingle : ''}`}>
-            <div className={styles.nodeTitle}>
-              {userOrServiceName({ service: serviceName, username }) || shortHash(address, 8)}
-            </div>
+            <div className={styles.nodeTitle}>{displayName}</div>
             {hasCustomLabel && <div className={styles.nodeAddress}>{address ? shortHash(address, 8) : '-'}</div>}
           </div>
         </AddressWithIcon>
@@ -370,7 +369,7 @@ function NodeCard({
             )}
             {serviceName && (
               <>
-                <dt>Service</dt>
+                <dt>{t('label-service')}</dt>
                 <dd>
                   <span className="green bold">{serviceName}</span>
                 </dd>
@@ -378,9 +377,17 @@ function NodeCard({
             )}
             {username && (
               <>
-                <dt>Username</dt>
+                <dt>{t('label-username')}</dt>
                 <dd>
                   <span className="blue bold">{username}</span>
+                </dd>
+              </>
+            )}
+            {nickname && (
+              <>
+                <dt>{t('label-nickname')}</dt>
+                <dd>
+                  <span className="orange bold">{nickname}</span>
                 </dd>
               </>
             )}

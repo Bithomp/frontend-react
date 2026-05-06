@@ -43,5 +43,8 @@
   "label-activation-balance": "Guthaben bei Aktivierung",
   "label-genesis-balance": "Genesis-Guthaben",
   "label-activated": "Aktiviert",
+  "label-service": "Dienst",
+  "label-username": "Benutzername",
+  "label-nickname": "Spitzname",
   "label-children": "Kinder"
 }

@@ -43,5 +43,8 @@
   "label-activation-balance": "활성화 당시 잔액",
   "label-genesis-balance": "Genesis 잔액",
   "label-activated": "활성화",
+  "label-service": "서비스",
+  "label-username": "사용자 이름",
+  "label-nickname": "닉네임",
   "label-children": "자식"
 }
