@@ -412,6 +412,7 @@ import {
   shortNiceNumber,
   serviceUsernameOrAddressText,
   timeFromNow,
+  timeOrDate,
   transferRateToPercent,
   userOrServiceName
 } from '../../utils/format'
@@ -6492,7 +6493,7 @@ export default function Account({
                                   )}
                                 </span>
                                 <span className="tx-time tx-time-top">
-                                  {tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}
+                                  {tx?.date ? timeOrDate(tx.date, 'ripple') : '-'}
                                 </span>
                               </div>
 
