@@ -1114,12 +1114,16 @@ export default function Account({
         : nftTab === 'minted'
           ? 'No minted NFTs found.'
           : 'No burned NFTs found.'
+  const createdSellNftOffers = createdNftOffers.filter((offer) => offer?.flags?.sellToken)
+  const createdBuyNftOffers = createdNftOffers.filter((offer) => !offer?.flags?.sellToken)
   const activeNftOffers =
     nftOffersTab === 'received'
       ? receivedPrivateNftOffers
-      : nftOffersTab === 'created'
-        ? createdNftOffers
-        : ownedNftOffers
+      : nftOffersTab === 'createdSelling'
+        ? createdSellNftOffers
+        : nftOffersTab === 'createdBuying'
+          ? createdBuyNftOffers
+          : ownedNftOffers
   const activeNftOffersLimit = nftOffersDisplayLimit
   const activeNftOffersPreview = activeNftOffers.slice(0, activeNftOffersLimit)
   const activeNftOffersShowMoreAvailable = activeNftOffers.length > activeNftOffersPreview.length
@@ -1127,15 +1131,25 @@ export default function Account({
   const showNftOffersFewerButton = nftOffersDisplayLimit > NFT_OFFERS_PREVIEW_LIMIT
   const showNftOffersControlsVisible = activeNftOffersShowMoreAvailable || showNftOffersFewerButton
   const activeNftOffersTabLabel =
-    nftOffersTab === 'received' ? 'private' : nftOffersTab === 'created' ? 'created' : 'owned'
+    nftOffersTab === 'received'
+      ? 'private'
+      : nftOffersTab === 'createdSelling'
+        ? 'selling'
+        : nftOffersTab === 'createdBuying'
+          ? 'buying'
+          : 'owned'
+  const activeNftOffersDataKey =
+    nftOffersTab === 'createdSelling' || nftOffersTab === 'createdBuying' ? 'created' : nftOffersTab
   const nftOffersTabCountMap = {
     received: receivedPrivateNftOffers.length,
-    created: createdNftOffers.length,
+    createdSelling: createdSellNftOffers.length,
+    createdBuying: createdBuyNftOffers.length,
     owned: ownedNftOffers.length
   }
   const nftOffersTabExactCountMap = {
     received: receivedPrivateNftOffers.length < NFT_OFFERS_FETCH_LIMIT,
-    created: createdNftOffers.length < NFT_OFFERS_FETCH_LIMIT,
+    createdSelling: createdNftOffers.length < NFT_OFFERS_FETCH_LIMIT,
+    createdBuying: createdNftOffers.length < NFT_OFFERS_FETCH_LIMIT,
     owned: ownedNftOffers.length < NFT_OFFERS_FETCH_LIMIT
   }
   const getNftOffersTabCountLabel = (tab) => {
@@ -1146,23 +1160,28 @@ export default function Account({
   }
   const nftOffersTabCountLabels = {
     received: getNftOffersTabCountLabel('received'),
-    created: getNftOffersTabCountLabel('created'),
+    createdSelling: getNftOffersTabCountLabel('createdSelling'),
+    createdBuying: getNftOffersTabCountLabel('createdBuying'),
     owned: getNftOffersTabCountLabel('owned')
   }
   const hasReceivedPrivateNftOffers = receivedPrivateNftOffers.length > 0
-  const hasCreatedNftOffers = createdNftOffers.length > 0
+  const hasCreatedSellNftOffers = createdSellNftOffers.length > 0
+  const hasCreatedBuyNftOffers = createdBuyNftOffers.length > 0
+  const hasCreatedNftOffers = hasCreatedSellNftOffers || hasCreatedBuyNftOffers
   const hasOwnedNftOffers = ownedNftOffers.length > 0
   const hasAnyNftOffersData =
     !effectiveLedgerTimestamp && (hasReceivedPrivateNftOffers || hasCreatedNftOffers || hasOwnedNftOffers)
   const activeNftOffersCount = activeNftOffers.length
-  const activeNftOffersLoading = nftOffersLoading[nftOffersTab]
-  const activeNftOffersError = nftOffersError[nftOffersTab]
+  const activeNftOffersLoading = nftOffersLoading[activeNftOffersDataKey]
+  const activeNftOffersError = nftOffersError[activeNftOffersDataKey]
   const activeNftOffersTitle =
     nftOffersTab === 'received'
       ? 'No private NFT offers found.'
-      : nftOffersTab === 'created'
-        ? 'No created NFT offers found.'
-        : 'No offers for owned NFTs found.'
+      : nftOffersTab === 'createdSelling'
+        ? 'No selling NFT offers found.'
+        : nftOffersTab === 'createdBuying'
+          ? 'No buying NFT offers found.'
+          : 'No offers for owned NFTs found.'
   const activeNftOffersViewAllHref =
     nftOffersTab === 'received'
       ? `/nft-offers/${data?.address}?offerList=privately-offered-to-address`
@@ -1807,8 +1826,11 @@ export default function Account({
     if (hasReceivedPrivateNftOffers) {
       availableOfferTabs.push('received')
     }
-    if (hasCreatedNftOffers) {
-      availableOfferTabs.push('created')
+    if (hasCreatedSellNftOffers) {
+      availableOfferTabs.push('createdSelling')
+    }
+    if (hasCreatedBuyNftOffers) {
+      availableOfferTabs.push('createdBuying')
     }
 
     if (availableOfferTabs.length === 0) return
@@ -1817,7 +1839,7 @@ export default function Account({
     if (!availableOfferTabs.includes(nftOffersTab) || (!nftOffersTabTouchedRef.current && nftOffersTab !== preferredOfferTab)) {
       setNftOffersTab(preferredOfferTab)
     }
-  }, [nftOffersTab, hasReceivedPrivateNftOffers, hasCreatedNftOffers, hasOwnedNftOffers])
+  }, [nftOffersTab, hasReceivedPrivateNftOffers, hasCreatedSellNftOffers, hasCreatedBuyNftOffers, hasOwnedNftOffers])
 
   const selectNftOffersTab = (tab) => {
     nftOffersTabTouchedRef.current = true
@@ -8493,13 +8515,23 @@ export default function Account({
                         Private{nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
                       </button>
                     )}
-                    {hasCreatedNftOffers && (
+                    {hasCreatedSellNftOffers && (
                       <button
                         type="button"
-                        className={`nft-tab-btn ${nftOffersTab === 'created' ? 'active' : ''}`}
-                        onClick={() => selectNftOffersTab('created')}
+                        className={`nft-tab-btn ${nftOffersTab === 'createdSelling' ? 'active' : ''}`}
+                        onClick={() => selectNftOffersTab('createdSelling')}
                       >
-                        Created{nftOffersTabCountLabels.created ? ` (${nftOffersTabCountLabels.created})` : ''}
+                        Selling
+                        {nftOffersTabCountLabels.createdSelling ? ` (${nftOffersTabCountLabels.createdSelling})` : ''}
+                      </button>
+                    )}
+                    {hasCreatedBuyNftOffers && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftOffersTab === 'createdBuying' ? 'active' : ''}`}
+                        onClick={() => selectNftOffersTab('createdBuying')}
+                      >
+                        Buying{nftOffersTabCountLabels.createdBuying ? ` (${nftOffersTabCountLabels.createdBuying})` : ''}
                       </button>
                     )}
                   </div>
@@ -8534,14 +8566,32 @@ export default function Account({
                           const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortHash(nftId)
                           const shortTokenId = shortHash(nftId)
                           const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
+                          const isPrivateNftOfferTab = nftOffersTab === 'received'
+                          const isCreatedNftOfferTab =
+                            nftOffersTab === 'createdSelling' || nftOffersTab === 'createdBuying'
+                          const isOwnedNftOfferTab = nftOffersTab === 'owned'
                           const isFreePrivateNftOffer = nftOffersTab === 'received' && offer?.amount === '0'
                           const offerAmountText = offer?.amount
                             ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
                             : null
-                          const offerAmountFiat =
-                            offer?.amount && selectedCurrency
+                          const isNativeOfferAmount = offer?.amount && typeof offer.amount !== 'object'
+                          const shouldShowCurrentNativeOfferFiat =
+                            isNativeOfferAmount && (isOwnedNftOfferTab || isCreatedNftOfferTab)
+                          const nativeOfferAmountFiat =
+                            shouldShowCurrentNativeOfferFiat
+                              ? tokenToFiat({
+                                  amount: offer.amount,
+                                  selectedCurrency,
+                                  fiatRate: pageFiatRate,
+                                  asText: true,
+                                  absolute: true
+                                })
+                              : null
+                          const convertedOfferAmountFiat =
+                            offer?.amount && selectedCurrency && !isNativeOfferAmount
                               ? convertedAmount(offer, selectedCurrency.toLowerCase(), { short: true })
                               : null
+                          const offerAmountFiat = nativeOfferAmountFiat || convertedOfferAmountFiat
                           const offerPlacedRelative = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : null
                           const offerPlacedExact = offer?.createdAt ? fullDateAndTime(offer.createdAt) : null
                           const offerIndex = offer?.offerIndex
@@ -8561,9 +8611,6 @@ export default function Account({
                             !!account?.address &&
                             !!ownerAddress &&
                             ownerAddress === account.address
-                          const isPrivateNftOfferTab = nftOffersTab === 'received'
-                          const isCreatedNftOfferTab = nftOffersTab === 'created'
-                          const isOwnedNftOfferTab = nftOffersTab === 'owned'
                           const canAcceptPrivateNftOffer =
                             !!setSignRequest &&
                             !effectiveLedgerTimestamp &&
@@ -8630,8 +8677,8 @@ export default function Account({
 
                             // Created offers: buy offer means you pay; sell offer means you receive.
                             return offerType === 'Buy'
-                              ? { sign: '-', className: 'red' }
-                              : { sign: '+', className: 'green' }
+                              ? { sign: '-', className: 'grey' }
+                              : { sign: '+', className: 'grey' }
                           })()
                           const collapsedAmountClass = isFreePrivateNftOffer
                             ? 'orange'
@@ -8692,6 +8739,9 @@ export default function Account({
                                         ? 'Free'
                                         : `${collapsedAmountSign}${offerAmountText || '-'}`}
                                     </span>
+                                    {shouldShowCurrentNativeOfferFiat && nativeOfferAmountFiat && (
+                                      <span className="tx-change-fiat">{nativeOfferAmountFiat}</span>
+                                    )}
                                   </span>
                                 </div>
                               </div>
@@ -8736,7 +8786,7 @@ export default function Account({
                                         {offerAmountFiat && (
                                           <span className="fiat-line" suppressHydrationWarning>
                                             {' '}
-                                            ≈{offerAmountFiat}
+                                            {nativeOfferAmountFiat ? offerAmountFiat : `≈${offerAmountFiat}`}
                                           </span>
                                         )}
                                       </span>
