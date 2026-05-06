@@ -37,6 +37,7 @@ const TOKEN_PREVIEW_LIMIT = 5
 const NFT_INITIAL_LIMIT = 5
 const NFT_LOAD_MORE_STEP = 10
 const NFT_FETCH_LIMIT = 45
+const NFT_BIDS_FETCH_LIMIT = 100
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
 const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
@@ -76,15 +77,12 @@ const tokenForAmount = (amount, tokenList) => {
   )
 }
 
-const nftOfferFiatValue = (offer, { fiatRate, tokenList } = {}) => {
+const nftOfferNativeValue = (offer, { tokenList } = {}) => {
   if (!offer?.amount) return null
-
-  const effectiveFiatRate = Number(fiatRate)
-  if (!Number.isFinite(effectiveFiatRate) || effectiveFiatRate <= 0) return null
 
   if (typeof offer.amount !== 'object') {
     const drops = Number(offer.amount)
-    return Number.isFinite(drops) ? Math.abs((drops / 1000000) * effectiveFiatRate) : null
+    return Number.isFinite(drops) ? Math.abs(drops / 1000000) : null
   }
 
   const token = tokenForAmount(offer.amount, tokenList)
@@ -92,7 +90,15 @@ const nftOfferFiatValue = (offer, { fiatRate, tokenList } = {}) => {
   const tokenPriceNative = Number(token?.priceNativeCurrencySpot)
   if (!Number.isFinite(tokenAmount) || !Number.isFinite(tokenPriceNative)) return null
 
-  return Math.abs(tokenAmount * tokenPriceNative * effectiveFiatRate)
+  return Math.abs(tokenAmount * tokenPriceNative)
+}
+
+const nftOfferFiatValue = (offer, { fiatRate, tokenList } = {}) => {
+  const nativeValue = nftOfferNativeValue(offer, { tokenList })
+  const effectiveFiatRate = Number(fiatRate)
+  if (nativeValue === null || !Number.isFinite(effectiveFiatRate) || effectiveFiatRate <= 0) return null
+
+  return nativeValue * effectiveFiatRate
 }
 
 const nftOfferFiatText = (offer, { fiatRate, selectedCurrency, tokenList } = {}) => {
@@ -102,11 +108,14 @@ const nftOfferFiatText = (offer, { fiatRate, selectedCurrency, tokenList } = {})
   return shortNiceNumber(fiatValue, 2, 1, selectedCurrency)
 }
 
-const bestNftBuyOfferValue = (nft, { fiatRate, tokenList } = {}) => {
+const bestNftBuyOfferValue = (nft, { tokenList } = {}) => {
   const validBuyOffers = Array.isArray(nft?.buyOffers) ? nft.buyOffers.filter((offer) => offer?.valid !== false) : null
   const bestBid = bestNftOffer(validBuyOffers, null, 'buy')
-  return nftOfferFiatValue(bestBid, { fiatRate, tokenList }) || 0
+  return nftOfferNativeValue(bestBid, { tokenList }) || 0
 }
+
+const sumNftBuyOfferNativeValues = (nfts, { tokenList } = {}) =>
+  nfts.reduce((sum, nft) => sum + bestNftBuyOfferValue(nft, { tokenList }), 0)
 
 const tomlCheckerHref = (domain) => ({
   pathname: '/services/toml-checker',
@@ -678,9 +687,11 @@ export default function Account({
   const refreshPageRef = useRef(refreshPage)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
+  const [nftsNativeValue, setNftsNativeValue] = useState(0)
 
   const resetAccountObjectCollections = () => {
     setTokens([])
+    setNftsNativeValue(0)
     setOwnedNfts([])
     setSoldNfts([])
     setSoldNftsTotalCount(null)
@@ -1081,11 +1092,15 @@ export default function Account({
     const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
     return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
   }, 0)
-  const totalWorthFiatValue = nativeAvailableFiatValue + lpTokensFiatValue + issuedTokensFiatValue
+  const nftsFiatValue = nftsNativeValue * (tokenFiatRate || pageFiatRate || 0)
+  const hasNftWorthLine = !xahauNetwork && (nftsNativeValue > 0 || ownedNftIds.length > 0 || ownedNfts.length > 0)
+  const hasAdditionalWorthAssets = hasNonNativeTokenAssets || hasNftWorthLine
+  const totalWorthFiatValue = nativeAvailableFiatValue + lpTokensFiatValue + issuedTokensFiatValue + nftsFiatValue
   const totalWorthBreakdown = [
     { label: nativeCurrency, value: nativeAvailableFiatValue },
     ...(lpTokensCount > 0 ? [{ label: `LP tokens (${lpTokensCount})`, value: lpTokensFiatValue }] : []),
-    ...(issuedTokensCount > 0 ? [{ label: `Tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : [])
+    ...(issuedTokensCount > 0 ? [{ label: `Tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : []),
+    ...(hasNftWorthLine ? [{ label: 'NFTs', value: nftsFiatValue }] : [])
   ].sort((a, b) => b.value - a.value)
   const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
   const activeTokenList = tokenTab === 'lp' ? lpTokenList : tokenTab === 'tokens' ? standardTokenList : tokens
@@ -2086,34 +2101,43 @@ export default function Account({
             let bidNftsList = []
             if (!xahauNetwork) {
               try {
-                const bidNftsResponse = await axios.get(
-                  `v2/${nftResource}?owner=${data.address}&list=bids&order=priceHigh&currency=${nativeCurrency.toLowerCase()}&offersValidate=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
+                let bidNftsMarker = null
+
+                do {
+                  const markerQuery = bidNftsMarker ? `&marker=${encodeURIComponent(bidNftsMarker)}` : ''
+                  const bidNftsResponse = await axios.get(
+                    `v2/${nftResource}?owner=${data.address}&list=bids&order=priceHigh&currency=${nativeCurrency.toLowerCase()}&offersValidate=true&includeWithoutMediaData=true&limit=${NFT_BIDS_FETCH_LIMIT}${markerQuery}`
+                  )
+                  const bidNftsPage = Array.isArray(bidNftsResponse?.data?.[nftResource])
+                    ? bidNftsResponse.data[nftResource]
+                    : []
+                  bidNftsList = [...bidNftsList, ...bidNftsPage]
+                  bidNftsMarker = bidNftsResponse?.data?.marker || null
+                } while (bidNftsMarker)
+
+                bidNftsList = uniqueNftsById(bidNftsList.filter(hasValidBuyOffer)).sort(
+                  (a, b) =>
+                    bestNftBuyOfferValue(b, {
+                      tokenList: sortedTokens
+                    }) -
+                    bestNftBuyOfferValue(a, {
+                      tokenList: sortedTokens
+                    })
                 )
-                bidNftsList = Array.isArray(bidNftsResponse?.data?.[nftResource])
-                  ? bidNftsResponse.data[nftResource]
-                      .filter(hasValidBuyOffer)
-                      .sort(
-                        (a, b) =>
-                          bestNftBuyOfferValue(b, {
-                            fiatRate: pageFiatRate,
-                            tokenList: sortedTokens
-                          }) -
-                          bestNftBuyOfferValue(a, {
-                            fiatRate: pageFiatRate,
-                            tokenList: sortedTokens
-                          })
-                      )
-                  : []
+                setNftsNativeValue(sumNftBuyOfferNativeValues(bidNftsList, { tokenList: sortedTokens }))
               } catch {
                 bidNftsList = []
+                setNftsNativeValue(0)
               }
+            } else {
+              setNftsNativeValue(0)
             }
 
             const nftResponse = await axios.get(nftPreviewUrl)
             const ownedNftsList = Array.isArray(nftResponse?.data?.[nftResource]) ? nftResponse.data[nftResource] : []
             const combinedOwnedNfts = uniqueNftsById([...bidNftsList, ...ownedNftsList])
 
-            setOwnedNfts(combinedOwnedNfts.slice(0, NFT_FETCH_LIMIT))
+            setOwnedNfts(combinedOwnedNfts)
             setNftMarkers((prev) => ({ ...prev, owned: nftResponse?.data?.marker || null }))
           } catch {
             setOwnedNfts([])
@@ -4349,7 +4373,7 @@ export default function Account({
               </div>
             )}
 
-            {hasNonNativeTokenAssets && (
+            {hasAdditionalWorthAssets && (
               <div className="asset-item" onClick={() => setShowTotalWorthDetails(!showTotalWorthDetails)}>
                 <div className="asset-main">
                   <div className="asset-logo">
