@@ -1,11 +1,58 @@
+import { useEffect, useState } from 'react'
 import HomeTeaser, { HomeTeaseRow } from './HomeTeaser'
 import { CurrencyWithIcon, shortNiceNumber } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
+import { fetchTeaserTokensClient } from '../../utils/homeTeaserClientData'
 import Delta from '../UI/Delta'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 export default function TeaserTopTokens({ data = [], isLoading = false, fiatRate, selectedCurrency }) {
-  const topTokens = data?.slice(0, 5) || []
+  const [items, setItems] = useState(data)
+  const [isInitialLoading, setIsInitialLoading] = useState(!data?.length || isLoading)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const topTokens = items?.slice(0, 5) || []
+  const loading = isInitialLoading && !topTokens.length
+  const showRefresh = isInitialLoading || isRefreshing || !topTokens.length
+
+  useEffect(() => {
+    if (data?.length) {
+      setItems(data)
+      setIsInitialLoading(false)
+    }
+  }, [data])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadData = async () => {
+      setIsInitialLoading(true)
+      setItems([])
+      try {
+        const latest = await fetchTeaserTokensClient(selectedCurrency)
+        if (!cancelled) {
+          setItems(latest)
+        }
+      } finally {
+        if (!cancelled) {
+          setIsInitialLoading(false)
+        }
+      }
+    }
+
+    loadData()
+    return () => {
+      cancelled = true
+    }
+  }, [selectedCurrency])
+
+  const refreshData = async () => {
+    setIsRefreshing(true)
+    try {
+      setItems(await fetchTeaserTokensClient(selectedCurrency))
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
 
   const getSelectedCurrency = (token) =>
     selectedCurrency || Object.keys(token?.statistics?.priceFiats || {})[0] || null
@@ -54,7 +101,9 @@ export default function TeaserTopTokens({ data = [], isLoading = false, fiatRate
       title="home.teaser.topTokens"
       titleNote="24h"
       href="/tokens"
-      isLoading={isLoading}
+      isLoading={loading}
+      isRefreshing={isRefreshing || isInitialLoading}
+      onRefresh={showRefresh ? refreshData : null}
       isEmpty={!topTokens.length}
     >
       {topTokens.map((token, index) => {
