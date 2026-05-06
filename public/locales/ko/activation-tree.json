@@ -30,6 +30,7 @@
   "show-older-ancestors": "더 오래된 조상 {{count}}개 보기",
   "load-more-ancestors": "조상 더 불러오기",
   "loading-ancestors": "조상 불러오는 중...",
+  "back-to-genesis": "Genesis 지갑으로 돌아가기",
   "no-children-short": "리프",
   "open-account": "계정",
   "focus-tree": "포커스",

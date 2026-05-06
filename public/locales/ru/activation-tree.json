@@ -30,6 +30,7 @@
   "show-older-ancestors": "Показать ещё {{count}} более старшего предка",
   "load-more-ancestors": "Загрузить ещё предков",
   "loading-ancestors": "Загружаем предков...",
+  "back-to-genesis": "Вернуться к genesis",
   "no-children-short": "Лист",
   "open-account": "Аккаунт",
   "focus-tree": "Фокус",

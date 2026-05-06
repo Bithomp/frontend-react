@@ -661,13 +661,22 @@
 }
 
 .showMoreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   border: none;
   background: color-mix(in srgb, var(--background-main) 90%, white 10%);
   color: var(--accent-link);
   border-radius: 999px;
   min-height: 34px;
   padding: 0 14px;
+  font-family: inherit;
+  font-size: inherit;
   font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
   box-shadow:
     0 10px 22px rgba(0, 0, 0, 0.06),
@@ -677,6 +686,10 @@
     transform 0.18s ease,
     box-shadow 0.18s ease,
     border-color 0.18s ease;
+}
+
+.showMoreButton:visited {
+  color: var(--accent-link);
 }
 
 .showMoreButton:hover,

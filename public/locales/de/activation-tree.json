@@ -30,6 +30,7 @@
   "show-older-ancestors": "{{count}} ältere Vorfahren zeigen",
   "load-more-ancestors": "Weitere Vorfahren laden",
   "loading-ancestors": "Vorfahren werden geladen...",
+  "back-to-genesis": "Zurück zu Genesis-Wallets",
   "no-children-short": "Blatt",
   "open-account": "Konto",
   "focus-tree": "Fokus",

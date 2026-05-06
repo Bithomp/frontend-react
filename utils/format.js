@@ -887,7 +887,11 @@ export const percentFormat = (small, big) => {
 }
 
 export const amountFormat = (amount, options = {}) => {
-  if (!amount && amount !== '0' && amount !== 0) {
+  if (amount === null) {
+    amount = 0
+  }
+
+  if (amount === undefined || amount === '') {
     return ''
   }
   const { value, currency, valuePrefix, issuer, issuerDetails, type, originalCurrency } = amountParced(amount)
@@ -1085,9 +1089,16 @@ export const niceCurrency = (currency) => {
 }
 
 export const amountParced = (amount) => {
-  if (!amount && amount !== 0) {
+  if (amount === null) {
+    amount = 0
+  }
+
+  if (amount === undefined || amount === '') {
     return false
   }
+
+  const hasAmountValue = typeof amount === 'object' && Object.prototype.hasOwnProperty.call(amount, 'value')
+  const normalizeAmountValue = (value) => (value === null || value === undefined || value === '' ? 0 : value)
 
   let currency = ''
   let value = ''
@@ -1100,14 +1111,14 @@ export const amountParced = (amount) => {
   if (amount.currencyDetails?.type === 'lp_token') {
     originalCurrency = amount.currency
     currency = amount.currencyDetails?.currency
-    value = amount.value
+    value = normalizeAmountValue(amount.value)
     issuer = amount.issuer
     issuerDetails = amount.issuerDetails
     type = 'LPT'
-  } else if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
+  } else if (hasAmountValue && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
     originalCurrency = amount.currency // Store original before processing
     currency = amount.currency
-    value = amount.value
+    value = normalizeAmountValue(amount.value)
     issuer = amount.issuer
     issuerDetails = amount.issuerDetails
     type = 'IOU'
@@ -1138,7 +1149,7 @@ export const amountParced = (amount) => {
       currency = 'Fake' + nativeCurrency
     }
 
-    value = amount.value
+    value = normalizeAmountValue(amount.value)
     const scale = amount.currencyDetails?.scale || 0
     if (scale > 0) {
       value = scaleAmount(value, scale)
@@ -1149,8 +1160,8 @@ export const amountParced = (amount) => {
   } else {
     type = nativeCurrency
     originalCurrency = nativeCurrency // Store original before processing
-    if (amount.value) {
-      value = amount.value
+    if (hasAmountValue) {
+      value = normalizeAmountValue(amount.value)
     } else {
       value = amount / 1000000
     }

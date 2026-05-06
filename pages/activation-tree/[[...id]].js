@@ -72,9 +72,19 @@ const uniqueByAccount = (nodes) => {
   })
 }
 
-const getKnownChildrenCount = (node) => safeNumber(node?.children ?? node?.details?.children)
+const getNodeData = (node) => node?.details || node
+
+const getKnownChildrenCount = (node) => safeNumber(getNodeData(node)?.children)
 
 const hasCheckedChildren = (node) => node?._childrenLoaded === true || node?.details?._childrenLoaded === true
+
+const hasGenesisBalance = (node) => {
+  const data = getNodeData(node)
+  const initialBalance = safeNumber(data?.initialBalance)
+  const genesisBalance = safeNumber(data?.genesisBalance)
+
+  return initialBalance === null && genesisBalance !== null
+}
 
 const decorateDescendantTree = (nodes, { childrenLoaded = false } = {}) =>
   (nodes || []).map((node) => {
@@ -134,21 +144,15 @@ const buildTreeState = async (address, req, ancestorsDepth = TREE_DEPTH) => {
   ])
   const descendantsTree = decorateDescendantTree(descendantsData?.descendants || [])
   const ancestors = decorateAncestors(ancestorsData?.ancestors || [])
-  const initialBalance = descendantsData?.initialBalance ?? ancestorsData?.initialBalance
-  const genesisBalance =
-    descendantsData?.genesisBalance ??
-    ancestorsData?.genesisBalance ??
-    descendantsData?.genesis_balance ??
-    ancestorsData?.genesis_balance
-  const rootHasGenesisBalance = initialBalance == null && safeNumber(genesisBalance) !== null
   const rootData = buildDetailsData({
-    account: descendantsData?.parent ?? ancestorsData?.account ?? address,
-    accountDetails: descendantsData?.parentDetails ?? ancestorsData?.accountDetails ?? { address },
-    initialBalance,
-    genesisBalance,
-    balance: descendantsData?.balance ?? ancestorsData?.balance,
-    inception: descendantsData?.inception ?? ancestorsData?.inception
+    account: descendantsData?.parent,
+    accountDetails: descendantsData?.parentDetails,
+    initialBalance: descendantsData?.initialBalance,
+    genesisBalance: descendantsData?.genesisBalance,
+    balance: descendantsData?.balance,
+    inception: descendantsData?.inception
   })
+  const reachedGenesis = hasGenesisBalance(rootData) || ancestors.some(hasGenesisBalance)
 
   return {
     pageMode: 'tree',
@@ -156,7 +160,7 @@ const buildTreeState = async (address, req, ancestorsDepth = TREE_DEPTH) => {
     rootData,
     ancestors,
     ancestorsDepth,
-    ancestorsHasMore: !rootHasGenesisBalance && ancestors.length >= ancestorsDepth,
+    ancestorsHasMore: !reachedGenesis && ancestors.length >= ancestorsDepth,
     descendantsTree,
     totalDescendants: countDescendants(descendantsTree),
     genesisStarters: []
@@ -174,16 +178,24 @@ export async function getServerSideProps(context) {
   let initialError = ''
   let rootData = null
   let ancestors = []
+  let ancestorsDepth = 0
+  let ancestorsHasMore = false
   let descendantsTree = []
   let totalDescendants = 0
   let genesisStarters = []
 
   if (address) {
     try {
-      ;({ pageMode, initialError, rootData, ancestors, descendantsTree, totalDescendants } = await buildTreeState(
-        address,
-        req
-      ))
+      ;({
+        pageMode,
+        initialError,
+        rootData,
+        ancestors,
+        ancestorsDepth,
+        ancestorsHasMore,
+        descendantsTree,
+        totalDescendants
+      } = await buildTreeState(address, req))
     } catch (error) {
       initialError = error?.message || 'failed'
     }
@@ -202,8 +214,8 @@ export async function getServerSideProps(context) {
       initialError,
       rootData: sanitizeForProps(rootData || null),
       ancestors: sanitizeForProps(ancestors),
-      ancestorsDepth: sanitizeForProps(pageMode === 'tree' ? TREE_DEPTH : 0),
-      ancestorsHasMore: sanitizeForProps(pageMode === 'tree' ? ancestors.length >= TREE_DEPTH : false),
+      ancestorsDepth: sanitizeForProps(ancestorsDepth),
+      ancestorsHasMore: sanitizeForProps(ancestorsHasMore),
       descendantsTree: sanitizeForProps(descendantsTree),
       totalDescendants,
       genesisStarters: sanitizeForProps(genesisStarters),
@@ -228,17 +240,15 @@ function NodeCard({
   const { t } = useTranslation(['activation-tree', 'common'])
   const isVisuallyFocused = Boolean(isFocus || isPendingFocus)
   const expanded = !isLoading && (defaultExpanded || isVisuallyFocused)
-  const data = node?.details || node
-  const address = data?.address || node?.account
-  const activationBalance = safeNumber(node?.initialBalance ?? data?.initialBalance)
-  const genesisBalance = safeNumber(
-    node?.genesisBalance ?? data?.genesisBalance ?? node?.genesis_balance ?? data?.genesis_balance
-  )
+  const data = getNodeData(node)
+  const address = data?.address || data?.account
+  const activationBalance = safeNumber(data?.initialBalance)
+  const genesisBalance = safeNumber(data?.genesisBalance)
   const initialBalance = activationBalance ?? genesisBalance
-  const balance = safeNumber(node?.balance ?? data?.balance)
-  const inception = safeNumber(node?.inception ?? data?.inception)
+  const balance = safeNumber(data?.balance)
+  const inception = safeNumber(data?.inception)
   const descendantsCount = Array.isArray(node?.descendants) ? node.descendants.length : null
-  const apiChildrenCount = Math.max(0, safeNumber(node?.children ?? data?.children) ?? 0)
+  const apiChildrenCount = Math.max(0, safeNumber(data?.children) ?? 0)
   const childrenCount = descendantsCount && descendantsCount > 0 ? descendantsCount : apiChildrenCount
   const isClickable = Boolean(address) && !isVisuallyFocused && typeof onFocusAddress === 'function'
   const { service: serviceName, username, nickname } = data?.addressDetails || {}
@@ -413,12 +423,11 @@ function NodeCard({
 function ChildrenExpander({ hiddenCount, onExpand }) {
   const { t } = useTranslation('activation-tree')
   const showCount = Math.min(VISIBLE_CHILDREN_STEP, hiddenCount)
-  const leftCount = Math.max(0, hiddenCount - showCount)
 
   return (
     <button type="button" className={styles.showMoreButton} onClick={onExpand}>
-      {leftCount > 0
-        ? t('show-more-children-left', { count: showCount, left: leftCount })
+      {hiddenCount > showCount
+        ? t('show-more-children-left', { count: showCount, left: hiddenCount })
         : t('show-more-children', { count: showCount })}
     </button>
   )
@@ -650,9 +659,8 @@ export default function ActivationTreePage({
   const [isAncestorsLoading, setIsAncestorsLoading] = useState(false)
   const [pendingFocusAddress, setPendingFocusAddress] = useState('')
   const [searchError, setSearchError] = useState('')
-  const rootHasGenesisBalance =
-    safeNumber(treeState.rootData?.initialBalance) === null &&
-    safeNumber(treeState.rootData?.genesisBalance ?? treeState.rootData?.genesis_balance) !== null
+  const treeHasGenesisBalance =
+    hasGenesisBalance(treeState.rootData) || (treeState.ancestors || []).some(hasGenesisBalance)
 
   useEffect(() => {
     setTreeState({
@@ -705,7 +713,7 @@ export default function ActivationTreePage({
       isTreeLoading ||
       isAncestorsLoading ||
       !treeState.ancestorsHasMore ||
-      rootHasGenesisBalance
+      treeHasGenesisBalance
     )
       return
 
@@ -719,12 +727,16 @@ export default function ActivationTreePage({
     try {
       const response = await fetchAncestors(targetAddress, ANCESTOR_STEP)
       const loadedAncestors = decorateAncestors(response?.ancestors || [])
-      setTreeState((prev) => ({
-        ...prev,
-        ancestors: uniqueByAccount([...(prev.ancestors || []), ...loadedAncestors]),
-        ancestorsDepth: (prev.ancestorsDepth || TREE_DEPTH) + loadedAncestors.length,
-        ancestorsHasMore: loadedAncestors.length >= ANCESTOR_STEP
-      }))
+      setTreeState((prev) => {
+        const nextAncestors = uniqueByAccount([...(prev.ancestors || []), ...loadedAncestors])
+
+        return {
+          ...prev,
+          ancestors: nextAncestors,
+          ancestorsDepth: (prev.ancestorsDepth || TREE_DEPTH) + loadedAncestors.length,
+          ancestorsHasMore: !nextAncestors.some(hasGenesisBalance) && loadedAncestors.length >= ANCESTOR_STEP
+        }
+      })
     } catch {
       setSearchError(t('errors.failed'))
     } finally {
@@ -839,7 +851,7 @@ export default function ActivationTreePage({
                 <h2>{t('focus-title')}</h2>
               </div>
 
-              {treeState.ancestorsHasMore && !rootHasGenesisBalance && (
+              {treeState.ancestorsHasMore && !treeHasGenesisBalance && (
                 <div className={styles.topExpandWrap}>
                   <button
                     type="button"
@@ -852,10 +864,17 @@ export default function ActivationTreePage({
                   </button>
                 </div>
               )}
+              {treeHasGenesisBalance && (
+                <div className={styles.topExpandWrap}>
+                  <Link href="/activation-tree" className={styles.showMoreButton}>
+                    {t('back-to-genesis')}
+                  </Link>
+                </div>
+              )}
               {!!treeState.ancestors?.length && (
                 <AncestorsStack
                   ancestors={treeState.ancestors}
-                  ancestorsHasMore={treeState.ancestorsHasMore}
+                  ancestorsHasMore={treeState.ancestorsHasMore && !treeHasGenesisBalance}
                   onFocusAddress={onFocusAddress}
                   pendingFocusAddress={pendingFocusAddress}
                 />

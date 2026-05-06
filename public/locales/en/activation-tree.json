@@ -30,6 +30,7 @@
   "show-older-ancestors": "Show {{count}} older ancestor",
   "load-more-ancestors": "Load more ancestors",
   "loading-ancestors": "Loading ancestors...",
+  "back-to-genesis": "Back to genesis wallets",
   "no-children-short": "Leaf",
   "open-account": "Account",
   "focus-tree": "Focus",

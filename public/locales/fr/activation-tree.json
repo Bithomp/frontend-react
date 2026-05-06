@@ -30,6 +30,7 @@
   "show-older-ancestors": "Afficher {{count}} ancêtre plus ancien",
   "load-more-ancestors": "Charger plus d'ancêtres",
   "loading-ancestors": "Chargement des ancêtres...",
+  "back-to-genesis": "Retour aux portefeuilles Genesis",
   "no-children-short": "Feuille",
   "open-account": "Compte",
   "focus-tree": "Cibler",

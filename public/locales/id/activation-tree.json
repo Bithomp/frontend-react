@@ -30,6 +30,7 @@
   "show-older-ancestors": "Tampilkan {{count}} leluhur yang lebih tua",
   "load-more-ancestors": "Muat lebih banyak leluhur",
   "loading-ancestors": "Memuat leluhur...",
+  "back-to-genesis": "Kembali ke dompet genesis",
   "no-children-short": "Daun",
   "open-account": "Akun",
   "focus-tree": "Fokus",
