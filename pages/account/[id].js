@@ -48,6 +48,66 @@ const OBJECT_LOAD_MORE_STEP = 5
 const DOMAIN_FAVICON_SIZE = 16
 const DOMAIN_FAVICON_CDN_SIZE = DOMAIN_FAVICON_SIZE * 2
 
+const nftTokenIdFromData = (item) => item?.nftokenID || null
+
+const uniqueNftsById = (nfts) => {
+  const seen = new Set()
+
+  return nfts.filter((nft) => {
+    const nftId = nftTokenIdFromData(nft)
+    if (!nftId || seen.has(nftId)) return false
+    seen.add(nftId)
+    return true
+  })
+}
+
+const hasValidBuyOffer = (nft) =>
+  Array.isArray(nft?.buyOffers) && nft.buyOffers.some((offer) => offer?.valid !== false)
+
+const tokenForAmount = (amount, tokenList) => {
+  if (!amount?.currency || !amount?.issuer || !Array.isArray(tokenList)) return null
+
+  return (
+    tokenList.find(
+      (token) =>
+        (token?.LowLimit?.currency === amount.currency && token?.LowLimit?.issuer === amount.issuer) ||
+        (token?.HighLimit?.currency === amount.currency && token?.HighLimit?.issuer === amount.issuer)
+    ) || null
+  )
+}
+
+const nftOfferFiatValue = (offer, { fiatRate, tokenList } = {}) => {
+  if (!offer?.amount) return null
+
+  const effectiveFiatRate = Number(fiatRate)
+  if (!Number.isFinite(effectiveFiatRate) || effectiveFiatRate <= 0) return null
+
+  if (typeof offer.amount !== 'object') {
+    const drops = Number(offer.amount)
+    return Number.isFinite(drops) ? Math.abs((drops / 1000000) * effectiveFiatRate) : null
+  }
+
+  const token = tokenForAmount(offer.amount, tokenList)
+  const tokenAmount = Number(offer.amount.value)
+  const tokenPriceNative = Number(token?.priceNativeCurrencySpot)
+  if (!Number.isFinite(tokenAmount) || !Number.isFinite(tokenPriceNative)) return null
+
+  return Math.abs(tokenAmount * tokenPriceNative * effectiveFiatRate)
+}
+
+const nftOfferFiatText = (offer, { fiatRate, selectedCurrency, tokenList } = {}) => {
+  const fiatValue = nftOfferFiatValue(offer, { fiatRate, tokenList })
+  if (fiatValue === null || !selectedCurrency) return null
+
+  return shortNiceNumber(fiatValue, 2, 1, selectedCurrency)
+}
+
+const bestNftBuyOfferValue = (nft, { fiatRate, tokenList } = {}) => {
+  const validBuyOffers = Array.isArray(nft?.buyOffers) ? nft.buyOffers.filter((offer) => offer?.valid !== false) : null
+  const bestBid = bestNftOffer(validBuyOffers, null, 'buy')
+  return nftOfferFiatValue(bestBid, { fiatRate, tokenList }) || 0
+}
+
 const tomlCheckerHref = (domain) => ({
   pathname: '/services/toml-checker',
   query: { domain }
@@ -396,7 +456,7 @@ import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
-import { NftImage, isNftExplicit, nftName, nftUrl } from '../../utils/nft'
+import { NftImage, bestNftOffer, isNftExplicit, nftName, nftUrl } from '../../utils/nft'
 import {
   AddressWithIconFilled,
   AddressWithIconInline,
@@ -1677,8 +1737,9 @@ export default function Account({
         }
       } else {
         moreItems = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
-        if (nftTab === 'owned') setOwnedNfts((prev) => [...prev, ...moreItems])
-        else if (nftTab === 'minted') setMintedNfts((prev) => [...prev, ...moreItems])
+        if (nftTab === 'owned') {
+          setOwnedNfts((prev) => uniqueNftsById([...prev, ...moreItems]))
+        } else if (nftTab === 'minted') setMintedNfts((prev) => [...prev, ...moreItems])
         else setBurnedNfts((prev) => [...prev, ...moreItems])
       }
 
@@ -1985,6 +2046,28 @@ export default function Account({
             .sort((a, b) => Number(b.Sequence || 0) - Number(a.Sequence || 0)) || []
         setDexOrders(accountObjectWithDexOrders)
 
+        // Filter RippleState objects (tokens) using the same legacy predicate as /account ObjectsData.
+        const rippleStateList = isGateway
+          ? []
+          : accountObjects.filter((node) => isRelevantRippleStateForAddress(node, data.address))
+
+        // Sort by token value in native currency (independent from websocket fiat updates)
+        const sortedTokens = rippleStateList.sort((a, b) => {
+          const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value || 0))
+          const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value || 0))
+
+          if (balanceA === 0 && balanceB === 0) return 0
+          if (balanceA === 0) return 1
+          if (balanceB === 0) return -1
+
+          const valueA = a.priceNativeCurrencySpot * balanceA || 0
+          const valueB = b.priceNativeCurrencySpot * balanceB || 0
+
+          return valueB - valueA
+        })
+
+        setTokens(sortedTokens)
+
         const nftIds = accountObjects
           .filter((node) => node.LedgerEntryType === 'NFTokenPage' && Array.isArray(node.NFTokens))
           .flatMap((page) =>
@@ -2000,10 +2083,37 @@ export default function Account({
           try {
             nftPreviewUrl = `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
 
+            let bidNftsList = []
+            if (!xahauNetwork) {
+              try {
+                const bidNftsResponse = await axios.get(
+                  `v2/${nftResource}?owner=${data.address}&list=bids&order=priceHigh&currency=${nativeCurrency.toLowerCase()}&offersValidate=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
+                )
+                bidNftsList = Array.isArray(bidNftsResponse?.data?.[nftResource])
+                  ? bidNftsResponse.data[nftResource]
+                      .filter(hasValidBuyOffer)
+                      .sort(
+                        (a, b) =>
+                          bestNftBuyOfferValue(b, {
+                            fiatRate: pageFiatRate,
+                            tokenList: sortedTokens
+                          }) -
+                          bestNftBuyOfferValue(a, {
+                            fiatRate: pageFiatRate,
+                            tokenList: sortedTokens
+                          })
+                      )
+                  : []
+              } catch {
+                bidNftsList = []
+              }
+            }
+
             const nftResponse = await axios.get(nftPreviewUrl)
             const ownedNftsList = Array.isArray(nftResponse?.data?.[nftResource]) ? nftResponse.data[nftResource] : []
+            const combinedOwnedNfts = uniqueNftsById([...bidNftsList, ...ownedNftsList])
 
-            setOwnedNfts(ownedNftsList.slice(0, NFT_FETCH_LIMIT))
+            setOwnedNfts(combinedOwnedNfts.slice(0, NFT_FETCH_LIMIT))
             setNftMarkers((prev) => ({ ...prev, owned: nftResponse?.data?.marker || null }))
           } catch {
             setOwnedNfts([])
@@ -2086,27 +2196,6 @@ export default function Account({
           setBurnedNftsLoading(false)
         }
 
-        // Filter RippleState objects (tokens) using the same legacy predicate as /account ObjectsData.
-        const rippleStateList = isGateway
-          ? []
-          : accountObjects.filter((node) => isRelevantRippleStateForAddress(node, data.address))
-
-        // Sort by token value in native currency (independent from websocket fiat updates)
-        const sortedTokens = rippleStateList.sort((a, b) => {
-          const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value || 0))
-          const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value || 0))
-
-          if (balanceA === 0 && balanceB === 0) return 0
-          if (balanceA === 0) return 1
-          if (balanceB === 0) return -1
-
-          const valueA = a.priceNativeCurrencySpot * balanceA || 0
-          const valueB = b.priceNativeCurrencySpot * balanceB || 0
-
-          return valueB - valueA
-        })
-
-        setTokens(sortedTokens)
       } catch (error) {
         setObjectsError(error?.message || 'Failed to load account objects')
         resetAccountObjectCollections()
@@ -5133,8 +5222,7 @@ export default function Account({
                     <>
                       <div className="cards-list">
                         {activeNftPreview.map((nft, nftIndex) => {
-                          const nftId =
-                            nft?.nftokenID || nft?.NFTokenID || nft?.nftoken?.nftokenID || nft?.nftoken?.NFTokenID
+                          const nftId = nftTokenIdFromData(nft)
                           if (!nftId) return null
 
                           const cardKey = `${nftTab}-${nftId}-${nftIndex}`
@@ -5242,6 +5330,37 @@ export default function Account({
                             nftTab === 'sold' && selectedCurrency
                               ? convertedAmount(nft, selectedCurrency.toLowerCase(), { short: true })
                               : null
+                          const validBuyOffers = Array.isArray(nft?.buyOffers)
+                            ? nft.buyOffers.filter((offer) => offer?.valid !== false)
+                            : null
+                          const bestBid =
+                            nftTab === 'owned' ? bestNftOffer(validBuyOffers, account?.address, 'buy') : null
+                          const bestBidAmount = bestBid?.amount
+                            ? amountFormat(bestBid.amount, { short: true, maxFractionDigits: 2 })
+                            : null
+                          const bestBidNativeFiat =
+                            bestBid?.amount && typeof bestBid.amount !== 'object' && selectedCurrency
+                              ? tokenToFiat({
+                                  amount: bestBid.amount,
+                                  selectedCurrency,
+                                  fiatRate: pageFiatRate,
+                                  asText: true,
+                                  absolute: true
+                                })
+                              : null
+                          const bestBidConvertedFiat =
+                            bestBid?.amount && typeof bestBid.amount === 'object' && selectedCurrency
+                              ? convertedAmount(bestBid, selectedCurrency.toLowerCase(), { short: true })
+                              : null
+                          const bestBidTokenFiat =
+                            bestBid?.amount && typeof bestBid.amount === 'object' && selectedCurrency
+                              ? nftOfferFiatText(bestBid, {
+                                  fiatRate: pageFiatRate,
+                                  selectedCurrency,
+                                  tokenList: tokens
+                                })
+                              : null
+                          const bestBidFiat = bestBidNativeFiat || bestBidConvertedFiat || bestBidTokenFiat
                           const actionTimeAgo = actionAt ? timeFromNow(actionAt, i18n) : null
                           const actionExact = actionAt ? fullDateAndTime(actionAt) : null
                           const actionVerb =
@@ -5310,6 +5429,15 @@ export default function Account({
                                         </div>
                                       )}
                                     </>
+                                  ) : bestBidAmount ? (
+                                    <>
+                                      <div className="asset-amount grey">{bestBidAmount}</div>
+                                      {bestBidFiat && (
+                                        <div className="asset-fiat" suppressHydrationWarning>
+                                          {bestBidNativeFiat ? bestBidFiat : `≈${bestBidFiat}`}
+                                        </div>
+                                      )}
+                                    </>
                                   ) : actionTimeAgo ? (
                                     <div className="asset-fiat">{actionTimeAgo}</div>
                                   ) : null}
@@ -5353,6 +5481,20 @@ export default function Account({
                                           <span className="fiat-line" suppressHydrationWarning>
                                             {' '}
                                             ≈{soldPriceFiat}
+                                          </span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {bestBidAmount && (
+                                    <div className="detail-row">
+                                      <span>Best buy offer:</span>
+                                      <span>
+                                        {bestBidAmount}
+                                        {bestBidFiat && (
+                                          <span className="fiat-line" suppressHydrationWarning>
+                                            {' '}
+                                            {bestBidNativeFiat ? bestBidFiat : `≈${bestBidFiat}`}
                                           </span>
                                         )}
                                       </span>
