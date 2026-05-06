@@ -7,15 +7,16 @@ import { getIsSsrMobile } from '../../utils/mobile'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
-import { avatarSrc, isAddressValid, isIdValid, isValidNftXls20, retinaImageSize, useWidth, xahauNetwork } from '../../utils'
+import { avatarSrc, isAddressValid, isIdValid, isValidNftXls20, useWidth, xahauNetwork } from '../../utils'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import { MdDelete } from 'react-icons/md'
-import { addressLink, amountFormat, tokenToFiat, nftIdLink, timeFromNow } from '../../utils/format'
+import { AddressWithIcon, addressLink, amountFormat, tokenToFiat, nftIdLink, timeFromNow } from '../../utils/format'
 import Link from 'next/link'
 import axios from 'axios'
 import { nftPriceData, nftThumbnail } from '../../utils/nft'
 import { LinkTx } from '../../utils/links'
+import Avatar from '../../components/UI/Avatar'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -283,25 +284,11 @@ export default function Watchlist({
                           <tr key={i}>
                             <td className="center">{i + 1}</td>
                             <td className="left">
-                              <table>
-                                <tbody>
-                                  <tr>
-                                    <td style={{ padding: 0 }}>
-                                      <img
-                                        alt="avatar"
-                                        src={avatarSrc(a.entity, { size: retinaImageSize(40), hashIconZoom: 12 })}
-                                        width="40"
-                                        height="40"
-                                      />
-                                    </td>
-                                    <td style={{ padding: '0 0 0 10px' }}>
-                                      <b className="orange">{a.name}</b>
-                                      <br />
-                                      {addressLink(a.entity, { short: true })}
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
+                              <AddressWithIcon address={a.entity}>
+                                <b className="orange">{a.name}</b>
+                                <br />
+                                {addressLink(a.entity, { short: true })}
+                              </AddressWithIcon>
                             </td>
                             <td className="right">
                               <b className="green">
@@ -334,12 +321,7 @@ export default function Watchlist({
                         {addresses.map((a, i) => (
                           <tr key={i}>
                             <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                              <img
-                                alt="avatar"
-                                src={avatarSrc(a.entity, { size: retinaImageSize(30), hashIconZoom: 12 })}
-                                width="30"
-                                height="30"
-                              />
+                              <Avatar src={avatarSrc(a.entity)} size={30} />
                               <br />
                               <br />
                               {i + 1}
