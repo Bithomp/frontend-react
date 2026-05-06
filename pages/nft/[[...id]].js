@@ -1291,7 +1291,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           )}
 
                           <div className={'slide ' + (showRawMetadata ? 'opened' : 'closed')}>
-                            {codeHighlight(data.metadata)}
+                            {showRawMetadata && codeHighlight(data.metadata)}
                           </div>
                           {data.collectionDetails && (
                             <table className="table-details">
