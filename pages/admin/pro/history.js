@@ -8,7 +8,7 @@ import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
-import { avatarSrc, nativeCurrency, retinaImageSize, useWidth, xahauNetwork } from '../../../utils'
+import { avatarSrc, nativeCurrency, useWidth, xahauNetwork } from '../../../utils'
 import {
   addressLink,
   amountFormat,
@@ -29,6 +29,7 @@ import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
 import { LinkTx } from '../../../utils/links'
 import RadioOptions from '../../../components/UI/RadioOptions'
+import Avatar from '../../../components/UI/Avatar'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -915,18 +916,12 @@ export default function History({
                             )
                           }}
                           outline
-                          checkmarkStyle={{ top: '10px' }}
                         >
                           <table>
                             <tbody>
                               <tr>
                                 <td style={{ padding: 0 }}>
-                                  <img
-                                    alt="avatar"
-                                    src={avatarSrc(address.address, { size: retinaImageSize(40), hashIconZoom: 12 })}
-                                    width="40"
-                                    height="40"
-                                  />
+                                  <Avatar src={avatarSrc(address.address)} size={40} />
                                 </td>
                                 <td style={{ padding: '0 0 0 5px' }}>
                                   <b className="orange">{address.name}</b> -{' '}
