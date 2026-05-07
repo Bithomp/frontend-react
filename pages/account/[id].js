@@ -108,6 +108,11 @@ const nftOfferFiatText = (offer, { fiatRate, selectedCurrency, tokenList } = {})
   return shortNiceNumber(fiatValue, 2, 1, selectedCurrency)
 }
 
+const isZeroAmountValue = (amount) => {
+  const value = typeof amount === 'object' && amount !== null ? Number(amount.value) : Number(amount)
+  return Number.isFinite(value) && value === 0
+}
+
 const bestNftBuyOfferValue = (nft, { tokenList } = {}) => {
   const validBuyOffers = Array.isArray(nft?.buyOffers) ? nft.buyOffers.filter((offer) => offer?.valid !== false) : null
   const bestBid = bestNftOffer(validBuyOffers, null, 'buy')
@@ -8736,11 +8741,13 @@ export default function Account({
                           const isCreatedNftOfferTab =
                             nftOffersTab === 'createdSelling' || nftOffersTab === 'createdBuying'
                           const isOwnedNftOfferTab = nftOffersTab === 'owned'
-                          const isFreePrivateNftOffer = nftOffersTab === 'received' && offer?.amount === '0'
-                          const offerAmountText = offer?.amount
-                            ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
-                            : null
-                          const isNativeOfferAmount = offer?.amount && typeof offer.amount !== 'object'
+                          const isFreeNftOffer = isZeroAmountValue(offer?.amount)
+                          const offerAmountText = isFreeNftOffer
+                            ? 'Free'
+                            : offer?.amount
+                              ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
+                              : null
+                          const isNativeOfferAmount = !isFreeNftOffer && offer?.amount && typeof offer.amount !== 'object'
                           const shouldShowCurrentNativeOfferFiat =
                             isNativeOfferAmount && (isOwnedNftOfferTab || isCreatedNftOfferTab)
                           const nativeOfferAmountFiat =
@@ -8846,13 +8853,13 @@ export default function Account({
                               ? { sign: '-', className: 'grey' }
                               : { sign: '+', className: 'grey' }
                           })()
-                          const collapsedAmountClass = isFreePrivateNftOffer
+                          const collapsedAmountClass = isFreeNftOffer
                             ? 'orange'
                             : offerAmountText
                               ? collapsedAmountDirection.className
                               : 'grey'
                           const collapsedAmountSign =
-                            isFreePrivateNftOffer || !offerAmountText ? '' : collapsedAmountDirection.sign
+                            isFreeNftOffer || !offerAmountText ? '' : collapsedAmountDirection.sign
 
                           return (
                             <div
@@ -8901,9 +8908,7 @@ export default function Account({
                                   )}
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${collapsedAmountClass}`}>
-                                      {isFreePrivateNftOffer
-                                        ? 'Free'
-                                        : `${collapsedAmountSign}${offerAmountText || '-'}`}
+                                      {isFreeNftOffer ? 'Free' : `${collapsedAmountSign}${offerAmountText || '-'}`}
                                     </span>
                                     {shouldShowCurrentNativeOfferFiat && nativeOfferAmountFiat && (
                                       <span className="tx-change-fiat">{nativeOfferAmountFiat}</span>
@@ -8948,8 +8953,8 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>Amount:</span>
                                       <span>
-                                        {offerAmountText}
-                                        {offerAmountFiat && (
+                                        <span className={isFreeNftOffer ? 'orange' : undefined}>{offerAmountText}</span>
+                                        {!isFreeNftOffer && offerAmountFiat && (
                                           <span className="fiat-line" suppressHydrationWarning>
                                             {' '}
                                             {nativeOfferAmountFiat ? offerAmountFiat : `≈${offerAmountFiat}`}
