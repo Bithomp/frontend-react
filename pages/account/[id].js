@@ -113,6 +113,21 @@ const isZeroAmountValue = (amount) => {
   return Number.isFinite(value) && value === 0
 }
 
+const checkNativeValue = (check) => {
+  if (!check?.SendMax) return 0
+
+  if (typeof check.SendMax !== 'object') {
+    const drops = Number(check.SendMax)
+    return Number.isFinite(drops) ? drops / 1000000 : 0
+  }
+
+  const amount = Number(check.SendMax.value)
+  const priceNativeCurrencySpot = Number(check.priceNativeCurrencySpot)
+  if (!Number.isFinite(amount) || !Number.isFinite(priceNativeCurrencySpot)) return 0
+
+  return Math.abs(amount * priceNativeCurrencySpot)
+}
+
 const bestNftBuyOfferValue = (nft, { tokenList } = {}) => {
   const validBuyOffers = Array.isArray(nft?.buyOffers) ? nft.buyOffers.filter((offer) => offer?.valid !== false) : null
   const bestBid = bestNftOffer(validBuyOffers, null, 'buy')
@@ -121,6 +136,9 @@ const bestNftBuyOfferValue = (nft, { tokenList } = {}) => {
 
 const sumNftBuyOfferNativeValues = (nfts, { tokenList } = {}) =>
   nfts.reduce((sum, nft) => sum + bestNftBuyOfferValue(nft, { tokenList }), 0)
+
+const countValuedNfts = (nfts, { tokenList } = {}) =>
+  nfts.reduce((count, nft) => count + (bestNftBuyOfferValue(nft, { tokenList }) > 0 ? 1 : 0), 0)
 
 const tomlCheckerHref = (domain) => ({
   pathname: '/services/toml-checker',
@@ -693,10 +711,12 @@ export default function Account({
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [nftsNativeValue, setNftsNativeValue] = useState(0)
+  const [nftsWorthCount, setNftsWorthCount] = useState(0)
 
   const resetAccountObjectCollections = () => {
     setTokens([])
     setNftsNativeValue(0)
+    setNftsWorthCount(0)
     setOwnedNfts([])
     setSoldNfts([])
     setSoldNftsTotalCount(null)
@@ -1098,14 +1118,20 @@ export default function Account({
     return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
   }, 0)
   const nftsFiatValue = nftsNativeValue * (tokenFiatRate || pageFiatRate || 0)
+  const receivedChecksNativeValue = receivedChecks.reduce((sum, check) => sum + checkNativeValue(check), 0)
+  const receivedChecksFiatValue = receivedChecksNativeValue * (tokenFiatRate || pageFiatRate || 0)
   const hasNftWorthLine = !xahauNetwork && (nftsNativeValue > 0 || ownedNftIds.length > 0 || ownedNfts.length > 0)
-  const hasAdditionalWorthAssets = hasNonNativeTokenAssets || hasNftWorthLine
-  const totalWorthFiatValue = nativeAvailableFiatValue + lpTokensFiatValue + issuedTokensFiatValue + nftsFiatValue
+  const nftsWorthLabel = nftsWorthCount > 0 ? `NFTs (${nftsWorthCount})` : 'NFTs'
+  const hasReceivedChecksWorthLine = receivedChecks.length > 0
+  const hasAdditionalWorthAssets = hasNonNativeTokenAssets || hasNftWorthLine || hasReceivedChecksWorthLine
+  const totalWorthFiatValue =
+    nativeAvailableFiatValue + lpTokensFiatValue + issuedTokensFiatValue + nftsFiatValue + receivedChecksFiatValue
   const totalWorthBreakdown = [
     { label: nativeCurrency, value: nativeAvailableFiatValue },
     ...(lpTokensCount > 0 ? [{ label: `LP tokens (${lpTokensCount})`, value: lpTokensFiatValue }] : []),
     ...(issuedTokensCount > 0 ? [{ label: `Tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : []),
-    ...(hasNftWorthLine ? [{ label: 'NFTs', value: nftsFiatValue }] : [])
+    ...(hasNftWorthLine ? [{ label: nftsWorthLabel, value: nftsFiatValue }] : []),
+    ...(hasReceivedChecksWorthLine ? [{ label: `Received checks (${receivedChecks.length})`, value: receivedChecksFiatValue }] : [])
   ].sort((a, b) => b.value - a.value)
   const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
   const activeTokenList = tokenTab === 'lp' ? lpTokenList : tokenTab === 'tokens' ? standardTokenList : tokens
@@ -2012,16 +2038,13 @@ export default function Account({
 
         let accountObjectWithChecks = accountObjects.filter((node) => node.LedgerEntryType === 'Check') || []
         accountObjectWithChecks = accountObjectWithChecks.sort((a, b) => {
-          const issuerCompare = (a.SendMax?.issuer || '') === (b.SendMax?.issuer || '') ? 0 : a.SendMax?.issuer ? 1 : -1
-          if (issuerCompare !== 0) return issuerCompare
+          const valueCompare = checkNativeValue(b) - checkNativeValue(a)
+          if (valueCompare !== 0) return valueCompare
 
           const destinationCompare = (a.Destination || '').localeCompare(b.Destination || '')
           if (destinationCompare !== 0) return destinationCompare
 
-          const valueA = Number(a.SendMax?.value || a.SendMax) || 0
-          const valueB = Number(b.SendMax?.value || b.SendMax) || 0
-
-          return valueB - valueA
+          return (a.index || '').localeCompare(b.index || '')
         })
 
         setReceivedChecks(accountObjectWithChecks.filter((node) => node.Destination === data.address))
@@ -2130,12 +2153,15 @@ export default function Account({
                     })
                 )
                 setNftsNativeValue(sumNftBuyOfferNativeValues(bidNftsList, { tokenList: sortedTokens }))
+                setNftsWorthCount(countValuedNfts(bidNftsList, { tokenList: sortedTokens }))
               } catch {
                 bidNftsList = []
                 setNftsNativeValue(0)
+                setNftsWorthCount(0)
               }
             } else {
               setNftsNativeValue(0)
+              setNftsWorthCount(0)
             }
 
             const nftResponse = await axios.get(nftPreviewUrl)
@@ -8108,6 +8134,19 @@ export default function Account({
                           ? sendMaxRawValue
                           : (Number(sendMaxRawValue) || 0) / 1000000
                         const sendMaxAmountOnly = fullNiceNumber(sendMaxDisplayValue)
+                        const sendMaxAmountForFiat = isSendMaxTokenObject
+                          ? { ...check.SendMax, priceNativeCurrencySpot: check.priceNativeCurrencySpot }
+                          : check.SendMax
+                        const hasSendMaxSpotPrice =
+                          isSendMaxTokenObject && Object.prototype.hasOwnProperty.call(check, 'priceNativeCurrencySpot')
+                        const sendMaxSpotPrice = hasSendMaxSpotPrice ? Number(check.priceNativeCurrencySpot) || 0 : null
+                        const sendMaxFiatText = tokenToFiat({
+                          amount: sendMaxAmountForFiat,
+                          selectedCurrency,
+                          fiatRate: tokenFiatRate,
+                          asText: true,
+                          absolute: true
+                        })
                         const isReceivedCheck = activeChecksTab === 'received'
                         const collapsedSendMaxText = isReceivedCheck
                           ? `+${shortNiceNumber(sendMaxDisplayValue)}`
@@ -8164,14 +8203,51 @@ export default function Account({
                               </div>
                               <div className="asset-value">
                                 <div className={`asset-amount ${isReceivedCheck ? 'grey' : ''}`}>{collapsedSendMaxText}</div>
+                                {sendMaxFiatText && (
+                                  <div className="asset-fiat" suppressHydrationWarning>
+                                    {sendMaxFiatText}
+                                  </div>
+                                )}
                               </div>
                             </div>
 
                             {isExpanded && (
                               <div className="asset-details">
+                                {hasSendMaxSpotPrice && (
+                                  <>
+                                    <div className="detail-row">
+                                      <span>Rate ({nativeCurrency}):</span>
+                                      <span>
+                                        1 {niceCurrency(check.SendMax?.currency)} ={' '}
+                                        {shortNiceNumber(sendMaxSpotPrice, 6, 6)} {nativeCurrency}
+                                      </span>
+                                    </div>
+                                    {tokenFiatRate && selectedCurrency ? (
+                                      <div className="detail-row">
+                                        <span>Rate ({selectedCurrency?.toUpperCase()}):</span>
+                                        <span>
+                                          1 {niceCurrency(check.SendMax?.currency)} ={' '}
+                                          <span className="tooltip no-brake" suppressHydrationWarning>
+                                            {shortNiceNumber(sendMaxSpotPrice * tokenFiatRate, 2, 1, selectedCurrency)}
+                                            <span className="tooltiptext no-brake" suppressHydrationWarning>
+                                              {niceNumber(sendMaxSpotPrice * tokenFiatRate, null, selectedCurrency, 8)}
+                                            </span>
+                                          </span>
+                                        </span>
+                                      </div>
+                                    ) : null}
+                                  </>
+                                )}
                                 <div className="detail-row">
                                   <span>Amount:</span>
-                                  <span>{sendMaxAmountOnly}</span>
+                                  <span className="amount-with-fiat">
+                                    <span className="no-brake">{sendMaxAmountOnly}</span>
+                                    {sendMaxFiatText && (
+                                      <span className="fiat-line" suppressHydrationWarning>
+                                        {sendMaxFiatText}
+                                      </span>
+                                    )}
+                                  </span>
                                 </div>
                                 <div className="detail-row">
                                   <span>Sent:</span>
