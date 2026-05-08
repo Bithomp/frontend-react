@@ -47,7 +47,7 @@ export const NOTIFICATION_CHANNELS = {
         label: 'Email address',
         type: 'email',
         placeholder: 'name@example.com',
-        helpText: 'Address that should receive notifications.',
+        helpText: 'Address that should receive alerts.',
         required: true,
         validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Enter a valid email address.'
       }

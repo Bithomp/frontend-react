@@ -1,6 +1,14 @@
+import { Fragment } from 'react'
 import { MdDelete, MdEdit, MdHistory } from 'react-icons/md'
 
 import Card from '@/components/UI/Card'
+import { LinkAccount } from '@/utils/links'
+import { isAddressValid } from '@/utils'
+import {
+  getNotificationEventLabel,
+  getNotificationFiatCurrencyLabel,
+  notificationEventSupports
+} from '@/utils/notificationRules'
 
 const operatorMap = {
   $eq: 'is',
@@ -10,43 +18,98 @@ const operatorMap = {
   $lt: '<',
   $lte: '<=',
   $in: 'in',
-  $nin: 'not in'
+  $nin: 'not in',
+  $exists: 'exists'
+}
+
+const addressConditionFields = new Set(['account', 'address', 'currency_issuer', 'destination', 'issuer'])
+
+const fieldLabelMap = {
+  price_usd: 'price USD',
+  tx_type: 'transaction type'
+}
+
+const fieldLabel = (field) => fieldLabelMap[field] || field.replace(/[._]/g, ' ')
+
+function renderConditionValue(field, value) {
+  if (value === null) return 'none'
+
+  if (Array.isArray(value)) {
+    return `[${value.join(', ')}]`
+  }
+
+  if (typeof value === 'boolean') {
+    return value ? 'yes' : 'no'
+  }
+
+  if (addressConditionFields.has(field) && typeof value === 'string' && isAddressValid(value)) {
+    return <LinkAccount address={value} short={8} />
+  }
+
+  return String(value)
+}
+
+function joinConditionNodes(nodes, separator) {
+  return nodes.map((node, index) => (
+    <Fragment key={index}>
+      {index > 0 && <span className="notification-rule-separator"> {separator} </span>}
+      {node}
+    </Fragment>
+  ))
 }
 
 function formatCondition(field, opObj) {
-  if (typeof opObj !== 'object' || opObj === null) return ''
-  return Object.entries(opObj)
-    .map(([op, value]) => {
-      const opStr = operatorMap[op] || op
-      const valStr = Array.isArray(value) ? `[${value.join(', ')}]` : String(value)
-      return `${field} ${opStr} ${valStr}`
-    })
-    .join(' and ')
+  if (typeof opObj !== 'object' || opObj === null) return null
+  const nodes = Object.entries(opObj).map(([op, value]) => (
+    <span className="notification-rule-filter-chip" key={`${field}-${op}`}>
+      <span>{fieldLabel(field)}</span>
+      <em>{operatorMap[op] || op}</em>
+      <strong>{renderConditionValue(field, value)}</strong>
+    </span>
+  ))
+
+  return joinConditionNodes(nodes, 'and')
 }
 
 function parseConditions(conditions) {
-  if (!conditions || typeof conditions !== 'object') return ''
+  if (!conditions || typeof conditions !== 'object') return null
   const parts = []
 
   for (const [key, value] of Object.entries(conditions)) {
     if (key === '$or' && Array.isArray(value)) {
       const orParts = value.map((sub) => parseConditions(sub)).filter(Boolean)
       if (orParts.length) {
-        parts.push(`(${orParts.join(' OR ')})`)
+        parts.push(
+          <span className="notification-rule-filter-group" key={key}>
+            ({joinConditionNodes(orParts, 'OR')})
+          </span>
+        )
       }
     } else if (typeof value === 'object' && value !== null) {
-      parts.push(formatCondition(key, value))
+      const condition = formatCondition(key, value)
+      if (condition) {
+        parts.push(<Fragment key={key}>{condition}</Fragment>)
+      }
     }
   }
 
-  return parts.filter(Boolean).join(' AND ')
+  return parts.length ? joinConditionNodes(parts, 'AND') : null
 }
 
 export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit, onExecutions, rule }) {
+  const eventLabel = getNotificationEventLabel(rule.event)
+  const settings = rule.settings || {}
+  const conditionText = parseConditions(settings.rules)
+
   return (
-    <Card className="notification-card">
+    <Card className="notification-card notification-rule-card">
       <div className="notification-card-header">
-        <div className="notification-rule-title">{rule.name || `Rule #${rule.id}`}</div>
+        <div>
+          <div className="notification-rule-title">{rule.name || `Rule #${rule.id}`}</div>
+          <div className={`notification-rule-status ${rule.enabled === false ? 'paused' : 'enabled'}`}>
+            {rule.enabled === false ? 'Paused' : 'Enabled'}
+          </div>
+        </div>
         <div className="notification-card-actions">
           {onExecutions && (
             <button
@@ -79,14 +142,31 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
       </div>
       <div className="notification-rule-meta">
         <span>
-          Event: <strong>{rule.event || 'N/A'}</strong>
+          <small>Event</small>
+          <strong>{eventLabel}</strong>
         </span>
         <span>
-          Send to: <strong>{rule.channel?.name || rule.channel?.type || 'Unknown'}</strong>
+          <small>Channel</small>
+          <strong>{rule.channel?.name || rule.channel?.type || 'Unknown'}</strong>
+        </span>
+        <span>
+          <small>Fiat</small>
+          <strong>{getNotificationFiatCurrencyLabel(settings.fiatCurrency || 'usd')}</strong>
         </span>
       </div>
+      <div className="notification-rule-options">
+        {notificationEventSupports(rule.event, 'externalUrl') && (
+          <span className={settings.externalUrl === false ? 'muted' : ''}>
+            External links {settings.externalUrl === false ? 'off' : 'on'}
+          </span>
+        )}
+        {notificationEventSupports(rule.event, 'xrpCafeURL') && (
+          <span className={settings.xrpCafeURL ? '' : 'muted'}>XRP Cafe {settings.xrpCafeURL ? 'on' : 'off'}</span>
+        )}
+      </div>
       <div className="notification-rule-condition">
-        If: <strong>{parseConditions(rule.settings?.rules) || 'N/A'}</strong>
+        <span>Filters</span>
+        <strong>{conditionText || 'Every matching event'}</strong>
       </div>
     </Card>
   )

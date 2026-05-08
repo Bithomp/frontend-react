@@ -1,10 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useMemo, useState } from 'react'
+import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
 import Select from 'react-select'
 import { FaDiscord, FaEnvelope, FaSlack } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
-import { MdNotificationsActive, MdOutlineRule, MdWarningAmber, MdWebhook } from 'react-icons/md'
+import { MdHistory, MdNotificationsActive, MdOutlineRule, MdWarningAmber, MdWebhook } from 'react-icons/md'
 
 import AddChannelButton from '@/components/Admin/notifications/AddChannelButton'
 import InputField from '@/components/Admin/notifications/InputField'
@@ -13,6 +14,9 @@ import RuleCard from '@/components/Admin/notifications/RuleCard'
 import AdminTabs from '@/components/Tabs/AdminTabs'
 import Dialog from '@/components/UI/Dialog'
 import CountrySelect from '@/components/UI/CountrySelect'
+import AddressInput from '@/components/UI/AddressInput'
+import TokenSelector from '@/components/UI/TokenSelector'
+import { axiosAdmin } from '@/utils/axios'
 import { adminNotifications } from '@/styles/pages/adminNotifications.module.scss'
 import {
   useCreateNotificationChannel,
@@ -26,6 +30,21 @@ import {
   useUpdateNotificationRule
 } from '@/hooks/useNotifications'
 import { getNotificationChannelLabel, NOTIFICATION_CHANNELS, NOTIFICATION_CHANNEL_TYPES } from '@/utils/notificationChannels'
+import { explorerName, isAddressValid, nativeCurrency, timestampExpired, xahauNetwork } from '@/utils'
+import {
+  getNotificationFilterFields,
+  getNotificationEventDescription,
+  getNotificationEventOptions,
+  NOTIFICATION_ACTION_TYPES,
+  NOTIFICATION_EVENT_TYPES,
+  NOTIFICATION_FIAT_CURRENCY_OPTIONS,
+  NOTIFICATION_NUMBER_OPERATOR_OPTIONS,
+  NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS,
+  NOTIFICATION_TX_TYPE_OPTIONS,
+  normalizeNotificationEvent,
+  notificationEventSupports
+} from '@/utils/notificationRules'
+import { DEFAULT_ALERT_PLAN_TIER, getAlertPlan, getAlertPlanTier } from '@/utils/notificationPlans'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -40,19 +59,44 @@ const initialChannelForm = {
   name: ''
 }
 
+const defaultRuleName = (index = 1) => `Rule ${index}`
+const defaultRuleEvent = xahauNetwork ? NOTIFICATION_EVENT_TYPES.URITOKEN_SELL : NOTIFICATION_EVENT_TYPES.NFTOKEN_SALE
+
 const initialRuleForm = {
   connectionId: '',
-  event: '',
-  name: '',
-  settings: '{\n  "rules": {}\n}'
+  enabled: true,
+  event: defaultRuleEvent,
+  externalUrl: true,
+  filters: {},
+  fiatCurrency: 'usd',
+  name: defaultRuleName(),
+  xrpCafeURL: false
 }
+
+const booleanFilterOptions = [
+  { value: 'any', label: 'Any' },
+  { value: 'true', label: 'Yes' },
+  { value: 'false', label: 'No' }
+]
+
+const destinationFilterOptions = [
+  { value: 'any', label: 'Any destination' },
+  { value: 'specific', label: 'Specific address' },
+  { value: 'none', label: 'No destination' }
+]
+
+const brokerDestinationFilterOptions = [
+  ...destinationFilterOptions,
+  { value: 'knownBroker', label: 'Known broker' },
+  { value: 'noneOrKnownBroker', label: 'No destination or known broker' }
+]
 
 const setupGuides = [
   {
     type: NOTIFICATION_CHANNEL_TYPES.EMAIL,
     icon: FaEnvelope,
     title: 'Email',
-    description: 'Use the mailbox that should receive blockchain alerts. No webhook setup is required.',
+    description: `Use the mailbox that should receive ${explorerName} alerts. No webhook setup is required.`,
     steps: []
   },
   {
@@ -79,7 +123,11 @@ const setupGuides = [
 ]
 
 const apiErrorMessages = {
-  'errors.connection.settings_required': 'Enter the required channel settings.'
+  'errors.connection.settings_required': 'Enter the required channel settings.',
+  'errors.listener.action_required': 'Choose what this rule should do.',
+  'errors.listener.event_invalid': 'Choose a supported event type.',
+  'errors.listener.event_required': 'Choose an event type.',
+  'errors.listener.name_required': 'Enter a rule name.'
 }
 
 const errorText = (error, fallback) => {
@@ -87,7 +135,196 @@ const errorText = (error, fallback) => {
   return apiErrorMessages[code] || code || error?.message || fallback
 }
 
-const listenerConnectionId = (listener) => listener?.channel?.id || ''
+const listenerConnectionId = (listener) => listener?.channel?.id || listener?.partnerConnectionID || ''
+
+const isFilled = (value) => value !== undefined && value !== null && String(value).trim() !== ''
+
+const filterValue = (filters, key) => filters?.[key] || {}
+
+const filterLabel = (field) => field.label.replace('{nativeCurrency}', nativeCurrency)
+
+const ruleKey = (key, fiatCurrency = 'usd') => key.replace('{fiatCurrency}', fiatCurrency || 'usd')
+
+const activePackage = (packages, type) =>
+  packages.find((item) => item.type === type && !(item.expiredAt && timestampExpired(item.expiredAt))) || null
+
+const alertPlanLimitText = (plan) =>
+  `${plan.label} allows ${plan.connections} channel${plan.connections === 1 ? '' : 's'} and ${plan.listeners} rule${
+    plan.listeners === 1 ? '' : 's'
+  }.`
+
+const firstRuleOperator = (rule) =>
+  NOTIFICATION_NUMBER_OPERATOR_OPTIONS.find((option) => Object.prototype.hasOwnProperty.call(rule || {}, option.value))?.value
+
+const parseRuleFilters = (event, rules = {}, fiatCurrency = 'usd') => {
+  const filters = {}
+  const fields = getNotificationFilterFields(event)
+
+  fields.forEach((field) => {
+    const key = ruleKey(field.ruleKey || field.key, fiatCurrency)
+    const rule = rules[key]
+
+    if (field.type === 'proAddress') {
+      if (rule && Object.prototype.hasOwnProperty.call(rule, '$eq') && rule.$eq !== null) {
+        filters[field.key] = { value: String(rule.$eq) }
+      }
+      return
+    }
+
+    if (field.type === 'address' || field.type === 'text') {
+      if (rule && Object.prototype.hasOwnProperty.call(rule, '$eq') && rule.$eq !== null) {
+        filters[field.key] = { value: String(rule.$eq) }
+      }
+      return
+    }
+
+    if (field.type === 'number') {
+      const operator = firstRuleOperator(rule)
+      if (operator) {
+        filters[field.key] = { operator, value: String(rule[operator]) }
+      }
+      return
+    }
+
+    if (field.type === 'txType') {
+      if (rule?.$eq) {
+        filters[field.key] = { operator: '$eq', value: String(rule.$eq) }
+      } else if (Array.isArray(rule?.$in)) {
+        filters[field.key] = { operator: '$in', values: rule.$in }
+      } else if (Array.isArray(rule?.$nin)) {
+        filters[field.key] = { operator: '$nin', values: rule.$nin }
+      }
+      return
+    }
+
+    if (field.type === 'token') {
+      const currencyKey = field.currencyKey || 'currency'
+      const issuerKey = field.issuerKey || 'currency_issuer'
+      if (rules[currencyKey]?.$eq) {
+        filters[field.key] = {
+          value: {
+            currency: String(rules[currencyKey].$eq),
+            issuer: rules[issuerKey]?.$eq || undefined
+          }
+        }
+      }
+      return
+    }
+
+    if (field.type === 'boolean') {
+      if (rule && typeof rule.$eq === 'boolean') {
+        filters[field.key] = { value: String(rule.$eq) }
+      }
+      return
+    }
+
+    if (field.type === 'destination') {
+      if (rule?.$eq === null) {
+        filters.destination = { mode: 'none' }
+      } else if (isFilled(rule?.$eq)) {
+        filters.destination = { mode: 'specific', value: String(rule.$eq) }
+      } else if (rules.known_broker?.$eq === true) {
+        filters.destination = { mode: 'knownBroker' }
+      } else if (
+        Array.isArray(rules.$or) &&
+        rules.$or.some((item) => item?.destination?.$eq === null) &&
+        rules.$or.some((item) => item?.known_broker?.$eq === true)
+      ) {
+        filters.destination = { mode: 'noneOrKnownBroker' }
+      }
+    }
+  })
+
+  return filters
+}
+
+const buildRuleSettings = (formData) => {
+  const rules = {}
+  const filters = formData.filters || {}
+  const fields = getNotificationFilterFields(formData.event)
+
+  fields.forEach((field) => {
+    const filter = filterValue(filters, field.key)
+    const key = ruleKey(field.ruleKey || field.key, formData.fiatCurrency)
+
+    if (field.type === 'proAddress') {
+      if (isFilled(filter.value)) {
+        rules[key] = { $eq: String(filter.value).trim() }
+      }
+      return
+    }
+
+    if (field.type === 'address' || field.type === 'text') {
+      if (isFilled(filter.value)) {
+        rules[key] = { $eq: String(filter.value).trim() }
+      }
+      return
+    }
+
+    if (field.type === 'txType') {
+      if ((filter.operator || '$eq') === '$eq' && isFilled(filter.value)) {
+        rules[key] = { $eq: filter.value }
+      } else if ((filter.operator === '$in' || filter.operator === '$nin') && filter.values?.length > 0) {
+        rules[key] = { [filter.operator]: filter.values }
+      }
+      return
+    }
+
+    if (field.type === 'number') {
+      if (isFilled(filter.value)) {
+        rules[key] = { [field.exactOnly ? '$eq' : filter.operator || '$gte']: Number(filter.value) }
+      }
+      return
+    }
+
+    if (field.type === 'token') {
+      if (filter.value?.currency) {
+        const currencyKey = field.currencyKey || 'currency'
+        const issuerKey = field.issuerKey || 'currency_issuer'
+        rules[currencyKey] = { $eq: filter.value.currency }
+        if (filter.value.issuer) {
+          rules[issuerKey] = { $eq: filter.value.issuer }
+        }
+      }
+      return
+    }
+
+    if (field.type === 'boolean') {
+      if (filter.value === 'true' || filter.value === 'false') {
+        rules[key] = { $eq: filter.value === 'true' }
+      }
+      return
+    }
+
+    if (field.type === 'destination') {
+      const mode = filter.mode || 'any'
+      if (mode === 'specific' && isFilled(filter.value)) {
+        rules.destination = { $eq: String(filter.value).trim() }
+      } else if (mode === 'none') {
+        rules.destination = { $eq: null }
+      } else if (mode === 'knownBroker') {
+        rules.known_broker = { $eq: true }
+      } else if (mode === 'noneOrKnownBroker') {
+        rules.$or = [{ destination: { $eq: null } }, { known_broker: { $eq: true } }]
+      }
+    }
+  })
+
+  const settings = {
+    rules,
+    fiatCurrency: formData.fiatCurrency || 'usd'
+  }
+
+  if (notificationEventSupports(formData.event, 'externalUrl')) {
+    settings.externalUrl = !!formData.externalUrl
+  }
+
+  if (notificationEventSupports(formData.event, 'xrpCafeURL')) {
+    settings.xrpCafeURL = !!formData.xrpCafeURL
+  }
+
+  return settings
+}
 
 export default function Notifications({ sessionToken, openEmailLogin }) {
   const { t } = useTranslation('admin')
@@ -117,6 +354,10 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const [partnerCountry, setPartnerCountry] = useState('')
   const [partnerName, setPartnerName] = useState('')
   const [profileMessage, setProfileMessage] = useState('')
+  const [proAddresses, setProAddresses] = useState([])
+  const [notificationPackages, setNotificationPackages] = useState([])
+  const [loadingNotificationPrerequisites, setLoadingNotificationPrerequisites] = useState(false)
+  const [notificationPrerequisitesLoaded, setNotificationPrerequisitesLoaded] = useState(false)
 
   const selectedChannel = useMemo(() => NOTIFICATION_CHANNELS[channelType], [channelType])
   const selectedGuide = useMemo(() => setupGuides.find((guide) => guide.type === channelType), [channelType])
@@ -132,19 +373,69 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     () => ruleChannelOptions.find((option) => String(option.value) === String(ruleFormData.connectionId)) || null,
     [ruleChannelOptions, ruleFormData.connectionId]
   )
+  const notificationEventOptions = useMemo(() => getNotificationEventOptions({ xahau: xahauNetwork }), [])
+  const selectedFiatCurrencyOption = useMemo(
+    () => NOTIFICATION_FIAT_CURRENCY_OPTIONS.find((option) => option.value === ruleFormData.fiatCurrency) || null,
+    [ruleFormData.fiatCurrency]
+  )
   const savingChannel = createChannel.isLoading || updateChannel.isLoading
   const savingRule = createRule.isLoading || updateRule.isLoading
   const notificationErrorCode = error?.response?.data?.error
   const partnerMissing = notificationErrorCode === 'errors.partner.not_found'
   const tokenRequired = notificationErrorCode === 'errors.token.required'
   const notificationDataUnavailable = !!error
+  const activeProPackage = activePackage(notificationPackages, 'bithomp_pro')
+  const activeBotPackage = activePackage(notificationPackages, 'bot')
+  const alertPlanTier = getAlertPlanTier(activeBotPackage?.tier || DEFAULT_ALERT_PLAN_TIER)
+  const alertPlan = getAlertPlan(alertPlanTier)
+  const hasActiveProSubscription = !!activeProPackage
+  const balanceHistoryAddressOptions = useMemo(
+    () =>
+      proAddresses
+        .filter((item) => item?.address && item?.crawler && item.crawler.status !== 'paused')
+        .map((item) => ({
+          value: item.address,
+          label: item.name ? `${item.name} - ${item.address}` : item.address,
+          status: item.crawler?.status
+        })),
+    [proAddresses]
+  )
+
+  useEffect(() => {
+    if (!sessionToken) return
+
+    const loadNotificationPrerequisites = async () => {
+      setLoadingNotificationPrerequisites(true)
+      try {
+        const [addressesResponse, packagesResponse] = await Promise.allSettled([
+          axiosAdmin.get('user/addresses'),
+          axiosAdmin.get('partner/packages')
+        ])
+
+        if (addressesResponse.status === 'fulfilled') {
+          setProAddresses(Array.isArray(addressesResponse.value?.data?.addresses) ? addressesResponse.value.data.addresses : [])
+        }
+
+        if (packagesResponse.status === 'fulfilled') {
+          setNotificationPackages(
+            Array.isArray(packagesResponse.value?.data?.packages) ? packagesResponse.value.data.packages : []
+          )
+        }
+      } finally {
+        setNotificationPrerequisitesLoaded(true)
+        setLoadingNotificationPrerequisites(false)
+      }
+    }
+
+    loadNotificationPrerequisites()
+  }, [sessionToken])
 
   const openAddChannel = (type = NOTIFICATION_CHANNEL_TYPES.EMAIL) => {
     setEditingChannel(null)
     setChannelType(type)
     setFormData(initialChannelForm)
     setFormErrors({})
-    setFormMessage('')
+    setFormMessage(channels.length >= alertPlan.connections ? `Channel limit reached. ${alertPlanLimitText(alertPlan)}` : '')
     setShowChannelForm(true)
   }
 
@@ -174,20 +465,28 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     setEditingRule(null)
     setRuleFormData({
       ...initialRuleForm,
-      connectionId: channels[0]?.id || ''
+      connectionId: channels[0]?.id || '',
+      event: notificationEventOptions[0]?.value || defaultRuleEvent,
+      name: defaultRuleName(rules.length + 1)
     })
     setRuleFormErrors({})
-    setRuleFormMessage('')
+    setRuleFormMessage(rules.length >= alertPlan.listeners ? `Rule limit reached. ${alertPlanLimitText(alertPlan)}` : '')
     setShowRuleForm(true)
   }
 
   const openEditRule = (rule) => {
+    const ruleSettings = rule.settings || {}
+    const event = normalizeNotificationEvent(rule.event) || NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE
     setEditingRule(rule)
     setRuleFormData({
       connectionId: listenerConnectionId(rule),
-      event: rule.event || '',
+      enabled: rule.enabled !== false,
+      event,
+      externalUrl: ruleSettings.externalUrl !== false,
+      filters: parseRuleFilters(event, ruleSettings.rules, ruleSettings.fiatCurrency || 'usd'),
+      fiatCurrency: ruleSettings.fiatCurrency || 'usd',
       name: rule.name || '',
-      settings: JSON.stringify(rule.settings || { rules: {} }, null, 2)
+      xrpCafeURL: !!ruleSettings.xrpCafeURL
     })
     setRuleFormErrors({})
     setRuleFormMessage('')
@@ -209,8 +508,29 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   }
 
   const handleRuleInputChange = (event) => {
-    const { name, value } = event.target
-    setRuleFormData((prev) => ({ ...prev, [name]: value }))
+    const { name, type, value, checked } = event.target
+    setRuleFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+    setRuleFormErrors((prev) => ({ ...prev, [name]: '' }))
+    setRuleFormMessage('')
+  }
+
+  const handleRuleFilterChange = (key, nextFilter) => {
+    setRuleFormData((prev) => ({
+      ...prev,
+      filters: {
+        ...prev.filters,
+        [key]: {
+          ...prev.filters?.[key],
+          ...nextFilter
+        }
+      }
+    }))
+    setRuleFormErrors((prev) => ({ ...prev, [key]: '' }))
+    setRuleFormMessage('')
+  }
+
+  const handleRuleToggle = (name) => {
+    setRuleFormData((prev) => ({ ...prev, [name]: !prev[name] }))
     setRuleFormErrors((prev) => ({ ...prev, [name]: '' }))
     setRuleFormMessage('')
   }
@@ -224,6 +544,10 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
   const validateChannelForm = () => {
     const errors = {}
+    let message = ''
+    if (!editingChannel && channels.length >= alertPlan.connections) {
+      message = `Channel limit reached. ${alertPlanLimitText(alertPlan)}`
+    }
     if (!formData.name?.trim()) {
       errors.name = 'Enter a channel name.'
     }
@@ -241,28 +565,66 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     })
 
     setFormErrors(errors)
-    return Object.keys(errors).length === 0
+    setFormMessage(message)
+    return Object.keys(errors).length === 0 && !message
   }
 
   const validateRuleForm = () => {
     const errors = {}
+    let message = ''
+    if (!editingRule && rules.length >= alertPlan.listeners) {
+      message = `Rule limit reached. ${alertPlanLimitText(alertPlan)}`
+    }
     if (!ruleFormData.connectionId) {
       errors.connectionId = 'Choose a channel.'
     }
     if (!ruleFormData.name?.trim()) {
       errors.name = 'Enter a rule name.'
     }
-    if (!ruleFormData.event?.trim()) {
-      errors.event = 'Enter an event.'
-    }
-    try {
-      JSON.parse(ruleFormData.settings || '{}')
-    } catch {
-      errors.settings = 'Settings must be valid JSON.'
+    if (!notificationEventOptions.some((option) => option.value === ruleFormData.event)) {
+      errors.event = 'Choose a supported event.'
     }
 
+    getNotificationFilterFields(ruleFormData.event).forEach((field) => {
+      const filter = filterValue(ruleFormData.filters, field.key)
+      if (field.required && !isFilled(filter.value)) {
+        errors[field.key] = `Choose ${filterLabel(field).toLowerCase()}.`
+      }
+      if (field.type === 'proAddress') {
+        if (!hasActiveProSubscription) {
+          errors[field.key] = 'Bithomp Pro subscription is required.'
+        } else if (balanceHistoryAddressOptions.length === 0) {
+          errors[field.key] = 'Enable balance history for a verified address first.'
+        } else if (isFilled(filter.value) && !balanceHistoryAddressOptions.some((option) => option.value === filter.value)) {
+          errors[field.key] = 'Choose an address with enabled balance history.'
+        }
+      }
+      if (field.type === 'address' && isFilled(filter.value) && !isAddressValid(filter.value)) {
+        errors[field.key] = 'Choose a valid address.'
+      }
+      if (field.type === 'number' && isFilled(filter.value) && !Number.isFinite(Number(filter.value))) {
+        errors[field.key] = 'Enter a valid number.'
+      }
+      if (field.type === 'txType') {
+        const operator = filter.operator || '$eq'
+        if (operator === '$eq' && isFilled(filter.value) && !NOTIFICATION_TX_TYPE_OPTIONS.some((option) => option.value === filter.value)) {
+          errors[field.key] = 'Choose a supported transaction type.'
+        }
+        if (
+          (operator === '$in' || operator === '$nin') &&
+          filter.values?.some((value) => !NOTIFICATION_TX_TYPE_OPTIONS.some((option) => option.value === value))
+        ) {
+          errors[field.key] = 'Choose supported transaction types.'
+        }
+      }
+      if (field.type === 'destination' && filter.mode === 'specific' && !isAddressValid(filter.value)) {
+        errors[field.key] = 'Choose a valid destination address.'
+      }
+    })
+
     setRuleFormErrors(errors)
-    return Object.keys(errors).length === 0
+    setRuleFormMessage(message)
+    return Object.keys(errors).length === 0 && !message
   }
 
   const handleCreateProfile = async (event) => {
@@ -319,9 +681,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     if (!validateRuleForm()) return
 
     const payload = {
-      event: ruleFormData.event.trim(),
+      action: NOTIFICATION_ACTION_TYPES.NOTIFICATION,
+      enabled: !!ruleFormData.enabled,
+      event: ruleFormData.event,
       name: ruleFormData.name.trim(),
-      settings: JSON.parse(ruleFormData.settings || '{}')
+      settings: buildRuleSettings(ruleFormData)
     }
 
     try {
@@ -467,12 +831,306 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     )
   }
 
+  const renderRuleFilterField = (field) => {
+    const filter = filterValue(ruleFormData.filters, field.key)
+    const fieldClassName = `notification-field${field.wide ? ' notification-field-wide' : ''}`
+
+    if (field.type === 'proAddress') {
+      const selectedOption = balanceHistoryAddressOptions.find((option) => option.value === filter.value) || null
+      return (
+        <div className={fieldClassName} key={field.key}>
+          <span>
+            {filterLabel(field)}
+            {field.required ? ' *' : ''}
+          </span>
+          <Select
+            className="simple-select"
+            classNamePrefix="react-select"
+            instanceId={`notification-rule-${field.key}`}
+            isDisabled={
+              loadingNotificationPrerequisites ||
+              (notificationPrerequisitesLoaded && !hasActiveProSubscription) ||
+              balanceHistoryAddressOptions.length === 0
+            }
+            isSearchable={true}
+            onChange={(option) => handleRuleFilterChange(field.key, { value: option?.value || '' })}
+            options={balanceHistoryAddressOptions}
+            placeholder={loadingNotificationPrerequisites ? 'Loading addresses...' : 'Choose address'}
+            value={selectedOption}
+          />
+          {notificationPrerequisitesLoaded && !hasActiveProSubscription && (
+            <small>
+              Balance change alerts require an active{' '}
+              <Link href="/admin/subscriptions?tab=pro">Bithomp Pro subscription</Link>.
+            </small>
+          )}
+          {notificationPrerequisitesLoaded &&
+            hasActiveProSubscription &&
+            balanceHistoryAddressOptions.length === 0 && (
+            <small>
+              Connect an address and enable balance history in <Link href="/admin/pro">My addresses</Link> first.
+            </small>
+          )}
+          {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
+        </div>
+      )
+    }
+
+    if (field.type === 'address') {
+      return (
+        <div className={`${fieldClassName} notification-address-field`} key={field.key}>
+          <AddressInput
+            hideButton={true}
+            placeholder="Enter address or username"
+            rawData={{ address: filter.value || '' }}
+            setInnerValue={(value) => handleRuleFilterChange(field.key, { value })}
+            setValue={(value) => handleRuleFilterChange(field.key, { value })}
+            title={`${filterLabel(field)}${field.required ? ' *' : ''}`}
+            type="address"
+          />
+          {field.required && <small>Required for this rule.</small>}
+          {field.helpText && <small>{field.helpText}</small>}
+          {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
+        </div>
+      )
+    }
+
+    if (field.type === 'number') {
+      const selectedOperator =
+        NOTIFICATION_NUMBER_OPERATOR_OPTIONS.find((option) => option.value === (filter.operator || '$gte')) ||
+        NOTIFICATION_NUMBER_OPERATOR_OPTIONS[0]
+      return (
+        <div className={fieldClassName} key={field.key}>
+          <span>
+            {filterLabel(field)}
+            {field.required ? ' *' : ''}
+          </span>
+          <div className={`notification-filter-number${field.exactOnly ? ' exact' : ''}`}>
+            {!field.exactOnly && (
+              <Select
+                className="simple-select"
+                classNamePrefix="react-select"
+                instanceId={`notification-rule-${field.key}-operator`}
+                isSearchable={false}
+                onChange={(option) => handleRuleFilterChange(field.key, { operator: option?.value || '$gte' })}
+                options={NOTIFICATION_NUMBER_OPERATOR_OPTIONS}
+                value={selectedOperator}
+              />
+            )}
+            <input
+              className="input-text"
+              inputMode="decimal"
+              name={field.key}
+              onChange={(event) => handleRuleFilterChange(field.key, { value: event.target.value })}
+              placeholder="0"
+              type="number"
+              value={filter.value || ''}
+            />
+          </div>
+          {field.helpText && <small>{field.helpText}</small>}
+          {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
+        </div>
+      )
+    }
+
+    if (field.type === 'txType') {
+      const selectedOperator =
+        NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS.find((option) => option.value === (filter.operator || '$eq')) ||
+        NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS[0]
+      const isMulti = selectedOperator.value === '$in' || selectedOperator.value === '$nin'
+      const selectedTxType = NOTIFICATION_TX_TYPE_OPTIONS.find((option) => option.value === filter.value) || null
+      const selectedTxTypes = NOTIFICATION_TX_TYPE_OPTIONS.filter((option) => filter.values?.includes(option.value))
+
+      return (
+        <div className={fieldClassName} key={field.key}>
+          <span>{filterLabel(field)}</span>
+          <div className="notification-filter-tx-type">
+            <Select
+              className="simple-select"
+              classNamePrefix="react-select"
+              instanceId="notification-rule-tx-type-operator"
+              isSearchable={false}
+              onChange={(option) =>
+                handleRuleFilterChange(field.key, {
+                  operator: option?.value || '$eq',
+                  value: '',
+                  values: []
+                })
+              }
+              options={NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS}
+              value={selectedOperator}
+            />
+            <Select
+              className="simple-select"
+              classNamePrefix="react-select"
+              instanceId="notification-rule-tx-type"
+              isClearable={true}
+              isMulti={isMulti}
+              isSearchable={true}
+              onChange={(option) => {
+                if (isMulti) {
+                  handleRuleFilterChange(field.key, {
+                    value: '',
+                    values: Array.isArray(option) ? option.map((item) => item.value) : []
+                  })
+                } else {
+                  handleRuleFilterChange(field.key, { value: option?.value || '', values: [] })
+                }
+              }}
+              options={NOTIFICATION_TX_TYPE_OPTIONS}
+              placeholder={isMulti ? 'Choose transaction types' : 'Any transaction type'}
+              value={isMulti ? selectedTxTypes : selectedTxType}
+            />
+          </div>
+          {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
+        </div>
+      )
+    }
+
+    if (field.type === 'token') {
+      return (
+        <div className={`${fieldClassName} notification-token-field`} key={field.key}>
+          <span>
+            {filterLabel(field)}
+            {field.required ? ' *' : ''}
+          </span>
+          <TokenSelector
+            value={filter.value || {}}
+            onChange={(value) => handleRuleFilterChange(field.key, { value })}
+          />
+          <small>Choose {nativeCurrency} or an issued token.</small>
+        </div>
+      )
+    }
+
+    if (field.type === 'destination') {
+      const options = field.includeKnownBroker ? brokerDestinationFilterOptions : destinationFilterOptions
+      const selectedOption = options.find((option) => option.value === (filter.mode || 'any')) || options[0]
+      return (
+        <div className="notification-field notification-address-field" key={field.key}>
+          <span>
+            {filterLabel(field)}
+            {field.required ? ' *' : ''}
+          </span>
+          <Select
+            className="simple-select"
+            classNamePrefix="react-select"
+            instanceId="notification-rule-destination-mode"
+            isSearchable={false}
+            onChange={(option) =>
+              handleRuleFilterChange(field.key, {
+                mode: option?.value || 'any',
+                value: option?.value === 'specific' ? filter.value || '' : ''
+              })
+            }
+            options={options}
+            value={selectedOption}
+          />
+          {(filter.mode || 'any') === 'specific' && (
+            <AddressInput
+              hideButton={true}
+              placeholder="Enter destination address or username"
+              rawData={{ address: filter.value || '' }}
+              setInnerValue={(value) => handleRuleFilterChange(field.key, { value })}
+              setValue={(value) => handleRuleFilterChange(field.key, { value })}
+              title="Destination address"
+              type="address"
+            />
+          )}
+          {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
+        </div>
+      )
+    }
+
+    if (field.type === 'boolean') {
+      const selectedOption = booleanFilterOptions.find((option) => option.value === (filter.value || 'any')) || booleanFilterOptions[0]
+      return (
+        <label className="notification-field" key={field.key}>
+          <span>
+            {filterLabel(field)}
+            {field.required ? ' *' : ''}
+          </span>
+          <Select
+            className="simple-select"
+            classNamePrefix="react-select"
+            instanceId={`notification-rule-${field.key}`}
+            isSearchable={false}
+            onChange={(option) => handleRuleFilterChange(field.key, { value: option?.value || 'any' })}
+            options={booleanFilterOptions}
+            value={selectedOption}
+          />
+        </label>
+      )
+    }
+
+    return (
+      <label className={fieldClassName} key={field.key}>
+        <span>
+          {filterLabel(field)}
+          {field.required ? ' *' : ''}
+        </span>
+        <input
+          className="input-text"
+          name={field.key}
+          onChange={(event) => handleRuleFilterChange(field.key, { value: event.target.value })}
+          placeholder={field.placeholder?.replace('{nativeCurrency}', nativeCurrency) || filterLabel(field)}
+          type="text"
+          value={filter.value || ''}
+        />
+        {field.helpText && <small>{field.helpText}</small>}
+        {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
+      </label>
+    )
+  }
+
   const renderRuleForm = () => {
     if (!showRuleForm) return null
+    const ruleFilterFields = getNotificationFilterFields(ruleFormData.event)
 
     return (
       <form className="notification-form" onSubmit={handleSaveRule}>
         <div className="notification-form-grid">
+          <div className="notification-rule-requirement">
+            <strong>{alertPlan.label} alerts plan</strong>
+            <span>
+              {alertPlanLimitText(alertPlan)}{' '}
+              {alertPlanTier === DEFAULT_ALERT_PLAN_TIER && (
+                <Link href="/admin/subscriptions?tab=notifications">Upgrade for more alert channels and rules.</Link>
+              )}
+            </span>
+          </div>
+          <div className="notification-rule-event-picker">
+            <span>Event</span>
+            <div className="notification-rule-event-grid">
+              {notificationEventOptions.map((option) => {
+                const active = option.value === ruleFormData.event
+                return (
+                  <button
+                    aria-pressed={active}
+                    className={`notification-rule-event-button${active ? ' active' : ''}`}
+                    key={option.value}
+                    onClick={() => {
+                      setRuleFormData((prev) => ({
+                        ...prev,
+                        event: option.value,
+                        externalUrl: notificationEventSupports(option.value, 'externalUrl') ? prev.externalUrl : false,
+                        filters: {},
+                        xrpCafeURL: notificationEventSupports(option.value, 'xrpCafeURL') ? prev.xrpCafeURL : false
+                      }))
+                      setRuleFormErrors((prev) => ({ ...prev, event: '' }))
+                      setRuleFormMessage('')
+                    }}
+                    type="button"
+                  >
+                    <span>{option.group}</span>
+                    <strong>{option.label}</strong>
+                    <small>{option.description}</small>
+                  </button>
+                )
+              })}
+            </div>
+            {ruleFormErrors.event && <strong>{ruleFormErrors.event}</strong>}
+          </div>
           <label className="notification-field">
             <span>Channel</span>
             <Select
@@ -493,6 +1151,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           </label>
           <InputField
             error={ruleFormErrors.name}
+            helpText="A short name shown only in your notification settings."
             id="name"
             label="Rule name"
             onChange={handleRuleInputChange}
@@ -500,29 +1159,81 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             required
             value={ruleFormData.name}
           />
-          <InputField
-            error={ruleFormErrors.event}
-            helpText="Event key expected by the backend listener."
-            id="event"
-            label="Event"
-            onChange={handleRuleInputChange}
-            placeholder="nft_sale"
-            required
-            value={ruleFormData.event}
-          />
-          <label className="notification-field notification-field-wide" htmlFor="settings">
-            <span>Settings JSON</span>
-            <textarea
-              className={`input-text notification-settings-textarea${ruleFormErrors.settings ? ' error' : ''}`}
-              id="settings"
-              name="settings"
-              onChange={handleRuleInputChange}
-              spellCheck="false"
-              value={ruleFormData.settings}
+          {ruleFilterFields.length > 0 && (
+            <div className="notification-rule-filter-panel">
+              <div className="notification-rule-filter-header">
+                <strong>Filters</strong>
+                <span>Leave optional fields empty to match any value.</span>
+              </div>
+              <div className="notification-rule-filter-grid">
+                {ruleFilterFields.map((field) => renderRuleFilterField(field))}
+              </div>
+            </div>
+          )}
+          <label className="notification-field">
+            <span>Fiat currency</span>
+            <Select
+              className="simple-select"
+              classNamePrefix="react-select"
+              instanceId="notification-rule-fiat-currency"
+              isSearchable={false}
+              onChange={(option) => {
+                setRuleFormData((prev) => ({ ...prev, fiatCurrency: option?.value || 'usd' }))
+                setRuleFormMessage('')
+              }}
+              options={NOTIFICATION_FIAT_CURRENCY_OPTIONS}
+              placeholder="Choose currency"
+              value={selectedFiatCurrencyOption}
             />
-            <small>Example: {"{ \"rules\": { \"amount.usd\": { \"$gte\": 1000 } } }"}</small>
-            {ruleFormErrors.settings && <strong>{ruleFormErrors.settings}</strong>}
+            <small>Used for fiat values in notification text.</small>
           </label>
+          <div className="notification-toggle-card">
+            <button
+              aria-label="Toggle rule enabled"
+              aria-pressed={!!ruleFormData.enabled}
+              className={`notification-toggle-control${ruleFormData.enabled ? ' active' : ''}`}
+              onClick={() => handleRuleToggle('enabled')}
+              type="button"
+            />
+            <span className="notification-toggle-copy">
+              <strong>Enabled</strong>
+              <small>Start sending matching alerts as soon as this rule is saved.</small>
+            </span>
+          </div>
+          {notificationEventSupports(ruleFormData.event, 'externalUrl') && (
+            <div className="notification-toggle-card">
+              <button
+                aria-label="Toggle external NFT links"
+                aria-pressed={!!ruleFormData.externalUrl}
+                className={`notification-toggle-control${ruleFormData.externalUrl ? ' active' : ''}`}
+                onClick={() => handleRuleToggle('externalUrl')}
+                type="button"
+              />
+              <span className="notification-toggle-copy">
+                <strong>Include external NFT links</strong>
+                <small>Add marketplace or media links when the event payload includes them.</small>
+              </span>
+            </div>
+          )}
+          {notificationEventSupports(ruleFormData.event, 'xrpCafeURL') && (
+            <div className="notification-toggle-card">
+              <button
+                aria-label="Toggle XRP Cafe link"
+                aria-pressed={!!ruleFormData.xrpCafeURL}
+                className={`notification-toggle-control${ruleFormData.xrpCafeURL ? ' active' : ''}`}
+                onClick={() => handleRuleToggle('xrpCafeURL')}
+                type="button"
+              />
+              <span className="notification-toggle-copy">
+                <strong>Include XRP Cafe link</strong>
+                <small>Add an XRP Cafe URL for NFT alerts.</small>
+              </span>
+            </div>
+          )}
+          <div className="notification-rule-summary">
+            <strong>{ruleFormData.name || 'New notification rule'}</strong>
+            <span>{getNotificationEventDescription(ruleFormData.event)}</span>
+          </div>
         </div>
         {ruleFormMessage && <p className="red center">{ruleFormMessage}</p>}
         <div className="notification-form-actions">
@@ -537,6 +1248,87 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     )
   }
 
+  const renderExecutionsDialogContent = () => {
+    if (ruleExecutions.isLoading) {
+      return (
+        <div className="notification-executions-empty notification-executions-empty-loading">
+          <div className="notification-executions-empty-icon" aria-hidden="true">
+            <span className="loader" />
+          </div>
+          <h3>No executions yet</h3>
+          <p>Checking recent delivery attempts for this rule.</p>
+          <div className="notification-executions-stats">
+            <span>
+              <small>Total</small>
+              <strong>0</strong>
+            </span>
+            <span>
+              <small>Loaded</small>
+              <strong>0</strong>
+            </span>
+          </div>
+        </div>
+      )
+    }
+
+    if (ruleExecutions.error) {
+      return <p className="red">{ruleExecutions.error?.response?.data?.error || ruleExecutions.error?.message}</p>
+    }
+
+    const data = ruleExecutions.data || {}
+    const executions = Array.isArray(data.executions) ? data.executions : []
+    const total = data.total ?? executions.length
+    const count = data.count ?? executions.length
+
+    if (executions.length === 0) {
+      return (
+        <div className="notification-executions-empty">
+          <div className="notification-executions-empty-icon" aria-hidden="true">
+            <MdHistory />
+          </div>
+          <h3>No executions yet</h3>
+          <p>This rule has not matched any events yet, so no notifications have been sent.</p>
+          <div className="notification-executions-stats">
+            <span>
+              <small>Total</small>
+              <strong>{total}</strong>
+            </span>
+            <span>
+              <small>Loaded</small>
+              <strong>{count}</strong>
+            </span>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="notification-executions">
+        <div className="notification-executions-stats">
+          <span>
+            <small>Total</small>
+            <strong>{total}</strong>
+          </span>
+          <span>
+            <small>Loaded</small>
+            <strong>{count}</strong>
+          </span>
+        </div>
+        <div className="notification-executions-list">
+          {executions.map((execution, index) => (
+            <article className="notification-execution-item" key={execution.id || execution.createdAt || index}>
+              <div className="notification-execution-item-header">
+                <strong>{execution.status || execution.result || `Execution #${execution.id || index + 1}`}</strong>
+                {(execution.createdAt || execution.created_at) && <span>{execution.createdAt || execution.created_at}</span>}
+              </div>
+              <pre className="notification-executions-json">{JSON.stringify(execution, null, 2)}</pre>
+            </article>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <main className={`page-admin content-center ${adminNotifications}`}>
       <h1 className="center">{t('header', { ns: 'admin' })}</h1>
@@ -546,8 +1338,8 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
         <>
           <section className="notification-hero">
             <div>
-              <p className="notification-eyebrow">Blockchain alerts</p>
-              <h2>Notifications</h2>
+              <p className="notification-eyebrow">{explorerName} alerts</p>
+              <h2>Alerts</h2>
               <p>
                 Connect Slack, Discord, Email, or X/Twitter, then create rules for the events your team wants to see.
               </p>
@@ -559,15 +1351,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             </div>
           </section>
 
-          {isLoading && <p className="center">Loading notifications...</p>}
+          {isLoading && <p className="center">Loading alerts...</p>}
 
           {partnerMissing && (
             <section className="notification-setup-card">
               <div>
-                <h2>Finish notification setup</h2>
+                <h2>Finish alerts setup</h2>
                 <p>
-                  Notifications need an admin profile before channels can be saved. This name is private and helps us
-                  attach notification settings to your account.
+                  Alerts need an admin profile before channels can be saved. This name is private and helps us attach
+                  alert settings to your account.
                 </p>
               </div>
               <form onSubmit={handleCreateProfile}>
@@ -597,13 +1389,13 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           {tokenRequired && (
             <section className="notification-status warning">
               <strong>Session expired.</strong>
-              <span>Please sign in again to manage notifications.</span>
+              <span>Please sign in again to manage alerts.</span>
             </section>
           )}
 
           {notificationDataUnavailable && !partnerMissing && !tokenRequired && (
             <section className="notification-status warning">
-              <strong>Could not load saved notifications.</strong>
+              <strong>Could not load saved alerts.</strong>
               <span>{errorText(error, 'Please try again later.')}</span>
             </section>
           )}
@@ -613,7 +1405,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
               <section className="admin-notification-section">
                 <div className="admin-notification-section-header">
                   <div>
-                    <h2>Notification channels</h2>
+                    <h2>Alert channels</h2>
                     <p>Saved destinations for alerts.</p>
                   </div>
                   {channels.length > 0 && !showChannelForm && <AddChannelButton onClick={() => openAddChannel()} />}
@@ -641,7 +1433,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 <section className="admin-notification-section">
                   <div className="admin-notification-section-header">
                     <div>
-                      <h2>Notification rules</h2>
+                      <h2>Alert rules</h2>
                       <p>Rules listen for events and send matching alerts to a channel.</p>
                     </div>
                     <button className="button-action thin" onClick={openAddRule} type="button">
@@ -653,7 +1445,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
                   {rules.length === 0 ? (
                     <div className="notification-empty-state">
-                      <h2>No notification rules yet</h2>
+                      <h2>No alert rules yet</h2>
                       <p>Add a rule for one of your channels.</p>
                     </div>
                   ) : (
@@ -765,13 +1557,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             size="large"
             title={`Executions: ${executionsRule?.name || executionsRule?.event || ''}`}
           >
-            {ruleExecutions.isLoading ? (
-              <p>Loading...</p>
-            ) : ruleExecutions.error ? (
-              <p className="red">{ruleExecutions.error?.response?.data?.error || ruleExecutions.error?.message}</p>
-            ) : (
-              <pre className="notification-executions-json">{JSON.stringify(ruleExecutions.data || {}, null, 2)}</pre>
-            )}
+            <div className="notification-executions-dialog">{renderExecutionsDialogContent()}</div>
           </Dialog>
         </>
       ) : (
@@ -779,7 +1565,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           <br />
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto' }}>
-              <p>Set up custom notification rules for blockchain events.</p>
+              <p>Set up custom alert rules for {explorerName} events.</p>
               <p>Get notified via Slack, Discord, Email and more.</p>
             </div>
             <br />

@@ -17,6 +17,7 @@ import Receipt from '../../components/Receipt'
 import Tabs from '../../components/Tabs'
 import Pro from '../../components/Admin/subscriptions/BithompPro'
 import Api from '../../components/Admin/subscriptions/Api'
+import NotificationsBot from '../../components/Admin/subscriptions/NotificationsBot'
 import ListTransactions from '../../components/ListTransactions'
 import { LinkTx } from '../../utils/links'
 import { bidFullServiceName, bidTypeToName } from '../../utils/bids'
@@ -91,6 +92,8 @@ const tabTotype = (tab) => {
       return 'bithomp_pro'
     case 'api':
       return 'token'
+    case 'notifications':
+      return 'bot'
     case 'bot':
       return 'bot'
     default:
@@ -164,7 +167,8 @@ const packageList = (packages, width) => {
 
 const subscriptionsTabList = [
   { value: 'pro', label: 'Bithomp Pro' },
-  { value: 'api', label: 'API' }
+  { value: 'api', label: 'API' },
+  { value: 'notifications', label: 'Alerts Bot' }
 ]
 
 export default function Subscriptions({
@@ -303,7 +307,7 @@ export default function Subscriptions({
       ...(ref ? { referralCode: ref } : {})
     }
 
-    if (subscriptionsTab === 'api') {
+    if (subscriptionsTab === 'api' || subscriptionsTab === 'notifications') {
       options.tier = tier
     }
 
@@ -558,6 +562,9 @@ export default function Subscriptions({
                           {subscriptionsTab === 'api' && (
                             <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />
                           )}
+                          {subscriptionsTab === 'notifications' && (
+                            <NotificationsBot setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />
+                          )}
 
                           <button
                             className="button-action narrow"
@@ -674,7 +681,7 @@ export default function Subscriptions({
                               </button>
                             </p>
                             <br />
-                            Your Pro account will be activated when the payment is received.
+                            Your subscription will be activated when the payment is received.
                           </>
                         )}
 
@@ -782,6 +789,9 @@ export default function Subscriptions({
 
               {subscriptionsTab === 'pro' && <Pro setPayPeriod={setPayPeriod} />}
               {subscriptionsTab === 'api' && <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />}
+              {subscriptionsTab === 'notifications' && (
+                <NotificationsBot setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />
+              )}
 
               <br />
 

@@ -5,7 +5,7 @@ export const bidTypeToName = (type) => {
     case 'token':
       return 'API'
     case 'bot':
-      return 'Bot'
+      return 'Alerts Bot'
     default:
       return type
   }
