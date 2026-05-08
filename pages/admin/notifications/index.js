@@ -3,7 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import Select from 'react-select'
-import { FaDiscord, FaEnvelope, FaSlack } from 'react-icons/fa'
+import { FaDiscord, FaSlack } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { MdHistory, MdNotificationsActive, MdOutlineRule, MdWarningAmber, MdWebhook } from 'react-icons/md'
 
@@ -92,13 +92,6 @@ const brokerDestinationFilterOptions = [
 ]
 
 const setupGuides = [
-  {
-    type: NOTIFICATION_CHANNEL_TYPES.EMAIL,
-    icon: FaEnvelope,
-    title: 'Email',
-    description: `Use the mailbox that should receive ${explorerName} alerts. No webhook setup is required.`,
-    steps: []
-  },
   {
     type: NOTIFICATION_CHANNEL_TYPES.DISCORD,
     icon: FaDiscord,
@@ -337,7 +330,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const updateRule = useUpdateNotificationRule()
   const deleteRule = useDeleteNotificationRule()
   const ruleExecutions = useNotificationRuleExecutions()
-  const [channelType, setChannelType] = useState(NOTIFICATION_CHANNEL_TYPES.EMAIL)
+  const [channelType, setChannelType] = useState(NOTIFICATION_CHANNEL_TYPES.DISCORD)
   const [channelToDelete, setChannelToDelete] = useState(null)
   const [editingChannel, setEditingChannel] = useState(null)
   const [formData, setFormData] = useState(initialChannelForm)
@@ -374,6 +367,10 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     [ruleChannelOptions, ruleFormData.connectionId]
   )
   const notificationEventOptions = useMemo(() => getNotificationEventOptions({ xahau: xahauNetwork }), [])
+  const visibleRules = useMemo(
+    () => rules.filter((rule) => normalizeNotificationEvent(rule.event) !== NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE),
+    [rules]
+  )
   const selectedFiatCurrencyOption = useMemo(
     () => NOTIFICATION_FIAT_CURRENCY_OPTIONS.find((option) => option.value === ruleFormData.fiatCurrency) || null,
     [ruleFormData.fiatCurrency]
@@ -430,7 +427,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     loadNotificationPrerequisites()
   }, [sessionToken])
 
-  const openAddChannel = (type = NOTIFICATION_CHANNEL_TYPES.EMAIL) => {
+  const openAddChannel = (type = NOTIFICATION_CHANNEL_TYPES.DISCORD) => {
     setEditingChannel(null)
     setChannelType(type)
     setFormData(initialChannelForm)
@@ -467,7 +464,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       ...initialRuleForm,
       connectionId: channels[0]?.id || '',
       event: notificationEventOptions[0]?.value || defaultRuleEvent,
-      name: defaultRuleName(rules.length + 1)
+      name: defaultRuleName(visibleRules.length + 1)
     })
     setRuleFormErrors({})
     setRuleFormMessage(rules.length >= alertPlan.listeners ? `Rule limit reached. ${alertPlanLimitText(alertPlan)}` : '')
@@ -1341,7 +1338,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
               <p className="notification-eyebrow">{explorerName} alerts</p>
               <h2>Alerts</h2>
               <p>
-                Connect Slack, Discord, Email, or X/Twitter, then create rules for the events your team wants to see.
+                Connect Slack, Discord, or X/Twitter, then create rules for the events your team wants to see.
               </p>
             </div>
             <div className="notification-hero-visual" aria-hidden="true">
@@ -1443,14 +1440,14 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
                   {!editingRule && renderRuleForm()}
 
-                  {rules.length === 0 ? (
+                  {visibleRules.length === 0 ? (
                     <div className="notification-empty-state">
                       <h2>No alert rules yet</h2>
                       <p>Add a rule for one of your channels.</p>
                     </div>
                   ) : (
                     <div className="notification-rule-list">
-                      {rules.map((rule) => (
+                      {visibleRules.map((rule) => (
                         <Fragment key={rule.id}>
                           <RuleCard
                             deleting={deleteRule.isLoading && ruleToDelete?.id === rule.id}
@@ -1568,7 +1565,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto' }}>
               <p>Set up custom alert rules for {explorerName} events.</p>
-              <p>Get notified via Slack, Discord, Email and more.</p>
+              <p>Get notified via Slack, Discord, X/Twitter and more.</p>
             </div>
             <br />
             <center>

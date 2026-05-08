@@ -164,7 +164,9 @@ export const notificationEventSupports = (event, setting) => {
 
 export const getNotificationEventOptions = ({ xahau = false } = {}) => {
   const network = xahau ? 'xahau' : 'xrpl'
-  return NOTIFICATION_EVENT_OPTIONS.filter((option) => option.networks.includes(network))
+  return NOTIFICATION_EVENT_OPTIONS.filter(
+    (option) => option.networks.includes(network) && option.value !== NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE
+  )
 }
 
 const legacyEventMap = {
