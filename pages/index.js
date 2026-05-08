@@ -182,14 +182,16 @@ export default function Home({
   const homeExplorerAttribution = xahauNetwork ? homeExplorerName : `${homeExplorerName} by ${siteName}`
 
   const pageTitle = isEnglishMainnetHome
-    ? `${homeExplorerName} | Search ${nativeCurrency} Transactions, Accounts, NFTs, and Ledger Data`
+    ? `${nativeCurrency} Explorer: Scan ${ledgerName} | Transactions, Accounts, NFTs`
     : isEnglishTestnetHome
       ? 'XRPL Testnet Explorer & Faucet — Free Test XRP and RLUSD'
       : isEnglishDevnetHome
         ? 'XRPL Devnet Explorer & Faucet — Free Test XRP for Developers'
         : t('home.title', { homeExplorerName, siteName, nativeCurrency })
   const pageDescription = isEnglishMainnetHome
-    ? `${homeExplorerName} by ${siteName} lets you search and scan ${nativeCurrency} addresses, transactions, tokens, NFTs, balances, and on-chain activity on the ${ledgerName}. Trade, mint NFTs, manage AMMs, submit transactions, and use account tools.`
+    ? `${nativeCurrency} Explorer for ${ledgerName}. Scan ${nativeCurrency} transactions, accounts, tokens, NFTs, balances, and on-chain activity.`
+    : network === 'xahau'
+      ? `${siteName} lets you search and scan ${nativeCurrency} addresses, transactions, tokens, NFTs, balances, and on-chain activity on ${ledgerName}. Trade, mint NFTs, submit transactions, and use account tools.`
     : isEnglishTestnetHome
       ? 'XRPL Testnet explorer and faucet by Bithomp. Search testnet transactions, accounts, tokens, and NFTs, and get free test XRP and RLUSD for development.'
       : isEnglishDevnetHome

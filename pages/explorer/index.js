@@ -131,27 +131,33 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
   const explorerSearchAttribution = xahauNetwork ? explorerSearchName : `${explorerSearchName} by ${siteName}`
 
   const pageTitle = isPrimaryExplorer
-    ? tt('seo.mainnet.title', { ledgerName, nativeCurrency, explorerSearchName, explorerSearchAttribution, siteName })
+    ? xahauNetwork
+      ? `${explorerSearchName} Search — Accounts, Transactions, Tokens, NFTs`
+      : tt('seo.mainnet.title', { ledgerName, nativeCurrency, explorerSearchName, explorerSearchAttribution, siteName })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.title')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.title')
         : t('explorer.header.main', { explorerName })
   const pageDescription = isPrimaryExplorer
-    ? tt('seo.mainnet.description', {
-        ledgerName,
-        nativeCurrency,
-        explorerSearchName,
-        explorerSearchAttribution,
-        siteName
-      })
+    ? xahauNetwork
+      ? `Use ${explorerSearchAttribution} to search ${nativeCurrency} addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, and ledger objects on ${ledgerName}.`
+      : tt('seo.mainnet.description', {
+          ledgerName,
+          nativeCurrency,
+          explorerSearchName,
+          explorerSearchAttribution,
+          siteName
+        })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.description')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.description')
         : tt('intro.subtitle', { nativeCurrency })
   const pageHeading = isPrimaryExplorer
-    ? tt('seo.mainnet.heading', { ledgerName, nativeCurrency, explorerSearchName, explorerSearchAttribution, siteName })
+    ? xahauNetwork
+      ? `${explorerSearchName} Search`
+      : tt('seo.mainnet.heading', { ledgerName, nativeCurrency, explorerSearchName, explorerSearchAttribution, siteName })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.heading')
       : isEnglishDevnetExplorer
