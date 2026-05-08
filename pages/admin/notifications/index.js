@@ -123,6 +123,7 @@ const setupGuides = [
 ]
 
 const apiErrorMessages = {
+  'errors.connection.has_listeners': 'To delete this channel, first delete the rules using it or move them to another channel.',
   'errors.connection.settings_required': 'Enter the required channel settings.',
   'errors.listener.action_required': 'Choose what this rule should do.',
   'errors.listener.event_invalid': 'Choose a supported event type.',
@@ -136,6 +137,12 @@ const errorText = (error, fallback) => {
 }
 
 const listenerConnectionId = (listener) => listener?.channel?.id || listener?.partnerConnectionID || ''
+const isBalanceChangeEvent = (event) => normalizeNotificationEvent(event) === NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE
+const channelSupportsEvent = (channel, event) => {
+  if (!channel) return false
+  if (isBalanceChangeEvent(event)) return channel.type === NOTIFICATION_CHANNEL_TYPES.EMAIL
+  return channel.type !== NOTIFICATION_CHANNEL_TYPES.EMAIL
+}
 
 const isFilled = (value) => value !== undefined && value !== null && String(value).trim() !== ''
 
@@ -363,11 +370,13 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const selectedGuide = useMemo(() => setupGuides.find((guide) => guide.type === channelType), [channelType])
   const ruleChannelOptions = useMemo(
     () =>
-      channels.map((channel) => ({
-        value: channel.id,
-        label: channel.name || getNotificationChannelLabel(channel.type)
-      })),
-    [channels]
+      channels
+        .filter((channel) => channelSupportsEvent(channel, ruleFormData.event))
+        .map((channel) => ({
+          value: channel.id,
+          label: channel.name || getNotificationChannelLabel(channel.type)
+        })),
+    [channels, ruleFormData.event]
   )
   const selectedRuleChannelOption = useMemo(
     () => ruleChannelOptions.find((option) => String(option.value) === String(ruleFormData.connectionId)) || null,
@@ -461,12 +470,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     setFormMessage('')
   }
 
+  const firstChannelForEvent = (event) => channels.find((channel) => channelSupportsEvent(channel, event))?.id || ''
+
   const openAddRule = () => {
+    const event = notificationEventOptions[0]?.value || defaultRuleEvent
     setEditingRule(null)
     setRuleFormData({
       ...initialRuleForm,
-      connectionId: channels[0]?.id || '',
-      event: notificationEventOptions[0]?.value || defaultRuleEvent,
+      connectionId: firstChannelForEvent(event),
+      event,
       name: defaultRuleName(rules.length + 1)
     })
     setRuleFormErrors({})
@@ -575,8 +587,13 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     if (!editingRule && rules.length >= alertPlan.listeners) {
       message = `Rule limit reached. ${alertPlanLimitText(alertPlan)}`
     }
+    const selectedRuleChannel = channels.find((channel) => String(channel.id) === String(ruleFormData.connectionId))
     if (!ruleFormData.connectionId) {
       errors.connectionId = 'Choose a channel.'
+    } else if (!channelSupportsEvent(selectedRuleChannel, ruleFormData.event)) {
+      errors.connectionId = isBalanceChangeEvent(ruleFormData.event)
+        ? 'Balance change alerts can only use an Email channel.'
+        : 'Email channels can only be used for balance change alerts.'
     }
     if (!ruleFormData.name?.trim()) {
       errors.name = 'Enter a rule name.'
@@ -1110,8 +1127,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                     className={`notification-rule-event-button${active ? ' active' : ''}`}
                     key={option.value}
                     onClick={() => {
+                      const connectionId = channelSupportsEvent(
+                        channels.find((channel) => String(channel.id) === String(ruleFormData.connectionId)),
+                        option.value
+                      )
+                        ? ruleFormData.connectionId
+                        : firstChannelForEvent(option.value)
                       setRuleFormData((prev) => ({
                         ...prev,
+                        connectionId,
                         event: option.value,
                         externalUrl: notificationEventSupports(option.value, 'externalUrl') ? prev.externalUrl : false,
                         filters: {},
@@ -1147,6 +1171,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
               placeholder="Choose channel"
               value={selectedRuleChannelOption}
             />
+            <small>
+              {isBalanceChangeEvent(ruleFormData.event)
+                ? 'Balance change alerts are sent by Email.'
+                : 'Email channels are only available for balance change alerts.'}
+            </small>
             {ruleFormErrors.connectionId && <strong>{ruleFormErrors.connectionId}</strong>}
           </label>
           <InputField
@@ -1485,8 +1514,8 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                   Delete <strong>{channelToDelete?.name || getNotificationChannelLabel(channelToDelete?.type)}</strong>?
                 </p>
                 <p className="notification-delete-confirm-note">
-                  This saved destination will be removed from your account. Rules using this channel will stop sending
-                  alerts.
+                  This saved destination will be removed from your account. Delete or move its rules before deleting the
+                  channel.
                 </p>
                 <div className="notification-delete-confirm-target">
                   <span className="notification-delete-confirm-label">Channel</span>
@@ -1496,9 +1525,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 </div>
               </div>
             </div>
-            {deleteChannel.error && (
-              <p className="red">{deleteChannel.error?.response?.data?.error || deleteChannel.error?.message}</p>
-            )}
+            {deleteChannel.error && <p className="red">{errorText(deleteChannel.error, 'Could not delete channel.')}</p>}
             <div className="notification-dialog-actions notification-dialog-actions-end">
               <button className="button-action thin secondary" onClick={() => setChannelToDelete(null)} type="button">
                 Cancel

@@ -89,9 +89,14 @@ export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
       <h4 className="center">Why Purchase an Alerts Bot Subscription?</h4>
       <div style={{ textAlign: 'left' }}>
         <p>Use alert channels and rules to receive updates for {explorerName} activity.</p>
-        <p>✅ Send alerts to Discord, Slack, or X/Twitter.</p>
+        <p>✅ Send alerts to Email, Discord, Slack, or X/Twitter.</p>
         <p>
-          ✅ Create NFT sale and NFT listing rules on the <Link href="/admin/notifications">Alerts page</Link>.
+          ✅ Create NFT sale, NFT listing, and Pro address balance-change rules on the{' '}
+          <Link href="/admin/notifications">Alerts page</Link>.
+        </p>
+        <p>
+          ✅ Balance change alerts require verified addresses with balance history enabled in{' '}
+          <Link href="/admin/pro">My addresses</Link>.
         </p>
         <PlanTable />
       </div>

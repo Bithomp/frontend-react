@@ -9,7 +9,8 @@ export default function AdminTabs({ name, tab }) {
     { value: 'profile', label: 'Profile' },
     { value: 'watchlist', label: 'Watchlist' },
     { value: 'pro', label: 'My addresses' },
-    { value: 'api', label: 'API' }
+    { value: 'api', label: 'API' },
+    { value: 'notifications', label: 'Alerts' }
   ]
 
   if (!devNet) {
