@@ -276,7 +276,10 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
       <div className="content-text">
         {id ? (
           <>
-            <div className="tabs-inline">
+            <div
+              className="tabs-inline"
+              style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10, marginBottom: 18 }}
+            >
               <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
               {!xahauNetwork && offerListTab === 'owned' && offersCount.all > 1 && (
                 <Tabs tabList={offerTypeTabList} tab={offerTypeTab} setTab={setOfferTypeTab} name="offerType" />
