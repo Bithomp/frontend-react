@@ -5295,6 +5295,7 @@ export default function Account({
                           const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortNftId
                           const nftIssuer =
                             nft?.issuer || nft?.Issuer || nft?.nftoken?.issuer || nft?.nftoken?.Issuer || null
+                          const nftIssuerDetails = nft?.issuerDetails || nft?.nftoken?.issuerDetails || null
                           const nftOwner =
                             nft?.owner || nft?.Owner || nft?.nftoken?.owner || nft?.nftoken?.Owner || null
                           const nftDeleted =
@@ -5517,8 +5518,9 @@ export default function Account({
                                       <span className="copy-inline">
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <AddressWithIconInline
-                                            data={{ address: nftIssuer }}
-                                            options={{ short: 6, showAddress: true }}
+                                            data={{ issuer: nftIssuer, issuerDetails: nftIssuerDetails }}
+                                            name="issuer"
+                                            options={{ short: 6 }}
                                           />
                                         </span>
                                         <span onClick={(event) => event.stopPropagation()}>
