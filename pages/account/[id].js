@@ -1120,7 +1120,7 @@ export default function Account({
   const nftsFiatValue = nftsNativeValue * (tokenFiatRate || pageFiatRate || 0)
   const receivedChecksNativeValue = receivedChecks.reduce((sum, check) => sum + checkNativeValue(check), 0)
   const receivedChecksFiatValue = receivedChecksNativeValue * (tokenFiatRate || pageFiatRate || 0)
-  const hasNftWorthLine = !xahauNetwork && (nftsNativeValue > 0 || ownedNftIds.length > 0 || ownedNfts.length > 0)
+  const hasNftWorthLine = !xahauNetwork && nftsNativeValue > 0
   const nftsWorthLabel = nftsWorthCount > 0 ? `NFTs (${nftsWorthCount})` : 'NFTs'
   const hasReceivedChecksWorthLine = receivedChecks.length > 0
   const hasAdditionalWorthAssets = hasNonNativeTokenAssets || hasNftWorthLine || hasReceivedChecksWorthLine
