@@ -1131,6 +1131,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     return data.metadata?.evernodeRegistration || data.metadata?.evernodeLease
   }
 
+  const dataId = data?.nftokenID || data?.uritokenID
+  const hasCurrentData = dataId === id
+  const showPageLoading = loading && !hasCurrentData
+
   return (
     <div className={nftClass}>
       <SEO
@@ -1152,7 +1156,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       <div className="content-profile">
         {id ? (
           <>
-            {loading ? (
+            {showPageLoading ? (
               <div className="center" style={{ marginTop: '80px' }}>
                 <span className="waiting"></span>
                 <br />
@@ -1164,7 +1168,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                   <div className="center orange bold">{errorMessage}</div>
                 ) : (
                   <>
-                    {data.flags && (
+                    {hasCurrentData && data.flags && (
                       <>
                         <div className="column-left">
                           {!notFoundInTheNetwork ? (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 
@@ -37,6 +37,7 @@ const isPanorama = (metadata) => {
 
 export default function NftPreview({ nft }) {
   const { t } = useTranslation()
+  const imageRef = useRef(null)
   const [contentTab, setContentTab] = useState('image')
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [displayedImageIndex, setDisplayedImageIndex] = useState(0)
@@ -99,6 +100,12 @@ export default function NftPreview({ nft }) {
   const currentImage = imageGalleryItems[displayedImageIndex] || imageGalleryItems[0] || null
   const currentImageUrl = currentImage?.url || imageUrl
   const currentImageFallbackUrl = currentImage?.fallbackUrl || currentImageUrl
+  const nftId = nft?.nftokenID || nft?.uritokenID
+
+  const markImageLoaded = () => {
+    setLoaded(true)
+    setErrored(false)
+  }
 
   let modelState = null
 
@@ -192,6 +199,14 @@ export default function NftPreview({ nft }) {
   }
 
   useEffect(() => {
+    setSelectedImageIndex(0)
+    setDisplayedImageIndex(0)
+    setIsSwitchingImage(false)
+    setLoaded(false)
+    setErrored(false)
+  }, [nftId, imageUrl])
+
+  useEffect(() => {
     if (imageUrl || videoUrl) {
       const panoramic = isPanorama(nft.metadata)
       setIsPanoramic(panoramic)
@@ -207,12 +222,14 @@ export default function NftPreview({ nft }) {
   }, [imageUrl, videoUrl])
 
   useEffect(() => {
-    setSelectedImageIndex(0)
-    setDisplayedImageIndex(0)
-    setIsSwitchingImage(false)
-    setLoaded(false)
-    setErrored(false)
-  }, [nft?.nftokenID, imageUrl])
+    const image = imageRef.current
+    if (!image || !currentImageUrl) return
+
+    if (image.complete && image.naturalWidth > 0) {
+      markImageLoaded()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentImageUrl])
 
   useEffect(() => {
     if (selectedImageIndex === displayedImageIndex) return
@@ -297,12 +314,11 @@ export default function NftPreview({ nft }) {
                 <>
                   <div style={mediaFrameStyle}>
                     <img
+                      key={currentImageUrl}
+                      ref={imageRef}
                       style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
                       src={currentImageUrl}
-                      onLoad={() => {
-                        setLoaded(true)
-                        setErrored(false)
-                      }}
+                      onLoad={markImageLoaded}
                       onError={({ currentTarget }) => {
                         if (currentTarget.src === currentImageUrl && currentImageUrl !== clUrl.image) {
                           currentTarget.src = clUrl.image
