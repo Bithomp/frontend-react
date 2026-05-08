@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import Select from 'react-select'
 import { FaDiscord, FaEnvelope, FaSlack } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
@@ -1441,7 +1441,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                     </button>
                   </div>
 
-                  {renderRuleForm()}
+                  {!editingRule && renderRuleForm()}
 
                   {rules.length === 0 ? (
                     <div className="notification-empty-state">
@@ -1451,15 +1451,17 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                   ) : (
                     <div className="notification-rule-list">
                       {rules.map((rule) => (
-                        <RuleCard
-                          deleting={deleteRule.isLoading && ruleToDelete?.id === rule.id}
-                          key={rule.id}
-                          loadingExecutions={ruleExecutions.isLoading && executionsRule?.id === rule.id}
-                          onDelete={setRuleToDelete}
-                          onEdit={openEditRule}
-                          onExecutions={openExecutions}
-                          rule={rule}
-                        />
+                        <Fragment key={rule.id}>
+                          <RuleCard
+                            deleting={deleteRule.isLoading && ruleToDelete?.id === rule.id}
+                            loadingExecutions={ruleExecutions.isLoading && executionsRule?.id === rule.id}
+                            onDelete={setRuleToDelete}
+                            onEdit={openEditRule}
+                            onExecutions={openExecutions}
+                            rule={rule}
+                          />
+                          {String(editingRule?.id) === String(rule.id) && renderRuleForm()}
+                        </Fragment>
                       ))}
                     </div>
                   )}
