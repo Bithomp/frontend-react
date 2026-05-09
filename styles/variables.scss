@@ -54,6 +54,12 @@ body {
   --code-bg: #eeeeee;
   --code-text: #1f1f1e;
   --code-border: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+  --code-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  --code-string: #0D742F;
+  --code-number: #B86500;
+  --code-boolean: #1C54A8;
+  --code-null: #8A4A9E;
+  --code-key: #B52222;
 }
 body.dark {
   --background-header: #031B21;
@@ -109,6 +115,12 @@ body.dark {
   --code-bg: rgba(255, 255, 255, 0.08);
   --code-text: #d7e2e5;
   --code-border: rgba(102, 208, 218, 0.18);
+  --code-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+  --code-string: #7FCB8A;
+  --code-number: #E1AE73;
+  --code-boolean: #8DB7E8;
+  --code-null: #D19AD7;
+  --code-key: #E89B93;
 }
   
 body[data-networkname*="xahau"] {

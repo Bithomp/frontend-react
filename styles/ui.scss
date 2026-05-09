@@ -1156,31 +1156,45 @@ body.dark {
 }
 
 pre {
-  box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
-  width: calc(100% - 10px);
-  margin: 0;
-  margin-bottom: 15px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 15px;
   background-color: var(--code-bg);
   border: 1px solid var(--code-border);
-  padding: 5px;
+  border-radius: 8px;
+  box-shadow: var(--code-shadow);
+  padding: 14px 16px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.94em;
+  line-height: 1.55;
+  tab-size: 2;
   white-space: pre-wrap;
-  word-break: break-all;
+  overflow-wrap: anywhere;
+  word-break: normal;
   color: var(--code-text);
-  transition: height 2s ease-in-out;
+  overflow-x: auto;
+  transition: background-color 0.5s, border-color 0.5s, color 0.5s;
+
+  code {
+    color: inherit;
+    font: inherit;
+  }
+
   .string {
-    color: green;
+    color: var(--code-string);
   }
   .number {
-    color: darkorange;
+    color: var(--code-number);
   }
   .boolean {
-    color: blue;
+    color: var(--code-boolean);
   }
   .null {
-    color: magenta;
+    color: var(--code-null);
   }
   .key {
-    color: red;
+    color: var(--code-key);
   }
 }
 
