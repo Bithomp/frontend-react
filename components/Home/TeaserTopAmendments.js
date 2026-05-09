@@ -1,5 +1,7 @@
 import { useTranslation } from 'next-i18next'
+import { useEffect, useState } from 'react'
 import HomeTeaser, { HomeTeaseRow } from './HomeTeaser'
+import { fetchTeaserAmendmentsClient } from '../../utils/homeTeaserClientData'
 import styles from '@/styles/components/home-teaser.module.scss'
 import { xahauNetwork } from '@/utils'
 
@@ -44,7 +46,13 @@ const amendmentStatus = (amendment) => (amendment.teaserStatus === 'enabled' ? '
 
 export default function TeaserTopAmendments({ data = [], isLoading = false }) {
   const { i18n } = useTranslation()
-  const versionWidthCh = Math.max(...(data?.map((amendment) => amendmentVersion(amendment).length) || [5]), 5)
+  const [items, setItems] = useState(data)
+  const [isInitialLoading, setIsInitialLoading] = useState(!data?.length || isLoading)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const topAmendments = items || []
+  const loading = isInitialLoading && !topAmendments.length
+  const showRefresh = isInitialLoading || isRefreshing || !topAmendments.length
+  const versionWidthCh = Math.max(...(topAmendments?.map((amendment) => amendmentVersion(amendment).length) || [5]), 5)
   const rowStyle = xahauNetwork
     ? {
         '--amendment-version-col': `${Math.max(versionWidthCh + 1, 9)}ch`,
@@ -52,15 +60,34 @@ export default function TeaserTopAmendments({ data = [], isLoading = false }) {
       }
     : undefined
 
+  useEffect(() => {
+    if (data?.length) {
+      setItems(data)
+      setIsInitialLoading(false)
+    }
+  }, [data])
+
+  const refreshData = async () => {
+    setIsRefreshing(true)
+    try {
+      setItems(await fetchTeaserAmendmentsClient())
+    } finally {
+      setIsRefreshing(false)
+      setIsInitialLoading(false)
+    }
+  }
+
   return (
     <HomeTeaser
       title="home.teaser.topAmendments"
       href="/amendments"
-      isLoading={isLoading}
-      isEmpty={!data?.length}
+      isLoading={loading}
+      isRefreshing={isRefreshing || isInitialLoading}
+      onRefresh={showRefresh ? refreshData : null}
+      isEmpty={!topAmendments?.length}
       className={styles.amendmentCard}
     >
-      {data?.map((amendment) => (
+      {topAmendments?.map((amendment) => (
         <HomeTeaseRow
           key={amendment.amendment}
           href={`/amendment/${amendment.amendment}`}
