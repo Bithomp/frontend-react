@@ -2,6 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
 
@@ -85,6 +86,7 @@ export const getServerSideProps = async (context) => {
 
 let interval
 let ws = null
+let paymentTracking = false
 
 const tabTotype = (tab) => {
   switch (tab) {
@@ -200,6 +202,7 @@ export default function Subscriptions({
   const [step, setStep] = useState(0)
   const [subscriptionsTab, setSubscriptionsTab] = useState(tabQuery)
   const [transactions, setTransactions] = useState([])
+  const [receiptVisible, setReceiptVisible] = useState(receiptQuery === 'true')
 
   useEffect(() => {
     if (sessionToken) {
@@ -296,7 +299,7 @@ export default function Subscriptions({
   }
 
   const onPurchaseClick = async () => {
-    setPayData(null)
+    resetPaymentFlow({ clearReceipt: true })
     const period = payPeriod.substring(0, 1) === 'm' ? 'month' : 'year'
     const periodCount = payPeriod.substring(1)
 
@@ -346,6 +349,7 @@ export default function Subscriptions({
       */
       setPayData(paymentData?.data)
       updateBid(paymentData?.data)
+      paymentTracking = true
       setUpdate(true)
       setStep(1)
     }
@@ -361,15 +365,38 @@ export default function Subscriptions({
 
   useEffect(() => {
     setPayData(null)
+    setPaymentErrorMessage('')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payPeriod, tier, subscriptionsTab])
 
-  const onCancel = () => {
+  const stopPaymentTracking = () => {
+    paymentTracking = false
     setUpdate(false)
     clearInterval(interval)
+    if (ws) {
+      ws.onclose = null
+      ws.close()
+      ws = null
+    }
+  }
+
+  const clearReceipt = () => {
+    setReceiptVisible(false)
+    addAndRemoveQueryParams(router, [], ['receipt', 'uuid'])
+  }
+
+  const resetPaymentFlow = ({ clearReceipt: shouldClearReceipt = false } = {}) => {
+    stopPaymentTracking()
     setStep(0)
     setPayData(null)
-    if (ws) ws.close()
+    setPaymentErrorMessage('')
+    if (shouldClearReceipt) {
+      clearReceipt()
+    }
+  }
+
+  const onCancel = () => {
+    resetPaymentFlow({ clearReceipt: true })
   }
 
   const updateBid = (data) => {
@@ -420,12 +447,11 @@ export default function Subscriptions({
         setSubscriptionExpired(false)
       }
       setStep(2)
-      setUpdate(false)
+      setPayData(null)
+      stopPaymentTracking()
       setErrorMessage('')
-      clearInterval(interval)
       getApiData()
       getTransactions()
-      if (ws) ws.close()
       return
     }
     if (data.bid.status === 'Partly paid') {
@@ -441,9 +467,7 @@ export default function Subscriptions({
     }
     if (data.bid.status === 'Timeout') {
       setStep(0)
-      setUpdate(false)
-      clearInterval(interval)
-      if (ws) ws.close()
+      stopPaymentTracking()
       return
     }
     if (data.error) {
@@ -456,18 +480,21 @@ export default function Subscriptions({
       setErrorMessage(t('error.' + error.message))
     })
     const data = response?.data
-    if (data) {
+    if (data && paymentTracking) {
       updateBid(data)
     }
   }
 
   const checkPaymentWs = (partnerId, destinationTag) => {
-    if (!update) return
+    if (!paymentTracking) return
 
     function sendData() {
-      if (ws.readyState) {
+      if (!ws || !paymentTracking) {
+        return
+      }
+      if (ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ command: 'subscribe', bids: [{ partnerID: partnerId, destinationTag }], id: 1 }))
-      } else {
+      } else if (ws.readyState === WebSocket.CONNECTING) {
         setTimeout(sendData, 1000)
       }
     }
@@ -480,23 +507,28 @@ export default function Subscriptions({
 
     ws.onmessage = (evt) => {
       const message = JSON.parse(evt.data)
-      if (message) {
+      if (message && paymentTracking) {
         updateBid(message)
       }
     }
 
     ws.onclose = () => {
-      if (update) {
+      if (paymentTracking) {
         checkPaymentWs(partnerId, destinationTag)
       }
     }
   }
 
   const setSubscriptionsTabAndRestartSteps = (tab) => {
+    resetPaymentFlow({ clearReceipt: true })
+    setBidData(null)
     setSubscriptionsTab(tab)
-    setStep(0)
-    setPayData(null)
   }
+
+  const completedBid = bidData?.bid
+  const completedType = completedBid?.type || tabTotype(subscriptionsTab)
+  const completedServiceName = completedBid ? bidFullServiceName(completedBid) : bidTypeToName(completedType)
+  const completedIsNotifications = completedType === 'bot'
 
   return (
     <>
@@ -685,11 +717,30 @@ export default function Subscriptions({
                           </>
                         )}
 
-                        {(receiptQuery === 'true' || step === 2) && (
-                          <>
-                            <p className="center orange">We have received your payment.</p>
-                            {receiptQuery === 'false' && <Receipt item="subscription" details={bidData.bid} />}
-                          </>
+                        {(receiptVisible || step === 2) && (
+                          <div className="subscription-success">
+                            <p className="center orange bold">We have received your payment.</p>
+                            <p className="center">
+                              {completedServiceName
+                                ? `${completedServiceName} is being activated.`
+                                : 'Your subscription is being activated.'}
+                            </p>
+
+                            {completedIsNotifications && (
+                              <div className="subscription-success-next">
+                                <h4>Next step</h4>
+                                <p>
+                                  Open Alerts to create a channel, then add rules for the ledger events you want to
+                                  receive.
+                                </p>
+                                <Link href="/admin/notifications" className="button-action narrow">
+                                  Open Alerts
+                                </Link>
+                              </div>
+                            )}
+
+                            {step === 2 && completedBid && <Receipt item="subscription" details={completedBid} />}
+                          </div>
                         )}
                         {paymentErrorMessage && (
                           <p
@@ -804,6 +855,30 @@ export default function Subscriptions({
           )}
         </div>
       </div>
+      <style jsx>{`
+        .subscription-success {
+          max-width: 760px;
+          margin: 20px auto;
+        }
+
+        .subscription-success-next {
+          max-width: 520px;
+          margin: 18px auto 22px;
+          padding: 18px;
+          border: 1px solid var(--unaccent-icon-color);
+          border-radius: 12px;
+          background: var(--background-input);
+          text-align: center;
+        }
+
+        .subscription-success-next h4 {
+          margin: 0 0 8px;
+        }
+
+        .subscription-success-next p {
+          margin: 0 0 16px;
+        }
+      `}</style>
     </>
   )
 }

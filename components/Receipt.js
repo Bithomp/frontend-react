@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import { fullDateAndTime } from '../utils/format'
+import { bidFullServiceName } from '../utils/bids'
 
 import { useTheme } from './Layout/ThemeContext'
 
@@ -33,7 +34,7 @@ export default function Receipt({ item, details }) {
       serviceName: t('menu.services.username')
     },
     subscription: {
-      serviceName: 'Bithomp Pro'
+      serviceName: bidFullServiceName(details) || 'Subscription'
     }
   }
 
