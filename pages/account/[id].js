@@ -49,7 +49,7 @@ const OBJECT_LOAD_MORE_STEP = 5
 const DOMAIN_FAVICON_SIZE = 16
 const DOMAIN_FAVICON_CDN_SIZE = DOMAIN_FAVICON_SIZE * 2
 
-const nftTokenIdFromData = (item) => item?.nftokenID || null
+const nftTokenIdFromData = (item) => item?.nftokenID || item?.uritokenID || null
 
 const uniqueNftsById = (nfts) => {
   const seen = new Set()
@@ -5997,24 +5997,40 @@ export default function Account({
                         ? txdata?.specification?.destination?.addressDetails
                         : txdata?.specification?.source?.addressDetails
 
-                      const nftChanges = (outcome?.nftokenChanges || []).flatMap((entry) => entry?.nftokenChanges || [])
-                      const nftAddressChanges = outcome?.nftokenChanges || []
+                      const affectedNfts = xahauNetwork
+                        ? outcome?.affectedObjects?.uritokens || {}
+                        : outcome?.affectedObjects?.nftokens || {}
+                      const affectedNftList = Object.values(affectedNfts)
+                      const nftChangeKey = xahauNetwork ? 'uritokenChanges' : 'nftokenChanges'
+                      const nftChanges = (outcome?.[nftChangeKey] || []).flatMap((entry) => entry?.[nftChangeKey] || [])
+                      const nftAddressChanges = outcome?.[nftChangeKey] || []
                       const nftSource =
                         nftAddressChanges.length === 2
-                          ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'removed')
+                          ? nftAddressChanges.find((change) => change?.[nftChangeKey]?.[0]?.status === 'removed')
                           : null
                       const nftDestination =
                         nftAddressChanges.length === 2
-                          ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'added')
+                          ? nftAddressChanges.find((change) => change?.[nftChangeKey]?.[0]?.status === 'added')
                           : null
-                      const nftTokenId =
-                        tx?.NFTokenID ||
-                        txdata?.meta?.nftoken_id ||
-                        txdata?.meta?.nftokenID ||
-                        txdata?.specification?.nftokenID ||
-                        txdata?.specification?.nftokenId ||
-                        txdata?.specification?.nftokenOffer?.nftokenID ||
-                        nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
+                      const nftTokenId = xahauNetwork
+                        ? tx?.URITokenID ||
+                          txdata?.meta?.uritoken_id ||
+                          txdata?.meta?.uritokenID ||
+                          txdata?.specification?.uritokenID ||
+                          nftChanges.find((entry) => entry?.uritokenID)?.uritokenID ||
+                          affectedNftList[0]?.uritokenID
+                        : tx?.NFTokenID ||
+                          txdata?.meta?.nftoken_id ||
+                          txdata?.meta?.nftokenID ||
+                          txdata?.specification?.nftokenID ||
+                          txdata?.specification?.nftokenOffer?.nftokenID ||
+                          nftChanges.find((entry) => entry?.nftokenID)?.nftokenID ||
+                          affectedNftList[0]?.nftokenID
+                      const nftPreviewData = (nftTokenId && affectedNfts[nftTokenId]) || affectedNftList[0] || null
+                      const nftPreviewId = nftTokenIdFromData(nftPreviewData) || nftTokenId
+                      const nftPreviewTitle = nftPreviewData
+                        ? nftName(nftPreviewData, { maxLength: 48 }) || shortHash(nftPreviewId)
+                        : ''
                       const nftSellerAddress = nftSource?.address || null
                       const nftSellerDetails = nftSource?.addressDetails || null
                       const nftBuyerAddress = nftDestination?.address || null
@@ -6158,26 +6174,36 @@ export default function Account({
                         (!!dexTakerGets || !!dexTakerPays)
                       const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
                       const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
-                      const isCreateNftOfferTx = txType === 'NFTokenCreateOffer'
-                      const isAcceptNftOfferTx = txType === 'NFTokenAcceptOffer'
-                      const isCancelNftOfferTx = txType === 'NFTokenCancelOffer'
+                      const isCreateNftOfferTx = xahauNetwork
+                        ? txType === 'URITokenCreateSellOffer'
+                        : txType === 'NFTokenCreateOffer'
+                      const isAcceptNftOfferTx = xahauNetwork
+                        ? txType === 'URITokenBuy'
+                        : txType === 'NFTokenAcceptOffer'
+                      const isCancelNftOfferTx = xahauNetwork
+                        ? txType === 'URITokenCancelSellOffer'
+                        : txType === 'NFTokenCancelOffer'
                       const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
-                      const outcomeOfferIds = (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
-                        (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
-                      )
-                      const nftOfferIds = Array.from(
-                        new Set(
-                          [
-                            ...outcomeOfferIds,
-                            ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
-                            tx?.NFTokenSellOffer,
-                            tx?.NFTokenBuyOffer,
-                            tx?.OfferID,
-                            txdata?.specification?.nftokenOffer?.offerIndex,
-                            txdata?.specification?.nftokenOffer?.offerID
-                          ].filter(Boolean)
-                        )
-                      )
+                      const outcomeOfferIds = xahauNetwork
+                        ? []
+                        : (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
+                            (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
+                          )
+                      const nftOfferIds = xahauNetwork
+                        ? []
+                        : Array.from(
+                            new Set(
+                              [
+                                ...outcomeOfferIds,
+                                ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
+                                tx?.NFTokenSellOffer,
+                                tx?.NFTokenBuyOffer,
+                                tx?.OfferID,
+                                txdata?.specification?.nftokenOffer?.offerIndex,
+                                txdata?.specification?.nftokenOffer?.offerID
+                              ].filter(Boolean)
+                            )
+                          )
                       const nftOfferAmountRaw =
                         tx?.Amount ??
                         txdata?.specification?.nftokenOffer?.amount ??
@@ -6503,7 +6529,12 @@ export default function Account({
                           if (amountChangeValue > 0) return `Sold NFT ${nonBrokerDirectionSuffix}`
                           if (amountChangeValue < 0) return `Bought NFT ${nonBrokerDirectionSuffix}`
 
-                          const direction = txdata?.specification?.flags?.sellToken ? 'Sell' : 'Buy'
+                          const direction =
+                            txType === 'URITokenCreateSellOffer'
+                              ? 'Sell'
+                              : txdata?.specification?.flags?.sellToken
+                                ? 'Sell'
+                                : 'Buy'
                           const isIncomingOffer = tx?.Account !== data?.address
 
                           if (isIncomingOffer) {
@@ -6541,12 +6572,19 @@ export default function Account({
                         showFreeNftBadge &&
                         typeof nftOfferLegacyLabel === 'string' &&
                         nftOfferLegacyLabel.startsWith('Received NFT from')
-                      const isNftSellOffer = !!txdata?.specification?.flags?.sellToken
+                      const isNftSellOffer = xahauNetwork
+                        ? isCreateNftOfferTx
+                        : !!txdata?.specification?.flags?.sellToken
                       const isNftBuyOffer = !isNftSellOffer
                       const isIncomingSellOffer = isCreateNftOfferTx && tx?.Account !== data?.address && isNftSellOffer
                       const isOutgoingSellOffer = isCreateNftOfferTx && tx?.Account === data?.address && isNftSellOffer
                       const isCreateNftBuyOfferTx = isCreateNftOfferTx && isNftBuyOffer
-                      const isNftMintTx = tx?.TransactionType === 'NFTokenMint'
+                      const isNftMintTx = xahauNetwork
+                        ? tx?.TransactionType === 'URITokenMint'
+                        : tx?.TransactionType === 'NFTokenMint'
+                      const isNftBurnTx = xahauNetwork
+                        ? tx?.TransactionType === 'URITokenBurn'
+                        : tx?.TransactionType === 'NFTokenBurn'
                       const nftMintDestinationAddress = tx?.Destination || destinationAddress
                       const nftMintAmountRaw =
                         tx?.Amount ??
@@ -6651,9 +6689,9 @@ export default function Account({
                           ? txTypeShortLabel
                           : isDidTx
                             ? txTypeShortLabel
-                            : txType === 'NFTokenMint'
+                            : isNftMintTx
                               ? txTypeShortLabel
-                              : txType === 'NFTokenBurn'
+                              : isNftBurnTx
                                 ? txTypeShortLabel
                                 : tx?.TransactionType === 'TrustSet'
                                   ? counterparty
@@ -6702,91 +6740,111 @@ export default function Account({
                         >
                           <div className="asset-main tx-asset-main">
                             <div className="asset-logo tx-asset-logo">
-                              <div className="tx-collapsed-top">
-                                <span className="tx-type-main">
-                                  {txTypeIconNode && <span className="tx-type-icon">{txTypeIconNode}</span>}
-                                  {showBrokerInCollapsedTitle ? (
-                                    <span className="tx-broker-stack">
-                                      <span className="tx-broker-inline">
-                                        <span>Broker </span>
+                              {!!nftPreviewData && !!nftPreviewId && (
+                                <Link
+                                  href={`/nft/${nftPreviewId}`}
+                                  className="tx-nft-thumb"
+                                  title={nftPreviewTitle}
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <NftImage
+                                    nft={nftPreviewData}
+                                    style={{
+                                      width: 40,
+                                      height: 40,
+                                      borderRadius: '6px',
+                                      verticalAlign: 'middle'
+                                    }}
+                                  />
+                                </Link>
+                              )}
+                              <div className="tx-collapsed-body">
+                                <div className="tx-collapsed-top">
+                                  <span className="tx-type-main">
+                                    {txTypeIconNode && <span className="tx-type-icon">{txTypeIconNode}</span>}
+                                    {showBrokerInCollapsedTitle ? (
+                                      <span className="tx-broker-stack">
+                                        <span className="tx-broker-inline">
+                                          <span>Broker </span>
+                                          <AddressWithIconInline
+                                            data={{
+                                              address: brokerAddress,
+                                              addressDetails: txdata?.specification?.source?.addressDetails || {}
+                                            }}
+                                            options={{ short: 6 }}
+                                          />
+                                        </span>
+                                        <span className="tx-broker-action">{brokerCollapsedAction}</span>
+                                      </span>
+                                    ) : (
+                                      txTypeCollapsedLabel
+                                    )}
+                                  </span>
+                                  <span className="tx-time tx-time-top">
+                                    {tx?.date ? timeOrDate(tx.date, 'ripple') : '-'}
+                                  </span>
+                                </div>
+
+                                <div className="tx-collapsed-meta">
+                                  {txType === 'AccountSet' && accountSetCollapsedChangeNode && (
+                                    <span className="tx-accountset-inline">{accountSetCollapsedChangeNode}</span>
+                                  )}
+                                  {isDidTx && !!didCollapsedMeta && (
+                                    <span className="tx-accountset-inline">{didCollapsedMeta}</span>
+                                  )}
+                                  {showDexCollapsedSequence && (
+                                    <span className="tx-accountset-inline">
+                                      {dexCollapsedSequences.length > 1 ? 'Offer sequences: ' : 'Offer sequence: '}
+                                      {dexCollapsedSequences.join(', ')}
+                                    </span>
+                                  )}
+                                  {ammPairToken && (
+                                    <span className="tx-amm-token-meta">
+                                      <CurrencyWithIcon
+                                        token={ammPairToken}
+                                        hideIssuer
+                                        options={{ disableTokenLink: true }}
+                                      />
+                                    </span>
+                                  )}
+                                  {tx?.TransactionType === 'TrustSet' && trustSetToken && (
+                                    <span className="tx-trustset-inline">
+                                      <CurrencyWithIcon
+                                        token={{ ...trustSetToken }}
+                                        options={{ disableTokenLink: true }}
+                                      />
+                                    </span>
+                                  )}
+                                  {txType === 'SetRegularKey' && (
+                                    <span className="tx-counterparty-inline">
+                                      {setRegularKeyValue && (
                                         <AddressWithIconInline
                                           data={{
-                                            address: brokerAddress,
-                                            addressDetails: txdata?.specification?.source?.addressDetails || {}
+                                            address: setRegularKeyValue,
+                                            addressDetails: setRegularKeyDetails || {}
+                                          }}
+                                          options={{ short: 6 }}
+                                        />
+                                      )}
+                                    </span>
+                                  )}
+                                  {tx?.TransactionType !== 'TrustSet' &&
+                                    txType !== 'SetRegularKey' &&
+                                    !isSelfPayment &&
+                                    !isRipplingTransaction &&
+                                    !isDexOfferTx &&
+                                    resolvedCounterpartyAddress && (
+                                      <span className="tx-counterparty-inline">
+                                        <AddressWithIconInline
+                                          data={{
+                                            address: resolvedCounterpartyAddress,
+                                            addressDetails: resolvedCounterpartyDetails || {}
                                           }}
                                           options={{ short: 6 }}
                                         />
                                       </span>
-                                      <span className="tx-broker-action">{brokerCollapsedAction}</span>
-                                    </span>
-                                  ) : (
-                                    txTypeCollapsedLabel
-                                  )}
-                                </span>
-                                <span className="tx-time tx-time-top">
-                                  {tx?.date ? timeOrDate(tx.date, 'ripple') : '-'}
-                                </span>
-                              </div>
-
-                              <div className="tx-collapsed-meta">
-                                {txType === 'AccountSet' && accountSetCollapsedChangeNode && (
-                                  <span className="tx-accountset-inline">{accountSetCollapsedChangeNode}</span>
-                                )}
-                                {isDidTx && !!didCollapsedMeta && (
-                                  <span className="tx-accountset-inline">{didCollapsedMeta}</span>
-                                )}
-                                {showDexCollapsedSequence && (
-                                  <span className="tx-accountset-inline">
-                                    {dexCollapsedSequences.length > 1 ? 'Offer sequences: ' : 'Offer sequence: '}
-                                    {dexCollapsedSequences.join(', ')}
-                                  </span>
-                                )}
-                                {ammPairToken && (
-                                  <span className="tx-amm-token-meta">
-                                    <CurrencyWithIcon
-                                      token={ammPairToken}
-                                      hideIssuer
-                                      options={{ disableTokenLink: true }}
-                                    />
-                                  </span>
-                                )}
-                                {tx?.TransactionType === 'TrustSet' && trustSetToken && (
-                                  <span className="tx-trustset-inline">
-                                    <CurrencyWithIcon
-                                      token={{ ...trustSetToken }}
-                                      options={{ disableTokenLink: true }}
-                                    />
-                                  </span>
-                                )}
-                                {txType === 'SetRegularKey' && (
-                                  <span className="tx-counterparty-inline">
-                                    {setRegularKeyValue && (
-                                      <AddressWithIconInline
-                                        data={{
-                                          address: setRegularKeyValue,
-                                          addressDetails: setRegularKeyDetails || {}
-                                        }}
-                                        options={{ short: 6 }}
-                                      />
                                     )}
-                                  </span>
-                                )}
-                                {tx?.TransactionType !== 'TrustSet' &&
-                                  txType !== 'SetRegularKey' &&
-                                  !isSelfPayment &&
-                                  !isRipplingTransaction &&
-                                  !isDexOfferTx &&
-                                  resolvedCounterpartyAddress && (
-                                    <span className="tx-counterparty-inline">
-                                      <AddressWithIconInline
-                                        data={{
-                                          address: resolvedCounterpartyAddress,
-                                          addressDetails: resolvedCounterpartyDetails || {}
-                                        }}
-                                        options={{ short: 6 }}
-                                      />
-                                    </span>
-                                  )}
+                                </div>
                               </div>
                             </div>
 
@@ -7466,17 +7524,38 @@ export default function Account({
                                 </div>
                               )}
 
-                              {nftTokenId && (
+                              {nftPreviewId && (
                                 <div className="detail-row">
                                   <span>NFT:</span>
                                   <span className="copy-inline">
-                                    <Link href={`/nft/${nftTokenId}`} onClick={(event) => event.stopPropagation()}>
-                                      {shortHash(nftTokenId)}
+                                    <Link href={`/nft/${nftPreviewId}`} onClick={(event) => event.stopPropagation()}>
+                                      {shortHash(nftPreviewId)}
                                     </Link>
                                     <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={nftTokenId} />
+                                      <CopyButton text={nftPreviewId} />
                                     </span>
                                   </span>
+                                </div>
+                              )}
+
+                              {!!nftPreviewData && !!nftPreviewId && (
+                                <div className="tx-nft-expanded-preview" onClick={(event) => event.stopPropagation()}>
+                                  <Link href={`/nft/${nftPreviewId}`} className="nft-expanded-preview-link">
+                                    <NftImage
+                                      nft={nftPreviewData}
+                                      style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        borderRadius: '10px',
+                                        verticalAlign: 'middle'
+                                      }}
+                                    />
+                                  </Link>
+                                  {!!nftPreviewTitle && (
+                                    <div className="tx-nft-expanded-title" title={nftPreviewTitle}>
+                                      {nftPreviewTitle}
+                                    </div>
+                                  )}
                                 </div>
                               )}
 
@@ -10157,6 +10236,39 @@ export default function Account({
           border-radius: 50%;
           object-fit: cover;
         }
+
+        .tx-asset-logo {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          min-width: 0;
+        }
+
+        .tx-collapsed-body {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .tx-nft-thumb {
+          display: inline-flex;
+          width: 40px;
+          height: 40px;
+          border-radius: 6px;
+          overflow: hidden;
+          line-height: 0;
+          flex: 0 0 auto;
+          border: 1px solid color-mix(in srgb, var(--border-color) 76%, var(--text-secondary));
+          background: color-mix(in srgb, var(--background-input) 90%, var(--text-main) 10%);
+        }
+
+        .tx-nft-thumb :global(img) {
+          width: 100%;
+          height: 100%;
+          margin-right: 0 !important;
+          border-radius: 6px;
+          object-fit: cover;
+          display: block;
+        }
         .tx-collapsed-top {
           display: flex;
           align-items: flex-start;
@@ -11388,6 +11500,28 @@ export default function Account({
           height: 100%;
           object-fit: cover;
           display: block;
+        }
+
+        .tx-nft-expanded-preview {
+          margin: 12px auto 10px;
+          width: min(100%, 180px);
+          text-align: center;
+        }
+
+        .tx-nft-expanded-preview :global(img) {
+          margin-right: 0 !important;
+        }
+
+        .tx-nft-expanded-title {
+          margin-top: 6px;
+          font-size: 12px;
+          line-height: 1.25;
+          color: var(--text-secondary);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
         }
 
         .nft-details {
