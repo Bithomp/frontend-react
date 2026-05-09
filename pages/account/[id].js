@@ -6617,7 +6617,7 @@ export default function Account({
                           ? buildTxAmountDisplay({
                               amount: nftOfferAmountRaw,
                               sign: -1,
-                              tone: 'orange',
+                              tone: 'grey',
                               withIssuer: true
                             })
                           : null
@@ -8905,10 +8905,12 @@ export default function Account({
                               ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
                               : null
                           const isNativeOfferAmount = !isFreeNftOffer && offer?.amount && typeof offer.amount !== 'object'
-                          const shouldShowCurrentNativeOfferFiat =
-                            isNativeOfferAmount && (isOwnedNftOfferTab || isCreatedNftOfferTab)
+                          const shouldShowOfferFiat =
+                            !isFreeNftOffer &&
+                            !!offer?.amount &&
+                            (isPrivateNftOfferTab || isOwnedNftOfferTab || isCreatedNftOfferTab)
                           const nativeOfferAmountFiat =
-                            shouldShowCurrentNativeOfferFiat
+                            shouldShowOfferFiat && isNativeOfferAmount
                               ? tokenToFiat({
                                   amount: offer.amount,
                                   selectedCurrency,
@@ -8918,10 +8920,19 @@ export default function Account({
                                 })
                               : null
                           const convertedOfferAmountFiat =
-                            offer?.amount && selectedCurrency && !isNativeOfferAmount
+                            shouldShowOfferFiat && selectedCurrency && !isNativeOfferAmount
                               ? convertedAmount(offer, selectedCurrency.toLowerCase(), { short: true })
                               : null
-                          const offerAmountFiat = nativeOfferAmountFiat || convertedOfferAmountFiat
+                          const tokenOfferAmountFiat =
+                            shouldShowOfferFiat && selectedCurrency && !isNativeOfferAmount
+                              ? nftOfferFiatText(offer, {
+                                  fiatRate: pageFiatRate,
+                                  selectedCurrency,
+                                  tokenList: tokens
+                                })
+                              : null
+                          const offerAmountFiat =
+                            nativeOfferAmountFiat || convertedOfferAmountFiat || tokenOfferAmountFiat
                           const offerPlacedRelative = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : null
                           const offerPlacedExact = offer?.createdAt ? fullDateAndTime(offer.createdAt) : null
                           const offerIndex = offer?.offerIndex
@@ -9002,7 +9013,7 @@ export default function Account({
                             return isOwnAccount ? 'Your sell offer' : 'Sell offer created by this account'
                           })()
                           const collapsedAmountDirection = (() => {
-                            if (nftOffersTab === 'received') return { sign: '-', className: 'red' }
+                            if (nftOffersTab === 'received') return { sign: '-', className: 'grey' }
                             if (nftOffersTab === 'owned') return { sign: '+', className: 'grey' }
 
                             // Created offers: buy offer means you pay; sell offer means you receive.
@@ -9067,8 +9078,10 @@ export default function Account({
                                     <span className={`tx-inline-change ${collapsedAmountClass}`}>
                                       {isFreeNftOffer ? 'Free' : `${collapsedAmountSign}${offerAmountText || '-'}`}
                                     </span>
-                                    {shouldShowCurrentNativeOfferFiat && nativeOfferAmountFiat && (
-                                      <span className="tx-change-fiat">{nativeOfferAmountFiat}</span>
+                                    {offerAmountFiat && (
+                                      <span className="tx-change-fiat">
+                                        {nativeOfferAmountFiat ? offerAmountFiat : `≈${offerAmountFiat}`}
+                                      </span>
                                     )}
                                   </span>
                                 </div>
