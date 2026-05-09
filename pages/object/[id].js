@@ -178,7 +178,7 @@ export default function LedgerObject({
             <tr key={key}>
               <td>{key}</td>
               <td>
-                <Link href={`/transaction/${value}`}>{shortHash(value)}</Link> <CopyButton text={value} />
+                <Link href={`/tx/${value}`}>{shortHash(value)}</Link> <CopyButton text={value} />
               </td>
             </tr>
           )

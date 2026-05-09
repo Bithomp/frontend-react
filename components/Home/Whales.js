@@ -63,7 +63,7 @@ export default function Whales({ currency, data, setData }) {
       {data?.slice(0, 8).map((tx) => (
         <HomeTeaseRow
           key={tx.hash}
-          href={`/transaction/${tx.hash}`}
+          href={`/tx/${tx.hash}`}
           className={`${styles.whaleRow} ${difference?.includes(tx) ? 'just-added' : ''}`}
         >
           <div className={styles.timeAgo}>{formatTxTime(tx)}</div>

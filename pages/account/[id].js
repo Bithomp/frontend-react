@@ -2673,7 +2673,7 @@ export default function Account({
   const lastSubmittedTxHash = data?.ledgerInfo?.lastSubmittedTxHash
   const statusTimeAgoNode = data?.ledgerInfo?.lastSubmittedAt ? (
     lastSubmittedTxHash ? (
-      <Link href={`/transaction/${lastSubmittedTxHash}`}>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</Link>
+      <Link href={`/tx/${lastSubmittedTxHash}`}>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</Link>
     ) : (
       <span>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</span>
     )
@@ -2908,7 +2908,7 @@ export default function Account({
       <span className="activated-line">
         <span className="tooltip activated-time no-brake">
           {data?.inceptionTxHash ? (
-            <Link href={`/transaction/${data.inceptionTxHash}`} onClick={(event) => event.stopPropagation()}>
+            <Link href={`/tx/${data.inceptionTxHash}`} onClick={(event) => event.stopPropagation()}>
               <span className="bold">{activatedRelativeToSelectedTime || timeFromNow(data.inception, i18n)}</span>
             </Link>
           ) : (
@@ -3256,7 +3256,7 @@ export default function Account({
                               <>
                                 {' '}
                                 <Link
-                                  href={`/transaction/${didData.createdTxHash}`}
+                                  href={`/tx/${didData.createdTxHash}`}
                                   className="inline-link-icon tooltip"
                                   onClick={(event) => event.stopPropagation()}
                                 >
@@ -3278,7 +3278,7 @@ export default function Account({
                               <>
                                 {' '}
                                 <Link
-                                  href={`/transaction/${didData.updatedTxHash}`}
+                                  href={`/tx/${didData.updatedTxHash}`}
                                   className="inline-link-icon tooltip"
                                   onClick={(event) => event.stopPropagation()}
                                 >
@@ -4050,7 +4050,7 @@ export default function Account({
                           <span>Last affecting tx:</span>
                           <span className="copy-inline">
                             <Link
-                              href={`/transaction/${data.ledgerInfo.previousTxnID}`}
+                              href={`/tx/${data.ledgerInfo.previousTxnID}`}
                               onClick={(event) => event.stopPropagation()}
                             >
                               {shortHash(data.ledgerInfo.previousTxnID)}
@@ -4067,7 +4067,7 @@ export default function Account({
                           <span>Last initiated tx:</span>
                           <span className="copy-inline">
                             <Link
-                              href={`/transaction/${data.ledgerInfo.accountTxnID}`}
+                              href={`/tx/${data.ledgerInfo.accountTxnID}`}
                               onClick={(event) => event.stopPropagation()}
                             >
                               {shortHash(data.ledgerInfo.accountTxnID)}
@@ -7594,7 +7594,7 @@ export default function Account({
                                 <span className="copy-inline">
                                   {txHash ? (
                                     <Link
-                                      href={`/transaction/${txHash}`}
+                                      href={`/tx/${txHash}`}
                                       className="tx-link"
                                       onClick={(event) => event.stopPropagation()}
                                     >
@@ -9708,7 +9708,7 @@ export default function Account({
                                       <span>Activation tx:</span>
                                       <span className="copy-inline">
                                         <Link
-                                          href={`/transaction/${child.txHash}`}
+                                          href={`/tx/${child.txHash}`}
                                           onClick={(e) => e.stopPropagation()}
                                         >
                                           {shortHash(child.txHash)}
@@ -9743,7 +9743,7 @@ export default function Account({
                                           <span>Last submitted tx:</span>
                                           <span className="copy-inline">
                                             <Link
-                                              href={`/transaction/${child.lastSubmittedTxHash}`}
+                                              href={`/tx/${child.lastSubmittedTxHash}`}
                                               onClick={(e) => e.stopPropagation()}
                                             >
                                               {shortHash(child.lastSubmittedTxHash)}
@@ -9767,7 +9767,7 @@ export default function Account({
                                           <span>Delete tx:</span>
                                           <span className="copy-inline">
                                             <Link
-                                              href={`/transaction/${child.deletedTxHash}`}
+                                              href={`/tx/${child.deletedTxHash}`}
                                               onClick={(e) => e.stopPropagation()}
                                             >
                                               {shortHash(child.deletedTxHash)}
