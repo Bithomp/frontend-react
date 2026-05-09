@@ -679,11 +679,18 @@
       border: 1px solid color-mix(in srgb, var(--accent-link) 24%, var(--button-additional));
       border-radius: 8px;
       background: color-mix(in srgb, var(--background-main) 74%, transparent);
+      color: var(--accent-link);
       line-height: 1;
 
       &:hover {
         border-color: var(--accent-link);
-        background: color-mix(in srgb, var(--accent-link) 12%, var(--background-main));
+        background: color-mix(in srgb, var(--accent-link) 16%, var(--background-main));
+        color: var(--accent-link-hover);
+      }
+
+      &:disabled {
+        cursor: default;
+        opacity: 0.58;
       }
 
       svg {
@@ -761,6 +768,12 @@
 
   .notification-delete-button {
     color: var(--red);
+
+    &:hover {
+      border-color: var(--red) !important;
+      background: color-mix(in srgb, var(--red) 14%, var(--background-main)) !important;
+      color: var(--red) !important;
+    }
 
     svg {
       width: 22px;
