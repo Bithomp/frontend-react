@@ -7,7 +7,16 @@ import Link from 'next/link'
 
 import { getIsSsrMobile } from '../../utils/mobile'
 
-import { setTabParams, stripText, useWidth, chartSpan, xahauNetwork, nativeCurrency, explorerName } from '../../utils'
+import {
+  setTabParams,
+  stripText,
+  useWidth,
+  chartSpan,
+  xahauNetwork,
+  nativeCurrency,
+  explorerName,
+  webSiteName
+} from '../../utils'
 import TokenSelector from '../../components/UI/TokenSelector'
 
 export const getServerSideProps = async (context) => {
@@ -50,6 +59,62 @@ import RadioOptions from '../../components/UI/RadioOptions'
 import { collectionNameText, collectionThumbnail, nonSologenic } from '../../utils/nft'
 import FiltersFrame from '../../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
+import DappLogo from '../../components/Dapps/DappLogo'
+import { DAPPS_META } from '../../utils/dapps'
+
+const MARKETPLACE_FAVICON_SIZE = 32
+const MARKETPLACE_FAVICON_CDN_SIZE = MARKETPLACE_FAVICON_SIZE * 2
+const MARKETPLACE_HOST_ALIASES = {
+  'sologenic.org': 'sologenic.com'
+}
+
+const normalizeMarketplaceHost = (value) => {
+  if (!value || typeof value !== 'string') return ''
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .split('/')[0]
+}
+
+const dappMetaByHost = (() => {
+  const metaObj = DAPPS_META?.[0] || {}
+  const map = {}
+
+  Object.values(metaObj).forEach((entry) => {
+    const host = normalizeMarketplaceHost(entry?.url)
+    if (host) {
+      map[host] = entry
+    }
+  })
+
+  return map
+})()
+
+const marketplaceFaviconSrc = (marketplace) => {
+  if (!marketplace) return ''
+  return `https://cdn.${webSiteName}/favicons/${encodeURIComponent(marketplace)}?size=${MARKETPLACE_FAVICON_CDN_SIZE}`
+}
+
+const MarketplaceCell = ({ marketplace }) => {
+  const host = MARKETPLACE_HOST_ALIASES[normalizeMarketplaceHost(marketplace)] || normalizeMarketplaceHost(marketplace)
+  const entry = dappMetaByHost[host]
+  const logo = entry?.logo ? `/images/dapps/${entry.logo}` : marketplaceFaviconSrc(marketplace)
+
+  return (
+    <span className="marketplace-name-wrap" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+      <DappLogo
+        src={logo}
+        alt={marketplace || 'marketplace'}
+        width={MARKETPLACE_FAVICON_SIZE}
+        height={MARKETPLACE_FAVICON_SIZE}
+        style={{ marginTop: 0, marginRight: 0 }}
+      />
+      <span className="marketplace-name-text">{marketplace}</span>
+    </span>
+  )
+}
 
 export default function NftVolumes({
   extendedStatsQuery,
@@ -1148,7 +1213,11 @@ export default function NftVolumes({
                                         </span>
                                       </td>
                                     )}
-                                    {listTab === 'marketplaces' && <td>{volume.marketplace}</td>}
+                                    {listTab === 'marketplaces' && (
+                                      <td>
+                                        <MarketplaceCell marketplace={volume.marketplace} />
+                                      </td>
+                                    )}
                                     {listTab === 'marketplaces' && (
                                       <td className="right">
                                         {xahauNetwork ? (
@@ -1316,7 +1385,7 @@ export default function NftVolumes({
                                   {listTab === 'collections' && collectionName(volume, 'mobile')}
                                   {listTab === 'marketplaces' && (
                                     <p>
-                                      {t('table.marketplace')}: {volume.marketplace}
+                                      {t('table.marketplace')}: <MarketplaceCell marketplace={volume.marketplace} />
                                     </p>
                                   )}
                                   {listTab === 'marketplaces' &&
@@ -1456,8 +1525,23 @@ export default function NftVolumes({
           max-width: 220px;
         }
 
+        .marketplace-name-wrap {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 0;
+          vertical-align: middle;
+        }
+
         .collections-name-thumb {
           flex: 0 0 auto;
+        }
+
+        .marketplace-name-text {
+          min-width: 0;
+          white-space: normal;
+          overflow-wrap: anywhere;
+          line-height: 1.3;
         }
 
         .collections-name-text {
