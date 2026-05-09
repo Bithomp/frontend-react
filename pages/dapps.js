@@ -56,6 +56,24 @@ const sortDapps = (list, order) => {
   }
 }
 
+const dappsApiUrl = (convertCurrency, period) => {
+  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true&previousPeriodMode=calendar-1`
+  if (period) {
+    apiUrl += `&period=${encodeURIComponent(period)}`
+  }
+  return apiUrl
+}
+
+const periodComparisonText = (period) => {
+  if (period === 'week') {
+    return '% compares the last 7 days with the previous full calendar week'
+  }
+  if (period === 'month') {
+    return '% compares the last 30 days with the previous full calendar month'
+  }
+  return '% compares the last 24 hours with the previous full calendar day'
+}
+
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
   const { order, period, includeAppsWithoutExternalSigning, wallet } = query
@@ -66,10 +84,7 @@ export async function getServerSideProps(context) {
   const selectedCurrencyServer = currencyServer(req)
   const convertCurrency = (selectedCurrencyServer || 'usd').toLowerCase()
 
-  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=${period === 'month' ? 'calendar' : 'true'}`
-  if (period) {
-    apiUrl += `&period=${encodeURIComponent(period)}`
-  }
+  const apiUrl = dappsApiUrl(convertCurrency, period)
 
   try {
     const res = await axiosServer({
@@ -195,12 +210,9 @@ export default function Dapps({
     const controller = new AbortController()
     abortControllerRef.current = controller
     axios
-      .get(
-        `/v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=${period === 'month' ? 'calendar' : 'true'}&period=${period}`,
-        {
-          signal: controller.signal
-        }
-      )
+      .get('/' + dappsApiUrl(convertCurrency, period), {
+        signal: controller.signal
+      })
       .then((res) => {
         setRawData(res?.data || {})
         setLoading(false)
@@ -370,9 +382,7 @@ export default function Dapps({
             Period
             <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
             <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
-              {period === 'day' && '% compared to previous 24h'}
-              {period === 'week' && '% compared to previous 7 days'}
-              {period === 'month' && '% compared to previous full calendar month'}
+              {periodComparisonText(period)}
             </div>
           </div>
           <div>
