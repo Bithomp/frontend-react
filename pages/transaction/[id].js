@@ -156,6 +156,9 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
     type: transactionSeo.type,
     status: transactionSeo.status
   }
+  if (transactionSeo.image) {
+    transactionPreviewParams.image = transactionSeo.image
+  }
   const transactionPreviewImage = {
     width: 630,
     height: 630,

@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer'
+
 const escapeSvg = (value) =>
   String(value || '')
     .replace(/&/g, '&amp;')
@@ -19,12 +21,53 @@ const txStyle = (type) => {
   return { accent: '#00a6b4', dark: '#07363b', mark: 'TX' }
 }
 
+const allowedPreviewImage = (value) => {
+  if (!value) return ''
+
+  try {
+    const url = new URL(String(value))
+    if (url.protocol !== 'https:') return ''
+    if (!['cdn.bithomp.com', 'cdn.xahauexplorer.com'].includes(url.hostname)) return ''
+    return url.toString()
+  } catch {
+    return ''
+  }
+}
+
+const roundedImage = async (sharp, imageUrl, width, height, radius) => {
+  if (!imageUrl) return null
+
+  try {
+    const response = await fetch(imageUrl, { headers: { accept: 'image/*' } })
+    if (!response.ok) return null
+
+    const source = Buffer.from(await response.arrayBuffer())
+    const image = await sharp(source)
+      .resize(width, height, { fit: 'cover', withoutEnlargement: false })
+      .png()
+      .toBuffer()
+    const mask = Buffer.from(`
+      <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="${width}" height="${height}" rx="${radius}" ry="${radius}" fill="#fff"/>
+      </svg>
+    `)
+
+    return sharp(image)
+      .composite([{ input: mask, blend: 'dest-in' }])
+      .png()
+      .toBuffer()
+  } catch {
+    return null
+  }
+}
+
 export async function getServerSideProps({ query, res }) {
   const sharp = (await import('sharp')).default
   const { getTransactionTypeLabel } = await import('../../utils/transaction')
   const type = String(query.type || 'Transaction').slice(0, 40)
   const status = String(query.status || 'success')
   const square = query.shape === 'square'
+  const imageUrl = allowedPreviewImage(query.image)
   const label = escapeSvg(getTransactionTypeLabel(type))
   const style = txStyle(type)
   const statusText = status === 'failed' ? 'Failed transaction' : status === 'pending' ? 'Pending transaction' : 'Validated transaction'
@@ -74,7 +117,24 @@ export async function getServerSideProps({ query, res }) {
     </svg>
   `
 
-  const png = await sharp(Buffer.from(svg)).png().toBuffer()
+  let png = await sharp(Buffer.from(svg)).png().toBuffer()
+  const nftImageBox = square
+    ? { left: 70, top: 67, width: 144, height: 144, radius: 32 }
+    : { left: 92, top: 84, width: 198, height: 198, radius: 40 }
+  const nftImage = await roundedImage(
+    sharp,
+    imageUrl,
+    nftImageBox.width,
+    nftImageBox.height,
+    nftImageBox.radius
+  )
+
+  if (nftImage) {
+    png = await sharp(png)
+      .composite([{ input: nftImage, left: nftImageBox.left, top: nftImageBox.top }])
+      .png()
+      .toBuffer()
+  }
 
   res.setHeader('Content-Type', 'image/png')
   res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800')

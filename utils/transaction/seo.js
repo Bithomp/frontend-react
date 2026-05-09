@@ -1,6 +1,8 @@
 import { nativeCurrency } from '..'
 import { niceCurrency, shortHash, shortNiceNumber } from '../format'
+import { nftUrl } from '../nft'
 import { addressBalanceChanges, getTransactionTypeLabel, isConvertionTx, shortErrorCode } from './index'
+import { getTransactionNftPreview } from './nftPreview'
 
 const compactText = (value) =>
   String(value || '')
@@ -152,15 +154,14 @@ const ammSummary = (data) => {
 }
 
 const nftSummary = (data, selectedCurrency) => {
-  const { tx, specification, outcome, fiatRates } = data
+  const { tx, specification, fiatRates } = data
   const txType = tx?.TransactionType
   const source = entityName(specification?.source)
   const label = getTransactionTypeLabel(txType)
   const amount = firstRelevantBalanceChange(data) || specification?.amount
   const amountText = amount ? fiatOrAmount(amount, selectedCurrency, fiatRates?.[selectedCurrency]) : ''
-  const nftChange = outcome?.nftokenChanges?.[0]?.nftokenChanges?.[0]
-  const nftId = tx?.NFTokenID || nftChange?.nftokenID
-  const nftText = nftId ? ` NFT ${shortHash(nftId, 4)}` : ' NFT'
+  const preview = getTransactionNftPreview(data)
+  const nftText = preview?.id ? ` NFT ${shortHash(preview.id, 4)}` : ' NFT'
 
   return {
     headline: label,
@@ -219,6 +220,9 @@ export const buildTransactionSeo = (data, selectedCurrency = 'usd') => {
   const ledgerText = data?.outcome?.ledgerIndex ? `Ledger #${data.outcome.ledgerIndex}.` : data?.validated ? 'Validated transaction.' : 'Not yet validated.'
   const resultText = failed ? `Failed: ${shortErrorCode(result)}.` : successful ? 'Successful transaction.' : ''
   const description = compactText(`${summary.description} ${resultText} ${ledgerText} Tx ${shortTxHash}.`)
+  const nftPreview = getTransactionNftPreview(data)
+  const previewImage = nftPreview?.nft ? nftUrl(nftPreview.nft, 'preview') : ''
+  const image = /^https:\/\/cdn\.(bithomp|xahauexplorer)\.com\//.test(previewImage) ? previewImage : ''
 
   return {
     title,
@@ -227,6 +231,7 @@ export const buildTransactionSeo = (data, selectedCurrency = 'usd') => {
     status: failed ? 'failed' : successful ? 'success' : 'pending',
     statusLabel,
     type: txType,
-    typeLabel: getTransactionTypeLabel(txType)
+    typeLabel: getTransactionTypeLabel(txType),
+    image
   }
 }

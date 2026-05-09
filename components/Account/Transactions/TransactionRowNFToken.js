@@ -9,6 +9,7 @@ import {
   AddressWithIconInline
 } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
+import { getTransactionNftPreview } from '../../../utils/transaction/nftPreview'
 import { useIsMobile } from '../../../utils/mobile'
 import { RiNftFill } from 'react-icons/ri'
 
@@ -73,7 +74,7 @@ const showAllOfferLinks = (changes) => {
       )
     }
   }
-  return <div style={{ display: 'flex', flexWrap: 'wrap', gap: 0 }}>{links}</div>
+  return <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 0, verticalAlign: 'baseline' }}>{links}</span>
 }
 
 export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }) => {
@@ -82,6 +83,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
   const txType = tx?.TransactionType
   let txTypeSpecial = txType
   const isMobile = useIsMobile(600)
+  const nftPreview = getTransactionNftPreview(data)
 
   const amountChange = addressBalanceChanges(data, address)?.[0]
 
@@ -176,6 +178,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
       icon={<RiNftFill style={{ color: iconColor, fontSize: 20 }} title="NFT" />}
+      nftPreview={nftPreview}
     >
       {outcome?.nftokenChanges?.length > 0 && (
         <>

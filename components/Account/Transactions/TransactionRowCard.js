@@ -22,6 +22,7 @@ import CopyButton from '../../UI/CopyButton'
 import { useIsMobile } from '../../../utils/mobile'
 import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
 import Link from 'next/link'
+import { TransactionNftPreviewLink } from '../../Transaction/TransactionNftPreview'
 
 /*
   {
@@ -53,7 +54,16 @@ import Link from 'next/link'
   }
 */
 
-export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency, icon }) => {
+export const TransactionRowCard = ({
+  data,
+  address,
+  index,
+  txTypeSpecial,
+  children,
+  selectedCurrency,
+  icon,
+  nftPreview
+}) => {
   const { t: txT } = useTranslation('transaction')
   const { t: txErrorT } = useTranslation('transaction-errors')
   const width = useWidth()
@@ -88,9 +98,24 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
       <td className="bold center grey" style={{ width: 10, verticalAlign: 'top' }}>
         <div>{index + 1}</div>
         <div style={{ marginTop: 2 }}>{icon}</div>
+        {isMobile && nftPreview && (
+          <div style={{ marginTop: 4 }}>
+            <TransactionNftPreviewLink preview={nftPreview} size={44} />
+          </div>
+        )}
       </td>
       {!isMobile && (
-        <td style={{ width: 120, verticalAlign: 'top' }}>
+        <td
+          style={{
+            width: nftPreview ? 180 : 120,
+            verticalAlign: 'top'
+          }}
+        >
+          {nftPreview && (
+            <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 10 }}>
+              <TransactionNftPreviewLink preview={nftPreview} size={124} />
+            </div>
+          )}
           {typeNode}
           <br />
           <br />

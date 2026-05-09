@@ -11,12 +11,14 @@ import {
   timeFromNow
 } from '../../utils/format'
 import { decode } from '../../utils'
+import { getTransactionNftPreview } from '../../utils/transaction/nftPreview'
 import { i18n } from 'next-i18next'
 import CopyButton from '../UI/CopyButton'
+import { TransactionNftPreviewPanel } from './TransactionNftPreview'
 
 //NFTokenAcceptOffer, NFTokenBurn, NFTokenCancelOffer, NFTokenCreateOffer, NFTokenMint, NFTokenModify
 
-const nftData = (change, nftInfo, txType) => {
+const nftData = (change, nftInfo, txType, { hideNftId = false } = {}) => {
   let decodedURI = ''
   if (change?.uri) {
     decodedURI = decode(change.uri)
@@ -26,10 +28,12 @@ const nftData = (change, nftInfo, txType) => {
 
   return (
     <>
-      <tr>
-        <TData>NFT</TData>
-        <TData>{nftIdLink(change.nftokenID)}</TData>
-      </tr>
+      {!hideNftId && (
+        <tr>
+          <TData>NFT</TData>
+          <TData>{nftIdLink(change.nftokenID)}</TData>
+        </tr>
+      )}
       {txType !== 'NFTokenMint' && nftInfo.issuer && (
         <tr>
           <TData>Issuer</TData>
@@ -82,7 +86,7 @@ const nftData = (change, nftInfo, txType) => {
   )
 }
 
-const nftokenChanges = (changes, nftokens, txType) => {
+const nftokenChanges = (changes, nftokens, txType, { hideNftId = false } = {}) => {
   /*
   [
     {
@@ -200,7 +204,11 @@ const nftokenChanges = (changes, nftokens, txType) => {
                 </tr>
               )
             }
-            output.push(<React.Fragment key={'t' + i}>{nftData(nftChnages[i], nftInfo, txType)}</React.Fragment>)
+            output.push(
+              <React.Fragment key={'t' + i}>
+                {nftData(nftChnages[i], nftInfo, txType, { hideNftId })}
+              </React.Fragment>
+            )
 
             output.push(
               <tr key="hr-bottom">
@@ -243,7 +251,9 @@ const nftokenChanges = (changes, nftokens, txType) => {
               <hr />
             </TData>
           </tr>
-          {nftData(changes?.[0].nftokenChanges[0], nftokens[changes?.[0].nftokenChanges[0].nftokenID], txType)}
+          {nftData(changes?.[0].nftokenChanges[0], nftokens[changes?.[0].nftokenChanges[0].nftokenID], txType, {
+            hideNftId
+          })}
           <tr>
             <TData colSpan="2">
               <hr />
@@ -300,6 +310,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
   const { specification, tx, outcome } = data
 
   const txType = tx?.TransactionType
+  const nftPreview = getTransactionNftPreview(data)
 
   const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
 
@@ -322,6 +333,13 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
+      {nftPreview && (
+        <tr>
+          <TData colSpan="2">
+            <TransactionNftPreviewPanel preview={nftPreview} />
+          </TData>
+        </tr>
+      )}
       {txType === 'NFTokenMint' && tx.Issuer && (
         <tr>
           <TData>Issuer</TData>
@@ -340,7 +358,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
               </TData>
             </tr>
           )}
-          {tx.NFTokenID && (
+          {tx.NFTokenID && !nftPreview && (
             <tr>
               <TData>NFT</TData>
               <TData>{nftIdLink(tx.NFTokenID)}</TData>
@@ -378,7 +396,9 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
       )}
 
       {outcome?.nftokenChanges?.length > 0 &&
-        nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
+        nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType, {
+          hideNftId: !!nftPreview
+        })}
 
       {/* show created offer details */}
       {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') &&

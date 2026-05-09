@@ -593,8 +593,10 @@ export const TransactionCard = ({
       <style jsx>{`
         .card-block {
           border-top: 4px solid var(--accent-link);
+          border-radius: 10px;
           box-shadow: 0 1px 3px 0 var(--shadow);
           padding: 8px;
+          overflow: hidden;
         }
         .tx-body {
           margin: 40px auto;

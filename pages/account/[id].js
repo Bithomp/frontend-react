@@ -518,6 +518,7 @@ import {
   memoNode,
   shortErrorCode
 } from '../../utils/transaction'
+import { getTransactionNftPreview } from '../../utils/transaction/nftPreview'
 import { isRipplingOnIssuer } from '../../utils/transaction/payment'
 import {
   FaArrowsRotate,
@@ -5997,12 +5998,7 @@ export default function Account({
                         ? txdata?.specification?.destination?.addressDetails
                         : txdata?.specification?.source?.addressDetails
 
-                      const affectedNfts = xahauNetwork
-                        ? outcome?.affectedObjects?.uritokens || {}
-                        : outcome?.affectedObjects?.nftokens || {}
-                      const affectedNftList = Object.values(affectedNfts)
                       const nftChangeKey = xahauNetwork ? 'uritokenChanges' : 'nftokenChanges'
-                      const nftChanges = (outcome?.[nftChangeKey] || []).flatMap((entry) => entry?.[nftChangeKey] || [])
                       const nftAddressChanges = outcome?.[nftChangeKey] || []
                       const nftSource =
                         nftAddressChanges.length === 2
@@ -6012,22 +6008,9 @@ export default function Account({
                         nftAddressChanges.length === 2
                           ? nftAddressChanges.find((change) => change?.[nftChangeKey]?.[0]?.status === 'added')
                           : null
-                      const nftTokenId = xahauNetwork
-                        ? tx?.URITokenID ||
-                          txdata?.meta?.uritoken_id ||
-                          txdata?.meta?.uritokenID ||
-                          txdata?.specification?.uritokenID ||
-                          nftChanges.find((entry) => entry?.uritokenID)?.uritokenID ||
-                          affectedNftList[0]?.uritokenID
-                        : tx?.NFTokenID ||
-                          txdata?.meta?.nftoken_id ||
-                          txdata?.meta?.nftokenID ||
-                          txdata?.specification?.nftokenID ||
-                          txdata?.specification?.nftokenOffer?.nftokenID ||
-                          nftChanges.find((entry) => entry?.nftokenID)?.nftokenID ||
-                          affectedNftList[0]?.nftokenID
-                      const nftPreviewData = (nftTokenId && affectedNfts[nftTokenId]) || affectedNftList[0] || null
-                      const nftPreviewId = nftTokenIdFromData(nftPreviewData) || nftTokenId
+                      const nftPreview = getTransactionNftPreview(txdata)
+                      const nftPreviewData = nftPreview?.nft || null
+                      const nftPreviewId = nftPreview?.id || null
                       const nftPreviewTitle = nftPreviewData
                         ? nftName(nftPreviewData, { maxLength: 48 }) || shortHash(nftPreviewId)
                         : ''
