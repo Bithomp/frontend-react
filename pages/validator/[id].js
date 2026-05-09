@@ -11,7 +11,7 @@ import { useTheme } from '../../components/Layout/ThemeContext'
 
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
-import { avatarServer, xahauNetwork } from '../../utils'
+import { appendImageParams, avatarServer, xahauNetwork } from '../../utils'
 import {
   addressUsernameOrServiceLink,
   amountFormat,
@@ -127,6 +127,10 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
   const totalMissedRecent = recentReports.reduce((sum, report) => sum + Number(report.missed || 0), 0)
 
   const title = validatorTitle(validator)
+  const validatorAvatarImage = appendImageParams(avatarServer + validator.validation_public_key, {
+    size: 400,
+    hashIconZoom: 12
+  })
   const domain = validator?.domain || ''
   const legacyDomain = validator?.domainLegacy && validator.domainLegacy !== domain ? validator.domainLegacy : ''
   const ownerCountry = fixCountry(validator?.ownerCountry)
@@ -200,6 +204,8 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
         title={`${title} Validator`}
         titleWithNetwork="true"
         description={`Validator details, agreement scores, network settings and reports for ${title}.`}
+        image={{ file: validatorAvatarImage, width: 400, height: 400 }}
+        twitterImage={{ file: validatorAvatarImage }}
       />
 
       <div className="content-profile validator-page">
