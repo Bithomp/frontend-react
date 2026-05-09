@@ -2963,6 +2963,8 @@ export default function Account({
     )
   }
 
+  const halfPublicDataRowsCount = publicDataRows.filter((row) => !row.fullWidth).length
+
   if (data?.parent?.address && data?.parent?.address === data?.address) {
     pushPublicRow(
       'Imported from XRPL',
@@ -3378,7 +3380,7 @@ export default function Account({
                 <div className="info-rows">
                   {publicDataRows.map((row) => (
                     <div
-                      className={`info-row ${row.fullWidth || publicDataRows.length === 1 ? 'info-row-full' : ''}`}
+                      className={`info-row ${row.fullWidth || (!row.fullWidth && halfPublicDataRowsCount === 1) ? 'info-row-full' : ''}`}
                       key={row.key}
                     >
                       <span className="info-row-head">
@@ -7772,6 +7774,10 @@ export default function Account({
                     const tokenVolume24h = Number(tokenStats.buyVolume || 0) + Number(tokenStats.sellVolume || 0)
                     const tokenVolume24hFiat = tokenVolume24h * tokenPriceNative * (pageFiatRate || 0)
                     const tokenKey = `${token.currency || 'token'}-${index}`
+                    const issuedTokenCurrencyCode = token.currency
+                    const issuedTokenCurrencyCodeDisplay =
+                      issuedTokenCurrencyCode?.replace(/0+$/, '') || issuedTokenCurrencyCode
+                    const issuedTokenDistributionUrl = `/distribution?currencyIssuer=${data.address}&currency=${issuedTokenCurrencyCode}`
                     const isExpanded = expandedIssuedToken === tokenKey
 
                     return (
@@ -7799,9 +7805,9 @@ export default function Account({
                             <div className="detail-row">
                               <span>Currency:</span>
                               <span className="copy-inline">
-                                <span>{token.currency}</span>
+                                <span>{issuedTokenCurrencyCodeDisplay}</span>
                                 <Link
-                                  href={`/token/${data.address}/${token.currency}`}
+                                  href={`/token/${data.address}/${issuedTokenCurrencyCode}`}
                                   className="inline-link-icon tooltip"
                                   onClick={(event) => event.stopPropagation()}
                                 >
@@ -7809,8 +7815,17 @@ export default function Account({
                                   <span className="tooltiptext no-brake">Token page</span>
                                 </Link>
                                 <span onClick={(event) => event.stopPropagation()}>
-                                  <CopyButton text={token.currency} />
+                                  <CopyButton text={issuedTokenCurrencyCode} />
                                 </span>
+                              </span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Distribution:</span>
+                              <span>
+                                <Link href={issuedTokenDistributionUrl} onClick={(event) => event.stopPropagation()}>
+                                  View token distribution
+                                </Link>
                               </span>
                             </div>
 
