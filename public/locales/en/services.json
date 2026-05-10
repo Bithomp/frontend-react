@@ -230,7 +230,8 @@
     }
   },
   "services-page": {
-    "search-placeholder": "Search by service name..."
+    "search-placeholder": "Search by service name...",
+    "try-tax-reports": "Try tax reports"
   },
   "amm": {
     "create-title": "Create an AMM Pool",

@@ -23,13 +23,31 @@ import CheckBox from '../../../components/UI/CheckBox'
 import Link from 'next/link'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
-import TypeToIcon from '../../../components/Admin/subscriptions/pro/history/TypeToIcon'
 import { CSVLink } from 'react-csv'
 import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
 import { LinkTx } from '../../../utils/links'
 import RadioOptions from '../../../components/UI/RadioOptions'
 import Avatar from '../../../components/UI/Avatar'
+import { getAccountTransactionTypeIcon, getTransactionTypeLabel } from '../../../utils/transaction'
+
+const sampleHistoryAddresses = [
+  'rDLNm4ehD7XQCtYKWuMjEKY7TCfmf3CwzH',
+  'r3sQYvXxc82iSNs5DnUUvXtcQQQqigCdW',
+  'rhWTXC2m2gGGA9WozUaoMm6kLAVPb1tcS3',
+  'raWYT6DD2XFAvjCqRPsCCzr1CMBzJydf9E',
+  'rakZprdzwsUJ1rD2ouhYYAVP7tPbhrCbtz',
+  'r3LAichpcBeZWk7LLSZcfSQcqYsvQ6beBc'
+]
+
+const sampleVerifiedAddresses = sampleHistoryAddresses.map((address, index) => ({
+  id: `sample-${index + 1}`,
+  address,
+  name: `Sample wallet ${index + 1}`,
+  crawler: { status: 'synced' },
+  sample: true
+}))
+
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -430,6 +448,30 @@ const shouldKeepAfterDustFilter = (activity, selectedCurrency) => {
   return Math.abs(fiatValue) >= 0.004
 }
 
+const HistoryTransaction = ({ activity }) => {
+  const txType = activity?.txType
+  const isSource = isSending(activity)
+  const icon = getAccountTransactionTypeIcon({
+    txType,
+    isSource,
+    isAmmTx: txType?.startsWith('AMM')
+  })
+
+  return (
+    <div className="pro-history-tx-cell">
+      <span className="pro-history-tx-icon" title={getTransactionTypeLabel(txType)}>
+        {icon || <span>Tx</span>}
+      </span>
+      <span className="pro-history-tx-text">
+        <span className="pro-history-tx-type">{getTransactionTypeLabel(txType)}</span>
+        <span className="pro-history-tx-link">
+          Tx <LinkTx tx={activity?.hash} short={8} copy={true} />
+        </span>
+      </span>
+    </div>
+  )
+}
+
 export default function History({
   queryAddress,
   selectedCurrency,
@@ -439,6 +481,7 @@ export default function History({
 }) {
   const router = useRouter()
   const width = useWidth()
+  const sampleMode = !sessionToken
 
   const { t } = useTranslation()
   const [errorMessage, setErrorMessage] = useState('')
@@ -456,6 +499,7 @@ export default function History({
   const [rendered, setRendered] = useState(false)
   const [removeDust, setRemoveDust] = useState(false)
   const [platformCSVExport, setPlatformCSVExport] = useState('Koinly')
+  const selectedAddressesKey = addressesToCheck.join(',')
 
   const platformCSVHeaders = useMemo(
     () => [
@@ -665,6 +709,7 @@ export default function History({
   const getProAddressHistory = async (options) => {
     if (addressesToCheck.length === 0) return
     setLoading(true)
+    setErrorMessage('')
 
     let orderPart = order
     let sortCurrency = null
@@ -689,7 +734,7 @@ export default function History({
         'user/addresses/activities?convertCurrency=' +
           selectedCurrency +
           '&addresses=' +
-          addressesToCheck +
+          selectedAddressesKey +
           '&period=' +
           period +
           '&order=' +
@@ -701,7 +746,11 @@ export default function History({
       .catch((error) => {
         setLoading(false)
         if (error.response?.data?.error === 'errors.token.required') {
-          openEmailLogin()
+          if (sampleMode) {
+            setErrorMessage('Sample tax report data is not available right now.')
+          } else {
+            openEmailLogin()
+          }
           return
         }
         if (error && error.message !== 'canceled') {
@@ -734,9 +783,10 @@ export default function History({
               "aed": "-0.0000167092330343814396",
     */
     if (res) {
+      const preparedActivities = []
       for (let i = 0; i < res.activities.length; i++) {
         const sending = isSending(res.activities[i])
-        res.activities[i].index = options?.marker ? activities.length + 1 + i : i + 1
+        res.activities[i].index = i + 1
         res.activities[i].amountExport = amountFormat(res.activities[i].amount, { noSpace: true })
         res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
@@ -765,12 +815,20 @@ export default function History({
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
+        preparedActivities.push(res.activities[i])
       }
       setData(res) // last request data
       if (options?.marker) {
-        setActivities(activities.concat(res.activities)) // joines data
+        setActivities((prev) =>
+          prev.concat(
+            preparedActivities.map((activity, index) => ({
+              ...activity,
+              index: prev.length + index + 1
+            }))
+          )
+        )
       } else {
-        setActivities(res.activities) // rewrite old data
+        setActivities(preparedActivities) // rewrite old data
       }
     }
   }
@@ -821,16 +879,24 @@ export default function History({
   useEffect(() => {
     if (sessionToken) {
       getVerifiedAddresses()
+    } else {
+      setVerifiedAddresses(sampleVerifiedAddresses)
+      setAddressesToCheck(sampleHistoryAddresses)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionToken])
 
   useEffect(() => {
-    if (sessionToken) {
+    if (addressesToCheck.length > 0) {
+      setPage(0)
       getProAddressHistory()
+    } else {
+      setPage(0)
+      setData(null)
+      setActivities([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressesToCheck, selectedCurrency, period, order, sessionToken])
+  }, [selectedAddressesKey, selectedCurrency, period, order, sessionToken])
 
   const addressName = (address) => {
     for (let a of verifiedAddresses) {
@@ -861,7 +927,17 @@ export default function History({
           </Link>
         </div>
 
-        {sessionToken ? (
+        {sampleMode && (
+          <div className="pro-history-demo-note">
+            <b>Try tax reports with sample wallets.</b>
+            <span>
+              Use these synced wallets to test filters, pagination, CSV exports, and tax report formats. Want to add your
+              own address? <Link href="/admin/pro">Sign in to Bithomp Pro</Link>.
+            </span>
+          </div>
+        )}
+
+        {
           <>
             <FiltersFrame
               order={order}
@@ -901,11 +977,11 @@ export default function History({
                     <br />
                   </div>
                 )}
-                <div style={{ margin: 'auto' }}>Addresses</div>
+                <div className="pro-history-address-title">Addresses</div>
                 {verifiedAddresses?.length > 0 ? (
                   <>
                     {verifiedAddresses.map((address, i) => (
-                      <div className="filters-check-box" key={i}>
+                      <div className="filters-check-box pro-history-address-filter" key={i}>
                         <CheckBox
                           checked={addressesToCheck.includes(address.address)}
                           setChecked={() => {
@@ -917,24 +993,26 @@ export default function History({
                           }}
                           outline
                         >
-                          <table>
-                            <tbody>
-                              <tr>
-                                <td style={{ padding: 0 }}>
-                                  <Avatar src={avatarSrc(address.address)} size={40} />
-                                </td>
-                                <td style={{ padding: '0 0 0 5px' }}>
-                                  <b className="orange">{address.name}</b> -{' '}
-                                  <small>{crawlerStatus(address.crawler, { inline: true })}</small>
-                                  <br />
-                                  {addressLink(address.address, { short: 10 })}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          <div className="pro-history-address-option">
+                            <Avatar src={avatarSrc(address.address)} size={32} />
+                            <div className="pro-history-address-text">
+                              <div>
+                                <b className="orange">{address.name}</b>{' '}
+                                <small>{crawlerStatus(address.crawler, { inline: true })}</small>
+                              </div>
+                              {addressLink(address.address, { short: 8 })}
+                            </div>
+                          </div>
                         </CheckBox>
                       </div>
                     ))}
+                    {sampleMode && (
+                      <div className="pro-history-add-wallet">
+                        <Link href="/admin/pro" className="button-action narrow thin secondary">
+                          Add your wallet
+                        </Link>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>
@@ -1003,16 +1081,16 @@ export default function History({
                 {addressesToCheck.length > 0 && (
                   <>
                     {!width || width > 800 ? (
-                      <table className="table-large no-hover" style={width > 800 ? { width: 780 } : {}}>
+                      <table className="table-large no-hover pro-history-table" style={width > 800 ? { minWidth: 940 } : {}}>
                         <thead>
                           <tr>
                             <th className="center">#</th>
                             <th>Timestamp</th>
                             {addressesToCheck.length > 1 && <th>Address</th>}
-                            <th className="center">Tx</th>
+                            <th>Transaction</th>
                             <th>Memo</th>
                             <th className="right">Transfer Fee</th>
-                            <th className="right">Tx Fee</th>
+                            <th className="right">Network Fee</th>
                             <th className="right">Balance change</th>
                           </tr>
                         </thead>
@@ -1024,17 +1102,16 @@ export default function History({
                                   <td className="center">{a.index}</td>
                                   <td>{fullDateAndTime(a.timestamp)}</td>
                                   {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
-                                  <td className="center">
-                                    <LinkTx tx={a.hash}>
-                                      <TypeToIcon type={a.txType} direction={isSending(a) ? 'sent' : 'received'} />
-                                    </LinkTx>
+                                  <td>
+                                    <HistoryTransaction activity={a} />
                                   </td>
                                   <td>
-                                    <div style={{ width: 160 }}>
+                                    <div className="pro-history-memo">
                                       <span className={a.memo?.length > 20 ? 'tooltip' : ''}>
                                         {a.memo && a.memo?.slice(0, 20) + (a.memo?.length > 20 ? '...' : '')}
                                         {a.memo?.length > 20 && <span className="tooltiptext right">{a.memo}</span>}
                                       </span>
+                                      {!a.memo && <span className="grey">-</span>}
                                     </div>
                                   </td>
                                   <td className="right" style={{ width: 110 }}>
@@ -1089,19 +1166,16 @@ export default function History({
                                         Address: <b>{addressName(a.address)}</b>
                                       </p>
                                     )}
-                                    <p>Type: {a.txType}</p>
+                                    <div className="pro-history-mobile-tx">
+                                      Transaction: <HistoryTransaction activity={a} />
+                                    </div>
+                                    {a.memo && <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>}
                                     <p>
                                       Ledger Amount: <b>{showAmount(a.amount)}</b>
                                     </p>
                                     <p>
                                       {selectedCurrency.toUpperCase()} equavalent:{' '}
                                       {showFiat(a.amountInFiats, selectedCurrency)}
-                                    </p>
-                                    {a.memo && (
-                                      <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>
-                                    )}
-                                    <p>
-                                      Tx: <LinkTx tx={a.hash} />
                                     </p>
                                   </td>
                                 </tr>
@@ -1125,28 +1199,7 @@ export default function History({
               </>
             </FiltersFrame>
           </>
-        ) : (
-          <>
-            <div className="center">
-              <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-                <p>- View detailed balance history for your verified addresses.</p>
-                <p>- Export data for tax reporting and analysis.</p>
-                <br />
-                <center>
-                  Read how it works: <Link href="/learn/xrp-xah-taxes">XRP and XAH Taxes</Link>
-                </center>
-                <br />
-              </div>
-              <br />
-              <center>
-                <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
-                </button>
-              </center>
-            </div>
-            <br />
-          </>
-        )}
+        }
       </div>
     </>
   )

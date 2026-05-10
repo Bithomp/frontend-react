@@ -230,7 +230,8 @@
     }
   },
   "services-page": {
-    "search-placeholder": "Поиск по названию сервиса..."
+    "search-placeholder": "Поиск по названию сервиса...",
+    "try-tax-reports": "Попробовать налоговые отчеты"
   },
   "amm": {
     "create-title": "Создать AMM Pool",

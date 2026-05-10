@@ -230,7 +230,8 @@
     }
   },
   "services-page": {
-    "search-placeholder": "サービス名で検索..."
+    "search-placeholder": "サービス名で検索...",
+    "try-tax-reports": "税務レポートを試す"
   },
   "amm": {
     "create-title": "AMM Poolを作成",

@@ -82,6 +82,7 @@ export default function ServicesPage() {
       items: [
         { href: '/explorer', title: `${explorerName} Explorer`, icon: RiCompassDiscoverLine },
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: LuFileCheck2 },
+        { href: '/admin/pro/history', title: t('services-page.try-tax-reports', { ns: 'services' }), icon: LuFileCheck2 },
         { href: '/username', title: t('menu.services.username'), icon: IoPersonOutline },
         { href: '/submit-account-information', title: t('menu.project-registration'), icon: IoDocumentTextOutline },
         { href: '/services/toml-checker', title: t('menu.services.toml-checker'), icon: IoCodeOutline },

@@ -230,7 +230,8 @@
     }
   },
   "services-page": {
-    "search-placeholder": "Cari berdasarkan nama layanan..."
+    "search-placeholder": "Cari berdasarkan nama layanan...",
+    "try-tax-reports": "Coba laporan pajak"
   },
   "amm": {
     "create-title": "Buat AMM Pool",

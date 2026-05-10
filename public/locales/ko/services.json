@@ -230,7 +230,8 @@
     }
   },
   "services-page": {
-    "search-placeholder": "서비스 이름으로 검색..."
+    "search-placeholder": "서비스 이름으로 검색...",
+    "try-tax-reports": "세금 보고서 체험"
   },
   "amm": {
     "create-title": "AMM Pool 생성",

@@ -230,7 +230,8 @@
     }
   },
   "services-page": {
-    "search-placeholder": "Rechercher par nom de service..."
+    "search-placeholder": "Rechercher par nom de service...",
+    "try-tax-reports": "Essayer les rapports fiscaux"
   },
   "amm": {
     "create-title": "Créer un AMM Pool",

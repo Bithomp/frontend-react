@@ -230,7 +230,8 @@
     }
   },
   "services-page": {
-    "search-placeholder": "Nach Dienstnamen suchen..."
+    "search-placeholder": "Nach Dienstnamen suchen...",
+    "try-tax-reports": "Steuerberichte testen"
   },
   "amm": {
     "create-title": "AMM Pool erstellen",
