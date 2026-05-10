@@ -67,15 +67,9 @@ export const NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS = [
   { value: '$nin', label: 'Exclude' }
 ]
 
-export const NOTIFICATION_TX_TYPE_OPTIONS = [
+const COMMON_TX_TYPES = [
   'AccountDelete',
   'AccountSet',
-  'AMMBid',
-  'AMMCreate',
-  'AMMDelete',
-  'AMMDeposit',
-  'AMMVote',
-  'AMMWithdraw',
   'CheckCancel',
   'CheckCash',
   'CheckCreate',
@@ -98,17 +92,78 @@ export const NOTIFICATION_TX_TYPE_OPTIONS = [
   'SetRegularKey',
   'SignerListSet',
   'TicketCreate',
-  'TrustSet',
+  'TrustSet'
+]
+
+const XRPL_TX_TYPES = [
+  ...COMMON_TX_TYPES,
+  'AMMBid',
+  'AMMCreate',
+  'AMMDelete',
+  'AMMDeposit',
+  'AMMVote',
+  'AMMWithdraw',
+  'CredentialAccept',
+  'CredentialCreate',
+  'CredentialDelete',
+  'DIDDelete',
+  'DIDSet',
+  'MPTokenAuthorize',
+  'MPTokenIssuanceCreate',
+  'MPTokenIssuanceDestroy',
+  'MPTokenIssuanceSet',
+  'NFTokenAcceptOffer',
+  'NFTokenBurn',
+  'NFTokenCancelOffer',
+  'NFTokenCreateOffer',
+  'NFTokenMint',
+  'NFTokenModify',
+  'OracleDelete',
+  'OracleSet',
+  'PermissionedDomainDelete',
+  'PermissionedDomainSet',
+  'VaultClawback',
+  'VaultCreate',
+  'VaultDelete',
+  'VaultDeposit',
+  'VaultSet',
+  'VaultWithdraw'
+]
+
+const XAHAU_TX_TYPES = [
+  ...COMMON_TX_TYPES,
+  'ClaimReward',
+  'Contract',
+  'Cron',
+  'CronSet',
+  'EmitFailure',
+  'GenesisMint',
+  'Import',
+  'Invoke',
+  'NicknameSet',
+  'Remit',
+  'SetHook',
+  'SetRemarks',
+  'SpinalTap',
+  'UNLModify',
+  'UNLReport',
   'URITokenBurn',
   'URITokenBuy',
   'URITokenCancelSellOffer',
   'URITokenCreateSellOffer',
   'URITokenMint'
-].map((type) => ({ value: type, label: type }))
+]
+
+const txTypeOptions = (types) => types.map((type) => ({ value: type, label: type }))
+
+export const NOTIFICATION_TX_TYPE_OPTIONS = txTypeOptions(XRPL_TX_TYPES)
+
+export const getNotificationTxTypeOptions = ({ xahau = false } = {}) =>
+  txTypeOptions(xahau ? XAHAU_TX_TYPES : XRPL_TX_TYPES)
 
 const balanceChangeFilterFields = [
-  { key: 'address', label: 'Address', type: 'proAddress', required: true },
-  { key: 'tx_type', label: 'Transaction type', type: 'txType' }
+  { key: 'address', label: 'Address', type: 'proAddress', required: true, wide: true },
+  { key: 'tx_type', label: 'Transaction type', type: 'txType', wide: true }
 ]
 
 const sharedOfferFilters = [

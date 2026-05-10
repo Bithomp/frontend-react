@@ -35,12 +35,12 @@ import {
   getNotificationFilterFields,
   getNotificationEventDescription,
   getNotificationEventOptions,
+  getNotificationTxTypeOptions,
   NOTIFICATION_ACTION_TYPES,
   NOTIFICATION_EVENT_TYPES,
   NOTIFICATION_FIAT_CURRENCY_OPTIONS,
   NOTIFICATION_NUMBER_OPERATOR_OPTIONS,
   NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS,
-  NOTIFICATION_TX_TYPE_OPTIONS,
   normalizeNotificationEvent,
   notificationEventSupports
 } from '@/utils/notificationRules'
@@ -385,6 +385,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     [ruleChannelOptions, ruleFormData.connectionId]
   )
   const notificationEventOptions = useMemo(() => getNotificationEventOptions({ xahau: xahauNetwork }), [])
+  const notificationTxTypeOptions = useMemo(() => getNotificationTxTypeOptions({ xahau: xahauNetwork }), [])
   const selectedFiatCurrencyOption = useMemo(
     () => NOTIFICATION_FIAT_CURRENCY_OPTIONS.find((option) => option.value === ruleFormData.fiatCurrency) || null,
     [ruleFormData.fiatCurrency]
@@ -626,12 +627,12 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       }
       if (field.type === 'txType') {
         const operator = filter.operator || '$eq'
-        if (operator === '$eq' && isFilled(filter.value) && !NOTIFICATION_TX_TYPE_OPTIONS.some((option) => option.value === filter.value)) {
+        if (operator === '$eq' && isFilled(filter.value) && !notificationTxTypeOptions.some((option) => option.value === filter.value)) {
           errors[field.key] = 'Choose a supported transaction type.'
         }
         if (
           (operator === '$in' || operator === '$nin') &&
-          filter.values?.some((value) => !NOTIFICATION_TX_TYPE_OPTIONS.some((option) => option.value === value))
+          filter.values?.some((value) => !notificationTxTypeOptions.some((option) => option.value === value))
         ) {
           errors[field.key] = 'Choose supported transaction types.'
         }
@@ -965,8 +966,8 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
         NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS.find((option) => option.value === (filter.operator || '$eq')) ||
         NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS[0]
       const isMulti = selectedOperator.value === '$in' || selectedOperator.value === '$nin'
-      const selectedTxType = NOTIFICATION_TX_TYPE_OPTIONS.find((option) => option.value === filter.value) || null
-      const selectedTxTypes = NOTIFICATION_TX_TYPE_OPTIONS.filter((option) => filter.values?.includes(option.value))
+      const selectedTxType = notificationTxTypeOptions.find((option) => option.value === filter.value) || null
+      const selectedTxTypes = notificationTxTypeOptions.filter((option) => filter.values?.includes(option.value))
 
       return (
         <div className={fieldClassName} key={field.key}>
@@ -988,7 +989,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
               value={selectedOperator}
             />
             <Select
-              className="simple-select"
+              className="simple-select notification-tx-type-values"
               classNamePrefix="react-select"
               instanceId="notification-rule-tx-type"
               isClearable={true}
@@ -1004,7 +1005,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                   handleRuleFilterChange(field.key, { value: option?.value || '', values: [] })
                 }
               }}
-              options={NOTIFICATION_TX_TYPE_OPTIONS}
+              options={notificationTxTypeOptions}
               placeholder={isMulti ? 'Choose transaction types' : 'Any transaction type'}
               value={isMulti ? selectedTxTypes : selectedTxType}
             />

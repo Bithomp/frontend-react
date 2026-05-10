@@ -468,8 +468,90 @@
 
   .notification-filter-tx-type {
     display: grid;
-    grid-template-columns: minmax(120px, 0.55fr) minmax(0, 1fr);
+    grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1fr);
     gap: 8px;
+
+    > .simple-select {
+      min-width: 0;
+
+      .react-select__control {
+        min-height: 42px !important;
+        height: 42px !important;
+      }
+
+      .react-select__value-container {
+        min-height: 40px !important;
+        height: 40px !important;
+      }
+
+      .react-select__indicators {
+        height: 40px !important;
+      }
+    }
+
+    .notification-tx-type-values {
+      min-width: 0;
+
+      .react-select__control {
+        height: auto !important;
+        min-height: 42px !important;
+        align-items: flex-start;
+      }
+
+      .react-select__value-container {
+        min-height: 40px !important;
+        height: auto !important;
+        padding: 4px 8px !important;
+        gap: 4px;
+      }
+
+      .react-select__input {
+        position: static !important;
+      }
+
+      .react-select__input-container {
+        min-width: 120px;
+        margin: 0;
+        padding: 0;
+      }
+
+      .react-select__placeholder {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .react-select__multi-value {
+        max-width: 100%;
+        margin: 0;
+        border: 1px solid color-mix(in srgb, var(--accent-link) 38%, var(--button-additional));
+        border-radius: 5px;
+        background: color-mix(in srgb, var(--accent-link) 16%, var(--background-secondary));
+        color: var(--text-main);
+      }
+
+      .react-select__multi-value__label {
+        max-width: 190px;
+        overflow: hidden;
+        color: var(--text-main);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .react-select__multi-value__remove {
+        color: var(--accent-link);
+
+        &:hover {
+          background: color-mix(in srgb, var(--accent-link) 22%, transparent);
+          color: var(--text-main);
+        }
+      }
+
+      .react-select__indicators {
+        min-height: 40px;
+        height: auto !important;
+      }
+    }
   }
 
   .notification-rule-event-grid {
