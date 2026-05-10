@@ -19,7 +19,7 @@ import CheckBox from '../components/UI/CheckBox'
 import Avatar from '../components/UI/Avatar'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
-import { devNet, useWidth, xahauNetwork, countriesTranslated, avatarServer, normalizeLocale } from '../utils'
+import { useWidth, xahauNetwork, countriesTranslated, avatarServer, normalizeLocale } from '../utils'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 
@@ -32,6 +32,8 @@ import Link from 'next/link'
 dayjs.extend(relativeTimePlugin)
 
 const relativeTimeLocales = new Set(['de', 'en', 'es', 'fr', 'id', 'ja', 'ko', 'ru'])
+const LAST_SEEN_WARNING_SECONDS = 60 * 60
+const LAST_SEEN_VOTES_SECONDS = 3 * 60 * 60
 
 const relativeTimeLocale = (locale) => {
   const lang = normalizeLocale(locale).slice(0, 2)
@@ -42,6 +44,9 @@ const formatLastSeenAgo = (lastSeenTime, nowSec, locale) =>
   dayjs((lastSeenTime - 1) * 1000)
     .locale(relativeTimeLocale(locale))
     .from(dayjs(nowSec * 1000).locale(relativeTimeLocale(locale)))
+
+const canShowValidatorVotes = (lastSeenTime, nowSec) =>
+  !!lastSeenTime && nowSec - LAST_SEEN_VOTES_SECONDS <= lastSeenTime
 
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
@@ -225,11 +230,12 @@ const buildValidatorsState = (initialData, amendment, locale) => {
   if (dataV) {
     for (let i = 0; i < dataV.length; i++) {
       const v = dataV[i]
+      v.showVotes = canShowValidatorVotes(v.lastSeenTime, nowSec)
       if (v?.publicKey && v?.lastSeenTime) {
         const text = formatLastSeenAgo(v.lastSeenTime, nowSec, locale)
         timeAgoMap[v.publicKey] = {
           text,
-          isLate: nowSec - (devNet ? 40 : 10) > v.lastSeenTime,
+          isLate: nowSec - LAST_SEEN_WARNING_SECONDS > v.lastSeenTime,
           at: nowSec,
           lastSeenTime: v.lastSeenTime
         }
@@ -382,7 +388,7 @@ const buildTimeAgoMap = (list, lang) => {
     const text = formatLastSeenAgo(v.lastSeenTime, nowSec, lang)
     map[v.publicKey] = {
       text,
-      isLate: nowSec - (devNet ? 40 : 10) > v.lastSeenTime,
+      isLate: nowSec - LAST_SEEN_WARNING_SECONDS > v.lastSeenTime,
       at: nowSec,
       lastSeenTime: v.lastSeenTime
     }
@@ -600,6 +606,11 @@ export default function Validators({ amendment, initialData, initialProcessed, i
       </span>
     ))
   }
+
+  const showValidatorVotes = (validator) => validator?.showVotes === true && !!validator?.amendments?.length
+
+  const hasValidatorLedgerData = (validator) =>
+    !!(validator?.baseFee || validator?.reserveBase || validator?.reserveIncrement || showValidatorVotes(validator))
 
   const verifiedSign = (domainVerified, domain, options) => {
     if (!domainVerified || !domain) return ''
@@ -985,15 +996,17 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                         </span>{' '}
                         <CopyButton text={v.publicKey} />
                       </p>
-                      {!v.amendments && !v.baseFee ? (
+                      {!hasValidatorLedgerData(v) ? (
                         <p className="red bold">Offline</p>
                       ) : (
                         <>
-                          <p>
-                            {t('table.votes-for', { ns: 'validators' })}:
-                            <br />
-                            {listAmendments(v.amendments)}
-                          </p>
+                          {showValidatorVotes(v) && (
+                            <p>
+                              {t('table.votes-for', { ns: 'validators' })}:
+                              <br />
+                              {listAmendments(v.amendments)}
+                            </p>
+                          )}
                           <p>
                             {t('last-ledger-information.base-fee')}: {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}
                           </p>
@@ -1142,12 +1155,16 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                         </>
                       )}
                       <br />
-                      {!v.baseFee && !v.reserveBase && !v.reserveIncrement && !v.amendments ? (
+                      {!hasValidatorLedgerData(v) ? (
                         <span className="red bold">Offline</span>
                       ) : (
                         <>
-                          {listAmendments(v.amendments)}
-                          <br />
+                          {showValidatorVotes(v) && (
+                            <>
+                              {listAmendments(v.amendments)}
+                              <br />
+                            </>
+                          )}
                           {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|{' '}
                           {t('last-ledger-information.base-reserve')}{' '}
                           {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}|{' '}
@@ -1158,7 +1175,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                     </td>
                     <td className="center">
                       {v.unl ? (
-                        v.nUnl || (!v.baseFee && !v.reserveBase && !v.reserveIncrement && !v.amendments) ? (
+                        v.nUnl || !hasValidatorLedgerData(v) ? (
                           <span className="tooltip">
                             ❌
                             <span className="tooltiptext right no-brake">
