@@ -29,9 +29,27 @@ const fieldLabelMap = {
   tx_type: 'transaction type'
 }
 
+const disableReasonMap = {
+  'errors.connection.not_found': 'The alert channel was not found.',
+  'errors.connection.settings_required': 'The alert channel is missing required settings.',
+  'errors.listener.disabled': 'The rule was disabled by the system.',
+  'errors.package.tier_required': 'Your current alerts plan does not allow this rule.',
+  'errors.package.limit_reached': 'Your current alerts plan limit was reached.'
+}
+
 const fieldLabel = (field) => fieldLabelMap[field] || field.replace(/[._]/g, ' ')
 
 const isRuleEnabled = (enabled) => enabled !== false && enabled !== 0 && enabled !== '0' && enabled !== 'false'
+
+const formatDisableReason = (reason) => {
+  if (!reason) return ''
+  if (disableReasonMap[reason]) return disableReasonMap[reason]
+
+  return String(reason)
+    .replace(/^errors\./, '')
+    .replace(/[._-]+/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+}
 
 function renderConditionValue(field, value) {
   if (value === null) return 'none'
@@ -109,6 +127,7 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
   const settings = rule.settings || {}
   const conditionText = parseConditions(settings.rules)
   const enabled = isRuleEnabled(rule.enabled)
+  const disableReason = enabled ? '' : formatDisableReason(settings.disableReason)
 
   return (
     <Card className="notification-card notification-rule-card">
@@ -118,6 +137,7 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
           <div className={`notification-rule-status ${enabled ? 'enabled' : 'paused'}`}>
             {enabled ? 'Enabled' : 'Paused'}
           </div>
+          {disableReason && <div className="notification-rule-disable-reason">{disableReason}</div>}
         </div>
         <div className="notification-card-actions">
           {onExecutions && (
