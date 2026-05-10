@@ -78,11 +78,6 @@ const COMMON_TX_TYPES = [
   'EscrowCancel',
   'EscrowCreate',
   'EscrowFinish',
-  'NFTokenAcceptOffer',
-  'NFTokenBurn',
-  'NFTokenCancelOffer',
-  'NFTokenCreateOffer',
-  'NFTokenMint',
   'OfferCancel',
   'OfferCreate',
   'Payment',
@@ -154,7 +149,9 @@ const XAHAU_TX_TYPES = [
   'URITokenMint'
 ]
 
-const txTypeOptions = (types) => types.map((type) => ({ value: type, label: type }))
+const uniqueList = (items) => [...new Set(items)]
+
+const txTypeOptions = (types) => uniqueList(types).map((type) => ({ value: type, label: type }))
 
 export const NOTIFICATION_TX_TYPE_OPTIONS = txTypeOptions(XRPL_TX_TYPES)
 

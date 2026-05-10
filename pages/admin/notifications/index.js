@@ -150,6 +150,9 @@ const channelSupportsEvent = (channel, event) => {
 
 const isFilled = (value) => value !== undefined && value !== null && String(value).trim() !== ''
 
+const enabledBoolean = (value) => value !== false && value !== 0 && value !== '0' && value !== 'false'
+const formEnabledBoolean = (value) => value === true
+
 const filterValue = (filters, key) => filters?.[key] || {}
 
 const filterLabel = (field) => field.label.replace('{nativeCurrency}', nativeCurrency)
@@ -500,10 +503,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const openEditRule = (rule) => {
     const ruleSettings = rule.settings || {}
     const event = normalizeNotificationEvent(rule.event) || NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE
+    const enabled = enabledBoolean(rule.enabled)
     setEditingRule(rule)
     setRuleFormData({
       connectionId: listenerConnectionId(rule),
-      enabled: rule.enabled !== false,
+      enabled,
       event,
       externalUrl: ruleSettings.externalUrl !== false,
       filters: parseRuleFilters(event, ruleSettings.rules, ruleSettings.fiatCurrency || 'usd'),
@@ -552,8 +556,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     setRuleFormMessage('')
   }
 
-  const handleRuleToggle = (name) => {
-    setRuleFormData((prev) => ({ ...prev, [name]: !prev[name] }))
+  const handleRuleBooleanToggle = (name) => {
+    setRuleFormData((prev) => ({
+      ...prev,
+      [name]: name === 'enabled' ? !formEnabledBoolean(prev[name]) : !Boolean(prev[name])
+    }))
     setRuleFormErrors((prev) => ({ ...prev, [name]: '' }))
     setRuleFormMessage('')
   }
@@ -710,7 +717,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
     const payload = {
       action: NOTIFICATION_ACTION_TYPES.NOTIFICATION,
-      enabled: !!ruleFormData.enabled,
+      enabled: formEnabledBoolean(ruleFormData.enabled),
       event: ruleFormData.event,
       name: ruleFormData.name.trim(),
       settings: buildRuleSettings(ruleFormData)
@@ -1238,9 +1245,9 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           <div className="notification-toggle-card">
             <button
               aria-label="Toggle rule enabled"
-              aria-pressed={!!ruleFormData.enabled}
-              className={`notification-toggle-control${ruleFormData.enabled ? ' active' : ''}`}
-              onClick={() => handleRuleToggle('enabled')}
+              aria-pressed={formEnabledBoolean(ruleFormData.enabled)}
+              className={`notification-toggle-control${formEnabledBoolean(ruleFormData.enabled) ? ' active' : ''}`}
+              onClick={() => handleRuleBooleanToggle('enabled')}
               type="button"
             />
             <span className="notification-toggle-copy">
@@ -1254,7 +1261,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 aria-label="Toggle external NFT links"
                 aria-pressed={!!ruleFormData.externalUrl}
                 className={`notification-toggle-control${ruleFormData.externalUrl ? ' active' : ''}`}
-                onClick={() => handleRuleToggle('externalUrl')}
+                onClick={() => handleRuleBooleanToggle('externalUrl')}
                 type="button"
               />
               <span className="notification-toggle-copy">
@@ -1269,7 +1276,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 aria-label="Toggle XRP Cafe link"
                 aria-pressed={!!ruleFormData.xrpCafeURL}
                 className={`notification-toggle-control${ruleFormData.xrpCafeURL ? ' active' : ''}`}
-                onClick={() => handleRuleToggle('xrpCafeURL')}
+                onClick={() => handleRuleBooleanToggle('xrpCafeURL')}
                 type="button"
               />
               <span className="notification-toggle-copy">

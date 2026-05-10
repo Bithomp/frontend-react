@@ -31,11 +31,19 @@ const fieldLabelMap = {
 
 const fieldLabel = (field) => fieldLabelMap[field] || field.replace(/[._]/g, ' ')
 
+const isRuleEnabled = (enabled) => enabled !== false && enabled !== 0 && enabled !== '0' && enabled !== 'false'
+
 function renderConditionValue(field, value) {
   if (value === null) return 'none'
 
   if (Array.isArray(value)) {
-    return `[${value.join(', ')}]`
+    return (
+      <span className="notification-rule-value-list">
+        {value.map((item) => (
+          <span key={item}>{item}</span>
+        ))}
+      </span>
+    )
   }
 
   if (typeof value === 'boolean') {
@@ -100,14 +108,15 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
   const eventLabel = getNotificationEventLabel(rule.event)
   const settings = rule.settings || {}
   const conditionText = parseConditions(settings.rules)
+  const enabled = isRuleEnabled(rule.enabled)
 
   return (
     <Card className="notification-card notification-rule-card">
       <div className="notification-card-header">
         <div>
           <div className="notification-rule-title">{rule.name || `Rule #${rule.id}`}</div>
-          <div className={`notification-rule-status ${rule.enabled === false ? 'paused' : 'enabled'}`}>
-            {rule.enabled === false ? 'Paused' : 'Enabled'}
+          <div className={`notification-rule-status ${enabled ? 'enabled' : 'paused'}`}>
+            {enabled ? 'Enabled' : 'Paused'}
           </div>
         </div>
         <div className="notification-card-actions">
