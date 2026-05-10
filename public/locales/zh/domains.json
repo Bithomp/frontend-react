@@ -1,0 +1,22 @@
+{
+  "domain-verification": "域名验证",
+  "domain-verification-desc": "域验证旨在证明同一组织控制特定的 {{explorerName}} 地址和特定域。",
+  "reason-to-verify": "为了透明起见，您可能需要验证您的域名，以便将自己打造为 {{ledgerName}} 服务的可靠提供商。",
+  "two-sides-verification": "由于任何人都可以为其 {{ledgerName}} 地址设置任何域，因此域和地址之间的双向关系对于域验证是必要的。",
+  "domain-claims-address": "该地址应由域声明",
+  "serve-toml": "您的网络服务器应提供一个 {{tomlFile}} 文件，可从以下 URL 获取：",
+  "address-in-toml": "您要验证的地址应在 [[ACCOUNTS]] 条目下指定。",
+  "read-about-toml": "您可以使用以下工具验证一切设置是否正确：<0>TOML Checker</0>",
+  "toml-editor": "<0>TOML 编辑器</0>，作者：<3>SchlaubiD</3>",
+  "address-claims-domain": "该域名应由地址声明。",
+  "set-domain": "您应该<2>为您的 {{ledgerName}} 地址设置一个域</2>，该域应与您的 TOML 文件的服务域相匹配。",
+  "verify": "验证",
+  "verify-desc": "您可以使用以下工具验证一切设置是否正确：<0>TOML Checker</0>。此页面上的列表更新时间为凌晨 3 点至凌晨 4 点（斯德哥尔摩时间），如果您的域名已在 Checker 工具中验证，但在 24 小时内未出现在我们的列表中，那么我们可能无法解析您的 TOML 文件。",
+  "desc": "下面您可以找到 {{ledgerName}} 上所有已验证域名的列表（页面每天更新）。",
+  "table": {
+    "toml-checker": "TOML",
+    "check-toml": "检查TOML",
+    "check-toml-for-domain": "检查 {{domain}} 的 TOML",
+    "addresses": "地址"
+  }
+}

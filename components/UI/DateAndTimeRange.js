@@ -143,8 +143,9 @@ export default function DateAndTimeRange({
   }
 
   if (lang) {
-    if (lang !== 'en') {
-      const languageData = require('date-fns/locale/' + lang + '/index.js')
+    const dateFnsLang = lang === 'zh' ? 'zh-CN' : lang
+    if (dateFnsLang !== 'en') {
+      const languageData = require('date-fns/locale/' + dateFnsLang + '/index.js')
       registerLocale(lang, languageData)
     }
     setDefaultLocale(lang)

@@ -1,0 +1,35 @@
+{
+  "get-free": "获得免费",
+  "error-occured": "发生错误",
+  "try-later": "您今天已经尝试过了。 {{time}}回来。",
+  "experience-fast-transactions": "体验在 {{explorerName}} 网络上进行交易是多么快速和轻松！",
+  "last-ledger-index-find-on-landing-page": "<strong>最后一个账本索引。</strong>在<1>首页</1>的统计信息中找到它",
+  "faucet-description": "需要为您的 {{ledgerName}} 开发测试 {{nativeCurrency}} 吗？使用我们安全快速的 {{explorerName}} Faucet 将免费的 {{nativeCurrency}} 直接接收到您的 {{devNet}} 钱包地址。无论您是在 {{ledgerName}} 上构建钱包、dApp、NFT 平台还是 DeFi 工具，这个水龙头都可以帮助您在不使用真实资金的情况下测试交易。",
+  "enter-amount": "{{devNet}} {{nativeCurrency}} 金额（最大值：{{maxAmount}} {{nativeCurrency}}）",
+  "form": {
+    "placeholder": {
+      "enter-address": "输入您的 {{ledgerName}} 地址",
+      "enter-latest-ledger-index": "仅输入最新账本索引的数字"
+    }
+  },
+  "how-it-works": "工作原理：",
+  "activated-wallet-required": "需要激活钱包",
+  "ensure-wallet-activated": "确保您的钱包已激活。",
+  "receive-currency-drops": "接收 {{nativeCurrency}} 掉落",
+  "get-between-drops": "您可以收到 1 滴到 1 {{nativeCurrency}}。",
+  "get-instant-feedback": "获取即时反馈",
+  "see-if-payment-succeeded": "查看支付成功还是失败。找出到达的确切时间，检查交易费用，并获取交易链接以查看完整的详细信息。",
+  "daily-testing-limit": "每日检测限额",
+  "can-test-only-once-per-day": "每天只能测试一次（每个IP一个钱包）。",
+  "button": {
+    "test-now": "立即测试"
+  },
+  "try-it-now": "立即尝试，看看 {{nativeCurrency}} 付款的处理速度有多快！",
+  "test-completed": "测试完成！",
+  "validated-on-ledger": "在账本<2/>上<0>已验证</0>",
+  "table": {
+    "fee": "费用",
+    "transaction-hash": "交易哈希"
+  },
+  "confirmed-within-seconds": "<2>{{time}} 秒内确认</2>"
+}

@@ -262,6 +262,8 @@
     },
     "stat": {
       "header": "Estadísticas {{ledgerName}} en vivo",
+      "last-ledger": "Último ledger",
+      "network": "Red",
       "ledger-index": "Índice Libro contable",
       "close-time": "Hora de cierre",
       "transactions": "Transacciones",

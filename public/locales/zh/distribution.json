@@ -1,0 +1,4 @@
+{
+  "desc": "在这里您可以按{{currency}}余额找到前100个账户。",
+  "summary": "有 <1>{{activeAccounts}}</1> 个活跃账户，可用总数：<3>{{totalCoins}}</3>"
+}

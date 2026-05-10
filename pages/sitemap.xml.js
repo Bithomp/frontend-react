@@ -122,7 +122,7 @@ if (network === 'mainnet') {
 }
 
 function generateSiteMap(posts) {
-  const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
+  const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr', 'zh']
   const noTranslatedPages = [
     'dapps',
     'the-chain-of-blocks-summit',

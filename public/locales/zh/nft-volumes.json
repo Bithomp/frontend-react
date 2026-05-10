@@ -1,0 +1,20 @@
+{
+  "header": "NFT 销量",
+  "text0": "在此期间，{{explorerName}} 的 {{allSales}} {{currency}} NFT {{saleType}} 销售额为 {{allVolume}}。",
+  "collections": {
+    "desc": "这是NFT收藏列表。这里的数量不包括在 2 笔交易（支付和 NFT 转移）内完成的主要销售（铸币）。"
+  },
+  "brokers": {
+    "desc": "这是 NFT 经纪商账户列表。您可以在这里找到大量的报价匹配机器人。市场使用混合交易模式，在这里您只能通过经纪模式看到交易量。",
+    "no-broker": "没有经纪人",
+    "text0": "在此期间，XRPL 的 {{allSales}} <3>{{currency}}</3> NFT {{saleType}} 销售额为 {{allVolume}}，其中 <13>{{brokerSales}}</13> {{percentBrokerSales}} 的 <19>{{brokerVolume}}</19> {{percentBrokerVolume}} 交易是通过经纪模式进行的。"
+  },
+  "marketplaces": {
+    "desc": "这是 {{explorerName}} 上的 NFT 市场列表。这里的数量不包括在 2 笔交易（支付和 NFT 转移）内完成的主要销售（铸币）。"
+  },
+  "issuers": {
+    "desc": "这是 {{explorerName}} 上的 NFT 发行者列表。要查看按发行者和分类单元识别的 NFT 收藏量，请单击“销量”列中的链接。"
+  },
+  "sales-chart": "销售图表",
+  "volumes-chart": "成交量图"
+}

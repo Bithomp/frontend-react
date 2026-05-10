@@ -1,0 +1,13 @@
+{
+  "header": "NFT 铸币者",
+  "desc": "在这里您可以找到所有已识别的 NFT 铸币者的列表。如果您希望您的项目得到认可，请在您的铸币交易中添加包含您的网站地址的备忘录。",
+  "summary-period": "在此期间铸造了 <1>{{minted}}</1> 个 NFT，其中 <4>{{mintedAndBurned}}</4> 个 NFT {{percentMintedAndBurned}} 已在同一时间段内被销毁，在此期间销毁的总量为：<11>{{burned}}</11> 个 NFT。",
+  "summary-all": "有 <1>{{minted}}</1> 个铸造的 NFT，其中 <4>{{mintedAndBurned}}</4> 个 NFT {{percentMintedAndBurned}} 被销毁。",
+  "mint-chart": "铸造图表",
+  "table": {
+    "minted-total": "铸造总量",
+    "minted-with-metadata": "使用元数据铸造 NFT",
+    "minted-and-burned": "铸造并烧毁",
+    "burned-total": "全部烧毁"
+  }
+}

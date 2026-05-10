@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "mainnet": {
+      "title": "{{explorerSearchName}} 搜索：扫描 {{ledgerName}} 账户和交易",
+      "description": "使用 {{explorerSearchAttribution}} 扫描 {{ledgerName}} 地址、交易哈希、用户名、CTID、NFT、代币、AMM 和账本对象。",
+      "heading": "{{explorerSearchName}} 搜索"
+    },
+    "testnet": {
+      "title": "搜索 XRPL 测试网 — 账户、交易、代币、NFT",
+      "description": "搜索 XRPL 测试网地址、交易哈希、用户名、CTID、NFT、代币和账本对象。还需要金币吗？使用测试网水龙头。",
+      "heading": "搜索 XRPL 测试网"
+    },
+    "devnet": {
+      "title": "搜索 XRPL Devnet — 账户、交易、代币、NFT",
+      "description": "搜索 XRPL Devnet 地址、交易哈希、用户名、CTID、NFT、代币和账本对象。还需要金币吗？使用 devnet 水龙头。",
+      "heading": "搜索 XRPL Devnet"
+    }
+  },
+  "intro": {
+    "subtitle": "搜索和扫描 {{nativeCurrency}} 交易、账户、代币和 NFT — 探索 {{nativeCurrency}} 账本的快速且值得信赖的方式。",
+    "home-link-prefix": "想要实时统计数据、价格工具、大额转账、验证器和修正吗？参观",
+    "home-link-label": "{{explorerName}} 主页"
+  },
+  "examples": {
+    "title": "示例",
+    "account": {
+      "title": "账户",
+      "intro": "开始在上面的搜索框中输入账户地址、X 地址、PayString、用户名、服务名称或 Web 域。",
+      "address-label": "地址",
+      "address-prefix": "示例：",
+      "address-middle": "开始输入，我们将为您找到完整的地址，或者输入",
+      "username-label": "用户名",
+      "examples-label": "示例",
+      "username-note": "开始输入，我们将找到完整的用户名",
+      "username-link": "注册您的用户名。",
+      "domain-label": "域名",
+      "domain-note": "开始输入，我们将找到具有此类域的账户",
+      "domain-link": "验证您的域。",
+      "xaddress-label": "X地址",
+      "paystring-label": "支付字符串",
+      "paystring-link": "获取您的 PayString。",
+      "example-label": "示例"
+    },
+    "transaction": {
+      "title": "交易",
+      "ctid-label": "CTID",
+      "ctid-note": "紧凑交易ID",
+      "hash-label": "交易哈希",
+      "example-label": "示例"
+    },
+    "objects": {
+      "title-with-amm": "NFT、AMM、对象",
+      "title-without-amm": "NFT，对象",
+      "nft-label": "NFT",
+      "amm-label": "AMM",
+      "object-label": "对象",
+      "example-label": "示例"
+    }
+  }
+}

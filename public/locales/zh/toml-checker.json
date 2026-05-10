@@ -1,0 +1,30 @@
+{
+  "title": "{{explorerName}} TOML 检查器",
+  "description": "检查并验证 {{ledgerName}} 域的 {{tomlName}}。",
+  "check-title": "检查域",
+  "check-description": "输入一个域来获取、解码和检查其 {{tomlName}} 文件。",
+  "toml-help": "{{tomlName}} 文件是域托管的 TOML 配置，用于声明和验证域与 {{ledgerName}} 账户、验证器和相关服务之间的关联。它应该可以在以下位置公开访问：",
+  "domain-placeholder": "输入域名，例如 bithomp.com",
+  "cooldown-note": "检查之间有 10 秒的限制。",
+  "cooldown-left": "请等待 {{seconds}} 秒再进行下一次检查。",
+  "button": "检查 TOML",
+  "checking": "检查中...",
+  "result-title": "验证结果",
+  "fields": {
+    "domain": "域名",
+    "tomlfile": "TOML 文件 URL",
+    "toml": "解码的 TOML",
+    "rawtoml": "原始 TOML 响应"
+  },
+  "errors": {
+    "invalid-domain": "请输入有效的域名。",
+    "captcha-required": "请完成验证码。",
+    "domain-not-found": "我们无法访问该域或找到其 TOML 文件。请检查域名并重试。",
+    "toml-not-found": "该域可以访问，但我们无法在预期的 .well-known 位置找到 {{tomlName}}。",
+    "secure-connection-failed": "我们无法安全地获取 TOML 文件。检查域 HTTPS/TLS 证书。",
+    "html-content": "预期的 {{tomlName}} URL 返回 HTML 而不是 TOML 文件。",
+    "invalid-toml": "TOML 文件已找到，但无法解析。",
+    "invalid-toml-with-reason": "TOML 文件已找到，但无法解析：{{reason}}",
+    "failed": "目前无法验证域名。"
+  }
+}

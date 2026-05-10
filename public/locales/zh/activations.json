@@ -1,0 +1,4 @@
+{
+  "header": "已激活账户",
+  "account-activations-for-that-period": "在此期间，<1>{{count}}</1> 个账户被激活。"
+}

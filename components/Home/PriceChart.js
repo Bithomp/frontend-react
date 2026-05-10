@@ -254,7 +254,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
 
   // Supported chart locales
   const chartLang = useMemo(() => {
-    const supported = ['en', 'ru']
+    const supported = ['en', 'ru', 'zh']
     return supported.includes(i18n.language) ? i18n.language : 'en'
   }, [i18n.language])
 
@@ -330,6 +330,13 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
                 zoomOut: 'Уменьшить',
                 pan: 'Панорамирование'
               }
+            }
+          },
+          {
+            name: 'zh',
+            options: {
+              shortMonths: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+              toolbar: { selectionZoom: '框选缩放', zoomIn: '放大', zoomOut: '缩小', pan: '平移' }
             }
           }
         ],

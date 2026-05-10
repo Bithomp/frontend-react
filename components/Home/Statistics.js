@@ -89,7 +89,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
         <div className="statistics-section">
           <div className={`${styles.cardHeader} statistics-header`}>
             <div className={styles.cardHeaderTitleWrap}>
-              <div className={`${styles.cardHeaderTitle} statistics-section-title`}>The last ledger</div>
+              <div className={`${styles.cardHeaderTitle} statistics-section-title`}>{t('home.stat.last-ledger')}</div>
             </div>
             <Link href="/last-ledger-information" className={styles.cardHeaderLink} prefetch={false}>
               {t('common.viewAll')}
@@ -127,7 +127,7 @@ export default function Statistics({ data, setData, title, mode = 'activity', fe
         <div className="statistics-section">
           <div className={`${styles.cardHeader} statistics-header`}>
             <div className={styles.cardHeaderTitleWrap}>
-              <div className={`${styles.cardHeaderTitle} statistics-section-title`}>Network</div>
+              <div className={`${styles.cardHeaderTitle} statistics-section-title`}>{t('home.stat.network')}</div>
             </div>
           </div>
           <div className="statistics-row">

@@ -1,0 +1,7 @@
+{
+  "button": {
+    "set-did": "设置 DID",
+    "update-did": "更新DID",
+    "delete-did": "删除 DID"
+  }
+}

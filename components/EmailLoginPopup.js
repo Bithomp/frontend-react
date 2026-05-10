@@ -4,7 +4,7 @@ import { Turnstile } from '@marsidev/react-turnstile'
 import { useTheme } from './Layout/ThemeContext'
 import Link from 'next/link'
 import { axiosAdmin } from '../utils/axios'
-import { isEmailValid, turnstileSupportedLanguages } from '../utils'
+import { isEmailValid, turnstileLanguage } from '../utils'
 import CheckBox from './UI/CheckBox'
 
 const checkmark = '/images/checkmark.svg'
@@ -249,7 +249,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
                     style={{ margin: 'auto' }}
                     options={{
                       theme,
-                      language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                      language: turnstileLanguage(i18n.language)
                     }}
                     onSuccess={setToken}
                     onError={() => {

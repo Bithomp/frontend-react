@@ -1,0 +1,57 @@
+{
+  "memo": "Bithomp 用户名注册",
+  "error": {
+    "address-empty": "请输入您的 XRPL 地址。",
+    "address-invalid": "请输入有效的 XRPL 地址。",
+    "address-hosted": "输入的地址托管在 {{service}} 上，您只能注册非托管钱包（硬件钱包、Xaman 等）的用户名。如果您是交易所运营商，请联系我们。",
+    "address-done": "该地址已有注册用户名。",
+    "username-empty": "请输入您要注册的用户名。",
+    "username-invalid": "用户名应少于 18 个字符，不允许使用符号。",
+    "username-taken": "用户名 <b>{{username}}</b> 已被占用:(",
+    "username-reserved": "用户名 <b>{{username}}</b> 已保留，请联系我们的支持人员。",
+    "username-hold": "用户名 <b>{{username}}</b> 已被另一个 XRPL 账户保留注册。您可以在 24 小时后重试。",
+    "agree-terms-page": "请同意本页指定的条款和条件。",
+    "agree-terms-site": "请同意网站的条款和条件。",
+    "agree-privacy-policy": "请同意我们的隐私政策。"
+  },
+  "step0": {
+    "text0": "Bithomp <1>用户名</1>是您的 {{ledgerName}} 地址的<3>公共</3>用户名。",
+    "text1": "用户名将与您在 bithomp 浏览器和使用 bithomp <1>API</1> 的第三方服务中的地址相关联。注册后，它将公开 - <3>任何人</3>都可以看到它。您的 XRPL 地址可通过以下方式访问：",
+    "text2": "用户名<1>无法更改或删除</1>。",
+    "only-one-for-address": "对于每个 XRPL 地址，您只能注册一个用户名。",
+    "address-you-control": "您只能为您控制的 XRPL 地址注册用户名（您有一个秘密或恢复 12/24 个字）。您无法在交易所/服务/钱包内注册托管地址（具有目的地标签）的用户名。",
+    "pay-from-your-address": "为了证明您可以控制 XRPL 地址，您需要从该地址（您要为其分配用户名）进行付款。来自其他地址的付款将被视为捐款且不会退还。",
+    "text3": "用户名的付款为<priceValue>{{price}}</priceValue>，且<strong>不可退款</strong>。如果您支付的金额超过要求的金额，超出部分将被视为捐款，并且不会退还。",
+    "text3-no-price": "用户名付款<strong>不可退还</strong>。如果您支付的金额超过要求的金额，超出部分将被视为捐款，并且不会退还。",
+    "please-note": "请注意：",
+    "we-can-revoke": "如果用户名是为了欺诈活动或操纵而创建的，我们保留撤销该用户名的权利。",
+    "text4": "用户名现在可以跨链使用，<2>在XRPL主网上注册一个用户名</2>，它将在其他bithomp浏览器上可用（1小时内）。",
+    "enter-address-or": "输入您的 XRPL 地址或",
+    "sign-in": "登录",
+    "sign-out": "退出",
+    "your-address": "您的 XRPL 地址",
+    "enter-username": "输入您想要的用户名",
+    "your-username": "用户名",
+    "enter-country": "您的居住国（用于我们的会计）",
+    "agree-terms-page": "我理解并同意上述条款和条件。",
+    "agree-terms-site": "我同意<2>条款和条件</2>。",
+    "agree-privacy-policy": "我同意<2>隐私政策</2>。",
+    "already-registered": "您的账户已经有一个注册用户名",
+    "sign-out-to-register-another-one": "<0>退出</0>此账户以注册其他地址的用户名。"
+  },
+  "step1": {
+    "to-register": "注册您的公共用户名：",
+    "from-your-address": "您需要从以下地址付款：",
+    "text0": "该服务将不接受您<1>从任何其他地址</1>或使用<4>错误目的地标签</4>进行的付款，该付款将被视为捐赠，并且<6>不会退款</6>。",
+    "payment-instructions": "付款说明",
+    "address": "XRPL地址：",
+    "tag": "目的地标签：",
+    "amount": "金额：",
+    "awaiting": "等待您的付款",
+    "about-confirmation": "我们收到您的付款后，您将立即看到确认信息。"
+  },
+  "step2": {
+    "text0": "恭喜！您的用户名<1>{{ username }}</1>已成功注册。",
+    "one-more": "再注册一个"
+  }
+}

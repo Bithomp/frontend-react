@@ -1,0 +1,23 @@
+{
+  "desc": "在这里您可以搜索 NFT，输入 NFT ID 并按搜索按钮。",
+  "enter-nft-id": "输入 NFT ID",
+  "holders": "持有者",
+  "nft-id-decoded-data": "NFT ID解码数据",
+  "nft-not-found-on-that-network": "在<1>{{network}}</1>网络上找不到此NFT。",
+  "table": {
+    "digest": "摘要",
+    "attention": "注意",
+    "attention-texts": {
+      "no-uri": "NFT 缺乏 URI，它与普遍接受的标准不兼容。",
+      "no-metadata": "给定的 URI 缺少该 NFT 的元数据。它违背了普遍接受的标准。",
+      "not-transferable": "该 NFT 不可转让；它只能转入或转出发行人。",
+      "burnable": "发行人（或发行人授权的实体）可以销毁NFT。",
+      "no-digest": "没有为该 NFT 提供摘要。 NFT 完整性无法验证。",
+      "invalid-digest": "NFT完整性检查失败。摘要与 NFT 元数据不匹配。"
+    },
+    "warnings": {
+      "nft-crawler-delay": "部分数据已过时，最后更新：{{lastUpdate}}。我们的服务器正在赶上，请稍后查看更准确的数据。"
+    }
+  },
+  "set-avatar-description": "要使用此 NFT 作为您的头像，请使用拥有它的钱包登录。"
+}

@@ -1,0 +1,38 @@
+{
+  "title": "{{currency}} 分配",
+  "subtitle": "{{supply}} {{currency}} 如何在网络上分配",
+  "max-supply": "最大供应量",
+  "current-supply": "电流供应",
+  "circulating": "循环供应",
+  "circulating-note": "最大减去烧毁、托管和黑洞。",
+  "distribution-link": "{{currency}} 分布",
+  "burned": "烧毁\n最大",
+  "of-max": "",
+  "chart-center-label": "最大供应量",
+  "chart-title": "按类别分布",
+  "chart-tap-hint": "点击图表部分即可查看详细信息",
+  "breakdown-title": "故障",
+  "col-category": "类别",
+  "col-amount": "金额",
+  "col-percent": "分享",
+  "updated-at": "最后更新",
+  "category": {
+    "escrowRipple": "Rippling托管",
+    "ripple": "Rippling",
+    "escrowService": "服务托管",
+    "escrowRest": "其他托管",
+    "rest": "活跃钱包",
+    "service": "已知服务",
+    "amm": "AMM 池",
+    "notActive1": "不活动 1–2 年",
+    "notActive2": "不活动 2–3 年",
+    "notActive3": "不活动 3–5 年",
+    "notActive5": "不活跃 5–10 岁",
+    "notActive10": "不活动 10 年以上",
+    "blackholed": "黑洞"
+  },
+  "group": {
+    "inactive-short": "不活动 1–5 年",
+    "inactive-long": "不活跃 5 年以上"
+  }
+}

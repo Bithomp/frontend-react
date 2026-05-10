@@ -1,0 +1,19 @@
+{
+  "table": {
+    "validator": "验证者",
+    "server-country": "服务器国家",
+    "server-location": "服务器位置",
+    "cloud-private": "云/私有",
+    "network-asn": "网络 ASN",
+    "owner-country": "所属国家",
+    "votes-for": "投票给",
+    "last-seen": "最后出现",
+    "text": {
+      "domain-verified-toml": "已验证的域（TOML 文件）",
+      "unl": "在唯一节点列表 (UNL) 中\n负 UNL 中的",
+      "negative-unl": ""
+    }
+  },
+  "domain-legacy": "域名（旧验证）",
+  "text0": "验证器列表 <1>{{url}}</1> 的序列为 {{sequence}}，过期时间为 {{expiration}}。<br/>它包括下面列出的 {{validatorCount}} 验证器。"
+}

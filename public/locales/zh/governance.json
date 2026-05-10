@@ -1,0 +1,42 @@
+{
+  "header": "{{ledgerName}} 治理",
+  "summary": "有 <1>{{ countTables }}</1> 个座位。",
+  "reward-rate": "奖励率：<1>{{ rewardRate }}</1>。",
+  "reward-delay": "奖励延迟：<2>{{ rewardDelay }}</2>（{{ rewardDelaySeconds }} 秒）。",
+  "button": {
+    "show-main-table": "显示主表",
+    "vote-seat": "投票选举席位",
+    "vote-reward-rate": "投票奖励率",
+    "vote-reward-delay": "投票支持奖励延迟",
+    "vote-hook": "投票给一个钩子"
+  },
+  "table": {
+    "cast-first-vote": "投第一票",
+    "members": "会员",
+    "seat": "座位",
+    "no-seat": "没有座位",
+    "layer": "层",
+    "hooks": "钩子",
+    "place": "地点",
+    "hook": "钩子",
+    "target": "目标",
+    "votes": "投票",
+    "voter": "选民",
+    "rate": "率",
+    "value": "价值",
+    "delay": "延迟",
+    "in-seconds": "几秒后",
+    "seat-votes": "席位票",
+    "seat-votes-count": "席位票数",
+    "reward-rate-votes": "奖励率投票",
+    "reward-rate-votes-count": "奖励率票数",
+    "reward-delay-votes": "奖励延迟投票",
+    "reward-delay-votes-count": "奖励延迟票数",
+    "hook-votes": "勾票",
+    "hook-votes-count": "胡克票数",
+    "text": {
+      "vacate-seat": "让座",
+      "vacate-place": "腾出地方"
+    }
+  }
+}

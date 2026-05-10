@@ -6,7 +6,7 @@ const PUBLIC_FILE = /\.(.*)$/
 const removedLocales = ['ca', 'da', 'nn', 'my', 'hr']
 
 // Currently supported locales
-const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
+const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr', 'zh']
 
 // All known locales
 const allLocales = ['default', ...currentLocales, ...removedLocales]

@@ -1,0 +1,13 @@
+{
+  "dropdown": {
+    "priceHigh": "价格从高到低",
+    "priceLow": "价格从低到高",
+    "soldNew": "最近的销售",
+    "soldOld": "最旧的销售",
+    "mintedNew": "最新铸造",
+    "mintedOld": "最古老的铸造",
+    "rating": "浏览次数最多",
+    "offerCreatedNew": "最新优惠",
+    "offerCreatedOld": "最旧优惠"
+  }
+}

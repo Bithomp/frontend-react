@@ -1,0 +1,13 @@
+{
+  "header": "NFT 发行",
+  "desc": "在这里您可以查看特定NFT发行者的NFT分布情况。输入 NFT 发行人地址或用户名，然后按搜索按钮。",
+  "no-nfts": "我们找不到该地址发行的任何 NFT。",
+  "total": "{{users}} 账户拥有 {{nfts}} NFT",
+  "nonSelfIssued": "{{users}} 账户拥有 {{nfts}} 个非自行发行的 NFT",
+  "selfIssued": "{{users}} 个账户拥有 {{nfts}} 个自行发行的 NFT",
+  "table": {
+    "non-self-issued": "非自行发行",
+    "self-issued": "自行发行",
+    "total": "总计"
+  }
+}

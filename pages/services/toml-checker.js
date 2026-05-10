@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { explorerName, ledgerName, turnstileSupportedLanguages, xahauNetwork } from '../../utils'
+import { explorerName, ledgerName, turnstileLanguage, xahauNetwork } from '../../utils'
 
 const COOLDOWN_SECONDS = 10
 
@@ -229,7 +229,7 @@ export default function TomlCheckerPage() {
                   onError={() => setTurnstileToken('')}
                   options={{
                     theme: 'light',
-                    language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                    language: turnstileLanguage(i18n.language)
                   }}
                 />
               )}

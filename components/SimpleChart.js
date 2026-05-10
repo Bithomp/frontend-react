@@ -18,7 +18,8 @@ const locales = {
     de: ['Jan', 'Feb', 'März', 'Apr', 'Mai', 'Juni', 'Juli', 'Aug', 'Sept', 'Okt', 'Nov', 'Dez'],
     ja: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
     ko: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-    fr: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
+    fr: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+    zh: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
   }
 }
 
@@ -26,7 +27,7 @@ export default function PriceChart({ data, combined, currency }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
 
-  const supportedLanguages = ['en', 'ru', 'es', 'de', 'ja', 'ko', 'fr']
+  const supportedLanguages = ['en', 'ru', 'es', 'de', 'ja', 'ko', 'fr', 'zh']
   let chartLang = 'en'
   if (supportedLanguages.includes(i18n.language)) {
     chartLang = i18n.language
@@ -133,6 +134,12 @@ export default function PriceChart({ data, combined, currency }) {
           name: 'fr',
           options: {
             shortMonths: locales.months.fr
+          }
+        },
+        {
+          name: 'zh',
+          options: {
+            shortMonths: locales.months.zh
           }
         }
       ],

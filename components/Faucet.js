@@ -5,7 +5,7 @@ import {
   network,
   explorerName,
   ledgerName,
-  turnstileSupportedLanguages,
+  turnstileLanguage,
   isTagValid,
   typeNumberOnly,
   devNet,
@@ -535,7 +535,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
                         style={{ margin: 'auto' }}
                         options={{
                           theme,
-                          language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                          language: turnstileLanguage(i18n.language)
                         }}
                         onSuccess={setToken}
                         onError={() => {

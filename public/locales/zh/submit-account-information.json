@@ -1,0 +1,32 @@
+{
+  "title": "提交账户",
+  "heading": "提交账户信息",
+  "cross-chain": "服务是跨链使用的，<2>在XRPL主网上注册一个服务</2>，它将在其他bithomp浏览器上可用。",
+  "desc": "Bithomp 致力于提高 Explorer 提供的信息的质量，并允许用户快速识别 Ledger 上的关系。如果您使用 Ledger 运行服务（交易所、金融服务提供商、非营利组织或任何其他企业），或者如果您使用此类服务​​，请在此处提交该服务信息。",
+  "no-private": "提交内容不适用于私人账户，通过此表格提交的个人账户信息将被丢弃。",
+  "subtitle": "你的信息",
+  "info": "请提供您的电子邮件地址，以便我们需要与您联系以验证您提交的内容。",
+  "placeholders": {
+    "email": "您的个人电子邮件",
+    "name": "服务名称",
+    "address": "地址",
+    "domain": "域名",
+    "twitter": "X 用户名",
+    "instagram": "Instagram 用户名",
+    "facebook": "Facebook 用户名",
+    "youtube": "YouTube 用户名",
+    "linkedin": "Linkedin 用户名",
+    "reddit": "Reddit 用户名",
+    "medium": "中用户名",
+    "telegram": "电报用户名"
+  },
+  "form": {
+    "error": {
+      "service-name-empty": "请输入服务名称。"
+    },
+    "success": "表格提交成功。"
+  },
+  "error": {
+    "Account exist": "有人已经提交了该地址的信息。"
+  }
+}

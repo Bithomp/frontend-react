@@ -262,6 +262,8 @@
     },
     "stat": {
       "header": "{{ledgerName}} live statistics",
+      "last-ledger": "The last ledger",
+      "network": "Network",
       "ledger-index": "Ledger index",
       "close-time": "Close time",
       "transactions": "Transactions",

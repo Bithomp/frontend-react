@@ -1,0 +1,9 @@
+{
+  "no-transactions": "我们找不到任何可显示的交易。",
+  "ledger-not-found": "我们还找不到那个账本",
+  "earliest-ledger": "账本 <1>{{minLedger}}</1> 是最早可用的账本。",
+  "earliest-ledger-mainnet": "账本 <1>32570</1> 是最早可用的账本，大约是 XRPL 历史的第一周，<3>账本 1 到 32569 由于 2012 年的事故而丢失</3>。",
+  "ledger-continue": "因为 {{ledgerName}} 的状态记录在每个账本版本中，所以账本可以继续运行而不会丢失历史记录。",
+  "ledger_unix_close_time": "Ledger Unix 关闭时间：{data.close_time}",
+  "ledger_utc_close_time": "Ledger UTC 关闭时间：{data.closeTime}"
+}

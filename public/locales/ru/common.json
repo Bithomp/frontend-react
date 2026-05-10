@@ -262,6 +262,8 @@
     },
     "stat": {
       "header": "Последние данные с {{ledgerName}}",
+      "last-ledger": "Последний леджер",
+      "network": "Сеть",
       "ledger-index": "№ леджера",
       "close-time": "Время",
       "transactions": "Транзакций в леджере",

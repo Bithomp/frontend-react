@@ -9,6 +9,7 @@ import 'dayjs/locale/es' // 'es'
 import 'dayjs/locale/id' // 'id'
 import 'dayjs/locale/ja' // 'ja'
 import 'dayjs/locale/fr' // 'fr'
+import 'dayjs/locale/zh' // 'zh'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
@@ -61,14 +62,14 @@ export default function LanguageSwitch({ close }) {
   const td = (langList, i, columnsNumber) => {
     let cols = []
     for (let j = 0; j < columnsNumber; j++) {
+      const lang = langList[columnsNumber * i + j]
       cols.push(
         <td key={j}>
-          <span
-            className={spanClass(langList[columnsNumber * i + j])}
-            onClick={() => handleLangChange(langList[columnsNumber * i + j].value)}
-          >
-            {langList[columnsNumber * i + j]?.label}
-          </span>
+          {lang && (
+            <span className={spanClass(lang)} onClick={() => handleLangChange(lang.value)}>
+              {lang.label}
+            </span>
+          )}
         </td>
       )
     }
@@ -84,7 +85,8 @@ export default function LanguageSwitch({ close }) {
     { value: 'ru', label: 'Русский' },
     { value: 'fr', label: 'Français' },
     { value: 'de', label: 'Deutsch' },
-    { value: 'id', label: 'Bahasa Indonesia' }
+    { value: 'id', label: 'Bahasa Indonesia' },
+    { value: 'zh', label: '简体中文' }
   ]
 
   const langTable = () => {

@@ -262,6 +262,8 @@
     },
     "stat": {
       "header": "{{ledgerName}}リアルタイム情報",
+      "last-ledger": "最新のレジャー",
+      "network": "ネットワーク",
       "ledger-index": "レジャーインデックス",
       "close-time": "クローズ時間",
       "transactions": "トランザクション",

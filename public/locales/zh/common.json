@@ -1,0 +1,763 @@
+{
+  "common": {
+    "viewAll": "查看全部",
+    "noData": "无可用数据",
+    "addresses": "地址",
+    "holders": "持有者",
+    "sales": "销售"
+  },
+  "token-tabs": {
+    "tokens": "代币",
+    "amms": "LP代币",
+    "mpts": "MPT"
+  },
+  "search-select": {
+    "currency": "货币",
+    "issuer": "发行人",
+    "search-currency": "搜索货币",
+    "search-issuer": "搜寻发行人",
+    "no-results": "没有找到结果",
+    "start-currency": "开始输入内容来搜索货币",
+    "start-issuer": "开始输入内容来搜索发行人",
+    "more-than-results": "超过 {{count}} 个结果。请输入更多内容以缩小搜索范围。"
+  },
+  "aria": {
+    "main-page": "Bithomp主页",
+    "open-menu": "打开菜单"
+  },
+  "token-selector": {
+    "select-token": "选择代币",
+    "select-token-destination": "选择代币（目的地可以持有）",
+    "search-placeholder": "按货币、发行人或用户名搜索",
+    "holders": "{{value}} 持有者",
+    "more-results": "找到超过 {{count}} 个结果。请指定发行人以缩小搜索范围。",
+    "no-destination-trustlines": "找不到此目标地址的信任线。"
+  },
+  "menu": {
+    "tokens": "代币",
+    "badges": {
+      "new": "新"
+    },
+    "explorer": "{{explorerName}} 浏览器",
+    "token-menu": {
+      "multi-purpose": "多用途代币",
+      "top-holders": "顶级持有者",
+      "set-trust": "设置信任（Trustline）",
+      "issue-token-guide": "如何发行代币",
+      "issuer-guide": "代币发行者指南"
+    },
+    "amm": {
+      "amm": "AMM",
+      "pools": "AMM 池",
+      "explorer": "AMM 浏览器",
+      "learn": "什么是AMM？",
+      "deposit": "AMM 充值",
+      "withdraw": "AMM 提现",
+      "vote": "AMM投票",
+      "create": "AMM 创建"
+    },
+    "company": {
+      "about-us": "关于我们"
+    },
+    "services": {
+      "services": "服务",
+      "send": "发送付款",
+      "reward-auto-claim": "奖励自动领取",
+      "add-token": "添加代币（信任线）",
+      "account-settings": "账户设置",
+      "toml-checker": "TOML 检查器",
+      "view-all-services": "查看所有服务",
+      "nft-mint": "铸造 NFT",
+      "tax-reports": "税务报告",
+      "username": "用户名注册"
+    },
+    "business": {
+      "advertise": "投放广告",
+      "eaas": "区块链浏览器即服务",
+      "build-unl": "构建 UNL"
+    },
+    "project-registration": "项目报名",
+    "price-alerts": "{{nativeCurrency}} 价格提醒",
+    "submit-offline-tx": "提交线下交易",
+    "ledger": "账本交易",
+    "nft": {
+      "explorer": "探索者",
+      "volumes": "成交量",
+      "sales": "销售",
+      "minters": "铸造者",
+      "distribution": "持有人",
+      "statistics": "实时统计",
+      "nfts": "账户的 NFT",
+      "offers": "账户的报价",
+      "marketplaces": "市场",
+      "collections": "收藏"
+    },
+    "network": {
+      "blockchain": "区块链",
+      "dapps": "Dapps",
+      "nodes": "节点",
+      "governance": "治理",
+      "activations": "已激活账户（图表）",
+      "distribution": "{{currency}}分布",
+      "last-ledger-information": "最后的账本信息",
+      "last-ledger-transactions": "最后的账本交易",
+      "top-transfers-24h": "大额转账",
+      "verified-domains": "已验证的域名",
+      "toml-checker": "TOML检查器",
+      "validators": "验证者",
+      "amendments": "修正案",
+      "unl-report": "UNL报告",
+      "genesis": "创世账户",
+      "allocation": "{{currency}} 分配",
+      "activation-tree": "激活树"
+    },
+    "developers": {
+      "developers": "开发者",
+      "account-generation": "账户生成",
+      "faucet": "水龙头",
+      "api": "API",
+      "images": "代币/NFT/地址图片",
+      "bithomp-tools": "Bithomp 工具"
+    },
+    "wallet": {
+      "connect-wallet": "连接钱包",
+      "my-account-settings": "我的账户设置",
+      "connected-wallets": "连接钱包",
+      "active": "活跃",
+      "disconnect": "断开连接",
+      "connect-another-wallet": "连接另一个钱包"
+    },
+    "pro": {
+      "profile": "简介",
+      "watchlist": "关注列表",
+      "subscriptions": "订阅",
+      "referrals": "推荐",
+      "my-addresses": "我的地址",
+      "api-management": "API管理"
+    },
+    "legal": "法律",
+    "disclaimer": "免责声明",
+    "privacy-policy": "隐私政策",
+    "terms-and-conditions": "条款和条件",
+    "customer-support": "客户支持",
+    "press": "新闻",
+    "donate": "捐赠",
+    "sponsored": {
+      "title": "赞助",
+      "buy": "购买瑞波币",
+      "earn": "赚取 XRP",
+      "link-label": "{{title}} 赞助商链接"
+    },
+    "learn-more": {
+      "title": "了解更多",
+      "buy-wallet": "买钱包",
+      "xrp-wallets": "瑞波币钱包",
+      "xahau-wallets": "Xahau 钱包",
+      "xrpl-ripple": "XRP、XRPL、瑞波币",
+      "verified-domains": "已验证的域名",
+      "ripple-usd": "瑞波币美元",
+      "nft-minting": "如何铸造NFT",
+      "learn-page": "查看我们的学习页面"
+    }
+  },
+  "components": {
+    "expiration-select": {
+      "1d": "1天",
+      "3d": "3天",
+      "7d": "7天",
+      "14d": "14天",
+      "30d": "30天",
+      "90d": "90 天"
+    },
+    "target-table-select": {
+      "01": "L1 - 主表",
+      "02": "L2 - 我的桌子"
+    }
+  },
+  "signin": {
+    "connect": "连接",
+    "signin": "登录",
+    "signout": "退出",
+    "choose-app": "选择签名应用程序",
+    "login-with": "使用 {{appName}} 登录",
+    "sign-with": "使用 {{appName}} 签名",
+    "amount": {
+      "set-price": "定价",
+      "enter-amount": "输入金额"
+    },
+    "expiration": "过期",
+    "target-table": "目标表",
+    "statuses": {
+      "check-app": "请按照 {{appName}} 应用程序中的说明进行操作。"
+    },
+    "xaman": {
+      "open-app": "打开手机上的 Xaman 应用程序。",
+      "change-settings": "转到设置并选择一个测试网节点。",
+      "scan-qr": "使用 Xaman 应用程序扫描此二维码。",
+      "statuses": {
+        "redirecting": "正在重定向至 Xaman...",
+        "wait": "请稍候...",
+        "check-push": "查看手机上的推送通知。",
+        "expired": "二维码已过期，请重新申请。"
+      }
+    },
+    "actions": {
+      "view": "我的账户页面",
+      "my-transactions": "我的交易",
+      "my-nfts": "我的 NFT",
+      "my-nft-offers": "我的 NFT 优惠"
+    },
+    "confirm": {
+      "set-did": "设置DID",
+      "set-domain": "设置域名",
+      "set-avatar": "设置头像",
+      "nft-create-transfer-offer-header": "NFT转账",
+      "nft-transfer": "我将该 NFT 免费提供给目标账户，<2>目标账户需要接受 NFT 转账</2>。",
+      "nft-accept-sell-offer-header": "NFT购买",
+      "nft-accept-buy-offer-header": "卖NFT",
+      "nft-create-sell-offer-header": "待售清单",
+      "nft-create-buy-offer-header": "创建购买报价",
+      "nft-accept-offer": "我承认 {{webSiteName}} 让我可以访问去中心化市场，它无法验证或保证任何 NFT 的真实性和合法性。我确认我已阅读<4>条款和条件</4>，并且我同意在 {{webSiteName}} 上购买、出售或使用任何 NFT 的所有条款。",
+      "nft-create-sell-offer": "我明白了，一旦我的listing被签署，NFT就可以立即购买。",
+      "nft-burn-header": "NFT燃烧",
+      "nft-burn": "我了解NFT将被永久删除，这意味着它不能再被拥有、转让、购买或出售。此操作无法撤消。"
+    },
+    "set-account": {
+      "domain": "域名",
+      "enter-domain": "输入域名"
+    },
+    "status": {
+      "awaiting-crawler": "等待爬虫更新数据",
+      "awaiting-broker": "正在等待 {{serviceName}} 接受报价",
+      "failed-broker": "无法通知 {{serviceName}} 有关优惠的信息。您可以取消它。"
+    },
+    "nft-offer": {
+      "counteroffer": "您正在提出还价，应在 20 秒内自动接受。如果不被接受，您可以随时取消。",
+      "nft-price": "NFT价格",
+      "fee": "{{serviceName}} 费用 ({{feeText}})",
+      "total": "总计"
+    }
+  },
+  "footer": {
+    "why-our-explorer": "为什么是我们的探索者",
+    "get-involved": "参与进来",
+    "affiliate-program": "附属计划",
+    "slogan": "Bithomp — 自 2015 年以来的 XRP 账本浏览器",
+    "cookie": {
+      "we-use-cookie": "我们使用 cookies 和类似技术来改善您在我们网站上的体验。"
+    }
+  },
+  "home": {
+    "title": "{{homeExplorerName}} |搜索 {{nativeCurrency}} 交易、账户、NFT 和账本数据",
+    "description": "{{homeExplorerAttribution}} 可让您搜索和扫描 {{ledgerName}} 上的 {{nativeCurrency}} 地址、交易、代币、NFT、余额和链上活动。交易、铸造 NFT、管理 AMM、提交交易以及使用账户工具。",
+    "h1": "{{homeExplorerName}} 和账本工具",
+    "search-placeholder": "按地址/交易/NFT/用户名/PayString/报价/货币哈希搜索",
+    "search-placeholder-short": "地址/交易/用户名",
+    "price": {
+      "header": "{{nativeCurrency}} 实时价格和转换器",
+      "chartHeader": "{{nativeCurrency}} 价格图表"
+    },
+    "whales": {
+      "header": "过去 24 小时内最重要的交易"
+    },
+    "stat": {
+      "header": "{{ledgerName}} 实时统计",
+      "last-ledger": "最新账本",
+      "network": "网络",
+      "ledger-index": "账本索引",
+      "close-time": "关门时间",
+      "transactions": "交易",
+      "quorum": "验证法定人数",
+      "proposers": "提案者",
+      "accounts": "账户",
+      "accountsActiveLast24h": "活跃账户",
+      "transactionsLast24h": "交易",
+      "paymentsLast24h": "付款",
+      "feesLast24h": "费用",
+      "usernames": "用户名",
+      "nft": {
+        "created": "铸造",
+        "burned": "烧毁",
+        "owners": "当前所有者",
+        "issuers": "发行人",
+        "transfers": "转账",
+        "for-sale": "列出"
+      },
+      "escrows": "托管",
+      "amms": "AMM 池",
+      "nodes": "节点"
+    },
+    "teaser": {
+      "topDapps": "热门 Dapp",
+      "topNftCollections": "顶级 NFT 收藏",
+      "topTokens": "热门代币",
+      "topAmms": "TVL 顶级 AMM 池",
+      "topValidators": "验证者",
+      "topAmendments": "最新修正案",
+      "refresh": "刷新数据"
+    }
+  },
+  "last-ledger-information": {
+    "ledger-hash": "账本哈希",
+    "ledger": "账本",
+    "ledger-closed-at": "账本关闭于",
+    "ledger-interval": "账本间隔",
+    "transactions": "交易",
+    "transaction-speed": "每秒事务数",
+    "proposers": "提案者",
+    "validation-quorum": "验证法定人数",
+    "base-fee": "基本费用",
+    "base-reserve": "基地储备",
+    "increment-reserve": "对象保留",
+    "total-supply": "总供应量",
+    "burned-by-hooks": "被钩子烧了",
+    "total-burned": "全部烧毁"
+  },
+  "nft-statistics": {
+    "header": "NFT实时统计",
+    "text0": "该信息有点过时，我们需要赶上<1>{{lag}}</1>个账本。<br/>数据是为账本#{{crawlerIndex}}，({{crawlerTime}})提供的。<br/>最后验证的账本是#{{currentLedgerIndex}}，({{currentLedgerTime}})。",
+    "ledger-index": "账本索引",
+    "created": "铸造",
+    "burned": "烧毁",
+    "exist": "目前存在",
+    "burnable": "可被铸币厂烧毁",
+    "only-xrp": "只能以 XRP 出售",
+    "transferable": "可以转给任何人",
+    "owners": "当前所有者",
+    "issuers": "发行人总数",
+    "transfers": "NFT 转账",
+    "for-sale": "NFT 出售",
+    "for-sale-without-destination": "NFT 公开发售",
+    "for-sale-with-destination": "NFT 直销"
+  },
+  "alerts": {
+    "text0": "当 <6>{{linkText}}</6> 的 {{ nativeCurrency }}/USD 或 {{ nativeCurrency }}/BTC 市场价格在一小时内变化超过 5% 或一天内变化超过 10% 时收到通知。",
+    "text1": "关注 Telegram 频道：<1>bithomp</1> 或 X 账户：<4>XRP_PriceAlerts</4>。",
+    "last-alerts": "最近 50 条警报",
+    "date-and-time": "日期和时间",
+    "currency-pair": "货币对",
+    "change-duration": "变更持续时间",
+    "change": "改变",
+    "old-rate": "旧费率",
+    "new-rate": "新费率"
+  },
+  "genesis": {
+    "text0": "账本 <1>32570</1> 是最早可用的账本，大约是 XRPL 历史的第一周，<3>账本 1 到 32569 由于 2012 年的事故而丢失</3>。",
+    "ledger-continue": "因为 XRP 账本的状态记录在每个账本版本中，所以账本可以继续运行而不会丢失历史记录。",
+    "ledger-index": "账本索引",
+    "account-count": "账户数",
+    "inception": "盗梦空间",
+    "balance-update": "余额更新",
+    "details": "详情",
+    "address": "地址",
+    "genesis-balance": "创世余额",
+    "rippletrade-username": "Rippletrade 用户名",
+    "nickname": "昵称",
+    "genesis-index": "创世索引"
+  },
+  "developer": {
+    "header": "Bithomp API 密钥请求",
+    "email": "您的电子邮件地址：",
+    "url": "您的网站/应用程序网址：",
+    "description": "项目说明及API使用详情：",
+    "success": "谢谢。 API 令牌已发送到您的电子邮件。",
+    "error": {
+      "url-empty": "请输入您的网站/应用程序 URL。",
+      "url-invalid": "请输入有效的 URL。",
+      "description-empty": "请添加您的项目的描述。",
+      "description-invalid": "请写下您的项目的详细描述。"
+    }
+  },
+  "press": "这是 Bithomp 的官方徽标，供媒体和新闻专业人士用于印刷和网页（svg、png、eps、pdf，用于深色和浅色背景）。如需媒体垂询，请<2>联系我们</2>。",
+  "page-not-found": {
+    "header": "找不到请求的页面。",
+    "text": "点击<2>此处</2>查看我们的登陆页面。"
+  },
+  "receipt": {
+    "quantity": "数量。",
+    "items": "项目",
+    "price": "价格",
+    "total": "总计",
+    "paid": "已付费",
+    "order-id": "订单号"
+  },
+  "button": {
+    "set-domain": "设置域名",
+    "continue": "继续",
+    "cancel": "取消",
+    "accept": "接受",
+    "submit": "提交",
+    "search": "搜索",
+    "print": "打印",
+    "download": "下载",
+    "copy": "复制",
+    "copied": "已复制",
+    "sign": "标志",
+    "nft": {
+      "add-another-sell-offer": "添加另一个卖出报价",
+      "transfer": "转账NFT",
+      "update-sell-offer": "更新卖出报价",
+      "cancel-sell-offer-for": "取消 {{amount}} 的销售报价",
+      "cancel-buy-offer-for": "取消 {{amount}} 的购买优惠",
+      "cancel-transfer": "取消NFT转账",
+      "accept-transfer": "接受NFT转账",
+      "buy-for-amount-on": "在 {{service}} 上以 {{amount}} 购买",
+      "buy-for-amount": "购买 {{amount}}",
+      "sell-for-amount": "售价 {{amount}}",
+      "make-offer": "出价",
+      "list-for-sale": "出售清单",
+      "burn": "烧掉那个NFT"
+    }
+  },
+  "general": {
+    "error": "错误",
+    "no-data": "无可用数据",
+    "loading": "加载中...",
+    "filters": "过滤器",
+    "login-to-bithomp-pro": "<2>登录</2> Bithomp Pro 订阅者可以加载更多数据。",
+    "renew-bithomp-pro": "您的 Bithomp Pro 订阅已过期。 <1>续订您的订阅</1>。",
+    "load-failed": "加载失败",
+    "all-issuers": "所有发行人",
+    "no-expiration": "从来没有",
+    "no-uri": "未指定 URI",
+    "no-media": "未找到媒体",
+    "viewer": "观众",
+    "developer-mode": "开发者模式",
+    "search": "搜索",
+    "of-many": "许多",
+    "of": "的",
+    "sort-by": "排序方式：",
+    "change-filters": "尝试调整过滤器以查看与您的搜索匹配的结果！"
+  },
+  "form": {
+    "error": {
+      "destination-tag-invalid": "目标标记无效。",
+      "price-empty": "请输入金额。",
+      "address-empty": "请输入地址。",
+      "address-invalid": "请输入有效地址。",
+      "domain-empty": "请输入域名。",
+      "domain-invalid": "请输入有效的域名。",
+      "description-empty": "请输入描述。",
+      "description-short": "描述太短。",
+      "email-empty": "请输入您的电子邮件地址。",
+      "email-invalid": "请输入有效的电子邮件地址。",
+      "password-empty": "请输入您的密码。",
+      "password-invalid": "请输入有效密码。"
+    },
+    "placeholder": {
+      "destination-tag": "输入目的地标签（如果需要）",
+      "uri": "输入 URI"
+    }
+  },
+  "error": {
+    "payment-partly": "请发送剩余的金额，到目前为止，我们仅在需要 <b>{{required}} {{currency}}</b> 时才收到 {{received}} {{currency}}。",
+    "Network Error": "似乎没有互联网连接;(",
+    "Request failed with status code 522": "服务器当前无法访问，请稍后再试。",
+    "Request failed with status code 429": "您向我们发送的请求过多，请稍后再试！",
+    "Request failed with status code 404": "该网络不允许此类 API 调用",
+    "Request failed with status code 403": "您似乎已退出，请重新登录",
+    "Request failed with status code 408": "请求已超时。尝试更改过滤器或稍后重试。",
+    "Request aborted": "请求中止",
+    "read ECONNRESET": "请求超时。尝试更改过滤器或稍后重试。"
+  },
+  "errors": {
+    "token": {
+      "required": "请登录以继续"
+    },
+    "partner": {
+      "not_found": "没有项目"
+    },
+    "access_token": {
+      "not_found": "没有 API 密钥。"
+    },
+    "address": {
+      "invalid_signature_address": "签名地址无效。确保您使用正确的地址进行签名。",
+      "limit_reached": "您无法添加更多地址，您已达到限制。",
+      "not_activated": "该地址尚未激活。"
+    },
+    "blob": {
+      "invalid_signature_address": "您需要使用您要添加的地址对邮件进行签名。"
+    }
+  },
+  "error-api": {
+    "search is too short": "搜索的名称太短",
+    "issuer username is not found or invalid": "发行人用户名无效",
+    "issuer is invalid": "发行人地址无效",
+    "owner username is not found or invalid": "所有者的用户名无效",
+    "owner is invalid": "所有者地址无效",
+    "destination username is not found or invalid": "目的地用户名无效",
+    "destination is invalid": "目的地地址无效",
+    "currency is invalid": "货币无效",
+    "currencyIssuer username is not found or invalid": "无效的货币发行者用户名",
+    "currencyIssuer is invalid": "货币发行人地址无效",
+    "Token information is not found": "我们找不到该 ID 的任何信息",
+    "No nfts information is found": "抱歉，出现错误，请搜索其他内容。",
+    "Address is not valid": "地址无效"
+  },
+  "units": {
+    "seconds-short": "s",
+    "minutes-short": "米",
+    "hours-short": "h",
+    "days-short": "d"
+  },
+  "period": {
+    "all": "",
+    "year": "过去 365 天",
+    "month": "过去 30 天",
+    "week": "过去 7 天",
+    "day": "过去 24 小时"
+  },
+  "table": {
+    "ledger": "账本",
+    "no-value": "没有值",
+    "updated": "已更新",
+    "currency": "货币",
+    "currency-issuer": "货币发行者",
+    "destination-tag": "目的地标签",
+    "uri": "URI",
+    "mints": "铸造",
+    "view": "查看",
+    "period": "期间",
+    "mint-period": "完好期",
+    "burn-period": "燃烧期",
+    "warning": "警告",
+    "sequence": "序列",
+    "version": "版本",
+    "domain": "域名",
+    "index": "索引",
+    "address": "地址",
+    "date": "日期",
+    "time": "时间",
+    "amount": "金额",
+    "name": "姓名",
+    "sender": "发件人",
+    "balance": "余额",
+    "memo": "备忘录",
+    "transaction": "交易",
+    "owner": "所有者",
+    "owners-now": "所有者（现在）",
+    "accepted-by": "接受者",
+    "issuer": "发行人",
+    "minter": "明特",
+    "receiver": "接收者",
+    "issuer-owner": "发行人和所有者",
+    "issuers": "发行人",
+    "broker": "经纪人",
+    "seller": "卖家",
+    "buyer": "买家",
+    "sold": "已售出",
+    "sold_few": "已售出",
+    "sold-on": "已售出",
+    "minted-on": "铸造于",
+    "type": "类型",
+    "status": "状态",
+    "hash": "哈希",
+    "serial": "串行",
+    "taxon": "分类单元",
+    "placed": "已放置",
+    "accepted": "已接受",
+    "canceled": "已取消",
+    "offer": "优惠",
+    "expiration": "过期",
+    "expired": "已过期",
+    "destination": "目的地",
+    "sales": "销售",
+    "volume": "销量",
+    "price": "价格",
+    "external-url": "外部网址",
+    "description": "说明",
+    "collection": "收藏",
+    "collection-family": "收藏家族",
+    "transfer-fee": "版税",
+    "flag": "标志",
+    "flags": "标志",
+    "count": "金额",
+    "nfts": "NFT",
+    "minted": "铸造",
+    "transferred": "已转移",
+    "burned": "烧毁",
+    "attributes": "属性",
+    "metadata": "元数据",
+    "ledger-data": "账本数据",
+    "history": "历史",
+    "sell-offers": "出售报价",
+    "buy-offers": "购买优惠",
+    "nfts-now": "NFT（现在）",
+    "traded-nfts": "交易 NFT",
+    "buyers": "买家",
+    "raw-data": "原始数据",
+    "username": "用户名",
+    "floor-now": "楼层（现在）",
+    "related-lists": "相关列表",
+    "by-issuer": "发行人",
+    "by-owner": "作者：",
+    "by-taxon": "通过分类单元",
+    "all-nfts": "所有 NFT",
+    "listed": "列出",
+    "social-share": "分享就是关怀",
+    "marketplace": "市场",
+    "public-key": "公钥",
+    "text": {
+      "private-offer": "私人优惠",
+      "show-extended-statistics": "显示扩展统计信息",
+      "include-without-media-data": "包括无媒体的 NFT",
+      "include-burned-nfts": "包括烧毁的 NFT",
+      "no-expiration": "无有效期",
+      "no-offers": "未找到优惠",
+      "unspecified": "未指定",
+      "sell": "出售",
+      "buy": "购买",
+      "show": "演出",
+      "hide": "隐藏",
+      "see-on": "请参见 <2><0>{{marketplace}}</0></2>",
+      "valid": "有效",
+      "invalid": "无效",
+      "no-votes": "没有投票。"
+    },
+    "filter": {
+      "valid": "有效",
+      "invalid": "无效",
+      "active": "全部活跃",
+      "historical": "历史",
+      "all": "全部"
+    },
+    "text-status": {
+      "NFT is not owned by the seller account": "NFT 不属于卖家所有",
+      "Offer is expired": "已过期",
+      "Unable to verify balance of the buyer account": "无法验证买家账户余额",
+      "Insufficient funds on the buyer account": "买家资金不足",
+      "Seller has no trustline for the token or it cannot be verified": "卖家没有代币的信任线或无法验证",
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT 发行者没有让代币接受版税的信任线，或者无法验证",
+      "NFT is already belongs to the buyer": "NFT已经属于买家"
+    }
+  },
+  "tabs": {
+    "list": "列表",
+    "tiles": "瓷砖",
+    "secondary-sales": "中学",
+    "primary-sales": "小学",
+    "primaryAndSecondary-sales": "所有销售",
+    "all-time": "所有时间",
+    "year": "365天",
+    "month": "30天",
+    "week": "7天",
+    "day": "24小时",
+    "hour": "1小时",
+    "currencies": "货币",
+    "issuers": "发行人",
+    "marketplaces": "市场",
+    "brokers": "经纪人",
+    "charts": "图表",
+    "collections": "收藏",
+    "image": "图片",
+    "video": "视频",
+    "audio": "音频",
+    "model": "3D模型",
+    "owned-offers": "拥有",
+    "offers-for-owned-nfts": "对于拥有的 NFT",
+    "privately-offered-to-address": "私人（传入）",
+    "all": "全部",
+    "buy": "购买",
+    "sell": "出售",
+    "buyNow": "立即购买（公开 + 已知经纪人）",
+    "publicAndKnownBrokers": "公共和市场",
+    "public": "公共",
+    "knownBrokers": "市场",
+    "onSale": "列出",
+    "bids": "出价",
+    "all-tokens": "所有代币",
+    "single-token": "单个代币",
+    "mintedNew": "最新",
+    "mintedOld": "最古老的",
+    "existing": "现有",
+    "burned": "烧毁"
+  },
+  "xaman": {
+    "new-qr": "获取新的二维码"
+  },
+  "explorer": {
+    "header": {
+      "main": "{{explorerName}} 浏览器",
+      "sub": "扫描 {{nativeCurrency}} 交易、账户、代币和 NFT — 探索 {{nativeCurrency}} 账本的快速且值得信赖的方式。",
+      "amm": "AMM矿池信息",
+      "object": "对象信息",
+      "account": "账户信息",
+      "transaction": "交易信息",
+      "nft": "NFT",
+      "nfts": "NFT",
+      "nft-offer": "NFT 报价",
+      "nft-offers": "NFT优惠",
+      "nft-volumes": "NFT 销量",
+      "topNftCollections": "顶级 NFT 收藏"
+    },
+    "enter-address": "输入地址或用户名",
+    "searching-tx-nft-nftoffer": "搜索 Tx / NFT ID / NFT 报价",
+    "searching-for-addresses": "正在搜索地址...",
+    "menu": {
+      "account": "账户",
+      "transactions": "交易",
+      "tokens": "代币"
+    },
+    "different-network": "此交易来自<1>{{networkNameOrId}}</1>网络",
+    "check-tx-on-different-explorer": "<2><0>此处</0></2>查看详细信息。",
+    "not-supported-network": "不受支持。",
+    "no-slashes": "搜索不应包含斜杠。"
+  },
+  "nft-explorer": {
+    "header": "NFT探索者"
+  },
+  "nft-offers": {
+    "header": "NFT优惠",
+    "owned-desc": "在这里您可以搜索 NFT 的买卖报价，输入地址或用户名即可查看其拥有哪些 NFT 报价。",
+    "for-owned-nfts-desc": "在这里您可以搜索账户拥有的 NFT 的购买报价，输入地址或用户名即可查看收到的报价。",
+    "privately-offered-to-address-desc": "在这里您可以搜索为账户私人创建的报价（带有目的地），通常用于 NFT 转账（价格 0），输入地址或用户名即可查看收到的报价。",
+    "no-nft-offers": "我们找不到任何 NFT 优惠。",
+    "cancel-invalid-offer_one": "取消无效报价",
+    "cancel-invalid-offer_other": "取消 {{count}} 个无效优惠",
+    "cancel-expired-offer_one": "取消过期优惠",
+    "cancel-expired-offer_other": "取消 {{count}} 个过期优惠"
+  },
+  "nft-offer": {
+    "header": "NFT报价",
+    "desc": "在这里您可以搜索 NFT Offers，输入 Offer ID 并按搜索按钮。",
+    "enter-offer-id": "输入 NFT 优惠 ID",
+    "selling": "出售",
+    "buying": "购买"
+  },
+  "nfts": {
+    "header": "账户的NFT",
+    "desc": "在这里您可以搜索NFT，输入地址即可查看其拥有哪些NFT。",
+    "search-by-name": "按 NFT 名称搜索",
+    "search-by-issuer": "按 NFT 发行人搜索",
+    "search-by-taxon": "按 NFT 分类单元搜索",
+    "search-by-owner": "按 NFT 所有者搜索",
+    "search-by-buyer": "NFT买家搜索",
+    "search-by-seller": "NFT卖家搜索",
+    "no-nfts": "使用您的搜索参数，我们找不到任何 NFT。",
+    "on-service": "{{service}}",
+    "load-more": "我们正在寻找账本上的数据...请稍候...",
+    "end": "这是我们能找到的所有 NFT。",
+    "change-filters": "使用不同的过滤选项或选择其他搜索参数来探索更多符合您兴趣的 NFT。"
+  },
+  "nft-sales": {
+    "header": "NFT销售",
+    "load-more": "我们正在寻找有关 XRPL 的数据...请稍候...",
+    "end": "列表末尾。"
+  },
+  "links": {
+    "active-offers-same-account": "查看该账户的有效优惠",
+    "nfts-same-issuer": "具有同一发行人的 NFT",
+    "owned-nfts-same-account": "该账户拥有的 NFT",
+    "all": "全部",
+    "sold": "已售出"
+  },
+  "donate": {
+    "help-us": "帮助我们完成打造最用户友好的 XRPL 浏览器的使命。",
+    "it-helps": "您的捐赠将帮助我们增加容量并继续开发 Bithomp。",
+    "address": "我们的 XRPL 捐款地址",
+    "donate-with-xaman": "与 Xaman 一起捐赠"
+  },
+  "sponsored": {
+    "sponsored": "赞助"
+  }
+}

@@ -108,6 +108,11 @@ export const turnstileSupportedLanguages = [
   'zh-TW'
 ]
 
+export const turnstileLanguage = (language) => {
+  if (language === 'zh') return 'zh-CN'
+  return turnstileSupportedLanguages.includes(language) ? language : 'en'
+}
+
 export const periodDescription = (periodName) => {
   if (periodName?.includes('..')) {
     const periodParts = periodName.split('..')

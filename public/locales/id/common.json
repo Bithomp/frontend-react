@@ -262,6 +262,8 @@
     },
     "stat": {
       "header": "Statistik live {{ledgerName}}",
+      "last-ledger": "Ledger terakhir",
+      "network": "Jaringan",
       "ledger-index": "Indeks ledger",
       "close-time": "Waktu penutupan",
       "transactions": "Transaksi",
