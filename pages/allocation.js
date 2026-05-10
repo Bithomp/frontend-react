@@ -106,7 +106,8 @@ export default function Allocation({ initialData, errorMessage }) {
   const isDark = theme === 'dark'
   const textColor = isDark ? '#ffffff' : '#333333'
 
-  const distribution = (data?.distribution || []).filter((d) => Number(d.amount) > 0)
+  const hiddenCategories = xahauNetwork ? new Set(['ripple']) : new Set()
+  const distribution = (data?.distribution || []).filter((d) => Number(d.amount) > 0 && !hiddenCategories.has(d.category))
   const burned = data?.burned ? dropsToXrp(data.burned) : 0
   const totalCoins = data?.totalCoins ? dropsToXrp(data.totalCoins) : data?.maxCoins ? dropsToXrp(data.maxCoins) : 0
   const maxCoins = data?.maxCoins ? dropsToXrp(data.maxCoins) : totalCoins
