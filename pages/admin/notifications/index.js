@@ -73,6 +73,8 @@ const initialRuleForm = {
   xrpCafeURL: false
 }
 
+const notificationsSubscriptionHref = '/admin/subscriptions?tab=notifications'
+
 const booleanFilterOptions = [
   { value: 'any', label: 'Any' },
   { value: 'true', label: 'Yes' },
@@ -400,6 +402,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const activeBotPackage = activePackage(notificationPackages, 'bot')
   const alertPlanTier = getAlertPlanTier(activeBotPackage?.tier || DEFAULT_ALERT_PLAN_TIER)
   const alertPlan = getAlertPlan(alertPlanTier)
+  const channelLimitReached = channels.length >= alertPlan.connections
   const hasActiveProSubscription = !!activeProPackage
   const balanceHistoryAddressOptions = useMemo(
     () =>
@@ -443,11 +446,16 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   }, [sessionToken])
 
   const openAddChannel = (type = NOTIFICATION_CHANNEL_TYPES.EMAIL) => {
+    if (channelLimitReached) {
+      setFormMessage(`Channel limit reached. ${alertPlanLimitText(alertPlan)}`)
+      setShowChannelForm(false)
+      return
+    }
     setEditingChannel(null)
     setChannelType(type)
     setFormData(initialChannelForm)
     setFormErrors({})
-    setFormMessage(channels.length >= alertPlan.connections ? `Channel limit reached. ${alertPlanLimitText(alertPlan)}` : '')
+    setFormMessage('')
     setShowChannelForm(true)
   }
 
@@ -1123,7 +1131,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             <span>
               {alertPlanLimitText(alertPlan)}{' '}
               {alertPlanTier === DEFAULT_ALERT_PLAN_TIER && (
-                <Link href="/admin/subscriptions?tab=notifications">Upgrade for more alert channels and rules.</Link>
+                <Link href={notificationsSubscriptionHref}>Upgrade for more alert channels and rules.</Link>
               )}
             </span>
           </div>
@@ -1448,8 +1456,26 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                     <h2>Alert channels</h2>
                     <p>Saved destinations for alerts.</p>
                   </div>
-                  {channels.length > 0 && !showChannelForm && <AddChannelButton onClick={() => openAddChannel()} />}
+                  {channels.length > 0 &&
+                    !showChannelForm &&
+                    (channelLimitReached ? (
+                      <Link href={notificationsSubscriptionHref} className="button-action thin">
+                        Upgrade plan
+                      </Link>
+                    ) : (
+                      <AddChannelButton onClick={() => openAddChannel()} />
+                    ))}
                 </div>
+
+                {channels.length > 0 && channelLimitReached && !showChannelForm && (
+                  <div className="notification-limit-notice">
+                    <strong>Channel limit reached.</strong>
+                    <span>
+                      {alertPlanLimitText(alertPlan)}{' '}
+                      <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more channels.</Link>
+                    </span>
+                  </div>
+                )}
 
                 {renderChannelForm()}
 

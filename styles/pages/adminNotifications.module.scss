@@ -84,6 +84,32 @@
     background: color-mix(in srgb, var(--accent-link) 8%, var(--background-main));
   }
 
+  .notification-limit-notice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    align-items: center;
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, var(--orange) 42%, var(--button-additional));
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--orange) 10%, var(--background-main));
+    line-height: 1.35;
+
+    strong {
+      color: var(--text-main);
+    }
+
+    span {
+      color: var(--text-secondary);
+    }
+
+    a {
+      color: var(--accent-link);
+      font-weight: 700;
+    }
+  }
+
   .notification-status {
     display: flex;
     flex-wrap: wrap;
