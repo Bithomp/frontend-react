@@ -117,8 +117,10 @@ const setupGuides = [
     type: NOTIFICATION_CHANNEL_TYPES.TWITTER,
     icon: FaXTwitter,
     title: 'X / Twitter',
-    description: 'Use credentials from the X developer portal if a rule should publish through your app.',
-    steps: ['Developer portal', 'Project app', 'Keys and tokens', 'Copy API/access tokens']
+    description:
+      'Use the API Key, API Key Secret, Access Token, and Access Token Secret from the X Developer Portal app.',
+    steps: ['Developer Portal', 'Project app', 'Read and write permissions', 'Keys and tokens'],
+    guideHref: '/admin/notifications/x-guide'
   }
 ]
 
@@ -800,15 +802,23 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 <p>{selectedGuide.description}</p>
               </div>
               {selectedGuide.steps.length > 0 && (
-                <ol>
-                  {selectedGuide.steps.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ol>
+                <div>
+                  <ol>
+                    {selectedGuide.steps.map((step) => (
+                      <li key={step}>{step}</li>
+                    ))}
+                  </ol>
+                  {selectedGuide.guideHref && (
+                    <Link href={selectedGuide.guideHref} className="notification-guide-link">
+                      Detailed setup guide
+                    </Link>
+                  )}
+                </div>
               )}
             </div>
           )}
           <InputField
+            className={channelType === NOTIFICATION_CHANNEL_TYPES.TWITTER ? 'notification-field-wide' : ''}
             error={formErrors.name}
             helpText="A short private name for this channel."
             id="name"

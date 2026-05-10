@@ -55,12 +55,38 @@ export const NOTIFICATION_CHANNELS = {
   },
   [NOTIFICATION_CHANNEL_TYPES.TWITTER]: {
     label: 'X / Twitter',
-    helpText: "Use your X application's API credentials.",
+    helpText: 'Use the API key pair and access token pair from your X Developer Portal app.',
     fields: [
-      { id: 'consumer_key', label: 'Consumer key', required: true },
-      { id: 'consumer_secret', label: 'Consumer secret', type: 'password', required: true },
-      { id: 'access_token_key', label: 'Access token key', required: true },
-      { id: 'access_token_secret', label: 'Access token secret', type: 'password', required: true }
+      {
+        id: 'consumer_key',
+        label: 'API Key',
+        placeholder: 'API Key from X',
+        helpText: 'Shown in X as API Key. This is the Consumer key used by the API.',
+        required: true
+      },
+      {
+        id: 'consumer_secret',
+        label: 'API Key Secret',
+        placeholder: 'API Key Secret from X',
+        helpText: 'Shown once together with the API Key. This is the Consumer secret.',
+        type: 'password',
+        required: true
+      },
+      {
+        id: 'access_token_key',
+        label: 'Access Token',
+        placeholder: 'Access Token from X',
+        helpText: 'Generate this in Keys and tokens after the app has Read and write permissions.',
+        required: true
+      },
+      {
+        id: 'access_token_secret',
+        label: 'Access Token Secret',
+        placeholder: 'Access Token Secret from X',
+        helpText: 'Generate this together with Access Token and keep it private.',
+        type: 'password',
+        required: true
+      }
     ]
   }
 }

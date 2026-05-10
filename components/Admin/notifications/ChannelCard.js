@@ -49,7 +49,7 @@ const ChannelSpecificDetails = ({ channel }) => {
       return (
         <div className="notification-card-details">
           <DetailRow
-            label="Consumer key"
+            label="API Key"
             mono
             value={channel.settings.consumer_key ? `...${channel.settings.consumer_key.slice(-8)}` : ''}
           />

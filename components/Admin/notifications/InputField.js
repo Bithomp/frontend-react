@@ -1,4 +1,5 @@
 export default function InputField({
+  className = '',
   error,
   helpText,
   id,
@@ -10,7 +11,7 @@ export default function InputField({
   value
 }) {
   return (
-    <label className="notification-field" htmlFor={id}>
+    <label className={`notification-field${className ? ` ${className}` : ''}`} htmlFor={id}>
       <span>
         {label}
         {required ? ' *' : ''}

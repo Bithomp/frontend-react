@@ -391,6 +391,14 @@
       font-size: 12px;
       line-height: 1.35;
     }
+
+    .notification-guide-link {
+      display: inline-flex;
+      margin-top: 9px;
+      color: var(--accent-link);
+      font-size: 13px;
+      font-weight: 700;
+    }
   }
 
   .notification-rule-event-picker {
