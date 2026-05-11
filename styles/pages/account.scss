@@ -38,6 +38,37 @@
     text-align: right;
   }
 
+  .copy-inline {
+    overflow: visible;
+  }
+
+  .copy-inline .tooltip .tooltiptext {
+    --tooltip-shift-x: 0%;
+    left: auto;
+    right: 0;
+    text-align: left;
+  }
+
+  .copy-inline .tooltip .tooltiptext:before,
+  .copy-inline .tooltip .tooltiptext:after {
+    left: auto;
+    right: var(--tooltip-arrow-offset);
+    transform: none;
+  }
+
+  .info-section:has(.tooltip:hover),
+  .assets-section:has(.tooltip:hover),
+  .transactions-section:has(.tooltip:hover),
+  .orders-section:has(.tooltip:hover),
+  .info-section:has(.tooltiptext.is-visible),
+  .assets-section:has(.tooltiptext.is-visible),
+  .transactions-section:has(.tooltiptext.is-visible),
+  .orders-section:has(.tooltiptext.is-visible),
+  .asset-item:has(.tooltip:hover),
+  .asset-item:has(.tooltiptext.is-visible) {
+    z-index: 50;
+  }
+
   .section-link {
     height: 30px;
     padding: 0 10px;
