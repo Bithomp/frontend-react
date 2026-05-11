@@ -106,12 +106,12 @@
       "asset-2-issuer": "Emisor del activo 2",
       "address": "Dirección",
       "account-status": "Estado de la cuenta",
-      "regular-key": "Regular key",
+      "regular-key": "Clave regular",
       "free-rekey": "Reasignación gratis",
       "multi-sign": "Multifirma",
       "multi-sign-threshold": "Umbral de multifirma",
       "signer-with-weight": "Firmante #{{index}} (peso {{weight}})",
-      "master-key": "Master key",
+      "master-key": "Clave maestra",
       "claimable": "Reclamable",
       "hook-namespaces": "Espacios de nombres Hook",
       "hook-state-count": "Cantidad de estados Hook",
@@ -304,7 +304,7 @@
       "checks": "Cheques",
       "sent-checks": "Cheques enviados",
       "received-checks": "Cheques recibidos",
-      "escrows": "Escrows",
+      "escrows": "Depósitos escrow",
       "outgoing-escrows": "Escrows salientes",
       "incoming-escrows": "Escrows entrantes",
       "self-escrows": "Escrows propios",
@@ -414,7 +414,9 @@
     "phrases": {
       "by": "por",
       "with": "con",
-      "for": "para"
+      "for": "para",
+      "from": "desde",
+      "to": "a"
     },
     "counts": {
       "addresses_one": "dirección",
@@ -424,7 +426,7 @@
       "for-addresses_other": "para {{formattedCount}} direcciones"
     },
     "roles": {
-      "regular-key": "regular key",
+      "regular-key": "clave regular",
       "regular-key-and-signer": "regular key + firmante",
       "signer": "firmante",
       "nft-minter": "minter NFT"
@@ -478,7 +480,10 @@
     },
     "errors": {
       "failed-load-account-objects-assets": "No se pudieron cargar los objetos de la cuenta. Puede que falten algunos activos.",
-      "failed-load-account-objects-sections": "No se pudieron cargar los objetos de la cuenta. Puede que falten algunas secciones de objetos."
+      "failed-load-account-objects-sections": "No se pudieron cargar los objetos de la cuenta. Puede que falten algunas secciones de objetos.",
+      "invalid-xaddress-format": "Formato de xAddress no válido",
+      "could-not-resolve-paystring": "No pudimos resolver tu payString {{account}}",
+      "invalid-paystring-response": "Respuesta de payString no válida"
     },
     "filters": {
       "newest-first": "Más recientes primero",
@@ -498,7 +503,49 @@
     "transactions": {
       "removed-did": "DID eliminado",
       "updated-did": "DID actualizado",
-      "set-did": "DID establecido"
+      "set-did": "DID establecido",
+      "rippling-through-offer": "Rippling mediante oferta",
+      "rippling-through-amm-creation": "Rippling mediante creación de AMM",
+      "dex-order": "Orden {{direction}} {{status}}",
+      "dex-order-status-canceled": "cancelada",
+      "dex-order-status-placed": "creada",
+      "dex-order-status-fulfilled": "ejecutada",
+      "dex-order-status-placed-fulfilled": "creada y ejecutada",
+      "nft-offer-accept": "Aceptación de oferta NFT",
+      "nft-offer-accept-by": "Aceptación de oferta NFT por",
+      "transferred-nft-to": "NFT transferido a",
+      "sold-nft-to": "NFT vendido a",
+      "sold-nft-from": "NFT vendido desde",
+      "sold-nft-by": "NFT vendido por",
+      "received-nft-from": "NFT recibido de",
+      "bought-nft-to": "NFT comprado para",
+      "bought-nft-from": "NFT comprado de",
+      "bought-nft-by": "NFT comprado por",
+      "received-nft-offer-from": "Oferta NFT recibida de",
+      "received-offer-to-buy-nft-from": "Oferta para comprar NFT recibida de",
+      "received-nft-sell-offer-from": "Oferta de venta NFT recibida de",
+      "received-nft-buy-offer-from": "Oferta de compra NFT recibida de",
+      "nft-transfer-to": "Transferencia NFT a",
+      "nft-transfer-by": "Transferencia NFT por",
+      "create-nft-sell-offer-for": "Crear oferta de venta NFT para",
+      "create-nft-buy-offer-for": "Crear oferta de compra NFT para",
+      "create-nft-sell-offer": "Crear oferta de venta NFT",
+      "create-nft-buy-offer": "Crear oferta de compra NFT",
+      "cancel-nft-offer": "Cancelar oferta NFT",
+      "nft-mint-with-free-offer-to": "Emisión NFT con oferta gratuita para",
+      "nft-mint-with-sell-offer-for": "Emisión NFT con oferta de venta por",
+      "escrow-sent-to": "Escrow enviado a",
+      "escrow-received-from": "Escrow recibido de",
+      "check-sent-to": "Check enviado a",
+      "check-received-from": "Check recibido de",
+      "regular-key-set": "Regular key establecida",
+      "regular-key-removed": "Regular key eliminada",
+      "swap": "Intercambio",
+      "payment-from-deleted-account": "Pago desde cuenta eliminada",
+      "transferred-nft-to-lower": "transfirió NFT a",
+      "sold-nft-to-lower": "vendió NFT a",
+      "received-nft-from-lower": "recibió NFT de",
+      "bought-nft-from-lower": "compró NFT de"
     },
     "nft-offers": {
       "private-to-you": "Oferta privada para ti",

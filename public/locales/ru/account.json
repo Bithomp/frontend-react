@@ -106,12 +106,12 @@
       "asset-2-issuer": "Эмитент актива 2",
       "address": "Адрес",
       "account-status": "Статус аккаунта",
-      "regular-key": "Regular key",
+      "regular-key": "Регулярный ключ",
       "free-rekey": "Бесплатная смена ключа",
       "multi-sign": "Мультиподпись",
       "multi-sign-threshold": "Порог мультиподписи",
       "signer-with-weight": "Подписант #{{index}} (вес {{weight}})",
-      "master-key": "Master key",
+      "master-key": "Мастер-ключ",
       "claimable": "Доступно к получению",
       "hook-namespaces": "Пространства имен Hook",
       "hook-state-count": "Количество состояний Hook",
@@ -414,7 +414,9 @@
     "phrases": {
       "by": "от",
       "with": "с",
-      "for": "для"
+      "for": "для",
+      "from": "от",
+      "to": "кому"
     },
     "counts": {
       "addresses_one": "адрес",
@@ -426,7 +428,7 @@
       "for-addresses_other": "для {{formattedCount}} адресов"
     },
     "roles": {
-      "regular-key": "regular key",
+      "regular-key": "регулярный ключ",
       "regular-key-and-signer": "regular key + подписант",
       "signer": "подписант",
       "nft-minter": "NFT-минтер"
@@ -480,7 +482,10 @@
     },
     "errors": {
       "failed-load-account-objects-assets": "Не удалось загрузить объекты аккаунта. Некоторые активы могут отсутствовать.",
-      "failed-load-account-objects-sections": "Не удалось загрузить объекты аккаунта. Некоторые разделы объектов могут отсутствовать."
+      "failed-load-account-objects-sections": "Не удалось загрузить объекты аккаунта. Некоторые разделы объектов могут отсутствовать.",
+      "invalid-xaddress-format": "Неверный формат xAddress",
+      "could-not-resolve-paystring": "Не удалось найти адрес для payString {{account}}",
+      "invalid-paystring-response": "Неверный ответ payString"
     },
     "filters": {
       "newest-first": "Сначала новые",
@@ -500,7 +505,49 @@
     "transactions": {
       "removed-did": "DID удалён",
       "updated-did": "DID обновлён",
-      "set-did": "DID установлен"
+      "set-did": "DID установлен",
+      "rippling-through-offer": "Rippling через ордер",
+      "rippling-through-amm-creation": "Rippling через создание AMM",
+      "dex-order": "{{direction}} ордер {{status}}",
+      "dex-order-status-canceled": "отменён",
+      "dex-order-status-placed": "размещён",
+      "dex-order-status-fulfilled": "исполнен",
+      "dex-order-status-placed-fulfilled": "размещён и исполнен",
+      "nft-offer-accept": "Принятие NFT-предложения",
+      "nft-offer-accept-by": "Принятие NFT-предложения через",
+      "transferred-nft-to": "Передача NFT кому",
+      "sold-nft-to": "Продажа NFT кому",
+      "sold-nft-from": "Продажа NFT от",
+      "sold-nft-by": "Продажа NFT через",
+      "received-nft-from": "Получение NFT от",
+      "bought-nft-to": "Покупка NFT кому",
+      "bought-nft-from": "Покупка NFT у",
+      "bought-nft-by": "Покупка NFT через",
+      "received-nft-offer-from": "Получено NFT-предложение от",
+      "received-offer-to-buy-nft-from": "Получено предложение купить NFT от",
+      "received-nft-sell-offer-from": "Получено предложение продажи NFT от",
+      "received-nft-buy-offer-from": "Получено предложение покупки NFT от",
+      "nft-transfer-to": "Передача NFT кому",
+      "nft-transfer-by": "Передача NFT через",
+      "create-nft-sell-offer-for": "Создание предложения продажи NFT для",
+      "create-nft-buy-offer-for": "Создание предложения покупки NFT для",
+      "create-nft-sell-offer": "Создание предложения продажи NFT",
+      "create-nft-buy-offer": "Создание предложения покупки NFT",
+      "cancel-nft-offer": "Отмена NFT-предложения",
+      "nft-mint-with-free-offer-to": "Выпуск NFT с бесплатным предложением для",
+      "nft-mint-with-sell-offer-for": "Выпуск NFT с предложением продажи за",
+      "escrow-sent-to": "Escrow отправлен кому",
+      "escrow-received-from": "Escrow получен от",
+      "check-sent-to": "Check отправлен кому",
+      "check-received-from": "Check получен от",
+      "regular-key-set": "Regular key установлен",
+      "regular-key-removed": "Regular key удалён",
+      "swap": "Обмен",
+      "payment-from-deleted-account": "Платёж из удалённого аккаунта",
+      "transferred-nft-to-lower": "передал NFT кому",
+      "sold-nft-to-lower": "продал NFT кому",
+      "received-nft-from-lower": "получил NFT от",
+      "bought-nft-from-lower": "купил NFT у"
     },
     "nft-offers": {
       "private-to-you": "Приватное предложение вам",

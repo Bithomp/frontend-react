@@ -357,7 +357,7 @@ export async function getServerSideProps(context) {
         }
       }
     } catch {
-      initialErrorMessage = 'Invalid xAddress format'
+      initialErrorMessage = 'detail.errors.invalid-xaddress-format'
     }
   } else if (isValidPayString(account)) {
     const payStringData = await axiosServer({
@@ -374,10 +374,10 @@ export async function getServerSideProps(context) {
       } else if (payStringData.data.address) {
         accountWithTag = payStringData.data
       } else {
-        initialErrorMessage = 'We could not resolve your payString ' + account
+        initialErrorMessage = 'detail.errors.could-not-resolve-paystring'
       }
     } else {
-      initialErrorMessage = 'Invalid payString response'
+      initialErrorMessage = 'detail.errors.invalid-paystring-response'
     }
   }
 
@@ -2981,7 +2981,11 @@ export default function Account({
         <div className="center">
           <br />
           <br />
-          <div className="orange bold">{errorT(t, initialErrorMessage)}</div>
+          <div className="orange bold">
+            {initialErrorMessage?.startsWith('detail.')
+              ? ta(initialErrorMessage.replace(/^detail\./, ''), { account })
+              : errorT(t, initialErrorMessage)}
+          </div>
           <br />
           <br />
           <Link href="/" className="button-action">
@@ -6026,18 +6030,18 @@ export default function Account({
                         myAddressOrderbookChanges.find(
                           (entry) => entry?.sequence === (tx?.offerSequence || txdata?.specification?.orderSequence)
                         ) || myAddressOrderbookChanges[0]
-                      const dexOfferDirection = (
+                      const dexOfferDirectionKey = (
                         txdata?.specification?.flags ? txdata?.specification?.flags?.sell : myOrderbookChange?.direction
                       )
-                        ? 'Sell'
-                        : 'Buy'
+                        ? 'sell'
+                        : 'buy'
                       const isMyDexOrder = tx?.Account === data?.address
-                      const dexOrderStatus = (() => {
+                      const dexOrderStatusKey = (() => {
                         if (!isDexOfferTx) return null
                         if (txType === 'OfferCancel') return 'canceled'
                         if (changes?.length === 0 && isMyDexOrder) return 'placed'
                         if (!isMyDexOrder) return 'fulfilled'
-                        return 'placed and fulfilled'
+                        return 'placed-fulfilled'
                       })()
                       const isRipplingDexOffer = isDexOfferTx && isRipplingByIssuer
                       const isRipplingAmmCreate = txType === 'AMMCreate' && isRipplingByIssuer
@@ -6058,12 +6062,17 @@ export default function Account({
                           })
                         : ''
                       const dexOfferShortLabel =
-                        isDexOfferTx && dexOrderStatus
+                        isDexOfferTx && dexOrderStatusKey
                           ? isRipplingDexOffer
-                            ? 'Rippling through offer'
-                            : `${dexOfferDirection} order ${dexOrderStatus}`
+                            ? ta('transactions.rippling-through-offer')
+                            : ta('transactions.dex-order', {
+                                direction: ta(`tabs.${dexOfferDirectionKey}`),
+                                status: ta(`transactions.dex-order-status-${dexOrderStatusKey}`)
+                              })
                           : null
-                      const ammCreateShortLabel = isRipplingAmmCreate ? 'Rippling through AMM creation' : null
+                      const ammCreateShortLabel = isRipplingAmmCreate
+                        ? ta('transactions.rippling-through-amm-creation')
+                        : null
                       const dexCollapsedSequences =
                         txType === 'OfferCancel'
                           ? myOrderbookSequences.length > 0
@@ -6076,7 +6085,9 @@ export default function Account({
                       const dexTakerGets = txdata?.specification?.takerGets || myOrderbookChange?.takerGets || null
                       const dexTakerPays = txdata?.specification?.takerPays || myOrderbookChange?.takerPays || null
                       const isDexNotFullfilled =
-                        isDexOfferTx && typeof dexOrderStatus === 'string' && !dexOrderStatus.includes('fulfilled')
+                        isDexOfferTx &&
+                        typeof dexOrderStatusKey === 'string' &&
+                        !dexOrderStatusKey.includes('fulfilled')
                       const toSignedDexAmount = (amount, sign) => {
                         if (!amount) return null
 
@@ -6142,8 +6153,8 @@ export default function Account({
                       const showDexSpecifiedOrderDetails =
                         isDexOfferTx &&
                         isMyDexOrder &&
-                        typeof dexOrderStatus === 'string' &&
-                        (dexOrderStatus.includes('placed') || dexOrderStatus === 'canceled') &&
+                        typeof dexOrderStatusKey === 'string' &&
+                        (dexOrderStatusKey.includes('placed') || dexOrderStatusKey === 'canceled') &&
                         (!!dexTakerGets || !!dexTakerPays)
                       const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
                       const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
@@ -6476,75 +6487,85 @@ export default function Account({
                         const nonBrokerDirectionSuffix = counterparty ? (isSource ? 'to' : 'from') : 'by'
 
                         if (isAcceptNftOfferTx) {
-                          if (!isSuccessful) return 'NFT offer accept'
-                          if (nftViewerRole === 'seller') return isFreeNftAccept ? 'Transferred NFT to' : 'Sold NFT to'
+                          if (!isSuccessful) return ta('transactions.nft-offer-accept')
+                          if (nftViewerRole === 'seller')
+                            return isFreeNftAccept
+                              ? ta('transactions.transferred-nft-to')
+                              : ta('transactions.sold-nft-to')
                           if (nftViewerRole === 'buyer')
-                            return isFreeNftAccept ? 'Received NFT from' : 'Bought NFT from'
+                            return isFreeNftAccept
+                              ? ta('transactions.received-nft-from')
+                              : ta('transactions.bought-nft-from')
 
                           const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
                           if (amountChangeValue > 0)
-                            return isBrokeredNftAccept ? 'Sold NFT by' : `Sold NFT ${nonBrokerDirectionSuffix}`
+                            return isBrokeredNftAccept
+                              ? ta('transactions.sold-nft-by')
+                              : ta(`transactions.sold-nft-${nonBrokerDirectionSuffix}`)
                           if (amountChangeValue < 0)
-                            return isBrokeredNftAccept ? 'Bought NFT by' : `Bought NFT ${nonBrokerDirectionSuffix}`
+                            return isBrokeredNftAccept
+                              ? ta('transactions.bought-nft-by')
+                              : ta(`transactions.bought-nft-${nonBrokerDirectionSuffix}`)
 
                           if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
-                            if (nftDestination?.address === data?.address) return 'Received NFT offer from'
-                            if (nftSource?.address === data?.address) return 'NFT transfer to'
-                            return 'NFT transfer by'
+                            if (nftDestination?.address === data?.address) return ta('transactions.received-nft-offer-from')
+                            if (nftSource?.address === data?.address) return ta('transactions.nft-transfer-to')
+                            return ta('transactions.nft-transfer-by')
                           }
 
-                          if (isBrokeredNftAccept) return 'NFT offer accept by'
-                          return 'NFT offer accept'
+                          if (isBrokeredNftAccept) return ta('transactions.nft-offer-accept-by')
+                          return ta('transactions.nft-offer-accept')
                         }
 
                         if (isCreateNftOfferTx) {
                           const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
-                          if (amountChangeValue > 0) return `Sold NFT ${nonBrokerDirectionSuffix}`
-                          if (amountChangeValue < 0) return `Bought NFT ${nonBrokerDirectionSuffix}`
+                          if (amountChangeValue > 0) return ta(`transactions.sold-nft-${nonBrokerDirectionSuffix}`)
+                          if (amountChangeValue < 0) return ta(`transactions.bought-nft-${nonBrokerDirectionSuffix}`)
 
                           const direction =
                             txType === 'URITokenCreateSellOffer'
-                              ? 'Sell'
+                              ? 'sell'
                               : txdata?.specification?.flags?.sellToken
-                                ? 'Sell'
-                                : 'Buy'
+                                ? 'sell'
+                                : 'buy'
                           const isIncomingOffer = tx?.Account !== data?.address
 
                           if (isIncomingOffer) {
                             const amountAsNumber = Number(tx?.Amount || 0)
-                            if (direction === 'Sell') {
+                            if (direction === 'sell') {
                               if (Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
-                                return 'Received NFT offer from'
+                                return ta('transactions.received-nft-offer-from')
                               }
-                              return 'Received offer to buy NFT from'
+                              return ta('transactions.received-offer-to-buy-nft-from')
                             }
-                            return `Received NFT ${direction} offer from`
+                            return ta(`transactions.received-nft-${direction}-offer-from`)
                           }
 
                           if (counterparty) {
-                            return `Create NFT ${direction} offer for`
+                            return ta(`transactions.create-nft-${direction}-offer-for`)
                           }
 
-                          return `Create NFT ${direction} offer`
+                          return ta(`transactions.create-nft-${direction}-offer`)
                         }
 
                         if (isCancelNftOfferTx) {
-                          return 'Cancel NFT offer'
+                          return ta('transactions.cancel-nft-offer')
                         }
 
                         return null
                       })()
                       const isNftTransferLabel =
-                        typeof nftOfferLegacyLabel === 'string' &&
-                        (nftOfferLegacyLabel.startsWith('NFT transfer') ||
-                          nftOfferLegacyLabel.startsWith('Received NFT offer'))
+                        isAcceptNftOfferTx &&
+                        !collapsedPrimaryChange &&
+                        !collapsedSecondaryChange &&
+                        (nftDestination?.address === data?.address || nftSource?.address === data?.address)
                       const isFreeNftTransfer =
                         isNftTransferLabel && (isZeroNftOfferAmount || nftOfferAmountRaw === '0')
                       const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept
                       const showFreeNftBadgeGreen =
                         showFreeNftBadge &&
-                        typeof nftOfferLegacyLabel === 'string' &&
-                        nftOfferLegacyLabel.startsWith('Received NFT from')
+                        nftViewerRole === 'buyer' &&
+                        isFreeNftAccept
                       const isNftSellOffer = xahauNetwork
                         ? isCreateNftOfferTx
                         : !!txdata?.specification?.flags?.sellToken
@@ -6575,14 +6596,17 @@ export default function Account({
                         const value = Number(nftMintAmountRaw)
                         return Number.isFinite(value) ? value : null
                       })()
-                      const nftMintSpecialLabel =
+                      const nftMintSpecialLabelKey =
                         isNftMintTx && nftMintDestinationAddress
                           ? nftMintAmountNumeric === 0
-                            ? 'NFT Mint with Free offer to'
-                            : 'NFT Mint with Sell Offer for'
+                            ? 'nft-mint-with-free-offer-to'
+                            : 'nft-mint-with-sell-offer-for'
                           : null
+                      const nftMintSpecialLabel = nftMintSpecialLabelKey
+                        ? ta(`transactions.${nftMintSpecialLabelKey}`)
+                        : null
                       const showNftMintSellOfferAmount =
-                        nftMintSpecialLabel === 'NFT Mint with Sell Offer for' &&
+                        nftMintSpecialLabelKey === 'nft-mint-with-sell-offer-for' &&
                         nftMintAmountRaw !== null &&
                         typeof nftMintAmountRaw !== 'undefined'
                       const incomingSellOfferDisplay =
@@ -6633,23 +6657,31 @@ export default function Account({
                         nftMintSellOfferDisplay
                       const fallbackTxTypeLabel = getTransactionTypeLabel(txType)
                       const escrowCreateCollapsedLabel =
-                        txType === 'EscrowCreate' ? (isSource ? 'Escrow sent to' : 'Escrow received from') : null
+                        txType === 'EscrowCreate'
+                          ? isSource
+                            ? ta('transactions.escrow-sent-to')
+                            : ta('transactions.escrow-received-from')
+                          : null
                       const checkCreateCollapsedLabel =
-                        txType === 'CheckCreate' ? (isSource ? 'Check sent to' : 'Check received from') : null
+                        txType === 'CheckCreate'
+                          ? isSource
+                            ? ta('transactions.check-sent-to')
+                            : ta('transactions.check-received-from')
+                          : null
                       const setRegularKey = txType === 'SetRegularKey'
                       const setRegularKeyValue = txdata?.specification?.regularKey || null
                       const setRegularKeyDetails = txdata?.specification?.regularKeyDetails || null
                       const setRegularKeyLabel = setRegularKey
                         ? setRegularKeyValue
-                          ? 'Regular key set'
-                          : 'Regular key removed'
+                          ? ta('transactions.regular-key-set')
+                          : ta('transactions.regular-key-removed')
                         : null
                       const txTypeShortLabel =
                         dexOfferShortLabel ||
                         ammCreateShortLabel ||
-                        (isRipplingTransaction ? 'Rippling' : null) ||
-                        (isSelfPayment ? 'Swap' : null) ||
-                        (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
+                        (isRipplingTransaction ? ta('labels.rippling') : null) ||
+                        (isSelfPayment ? ta('transactions.swap') : null) ||
+                        (isAccountDeleteTx ? ta('transactions.payment-from-deleted-account') : null) ||
                         (isDidTx ? didTxLabel : null) ||
                         setRegularKeyLabel ||
                         escrowCreateCollapsedLabel ||
@@ -6668,7 +6700,7 @@ export default function Account({
                                 ? txTypeShortLabel
                                 : tx?.TransactionType === 'TrustSet'
                                   ? counterparty
-                                    ? `${isSource ? 'to' : 'from'}`
+                                    ? `${isSource ? ta('phrases.to') : ta('phrases.from')}`
                                     : ''
                                   : isNftOfferTx
                                     ? txTypeShortLabel
@@ -6679,7 +6711,7 @@ export default function Account({
                                         : txType === 'CheckCreate'
                                           ? txTypeShortLabel
                                           : counterparty
-                                            ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
+                                            ? `${txTypeShortLabel} ${isSource ? ta('phrases.to') : ta('phrases.from')}`
                                             : txTypeShortLabel
                       const showBrokerInCollapsedTitle =
                         isBrokeredNftAccept &&
@@ -6688,12 +6720,12 @@ export default function Account({
                       const brokerCollapsedAction =
                         nftViewerRole === 'seller'
                           ? isFreeNftAccept
-                            ? 'transferred NFT to'
-                            : 'sold NFT to'
+                            ? ta('transactions.transferred-nft-to-lower')
+                            : ta('transactions.sold-nft-to-lower')
                           : nftViewerRole === 'buyer'
                             ? isFreeNftAccept
-                              ? 'received NFT from'
-                              : 'bought NFT from'
+                              ? ta('transactions.received-nft-from-lower')
+                              : ta('transactions.bought-nft-from-lower')
                             : ''
                       const txTypeIconNode = getAccountTransactionTypeIcon({
                         txType,
@@ -6917,7 +6949,7 @@ export default function Account({
                               {showDexSpecifiedOrderDetails && !!dexTakerGets && (
                                 <div className="detail-row">
                                   <span>
-                                    {dexOfferDirection === 'Sell'
+                                    {dexOfferDirectionKey === 'sell'
                                       ? `${ta('labels.specified-sell-exactly')}:`
                                       : `${ta('labels.specified-pay-up-to')}:`}
                                   </span>
@@ -6933,7 +6965,7 @@ export default function Account({
                               {showDexSpecifiedOrderDetails && !!dexTakerPays && (
                                 <div className="detail-row">
                                   <span>
-                                    {dexOfferDirection === 'Sell'
+                                    {dexOfferDirectionKey === 'sell'
                                       ? `${ta('labels.specified-receive-at-least')}:`
                                       : `${ta('labels.specified-receive-exactly')}:`}
                                   </span>

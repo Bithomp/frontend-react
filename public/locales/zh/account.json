@@ -106,12 +106,12 @@
       "asset-2-issuer": "资产 2 发行方",
       "address": "地址",
       "account-status": "账户状态",
-      "regular-key": "Regular key",
-      "free-rekey": "Free re-key",
+      "regular-key": "常规密钥",
+      "free-rekey": "免费重设密钥",
       "multi-sign": "多重签名",
       "multi-sign-threshold": "多重签名阈值",
       "signer-with-weight": "签名者 #{{index}}（权重 {{weight}}）",
-      "master-key": "Master key",
+      "master-key": "主密钥",
       "claimable": "可领取",
       "hook-namespaces": "Hook 命名空间",
       "hook-state-count": "Hook 状态数量",
@@ -414,7 +414,9 @@
     "phrases": {
       "by": "由",
       "with": "使用",
-      "for": "用于"
+      "for": "用于",
+      "from": "来自",
+      "to": "至"
     },
     "counts": {
       "addresses_one": "地址",
@@ -424,16 +426,16 @@
       "for-addresses_other": "用于 {{formattedCount}} 个地址"
     },
     "roles": {
-      "regular-key": "regular key",
+      "regular-key": "常规密钥",
       "regular-key-and-signer": "regular key + 签名者",
       "signer": "签名者",
       "nft-minter": "NFT 铸造者"
     },
     "account-control": {
       "blackholed": "已黑洞化",
-      "regular-key-and-multisig": "regKey + multisig",
+      "regular-key-and-multisig": "regKey + 多重签名",
       "regular-key-short": "regKey",
-      "multisig": "multisig",
+      "multisig": "多重签名",
       "master-disabled": "master 已禁用",
       "free-rekey-spent": "free re-key 已使用",
       "standard": "标准"
@@ -478,7 +480,10 @@
     },
     "errors": {
       "failed-load-account-objects-assets": "账户对象加载失败。部分资产可能缺失。",
-      "failed-load-account-objects-sections": "无法加载账户对象。部分对象区域可能缺失。"
+      "failed-load-account-objects-sections": "无法加载账户对象。部分对象区域可能缺失。",
+      "invalid-xaddress-format": "xAddress 格式无效",
+      "could-not-resolve-paystring": "无法解析你的 payString {{account}}",
+      "invalid-paystring-response": "payString 响应无效"
     },
     "filters": {
       "newest-first": "最新优先",
@@ -498,7 +503,49 @@
     "transactions": {
       "removed-did": "已移除 DID",
       "updated-did": "已更新 DID",
-      "set-did": "已设置 DID"
+      "set-did": "已设置 DID",
+      "rippling-through-offer": "通过报价 Rippling",
+      "rippling-through-amm-creation": "通过创建 AMM Rippling",
+      "dex-order": "{{direction}}订单{{status}}",
+      "dex-order-status-canceled": "已取消",
+      "dex-order-status-placed": "已创建",
+      "dex-order-status-fulfilled": "已成交",
+      "dex-order-status-placed-fulfilled": "已创建并成交",
+      "nft-offer-accept": "接受 NFT 报价",
+      "nft-offer-accept-by": "通过以下账户接受 NFT 报价",
+      "transferred-nft-to": "NFT 转给",
+      "sold-nft-to": "NFT 卖给",
+      "sold-nft-from": "NFT 从以下账户卖出",
+      "sold-nft-by": "通过以下账户卖出 NFT",
+      "received-nft-from": "收到 NFT，来自",
+      "bought-nft-to": "NFT 买给",
+      "bought-nft-from": "NFT 购自",
+      "bought-nft-by": "通过以下账户购买 NFT",
+      "received-nft-offer-from": "收到 NFT 报价，来自",
+      "received-offer-to-buy-nft-from": "收到购买 NFT 的报价，来自",
+      "received-nft-sell-offer-from": "收到 NFT 卖出报价，来自",
+      "received-nft-buy-offer-from": "收到 NFT 买入报价，来自",
+      "nft-transfer-to": "NFT 转给",
+      "nft-transfer-by": "NFT 通过以下账户转移",
+      "create-nft-sell-offer-for": "为以下账户创建 NFT 卖出报价",
+      "create-nft-buy-offer-for": "为以下账户创建 NFT 买入报价",
+      "create-nft-sell-offer": "创建 NFT 卖出报价",
+      "create-nft-buy-offer": "创建 NFT 买入报价",
+      "cancel-nft-offer": "取消 NFT 报价",
+      "nft-mint-with-free-offer-to": "铸造 NFT，并向以下账户提供免费报价",
+      "nft-mint-with-sell-offer-for": "铸造 NFT，并以以下价格创建卖出报价",
+      "escrow-sent-to": "Escrow 发送至",
+      "escrow-received-from": "Escrow 接收自",
+      "check-sent-to": "Check 发送至",
+      "check-received-from": "Check 接收自",
+      "regular-key-set": "已设置 Regular key",
+      "regular-key-removed": "已移除 Regular key",
+      "swap": "兑换",
+      "payment-from-deleted-account": "来自已删除账户的付款",
+      "transferred-nft-to-lower": "将 NFT 转给",
+      "sold-nft-to-lower": "将 NFT 卖给",
+      "received-nft-from-lower": "收到 NFT，来自",
+      "bought-nft-from-lower": "购买 NFT，来自"
     },
     "nft-offers": {
       "private-to-you": "给你的私有报价",

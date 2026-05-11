@@ -409,7 +409,9 @@
     "phrases": {
       "by": "by",
       "with": "with",
-      "for": "for"
+      "for": "for",
+      "from": "from",
+      "to": "to"
     },
     "counts": {
       "addresses_one": "address",
@@ -473,7 +475,10 @@
     },
     "errors": {
       "failed-load-account-objects-assets": "Failed to load account objects. Some assets may be missing.",
-      "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing."
+      "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing.",
+      "invalid-xaddress-format": "Invalid xAddress format",
+      "could-not-resolve-paystring": "We could not resolve your payString {{account}}",
+      "invalid-paystring-response": "Invalid payString response"
     },
     "filters": {
       "newest-first": "Newest first",
@@ -493,7 +498,49 @@
     "transactions": {
       "removed-did": "Removed DID",
       "updated-did": "Updated DID",
-      "set-did": "Set DID"
+      "set-did": "Set DID",
+      "rippling-through-offer": "Rippling through offer",
+      "rippling-through-amm-creation": "Rippling through AMM creation",
+      "dex-order": "{{direction}} order {{status}}",
+      "dex-order-status-canceled": "canceled",
+      "dex-order-status-placed": "placed",
+      "dex-order-status-fulfilled": "fulfilled",
+      "dex-order-status-placed-fulfilled": "placed and fulfilled",
+      "nft-offer-accept": "NFT offer accept",
+      "nft-offer-accept-by": "NFT offer accept by",
+      "transferred-nft-to": "Transferred NFT to",
+      "sold-nft-to": "Sold NFT to",
+      "sold-nft-from": "Sold NFT from",
+      "sold-nft-by": "Sold NFT by",
+      "received-nft-from": "Received NFT from",
+      "bought-nft-to": "Bought NFT to",
+      "bought-nft-from": "Bought NFT from",
+      "bought-nft-by": "Bought NFT by",
+      "received-nft-offer-from": "Received NFT offer from",
+      "received-offer-to-buy-nft-from": "Received offer to buy NFT from",
+      "received-nft-sell-offer-from": "Received NFT sell offer from",
+      "received-nft-buy-offer-from": "Received NFT buy offer from",
+      "nft-transfer-to": "NFT transfer to",
+      "nft-transfer-by": "NFT transfer by",
+      "create-nft-sell-offer-for": "Create NFT sell offer for",
+      "create-nft-buy-offer-for": "Create NFT buy offer for",
+      "create-nft-sell-offer": "Create NFT sell offer",
+      "create-nft-buy-offer": "Create NFT buy offer",
+      "cancel-nft-offer": "Cancel NFT offer",
+      "nft-mint-with-free-offer-to": "NFT mint with free offer to",
+      "nft-mint-with-sell-offer-for": "NFT mint with sell offer for",
+      "escrow-sent-to": "Escrow sent to",
+      "escrow-received-from": "Escrow received from",
+      "check-sent-to": "Check sent to",
+      "check-received-from": "Check received from",
+      "regular-key-set": "Regular key set",
+      "regular-key-removed": "Regular key removed",
+      "swap": "Swap",
+      "payment-from-deleted-account": "Payment from deleted account",
+      "transferred-nft-to-lower": "transferred NFT to",
+      "sold-nft-to-lower": "sold NFT to",
+      "received-nft-from-lower": "received NFT from",
+      "bought-nft-from-lower": "bought NFT from"
     },
     "nft-offers": {
       "private-to-you": "Private offer to you",

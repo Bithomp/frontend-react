@@ -106,12 +106,12 @@
       "asset-2-issuer": "Penerbit aset 2",
       "address": "Alamat",
       "account-status": "Status akun",
-      "regular-key": "Regular key",
-      "free-rekey": "Free re-key",
+      "regular-key": "Kunci reguler",
+      "free-rekey": "Ganti kunci gratis",
       "multi-sign": "Multi-tanda tangan",
       "multi-sign-threshold": "Ambang multi-sign",
       "signer-with-weight": "Penanda tangan #{{index}} (bobot {{weight}})",
-      "master-key": "Master key",
+      "master-key": "Kunci master",
       "claimable": "Dapat diklaim",
       "hook-namespaces": "Namespace Hook",
       "hook-state-count": "Jumlah status Hook",
@@ -414,7 +414,9 @@
     "phrases": {
       "by": "oleh",
       "with": "dengan",
-      "for": "untuk"
+      "for": "untuk",
+      "from": "dari",
+      "to": "ke"
     },
     "counts": {
       "addresses_one": "alamat",
@@ -424,16 +426,16 @@
       "for-addresses_other": "untuk {{formattedCount}} alamat"
     },
     "roles": {
-      "regular-key": "regular key",
+      "regular-key": "kunci reguler",
       "regular-key-and-signer": "regular key + penanda tangan",
       "signer": "penanda tangan",
       "nft-minter": "pencetak NFT"
     },
     "account-control": {
       "blackholed": "Blackholed",
-      "regular-key-and-multisig": "regKey + multisig",
+      "regular-key-and-multisig": "regKey + multi-tanda tangan",
       "regular-key-short": "regKey",
-      "multisig": "multisig",
+      "multisig": "multi-tanda tangan",
       "master-disabled": "master dinonaktifkan",
       "free-rekey-spent": "free re-key terpakai",
       "standard": "standar"
@@ -478,7 +480,10 @@
     },
     "errors": {
       "failed-load-account-objects-assets": "Gagal memuat objek akun. Beberapa aset mungkin tidak ditampilkan.",
-      "failed-load-account-objects-sections": "Gagal memuat objek akun. Beberapa bagian objek mungkin tidak tersedia."
+      "failed-load-account-objects-sections": "Gagal memuat objek akun. Beberapa bagian objek mungkin tidak tersedia.",
+      "invalid-xaddress-format": "Format xAddress tidak valid",
+      "could-not-resolve-paystring": "Kami tidak dapat menemukan payString {{account}}",
+      "invalid-paystring-response": "Respons payString tidak valid"
     },
     "filters": {
       "newest-first": "Terbaru lebih dulu",
@@ -498,7 +503,49 @@
     "transactions": {
       "removed-did": "DID dihapus",
       "updated-did": "DID diperbarui",
-      "set-did": "DID diatur"
+      "set-did": "DID diatur",
+      "rippling-through-offer": "Rippling melalui penawaran",
+      "rippling-through-amm-creation": "Rippling melalui pembuatan AMM",
+      "dex-order": "Order {{direction}} {{status}}",
+      "dex-order-status-canceled": "dibatalkan",
+      "dex-order-status-placed": "dipasang",
+      "dex-order-status-fulfilled": "terpenuhi",
+      "dex-order-status-placed-fulfilled": "dipasang dan terpenuhi",
+      "nft-offer-accept": "Penerimaan penawaran NFT",
+      "nft-offer-accept-by": "Penerimaan penawaran NFT oleh",
+      "transferred-nft-to": "NFT ditransfer ke",
+      "sold-nft-to": "NFT dijual ke",
+      "sold-nft-from": "NFT dijual dari",
+      "sold-nft-by": "NFT dijual oleh",
+      "received-nft-from": "NFT diterima dari",
+      "bought-nft-to": "NFT dibeli ke",
+      "bought-nft-from": "NFT dibeli dari",
+      "bought-nft-by": "NFT dibeli oleh",
+      "received-nft-offer-from": "Penawaran NFT diterima dari",
+      "received-offer-to-buy-nft-from": "Penawaran untuk membeli NFT diterima dari",
+      "received-nft-sell-offer-from": "Penawaran jual NFT diterima dari",
+      "received-nft-buy-offer-from": "Penawaran beli NFT diterima dari",
+      "nft-transfer-to": "Transfer NFT ke",
+      "nft-transfer-by": "Transfer NFT oleh",
+      "create-nft-sell-offer-for": "Buat penawaran jual NFT untuk",
+      "create-nft-buy-offer-for": "Buat penawaran beli NFT untuk",
+      "create-nft-sell-offer": "Buat penawaran jual NFT",
+      "create-nft-buy-offer": "Buat penawaran beli NFT",
+      "cancel-nft-offer": "Batalkan penawaran NFT",
+      "nft-mint-with-free-offer-to": "Mint NFT dengan penawaran gratis ke",
+      "nft-mint-with-sell-offer-for": "Mint NFT dengan penawaran jual seharga",
+      "escrow-sent-to": "Escrow dikirim ke",
+      "escrow-received-from": "Escrow diterima dari",
+      "check-sent-to": "Check dikirim ke",
+      "check-received-from": "Check diterima dari",
+      "regular-key-set": "Regular key diatur",
+      "regular-key-removed": "Regular key dihapus",
+      "swap": "Tukar",
+      "payment-from-deleted-account": "Pembayaran dari akun yang dihapus",
+      "transferred-nft-to-lower": "mentransfer NFT ke",
+      "sold-nft-to-lower": "menjual NFT ke",
+      "received-nft-from-lower": "menerima NFT dari",
+      "bought-nft-from-lower": "membeli NFT dari"
     },
     "nft-offers": {
       "private-to-you": "Penawaran privat untuk Anda",
