@@ -1,4 +1,3 @@
-import React from 'react'
 import { TData, TransactionValue } from './TData'
 
 import { TransactionCard } from './TransactionCard'
@@ -11,83 +10,13 @@ import {
   tokenToFiat,
   timeFromNow
 } from '../../utils/format'
-import { decode } from '../../utils'
 import { getTransactionNftPreview } from '../../utils/transaction/nftPreview'
 import { i18n } from 'next-i18next'
-import CopyButton from '../UI/CopyButton'
 import { TransactionNftPreviewPanel } from './TransactionNftPreview'
 
 //NFTokenAcceptOffer, NFTokenBurn, NFTokenCancelOffer, NFTokenCreateOffer, NFTokenMint, NFTokenModify
 
-const nftData = (change, nftInfo, txType, { hideNftId = false } = {}) => {
-  let decodedURI = ''
-  if (change?.uri) {
-    decodedURI = decode(change.uri)
-  }
-
-  const flagsAsString = flagList(nftInfo.flags)
-
-  return (
-    <>
-      {!hideNftId && (
-        <tr>
-          <TData>NFT</TData>
-          <TData>{nftIdLink(change.nftokenID)}</TData>
-        </tr>
-      )}
-      {txType !== 'NFTokenMint' && nftInfo.issuer && (
-        <tr>
-          <TData>Issuer</TData>
-          <TData>
-            <AddressWithIconFilled data={nftInfo} name="issuer" />
-          </TData>
-        </tr>
-      )}
-      {nftInfo.transferFee !== undefined && (
-        <tr>
-          <TData>Transfer fee</TData>
-          <TData>{nftInfo.transferFee / 1000}%</TData>
-        </tr>
-      )}
-      {flagsAsString && (
-        <tr>
-          <TData>Flag{flagsAsString.includes(',') ? 's' : ''}</TData>
-          <TData>{flagsAsString}</TData>
-        </tr>
-      )}
-      {nftInfo.nftokenTaxon !== undefined && (
-        <tr>
-          <TData>NFT taxon</TData>
-          <TData>{nftInfo.nftokenTaxon}</TData>
-        </tr>
-      )}
-      {nftInfo.sequence !== undefined && (
-        <tr>
-          <TData>NFT serial</TData>
-          <TData>{nftInfo.sequence}</TData>
-        </tr>
-      )}
-      {change.previousURI && (
-        <tr>
-          <TData>Previous URI</TData>
-          <TData>{decode(change.previousURI)}</TData>
-        </tr>
-      )}
-      {decodedURI && (
-        <tr>
-          <TData className={txType === 'NFTokenModify' ? 'bold orange' : ''}>
-            {txType === 'NFTokenModify' ? 'New ' : ''}URI
-          </TData>
-          <TData>
-            {decodedURI} <CopyButton text={decodedURI} />{' '}
-          </TData>
-        </tr>
-      )}
-    </>
-  )
-}
-
-const nftokenChanges = (changes, nftokens, txType, { hideNftId = false, hideNftData = false } = {}) => {
+const nftokenChanges = (changes, txType) => {
   /*
   [
     {
@@ -141,7 +70,6 @@ const nftokenChanges = (changes, nftokens, txType, { hideNftId = false, hideNftD
         }
         const nftChnages = change.nftokenChanges
         for (let i = 0; i < nftChnages.length; i++) {
-          const nftInfo = nftokens[nftChnages[i].nftokenID]
           if (showAll) {
             output.push(
               <tr key={i}>
@@ -167,58 +95,6 @@ const nftokenChanges = (changes, nftokens, txType, { hideNftId = false, hideNftD
             } else if (nftChnages[i].status === 'removed') {
               addressFrom = { address: change.address, addressDetails: change.addressDetails }
             }
-          } else if (!hideNftData) {
-            output.push(
-              <tr key="nft-modify-header">
-                <TData className="bold">
-                  <br />
-                  {txType === 'NFTokenModify' ? (
-                    <TransactionValue value="Modified NFT" />
-                  ) : (
-                    <>
-                      <TransactionValue value="NFT Data" /> {nftChnages.length > 1 ? i + 1 : ''}
-                    </>
-                  )}
-                </TData>
-                <TData>
-                  <br />
-                  <br />
-                </TData>
-              </tr>
-            )
-
-            output.push(
-              <tr key="hr-top">
-                <TData colSpan="2">
-                  <hr />
-                </TData>
-              </tr>
-            )
-
-            if (txType === 'NFTokenModify') {
-              output.push(
-                <tr key="owner-and-issuer">
-                  <TData>Owner</TData>
-                  <TData>
-                    <AddressWithIconFilled data={change} name="address" />
-                  </TData>
-                </tr>
-              )
-            }
-            output.push(
-              <React.Fragment key={'t' + i}>
-                {nftData(nftChnages[i], nftInfo, txType, { hideNftId })}
-              </React.Fragment>
-            )
-
-            output.push(
-              <tr key="hr-bottom">
-                <TData colSpan="2">
-                  <hr />
-                  <br />
-                </TData>
-              </tr>
-            )
           }
         }
         return output
@@ -237,74 +113,17 @@ const nftokenChanges = (changes, nftokens, txType, { hideNftId = false, hideNftD
               <AddressWithIconFilled data={addressTo} name="address" />
             </TData>
           </tr>
-          {!hideNftData && (
-            <>
-              <tr>
-                <TData className="bold">
-                  <br />
-                  NFT Data
-                </TData>
-                <TData>
-                  <br />
-                  <br />
-                </TData>
-              </tr>
-              <tr>
-                <TData colSpan="2">
-                  <hr />
-                </TData>
-              </tr>
-              {nftData(changes?.[0].nftokenChanges[0], nftokens[changes?.[0].nftokenChanges[0].nftokenID], txType, {
-                hideNftId
-              })}
-              <tr>
-                <TData colSpan="2">
-                  <hr />
-                  <br />
-                </TData>
-              </tr>
-            </>
-          )}
         </>
       )}
     </>
   )
 }
 
-const flagList = (flags) => {
-  /*
-  "flags": {
-    "burnable": false,
-    "onlyXRP": false,
-    "trustLine": false,
-    "transferable": true
-  },
-  */
-  let flagList = ''
-
-  if (!flags) return flagList
-
-  for (let key in flags) {
-    if (flags[key]) {
-      //skip sellToken flag for tokenCreateOffer, we show it already
-      if (key === 'sellToken') {
-        continue
-      }
-      flagList += key + ', '
-    }
-  }
-  flagList = flagList.slice(0, -2) // remove the last comma
-
-  return flagList
-}
-
 const showAllOfferLinks = (changes) => {
   const indexes = []
   for (let i = 0; i < changes.length; i++) {
     for (let j = 0; j < changes[i].nftokenOfferChanges.length; j++) {
-      indexes.push(
-        <React.Fragment key={i + '-' + j}>{nftOfferLink(changes[i].nftokenOfferChanges[j].index)}</React.Fragment>
-      )
+      indexes.push(<span key={i + '-' + j}>{nftOfferLink(changes[i].nftokenOfferChanges[j].index)}</span>)
     }
   }
   return indexes
@@ -464,11 +283,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
         </>
       )}
 
-      {outcome?.nftokenChanges?.length > 0 &&
-        nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType, {
-          hideNftId: !!nftPreview,
-          hideNftData: !!nftPreview
-        })}
+      {outcome?.nftokenChanges?.length > 0 && nftokenChanges(outcome?.nftokenChanges, txType)}
 
       {/* show created offer details */}
       {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') &&

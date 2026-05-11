@@ -25,14 +25,21 @@ const nftFlagList = (flags) => {
     .join(', ')
 }
 
-const nftDetails = (nft, change, title, id) => {
+const nftDetails = (preview, title) => {
+  const { nft, change, id, owner, txType } = preview
   const decodedUri = change?.uri ? decode(change.uri) : textValue(nft?.uri)
   const decodedPreviousUri = change?.previousURI ? decode(change.previousURI) : ''
   const flags = nftFlagList(nft?.flags)
+  const uriLabel = txType === 'NFTokenModify' ? 'New URI' : 'URI'
 
   return [
     { label: 'Name', value: title },
     { label: 'Collection', value: nftCollectionName(nft) },
+    {
+      label: 'Owner',
+      value: owner?.address,
+      addressData: owner || null
+    },
     {
       label: 'Issuer',
       value: nft?.issuer,
@@ -49,7 +56,7 @@ const nftDetails = (nft, change, title, id) => {
     { label: 'Serial', value: nft?.sequence },
     { label: 'NFT ID', value: id, link: id ? `/nft/${id}` : '' },
     { label: 'Previous URI', value: decodedPreviousUri, copy: true },
-    { label: 'URI', value: decodedUri, copy: true }
+    { label: uriLabel, value: decodedUri, copy: true, labelClassName: txType === 'NFTokenModify' ? 'orange' : '' }
   ].filter((item) => item.value !== undefined && item.value !== null && item.value !== '')
 }
 
@@ -102,7 +109,7 @@ export const TransactionNftPreviewPanel = ({ preview }) => {
   if (!preview?.nft || !preview?.id) return null
 
   const title = nftName(preview.nft, { maxLength: 80 }) || 'NFT'
-  const details = nftDetails(preview.nft, preview.change, title, preview.id)
+  const details = nftDetails(preview, title)
 
   return (
     <div
@@ -135,7 +142,7 @@ export const TransactionNftPreviewPanel = ({ preview }) => {
           >
             {details.map((item) => (
               <span key={item.label} style={{ display: 'contents' }}>
-                <span className="grey bold">{item.label}</span>
+                <span className={`grey bold ${item.labelClassName || ''}`.trim()}>{item.label}</span>
                 <span style={{ minWidth: 0, overflowWrap: 'anywhere', textAlign: 'left' }}>
                   {item.addressData ? (
                     <span className="copy-inline">

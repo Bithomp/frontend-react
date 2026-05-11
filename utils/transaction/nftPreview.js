@@ -9,7 +9,8 @@ export const getTransactionNftPreview = (data) => {
   const idKey = isUriToken ? 'uritokenID' : 'nftokenID'
   const affectedNfts = data?.outcome?.affectedObjects?.[objectKey] || {}
   const affectedNftList = Object.values(affectedNfts)
-  const nftChanges = (data?.outcome?.[changeKey] || []).flatMap((entry) => entry?.[changeKey] || [])
+  const nftChangeEntries = data?.outcome?.[changeKey] || []
+  const nftChanges = nftChangeEntries.flatMap((entry) => entry?.[changeKey] || [])
 
   const nftId = isUriToken
     ? data?.tx?.URITokenID ||
@@ -30,7 +31,18 @@ export const getTransactionNftPreview = (data) => {
   const id = nft?.[idKey] || nftId
   if (!nft || !id) return null
 
-  const change = nftChanges.find((entry) => entry?.[idKey] === id) || nftChanges[0] || null
+  const changeEntry =
+    nftChangeEntries.find((entry) => (entry?.[changeKey] || []).some((change) => change?.[idKey] === id)) ||
+    nftChangeEntries[0] ||
+    null
+  const change = changeEntry?.[changeKey]?.find((entry) => entry?.[idKey] === id) || nftChanges[0] || null
+  const owner =
+    txType === 'NFTokenModify' && changeEntry?.address
+      ? {
+          address: changeEntry.address,
+          addressDetails: changeEntry.addressDetails
+        }
+      : null
 
-  return { id, nft, change }
+  return { id, nft, change, owner, txType }
 }
