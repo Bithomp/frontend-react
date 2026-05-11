@@ -6572,7 +6572,8 @@ export default function Account({
                         (nftDestination?.address === data?.address || nftSource?.address === data?.address)
                       const isFreeNftTransfer =
                         isNftTransferLabel && (isZeroNftOfferAmount || nftOfferAmountRaw === '0')
-                      const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept
+                      const isFreeNftCreateOffer = isCreateNftOfferTx && isZeroNftOfferAmount
+                      const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept || isFreeNftCreateOffer
                       const showFreeNftBadgeGreen =
                         showFreeNftBadge &&
                         nftViewerRole === 'buyer' &&
@@ -6900,7 +6901,7 @@ export default function Account({
                                 nftCollapsedSpecialDisplay.collapsedNode
                               ) : showFreeNftBadge ? (
                                 <span className={`tx-offer-free ${showFreeNftBadgeGreen ? 'green' : 'orange'}`}>
-                                  Free
+                                  {ta('states.free')}
                                 </span>
                               ) : canCollapseRipplingAmounts ? (
                                 <span className="tx-inline-change-item">
