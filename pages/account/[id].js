@@ -4268,7 +4268,9 @@ export default function Account({
                       <div className="detail-row issuer-detail-row">
                         <span>{ta('labels.address')}:</span>
                         <span className="copy-inline airdrop-address-wrap">
-                          <span className="address-text">{data.flare.address}</span>
+                          <span className="address-text" title={data.flare.address}>
+                            {shortHash(data.flare.address)}
+                          </span>
                           <span onClick={(event) => event.stopPropagation()}>
                             <CopyButton text={data.flare.address} />
                           </span>
