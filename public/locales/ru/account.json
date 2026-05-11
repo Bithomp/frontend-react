@@ -258,7 +258,7 @@
       "show-more-items": "Показать ещё {{count}} {{type}}",
       "show-all-items": "Показать все {{type}} (+{{count}} ещё)",
       "show-fewer-items": "Показать меньше {{type}}",
-      "view-all": "Показать все",
+      "view-all": "Все",
       "search": "Поиск",
       "load-more-transactions": "Загрузить ещё транзакции",
       "view-token-distribution": "Показать распределение токена",
@@ -317,7 +317,7 @@
       "issued-mpts": "Выпущенные MPT",
       "dex-orders": "DEX-ордера",
       "nft-offers": "NFT-предложения",
-      "activated-accounts": "Активированные аккаунты",
+      "activated-accounts": "Активации",
       "objects": "Объекты"
     },
     "tabs": {
