@@ -36,7 +36,6 @@ const sampleHistoryAddresses = [
   'r3sQYvXxc82iSNs5DnUUvXtcQQQqigCdW',
   'rhWTXC2m2gGGA9WozUaoMm6kLAVPb1tcS3',
   'raWYT6DD2XFAvjCqRPsCCzr1CMBzJydf9E',
-  'rakZprdzwsUJ1rD2ouhYYAVP7tPbhrCbtz',
   'r3LAichpcBeZWk7LLSZcfSQcqYsvQ6beBc'
 ]
 
