@@ -127,6 +127,19 @@ export default function FiltersFrame({
     }
   }
 
+  const renderPagination = ({ compact = false } = {}) => (
+    <TablePagination
+      labelRowsPerPage={compact ? 'Rows' : 'Rows per page'}
+      component="div"
+      count={total}
+      page={page}
+      onPageChange={handleChangePage}
+      rowsPerPage={rowsPerPage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+      rowsPerPageOptions={compact ? [] : rowsPerPageOptions}
+    />
+  )
+
   if (onlyCsv) {
     contentStyle = contentStyle || {}
     contentStyle.margin = width > 1300 ? '80px 0 25px 0' : '63px 0 25px 0'
@@ -139,19 +152,7 @@ export default function FiltersFrame({
         <div className="filters-nav">
           <div className="filters-nav__wrap">
             {rowsPerPage && (width >= 920 || width <= 440) ? (
-              <>
-                <TablePagination
-                  labelRowsPerPage={width <= 440 ? 'Rows' : 'Rows per page'}
-                  component="div"
-                  count={total}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  rowsPerPage={rowsPerPage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  rowsPerPageOptions={width <= 440 ? [] : rowsPerPageOptions}
-                  //slotProps={{ select: </> }}
-                />
-              </>
+              <>{renderPagination({ compact: width <= 440 })}</>
             ) : (
               ''
             )}
@@ -174,17 +175,7 @@ export default function FiltersFrame({
             {rowsPerPage && width < 920 && width > 440 ? (
               <>
                 <div style={{ flexBasis: '100%', height: 0 }}></div>
-                <TablePagination
-                  labelRowsPerPage="Rows per page"
-                  component="div"
-                  count={total}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  rowsPerPage={rowsPerPage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  rowsPerPageOptions={rowsPerPageOptions}
-                  //slotProps={{ select: </> }}
-                />
+                {renderPagination()}
               </>
             ) : (
               ''
@@ -231,6 +222,9 @@ export default function FiltersFrame({
         {/* Filter Indicator */}
         {filters && (width > 1300 ? filtersHide : !filtersHide) && <FilterIndicator filters={filters} />}
         {children[1]}
+        {rowsPerPage && width > 0 && width <= 800 && (
+          <div className="filters-pagination-bottom">{renderPagination({ compact: true })}</div>
+        )}
       </div>
     </div>
   )
