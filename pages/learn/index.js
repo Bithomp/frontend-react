@@ -1,4 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import Link from 'next/link'
 
@@ -9,49 +10,38 @@ import styles from '@/styles/pages/learn.module.scss'
 import { getIsSsrMobile } from '@/utils/mobile'
 import { explorerName, nativeCurrency } from '../../utils'
 
-const pageDetails = {
-  title: 'Learn About ' + nativeCurrency + ' & The ' + explorerName,
-  description:
-    'Explore essential concepts behind ' +
-    nativeCurrency +
-    ', the ' +
-    explorerName +
-    ', and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.',
-  h1: 'Learn About ' + nativeCurrency + ' & ' + explorerName
-}
-
-const buildLearnContent = () => {
+const buildLearnContent = (t) => {
   let content = [
     {
-      category: explorerName + ' Features & Concepts',
-      description: 'Dive deeper into the features and concepts of the ' + explorerName + '.',
+      category: t('categories.features.title', { explorerName }),
+      description: t('categories.features.description', { explorerName }),
       items: [
-        { title: 'Blackholed Address', slug: 'blackholed-address' },
-        { title: 'Blacklisted Address', slug: 'blacklisted-address' },
-        { title: 'Verified Domain', slug: 'verified-domain' },
-        { title: 'PayStrings', slug: 'paystrings' }
+        { title: t('items.blackholed-address'), slug: 'blackholed-address' },
+        { title: t('items.blacklisted-address'), slug: 'blacklisted-address' },
+        { title: t('items.verified-domain'), slug: 'verified-domain' },
+        { title: t('items.paystrings'), slug: 'paystrings' }
       ]
     },
     {
-      category: 'Bithomp Tools',
-      description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
+      category: t('categories.tools.title'),
+      description: t('categories.tools.description'),
       items: [
-        { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
-        { title: 'How to Mint NFTs on ' + explorerName, slug: 'nft-minting' },
-        { title: 'How to Create an Escrow on ' + explorerName, slug: 'create-escrow' },
-        { title: 'The Bithomp API', slug: 'the-bithomp-api' },
-        { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' },
-        { title: 'How to Issue a Token on ' + explorerName, slug: 'issue-a-token' },
+        { title: t('items.the-bithomp-explorer-advantages'), slug: 'the-bithomp-explorer-advantages' },
+        { title: t('items.nft-minting', { explorerName }), slug: 'nft-minting' },
+        { title: t('items.create-escrow', { explorerName }), slug: 'create-escrow' },
+        { title: t('items.the-bithomp-api'), slug: 'the-bithomp-api' },
+        { title: t('items.xrp-xah-taxes'), slug: 'xrp-xah-taxes' },
+        { title: t('items.issue-a-token', { explorerName }), slug: 'issue-a-token' },
         {
-          title: 'Guide for Token Issuers: Username, Toml file, Project Registration',
+          title: t('items.guide-for-token-issuers'),
           slug: 'guide-for-token-issuers'
         },
-        { title: 'Bithomp Image Services', slug: 'image-services' },
-        { title: 'Understanding Trustlines', slug: 'trustlines' },
-        { title: 'NFT Explorer', slug: 'nft-explorer' },
-        { title: 'Send Payments with us: Key Benefits', slug: 'send-payments' },
-        { title: 'Types of assets on ' + explorerName, slug: 'types-of-assets' },
-        { title: 'Checks explained', slug: 'checks' },
+        { title: t('items.image-services'), slug: 'image-services' },
+        { title: t('items.trustlines'), slug: 'trustlines' },
+        { title: t('items.nft-explorer'), slug: 'nft-explorer' },
+        { title: t('items.send-payments'), slug: 'send-payments' },
+        { title: t('items.types-of-assets', { explorerName }), slug: 'types-of-assets' },
+        { title: t('items.checks'), slug: 'checks' }
       ]
     }
   ]
@@ -59,17 +49,17 @@ const buildLearnContent = () => {
 
   // only on xrpl
   if (nativeCurrency === 'XRP') {
-    const itemsBefore = [{ title: 'XRP, Ripple, XRP Ledger: Key Differencies', slug: 'xrpl-article' }]
+    const itemsBefore = [{ title: t('items.xrpl-article'), slug: 'xrpl-article' }]
     const itemsAfter = [
-      { title: 'Ripple USD', slug: 'ripple-usd' },
-      { title: 'XRPL AMM', slug: 'amm' }
+      { title: t('items.ripple-usd'), slug: 'ripple-usd' },
+      { title: t('items.amm'), slug: 'amm' }
     ]
     content[0].items = [...itemsBefore, ...content[0].items, ...itemsAfter]
   }
 
   // only on xahau
   if (nativeCurrency === 'XAH') {
-    const itemsBefore = [{ title: 'Xahau Balance Adjustments. Claim Reward.', slug: 'claim-reward' }]
+    const itemsBefore = [{ title: t('items.claim-reward'), slug: 'claim-reward' }]
     content[0].items = [...itemsBefore, ...content[0].items]
   }
 
@@ -80,13 +70,19 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
 
 export default function LearnPage() {
-  const learnContent = buildLearnContent()
+  const { t } = useTranslation('learn')
+  const pageDetails = {
+    title: t('page.title', { nativeCurrency, explorerName }),
+    description: t('page.description', { nativeCurrency, explorerName }),
+    h1: t('page.h1', { nativeCurrency, explorerName })
+  }
+  const learnContent = buildLearnContent(t)
 
   return (
     <>
@@ -112,7 +108,7 @@ export default function LearnPage() {
                 {section.items.map((item) => (
                   <Card
                     as={Link}
-                    aria-label={`Read more about ${item.title}`}
+                    aria-label={t('readMoreAria', { title: item.title })}
                     href={`/learn/${item.slug}`}
                     key={item.slug}
                     className={`${styles.card}`}
@@ -121,7 +117,7 @@ export default function LearnPage() {
                       <h3 className="text-lg font-semibold">{item.title}</h3>
                       {item.description && <p className="text-gray-600 dark:text-gray-400 mb-4">{item.description}</p>}
                     </div>
-                    <p className={`${styles.readMore}`}>Read more →</p>
+                    <p className={`${styles.readMore}`}>{t('readMore')}</p>
                   </Card>
                 ))}
               </div>

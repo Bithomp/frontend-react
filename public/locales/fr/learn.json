@@ -1,0 +1,42 @@
+{
+  "page": {
+    "title": "Découvrir {{nativeCurrency}} et {{explorerName}}",
+    "description": "Explorez les notions essentielles autour de {{nativeCurrency}}, de {{explorerName}} et de l'activité des portefeuilles. Comprenez le fonctionnement de l'écosystème grâce à ces guides et définitions accessibles.",
+    "h1": "Découvrir {{nativeCurrency}} et {{explorerName}}"
+  },
+  "categories": {
+    "features": {
+      "title": "Fonctionnalités et concepts de {{explorerName}}",
+      "description": "Approfondissez les fonctionnalités et les concepts de {{explorerName}}."
+    },
+    "tools": {
+      "title": "Outils Bithomp",
+      "description": "Découvrez comment tirer le meilleur parti du puissant explorateur Bithomp."
+    }
+  },
+  "items": {
+    "xrpl-article": "XRP, Ripple, XRP Ledger : différences clés",
+    "ripple-usd": "Ripple USD",
+    "amm": "AMM XRPL",
+    "claim-reward": "Ajustements de solde Xahau. Réclamer une récompense.",
+    "blackholed-address": "Adresse blackholed",
+    "blacklisted-address": "Adresse sur liste noire",
+    "verified-domain": "Domaine vérifié",
+    "paystrings": "PayStrings",
+    "the-bithomp-explorer-advantages": "Les avantages de Bithomp Explorer",
+    "nft-minting": "Comment minter des NFT sur {{explorerName}}",
+    "create-escrow": "Comment créer un escrow sur {{explorerName}}",
+    "the-bithomp-api": "L'API Bithomp",
+    "xrp-xah-taxes": "Fiscalité XRP et XAH - exports CSV pour votre rapport",
+    "issue-a-token": "Comment émettre un token sur {{explorerName}}",
+    "guide-for-token-issuers": "Guide pour les émetteurs de tokens : username, fichier TOML, enregistrement du projet",
+    "image-services": "Services d'images Bithomp",
+    "trustlines": "Comprendre les trustlines",
+    "nft-explorer": "NFT Explorer",
+    "send-payments": "Envoyer des paiements avec Bithomp : principaux avantages",
+    "types-of-assets": "Types d'actifs sur {{explorerName}}",
+    "checks": "Checks expliqués"
+  },
+  "readMore": "Lire la suite ->",
+  "readMoreAria": "Lire la suite sur {{title}}"
+}

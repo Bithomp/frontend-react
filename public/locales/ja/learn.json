@@ -1,0 +1,42 @@
+{
+  "page": {
+    "title": "{{nativeCurrency}} と {{explorerName}} を学ぶ",
+    "description": "{{nativeCurrency}}、{{explorerName}}、ウォレットのアクティビティに関する基本概念を学べます。初心者にも分かりやすいガイドと用語解説で、エコシステムの仕組みを理解できます。",
+    "h1": "{{nativeCurrency}} と {{explorerName}} を学ぶ"
+  },
+  "categories": {
+    "features": {
+      "title": "{{explorerName}} の機能と概念",
+      "description": "{{explorerName}} の機能と概念をさらに詳しく学びましょう。"
+    },
+    "tools": {
+      "title": "Bithomp ツール",
+      "description": "Bithomp の強力なエクスプローラーを最大限に活用する方法を学びましょう。"
+    }
+  },
+  "items": {
+    "xrpl-article": "XRP、Ripple、XRP Ledger: 主な違い",
+    "ripple-usd": "Ripple USD",
+    "amm": "XRPL AMM",
+    "claim-reward": "Xahau の残高調整。報酬の請求。",
+    "blackholed-address": "Blackholed アドレス",
+    "blacklisted-address": "ブラックリスト登録アドレス",
+    "verified-domain": "認証済みドメイン",
+    "paystrings": "PayStrings",
+    "the-bithomp-explorer-advantages": "Bithomp Explorer の利点",
+    "nft-minting": "{{explorerName}} で NFT をミントする方法",
+    "create-escrow": "{{explorerName}} で escrow を作成する方法",
+    "the-bithomp-api": "Bithomp API",
+    "xrp-xah-taxes": "XRP と XAH の税務 - レポート用 CSV エクスポート",
+    "issue-a-token": "{{explorerName}} でトークンを発行する方法",
+    "guide-for-token-issuers": "トークン発行者向けガイド: username、TOML ファイル、プロジェクト登録",
+    "image-services": "Bithomp 画像サービス",
+    "trustlines": "Trustline を理解する",
+    "nft-explorer": "NFT Explorer",
+    "send-payments": "Bithomp で支払いを送信: 主なメリット",
+    "types-of-assets": "{{explorerName}} 上の資産タイプ",
+    "checks": "Checks の解説"
+  },
+  "readMore": "続きを読む ->",
+  "readMoreAria": "{{title}} について続きを読む"
+}

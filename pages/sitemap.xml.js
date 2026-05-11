@@ -140,7 +140,6 @@ function generateSiteMap(posts) {
     'whales/receivers',
     'whales/senders',
     'whales/submitters',
-    'learn',
     'learn/blackholed-address',
     'learn/blacklisted-address',
     'learn/verified-domain',

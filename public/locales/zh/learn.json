@@ -1,0 +1,42 @@
+{
+  "page": {
+    "title": "了解 {{nativeCurrency}} 和 {{explorerName}}",
+    "description": "了解 {{nativeCurrency}}、{{explorerName}} 以及钱包活动背后的核心概念。通过适合初学者的指南和定义，理解整个生态系统的运作方式。",
+    "h1": "了解 {{nativeCurrency}} 和 {{explorerName}}"
+  },
+  "categories": {
+    "features": {
+      "title": "{{explorerName}} 功能与概念",
+      "description": "深入了解 {{explorerName}} 的功能和核心概念。"
+    },
+    "tools": {
+      "title": "Bithomp 工具",
+      "description": "学习如何充分使用 Bithomp 强大的浏览器功能。"
+    }
+  },
+  "items": {
+    "xrpl-article": "XRP、Ripple、XRP Ledger：关键区别",
+    "ripple-usd": "Ripple USD",
+    "amm": "XRPL AMM",
+    "claim-reward": "Xahau 余额调整。领取奖励。",
+    "blackholed-address": "Blackholed 地址",
+    "blacklisted-address": "黑名单地址",
+    "verified-domain": "已验证域名",
+    "paystrings": "PayStrings",
+    "the-bithomp-explorer-advantages": "Bithomp Explorer 的优势",
+    "nft-minting": "如何在 {{explorerName}} 上铸造 NFT",
+    "create-escrow": "如何在 {{explorerName}} 上创建 escrow",
+    "the-bithomp-api": "Bithomp API",
+    "xrp-xah-taxes": "XRP 和 XAH 税务 - 用于报表的 CSV 导出",
+    "issue-a-token": "如何在 {{explorerName}} 上发行代币",
+    "guide-for-token-issuers": "代币发行方指南：username、TOML 文件、项目注册",
+    "image-services": "Bithomp 图片服务",
+    "trustlines": "理解 trustline",
+    "nft-explorer": "NFT Explorer",
+    "send-payments": "使用 Bithomp 发送付款：主要优势",
+    "types-of-assets": "{{explorerName}} 上的资产类型",
+    "checks": "Checks 说明"
+  },
+  "readMore": "继续阅读 ->",
+  "readMoreAria": "继续阅读 {{title}}"
+}

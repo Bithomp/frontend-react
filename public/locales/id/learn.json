@@ -1,0 +1,42 @@
+{
+  "page": {
+    "title": "Pelajari {{nativeCurrency}} & {{explorerName}}",
+    "description": "Jelajahi konsep penting tentang {{nativeCurrency}}, {{explorerName}}, dan aktivitas dompet. Pahami cara kerja ekosistem melalui panduan dan definisi yang mudah diikuti.",
+    "h1": "Pelajari {{nativeCurrency}} & {{explorerName}}"
+  },
+  "categories": {
+    "features": {
+      "title": "Fitur & Konsep {{explorerName}}",
+      "description": "Pelajari lebih dalam fitur dan konsep {{explorerName}}."
+    },
+    "tools": {
+      "title": "Alat Bithomp",
+      "description": "Pelajari cara memaksimalkan explorer Bithomp yang kuat."
+    }
+  },
+  "items": {
+    "xrpl-article": "XRP, Ripple, XRP Ledger: Perbedaan Utama",
+    "ripple-usd": "Ripple USD",
+    "amm": "AMM XRPL",
+    "claim-reward": "Penyesuaian saldo Xahau. Klaim reward.",
+    "blackholed-address": "Alamat blackholed",
+    "blacklisted-address": "Alamat dalam daftar hitam",
+    "verified-domain": "Domain terverifikasi",
+    "paystrings": "PayStrings",
+    "the-bithomp-explorer-advantages": "Keunggulan Bithomp Explorer",
+    "nft-minting": "Cara mint NFT di {{explorerName}}",
+    "create-escrow": "Cara membuat escrow di {{explorerName}}",
+    "the-bithomp-api": "API Bithomp",
+    "xrp-xah-taxes": "Pajak XRP dan XAH - ekspor CSV untuk laporan Anda",
+    "issue-a-token": "Cara menerbitkan token di {{explorerName}}",
+    "guide-for-token-issuers": "Panduan untuk penerbit token: username, file TOML, pendaftaran proyek",
+    "image-services": "Layanan gambar Bithomp",
+    "trustlines": "Memahami trustline",
+    "nft-explorer": "NFT Explorer",
+    "send-payments": "Kirim pembayaran dengan Bithomp: manfaat utama",
+    "types-of-assets": "Jenis aset di {{explorerName}}",
+    "checks": "Penjelasan checks"
+  },
+  "readMore": "Baca selengkapnya ->",
+  "readMoreAria": "Baca selengkapnya tentang {{title}}"
+}

@@ -1,0 +1,42 @@
+{
+  "page": {
+    "title": "Узнайте о {{nativeCurrency}} и {{explorerName}}",
+    "description": "Изучите основные понятия о {{nativeCurrency}}, {{explorerName}} и активности кошельков. Эти понятные руководства и определения помогут разобраться, как работает экосистема.",
+    "h1": "Узнайте о {{nativeCurrency}} и {{explorerName}}"
+  },
+  "categories": {
+    "features": {
+      "title": "Функции и понятия {{explorerName}}",
+      "description": "Узнайте больше о функциях и ключевых понятиях {{explorerName}}."
+    },
+    "tools": {
+      "title": "Инструменты Bithomp",
+      "description": "Узнайте, как использовать возможности Bithomp Explorer максимально эффективно."
+    }
+  },
+  "items": {
+    "xrpl-article": "XRP, Ripple и XRP Ledger: ключевые различия",
+    "ripple-usd": "Ripple USD",
+    "amm": "АММ в XRPL",
+    "claim-reward": "Корректировки баланса Xahau. Получение награды.",
+    "blackholed-address": "Blackholed-адрес",
+    "blacklisted-address": "Адрес в черном списке",
+    "verified-domain": "Проверенный домен",
+    "paystrings": "PayStrings",
+    "the-bithomp-explorer-advantages": "Преимущества Bithomp Explorer",
+    "nft-minting": "Как выпустить NFT в {{explorerName}}",
+    "create-escrow": "Как создать escrow в {{explorerName}}",
+    "the-bithomp-api": "Bithomp API",
+    "xrp-xah-taxes": "Налоги по XRP и XAH - CSV-экспорт для отчета",
+    "issue-a-token": "Как выпустить токен в {{explorerName}}",
+    "guide-for-token-issuers": "Руководство для эмитентов токенов: username, TOML-файл, регистрация проекта",
+    "image-services": "Сервисы изображений Bithomp",
+    "trustlines": "Что такое trustline",
+    "nft-explorer": "NFT Explorer",
+    "send-payments": "Отправка платежей через Bithomp: ключевые преимущества",
+    "types-of-assets": "Типы активов в {{explorerName}}",
+    "checks": "Checks: как это работает"
+  },
+  "readMore": "Читать дальше ->",
+  "readMoreAria": "Читать подробнее: {{title}}"
+}

@@ -1,0 +1,42 @@
+{
+  "page": {
+    "title": "Learn About {{nativeCurrency}} & The {{explorerName}}",
+    "description": "Explore essential concepts behind {{nativeCurrency}}, the {{explorerName}}, and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.",
+    "h1": "Learn About {{nativeCurrency}} & {{explorerName}}"
+  },
+  "categories": {
+    "features": {
+      "title": "{{explorerName}} Features & Concepts",
+      "description": "Dive deeper into the features and concepts of the {{explorerName}}."
+    },
+    "tools": {
+      "title": "Bithomp Tools",
+      "description": "Learn how to get the most out of Bithomp's powerful explorer."
+    }
+  },
+  "items": {
+    "xrpl-article": "XRP, Ripple, XRP Ledger: Key Differences",
+    "ripple-usd": "Ripple USD",
+    "amm": "XRPL AMM",
+    "claim-reward": "Xahau Balance Adjustments. Claim Reward.",
+    "blackholed-address": "Blackholed Address",
+    "blacklisted-address": "Blacklisted Address",
+    "verified-domain": "Verified Domain",
+    "paystrings": "PayStrings",
+    "the-bithomp-explorer-advantages": "The Bithomp Explorer Advantages",
+    "nft-minting": "How to Mint NFTs on {{explorerName}}",
+    "create-escrow": "How to Create an Escrow on {{explorerName}}",
+    "the-bithomp-api": "The Bithomp API",
+    "xrp-xah-taxes": "XRP and XAH Taxes - get CSV exports for your report",
+    "issue-a-token": "How to Issue a Token on {{explorerName}}",
+    "guide-for-token-issuers": "Guide for Token Issuers: Username, TOML file, Project Registration",
+    "image-services": "Bithomp Image Services",
+    "trustlines": "Understanding Trustlines",
+    "nft-explorer": "NFT Explorer",
+    "send-payments": "Send Payments with us: Key Benefits",
+    "types-of-assets": "Types of assets on {{explorerName}}",
+    "checks": "Checks explained"
+  },
+  "readMore": "Read more ->",
+  "readMoreAria": "Read more about {{title}}"
+}
