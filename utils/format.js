@@ -1191,7 +1191,7 @@ export const capitalize = (word) => {
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
-export const timeFromNow = (timestamp, i18n, type) => {
+export const timeFromNow = (timestamp, i18n, type, referenceTimestamp = null) => {
   if (timestamp === null || typeof timestamp === 'undefined' || timestamp === '') return ''
 
   let lang = 'en'
@@ -1202,30 +1202,40 @@ export const timeFromNow = (timestamp, i18n, type) => {
   }
   dayjs.locale(lang)
 
-  let parsedTime = null
+  const parseTimestamp = (value, valueType) => {
+    if (value === null || typeof value === 'undefined' || value === '') return null
 
-  if (typeof timestamp === 'number') {
-    let normalizedTimestamp = timestamp
-    if (type === 'ripple') {
-      normalizedTimestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
-    }
-    parsedTime = normalizedTimestamp > 1e12 ? dayjs(normalizedTimestamp) : dayjs.unix(normalizedTimestamp)
-  } else if (typeof timestamp === 'string') {
-    const numericTimestamp = Number(timestamp)
-    if (Number.isFinite(numericTimestamp)) {
-      let normalizedTimestamp = numericTimestamp
-      if (type === 'ripple') {
+    if (typeof value === 'number') {
+      let normalizedTimestamp = value
+      if (valueType === 'ripple') {
         normalizedTimestamp += 946684800
       }
-      parsedTime = normalizedTimestamp > 1e12 ? dayjs(normalizedTimestamp) : dayjs.unix(normalizedTimestamp)
-    } else {
-      parsedTime = dayjs(timestamp)
+      return normalizedTimestamp > 1e12 ? dayjs(normalizedTimestamp) : dayjs.unix(normalizedTimestamp)
     }
-  } else {
-    parsedTime = dayjs(timestamp)
+
+    if (typeof value === 'string') {
+      const numericTimestamp = Number(value)
+      if (Number.isFinite(numericTimestamp)) {
+        let normalizedTimestamp = numericTimestamp
+        if (valueType === 'ripple') {
+          normalizedTimestamp += 946684800
+        }
+        return normalizedTimestamp > 1e12 ? dayjs(normalizedTimestamp) : dayjs.unix(normalizedTimestamp)
+      }
+      return dayjs(value)
+    }
+
+    return dayjs(value)
   }
 
-  return <span suppressHydrationWarning>{parsedTime?.isValid() ? parsedTime.fromNow() : '-'}</span>
+  const parsedTime = parseTimestamp(timestamp, type)
+  const referenceTime = parseTimestamp(referenceTimestamp, type)
+
+  return (
+    <span suppressHydrationWarning>
+      {parsedTime?.isValid() ? (referenceTime?.isValid() ? parsedTime.from(referenceTime) : parsedTime.fromNow()) : '-'}
+    </span>
+  )
 }
 
 export const fullDateAndTime = (timestamp, type = null, options) => {

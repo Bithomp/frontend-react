@@ -762,40 +762,6 @@ export default function Account({
     return date.toLocaleString()
   }
 
-  const timestampToMs = (value) => {
-    if (!value) return null
-    if (typeof value === 'string') {
-      const parsed = Date.parse(value)
-      return Number.isNaN(parsed) ? null : parsed
-    }
-    const numberValue = Number(value)
-    if (!Number.isFinite(numberValue)) return null
-    return numberValue < 1000000000000 ? numberValue * 1000 : numberValue
-  }
-
-  const formatRelativeBeforeReference = (sourceTimestampSeconds, referenceTimestampValue) => {
-    if (!sourceTimestampSeconds || !referenceTimestampValue) return null
-    const referenceMs = timestampToMs(referenceTimestampValue)
-    if (!referenceMs) return null
-
-    const diffSeconds = Math.floor(referenceMs / 1000 - Number(sourceTimestampSeconds))
-    if (!Number.isFinite(diffSeconds)) return null
-    if (diffSeconds <= 0) return ta('time.at-selected-time')
-
-    const units = [
-      { key: 'year', seconds: 60 * 60 * 24 * 365 },
-      { key: 'month', seconds: 60 * 60 * 24 * 30 },
-      { key: 'day', seconds: 60 * 60 * 24 },
-      { key: 'hour', seconds: 60 * 60 },
-      { key: 'minute', seconds: 60 },
-      { key: 'second', seconds: 1 }
-    ]
-
-    const unit = units.find((item) => diffSeconds >= item.seconds) || units[units.length - 1]
-    const value = Math.floor(diffSeconds / unit.seconds)
-    return ta(`time.before.${unit.key}`, { count: value })
-  }
-
   const balanceList = balanceListServer
   const nativeAvailableDrops = Number(balanceList?.available?.native || 0)
   const nativeTotalDrops = Number(balanceList?.total?.native || 0)
@@ -2906,7 +2872,7 @@ export default function Account({
     const activatedByIsUsername = !activatedByIsService && !!activatedByDetails.addressDetails.username
     const activationTimeText = fullDateAndTime(data.inception, null, { asText: true })
     const activatedRelativeToSelectedTime = isHistoricalLedger
-      ? formatRelativeBeforeReference(data.inception, historicalTimestampForBanner)
+      ? timeFromNow(data.inception, i18n, null, historicalTimestampForBanner)
       : null
     const activatedWithAmount = data?.initialBalance ? (
       <>

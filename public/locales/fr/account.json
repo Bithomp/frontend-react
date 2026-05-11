@@ -478,23 +478,6 @@
       "failed-load-account-objects-assets": "Impossible de charger les objets du compte. Certains actifs peuvent manquer.",
       "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing."
     },
-    "time": {
-      "at-selected-time": "au moment sélectionné",
-      "before": {
-        "year_one": "{{count}} an avant",
-        "year_other": "{{count}} ans avant",
-        "month_one": "{{count}} mois avant",
-        "month_other": "{{count}} mois avant",
-        "day_one": "{{count}} jour avant",
-        "day_other": "{{count}} jours avant",
-        "hour_one": "{{count}} heure avant",
-        "hour_other": "{{count}} heures avant",
-        "minute_one": "{{count}} minute avant",
-        "minute_other": "{{count}} minutes avant",
-        "second_one": "{{count}} seconde avant",
-        "second_other": "{{count}} secondes avant"
-      }
-    },
     "filters": {
       "newest-first": "Newest first",
       "oldest-first": "Oldest first",

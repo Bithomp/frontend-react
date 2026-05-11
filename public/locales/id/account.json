@@ -478,23 +478,6 @@
       "failed-load-account-objects-assets": "Gagal memuat objek akun. Beberapa aset mungkin tidak ditampilkan.",
       "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing."
     },
-    "time": {
-      "at-selected-time": "pada waktu yang dipilih",
-      "before": {
-        "year_one": "{{count}} tahun sebelumnya",
-        "year_other": "{{count}} tahun sebelumnya",
-        "month_one": "{{count}} bulan sebelumnya",
-        "month_other": "{{count}} bulan sebelumnya",
-        "day_one": "{{count}} hari sebelumnya",
-        "day_other": "{{count}} hari sebelumnya",
-        "hour_one": "{{count}} jam sebelumnya",
-        "hour_other": "{{count}} jam sebelumnya",
-        "minute_one": "{{count}} menit sebelumnya",
-        "minute_other": "{{count}} menit sebelumnya",
-        "second_one": "{{count}} detik sebelumnya",
-        "second_other": "{{count}} detik sebelumnya"
-      }
-    },
     "filters": {
       "newest-first": "Newest first",
       "oldest-first": "Oldest first",

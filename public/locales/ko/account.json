@@ -478,23 +478,6 @@
       "failed-load-account-objects-assets": "계정 객체를 불러오지 못했습니다. 일부 자산이 누락될 수 있습니다.",
       "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing."
     },
-    "time": {
-      "at-selected-time": "선택한 시점",
-      "before": {
-        "year_one": "{{count}}년 전",
-        "year_other": "{{count}}년 전",
-        "month_one": "{{count}}개월 전",
-        "month_other": "{{count}}개월 전",
-        "day_one": "{{count}}일 전",
-        "day_other": "{{count}}일 전",
-        "hour_one": "{{count}}시간 전",
-        "hour_other": "{{count}}시간 전",
-        "minute_one": "{{count}}분 전",
-        "minute_other": "{{count}}분 전",
-        "second_one": "{{count}}초 전",
-        "second_other": "{{count}}초 전"
-      }
-    },
     "filters": {
       "newest-first": "Newest first",
       "oldest-first": "Oldest first",

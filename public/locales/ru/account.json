@@ -478,23 +478,6 @@
       "failed-load-account-objects-assets": "Не удалось загрузить объекты аккаунта. Некоторые активы могут отсутствовать.",
       "failed-load-account-objects-sections": "Не удалось загрузить объекты аккаунта. Некоторые разделы объектов могут отсутствовать."
     },
-    "time": {
-      "at-selected-time": "в выбранное время",
-      "before": {
-        "year_one": "{{count}} год до",
-        "year_other": "{{count}} лет до",
-        "month_one": "{{count}} месяц до",
-        "month_other": "{{count}} месяцев до",
-        "day_one": "{{count}} день до",
-        "day_other": "{{count}} дней до",
-        "hour_one": "{{count}} час до",
-        "hour_other": "{{count}} часов до",
-        "minute_one": "{{count}} минута до",
-        "minute_other": "{{count}} минут до",
-        "second_one": "{{count}} секунда до",
-        "second_other": "{{count}} секунд до"
-      }
-    },
     "filters": {
       "newest-first": "Сначала новые",
       "oldest-first": "Сначала старые",

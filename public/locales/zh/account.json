@@ -478,23 +478,6 @@
       "failed-load-account-objects-assets": "账户对象加载失败。部分资产可能缺失。",
       "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing."
     },
-    "time": {
-      "at-selected-time": "在所选时间",
-      "before": {
-        "year_one": "{{count}} 年前",
-        "year_other": "{{count}} 年前",
-        "month_one": "{{count}} 个月前",
-        "month_other": "{{count}} 个月前",
-        "day_one": "{{count}} 天前",
-        "day_other": "{{count}} 天前",
-        "hour_one": "{{count}} 小时前",
-        "hour_other": "{{count}} 小时前",
-        "minute_one": "{{count}} 分钟前",
-        "minute_other": "{{count}} 分钟前",
-        "second_one": "{{count}} 秒前",
-        "second_other": "{{count}} 秒前"
-      }
-    },
     "filters": {
       "newest-first": "Newest first",
       "oldest-first": "Oldest first",

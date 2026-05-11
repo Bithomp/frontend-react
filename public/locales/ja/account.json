@@ -478,23 +478,6 @@
       "failed-load-account-objects-assets": "アカウントオブジェクトの読み込みに失敗しました。一部の資産が表示されない可能性があります。",
       "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing."
     },
-    "time": {
-      "at-selected-time": "選択した時点",
-      "before": {
-        "year_one": "{{count}}年前",
-        "year_other": "{{count}}年前",
-        "month_one": "{{count}}か月前",
-        "month_other": "{{count}}か月前",
-        "day_one": "{{count}}日前",
-        "day_other": "{{count}}日前",
-        "hour_one": "{{count}}時間前",
-        "hour_other": "{{count}}時間前",
-        "minute_one": "{{count}}分前",
-        "minute_other": "{{count}}分前",
-        "second_one": "{{count}}秒前",
-        "second_other": "{{count}}秒前"
-      }
-    },
     "filters": {
       "newest-first": "Newest first",
       "oldest-first": "Oldest first",

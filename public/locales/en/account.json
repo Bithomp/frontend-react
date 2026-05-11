@@ -473,23 +473,6 @@
       "failed-load-account-objects-assets": "Failed to load account objects. Some assets may be missing.",
       "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing."
     },
-    "time": {
-      "at-selected-time": "at selected time",
-      "before": {
-        "year_one": "{{count}} year before",
-        "year_other": "{{count}} years before",
-        "month_one": "{{count}} month before",
-        "month_other": "{{count}} months before",
-        "day_one": "{{count}} day before",
-        "day_other": "{{count}} days before",
-        "hour_one": "{{count}} hour before",
-        "hour_other": "{{count}} hours before",
-        "minute_one": "{{count}} minute before",
-        "minute_other": "{{count}} minutes before",
-        "second_one": "{{count}} second before",
-        "second_other": "{{count}} seconds before"
-      }
-    },
     "filters": {
       "newest-first": "Newest first",
       "oldest-first": "Oldest first",
