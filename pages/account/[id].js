@@ -574,6 +574,7 @@ export default function Account({
 }) {
   const { t, i18n } = useTranslation()
   const { t: txErrorT } = useTranslation('transaction-errors')
+  const ta = (key, values) => t(`detail.${key}`, { ns: 'account', nativeCurrency, ...values })
   const router = useRouter()
   const { Canvas } = useQRCode()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
@@ -779,7 +780,7 @@ export default function Account({
 
     const diffSeconds = Math.floor(referenceMs / 1000 - Number(sourceTimestampSeconds))
     if (!Number.isFinite(diffSeconds)) return null
-    if (diffSeconds <= 0) return 'at selected time'
+    if (diffSeconds <= 0) return ta('time.at-selected-time')
 
     const units = [
       { key: 'year', seconds: 60 * 60 * 24 * 365 },
@@ -792,7 +793,7 @@ export default function Account({
 
     const unit = units.find((item) => diffSeconds >= item.seconds) || units[units.length - 1]
     const value = Math.floor(diffSeconds / unit.seconds)
-    return `${value} ${unit.key}${value === 1 ? '' : 's'} before`
+    return ta(`time.before.${unit.key}`, { count: value })
   }
 
   const balanceList = balanceListServer
@@ -846,10 +847,10 @@ export default function Account({
   const canSendFromAccount = !!setSignRequest && !!account?.address && isOwnAccount && !effectiveLedgerTimestamp
   const disabledSendTooltip = (() => {
     if (canSendFromAccount) return ''
-    if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
-    if (!isOwnAccount) return 'Only the viewed account can do it'
-    if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
-    return 'Send is unavailable'
+    if (!setSignRequest || !account?.address) return ta('tooltips.login-required')
+    if (!isOwnAccount) return ta('tooltips.viewed-account-only')
+    if (effectiveLedgerTimestamp) return ta('tooltips.historical-unavailable')
+    return ta('tooltips.send-unavailable')
   })()
   const getFirstNativeUrl = getCoinsUrl ? getCoinsUrl + (devNet ? '?address=' + data?.address : '') : ''
   const hasAccountControlData =
@@ -884,10 +885,10 @@ export default function Account({
   }
   const xahauRewardCollapsedAmountText = hasXahauRewardsConfigured
     ? amountFormat(xahauRewardAmount, { maxFractionDigits: 6 })
-    : 'not set'
+    : ta('states.not-set')
   const xahauRewardCollapsedTimeNode = hasXahauRewardsConfigured
     ? isXahauRewardClaimable
-      ? 'claimable now'
+      ? ta('states.claimable-now')
       : timeFromNow(xahauRewardClaimableAt, i18n)
     : null
   const hasAccountSettingsRows =
@@ -917,38 +918,38 @@ export default function Account({
     data?.address === account?.address && !!setSignRequest && !effectiveLedgerTimestamp && !!data?.ledgerInfo?.activated
   const disabledSetDomainTooltip = (() => {
     if (canManageDomain) return ''
-    if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
-    if (data?.address !== account?.address) return 'Only the viewed account can do it'
-    if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
-    return 'Set domain is unavailable'
+    if (!setSignRequest || !account?.address) return ta('tooltips.login-required')
+    if (data?.address !== account?.address) return ta('tooltips.viewed-account-only')
+    if (effectiveLedgerTimestamp) return ta('tooltips.historical-unavailable')
+    return ta('tooltips.set-domain-unavailable')
   })()
   const hasAccountSettingsData = hasAccountSettingsRows
   const accountControlCollapsedLabel = isBlackholed
-    ? 'Blackholed'
+    ? ta('account-control.blackholed')
     : hasRegularKey && hasMultisig
-      ? 'regKey + multisig'
+      ? ta('account-control.regular-key-and-multisig')
       : hasRegularKey
-        ? 'regKey'
+        ? ta('account-control.regular-key-short')
         : hasMultisig
-          ? 'multisig'
+          ? ta('account-control.multisig')
           : data?.ledgerInfo?.flags?.disableMaster
-            ? 'master disabled'
+            ? ta('account-control.master-disabled')
             : data?.ledgerInfo?.flags?.passwordSpent
-              ? 'free re-key spent'
-              : 'standard'
+              ? ta('account-control.free-rekey-spent')
+              : ta('account-control.standard')
   const issuerSettingsCollapsedLabel = isGlobalFreezeEnabled
-    ? 'global freeze'
+    ? ta('issuer-settings.global-freeze')
     : hasCustomTransferFee
-      ? `fee ${issuerTransferFeeText}`
+      ? ta('issuer-settings.fee', { fee: issuerTransferFeeText })
       : isRipplingEnabled
-        ? 'rippling'
+        ? ta('issuer-settings.rippling')
         : isTrustlineClawbackEnabled
-          ? 'clawback'
+          ? ta('issuer-settings.clawback')
           : isNoFreezeEnabled
-            ? 'no freeze'
+            ? ta('issuer-settings.no-freeze')
             : isCanEscrowEnabled
-              ? 'escrow'
-              : 'not configured'
+              ? ta('issuer-settings.escrow')
+              : ta('issuer-settings.not-configured')
   const hasNftDataDetails =
     !!data?.ledgerInfo?.firstNFTokenSequence ||
     !!data?.ledgerInfo?.nftokenMinter ||
@@ -974,16 +975,16 @@ export default function Account({
   })()
   const didCreatedAgo = didData?.createdAt ? timeFromNow(didData.createdAt, i18n) : null
   const didCollapsedAgo = didData?.updatedAt ? timeFromNow(didData.updatedAt, i18n) : didCreatedAgo
-  const didCollapsedAgoLabel = didData?.updatedAt ? 'Updated' : 'Created'
+  const didCollapsedAgoLabel = didData?.updatedAt ? ta('labels.updated') : ta('labels.created')
   const didCreatedFull = didData?.createdAt ? fullDateAndTime(didData.createdAt) : null
   const didUpdatedFull = didData?.updatedAt ? fullDateAndTime(didData.updatedAt) : null
   const canManageDid = data?.address === account?.address && !effectiveLedgerTimestamp && !!setSignRequest
   const disabledSetDidTooltip = (() => {
     if (canManageDid) return ''
-    if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
-    if (data?.address !== account?.address) return 'Only the viewed account can do it'
-    if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
-    return 'Set DID is unavailable'
+    if (!setSignRequest || !account?.address) return ta('tooltips.login-required')
+    if (data?.address !== account?.address) return ta('tooltips.viewed-account-only')
+    if (effectiveLedgerTimestamp) return ta('tooltips.historical-unavailable')
+    return ta('tooltips.set-did-unavailable')
   })()
   const flareClaimNode = hasFlareAddress ? (
     <>
@@ -1002,11 +1003,11 @@ export default function Account({
   if (Number.isFinite(inceptionTimestamp) && inceptionTimestamp > 0) {
     const accountAgeYears = (Date.now() / 1000 - inceptionTimestamp) / (60 * 60 * 24 * 365.25)
     const ageAchievementList = [
-      { years: 10, image: '10years.png', tooltip: 'Account active for 10+ years' },
-      { years: 5, image: '5years.png', tooltip: 'Account active for 5+ years' },
-      { years: 3, image: '3years.png', tooltip: 'Account active for 3+ years' },
-      { years: 2, image: '2year.png', tooltip: 'Account active for 2+ years' },
-      { years: 1, image: '1year.png', tooltip: 'Account active for 1+ year' }
+      { years: 10, image: '10years.png', tooltip: ta('achievements.active-years', { count: 10 }) },
+      { years: 5, image: '5years.png', tooltip: ta('achievements.active-years', { count: 5 }) },
+      { years: 3, image: '3years.png', tooltip: ta('achievements.active-years', { count: 3 }) },
+      { years: 2, image: '2year.png', tooltip: ta('achievements.active-years', { count: 2 }) },
+      { years: 1, image: '1year.png', tooltip: ta('achievements.active-years', { count: 1 }) }
     ]
 
     const ageAchievement = ageAchievementList.find((item) => accountAgeYears >= item.years)
@@ -1023,7 +1024,7 @@ export default function Account({
     achievements.push({
       key: 'bithomp-pro',
       image: 'bithomppro.png',
-      tooltip: 'Bithomp Pro activated'
+      tooltip: ta('achievements.bithomp-pro')
     })
   }
 
@@ -1031,7 +1032,7 @@ export default function Account({
     achievements.push({
       key: 'xaman-kyc',
       image: 'xamankyc.png',
-      tooltip: 'Xaman KYC verified'
+      tooltip: ta('achievements.xaman-kyc')
     })
   }
 
@@ -1039,7 +1040,7 @@ export default function Account({
     achievements.push({
       key: 'domain-verified',
       image: 'domainverified.png',
-      tooltip: 'TOML verified domain'
+      tooltip: ta('achievements.toml-verified-domain')
     })
   }
 
@@ -1051,7 +1052,7 @@ export default function Account({
     achievements.push({
       key: 'xaodao',
       image: 'xaodao.png',
-      tooltip: 'XAO DAO NFT holder'
+      tooltip: ta('achievements.xao-dao-holder')
     })
   }
 
@@ -1063,7 +1064,7 @@ export default function Account({
     achievements.push({
       key: 'apex23',
       image: 'apex23.png',
-      tooltip: 'Apex 2023 NFT holder'
+      tooltip: ta('achievements.apex-2023-holder')
     })
   }
 
@@ -1081,13 +1082,13 @@ export default function Account({
   const accountDisplayName = accountAmmId ? (
     <>
       <span>AMM</span>{' '}
-      <Link href={`/amm/${accountAmmId}`} className="inline-link-icon tooltip" aria-label="Open AMM page">
+      <Link href={`/amm/${accountAmmId}`} className="inline-link-icon tooltip" aria-label={ta('aria.open-amm-page')}>
         <LinkIcon />
-        <span className="tooltiptext no-brake">AMM page</span>
+        <span className="tooltiptext no-brake">{ta('tooltips.amm-page')}</span>
       </Link>
     </>
   ) : (
-    userOrServiceName({ service: accountDisplayService, username: accountDisplayUsername }) || 'No username'
+    userOrServiceName({ service: accountDisplayService, username: accountDisplayUsername }) || ta('labels.no-username')
   )
   const hasPositiveNativeAvailableBalance = Number(balanceList?.available?.native || 0) > 0
   const shouldShowUsernameRegisterButton =
@@ -1122,17 +1123,17 @@ export default function Account({
   const receivedChecksNativeValue = receivedChecks.reduce((sum, check) => sum + checkNativeValue(check), 0)
   const receivedChecksFiatValue = receivedChecksNativeValue * (tokenFiatRate || pageFiatRate || 0)
   const hasNftWorthLine = !xahauNetwork && nftsNativeValue > 0
-  const nftsWorthLabel = nftsWorthCount > 0 ? `NFTs (${nftsWorthCount})` : 'NFTs'
+  const nftsWorthLabel = nftsWorthCount > 0 ? ta('worth.nfts-count', { count: nftsWorthCount }) : ta('tabs.nfts')
   const hasReceivedChecksWorthLine = receivedChecks.length > 0
   const hasAdditionalWorthAssets = hasNonNativeTokenAssets || hasNftWorthLine || hasReceivedChecksWorthLine
   const totalWorthFiatValue =
     nativeAvailableFiatValue + lpTokensFiatValue + issuedTokensFiatValue + nftsFiatValue + receivedChecksFiatValue
   const totalWorthBreakdown = [
     { label: nativeCurrency, value: nativeAvailableFiatValue },
-    ...(lpTokensCount > 0 ? [{ label: `LP tokens (${lpTokensCount})`, value: lpTokensFiatValue }] : []),
-    ...(issuedTokensCount > 0 ? [{ label: `Tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : []),
+    ...(lpTokensCount > 0 ? [{ label: ta('worth.lp-tokens-count', { count: lpTokensCount }), value: lpTokensFiatValue }] : []),
+    ...(issuedTokensCount > 0 ? [{ label: ta('worth.tokens-count', { count: issuedTokensCount }), value: issuedTokensFiatValue }] : []),
     ...(hasNftWorthLine ? [{ label: nftsWorthLabel, value: nftsFiatValue }] : []),
-    ...(hasReceivedChecksWorthLine ? [{ label: `Received checks (${receivedChecks.length})`, value: receivedChecksFiatValue }] : [])
+    ...(hasReceivedChecksWorthLine ? [{ label: ta('worth.received-checks-count', { count: receivedChecks.length }), value: receivedChecksFiatValue }] : [])
   ].sort((a, b) => b.value - a.value)
   const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
   const activeTokenList = tokenTab === 'lp' ? lpTokenList : tokenTab === 'tokens' ? standardTokenList : tokens
@@ -1141,11 +1142,11 @@ export default function Account({
     : activeTokenList.slice(0, Math.max(tokenDisplayLimit, TOKEN_PREVIEW_LIMIT))
   const hiddenTokensCount = Math.max(activeTokenList.length - visibleTokens.length, 0)
   const tokenTabDisplayNameMap = {
-    all: 'tokens',
-    tokens: 'tokens',
-    lp: 'LP tokens'
+    all: ta('tabs.tokens-lower'),
+    tokens: ta('tabs.tokens-lower'),
+    lp: ta('tabs.lp-tokens')
   }
-  const activeTokenTabLabel = tokenTabDisplayNameMap[tokenTab] || 'tokens'
+  const activeTokenTabLabel = tokenTabDisplayNameMap[tokenTab] || ta('tabs.tokens-lower')
   const ownedNftCount = Math.max(ownedNftIds.length, ownedNfts.length)
   const soldNftsCount = Math.max(soldNfts.length, soldNftsTotalCount || 0)
   const mintedNftsLedgerCount = Number(data?.ledgerInfo?.mintedNFTokens || 0)
@@ -1196,7 +1197,13 @@ export default function Account({
       : Math.min(NFT_LOAD_MORE_STEP, Math.max(activeNftCount - activeNftPreview.length, 0))
   const showNftFewerButton = nftDisplayLimit > NFT_INITIAL_LIMIT
   const showNftControlsVisible = activeNftShowMoreAvailable || showNftFewerButton
-  const activeNftTabLabel = nftTab.charAt(0).toUpperCase() + nftTab.slice(1)
+  const nftTabDisplayNameMap = {
+    owned: ta('tabs.owned-lower'),
+    sold: ta('tabs.sold-lower'),
+    minted: ta('tabs.minted-lower'),
+    burned: ta('tabs.burned-lower')
+  }
+  const activeNftTabLabel = nftTabDisplayNameMap[nftTab] || ta('tabs.owned-lower')
   const activeNftLoading =
     nftTab === 'sold'
       ? soldNftsLoading
@@ -1215,12 +1222,12 @@ export default function Account({
           : `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true&burnedPeriod=${effectiveLedgerTimestamp && data?.inception ? `${new Date(data.inception * 1000).toISOString()}..${new Date(effectiveLedgerTimestamp).toISOString()}` : 'all'}`
   const activeNftEmptyLabel =
     nftTab === 'owned'
-      ? 'No owned NFTs found.'
+      ? ta('empty.no-owned-nfts')
       : nftTab === 'sold'
-        ? 'No sold NFTs found.'
+        ? ta('empty.no-sold-nfts')
         : nftTab === 'minted'
-          ? 'No minted NFTs found.'
-          : 'No burned NFTs found.'
+          ? ta('empty.no-minted-nfts')
+          : ta('empty.no-burned-nfts')
   const createdSellNftOffers = createdNftOffers.filter((offer) => offer?.flags?.sellToken)
   const createdBuyNftOffers = createdNftOffers.filter((offer) => !offer?.flags?.sellToken)
   const activeNftOffers =
@@ -1239,12 +1246,12 @@ export default function Account({
   const showNftOffersControlsVisible = activeNftOffersShowMoreAvailable || showNftOffersFewerButton
   const activeNftOffersTabLabel =
     nftOffersTab === 'received'
-      ? 'private'
+      ? ta('tabs.private-lower')
       : nftOffersTab === 'createdSelling'
-        ? 'selling'
+        ? ta('tabs.selling-lower')
         : nftOffersTab === 'createdBuying'
-          ? 'buying'
-          : 'owned'
+          ? ta('tabs.buying-lower')
+          : ta('tabs.owned-lower')
   const activeNftOffersDataKey =
     nftOffersTab === 'createdSelling' || nftOffersTab === 'createdBuying' ? 'created' : nftOffersTab
   const nftOffersTabCountMap = {
@@ -1283,12 +1290,12 @@ export default function Account({
   const activeNftOffersError = nftOffersError[activeNftOffersDataKey]
   const activeNftOffersTitle =
     nftOffersTab === 'received'
-      ? 'No private NFT offers found.'
+      ? ta('empty.no-private-nft-offers')
       : nftOffersTab === 'createdSelling'
-        ? 'No selling NFT offers found.'
+        ? ta('empty.no-selling-nft-offers')
         : nftOffersTab === 'createdBuying'
-          ? 'No buying NFT offers found.'
-          : 'No offers for owned NFTs found.'
+          ? ta('empty.no-buying-nft-offers')
+          : ta('empty.no-owned-nft-offers')
   const activeNftOffersViewAllHref =
     nftOffersTab === 'received'
       ? `/nft-offers/${data?.address}?offerList=privately-offered-to-address`
@@ -1303,7 +1310,11 @@ export default function Account({
   const activeChecksRemainingCount = Math.max(activeChecksList.length - activeChecksPreview.length, 0)
   const showChecksFewerButton = checksDisplayLimit > OBJECT_PREVIEW_LIMIT
   const showChecksControlsVisible = activeChecksShowMoreAvailable || showChecksFewerButton
-  const checksSectionTitle = showChecksTabs ? 'Checks' : activeChecksTab === 'sent' ? 'Sent checks' : 'Received checks'
+  const checksSectionTitle = showChecksTabs
+    ? ta('sections.checks')
+    : activeChecksTab === 'sent'
+      ? ta('sections.sent-checks')
+      : ta('sections.received-checks')
 
   const hasReceivedEscrows = receivedEscrows.length > 0
   const hasSentEscrows = sentEscrows.length > 0
@@ -1326,12 +1337,12 @@ export default function Account({
   const showEscrowsFewerButton = escrowsDisplayLimit > OBJECT_PREVIEW_LIMIT
   const showEscrowsControlsVisible = activeEscrowsShowMoreAvailable || showEscrowsFewerButton
   const escrowsSectionTitle = showEscrowsTabs
-    ? 'Escrows'
+    ? ta('sections.escrows')
     : activeEscrowsTab === 'sent'
-      ? 'Outgoing escrows'
+      ? ta('sections.outgoing-escrows')
       : activeEscrowsTab === 'self'
-        ? 'Self escrows'
-        : 'Incoming escrows'
+        ? ta('sections.self-escrows')
+        : ta('sections.incoming-escrows')
 
   const hasIncomingPaychannels = incomingPaychannels.length > 0
   const hasOutgoingPaychannels = outgoingPaychannels.length > 0
@@ -1344,10 +1355,10 @@ export default function Account({
   const showPaychannelsFewerButton = paychannelsDisplayLimit > OBJECT_PREVIEW_LIMIT
   const showPaychannelsControlsVisible = activePaychannelsShowMoreAvailable || showPaychannelsFewerButton
   const paychannelsSectionTitle = showPaychannelsTabs
-    ? 'Paychannels'
+    ? ta('sections.paychannels')
     : activePaychannelsTab === 'outgoing'
-      ? 'Outgoing paychannels'
-      : 'Incoming paychannels'
+      ? ta('sections.outgoing-paychannels')
+      : ta('sections.incoming-paychannels')
   const hasDexOrders = dexOrders.length > 0
   const dexOrdersPreview = dexOrders.slice(0, dexOrdersDisplayLimit)
   const dexOrdersShowMoreAvailable = dexOrders.length > dexOrdersPreview.length
@@ -2531,8 +2542,8 @@ export default function Account({
   const transactionsEndMessage =
     transactionsSearchPaused && transactionsMarker ? (
       <>
-        It takes too long to find relevant transactions. Searched up to ledger{' '}
-        <span className="bold">{transactionsMarker?.ledger || 'unknown'}</span>.
+        {ta('messages.transactions-search-paused')}{' '}
+        <span className="bold">{transactionsMarker?.ledger || ta('states.unknown')}</span>.
         <br />
         <br />
         <button
@@ -2541,7 +2552,7 @@ export default function Account({
           onClick={continueTransactionsSearch}
           disabled={transactionsLoadingMore || transactionsLoading}
         >
-          Continue searching
+          {ta('actions.continue-searching')}
         </button>
         {transactionsLoadingMore && (
           <>
@@ -2557,7 +2568,7 @@ export default function Account({
 
   const transactionsLoadMoreMessage = transactionsLoadingMore ? (
     <button type="button" className="button-outline" disabled>
-      Loading
+      {ta('states.loading')}
       <span className="waiting inline" aria-hidden="true"></span>
     </button>
   ) : (
@@ -2681,25 +2692,25 @@ export default function Account({
 
   const accountStatusNode = isBlackholed ? (
     <>
-      <span className="orange bold">Blackholed</span> {statusTimeAgoNode}
+      <span className="orange bold">{ta('statuses.blackholed')}</span> {statusTimeAgoNode}
     </>
   ) : data?.ledgerInfo?.activated ? (
     data?.ledgerInfo?.lastSubmittedAt ? (
       <>
-        <span className="green">Active</span> {statusTimeAgoNode}
+        <span className="green">{ta('statuses.active')}</span> {statusTimeAgoNode}
       </>
     ) : (
       <>
-        <span>Activated</span> <span>{data?.inception ? timeFromNow(data.inception, i18n) : ''}</span>
+        <span>{ta('statuses.activated')}</span> <span>{data?.inception ? timeFromNow(data.inception, i18n) : ''}</span>
       </>
     )
   ) : isDeletedAccount ? (
-    <span className="red bold">This account was deleted</span>
+    <span className="red bold">{ta('statuses.deleted')}</span>
   ) : isNotActivatedAccount ? (
-    <span className="orange">Not activated</span>
+    <span className="orange">{ta('statuses.not-activated')}</span>
   ) : (
     <>
-      <span className="orange">Network error</span> <span>Please try again later.</span>
+      <span className="orange">{ta('statuses.network-error')}</span> <span>{ta('messages.try-again-later')}</span>
     </>
   )
 
@@ -2719,7 +2730,7 @@ export default function Account({
 
   if (data?.service?.name && data?.username) {
     pushPublicRow(
-      'Username',
+      ta('labels.username'),
       <span className="blue bold">
         {data.username} <CopyButton text={data.username} />
       </span>
@@ -2727,7 +2738,7 @@ export default function Account({
   }
 
   if (data?.nickname) {
-    pushPublicRow('Nickname', <span className="orange bold">{data.nickname}</span>)
+    pushPublicRow(ta('labels.nickname'), <span className="orange bold">{data.nickname}</span>)
   }
 
   const normalizedUsername = (data?.username || '').trim().toLowerCase()
@@ -2746,7 +2757,7 @@ export default function Account({
   if (data?.xamanMeta?.xummProfile?.slug) {
     xamanRows.push({
       key: 'pro',
-      label: 'Alias:',
+      label: ta('labels.alias') + ':',
       value: (
         <a href={data.xamanMeta.xummProfile.profileUrl} className="green" target="_blank" rel="noopener nofollow">
           {data.xamanMeta.xummProfile.slug}
@@ -2756,20 +2767,20 @@ export default function Account({
   }
 
   if (xamanOwnerAlias) {
-    xamanRows.push({ key: 'owner-alias', label: 'Owner:', value: xamanOwnerAlias })
+    xamanRows.push({ key: 'owner-alias', label: ta('labels.owner') + ':', value: xamanOwnerAlias })
   }
 
   if (showXamanAccountAlias) {
-    xamanRows.push({ key: 'account-alias', label: 'Account:', value: xamanAccountAlias })
+    xamanRows.push({ key: 'account-alias', label: ta('labels.account') + ':', value: xamanAccountAlias })
   }
 
   if (data?.xamanMeta?.kycApproved) {
-    xamanRows.push({ key: 'kyc', label: 'KYC:', value: <span className="green">verified</span> })
+    xamanRows.push({ key: 'kyc', label: ta('labels.kyc') + ':', value: <span className="green">{ta('states.verified')}</span> })
   }
 
   if (showPaystring) {
     pushPublicRow(
-      'PayString',
+      ta('labels.paystring'),
       <span className="blue">
         {data.payString} <CopyButton text={data.payString} />
       </span>,
@@ -2803,7 +2814,7 @@ export default function Account({
           >
             <FaPencil />
           </span>
-          <span className="tooltiptext no-brake">Edit</span>
+          <span className="tooltiptext no-brake">{ta('actions.edit')}</span>
         </span>{' '}
         <span className="tooltip tooltip-icon">
           <span
@@ -2822,7 +2833,7 @@ export default function Account({
           >
             <MdDeleteForever />
           </span>
-          <span className="tooltiptext no-brake">Remove</span>
+          <span className="tooltiptext no-brake">{ta('actions.remove')}</span>
         </span>
       </span>
     ) : null
@@ -2832,15 +2843,15 @@ export default function Account({
           href={tomlCheckerHref(domainText)}
           prefetch={false}
           className="tooltip activated-tree-link toml-checker-link"
-          aria-label={`View TOML for ${domainText}`}
+          aria-label={ta('aria.view-toml-for-domain', { domain: domainText })}
         >
           <LuFileCheck2 className="toml-checker-icon" aria-hidden="true" focusable="false" />
-          <span className="tooltiptext no-brake">View TOML</span>
+          <span className="tooltiptext no-brake">{ta('actions.view-toml')}</span>
         </Link>
       ) : null
 
     pushPublicRow(
-      'Domain',
+      ta('labels.domain'),
       isValidDomain ? (
         <>
           <span className={domainStyles.domainWithFavicon}>
@@ -2854,17 +2865,17 @@ export default function Account({
               {domainText}
             </a>
             {data.verifiedDomain && (
-              <span className="blue tooltip verified-domain-status-icon" role="img" aria-label="TOML verified domain">
+              <span className="blue tooltip verified-domain-status-icon" role="img" aria-label={ta('labels.toml-verified-domain')}>
                 <MdVerified aria-hidden="true" style={{ position: 'relative', top: 2 }} />
-                <span className="tooltiptext small no-brake">TOML Verified Domain</span>
+                <span className="tooltiptext small no-brake">{ta('labels.toml-verified-domain')}</span>
               </span>
             )}
           </span>
           {showUnverified && (
             <span className="account-domain-status-inline">
-              <span className="grey">(unverified)</span>{' '}
+              <span className="grey">({ta('states.unverified')})</span>{' '}
               <Link href="/domains" className="link">
-                Verify
+                {ta('actions.verify')}
               </Link>
             </span>
           )}
@@ -2904,7 +2915,7 @@ export default function Account({
     ) : null
 
     pushPublicRow(
-      'Activated',
+      ta('labels.activated'),
       <span className="activated-line">
         <span className="tooltip activated-time no-brake">
           {data?.inceptionTxHash ? (
@@ -2921,7 +2932,7 @@ export default function Account({
         {activatedByName && activatedByAddress && (
           <>
             {' '}
-            by{' '}
+            {ta('phrases.by')}{' '}
             <Link href={`/account/${activatedByAddress}`} onClick={(event) => event.stopPropagation()}>
               <span
                 className={`activated-by ${activatedByIsService ? 'green' : ''} ${activatedByIsUsername ? 'blue' : ''}`}
@@ -2937,18 +2948,18 @@ export default function Account({
         {activatedWithAmount && (
           <>
             {' '}
-            with <span className="activated-amount">{activatedWithAmount}</span>
+            {ta('phrases.with')} <span className="activated-amount">{activatedWithAmount}</span>
           </>
         )}
       </span>,
       <Link
         href={`/activation-tree/${data.address}`}
         className="tooltip activated-tree-link"
-        aria-label="Open family tree"
+        aria-label={ta('aria.open-family-tree')}
         onClick={(event) => event.stopPropagation()}
       >
         <TbBinaryTree className="activated-tree-icon" aria-hidden="true" focusable="false" />
-        <span className="tooltiptext no-brake">Family tree</span>
+        <span className="tooltiptext no-brake">{ta('tooltips.family-tree')}</span>
       </Link>,
       { fullWidth: true }
     )
@@ -2956,7 +2967,7 @@ export default function Account({
 
   if (data?.genesis) {
     pushPublicRow(
-      'Genesis balance',
+      ta('labels.genesis-balance'),
       <span className="bold">
         {niceNumber(data.initialBalance)} {nativeCurrency}
       </span>
@@ -2967,7 +2978,7 @@ export default function Account({
 
   if (data?.parent?.address && data?.parent?.address === data?.address) {
     pushPublicRow(
-      'Imported from XRPL',
+      ta('labels.imported-from-ledger'),
       <a href={`${devNet ? networks.testnet.server : networks.mainnet.server}/account/${data.address}`}>
         {data.address}
       </a>
@@ -3000,7 +3011,7 @@ export default function Account({
   if (initialErrorMessage) {
     return (
       <>
-        <SEO title="Account error" />
+      <SEO title={ta('seo.account-error')} />
         <div className="center">
           <br />
           <br />
@@ -3008,7 +3019,7 @@ export default function Account({
           <br />
           <br />
           <Link href="/" className="button-action">
-            Go Home
+            {ta('actions.go-home')}
           </Link>
           <br />
           <br />
@@ -3022,9 +3033,9 @@ export default function Account({
   if (!data || !data.address) {
     return (
       <>
-        <SEO title="Loading Account..." />
+        <SEO title={ta('seo.loading-account')} />
         <div className="center">
-          <h1>Loading...</h1>
+          <h1>{ta('states.loading')}</h1>
         </div>
       </>
     )
@@ -3041,10 +3052,9 @@ export default function Account({
             : '')
         }
         description={
-          'Account details, transactions, NFTs, Tokens for ' +
-          (data.service?.name || data.username || '') +
-          ' ' +
-          data.address
+          ta('seo.account-description', {
+            name: `${data.service?.name || data.username || ''} ${data.address}`.trim()
+          })
         }
         image={{ file: avatarSrc(data.address, refreshPage) }}
       />
@@ -3052,7 +3062,7 @@ export default function Account({
       <div className="account-container">
         {isHistoricalLedger && (
           <div className="historical-banner">
-            <span className="historical-badge">Historical mode</span>
+            <span className="historical-badge">{ta('labels.historical-mode')}</span>
             {historicalTimestampForBanner ? (
               <span className="historical-date no-brake" suppressHydrationWarning>
                 {fullDateAndTime(historicalTimestampForBanner)}
@@ -3074,7 +3084,7 @@ export default function Account({
                       refreshPage,
                       hashIconZoom: 12
                     })}
-                    alt="Avatar"
+                    alt={ta('labels.avatar')}
                     className="account-avatar"
                   />
                 </div>
@@ -3132,12 +3142,12 @@ export default function Account({
                   type="button"
                   className={`account-qr-toggle ${showAddressQr ? 'active' : ''}`}
                   onClick={() => setShowAddressQr((prev) => !prev)}
-                  aria-label="Toggle address QR code"
-                  title="Show QR code"
+                  aria-label={ta('aria.toggle-address-qr-code')}
+                  title={ta('labels.qr-code')}
                 >
                   <span className="tooltip">
                     <MdQrCode2 />
-                    <span className="tooltiptext no-brake">QR code</span>
+                    <span className="tooltiptext no-brake">{ta('labels.qr-code')}</span>
                   </span>
                 </button>
               </div>
@@ -3167,7 +3177,7 @@ export default function Account({
               <div className="identity-actions-wrap">
                 {shouldShowUsernameRegisterButton && (
                   <a href={`/username?address=${data.address}`} className="get-first-native-btn">
-                    ⚡ Grab your username now
+                    {ta('actions.grab-username')}
                   </a>
                 )}
 
@@ -3189,7 +3199,7 @@ export default function Account({
                       })
                     }
                   >
-                    🖼️ Set an Avatar
+                    {ta('actions.set-avatar')}
                   </button>
                 )}
 
@@ -3203,7 +3213,7 @@ export default function Account({
                       })
                     }
                   >
-                    <FaWallet style={{ fontSize: 14, marginRight: 6 }} /> Connect
+                    <FaWallet style={{ fontSize: 14, marginRight: 6 }} /> {ta('actions.connect')}
                   </button>
                 )}
               </div>
@@ -3236,7 +3246,7 @@ export default function Account({
                   {expandedDidCard && (
                     <div className="asset-details">
                       <div className="detail-row">
-                        <span>DID ID:</span>
+                          <span>{ta('labels.did-id')}:</span>
                         <span className="copy-inline">
                           <span>{didData?.didID ? shortHash(didData.didID) : '-'}</span>
                           {!!didData?.didID && (
@@ -3249,7 +3259,7 @@ export default function Account({
 
                       {!!didCreatedFull && (
                         <div className="detail-row">
-                          <span>Created:</span>
+                          <span>{ta('labels.created')}:</span>
                           <span>
                             {didCreatedFull}
                             {didData?.createdTxHash && (
@@ -3261,7 +3271,7 @@ export default function Account({
                                   onClick={(event) => event.stopPropagation()}
                                 >
                                   <LinkIcon />
-                                  <span className="tooltiptext no-brake">Created transaction</span>
+                                  <span className="tooltiptext no-brake">{ta('tooltips.created-transaction')}</span>
                                 </Link>
                               </>
                             )}
@@ -3271,7 +3281,7 @@ export default function Account({
 
                       {!!didUpdatedFull && didData?.updatedAt !== didData?.createdAt && (
                         <div className="detail-row">
-                          <span>Updated:</span>
+                          <span>{ta('labels.updated')}:</span>
                           <span>
                             {didUpdatedFull}
                             {didData?.updatedTxHash && (
@@ -3283,7 +3293,7 @@ export default function Account({
                                   onClick={(event) => event.stopPropagation()}
                                 >
                                   <LinkIcon />
-                                  <span className="tooltiptext no-brake">Updated transaction</span>
+                                  <span className="tooltiptext no-brake">{ta('tooltips.updated-transaction')}</span>
                                 </Link>
                               </>
                             )}
@@ -3293,7 +3303,7 @@ export default function Account({
 
                       {!!didUrl && (
                         <div className="detail-row">
-                          <span>URL:</span>
+                          <span>{ta('labels.url')}:</span>
                           <span>
                             {isUrlValid(didUrl) ? (
                               <a
@@ -3313,14 +3323,14 @@ export default function Account({
 
                       {!!didDecodedData && (
                         <div className="detail-row">
-                          <span>Data:</span>
+                          <span>{ta('labels.data')}:</span>
                           <span className="address-text">{didDecodedData}</span>
                         </div>
                       )}
 
                       {!!didDecodedDocument && (
                         <div className="detail-row">
-                          <span>DID Document:</span>
+                          <span>{ta('labels.did-document')}:</span>
                           <span className="address-text">{didDecodedDocument}</span>
                         </div>
                       )}
@@ -3328,7 +3338,7 @@ export default function Account({
                       {!!didMetadataNode && (
                         <>
                           <div className="detail-row">
-                            <span>Metadata:</span>
+                            <span>{ta('labels.metadata')}:</span>
                           </div>
                           <div>{didMetadataNode}</div>
                         </>
@@ -3350,7 +3360,7 @@ export default function Account({
                               })
                             }
                           >
-                            Update DID
+                            {ta('button.update-did')}
                           </button>
                           <button
                             type="button"
@@ -3365,7 +3375,7 @@ export default function Account({
                               })
                             }
                           >
-                            Delete DID
+                            {ta('button.delete-did')}
                           </button>
                         </div>
                       )}
@@ -3402,15 +3412,15 @@ export default function Account({
                     className={`time-machine-toggle ${expandedSignerCard ? 'active' : ''}`}
                     onClick={() => setExpandedSignerCard((prev) => !prev)}
                   >
-                    Signer
+                    {ta('sections.signer')}
                     <span className="account-control-collapsed" suppressHydrationWarning>
                       {signerAccountsError ? (
-                        ' unavailable'
+                        ' ' + ta('states.unavailable')
                       ) : (
                         <>
-                          {' for '}
+                          {' '}{ta('phrases.for')}{' '}
                           <span className="bold">{fullNiceNumber(signerAccountsTotal)}</span>{' '}
-                          {signerAccountsTotal === 1 ? 'address' : 'addresses'}
+                          {ta('counts.addresses', { count: signerAccountsTotal })}
                         </>
                       )}
                     </span>
@@ -3421,7 +3431,7 @@ export default function Account({
                       {signerAccountsLoading ? (
                         <div className="detail-row">
                           <span className="tx-inline-load object-load-status-text">
-                            <span>Loading signer addresses</span>
+                            <span>{ta('states.loading-signer-addresses')}</span>
                             <span className="waiting inline" aria-hidden="true"></span>
                           </span>
                         </div>
@@ -3431,7 +3441,7 @@ export default function Account({
                         </div>
                       ) : signerAccounts.length === 0 ? (
                         <div className="detail-row">
-                          <span>No addresses found where this account is a signer.</span>
+                          <span>{ta('empty.no-signer-addresses')}</span>
                         </div>
                       ) : (
                         <>
@@ -3443,9 +3453,9 @@ export default function Account({
                                 : false
                               const roleLabel = hasRegularKeyMatch
                                 ? hasSignerMatch
-                                  ? 'regular key + signer'
-                                  : 'regular key'
-                                : 'signer'
+                                  ? ta('roles.regular-key-and-signer')
+                                  : ta('roles.regular-key')
+                                : ta('roles.signer')
 
                               return (
                                 <div className="signer-row" key={`${signerAccount.account}-${index}`}>
@@ -3474,11 +3484,11 @@ export default function Account({
                               >
                                 {signerAccountsLoadingMore ? (
                                   <>
-                                    Loading
+                                    {ta('states.loading')}
                                     <span className="waiting inline" aria-hidden="true"></span>
                                   </>
                                 ) : (
-                                  'Load more'
+                                  ta('actions.load-more')
                                 )}
                               </button>
                             </div>
@@ -3497,15 +3507,15 @@ export default function Account({
                     className={`time-machine-toggle ${expandedNftMinterCard ? 'active' : ''}`}
                     onClick={() => setExpandedNftMinterCard((prev) => !prev)}
                   >
-                    NFT minter
+                    {ta('sections.nft-minter')}
                     <span className="account-control-collapsed" suppressHydrationWarning>
                       {nftMinterAccountsError && nftMinterAccounts.length === 0 ? (
-                        ' unavailable'
+                        ' ' + ta('states.unavailable')
                       ) : (
                         <>
-                          {' for '}
+                          {' '}{ta('phrases.for')}{' '}
                           <span className="bold">{fullNiceNumber(nftMinterAccountsTotal)}</span>
-                          {nftMinterAccountsMarker ? '+' : ''} {nftMinterAccountsTotal === 1 ? 'address' : 'addresses'}
+                          {nftMinterAccountsMarker ? '+' : ''} {ta('counts.addresses', { count: nftMinterAccountsTotal })}
                         </>
                       )}
                     </span>
@@ -3519,7 +3529,7 @@ export default function Account({
                         </div>
                       ) : nftMinterAccounts.length === 0 ? (
                         <div className="detail-row">
-                          <span>No addresses found where this account is an NFT minter.</span>
+                          <span>{ta('empty.no-nft-minter-addresses')}</span>
                         </div>
                       ) : (
                         <>
@@ -3531,7 +3541,7 @@ export default function Account({
                                   <AddressWithIconInline data={minterAccount} options={{ short: 6 }} name="account" />
                                 </div>
                                 <span className="signer-row-role">
-                                  <span className="grey">(NFT minter)</span>
+                                  <span className="grey">({ta('roles.nft-minter')})</span>
                                 </span>
                                 <div className="signer-row-action">
                                   <CopyButton text={minterAccount.account} />
@@ -3556,11 +3566,11 @@ export default function Account({
                               >
                                 {nftMinterAccountsLoadingMore ? (
                                   <>
-                                    Loading
+                                    {ta('states.loading')}
                                     <span className="waiting inline" aria-hidden="true"></span>
                                   </>
                                 ) : (
-                                  'Load more'
+                                  ta('actions.load-more')
                                 )}
                               </button>
                             </div>
@@ -3579,7 +3589,7 @@ export default function Account({
                     className={`time-machine-toggle ${showAccountControlDetails ? 'active' : ''}`}
                     onClick={() => setShowAccountControlDetails((prev) => !prev)}
                   >
-                    Account control
+                    {ta('sections.account-control')}
                     <span className={`account-control-collapsed${isBlackholed ? ' orange bold' : ''}`}>
                       {' '}
                       · {accountControlCollapsedLabel}
@@ -3590,16 +3600,16 @@ export default function Account({
                     <div className="time-machine-panel account-control-panel">
                       {isBlackholed && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Account status:</span>
+                          <span>{ta('labels.account-status')}:</span>
                           <span className="orange bold">
-                            blackholed - can not issue more tokens or perform transactions
+                            {ta('messages.blackholed-description')}
                           </span>
                         </div>
                       )}
 
                       {data?.ledgerInfo?.regularKey && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Regular key:</span>
+                          <span>{ta('labels.regular-key')}:</span>
                           <span className="control-address-wrap">
                             <span className="copy-inline">
                               <AddressWithIconInline data={data.ledgerInfo} name="regularKey" options={{ short: 6 }} />
@@ -3613,21 +3623,21 @@ export default function Account({
 
                       {data?.ledgerInfo?.flags?.passwordSpent && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Free re-key:</span>
-                          <span>spent</span>
+                          <span>{ta('labels.free-rekey')}:</span>
+                          <span>{ta('states.spent')}</span>
                         </div>
                       )}
 
                       {data?.ledgerInfo?.signerList && (
                         <>
                           <div className="detail-row issuer-detail-row">
-                            <span>Multi-sign:</span>
-                            <span className="green">enabled</span>
+                            <span>{ta('labels.multi-sign')}:</span>
+                            <span className="green">{ta('states.enabled')}</span>
                           </div>
 
                           {data?.ledgerInfo?.signerList?.signerQuorum && (
                             <div className="detail-row issuer-detail-row">
-                              <span>Multi-sign threshold:</span>
+                              <span>{ta('labels.multi-sign-threshold')}:</span>
                               <span>{data.ledgerInfo.signerList.signerQuorum}</span>
                             </div>
                           )}
@@ -3637,7 +3647,7 @@ export default function Account({
                               <div key={`signer-group-${signerIndex}`}>
                                 <div className="detail-row issuer-detail-row">
                                   <span>
-                                    Signer #{signerIndex + 1} (weight {signer?.signerWeight || 0}):
+                                    {ta('labels.signer-with-weight', { index: signerIndex + 1, weight: signer?.signerWeight || 0 })}:
                                   </span>
                                   <span className="control-address-wrap">
                                     <span className="copy-inline">
@@ -3655,8 +3665,8 @@ export default function Account({
 
                       {data?.ledgerInfo?.flags?.disableMaster && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Master key:</span>
-                          <span className="red">disabled</span>
+                          <span>{ta('labels.master-key')}:</span>
+                          <span className="red">{ta('states.disabled')}</span>
                         </div>
                       )}
                     </div>
@@ -3671,7 +3681,7 @@ export default function Account({
                     className={`time-machine-toggle ${showDepositPreauthDetails ? 'active' : ''}`}
                     onClick={() => setShowDepositPreauthDetails((prev) => !prev)}
                   >
-                    Deposit preauthorized accounts
+                    {ta('sections.deposit-preauthorized-accounts')}
                     <span className="account-control-collapsed"> · {depositPreauthAccounts.length}</span>
                   </button>
 
@@ -3705,7 +3715,7 @@ export default function Account({
                     className={`time-machine-toggle ${showXahauRewardDetails ? 'active' : ''}`}
                     onClick={() => setShowXahauRewardDetails((prev) => !prev)}
                   >
-                    Reward
+                    {ta('sections.reward')}
                     <span
                       className={`account-control-collapsed${isXahauRewardClaimable ? ' orange bold' : !hasXahauRewardsConfigured ? ' dimmed' : ''}`}
                     >
@@ -3718,7 +3728,7 @@ export default function Account({
                   {showXahauRewardDetails && (
                     <div className="time-machine-panel tx-settings-panel">
                       <div className="detail-row issuer-detail-row">
-                        <span>Reward:</span>
+                        <span>{ta('sections.reward')}:</span>
                         <span>
                           {hasXahauRewardsConfigured ? (
                             <>
@@ -3730,14 +3740,14 @@ export default function Account({
                               })}
                             </>
                           ) : (
-                            <span className="grey">Not set</span>
+                            <span className="grey">{ta('states.not-set')}</span>
                           )}
                         </span>
                       </div>
 
                       {hasXahauRewardsConfigured && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Claimable:</span>
+                          <span>{ta('labels.claimable')}:</span>
                           <span>{fullDateAndTime(xahauRewardClaimableAt)}</span>
                         </div>
                       )}
@@ -3759,7 +3769,7 @@ export default function Account({
                                   })
                                 }}
                               >
-                                Rewards Opt-out
+                                {ta('actions.rewards-opt-out')}
                               </button>
                             )}
                             {!account?.address && data.address !== account?.address && (
@@ -3770,7 +3780,7 @@ export default function Account({
                                   setSignRequest({})
                                 }}
                               >
-                                Sign in to opt-out
+                                {ta('actions.sign-in-to-opt-out')}
                               </button>
                             )}
                             {isXahauRewardClaimable && (
@@ -3789,7 +3799,7 @@ export default function Account({
                                       })
                                     }}
                                   >
-                                    <TbPigMoney style={{ fontSize: 16, marginBottom: -3 }} /> Claim now
+                                    <TbPigMoney style={{ fontSize: 16, marginBottom: -3 }} /> {ta('actions.claim-now')}
                                   </button>
                                 )}
                                 {!account?.address && data.address !== account?.address && (
@@ -3800,7 +3810,7 @@ export default function Account({
                                       setSignRequest({})
                                     }}
                                   >
-                                    <TbPigMoney style={{ fontSize: 16, marginBottom: -3 }} /> Sign in to claim
+                                    <TbPigMoney style={{ fontSize: 16, marginBottom: -3 }} /> {ta('actions.sign-in-to-claim')}
                                   </button>
                                 )}
                               </>
@@ -3822,7 +3832,7 @@ export default function Account({
                                   })
                                 }}
                               >
-                                Rewards Opt-in
+                                {ta('actions.rewards-opt-in')}
                               </button>
                             )}
                             {!account?.address && data.address !== account?.address && (
@@ -3833,7 +3843,7 @@ export default function Account({
                                   setSignRequest({})
                                 }}
                               >
-                                Sign in to opt-in
+                                {ta('actions.sign-in-to-opt-in')}
                               </button>
                             )}
                           </>
@@ -3859,19 +3869,19 @@ export default function Account({
                     <div className="time-machine-panel tx-settings-panel">
                       {!!data?.ledgerInfo?.hookNamespaces?.length && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Hook namespaces:</span>
+                          <span>{ta('labels.hook-namespaces')}:</span>
                           <span>{data.ledgerInfo.hookNamespaces.length}</span>
                         </div>
                       )}
                       {(data?.ledgerInfo?.hookStateCount || data?.ledgerInfo?.hookStateCount === 0) && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Hook state count:</span>
+                          <span>{ta('labels.hook-state-count')}:</span>
                           <span>{data.ledgerInfo.hookStateCount}</span>
                         </div>
                       )}
                       {hookList.map((hookHash, index) => (
                         <div className="detail-row issuer-detail-row" key={`${hookHash}-${index}`}>
-                          <span>Hook #{index + 1}:</span>
+                          <span>{ta('labels.hook-index', { index: index + 1 })}:</span>
                           <span className="copy-inline">
                             <span>{hookNameText(hookHash)}</span>
                             <span onClick={(event) => event.stopPropagation()}>
@@ -3899,7 +3909,7 @@ export default function Account({
                     <div className="time-machine-panel tx-settings-panel">
                       {data?.ledgerInfo?.cron && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Cron object:</span>
+                          <span>{ta('labels.cron-object')}:</span>
                           <span className="copy-inline">
                             <span>{shortHash(data.ledgerInfo.cron)}</span>
                             <Link
@@ -3908,7 +3918,7 @@ export default function Account({
                               onClick={(event) => event.stopPropagation()}
                             >
                               <LinkIcon />
-                              <span className="tooltiptext no-brake">Object page</span>
+                              <span className="tooltiptext no-brake">{ta('tooltips.object-page')}</span>
                             </Link>
                             <span onClick={(event) => event.stopPropagation()}>
                               <CopyButton text={data.ledgerInfo.cron} />
@@ -3928,21 +3938,21 @@ export default function Account({
                     className={`time-machine-toggle ${showNftDataDetails ? 'active' : ''}`}
                     onClick={() => setShowNftDataDetails((prev) => !prev)}
                   >
-                    NFT data
+                    {ta('sections.nft-data')}
                   </button>
 
                   {showNftDataDetails && (
                     <div className="time-machine-panel tx-settings-panel">
                       {data?.ledgerInfo?.firstNFTokenSequence && (
                         <div className="detail-row issuer-detail-row">
-                          <span>First NFT sequence:</span>
+                          <span>{ta('labels.first-nft-sequence')}:</span>
                           <span>{data.ledgerInfo.firstNFTokenSequence}</span>
                         </div>
                       )}
 
                       {data?.ledgerInfo?.nftokenMinter && (
                         <div className="detail-row issuer-detail-row">
-                          <span>NFT minter:</span>
+                          <span>{ta('sections.nft-minter')}:</span>
                           <span className="copy-inline">
                             <AddressWithIconInline data={data.ledgerInfo} name="nftokenMinter" options={{ short: 6 }} />
                             <span onClick={(event) => event.stopPropagation()}>
@@ -3954,15 +3964,15 @@ export default function Account({
 
                       {data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Incoming NFT offers:</span>
-                          <span className="red">disallowed</span>
+                          <span>{ta('labels.incoming-nft-offers')}:</span>
+                          <span className="red">{ta('states.disallowed')}</span>
                         </div>
                       )}
 
                       {data?.ledgerInfo?.flags?.uriTokenIssuer && (
                         <div className="detail-row issuer-detail-row">
-                          <span>NFT issuer:</span>
-                          <span className="green">enabled</span>
+                          <span>{ta('labels.nft-issuer')}:</span>
+                          <span className="green">{ta('states.enabled')}</span>
                         </div>
                       )}
                     </div>
@@ -3977,14 +3987,14 @@ export default function Account({
                     className={`time-machine-toggle ${showTxSettingsDetails ? 'active' : ''}`}
                     onClick={() => setShowTxSettingsDetails((prev) => !prev)}
                   >
-                    Account settings
+                    {ta('sections.account-settings')}
                   </button>
 
                   {showTxSettingsDetails && (
                     <div className="time-machine-panel tx-settings-panel">
                       {!!data?.ledgerInfo?.accountIndex && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Account index:</span>
+                          <span>{ta('labels.account-index')}:</span>
                           <span className="copy-inline">
                             <span className="address-text">{data.ledgerInfo.accountIndex}</span>
                             <span onClick={(event) => event.stopPropagation()}>
@@ -3996,7 +4006,7 @@ export default function Account({
 
                       {hasNextSequence && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Next sequence:</span>
+                          <span>{ta('labels.next-sequence')}:</span>
                           <span className="copy-inline">
                             <span>{data.ledgerInfo.sequence}</span>
                             <span onClick={(event) => event.stopPropagation()}>
@@ -4008,7 +4018,7 @@ export default function Account({
 
                       {data?.ledgerInfo?.emailHash && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Email hash:</span>
+                          <span>{ta('labels.email-hash')}:</span>
                           <span className="copy-inline">
                             <a
                               href={`https://gravatar.com/${data.ledgerInfo.emailHash.toLowerCase()}`}
@@ -4028,11 +4038,11 @@ export default function Account({
                       {data?.ledgerInfo?.messageKey && (
                         <div className="detail-row issuer-detail-row">
                           <span>
-                            Message key:
+                            {ta('labels.message-key')}:
                             {isMessageKeyUsedForFlare && (
                               <>
                                 <br />
-                                <b>used for Flare</b>
+                                <b>{ta('labels.used-for-flare')}</b>
                               </>
                             )}
                           </span>
@@ -4047,7 +4057,7 @@ export default function Account({
 
                       {!!data?.ledgerInfo?.previousTxnID && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Last affecting tx:</span>
+                          <span>{ta('labels.last-affecting-tx')}:</span>
                           <span className="copy-inline">
                             <Link
                               href={`/tx/${data.ledgerInfo.previousTxnID}`}
@@ -4064,7 +4074,7 @@ export default function Account({
 
                       {!!data?.ledgerInfo?.accountTxnID && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Last initiated tx:</span>
+                          <span>{ta('labels.last-initiated-tx')}:</span>
                           <span className="copy-inline">
                             <Link
                               href={`/tx/${data.ledgerInfo.accountTxnID}`}
@@ -4081,7 +4091,7 @@ export default function Account({
 
                       {!!data?.ledgerInfo?.walletLocator && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Wallet locator:</span>
+                          <span>{ta('labels.wallet-locator')}:</span>
                           <span className="copy-inline">
                             <span className="address-text">{data.ledgerInfo.walletLocator}</span>
                             <span onClick={(event) => event.stopPropagation()}>
@@ -4093,7 +4103,7 @@ export default function Account({
 
                       {!!data?.ledgerInfo?.ammID && (
                         <div className="detail-row issuer-detail-row">
-                          <span>AMM ID:</span>
+                          <span>{ta('labels.amm-id')}:</span>
                           <span className="copy-inline">
                             <span>{shortHash(data.ledgerInfo.ammID)}</span>
                             <Link
@@ -4102,7 +4112,7 @@ export default function Account({
                               onClick={(event) => event.stopPropagation()}
                             >
                               <LinkIcon />
-                              <span className="tooltiptext no-brake">AMM page</span>
+                              <span className="tooltiptext no-brake">{ta('tooltips.amm-page')}</span>
                             </Link>
                             <span onClick={(event) => event.stopPropagation()}>
                               <CopyButton text={data.ledgerInfo.ammID} />
@@ -4113,92 +4123,92 @@ export default function Account({
 
                       {(data?.ledgerInfo?.ticketCount || data?.ledgerInfo?.ticketCount === 0) && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Ticket count:</span>
+                          <span>{ta('labels.ticket-count')}:</span>
                           <span>{data.ledgerInfo.ticketCount}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.importSequence && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Import sequence:</span>
+                          <span>{ta('labels.import-sequence')}:</span>
                           <span>{data.ledgerInfo.importSequence}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.tickSize && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Tick size:</span>
+                          <span>{ta('labels.tick-size')}:</span>
                           <span>{data.ledgerInfo.tickSize}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.requireDestTag && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Destination tag:</span>
-                          <span>required</span>
+                          <span>{ta('labels.destination-tag')}:</span>
+                          <span>{ta('states.required')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.depositAuth && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Deposit authorization:</span>
-                          <span>required</span>
+                          <span>{ta('labels.deposit-authorization')}:</span>
+                          <span>{ta('states.required')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.requireAuth && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Token authorization:</span>
-                          <span>required</span>
+                          <span>{ta('labels.token-authorization')}:</span>
+                          <span>{ta('states.required')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.disallowIncomingCheck && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Incoming checks:</span>
-                          <span className="red">disallowed</span>
+                          <span>{ta('labels.incoming-checks')}:</span>
+                          <span className="red">{ta('states.disallowed')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.disallowIncomingPayChan && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Incoming payment channels:</span>
-                          <span className="red">disallowed</span>
+                          <span>{ta('labels.incoming-payment-channels')}:</span>
+                          <span className="red">{ta('states.disallowed')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.disallowIncomingTrustline && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Incoming trustlines:</span>
-                          <span className="red">disallowed</span>
+                          <span>{ta('labels.incoming-trustlines')}:</span>
+                          <span className="red">{ta('states.disallowed')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Incoming NFT offers:</span>
-                          <span className="red">disallowed</span>
+                          <span>{ta('labels.incoming-nft-offers')}:</span>
+                          <span className="red">{ta('states.disallowed')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.disallowIncomingRemit && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Incoming remit:</span>
-                          <span className="red">disallowed</span>
+                          <span>{ta('labels.incoming-remit')}:</span>
+                          <span className="red">{ta('states.disallowed')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.tshCollect && (
                         <div className="detail-row issuer-detail-row">
                           <span>TshCollect:</span>
-                          <span>enabled</span>
+                          <span>{ta('states.enabled')}</span>
                         </div>
                       )}
 
                       {!!data?.ledgerInfo?.flags?.disallowXRP && (
                         <div className="detail-row issuer-detail-row">
-                          <span>Receiving {nativeCurrency}:</span>
-                          <span>disabled</span>
+                          <span>{ta('labels.receiving-native', { nativeCurrency })}:</span>
+                          <span>{ta('states.disabled')}</span>
                         </div>
                       )}
 
@@ -4208,10 +4218,10 @@ export default function Account({
                             type="button"
                             className="card-action-btn"
                             onClick={() => router.push('/services/account-settings')}
-                            title="Account settings"
+                            title={ta('sections.account-settings')}
                           >
                             <FaGear />
-                            Account settings
+                            {ta('sections.account-settings')}
                           </button>
                           {!data?.ledgerInfo?.domain && !isDeletedAccount && (
                             <span className={disabledSetDomainTooltip ? 'tooltip' : ''}>
@@ -4230,9 +4240,9 @@ export default function Account({
                                     }
                                   })
                                 }}
-                                title="Set domain"
+                                title={ta('actions.set-domain')}
                               >
-                                <FaPencil /> Set domain
+                                <FaPencil /> {ta('actions.set-domain')}
                               </button>
                               {!!disabledSetDomainTooltip && (
                                 <span className="tooltiptext left">{disabledSetDomainTooltip}</span>
@@ -4256,9 +4266,9 @@ export default function Account({
                                     }
                                   })
                                 }}
-                                title="Set DID"
+                                title={ta('button.set-did')}
                               >
-                                <MdVerified /> Set DID
+                                <MdVerified /> {ta('button.set-did')}
                               </button>
                               {!!disabledSetDidTooltip && (
                                 <span className="tooltiptext left">{disabledSetDidTooltip}</span>
@@ -4279,14 +4289,14 @@ export default function Account({
                     className={`time-machine-toggle ${showAirdropsDetails ? 'active' : ''}`}
                     onClick={() => setShowAirdropsDetails((prev) => !prev)}
                   >
-                    Airdrops
+                    {ta('sections.airdrops')}
                     <span className="account-control-collapsed"> · Flare</span>
                   </button>
 
                   {showAirdropsDetails && (
                     <div className="time-machine-panel tx-settings-panel">
                       <div className="detail-row issuer-detail-row">
-                        <span>Address:</span>
+                        <span>{ta('labels.address')}:</span>
                         <span className="copy-inline airdrop-address-wrap">
                           <span className="address-text">{data.flare.address}</span>
                           <span onClick={(event) => event.stopPropagation()}>
@@ -4296,7 +4306,7 @@ export default function Account({
                       </div>
 
                       <div className="detail-row issuer-detail-row">
-                        <span>Flare claim:</span>
+                        <span>{ta('labels.flare-claim')}:</span>
                         <span className="copy-inline airdrop-claim-wrap">
                           <span>{flareClaimNode}</span>
                           <a
@@ -4305,8 +4315,8 @@ export default function Account({
                             rel="noopener noreferrer"
                             className="airdrop-link-btn"
                             onClick={(event) => event.stopPropagation()}
-                            aria-label="Open Flare address"
-                            title="Open Flare address"
+                            aria-label={ta('aria.open-flare-address')}
+                            title={ta('aria.open-flare-address')}
                           >
                             <LinkIcon />
                           </a>
@@ -4314,7 +4324,7 @@ export default function Account({
                       </div>
 
                       <div className="detail-row issuer-detail-row">
-                        <span>Songbird claim:</span>
+                        <span>{ta('labels.songbird-claim')}:</span>
                         <span className="copy-inline airdrop-claim-wrap">
                           <span>{songbirdClaimNode}</span>
                           <a
@@ -4323,8 +4333,8 @@ export default function Account({
                             rel="noopener noreferrer"
                             className="airdrop-link-btn"
                             onClick={(event) => event.stopPropagation()}
-                            aria-label="Open Songbird address"
-                            title="Open Songbird address"
+                            aria-label={ta('aria.open-songbird-address')}
+                            title={ta('aria.open-songbird-address')}
                           >
                             <LinkIcon />
                           </a>
@@ -4342,13 +4352,13 @@ export default function Account({
                     className={`time-machine-toggle ${showTimeMachine ? 'active' : ''}`}
                     onClick={() => setShowTimeMachine((prev) => !prev)}
                   >
-                    Historical data
+                    {ta('sections.historical-data')}
                   </button>
 
                   {showTimeMachine && (
                     <div className="time-machine-panel">
                       <div className="time-machine-head">
-                        <div className="time-machine-title">Select date and time</div>
+                        <div className="time-machine-title">{ta('labels.select-date-time')}</div>
                       </div>
                       <div className="time-machine-picker-wrap">
                         <DatePicker
@@ -4357,7 +4367,7 @@ export default function Account({
                           value={localDateTimeText(ledgerTimestampInput || new Date())}
                           selectsStart
                           showTimeInput
-                          timeInputLabel="Time"
+                          timeInputLabel={ta('labels.time')}
                           minDate={data?.inception ? new Date(data.inception * 1000) : undefined}
                           maxDate={new Date()}
                           dateFormat="Pp"
@@ -4373,14 +4383,14 @@ export default function Account({
                           onClick={applyTimeMachine}
                           className="time-machine-btn time-machine-btn-update"
                         >
-                          Update
+                          {ta('actions.update')}
                         </button>
                         <button
                           type="button"
                           onClick={resetTimeMachine}
                           className="time-machine-btn time-machine-btn-reset"
                         >
-                          Reset
+                          {ta('actions.reset')}
                         </button>
                       </div>
                     </div>
@@ -4396,12 +4406,12 @@ export default function Account({
               <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
                 {objectsLoading ? (
                   <span className="tx-inline-load object-load-status-text">
-                    <span>Loading account objects and assets</span>
+                    <span>{ta('states.loading-account-objects-assets')}</span>
                     <span className="waiting inline" aria-hidden="true"></span>
                   </span>
                 ) : (
                   <span className="object-load-status-text">
-                    Failed to load account objects. Some assets may be missing.
+                    {ta('errors.failed-load-account-objects-assets')}
                   </span>
                 )}
               </div>
@@ -4411,7 +4421,7 @@ export default function Account({
               <div className="asset-item" onClick={() => setShowTotalWorthDetails(!showTotalWorthDetails)}>
                 <div className="asset-main">
                   <div className="asset-logo">
-                    <span className="asset-summary-title">Total worth</span>
+                    <span className="asset-summary-title">{ta('labels.total-worth')}</span>
                   </div>
                   <div className="asset-value total-worth-value">
                     <div className="asset-fiat total-worth-fiat" suppressHydrationWarning>
@@ -4463,7 +4473,7 @@ export default function Account({
                     </div>
                     <div className="asset-details">
                       <div className="detail-row">
-                        <span>Available:</span>
+                        <span>{ta('labels.available')}:</span>
                         <span className="copy-inline">
                           <span>{nativeAvailable}</span>
                           <span onClick={(event) => event.stopPropagation()}>
@@ -4472,7 +4482,7 @@ export default function Account({
                         </span>
                       </div>
                       <div className="detail-row">
-                        <span>Total:</span>
+                        <span>{ta('labels.total')}:</span>
                         <span className="amount-with-fiat">
                           <span>{amountFormat(nativeTotalDrops, { precise: 'nice' })}</span>
                           <span className="fiat-line" suppressHydrationWarning>
@@ -4486,7 +4496,7 @@ export default function Account({
                         </span>
                       </div>
                       <div className="detail-row">
-                        <span>Reserved:</span>
+                        <span>{ta('labels.reserved')}:</span>
                         <span className="grey amount-with-fiat">
                           <span>{amountFormat(nativeReservedDrops, { precise: 'nice' })}</span>
                           <span className="fiat-line" suppressHydrationWarning>
@@ -4501,7 +4511,7 @@ export default function Account({
                       </div>
                       {isHistoricalLedger && selectedCurrency && pageFiatRate ? (
                         <div className="detail-row">
-                          <span>Rate:</span>
+                          <span>{ta('labels.rate')}:</span>
                           <span>
                             1 {nativeCurrency} = {shortNiceNumber(pageFiatRate, 2, 1, selectedCurrency)}
                           </span>
@@ -4530,7 +4540,7 @@ export default function Account({
                               })
                             }}
                           >
-                            <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Send
+                            <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.send')}
                           </button>
                           {!!disabledSendTooltip && <span className="tooltiptext left">{disabledSendTooltip}</span>}
                         </span>
@@ -4544,7 +4554,7 @@ export default function Account({
             {shouldShowGetFirstNativeButton && (
               <div className="get-first-native-wrap">
                 <a href={getFirstNativeUrl} target="_blank" rel="noreferrer" className="get-first-native-btn">
-                  🚀 Get your first {nativeCurrency}
+                  {ta('actions.get-first-native', { nativeCurrency })}
                 </a>
               </div>
             )}
@@ -4570,7 +4580,7 @@ export default function Account({
                     })
                   }}
                 >
-                  Add a token
+                  {ta('actions.add-token')}
                 </button>
               </div>
             )}
@@ -4583,7 +4593,7 @@ export default function Account({
                     className={`token-tab-btn ${tokenTab === 'all' ? 'active' : ''}`}
                     onClick={() => setTokenTab('all')}
                   >
-                    All ({totalTokenCount})
+                    {ta('tabs.all')} ({totalTokenCount})
                   </button>
                   {issuedTokensCount > 0 && (
                     <button
@@ -4591,7 +4601,7 @@ export default function Account({
                       className={`token-tab-btn ${tokenTab === 'tokens' ? 'active' : ''}`}
                       onClick={() => setTokenTab('tokens')}
                     >
-                      Tokens ({issuedTokensCount})
+                      {ta('tabs.tokens')} ({issuedTokensCount})
                     </button>
                   )}
                   {lpTokensCount > 0 && (
@@ -4600,7 +4610,7 @@ export default function Account({
                       className={`token-tab-btn ${tokenTab === 'lp' ? 'active' : ''}`}
                       onClick={() => setTokenTab('lp')}
                     >
-                      LP Tokens ({lpTokensCount})
+                      {ta('tabs.lp-tokens')} ({lpTokensCount})
                     </button>
                   )}
                 </div>
@@ -4646,12 +4656,12 @@ export default function Account({
                 !!trustlineCurrencyCode
               const disabledSendTokenTooltip = (() => {
                 if (canSendToken) return ''
-                if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
-                if (!isOwnAccount) return 'Only the viewed account can do it'
-                if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
-                if (!hasPositiveTokenBalance) return 'Send is available only when your token balance is above 0'
-                if (!issuer?.issuer || !trustlineCurrencyCode) return 'Trustline data is incomplete'
-                return 'Send is unavailable'
+                if (!setSignRequest || !account?.address) return ta('tooltips.login-required')
+                if (!isOwnAccount) return ta('tooltips.viewed-account-only')
+                if (effectiveLedgerTimestamp) return ta('tooltips.historical-unavailable')
+                if (!hasPositiveTokenBalance) return ta('tooltips.send-positive-token-balance')
+                if (!issuer?.issuer || !trustlineCurrencyCode) return ta('tooltips.trustline-incomplete')
+                return ta('tooltips.send-unavailable')
               })()
               const canRemoveTrustline =
                 !isLpToken &&
@@ -4664,13 +4674,13 @@ export default function Account({
                 !!trustlineCurrencyCode
               const disabledRemoveTrustlineTooltip = (() => {
                 if (canRemoveTrustline) return ''
-                if (isLpToken) return 'LP trustlines cannot be removed here'
-                if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
-                if (!isOwnAccount) return 'Only the viewed account can do it'
-                if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
-                if (Number(balance) !== 0) return 'Trustline can be removed only when balance is 0'
-                if (!issuer?.issuer || !trustlineCurrencyCode) return 'Trustline data is incomplete'
-                return 'Trustline cannot be removed'
+                if (isLpToken) return ta('tooltips.lp-trustline-remove-unavailable')
+                if (!setSignRequest || !account?.address) return ta('tooltips.login-required')
+                if (!isOwnAccount) return ta('tooltips.viewed-account-only')
+                if (effectiveLedgerTimestamp) return ta('tooltips.historical-unavailable')
+                if (Number(balance) !== 0) return ta('tooltips.remove-trustline-zero-balance')
+                if (!issuer?.issuer || !trustlineCurrencyCode) return ta('tooltips.trustline-incomplete')
+                return ta('tooltips.remove-trustline-unavailable')
               })()
 
               return (
@@ -4711,7 +4721,7 @@ export default function Account({
                       {!isLpToken && token.priceNativeCurrencySpot ? (
                         <>
                           <div className="detail-row">
-                            <span>Rate ({nativeCurrency}):</span>
+                            <span>{ta('labels.rate')} ({nativeCurrency}):</span>
                             <span>
                               1 {niceCurrency(token.Balance?.currency)} ={' '}
                               {shortNiceNumber(token.priceNativeCurrencySpot, 6, 6)} {nativeCurrency}
@@ -4719,7 +4729,7 @@ export default function Account({
                           </div>
                           {tokenFiatRate && selectedCurrency ? (
                             <div className="detail-row">
-                              <span>Rate ({selectedCurrency?.toUpperCase()}):</span>
+                              <span>{ta('labels.rate')} ({selectedCurrency?.toUpperCase()}):</span>
                               <span>
                                 1 {niceCurrency(token.Balance?.currency)} ={' '}
                                 <span className="tooltip no-brake" suppressHydrationWarning>
@@ -4744,7 +4754,7 @@ export default function Account({
                         </>
                       ) : null}
                       <div className="detail-row">
-                        <span>Balance:</span>
+                        <span>{ta('labels.balance')}:</span>
                         <span className="copy-inline">
                           <span>{fullNiceNumber(balance)}</span>
                           <span onClick={(event) => event.stopPropagation()}>
@@ -4775,7 +4785,7 @@ export default function Account({
                             return (
                               <>
                                 <div className="detail-row">
-                                  <span>LP Token:</span>
+                                  <span>{ta('labels.lp-token')}:</span>
                                   <span className="copy-inline">
                                     <span>{shortHash(token.Balance?.currency)}</span>
                                     <span onClick={(event) => event.stopPropagation()}>
@@ -4786,7 +4796,7 @@ export default function Account({
                                 {asset1 && (
                                   <>
                                     <div className="detail-row">
-                                      <span>Asset 1:</span>
+                                      <span>{ta('labels.asset-1')}:</span>
                                       <span className="amount-with-fiat" onClick={(event) => event.stopPropagation()}>
                                         <span>
                                           {amountFormat(amount1Raw, {
@@ -4804,7 +4814,7 @@ export default function Account({
                                     </div>
                                     {asset1?.issuer && (
                                       <div className="detail-row">
-                                        <span>Asset 1 issuer:</span>
+                                        <span>{ta('labels.asset-1-issuer')}:</span>
                                         <span className="copy-inline">
                                           <AddressWithIconInline data={asset1} name="issuer" options={{ short: 6 }} />
                                           <span onClick={(event) => event.stopPropagation()}>
@@ -4814,7 +4824,7 @@ export default function Account({
                                       </div>
                                     )}
                                     <div className="detail-row">
-                                      <span>Asset 2:</span>
+                                      <span>{ta('labels.asset-2')}:</span>
                                       <span className="amount-with-fiat" onClick={(event) => event.stopPropagation()}>
                                         <span>
                                           {amountFormat(amount2Raw, {
@@ -4832,7 +4842,7 @@ export default function Account({
                                     </div>
                                     {asset2?.issuer && (
                                       <div className="detail-row">
-                                        <span>Asset 2 issuer:</span>
+                                        <span>{ta('labels.asset-2-issuer')}:</span>
                                         <span className="copy-inline">
                                           <AddressWithIconInline data={asset2} name="issuer" options={{ short: 6 }} />
                                           <span onClick={(event) => event.stopPropagation()}>
@@ -4850,7 +4860,7 @@ export default function Account({
                       ) : (
                         <>
                           <div className="detail-row">
-                            <span>Currency:</span>
+                            <span>{ta('labels.currency')}:</span>
                             <span className="copy-inline">
                               <span>{trustlineCurrencyCodeDisplay}</span>
                               <Link
@@ -4859,7 +4869,7 @@ export default function Account({
                                 onClick={(event) => event.stopPropagation()}
                               >
                                 <LinkIcon />
-                                <span className="tooltiptext no-brake">Token page</span>
+                                <span className="tooltiptext no-brake">{ta('tooltips.token-page')}</span>
                               </Link>
                               <span onClick={(event) => event.stopPropagation()}>
                                 <CopyButton text={trustlineCurrencyCode} />
@@ -4871,7 +4881,7 @@ export default function Account({
                       {!isLpToken && (
                         <>
                           <div className="detail-row">
-                            <span>Issuer:</span>
+                            <span>{ta('labels.issuer')}:</span>
                             <span className="copy-inline">
                               <AddressWithIconInline
                                 data={{ issuer: issuer?.issuer, issuerDetails: issuer?.issuerDetails }}
@@ -4887,14 +4897,14 @@ export default function Account({
                       )}
                       {token.LockedBalance?.value && parseFloat(token.LockedBalance.value) > 0 && (
                         <div className="detail-row">
-                          <span>Locked:</span>
+                          <span>{ta('labels.locked')}:</span>
                           <span>{fullNiceNumber(token.LockedBalance.value)}</span>
                         </div>
                       )}
                       {!isLpToken && token.HighLimit?.issuer === data?.address ? (
                         <>
                           <div className="detail-row">
-                            <span>{isLoggedIn ? 'Your limit' : 'Limit'}:</span>
+                            <span>{isLoggedIn ? ta('labels.your-limit') : ta('labels.limit')}:</span>
                             <span>
                               {fullNiceNumber(token.HighLimit?.value)}
                               {isLoggedIn && (
@@ -4905,7 +4915,7 @@ export default function Account({
                                     onClick={(event) => event.stopPropagation()}
                                     className="change-limit-link"
                                   >
-                                    [change]
+                                    [{ta('actions.change')}]
                                   </Link>
                                 </>
                               )}
@@ -4913,7 +4923,7 @@ export default function Account({
                           </div>
                           {parseFloat(token.LowLimit?.value) !== 0 && (
                             <div className="detail-row">
-                              <span>Counterparty limit:</span>
+                              <span>{ta('labels.counterparty-limit')}:</span>
                               <span>{fullNiceNumber(token.LowLimit?.value)}</span>
                             </div>
                           )}
@@ -4921,7 +4931,7 @@ export default function Account({
                       ) : !isLpToken ? (
                         <>
                           <div className="detail-row">
-                            <span>{isLoggedIn ? 'Your limit' : 'Limit'}:</span>
+                            <span>{isLoggedIn ? ta('labels.your-limit') : ta('labels.limit')}:</span>
                             <span>
                               {fullNiceNumber(token.LowLimit?.value)}
                               {isLoggedIn && (
@@ -4932,7 +4942,7 @@ export default function Account({
                                     onClick={(event) => event.stopPropagation()}
                                     className="change-limit-link"
                                   >
-                                    [change]
+                                    [{ta('actions.change')}]
                                   </Link>
                                 </>
                               )}
@@ -4940,7 +4950,7 @@ export default function Account({
                           </div>
                           {parseFloat(token.HighLimit?.value) !== 0 && (
                             <div className="detail-row">
-                              <span>Counterparty limit:</span>
+                              <span>{ta('labels.counterparty-limit')}:</span>
                               <span>{fullNiceNumber(token.HighLimit?.value)}</span>
                             </div>
                           )}
@@ -4950,26 +4960,26 @@ export default function Account({
                         <>
                           {(token.flags.lowFreeze || token.flags.highFreeze) && (
                             <div className="detail-row">
-                              <span>Freeze:</span>
-                              <span className="red">Yes</span>
+                              <span>{ta('labels.freeze')}:</span>
+                              <span className="red">{ta('states.yes')}</span>
                             </div>
                           )}
                           {(token.flags.lowNoRipple || token.flags.highNoRipple) && (
                             <div className="detail-row">
-                              <span>Rippling:</span>
-                              <span className="green">Disabled</span>
+                              <span>{ta('labels.rippling')}:</span>
+                              <span className="green">{ta('states.disabled')}</span>
                             </div>
                           )}
                           {(token.flags.lowAuth || token.flags.highAuth) && (
                             <div className="detail-row">
-                              <span>Authorized:</span>
-                              <span className="green">Yes</span>
+                              <span>{ta('labels.authorized')}:</span>
+                              <span className="green">{ta('states.yes')}</span>
                             </div>
                           )}
                           {(token.flags.lowDeepFreeze || token.flags.highDeepFreeze) && (
                             <div className="detail-row">
-                              <span>Deep Freeze:</span>
-                              <span className="red">Yes</span>
+                              <span>{ta('labels.deep-freeze')}:</span>
+                              <span className="red">{ta('states.yes')}</span>
                             </div>
                           )}
                         </>
@@ -4993,7 +5003,7 @@ export default function Account({
                               )
                             }
                           >
-                            <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> Deposit
+                            <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.deposit')}
                           </button>
                           <button
                             type="button"
@@ -5012,7 +5022,7 @@ export default function Account({
                               )
                             }
                           >
-                            <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Withdraw
+                            <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.withdraw')}
                           </button>
                         </div>
                       )}
@@ -5046,7 +5056,7 @@ export default function Account({
                                 })
                               }}
                             >
-                              <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Send
+                              <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.send')}
                             </button>
                             {!!disabledSendTokenTooltip && (
                               <span className="tooltiptext left">{disabledSendTokenTooltip}</span>
@@ -5058,7 +5068,7 @@ export default function Account({
                               className="card-action-btn redeem"
                               onClick={() => router.push(`/faucet?currency=RLUSD&amount=1&address=${data?.address}`)}
                             >
-                              <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> Get 1 more RLUSD
+                              <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.get-more-token', { amount: 1, token: 'RLUSD' })}
                             </button>
                           )}
                           <span className={disabledRemoveTrustlineTooltip ? 'tooltip' : ''}>
@@ -5083,7 +5093,7 @@ export default function Account({
                                 })
                               }}
                             >
-                              <MdDeleteForever /> Remove
+                              <MdDeleteForever /> {ta('actions.remove')}
                             </button>
                             {!!disabledRemoveTrustlineTooltip && (
                               <span className="tooltiptext left">{disabledRemoveTrustlineTooltip}</span>
@@ -5117,7 +5127,10 @@ export default function Account({
                         setTokenDisplayLimit(nextLimit)
                       }}
                     >
-                      Show {Math.min(10, hiddenTokensCount)} more {activeTokenTabLabel}
+                      {ta('actions.show-more-items', {
+                        count: Math.min(10, hiddenTokensCount),
+                        type: activeTokenTabLabel
+                      })}
                     </button>
                   )}
                   {showAllButtonVisible && (
@@ -5129,7 +5142,7 @@ export default function Account({
                         setTokenDisplayLimit(activeTokenList.length)
                       }}
                     >
-                      Show all {activeTokenTabLabel} (+{hiddenTokensCount} more)
+                      {ta('actions.show-all-items', { type: activeTokenTabLabel, count: hiddenTokensCount })}
                     </button>
                   )}
                   {showFewerButton && (
@@ -5142,7 +5155,7 @@ export default function Account({
                         setExpandedToken(null)
                       }}
                     >
-                      Show fewer {activeTokenTabLabel}
+                      {ta('actions.show-fewer-items', { type: activeTokenTabLabel })}
                     </button>
                   )}
                 </div>
@@ -5184,7 +5197,7 @@ export default function Account({
                         {isExpanded && (
                           <div className="asset-details">
                             <div className="detail-row">
-                              <span>MPT ID:</span>
+                              <span>{ta('labels.mpt-id')}:</span>
                               <span className="copy-inline">
                                 <span>{shortHash(mptId(mptNode) || '-')}</span>
                                 {!!mptId(mptNode) && (
@@ -5195,12 +5208,12 @@ export default function Account({
                               </span>
                             </div>
                             <div className="detail-row">
-                              <span>Balance:</span>
+                              <span>{ta('labels.balance')}:</span>
                               <span>{fullNiceNumber(balanceValue)}</span>
                             </div>
                             {mptNode?.mptokenCurrencyDetails?.account && (
                               <div className="detail-row">
-                                <span>Issuer:</span>
+                                <span>{ta('labels.issuer')}:</span>
                                 <span className="copy-inline">
                                   <AddressWithIconInline
                                     data={{ address: mptNode.mptokenCurrencyDetails.account }}
@@ -5227,7 +5240,7 @@ export default function Account({
                   <div className="section-title nft-section-title">NFTs</div>
                   {activeNftCount > 0 && data?.address && (
                     <Link className="section-link" href={activeNftViewAllHref}>
-                      View all
+                      {ta('actions.view-all')}
                     </Link>
                   )}
                 </div>
@@ -5240,7 +5253,7 @@ export default function Account({
                         className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
                         onClick={() => setNftTab('owned')}
                       >
-                        Owned{nftTabCountLabels.owned ? ` (${nftTabCountLabels.owned})` : ''}
+                        {ta('tabs.owned')}{nftTabCountLabels.owned ? ` (${nftTabCountLabels.owned})` : ''}
                       </button>
                     )}
                     {hasSoldNfts && (
@@ -5249,7 +5262,7 @@ export default function Account({
                         className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
                         onClick={() => setNftTab('sold')}
                       >
-                        Sold{nftTabCountLabels.sold ? ` (${nftTabCountLabels.sold})` : ''}
+                        {ta('tabs.sold')}{nftTabCountLabels.sold ? ` (${nftTabCountLabels.sold})` : ''}
                       </button>
                     )}
                     {hasMintedNfts && (
@@ -5258,7 +5271,7 @@ export default function Account({
                         className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
                         onClick={() => setNftTab('minted')}
                       >
-                        Minted{nftTabCountLabels.minted ? ` (${nftTabCountLabels.minted})` : ''}
+                        {ta('tabs.minted')}{nftTabCountLabels.minted ? ` (${nftTabCountLabels.minted})` : ''}
                       </button>
                     )}
                     {hasBurnedNfts && (
@@ -5267,7 +5280,7 @@ export default function Account({
                         className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
                         onClick={() => setNftTab('burned')}
                       >
-                        Burned{nftTabCountLabels.burned ? ` (${nftTabCountLabels.burned})` : ''}
+                        {ta('tabs.burned')}{nftTabCountLabels.burned ? ` (${nftTabCountLabels.burned})` : ''}
                       </button>
                     )}
                   </div>
@@ -5275,7 +5288,7 @@ export default function Account({
 
                 <div className="nft-section-content">
                   {activeNftLoading ? (
-                    <div className="asset-fiat">Loading {nftTab} NFTs...</div>
+                    <div className="asset-fiat">{ta('messages.loading-nfts', { type: activeNftTabLabel })}</div>
                   ) : activeNftCount > 0 ? (
                     <>
                       <div className="cards-list">
@@ -5350,7 +5363,7 @@ export default function Account({
                             (nftIsTransferable || isSignedInNftIssuer)
                           const disabledBuyOfferTooltip = (() => {
                             if (canMakeBuyOffer) return ''
-                            if (!nftIsTransferable && !isSignedInNftIssuer) return 'Non-transferable NFT'
+                            if (!nftIsTransferable && !isSignedInNftIssuer) return ta('tooltips.non-transferable-nft')
                             return ''
                           })()
                           const nftImageUrl = nftUrl(nftDisplayData, 'image')
@@ -5362,7 +5375,7 @@ export default function Account({
                             (nftIsTransferable || isSignedInNftIssuer)
                           const disabledOwnerNftActionTooltip = (() => {
                             if (canListOwnedNft) return ''
-                            if (!nftIsTransferable && !isSignedInNftIssuer) return 'Non-transferable NFT'
+                            if (!nftIsTransferable && !isSignedInNftIssuer) return ta('tooltips.non-transferable-nft')
                             return ''
                           })()
                           const canSetNftAsAvatar =
@@ -5424,12 +5437,12 @@ export default function Account({
                           const actionExact = actionAt ? fullDateAndTime(actionAt) : null
                           const actionVerb =
                             nftTab === 'sold'
-                              ? 'Sold'
+                              ? ta('tabs.sold')
                               : nftTab === 'minted'
-                                ? 'Minted'
+                                ? ta('tabs.minted')
                                 : nftTab === 'burned'
-                                  ? 'Burned'
-                                  : 'Updated'
+                                  ? ta('tabs.burned')
+                                  : ta('labels.updated')
                           const fallbackSecondaryLine =
                             nftTab === 'owned' && shortNftId ? `Token ID ${shortNftId}` : actionVerb
                           const shouldShowActionInSecondaryLine = nftTab === 'sold'
@@ -5517,7 +5530,7 @@ export default function Account({
                                   </div>
                                   {nftIssuer && (
                                     <div className="detail-row">
-                                      <span>Issuer:</span>
+                                      <span>{ta('labels.issuer')}:</span>
                                       <span className="copy-inline">
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <AddressWithIconInline
@@ -5534,7 +5547,7 @@ export default function Account({
                                   )}
                                   {soldPrice && (
                                     <div className="detail-row">
-                                      <span>Sale price:</span>
+                                      <span>{ta('labels.sale-price')}:</span>
                                       <span>
                                         {soldPrice}
                                         {soldPriceFiat && (
@@ -5548,7 +5561,7 @@ export default function Account({
                                   )}
                                   {bestBidAmount && (
                                     <div className="detail-row">
-                                      <span>Best buy offer:</span>
+                                      <span>{ta('labels.best-buy-offer')}:</span>
                                       <span>
                                         {bestBidAmount}
                                         {bestBidFiat && (
@@ -5717,11 +5730,11 @@ export default function Account({
                                           {!canSetNftAsAvatar && (
                                             <span className="tooltiptext left">
                                               {devNet
-                                                ? 'Not available on devnet'
+                                                ? ta('tooltips.not-available-devnet')
                                                 : isNftExplicit(nftDisplayData)
-                                                  ? 'Explicit NFT cannot be used as avatar'
+                                                  ? ta('tooltips.explicit-nft-avatar')
                                                   : !nftImageUrl
-                                                    ? 'Image is missing for this NFT'
+                                                    ? ta('tooltips.nft-image-missing')
                                                     : ''}
                                             </span>
                                           )}
@@ -5745,8 +5758,11 @@ export default function Account({
                               onClick={loadMoreNfts}
                             >
                               {nftLoadingMore
-                                ? `Loading ${activeNftTabLabel} NFTs...`
-                                : `Show ${activeNftRemainingCount} more ${activeNftTabLabel} NFTs`}
+                                ? ta('messages.loading-nfts', { type: activeNftTabLabel })
+                                : ta('actions.show-more-nfts', {
+                                    count: activeNftRemainingCount,
+                                    type: activeNftTabLabel
+                                  })}
                             </button>
                           )}
                           {showNftFewerButton && (
@@ -5758,7 +5774,7 @@ export default function Account({
                                 setExpandedNftCardKey(null)
                               }}
                             >
-                              Show fewer {activeNftTabLabel} NFTs
+                              {ta('actions.show-fewer-nfts', { type: activeNftTabLabel })}
                             </button>
                           )}
                         </div>
@@ -5775,32 +5791,32 @@ export default function Account({
           {/* Column 3: Transactions */}
           <div className="transactions-section">
             <div className="section-header-row">
-              <span className="section-title">Transactions</span>
+              <span className="section-title">{ta('sections.transactions')}</span>
               <div className="tx-header-actions">
                 <button
                   className="tx-filter-toggle tooltip"
                   onClick={() => fetchRecentTransactions()}
-                  aria-label="Reload transactions"
+                  aria-label={ta('aria.reload-transactions')}
                   type="button"
                   disabled={!data?.address || transactionsLoading || transactionsLoadingMore}
                 >
                   <FaArrowsRotate
                     className={`tx-refresh-icon ${transactionsLoading || transactionsLoadingMore ? 'spinning' : ''}`}
                   />
-                  <span className="tooltiptext">Update</span>
+                  <span className="tooltiptext">{ta('actions.update')}</span>
                 </button>
                 <button
                   className={`tx-filter-toggle tooltip ${showTxFilters ? 'active' : ''}`}
                   onClick={() => setShowTxFilters((prev) => !prev)}
-                  aria-label="Toggle transaction filters"
+                  aria-label={ta('aria.toggle-transaction-filters')}
                   type="button"
                 >
                   <FaGear />
-                  <span className="tooltiptext">Settings</span>
+                  <span className="tooltiptext">{ta('labels.settings')}</span>
                 </button>
                 {data?.address && (
                   <Link className="section-link" href={`/account/${data.address}/transactions`}>
-                    View all
+                    {ta('actions.view-all')}
                   </Link>
                 )}
               </div>
@@ -5810,59 +5826,59 @@ export default function Account({
               <div className="tx-filters-panel">
                 <div className="tx-filter-grid">
                   <label className="tx-filter-field">
-                    <span>Order</span>
+                    <span>{ta('labels.order')}</span>
                     <select value={txOrder} onChange={(event) => setTxOrder(event.target.value)}>
-                      <option value="newest">Newest first</option>
-                      <option value="oldest">Oldest first</option>
+                      <option value="newest">{ta('filters.newest-first')}</option>
+                      <option value="oldest">{ta('filters.oldest-first')}</option>
                     </select>
                   </label>
 
                   <label className="tx-filter-field">
-                    <span>Type</span>
+                    <span>{ta('labels.type')}</span>
                     <select value={txType} onChange={(event) => setTxType(event.target.value)}>
-                      <option value="all">All types</option>
-                      <option value="payment">Payment</option>
+                      <option value="all">{ta('filters.all-types')}</option>
+                      <option value="payment">{ta('filters.payment')}</option>
                       <option value="nft">NFT</option>
                       <option value="amm">AMM</option>
                       <option value="order">DEX</option>
                       <option value="escrow">Escrow</option>
-                      <option value="channel">Channel</option>
+                      <option value="channel">{ta('filters.channel')}</option>
                       <option value="check">Check</option>
                       <option value="trustline">Trustline</option>
-                      <option value="settings">Settings</option>
-                      <option value="accountDelete">Account delete</option>
+                      <option value="settings">{ta('labels.settings')}</option>
+                      <option value="accountDelete">{ta('filters.account-delete')}</option>
                     </select>
                   </label>
 
                   <label className="tx-filter-field">
-                    <span>Direction</span>
+                    <span>{ta('labels.direction')}</span>
                     <select value={txInitiated} onChange={(event) => setTxInitiated(event.target.value)}>
-                      <option value="all">Incoming & outgoing</option>
-                      <option value="true">Outgoing only</option>
-                      <option value="false">Incoming only</option>
+                      <option value="all">{ta('filters.incoming-outgoing')}</option>
+                      <option value="true">{ta('filters.outgoing-only')}</option>
+                      <option value="false">{ta('filters.incoming-only')}</option>
                     </select>
                   </label>
 
                   <label className="tx-filter-field">
-                    <span>Failures</span>
+                    <span>{ta('labels.failures')}</span>
                     <select value={txExcludeFailures} onChange={(event) => setTxExcludeFailures(event.target.value)}>
-                      <option value="all">Include failed</option>
-                      <option value="true">Exclude failed</option>
+                      <option value="all">{ta('filters.include-failed')}</option>
+                      <option value="true">{ta('filters.exclude-failed')}</option>
                     </select>
                   </label>
 
                   <label className="tx-filter-field tx-filter-field-wide">
-                    <span>Counterparty</span>
+                    <span>{ta('labels.counterparty')}</span>
                     <input
                       type="text"
                       value={txCounterparty}
                       onChange={(event) => setTxCounterparty(event.target.value)}
-                      placeholder="Address"
+                      placeholder={ta('labels.address')}
                     />
                   </label>
 
                   <label className="tx-filter-field">
-                    <span>From</span>
+                    <span>{ta('labels.from')}</span>
                     <input
                       type="datetime-local"
                       value={txFromDate}
@@ -5871,7 +5887,7 @@ export default function Account({
                   </label>
 
                   <label className="tx-filter-field">
-                    <span>To</span>
+                    <span>{ta('labels.to')}</span>
                     <input
                       type="datetime-local"
                       value={txToDate}
@@ -5886,15 +5902,15 @@ export default function Account({
                     checked={txFilterSpam}
                     onChange={(event) => setTxFilterSpam(event.target.checked)}
                   />
-                  <span>Exclude spam transactions</span>
+                  <span>{ta('filters.exclude-spam-transactions')}</span>
                 </label>
 
                 <div className="tx-filter-actions">
                   <button className="card-action-btn" type="button" onClick={resetTransactionFilters}>
-                    Reset
+                    {ta('actions.reset')}
                   </button>
                   <button className="card-action-btn redeem" type="button" onClick={applyTransactionFilters}>
-                    Search
+                    {ta('actions.search')}
                   </button>
                 </div>
               </div>
@@ -5903,7 +5919,7 @@ export default function Account({
             {transactionsLoading && (
               <p className="grey tx-status-text">
                 <span className="tx-inline-load">
-                  <span>Loading transactions</span>
+                  <span>{ta('messages.loading-transactions')}</span>
                   <span className="waiting inline" aria-hidden="true"></span>
                 </span>
               </p>
@@ -5913,7 +5929,7 @@ export default function Account({
             {!transactionsLoading &&
               !transactionsError &&
               recentTransactions.length === 0 &&
-              !transactionsSearchPaused && <p className="grey tx-status-text">No transactions found.</p>}
+              !transactionsSearchPaused && <p className="grey tx-status-text">{ta('empty.no-transactions')}</p>}
 
             {!transactionsLoading &&
               !transactionsError &&
@@ -6289,19 +6305,19 @@ export default function Account({
                       const didUpdatedUri = didChanges?.uriChange ? decode(didChanges.uriChange) : ''
                       const didTxLabel =
                         isDidDeleteTx || didStatus === 'deleted'
-                          ? 'Removed DID'
+                          ? ta('transactions.removed-did')
                           : didStatus === 'modified'
-                            ? 'Updated DID'
-                            : 'Set DID'
+                            ? ta('transactions.updated-did')
+                            : ta('transactions.set-did')
                       const didStatusLabel =
                         isDidDeleteTx || didStatus === 'deleted'
-                          ? 'Deleted'
+                          ? ta('statuses.deleted-short')
                           : didStatus === 'modified'
-                            ? 'Updated'
+                            ? ta('labels.updated')
                             : didStatus === 'created'
-                              ? 'Created'
+                              ? ta('labels.created')
                               : isDidSetTx
-                                ? 'Set'
+                                ? ta('states.set')
                                 : null
                       const didOriginalCollapsedUri = didOriginalUri ? stripDomain(didOriginalUri) : ''
                       const didUpdatedCollapsedUri = didUpdatedUri ? stripDomain(didUpdatedUri) : ''
@@ -6343,18 +6359,18 @@ export default function Account({
                         (isZeroNftOfferAmount || (!collapsedPrimaryChange && !collapsedSecondaryChange))
                       const directionLabel = resolvedCounterpartyAddress
                         ? isAccountDeleteTx
-                          ? 'From removed account'
+                          ? ta('labels.from-removed-account')
                           : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                            ? 'To'
+                            ? ta('labels.to')
                             : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                              ? 'From'
+                              ? ta('labels.from')
                               : isCreateNftOfferTx && isSource && !!counterparty
-                                ? 'For'
+                                ? ta('phrases.for')
                                 : isBrokeredNftAccept
-                                  ? 'By broker'
+                                  ? ta('labels.by-broker')
                                   : isSource
-                                    ? 'To'
-                                    : 'From'
+                                    ? ta('labels.to')
+                                    : ta('labels.from')
                         : null
                       const accountSetSpec = txdata?.specification || {}
                       const accountSetSettings = outcome?.settingsChanges || {}
@@ -6364,24 +6380,24 @@ export default function Account({
                         const changes = []
 
                         if (tx?.MessageKey !== undefined) {
-                          const messageKeyStatus = accountSetSpec?.messageKey ? 'set' : 'removed'
-                          changes.push(`Message key: ${messageKeyStatus}`)
+                          const messageKeyStatus = accountSetSpec?.messageKey ? ta('states.set') : ta('states.removed')
+                          changes.push(`${ta('labels.message-key')}: ${messageKeyStatus}`)
                         }
                         if (tx?.Domain !== undefined) {
                           changes.push(
-                            `Domain: ${accountSetSpec?.domain ? stripDomain(accountSetSpec.domain) : 'removed'}`
+                            `${ta('labels.domain')}: ${accountSetSpec?.domain ? stripDomain(accountSetSpec.domain) : ta('states.removed')}`
                           )
                         }
                         if (accountSetSpec?.defaultRipple !== undefined) {
-                          changes.push(`Default ripple: ${accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}`)
+                          changes.push(`${ta('labels.default-ripple')}: ${accountSetSpec.defaultRipple ? ta('states.enabled') : ta('states.disabled')}`)
                         }
                         if (
                           accountSetSpec?.disallowXRP !== undefined ||
                           accountSetSettings?.disallowXRP !== undefined
                         ) {
                           changes.push(
-                            `Incoming ${nativeCurrency}: ${
-                              accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP ? 'disallow' : 'allow'
+                            `${ta('labels.receiving-native')}: ${
+                              accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP ? ta('states.disallow') : ta('states.allow')
                             }`
                           )
                         }
@@ -6390,77 +6406,77 @@ export default function Account({
                           accountSetSettings?.requireDestTag !== undefined
                         ) {
                           changes.push(
-                            `Destination tag: ${
+                            `${ta('labels.destination-tag')}: ${
                               accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
-                                ? 'require'
-                                : "don't require"
+                                ? ta('states.require')
+                                : ta('states.do-not-require')
                             }`
                           )
                         }
                         if (accountSetSpec?.depositAuth !== undefined) {
-                          changes.push(`Deposit authorization: ${accountSetSpec.depositAuth ? 'enabled' : 'disabled'}`)
+                          changes.push(`${ta('labels.deposit-authorization')}: ${accountSetSpec.depositAuth ? ta('states.enabled') : ta('states.disabled')}`)
                         }
                         if (accountSetSpec?.disableMaster !== undefined) {
-                          changes.push(`Master key: ${accountSetSpec.disableMaster ? 'disabled' : 'enabled'}`)
+                          changes.push(`${ta('labels.master-key')}: ${accountSetSpec.disableMaster ? ta('states.disabled') : ta('states.enabled')}`)
                         }
                         if (accountSetSpec?.noFreeze) {
-                          changes.push('No freeze: enabled')
+                          changes.push(`${ta('labels.no-freeze')}: ${ta('states.enabled')}`)
                         }
                         if (
                           accountSetSpec?.requireAuth !== undefined ||
                           accountSetSettings?.requireAuth !== undefined
                         ) {
                           changes.push(
-                            `Require authorization: ${
-                              accountSetSpec?.requireAuth || accountSetSettings?.requireAuth ? 'enabled' : 'disabled'
+                            `${ta('labels.require-authorization')}: ${
+                              accountSetSpec?.requireAuth || accountSetSettings?.requireAuth ? ta('states.enabled') : ta('states.disabled')
                             }`
                           )
                         }
                         if (accountSetSpec?.disallowIncomingCheck !== undefined) {
-                          changes.push(`Incoming check: ${accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}`)
+                          changes.push(`${ta('labels.incoming-check')}: ${accountSetSpec.disallowIncomingCheck ? ta('states.disallow') : ta('states.allow')}`)
                         }
                         if (accountSetSpec?.disallowIncomingPayChan !== undefined) {
                           changes.push(
-                            `Incoming payment channel: ${accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}`
+                            `${ta('labels.incoming-payment-channel')}: ${accountSetSpec.disallowIncomingPayChan ? ta('states.disallow') : ta('states.allow')}`
                           )
                         }
                         if (accountSetSpec?.disallowIncomingNFTokenOffer !== undefined) {
                           changes.push(
-                            `Incoming NFT offer: ${accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}`
+                            `${ta('labels.incoming-nft-offer')}: ${accountSetSpec.disallowIncomingNFTokenOffer ? ta('states.disallow') : ta('states.allow')}`
                           )
                         }
                         if (accountSetSpec?.disallowIncomingTrustline !== undefined) {
                           changes.push(
-                            `Incoming trustline: ${accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}`
+                            `${ta('labels.incoming-trustline')}: ${accountSetSpec.disallowIncomingTrustline ? ta('states.disallow') : ta('states.allow')}`
                           )
                         }
                         if (accountSetSpec?.enableTransactionIDTracking !== undefined) {
                           changes.push(
-                            `Transaction ID tracking: ${
-                              accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'
+                            `${ta('labels.transaction-id-tracking')}: ${
+                              accountSetSpec.enableTransactionIDTracking ? ta('states.enabled') : ta('states.disabled')
                             }`
                           )
                         }
                         if (accountSetSpec?.globalFreeze !== undefined) {
-                          changes.push(`Global freeze: ${accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}`)
+                          changes.push(`${ta('labels.global-freeze')}: ${accountSetSpec.globalFreeze ? ta('states.enabled') : ta('states.disabled')}`)
                         }
                         if (accountSetSpec?.authorizedMinter !== undefined) {
-                          changes.push(`Authorized minter: ${accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}`)
+                          changes.push(`${ta('labels.authorized-minter')}: ${accountSetSpec.authorizedMinter ? ta('states.enabled') : ta('states.disabled')}`)
                         }
                         if (accountSetSpec?.nftokenMinter !== undefined) {
                           if (accountSetSpec.nftokenMinter) {
                             changes.push({ type: 'nftMinter', address: accountSetSpec.nftokenMinter })
                           } else {
-                            changes.push('NFT minter: removed')
+                            changes.push(`${ta('sections.nft-minter')}: ${ta('states.removed')}`)
                           }
                         }
                         if (accountSetSpec?.allowTrustLineClawback !== undefined) {
                           changes.push(
-                            `Trustline clawback: ${accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}`
+                            `${ta('labels.trustline-clawback')}: ${accountSetSpec.allowTrustLineClawback ? ta('states.allowed') : ta('states.disallow')}`
                           )
                         }
                         if (accountSetSpec?.disallowIncomingRemit !== undefined) {
-                          changes.push(`Incoming remit: ${accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}`)
+                          changes.push(`${ta('labels.incoming-remit')}: ${accountSetSpec.disallowIncomingRemit ? ta('states.disallow') : ta('states.allow')}`)
                         }
 
                         return changes[0] || null
@@ -6471,7 +6487,7 @@ export default function Account({
                         if (accountSetCollapsedChange?.type === 'nftMinter') {
                           return (
                             <>
-                              NFT minter:{' '}
+                              {ta('sections.nft-minter')}:{' '}
                               <AddressWithIconInline
                                 data={{
                                   address: accountSetCollapsedChange.address,
@@ -6750,7 +6766,7 @@ export default function Account({
                                     {showBrokerInCollapsedTitle ? (
                                       <span className="tx-broker-stack">
                                         <span className="tx-broker-inline">
-                                          <span>Broker </span>
+                                          <span>{ta('labels.broker')} </span>
                                           <AddressWithIconInline
                                             data={{
                                               address: brokerAddress,
@@ -6912,7 +6928,7 @@ export default function Account({
                                     </span>
                                   )}
                                   {collapsedMoreCount > 0 && (
-                                    <span className="tx-inline-more">+{collapsedMoreCount} more</span>
+                                    <span className="tx-inline-more">{ta('counts.more', { count: collapsedMoreCount })}</span>
                                   )}
                                 </>
                               )}
@@ -6922,14 +6938,16 @@ export default function Account({
                           {isExpanded && (
                             <div className="asset-details">
                               <div className="detail-row">
-                                <span>Type:</span>
+                                <span>{ta('labels.type')}:</span>
                                 <span>{tx?.TransactionType}</span>
                               </div>
 
                               {showDexSpecifiedOrderDetails && !!dexTakerGets && (
                                 <div className="detail-row">
                                   <span>
-                                    {dexOfferDirection === 'Sell' ? 'Specified sell exactly:' : 'Specified pay up to:'}
+                                    {dexOfferDirection === 'Sell'
+                                      ? `${ta('labels.specified-sell-exactly')}:`
+                                      : `${ta('labels.specified-pay-up-to')}:`}
                                   </span>
                                   <span>
                                     {amountFormat(dexTakerGets, {
@@ -6944,8 +6962,8 @@ export default function Account({
                                 <div className="detail-row">
                                   <span>
                                     {dexOfferDirection === 'Sell'
-                                      ? 'Specified receive at least:'
-                                      : 'Specified receive exactly:'}
+                                      ? `${ta('labels.specified-receive-at-least')}:`
+                                      : `${ta('labels.specified-receive-exactly')}:`}
                                   </span>
                                   <span>
                                     {amountFormat(dexTakerPays, {
@@ -6958,7 +6976,7 @@ export default function Account({
 
                               {hasAmmVoteTradingFee && (
                                 <div className="detail-row">
-                                  <span>Trading fee:</span>
+                                  <span>{ta('labels.trading-fee')}:</span>
                                   <span>{ammVoteTradingFeeText}</span>
                                 </div>
                               )}
@@ -6966,11 +6984,11 @@ export default function Account({
                               {failedStatusText && (
                                 <>
                                   <div className="detail-row">
-                                    <span>Error code:</span>
+                                    <span>{ta('labels.error-code')}:</span>
                                     <span className="orange">{failedStatusText}</span>
                                   </div>
                                   <div className="detail-row tx-fail-description-row">
-                                    <span>Error:</span>
+                                    <span>{ta('labels.error')}:</span>
                                     <span className="orange tx-fail-description-text">
                                       {errorCodeDescription(failedStatusText, txErrorT) || failedStatusText}
                                     </span>
@@ -6997,7 +7015,7 @@ export default function Account({
 
                               {brokerAddress && (
                                 <div className="detail-row">
-                                  <span>By broker:</span>
+                                  <span>{ta('labels.by-broker')}:</span>
                                   <span className="copy-inline">
                                     <span onClick={(event) => event.stopPropagation()}>
                                       <AddressWithIconInline
@@ -7014,7 +7032,7 @@ export default function Account({
 
                               {isTagValid(tx?.DestinationTag) && (
                                 <div className="detail-row">
-                                  <span>Destination tag:</span>
+                                  <span>{ta('labels.destination-tag')}:</span>
                                   <span>{tx.DestinationTag}</span>
                                 </div>
                               )}
@@ -7022,7 +7040,7 @@ export default function Account({
                               {tx?.TransactionType === 'TrustSet' && trustSetToken && (
                                 <>
                                   <div className="detail-row">
-                                    <span>Currency:</span>
+                                    <span>{ta('labels.currency')}:</span>
                                     <span className="copy-inline">
                                       <span>{trustSetCurrencyDisplay || '-'}</span>
                                       {!!trustSetToken?.issuer && !!trustSetToken?.currency && (
@@ -7032,7 +7050,7 @@ export default function Account({
                                           onClick={(event) => event.stopPropagation()}
                                         >
                                           <LinkIcon />
-                                          <span className="tooltiptext no-brake">Token page</span>
+                                          <span className="tooltiptext no-brake">{ta('tooltips.token-page')}</span>
                                         </Link>
                                       )}
                                       {!!trustSetCurrencyDisplay && (
@@ -7045,7 +7063,7 @@ export default function Account({
 
                                   {!!trustSetToken?.issuer && (
                                     <div className="detail-row">
-                                      <span>Issuer:</span>
+                                      <span>{ta('labels.issuer')}:</span>
                                       <span className="copy-inline">
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <AddressWithIconInline
@@ -7061,7 +7079,7 @@ export default function Account({
                                   )}
 
                                   <div className="detail-row">
-                                    <span>Limit:</span>
+                                    <span>{ta('labels.limit')}:</span>
                                     <span>{fullNiceNumber(trustSetToken?.value || 0)}</span>
                                   </div>
                                 </>
@@ -7069,7 +7087,7 @@ export default function Account({
 
                               {txType === 'SetRegularKey' && (
                                 <div className="detail-row">
-                                  <span>Regular key:</span>
+                                  <span>{ta('labels.regular-key')}:</span>
                                   {setRegularKeyValue ? (
                                     <span className="copy-inline">
                                       <span onClick={(event) => event.stopPropagation()}>
@@ -7086,7 +7104,7 @@ export default function Account({
                                       </span>
                                     </span>
                                   ) : (
-                                    <span className="orange">removed</span>
+                                    <span className="orange">{ta('states.removed')}</span>
                                   )}
                                 </div>
                               )}
@@ -7095,7 +7113,7 @@ export default function Account({
                                 <>
                                   {tx?.MessageKey !== undefined && (
                                     <div className="detail-row">
-                                      <span>Message key:</span>
+                                      <span>{ta('labels.message-key')}:</span>
                                       {accountSetSpec?.messageKey ? (
                                         <span className="copy-inline">
                                           <span className="address-text">{accountSetSpec.messageKey}</span>
@@ -7104,23 +7122,23 @@ export default function Account({
                                           </span>
                                         </span>
                                       ) : (
-                                        <span className="orange">removed</span>
+                                        <span className="orange">{ta('states.removed')}</span>
                                       )}
                                     </div>
                                   )}
 
                                   {tx?.Domain !== undefined && (
                                     <div className="detail-row">
-                                      <span>Domain:</span>
-                                      <span className="orange">{accountSetSpec?.domain || 'removed'}</span>
+                                      <span>{ta('labels.domain')}:</span>
+                                      <span className="orange">{accountSetSpec?.domain || ta('states.removed')}</span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.defaultRipple !== undefined && (
                                     <div className="detail-row">
-                                      <span>Default ripple:</span>
+                                      <span>{ta('labels.default-ripple')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}
+                                        {accountSetSpec.defaultRipple ? ta('states.enabled') : ta('states.disabled')}
                                       </span>
                                     </div>
                                   )}
@@ -7131,8 +7149,8 @@ export default function Account({
                                       <span>Incoming {nativeCurrency}:</span>
                                       <span className="orange">
                                         {accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP
-                                          ? 'disallow'
-                                          : 'allow'}
+                                          ? ta('states.disallow')
+                                          : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
@@ -7140,118 +7158,118 @@ export default function Account({
                                   {(accountSetSpec?.requireDestTag !== undefined ||
                                     accountSetSettings?.requireDestTag !== undefined) && (
                                     <div className="detail-row">
-                                      <span>Destination tag:</span>
+                                      <span>{ta('labels.destination-tag')}:</span>
                                       <span className="orange">
                                         {accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
-                                          ? 'require'
-                                          : "don't require"}
+                                          ? ta('states.require')
+                                          : ta('states.do-not-require')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.depositAuth !== undefined && (
                                     <div className="detail-row">
-                                      <span>Deposit authorization:</span>
+                                      <span>{ta('labels.deposit-authorization')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.depositAuth ? 'enabled' : 'disabled'}
+                                        {accountSetSpec.depositAuth ? ta('states.enabled') : ta('states.disabled')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.disableMaster !== undefined && (
                                     <div className="detail-row">
-                                      <span>Master key:</span>
+                                      <span>{ta('labels.master-key')}:</span>
                                       <span className="red">
-                                        {accountSetSpec.disableMaster ? 'disabled' : 'enabled'}
+                                        {accountSetSpec.disableMaster ? ta('states.disabled') : ta('states.enabled')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.noFreeze && (
                                     <div className="detail-row">
-                                      <span>No freeze:</span>
-                                      <span className="orange">enabled</span>
+                                      <span>{ta('labels.no-freeze')}:</span>
+                                      <span className="orange">{ta('states.enabled')}</span>
                                     </div>
                                   )}
 
                                   {(accountSetSpec?.requireAuth !== undefined ||
                                     accountSetSettings?.requireAuth !== undefined) && (
                                     <div className="detail-row">
-                                      <span>Require authorization:</span>
+                                      <span>{ta('labels.require-authorization')}:</span>
                                       <span className="orange">
                                         {accountSetSpec?.requireAuth || accountSetSettings?.requireAuth
-                                          ? 'enabled'
-                                          : 'disabled'}
+                                          ? ta('states.enabled')
+                                          : ta('states.disabled')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.disallowIncomingCheck !== undefined && (
                                     <div className="detail-row">
-                                      <span>Incoming check:</span>
+                                      <span>{ta('labels.incoming-check')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}
+                                        {accountSetSpec.disallowIncomingCheck ? ta('states.disallow') : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.disallowIncomingPayChan !== undefined && (
                                     <div className="detail-row">
-                                      <span>Incoming payment channel:</span>
+                                      <span>{ta('labels.incoming-payment-channel')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}
+                                        {accountSetSpec.disallowIncomingPayChan ? ta('states.disallow') : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.disallowIncomingNFTokenOffer !== undefined && (
                                     <div className="detail-row">
-                                      <span>Incoming NFT offer:</span>
+                                      <span>{ta('labels.incoming-nft-offer')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}
+                                        {accountSetSpec.disallowIncomingNFTokenOffer ? ta('states.disallow') : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.disallowIncomingTrustline !== undefined && (
                                     <div className="detail-row">
-                                      <span>Incoming trustline:</span>
+                                      <span>{ta('labels.incoming-trustline')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}
+                                        {accountSetSpec.disallowIncomingTrustline ? ta('states.disallow') : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.enableTransactionIDTracking !== undefined && (
                                     <div className="detail-row">
-                                      <span>Transaction ID tracking:</span>
+                                      <span>{ta('labels.transaction-id-tracking')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'}
+                                        {accountSetSpec.enableTransactionIDTracking ? ta('states.enabled') : ta('states.disabled')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.globalFreeze !== undefined && (
                                     <div className="detail-row">
-                                      <span>Global freeze:</span>
+                                      <span>{ta('labels.global-freeze')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}
+                                        {accountSetSpec.globalFreeze ? ta('states.enabled') : ta('states.disabled')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.authorizedMinter !== undefined && (
                                     <div className="detail-row">
-                                      <span>Authorized minter:</span>
+                                      <span>{ta('labels.authorized-minter')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}
+                                        {accountSetSpec.authorizedMinter ? ta('states.enabled') : ta('states.disabled')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.nftokenMinter !== undefined && (
                                     <div className="detail-row">
-                                      <span>NFT minter:</span>
+                                      <span>{ta('sections.nft-minter')}:</span>
                                       {accountSetSpec?.nftokenMinter ? (
                                         <span className="copy-inline">
                                           <span onClick={(event) => event.stopPropagation()}>
@@ -7265,25 +7283,25 @@ export default function Account({
                                           </span>
                                         </span>
                                       ) : (
-                                        <span className="orange">removed</span>
+                                        <span className="orange">{ta('states.removed')}</span>
                                       )}
                                     </div>
                                   )}
 
                                   {accountSetSpec?.allowTrustLineClawback !== undefined && (
                                     <div className="detail-row">
-                                      <span>Trustline clawback:</span>
+                                      <span>{ta('labels.trustline-clawback')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}
+                                        {accountSetSpec.allowTrustLineClawback ? ta('states.allowed') : ta('states.disallow')}
                                       </span>
                                     </div>
                                   )}
 
                                   {accountSetSpec?.disallowIncomingRemit !== undefined && (
                                     <div className="detail-row">
-                                      <span>Incoming remit:</span>
+                                      <span>{ta('labels.incoming-remit')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}
+                                        {accountSetSpec.disallowIncomingRemit ? ta('states.disallow') : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
@@ -7294,14 +7312,14 @@ export default function Account({
                                 <>
                                   {!!didStatusLabel && (
                                     <div className="detail-row">
-                                      <span>Status:</span>
+                                      <span>{ta('labels.status')}:</span>
                                       <span className="orange">{didStatusLabel}</span>
                                     </div>
                                   )}
 
                                   {!!didId && (
                                     <div className="detail-row">
-                                      <span>DID ID:</span>
+                                      <span>{ta('labels.did-id')}:</span>
                                       <span className="copy-inline id-inline">
                                         <span className="address-text" title={didId}>
                                           {didShortId}
@@ -7315,7 +7333,7 @@ export default function Account({
 
                                   {isDidDeleteTx && !!didOriginalUri && (
                                     <div className="detail-row">
-                                      <span>Removed URI:</span>
+                                      <span>{ta('labels.removed-uri')}:</span>
                                       <span className="brake" title={didOriginalUri}>
                                         {didOriginalUri}
                                       </span>
@@ -7324,7 +7342,7 @@ export default function Account({
 
                                   {isDidSetTx && didStatus === 'modified' && !!didOriginalUri && (
                                     <div className="detail-row">
-                                      <span>Previous URI:</span>
+                                      <span>{ta('labels.previous-uri')}:</span>
                                       <span className="brake" title={didOriginalUri}>
                                         {didOriginalUri}
                                       </span>
@@ -7333,7 +7351,7 @@ export default function Account({
 
                                   {isDidSetTx && didStatus === 'modified' && !!didUpdatedUri && (
                                     <div className="detail-row">
-                                      <span>Updated URI:</span>
+                                      <span>{ta('labels.updated-uri')}:</span>
                                       <span className="brake" title={didUpdatedUri}>
                                         {didUpdatedUri}
                                       </span>
@@ -7342,7 +7360,7 @@ export default function Account({
 
                                   {isDidSetTx && didStatus !== 'modified' && !!(didUpdatedUri || didOriginalUri) && (
                                     <div className="detail-row">
-                                      <span>URI:</span>
+                                      <span>{ta('labels.uri')}:</span>
                                       <span className="brake" title={didUpdatedUri || didOriginalUri}>
                                         {didUpdatedUri || didOriginalUri}
                                       </span>
@@ -7352,7 +7370,7 @@ export default function Account({
                               )}
 
                               <div className="detail-row">
-                                <span>Timestamp:</span>
+                                <span>{ta('labels.timestamp')}:</span>
                                 <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
                               </div>
 
@@ -7361,7 +7379,7 @@ export default function Account({
                                 (shouldShowExpandedRate || isDexOfferTx) &&
                                 !hasDexOfferRates && (
                                   <div className="detail-row">
-                                    <span>Rate:</span>
+                                    <span>{ta('labels.rate')}:</span>
                                     <span suppressHydrationWarning>
                                       {txHistoricalRate
                                         ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
@@ -7372,7 +7390,7 @@ export default function Account({
 
                               {isSource && (tx?.Sequence || tx?.TicketSequence) && (
                                 <div className="detail-row">
-                                  <span>{tx?.TicketSequence ? 'Ticket sequence:' : 'Sequence:'}</span>
+                                  <span>{tx?.TicketSequence ? `${ta('labels.ticket-sequence')}:` : `${ta('labels.sequence')}:`}</span>
                                   <span>{tx?.Sequence || tx?.TicketSequence}</span>
                                 </div>
                               )}
@@ -7389,7 +7407,7 @@ export default function Account({
 
                                   return (
                                     <div className="detail-row">
-                                      <span>Fee:</span>
+                                      <span>{ta('labels.fee')}:</span>
                                       <span className="tx-detail-stacked-amount">
                                         <span className="tx-inline-change grey">
                                           {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
@@ -7402,7 +7420,7 @@ export default function Account({
 
                               {txSpecialAmountDisplay && (
                                 <div className="detail-row">
-                                  <span>Amount:</span>
+                                  <span>{ta('labels.amount')}:</span>
                                   <span className="tx-detail-stacked-amount">
                                     <span className="grey">{txSpecialAmountDisplay.expandedText}</span>
                                     {!!txSpecialAmountDisplay.expandedFiat && (
@@ -7414,7 +7432,7 @@ export default function Account({
 
                               {txDapp && (
                                 <div className="detail-row">
-                                  <span>App/Dapp:</span>
+                                  <span>{ta('labels.app-dapp')}:</span>
                                   <span>{txDapp}</span>
                                 </div>
                               )}
@@ -7423,7 +7441,7 @@ export default function Account({
 
                               {changes.length > 0 && (
                                 <div className="detail-row tx-detail-change-row">
-                                  <span>Balance changes:</span>
+                                  <span>{ta('labels.balance-changes')}:</span>
                                   <span className="tx-detail-change-list">
                                     {changes.map((change, changeIndex) => {
                                       const changeFiat = tokenToFiat({
@@ -7454,7 +7472,7 @@ export default function Account({
 
                               {hasDexOfferRates && (
                                 <div className="detail-row tx-detail-change-row">
-                                  <span>Rates:</span>
+                                  <span>{ta('labels.rates')}:</span>
                                   <span className="tx-detail-change-list">
                                     {!!selectedCurrency && (
                                       <span className="tx-change-row">
@@ -7546,7 +7564,7 @@ export default function Account({
 
                               {nftOfferIds.length > 0 && (
                                 <div className="detail-row">
-                                  <span>{nftOfferIds.length > 1 ? 'Offers:' : 'Offer:'}</span>
+                                  <span>{nftOfferIds.length > 1 ? `${ta('labels.offers')}:` : `${ta('labels.offer')}:`}</span>
                                   <span className="tx-offer-id-list">
                                     {nftOfferIds.map((offerId, offerIndex) => (
                                       <span className="copy-inline" key={`${txKey}-offer-${offerIndex}`}>
@@ -7567,7 +7585,7 @@ export default function Account({
 
                               {isNftOfferTx && hasNftOfferAmount && (
                                 <div className="detail-row">
-                                  <span>Offer amount:</span>
+                                  <span>{ta('labels.offer-amount')}:</span>
                                   <span className="tx-detail-stacked-amount">
                                     <span className="tx-inline-change">{offerAmountExpandedText}</span>
                                     {!!offerAmountFiatDetailText && (
@@ -7579,7 +7597,7 @@ export default function Account({
 
                               {!isNftOfferTx && nftMintSellOfferDisplay && (
                                 <div className="detail-row">
-                                  <span>Offer amount:</span>
+                                  <span>{ta('labels.offer-amount')}:</span>
                                   <span className="tx-detail-stacked-amount">
                                     <span className="tx-inline-change">{nftMintSellOfferDisplay.expandedText}</span>
                                     {!!nftMintSellOfferDisplay.expandedFiat && (
@@ -7590,7 +7608,7 @@ export default function Account({
                               )}
 
                               <div className="detail-row">
-                                <span>Hash:</span>
+                                <span>{ta('labels.hash')}:</span>
                                 <span className="copy-inline">
                                   {txHash ? (
                                     <Link
@@ -7638,15 +7656,15 @@ export default function Account({
                             >
                               {transactionsLoadingMore ? (
                                 <>
-                                  Loading
+                                  {ta('states.loading')}
                                   <span className="waiting inline" aria-hidden="true"></span>
                                 </>
                               ) : (
-                                'Load more transactions'
+                                ta('actions.load-more-transactions')
                               )}
                             </button>
                           ) : (
-                            <span className="tx-mobile-end-label">End of list.</span>
+                            <span className="tx-mobile-end-label">{ta('messages.end-of-list')}</span>
                           )}
                         </div>
                       )}
@@ -7676,12 +7694,12 @@ export default function Account({
               <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
                 {objectsLoading ? (
                   <span className="tx-inline-load object-load-status-text">
-                    <span>Loading account objects</span>
+                    <span>{ta('messages.loading-account-objects')}</span>
                     <span className="waiting inline" aria-hidden="true"></span>
                   </span>
                 ) : (
                   <span className="object-load-status-text">
-                    Failed to load account objects. Object sections may be missing.
+                    {ta('errors.failed-load-account-objects-sections')}
                   </span>
                 )}
               </div>
@@ -7694,53 +7712,53 @@ export default function Account({
                   className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
                   onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
                 >
-                  Issuer settings
+                  {ta('sections.issuer-settings')}
                   <span className={`account-control-collapsed`}> · {issuerSettingsCollapsedLabel}</span>
                 </button>
 
                 {showIssuerSettingsDetails && (
                   <div className="time-machine-panel issuer-settings-panel">
                     <div className="detail-row issuer-detail-row">
-                      <span>Rippling:</span>
+                      <span>{ta('labels.rippling')}:</span>
                       <span className={isRipplingEnabled ? 'green' : 'grey'}>
-                        {isRipplingEnabled ? 'enabled' : 'disabled'}
+                        {isRipplingEnabled ? ta('states.enabled') : ta('states.disabled')}
                       </span>
                     </div>
                     <div className="detail-row issuer-detail-row">
-                      <span>Transfer fee:</span>
+                      <span>{ta('labels.transfer-fee')}:</span>
                       <span>{issuerTransferFeeText}</span>
                     </div>
                     <div className="detail-row issuer-detail-row">
                       <span>Escrow:</span>
                       <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
-                        {isCanEscrowEnabled ? 'enabled' : 'disabled'}
+                        {isCanEscrowEnabled ? ta('states.enabled') : ta('states.disabled')}
                       </span>
                     </div>
                     <div className="detail-row issuer-detail-row">
                       <span>Clawback:</span>
                       <span className={isTrustlineClawbackEnabled && 'bold'}>
-                        {isTrustlineClawbackEnabled ? 'enabled' : 'disabled'}
+                        {isTrustlineClawbackEnabled ? ta('states.enabled') : ta('states.disabled')}
                       </span>
                     </div>
                     <div className="detail-row issuer-detail-row">
-                      <span>Global freeze:</span>
+                      <span>{ta('labels.global-freeze')}:</span>
                       <span className={isGlobalFreezeEnabled && 'bold'}>
-                        {isGlobalFreezeEnabled ? 'true' : 'false'}
+                        {isGlobalFreezeEnabled ? ta('states.true') : ta('states.false')}
                       </span>
                     </div>
                     <div className="detail-row issuer-detail-row">
-                      <span>No freeze:</span>
-                      <span className={isNoFreezeEnabled && 'bold'}>{isNoFreezeEnabled ? 'enabled' : 'not set'}</span>
+                      <span>{ta('labels.no-freeze')}:</span>
+                      <span className={isNoFreezeEnabled && 'bold'}>{isNoFreezeEnabled ? ta('states.enabled') : ta('states.not-set')}</span>
                     </div>
                     <div className="card-actions issuer-settings-actions">
                       <button
                         type="button"
                         className="card-action-btn"
                         onClick={() => router.push('/services/account-settings')}
-                        title="Account settings"
+                        title={ta('sections.account-settings')}
                       >
                         <FaGear />
-                        Account settings
+                        {ta('sections.account-settings')}
                       </button>
                     </div>
                   </div>
@@ -7751,15 +7769,15 @@ export default function Account({
             {(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
               <>
                 <div className="section-header-row">
-                  <span className="section-title">Issued tokens</span>
+                  <span className="section-title">{ta('sections.issued-tokens')}</span>
                   {data?.address && (
                     <Link className="section-link" href={`/tokens?issuer=${data.address}`}>
-                      View all
+                      {ta('actions.view-all')}
                     </Link>
                   )}
                 </div>
 
-                {issuedTokensLoading && <p className="grey">Loading issued tokens...</p>}
+                {issuedTokensLoading && <p className="grey">{ta('messages.loading-issued-tokens')}</p>}
                 {!issuedTokensLoading && issuedTokensError && <p className="red">{issuedTokensError}</p>}
 
                 {!issuedTokensLoading &&
@@ -7796,14 +7814,14 @@ export default function Account({
                                 ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
                                 : shortNiceNumber(tokenMarketcap, 2, 1)}
                             </div>
-                            <div className="asset-fiat">Supply: {shortNiceNumber(tokenSupply)}</div>
+                            <div className="asset-fiat">{ta('labels.supply')}: {shortNiceNumber(tokenSupply)}</div>
                           </div>
                         </div>
 
                         {isExpanded && (
                           <div className="asset-details">
                             <div className="detail-row">
-                              <span>Currency:</span>
+                              <span>{ta('labels.currency')}:</span>
                               <span className="copy-inline">
                                 <span>{issuedTokenCurrencyCodeDisplay}</span>
                                 <Link
@@ -7812,7 +7830,7 @@ export default function Account({
                                   onClick={(event) => event.stopPropagation()}
                                 >
                                   <LinkIcon />
-                                  <span className="tooltiptext no-brake">Token page</span>
+                                  <span className="tooltiptext no-brake">{ta('tooltips.token-page')}</span>
                                 </Link>
                                 <span onClick={(event) => event.stopPropagation()}>
                                   <CopyButton text={issuedTokenCurrencyCode} />
@@ -7821,10 +7839,10 @@ export default function Account({
                             </div>
 
                             <div className="detail-row">
-                              <span>Distribution:</span>
+                              <span>{ta('labels.distribution')}:</span>
                               <span>
                                 <Link href={issuedTokenDistributionUrl} onClick={(event) => event.stopPropagation()}>
-                                  View token distribution
+                                  {ta('actions.view-token-distribution')}
                                 </Link>
                               </span>
                             </div>
@@ -7846,7 +7864,7 @@ export default function Account({
                             </div>
 
                             <div className="detail-row">
-                              <span>Marketcap:</span>
+                              <span>{ta('labels.marketcap')}:</span>
                               <span suppressHydrationWarning>
                                 {tokenMarketcapFiat > 0
                                   ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
@@ -7855,12 +7873,12 @@ export default function Account({
                             </div>
 
                             <div className="detail-row">
-                              <span>Supply:</span>
+                              <span>{ta('labels.supply')}:</span>
                               <span>{fullNiceNumber(tokenSupply)}</span>
                             </div>
 
                             <div className="detail-row">
-                              <span>Holders:</span>
+                              <span>{ta('labels.holders')}:</span>
                               <span>{fullNiceNumber(token.holders || 0)}</span>
                             </div>
 
@@ -7870,7 +7888,7 @@ export default function Account({
                             </div>
 
                             <div className="detail-row">
-                              <span>Volume (24h):</span>
+                              <span>{ta('labels.volume-24h')}:</span>
                               <span suppressHydrationWarning>
                                 {tokenVolume24hFiat > 0
                                   ? shortNiceNumber(tokenVolume24hFiat, 2, 1, selectedCurrency)
@@ -7879,7 +7897,7 @@ export default function Account({
                             </div>
 
                             <div className="detail-row">
-                              <span>Volume (24h) token:</span>
+                              <span>{ta('labels.volume-24h-token')}:</span>
                               <span>
                                 {shortNiceNumber(tokenVolume24h, 2, 1)} {niceCurrency(token.currency)}
                               </span>
@@ -7896,7 +7914,7 @@ export default function Account({
               <>
                 <div className="section-header-row object-section-header-row">
                   <div className="section-title object-section-title">
-                    Issued MPTs <span className="object-title-count">{issuedMpts.length}</span>
+                    {ta('sections.issued-mpts')} <span className="object-title-count">{issuedMpts.length}</span>
                   </div>
                 </div>
 
@@ -7921,14 +7939,14 @@ export default function Account({
                           </div>
                           <div className="asset-value">
                             <div className="asset-amount">{shortNiceNumber(outstanding)}</div>
-                            <div className="asset-fiat">Outstanding</div>
+                            <div className="asset-fiat">{ta('labels.outstanding')}</div>
                           </div>
                         </div>
 
                         {isExpanded && (
                           <div className="asset-details">
                             <div className="detail-row">
-                              <span>MPT ID:</span>
+                              <span>{ta('labels.mpt-id')}:</span>
                               <span className="copy-inline">
                                 <span>{shortHash(mptId(mptNode) || '-')}</span>
                                 {!!mptId(mptNode) && (
@@ -7939,12 +7957,12 @@ export default function Account({
                               </span>
                             </div>
                             <div className="detail-row">
-                              <span>Outstanding:</span>
+                              <span>{ta('labels.outstanding')}:</span>
                               <span>{fullNiceNumber(outstanding)}</span>
                             </div>
                             <div className="detail-row">
-                              <span>Max supply:</span>
-                              <span>{maxSupply === null ? 'not set' : fullNiceNumber(maxSupply)}</span>
+                              <span>{ta('labels.max-supply')}:</span>
+                              <span>{maxSupply === null ? ta('states.not-set') : fullNiceNumber(maxSupply)}</span>
                             </div>
                           </div>
                         )}
@@ -7959,11 +7977,11 @@ export default function Account({
               <>
                 <div className="section-header-row object-section-header-row">
                   <div className="section-title object-section-title">
-                    DEX orders <span className="object-title-count">{dexOrders.length}</span>
+                    {ta('sections.dex-orders')} <span className="object-title-count">{dexOrders.length}</span>
                   </div>
                   {data?.address && (
                     <Link className="section-link" href={`/account/${data.address}/dex`}>
-                      View all
+                      {ta('actions.view-all')}
                     </Link>
                   )}
                 </div>
@@ -7975,7 +7993,7 @@ export default function Account({
                     const isSell = !!offer?.flags?.sell
                     const baseAmount = isSell ? offer?.TakerGets : offer?.TakerPays
                     const quoteAmount = isSell ? offer?.TakerPays : offer?.TakerGets
-                    const collapsedMainLabel = isSell ? 'Selling' : 'Buying'
+                    const collapsedMainLabel = isSell ? ta('tabs.selling-lower') : ta('tabs.buying-lower')
                     const collapsedPrimary = amountFormat(baseAmount, {
                       short: true,
                       maxFractionDigits: 2,
@@ -8026,7 +8044,7 @@ export default function Account({
                               <span className="escrow-time-top">{offerDateText}</span>
                             </div>
                             <div className="tx-collapsed-meta">
-                              <span className="tx-accountset-inline">for {collapsedSecondary}</span>
+                              <span className="tx-accountset-inline">{ta('phrases.for')} {collapsedSecondary}</span>
                             </div>
                           </div>
                           <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
@@ -8037,7 +8055,7 @@ export default function Account({
                         {isExpanded && (
                           <div className="asset-details">
                             <div className="detail-row">
-                              <span>{isSell ? 'Selling:' : 'Wants to buy:'}</span>
+                              <span>{isSell ? `${ta('tabs.selling-lower')}:` : `${ta('labels.wants-to-buy')}:`}</span>
                               <span>
                                 {amountFormat(isSell ? offer?.TakerGets : offer?.TakerPays, {
                                   icon: true,
@@ -8047,7 +8065,7 @@ export default function Account({
                               </span>
                             </div>
                             <div className="detail-row">
-                              <span>{isSell ? 'Wants at least:' : 'Can pay maximum:'}</span>
+                              <span>{isSell ? `${ta('labels.wants-at-least')}:` : `${ta('labels.can-pay-maximum')}:`}</span>
                               <span>
                                 {amountFormat(isSell ? offer?.TakerPays : offer?.TakerGets, {
                                   icon: true,
@@ -8057,15 +8075,15 @@ export default function Account({
                               </span>
                             </div>
                             <div className="detail-row">
-                              <span>Rate:</span>
+                              <span>{ta('labels.rate')}:</span>
                               <span>{rateText}</span>
                             </div>
                             <div className="detail-row">
-                              <span>Sequence:</span>
+                              <span>{ta('labels.sequence')}:</span>
                               <span>{offer?.Sequence || '-'}</span>
                             </div>
                             <div className="detail-row">
-                              <span>Offer ID:</span>
+                              <span>{ta('labels.offer-id')}:</span>
                               <span className="copy-inline">
                                 <span>{offer?.index ? shortHash(offer.index) : '-'}</span>
                                 {!!offer?.index && (
@@ -8076,7 +8094,7 @@ export default function Account({
                                       onClick={(event) => event.stopPropagation()}
                                     >
                                       <LinkIcon />
-                                      <span className="tooltiptext no-brake">Object page</span>
+                                      <span className="tooltiptext no-brake">{ta('tooltips.object-page')}</span>
                                     </Link>
                                     <span onClick={(event) => event.stopPropagation()}>
                                       <CopyButton text={offer.index} />
@@ -8092,11 +8110,11 @@ export default function Account({
                                   const canCancel = !!setSignRequest && offer?.Account === account?.address
                                   const disabledCancelDexOrderTooltip = (() => {
                                     if (canCancel) return ''
-                                    if (!setSignRequest) return 'Connect wallet to cancel this DEX order'
-                                    if (!account?.address) return 'Connect wallet to cancel this DEX order'
-                                    if (!offer?.Account) return 'Offer owner is unknown'
-                                    if (offer.Account !== account.address) return 'Only offer owner can cancel it'
-                                    return 'This DEX order cannot be canceled'
+                                    if (!setSignRequest) return ta('tooltips.connect-cancel-dex-order')
+                                    if (!account?.address) return ta('tooltips.connect-cancel-dex-order')
+                                    if (!offer?.Account) return ta('tooltips.offer-owner-unknown')
+                                    if (offer.Account !== account.address) return ta('tooltips.only-offer-owner-cancel')
+                                    return ta('tooltips.dex-order-cannot-cancel')
                                   })()
                                   return (
                                     <span className={disabledCancelDexOrderTooltip ? 'tooltip' : ''}>
@@ -8114,9 +8132,9 @@ export default function Account({
                                             }
                                           })
                                         }}
-                                        title="Cancel"
+                                        title={ta('actions.cancel')}
                                       >
-                                        <MdMoneyOff /> Cancel
+                                        <MdMoneyOff /> {ta('actions.cancel')}
                                       </button>
                                       {!!disabledCancelDexOrderTooltip && (
                                         <span className="tooltiptext left">{disabledCancelDexOrderTooltip}</span>
@@ -8144,7 +8162,9 @@ export default function Account({
                           )
                         }
                       >
-                        Show {Math.min(OBJECT_LOAD_MORE_STEP, dexOrdersRemainingCount)} more DEX orders
+                        {ta('actions.show-more-dex-orders', {
+                          count: Math.min(OBJECT_LOAD_MORE_STEP, dexOrdersRemainingCount)
+                        })}
                       </button>
                     )}
                     {dexOrdersShowMoreAvailable && (
@@ -8153,7 +8173,7 @@ export default function Account({
                         className="asset-compact-toggle"
                         onClick={() => setDexOrdersDisplayLimit(dexOrders.length)}
                       >
-                        Show all DEX orders
+                        {ta('actions.show-all-dex-orders')}
                       </button>
                     )}
                     {showDexOrdersFewerButton && (
@@ -8162,7 +8182,7 @@ export default function Account({
                         className="asset-compact-toggle"
                         onClick={() => setDexOrdersDisplayLimit(OBJECT_PREVIEW_LIMIT)}
                       >
-                        Show fewer DEX orders
+                        {ta('actions.show-fewer-dex-orders')}
                       </button>
                     )}
                   </div>
@@ -8186,14 +8206,14 @@ export default function Account({
                         className={`object-tab-btn ${checksTab === 'received' ? 'active' : ''}`}
                         onClick={() => setChecksTab('received')}
                       >
-                        Received
+                        {ta('tabs.received')}
                       </button>
                       <button
                         type="button"
                         className={`object-tab-btn ${checksTab === 'sent' ? 'active' : ''}`}
                         onClick={() => setChecksTab('sent')}
                       >
-                        Sent
+                        {ta('tabs.sent')}
                       </button>
                     </div>
                   </div>
@@ -8235,7 +8255,7 @@ export default function Account({
                         const expirationValue = check?.expiration || check?.Expiration
                         const expirationText = expirationValue
                           ? timeFromNow(expirationValue, i18n, 'ripple')
-                          : 'does not expire'
+                          : ta('states.does-not-expire')
                         const isExpired = expirationValue ? timestampExpired(expirationValue, 'ripple') : false
                         const canRedeem =
                           !!setSignRequest &&
@@ -8248,26 +8268,26 @@ export default function Account({
                           (check?.Destination === account?.address || check?.Account === account?.address || isExpired)
                         const disabledRedeemCheckTooltip = (() => {
                           if (canRedeem) return ''
-                          if (!setSignRequest) return 'Connect wallet to redeem this check'
-                          if (isExpired) return 'This check is expired'
-                          if (!account?.address) return 'Connect wallet to redeem this check'
+                          if (!setSignRequest) return ta('tooltips.connect-redeem-check')
+                          if (isExpired) return ta('tooltips.check-expired')
+                          if (!account?.address) return ta('tooltips.connect-redeem-check')
                           if (check?.Destination && check.Destination !== account.address) {
-                            return 'Only destination account can redeem it'
+                            return ta('tooltips.only-destination-redeem')
                           }
-                          return 'This check cannot be redeemed'
+                          return ta('tooltips.check-cannot-redeem')
                         })()
                         const disabledCancelCheckTooltip = (() => {
                           if (canCancel) return ''
-                          if (!setSignRequest) return 'Connect wallet to cancel this check'
-                          if (!account?.address) return 'Connect wallet to cancel this check'
+                          if (!setSignRequest) return ta('tooltips.connect-cancel-check')
+                          if (!account?.address) return ta('tooltips.connect-cancel-check')
                           if (
                             !isExpired &&
                             check?.Destination !== account.address &&
                             check?.Account !== account.address
                           ) {
-                            return 'Only source or destination account can cancel it'
+                            return ta('tooltips.only-source-destination-cancel')
                           }
-                          return 'This check cannot be canceled'
+                          return ta('tooltips.check-cannot-cancel')
                         })()
 
                         return (
@@ -8318,7 +8338,7 @@ export default function Account({
                                   </>
                                 )}
                                 <div className="detail-row">
-                                  <span>Amount:</span>
+                                  <span>{ta('labels.amount')}:</span>
                                   <span className="amount-with-fiat">
                                     <span className="no-brake">{sendMaxAmountOnly}</span>
                                     {sendMaxFiatText && (
@@ -8329,11 +8349,11 @@ export default function Account({
                                   </span>
                                 </div>
                                 <div className="detail-row">
-                                  <span>Sent:</span>
+                                  <span>{ta('tabs.sent')}:</span>
                                   <span>{sentAtText}</span>
                                 </div>
                                 <div className="detail-row">
-                                  <span>{activeChecksTab === 'sent' ? 'To' : 'From'}:</span>
+                                  <span>{activeChecksTab === 'sent' ? ta('labels.to') : ta('labels.from')}:</span>
                                   <span>
                                     {counterpartAddress ? (
                                       <AddressWithIconInline
@@ -8347,16 +8367,16 @@ export default function Account({
                                 </div>
                                 {typeof check?.DestinationTag !== 'undefined' && (
                                   <div className="detail-row">
-                                    <span>Destination tag:</span>
+                                    <span>{ta('labels.destination-tag')}:</span>
                                     <span>{check.DestinationTag}</span>
                                   </div>
                                 )}
                                 <div className="detail-row">
-                                  <span>Expiration:</span>
+                                  <span>{ta('labels.expiration')}:</span>
                                   <span className={isExpired ? 'red' : ''}>{expirationText}</span>
                                 </div>
                                 <div className="detail-row">
-                                  <span>Check ID:</span>
+                                  <span>{ta('labels.check-id')}:</span>
                                   <span className="copy-inline">
                                     <span>{shortHash(check?.index)}</span>
                                     {!!check?.index && (
@@ -8386,7 +8406,7 @@ export default function Account({
                                           })
                                         }}
                                       >
-                                        <TbPigMoney /> Redeem
+                                        <TbPigMoney /> {ta('actions.redeem')}
                                       </button>
                                       {!!disabledRedeemCheckTooltip && (
                                         <span className="tooltiptext left">{disabledRedeemCheckTooltip}</span>
@@ -8407,7 +8427,7 @@ export default function Account({
                                           })
                                         }}
                                       >
-                                        <MdMoneyOff /> Cancel
+                                        <MdMoneyOff /> {ta('actions.cancel')}
                                       </button>
                                       {!!disabledCancelCheckTooltip && (
                                         <span className="tooltiptext left">{disabledCancelCheckTooltip}</span>
@@ -8433,7 +8453,9 @@ export default function Account({
                               )
                             }
                           >
-                            Show {Math.min(OBJECT_LOAD_MORE_STEP, activeChecksRemainingCount)} more checks
+                            {ta('actions.show-more-checks', {
+                              count: Math.min(OBJECT_LOAD_MORE_STEP, activeChecksRemainingCount)
+                            })}
                           </button>
                         )}
                         {activeChecksShowMoreAvailable && (
@@ -8442,7 +8464,7 @@ export default function Account({
                             className="asset-compact-toggle"
                             onClick={() => setChecksDisplayLimit(activeChecksList.length)}
                           >
-                            Show all checks
+                            {ta('actions.show-all-checks')}
                           </button>
                         )}
                         {showChecksFewerButton && (
@@ -8451,7 +8473,7 @@ export default function Account({
                             className="asset-compact-toggle"
                             onClick={() => setChecksDisplayLimit(OBJECT_PREVIEW_LIMIT)}
                           >
-                            Show fewer checks
+                            {ta('actions.show-fewer-checks')}
                           </button>
                         )}
                       </div>
@@ -8478,7 +8500,7 @@ export default function Account({
                           className={`object-tab-btn ${escrowsTab === 'self' ? 'active' : ''}`}
                           onClick={() => setEscrowsTab('self')}
                         >
-                          Self
+                          {ta('tabs.self')}
                         </button>
                       )}
                       {hasReceivedEscrows && (
@@ -8487,7 +8509,7 @@ export default function Account({
                           className={`object-tab-btn ${escrowsTab === 'received' ? 'active' : ''}`}
                           onClick={() => setEscrowsTab('received')}
                         >
-                          Incoming
+                          {ta('tabs.incoming')}
                         </button>
                       )}
                       {hasSentEscrows && (
@@ -8496,7 +8518,7 @@ export default function Account({
                           className={`object-tab-btn ${escrowsTab === 'sent' ? 'active' : ''}`}
                           onClick={() => setEscrowsTab('sent')}
                         >
-                          Outgoing
+                          {ta('tabs.outgoing')}
                         </button>
                       )}
                     </div>
@@ -8514,16 +8536,16 @@ export default function Account({
                         const amountCollapsed = amountFormat(escrow?.Amount, { short: true, maxFractionDigits: 2 })
                         const cancelAfterText = escrow?.CancelAfter
                           ? timeFromNow(escrow.CancelAfter, i18n, 'ripple')
-                          : 'not set'
+                          : ta('states.not-set')
                         const cancelAfterFullText = escrow?.CancelAfter
                           ? fullDateAndTime(escrow.CancelAfter, 'ripple')
-                          : 'not set'
+                          : ta('states.not-set')
                         const finishAfterText = escrow?.FinishAfter
                           ? timeFromNow(escrow.FinishAfter, i18n, 'ripple')
-                          : 'not set'
+                          : ta('states.not-set')
                         const finishAfterFullText = escrow?.FinishAfter
                           ? fullDateAndTime(escrow.FinishAfter, 'ripple')
-                          : 'not set'
+                          : ta('states.not-set')
                         const isCanceled = escrow?.CancelAfter ? timestampExpired(escrow.CancelAfter, 'ripple') : false
                         const isUnlockable = escrow?.FinishAfter
                           ? timestampExpired(escrow.FinishAfter, 'ripple')
@@ -8544,21 +8566,21 @@ export default function Account({
                           timestampExpired(escrow.CancelAfter, 'ripple')
                         const disabledExecuteEscrowTooltip = (() => {
                           if (canExecute) return ''
-                          if (!setSignRequest) return 'Connect wallet to execute this escrow'
-                          if (!escrow?.FinishAfter) return 'This escrow has no unlock time'
-                          if (!timestampExpired(escrow.FinishAfter, 'ripple')) return 'This escrow is still locked'
+                          if (!setSignRequest) return ta('tooltips.connect-execute-escrow')
+                          if (!escrow?.FinishAfter) return ta('tooltips.escrow-no-unlock-time')
+                          if (!timestampExpired(escrow.FinishAfter, 'ripple')) return ta('tooltips.escrow-still-locked')
                           if (escrow?.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple')) {
-                            return 'This escrow has already expired'
+                            return ta('tooltips.escrow-expired')
                           }
-                          return 'This escrow cannot be executed'
+                          return ta('tooltips.escrow-cannot-execute')
                         })()
                         const disabledCancelEscrowTooltip = (() => {
                           if (canCancel) return ''
-                          if (!setSignRequest) return 'Connect wallet to cancel this escrow'
-                          if (!escrow?.CancelAfter) return 'This escrow cannot be canceled'
+                          if (!setSignRequest) return ta('tooltips.connect-cancel-escrow')
+                          if (!escrow?.CancelAfter) return ta('tooltips.escrow-cannot-cancel')
                           if (!timestampExpired(escrow.CancelAfter, 'ripple'))
-                            return 'This escrow is not cancellable yet'
-                          return 'This escrow cannot be canceled'
+                            return ta('tooltips.escrow-not-cancellable-yet')
+                          return ta('tooltips.escrow-cannot-cancel')
                         })()
                         const collapsedTimeText = isCanceled
                           ? cancelAfterText
@@ -8569,7 +8591,7 @@ export default function Account({
                               : '-'
                         const isOutgoingEscrow = activeEscrowsTab === 'sent'
                         const isSelfEscrow = activeEscrowsTab === 'self'
-                        const collapsedDirectionLabel = isSelfEscrow ? '' : isOutgoingEscrow ? 'to' : 'from'
+                        const collapsedDirectionLabel = isSelfEscrow ? '' : isOutgoingEscrow ? ta('labels.to') : ta('labels.from')
                         const collapsedAmountClass = isSelfEscrow ? 'grey' : isOutgoingEscrow ? 'red' : 'green'
                         const collapsedAmountSign = isSelfEscrow ? '' : isOutgoingEscrow ? '-' : '+'
                         const escrowAmountDrops = Number(escrow?.Amount || 0)
@@ -8641,7 +8663,7 @@ export default function Account({
                               <div className="asset-details">
                                 {!isSelfEscrow && (
                                   <div className="detail-row">
-                                    <span>{activeEscrowsTab === 'sent' ? 'To' : 'From'}:</span>
+                                    <span>{activeEscrowsTab === 'sent' ? ta('labels.to') : ta('labels.from')}:</span>
                                     <span className="copy-inline">
                                       {counterpartAddress ? (
                                         <>
@@ -8663,7 +8685,7 @@ export default function Account({
                                 )}
 
                                 <div className="detail-row">
-                                  <span>Expire:</span>
+                                  <span>{ta('labels.expire')}:</span>
                                   <span
                                     className={
                                       escrow?.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''
@@ -8674,7 +8696,7 @@ export default function Account({
                                 </div>
 
                                 <div className="detail-row">
-                                  <span>Unlock:</span>
+                                  <span>{ta('labels.unlock')}:</span>
                                   <span
                                     className={
                                       escrow?.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple')
@@ -8687,7 +8709,7 @@ export default function Account({
                                 </div>
 
                                 <div className="detail-row">
-                                  <span>Amount:</span>
+                                  <span>{ta('labels.amount')}:</span>
                                   <span>
                                     {amountFormat(escrow?.Amount, { precise: 'nice' })}
                                     {!isSelfEscrow && expandedAmountFiatNode}
@@ -8695,7 +8717,7 @@ export default function Account({
                                 </div>
 
                                 <div className="detail-row">
-                                  <span>Escrow ID:</span>
+                                  <span>{ta('labels.escrow-id')}:</span>
                                   <span className="copy-inline">
                                     <span>{escrow?.index ? shortHash(escrow.index) : '-'}</span>
                                     {!!escrow?.index && (
@@ -8706,7 +8728,7 @@ export default function Account({
                                           onClick={(event) => event.stopPropagation()}
                                         >
                                           <LinkIcon />
-                                          <span className="tooltiptext no-brake">Object page</span>
+                                          <span className="tooltiptext no-brake">{ta('tooltips.object-page')}</span>
                                         </Link>
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <CopyButton text={escrow.index} />
@@ -8734,7 +8756,7 @@ export default function Account({
                                           })
                                         }}
                                       >
-                                        <TbPigMoney /> Execute
+                                        <TbPigMoney /> {ta('actions.execute')}
                                       </button>
                                       {!!disabledExecuteEscrowTooltip && (
                                         <span className="tooltiptext left">{disabledExecuteEscrowTooltip}</span>
@@ -8756,7 +8778,7 @@ export default function Account({
                                           })
                                         }}
                                       >
-                                        <MdMoneyOff /> Cancel
+                                        <MdMoneyOff /> {ta('actions.cancel')}
                                       </button>
                                       {!!disabledCancelEscrowTooltip && (
                                         <span className="tooltiptext left">{disabledCancelEscrowTooltip}</span>
@@ -8782,7 +8804,9 @@ export default function Account({
                               )
                             }
                           >
-                            Show {Math.min(OBJECT_LOAD_MORE_STEP, activeEscrowsRemainingCount)} more escrows
+                            {ta('actions.show-more-escrows', {
+                              count: Math.min(OBJECT_LOAD_MORE_STEP, activeEscrowsRemainingCount)
+                            })}
                           </button>
                         )}
                         {activeEscrowsShowMoreAvailable && (
@@ -8791,7 +8815,7 @@ export default function Account({
                             className="asset-compact-toggle"
                             onClick={() => setEscrowsDisplayLimit(activeEscrowsList.length)}
                           >
-                            Show all escrows
+                            {ta('actions.show-all-escrows')}
                           </button>
                         )}
                         {showEscrowsFewerButton && (
@@ -8800,7 +8824,7 @@ export default function Account({
                             className="asset-compact-toggle"
                             onClick={() => setEscrowsDisplayLimit(OBJECT_PREVIEW_LIMIT)}
                           >
-                            Show fewer escrows
+                            {ta('actions.show-fewer-escrows')}
                           </button>
                         )}
                       </div>
@@ -8813,10 +8837,10 @@ export default function Account({
             {hasAnyNftOffersData && (
               <>
                 <div className="section-header-row nft-section-header-row">
-                  <div className="section-title nft-section-title">NFT offers</div>
+                  <div className="section-title nft-section-title">{ta('sections.nft-offers')}</div>
                   {data?.address && activeNftOffersCount > 0 && (
                     <Link className="section-link" href={activeNftOffersViewAllHref}>
-                      View all
+                      {ta('actions.view-all')}
                     </Link>
                   )}
                 </div>
@@ -8829,7 +8853,7 @@ export default function Account({
                         className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
                         onClick={() => selectNftOffersTab('owned')}
                       >
-                        For owned{nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
+                        {ta('tabs.for-owned')}{nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
                       </button>
                     )}
                     {hasReceivedPrivateNftOffers && (
@@ -8838,7 +8862,7 @@ export default function Account({
                         className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
                         onClick={() => selectNftOffersTab('received')}
                       >
-                        Private{nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
+                        {ta('tabs.private')}{nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
                       </button>
                     )}
                     {hasCreatedSellNftOffers && (
@@ -8847,7 +8871,7 @@ export default function Account({
                         className={`nft-tab-btn ${nftOffersTab === 'createdSelling' ? 'active' : ''}`}
                         onClick={() => selectNftOffersTab('createdSelling')}
                       >
-                        Selling
+                        {ta('tabs.selling')}
                         {nftOffersTabCountLabels.createdSelling ? ` (${nftOffersTabCountLabels.createdSelling})` : ''}
                       </button>
                     )}
@@ -8857,7 +8881,7 @@ export default function Account({
                         className={`nft-tab-btn ${nftOffersTab === 'createdBuying' ? 'active' : ''}`}
                         onClick={() => selectNftOffersTab('createdBuying')}
                       >
-                        Buying{nftOffersTabCountLabels.createdBuying ? ` (${nftOffersTabCountLabels.createdBuying})` : ''}
+                        {ta('tabs.buying')}{nftOffersTabCountLabels.createdBuying ? ` (${nftOffersTabCountLabels.createdBuying})` : ''}
                       </button>
                     )}
                   </div>
@@ -8865,7 +8889,7 @@ export default function Account({
 
                 <div className="nft-section-content nft-offers-content">
                   {activeNftOffersLoading ? (
-                    <div className="asset-fiat">Loading NFT offers...</div>
+                    <div className="asset-fiat">{ta('messages.loading-nft-offers')}</div>
                   ) : activeNftOffersError ? (
                     <div className="asset-fiat red">{activeNftOffersError}</div>
                   ) : activeNftOffersCount > 0 ? (
@@ -8891,14 +8915,15 @@ export default function Account({
                           const nftDisplayData = offer?.nftoken || offer
                           const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortHash(nftId)
                           const shortTokenId = shortHash(nftId)
-                          const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
+                          const offerType = offer?.flags?.sellToken ? ta('tabs.sell') : ta('tabs.buy')
+                          const offerTypeCode = offer?.flags?.sellToken ? 'sell' : 'buy'
                           const isPrivateNftOfferTab = nftOffersTab === 'received'
                           const isCreatedNftOfferTab =
                             nftOffersTab === 'createdSelling' || nftOffersTab === 'createdBuying'
                           const isOwnedNftOfferTab = nftOffersTab === 'owned'
                           const isFreeNftOffer = isZeroAmountValue(offer?.amount)
                           const offerAmountText = isFreeNftOffer
-                            ? 'Free'
+                            ? ta('states.free')
                             : offer?.amount
                               ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
                               : null
@@ -8961,17 +8986,17 @@ export default function Account({
                             (!ownerAddress || ownerAddress !== account.address)
                           const disabledAcceptPrivateNftOfferTooltip = (() => {
                             if (!isPrivateNftOfferTab || canAcceptPrivateNftOffer) return ''
-                            if (!account?.address) return 'Connect wallet to buy this NFT'
+                            if (!account?.address) return ta('tooltips.connect-buy-nft')
                             if (ownerAddress && ownerAddress === account.address) {
-                              return 'Offer owner cannot accept this offer'
+                              return ta('tooltips.offer-owner-cannot-accept')
                             }
                             if (destinationAddress && account.address !== destinationAddress) {
-                              return 'Only destination account can accept it'
+                              return ta('tooltips.only-destination-accept')
                             }
                             if (!destinationAddress && data?.address && account.address !== data.address) {
-                              return 'Only the viewed account can accept it'
+                              return ta('tooltips.only-viewed-account-accept')
                             }
-                            return 'This offer cannot be accepted'
+                            return ta('tooltips.offer-cannot-accept')
                           })()
                           const canAcceptOwnedNftOffer =
                             !!setSignRequest &&
@@ -8982,40 +9007,40 @@ export default function Account({
                             (!ownerAddress || ownerAddress !== account.address)
                           const disabledAcceptOwnedNftOfferTooltip = (() => {
                             if (!isOwnedNftOfferTab || canAcceptOwnedNftOffer) return ''
-                            if (!account?.address) return 'Connect wallet to sell this NFT'
+                            if (!account?.address) return ta('tooltips.connect-sell-nft')
                             if (ownerAddress && ownerAddress === account.address) {
-                              return 'Offer owner cannot accept this offer'
+                              return ta('tooltips.offer-owner-cannot-accept')
                             }
                             if (data?.address && account.address !== data.address) {
-                              return 'Only the viewed account can accept it'
+                              return ta('tooltips.only-viewed-account-accept')
                             }
-                            return 'This offer cannot be accepted'
+                            return ta('tooltips.offer-cannot-accept')
                           })()
                           const disabledCancelCreatedNftOfferTooltip = (() => {
                             if (!isCreatedNftOfferTab || canCancelNftOffer) return ''
-                            if (!account?.address) return 'Connect wallet to cancel this offer'
-                            if (!ownerAddress) return 'Offer owner is unknown'
-                            if (ownerAddress !== account.address) return 'Only offer owner can cancel it'
-                            return 'This offer cannot be canceled'
+                            if (!account?.address) return ta('tooltips.connect-cancel-offer')
+                            if (!ownerAddress) return ta('tooltips.offer-owner-unknown')
+                            if (ownerAddress !== account.address) return ta('tooltips.only-offer-owner-cancel')
+                            return ta('tooltips.offer-cannot-cancel')
                           })()
                           const secondaryLine = (() => {
                             if (nftOffersTab === 'received') {
-                              return isOwnAccount ? 'Private offer to you' : 'Private offer to this account'
+                              return isOwnAccount ? ta('nft-offers.private-to-you') : ta('nft-offers.private-to-account')
                             }
                             if (nftOffersTab === 'owned') {
-                              return isOwnAccount ? 'Offer on your NFT' : 'Offer on NFT owned by this account'
+                              return isOwnAccount ? ta('nft-offers.on-your-nft') : ta('nft-offers.on-account-owned-nft')
                             }
-                            if (offerType === 'Buy') {
-                              return isOwnAccount ? 'Your buy offer' : 'Buy offer created by this account'
+                            if (offerTypeCode === 'buy') {
+                              return isOwnAccount ? ta('nft-offers.your-buy-offer') : ta('nft-offers.account-buy-offer')
                             }
-                            return isOwnAccount ? 'Your sell offer' : 'Sell offer created by this account'
+                            return isOwnAccount ? ta('nft-offers.your-sell-offer') : ta('nft-offers.account-sell-offer')
                           })()
                           const collapsedAmountDirection = (() => {
                             if (nftOffersTab === 'received') return { sign: '-', className: 'grey' }
                             if (nftOffersTab === 'owned') return { sign: '+', className: 'grey' }
 
                             // Created offers: buy offer means you pay; sell offer means you receive.
-                            return offerType === 'Buy'
+                            return offerTypeCode === 'buy'
                               ? { sign: '-', className: 'grey' }
                               : { sign: '+', className: 'grey' }
                           })()
@@ -9074,7 +9099,7 @@ export default function Account({
                                   )}
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${collapsedAmountClass}`}>
-                                      {isFreeNftOffer ? 'Free' : `${collapsedAmountSign}${offerAmountText || '-'}`}
+                                      {isFreeNftOffer ? ta('states.free') : `${collapsedAmountSign}${offerAmountText || '-'}`}
                                     </span>
                                     {offerAmountFiat && (
                                       <span className="tx-change-fiat">
@@ -9099,7 +9124,7 @@ export default function Account({
                                   </div>
                                   {offerIndex && (
                                     <div className="detail-row">
-                                      <span>Offer:</span>
+                                      <span>{ta('labels.offer')}:</span>
                                       <span className="copy-inline">
                                         <Link
                                           href={`/nft-offer/${offerIndex}`}
@@ -9114,12 +9139,12 @@ export default function Account({
                                     </div>
                                   )}
                                   <div className="detail-row">
-                                    <span>Offer type:</span>
+                                    <span>{ta('labels.offer-type')}:</span>
                                     <span>{offerType}</span>
                                   </div>
                                   {offerAmountText && (
                                     <div className="detail-row">
-                                      <span>Amount:</span>
+                                      <span>{ta('labels.amount')}:</span>
                                       <span>
                                         <span className={isFreeNftOffer ? 'orange' : undefined}>{offerAmountText}</span>
                                         {!isFreeNftOffer && offerAmountFiat && (
@@ -9133,13 +9158,13 @@ export default function Account({
                                   )}
                                   {offerPlacedExact && (
                                     <div className="detail-row">
-                                      <span>Placed:</span>
+                                      <span>{ta('labels.placed')}:</span>
                                       <span>{offerPlacedExact}</span>
                                     </div>
                                   )}
                                   {expirationRelative && (
                                     <div className="detail-row nft-offer-expiration-row">
-                                      <span>Expires:</span>
+                                      <span>{ta('labels.expires')}:</span>
                                       <span className="nft-offer-expiration-time">
                                         {expirationRelative}
                                         {expirationExact && (
@@ -9150,7 +9175,7 @@ export default function Account({
                                   )}
                                   {ownerAddress && nftOffersTab !== 'created' && (
                                     <div className="detail-row">
-                                      <span>From:</span>
+                                      <span>{ta('labels.from')}:</span>
                                       <span className="copy-inline">
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <AddressWithIconInline
@@ -9167,7 +9192,7 @@ export default function Account({
                                   )}
                                   {destinationAddress && nftOffersTab !== 'received' && (
                                     <div className="detail-row">
-                                      <span>To:</span>
+                                      <span>{ta('labels.to')}:</span>
                                       <span className="copy-inline">
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <AddressWithIconInline
@@ -9218,9 +9243,9 @@ export default function Account({
                                             }}
                                           >
                                             {offer.amount === '0' || !offer.amount ? (
-                                              'Accept NFT transfer'
+                                              ta('actions.accept-nft-transfer')
                                             ) : (
-                                              <>Buy NFT for {amountFormat(offer.amount)}</>
+                                              <>{ta('actions.buy-nft-for', { amount: amountFormat(offer.amount) })}</>
                                             )}
                                           </button>
                                           {!!disabledAcceptPrivateNftOfferTooltip && (
@@ -9249,9 +9274,9 @@ export default function Account({
                                                 }
                                               })
                                             }}
-                                            title="Cancel"
+                                            title={ta('actions.cancel')}
                                           >
-                                            <MdMoneyOff /> Cancel
+                                            <MdMoneyOff /> {ta('actions.cancel')}
                                           </button>
                                           {!!disabledCancelCreatedNftOfferTooltip && (
                                             <span className="tooltiptext left">
@@ -9282,9 +9307,9 @@ export default function Account({
                                             }}
                                           >
                                             {offer.amount === '0' || !offer.amount ? (
-                                              'Accept NFT transfer'
+                                              ta('actions.accept-nft-transfer')
                                             ) : (
-                                              <>Sell NFT for {amountFormat(offer.amount)}</>
+                                              <>{ta('actions.sell-nft-for', { amount: amountFormat(offer.amount) })}</>
                                             )}
                                           </button>
                                           {!!disabledAcceptOwnedNftOfferTooltip && (
@@ -9314,8 +9339,10 @@ export default function Account({
                                 )
                               }
                             >
-                              Show {Math.min(NFT_LOAD_MORE_STEP, activeNftOffersRemainingCount)} more{' '}
-                              {activeNftOffersTabLabel} NFT offers
+                              {ta('actions.show-more-nft-offers', {
+                                count: Math.min(NFT_LOAD_MORE_STEP, activeNftOffersRemainingCount),
+                                type: activeNftOffersTabLabel
+                              })}
                             </button>
                           )}
                           {showNftOffersFewerButton && (
@@ -9327,7 +9354,7 @@ export default function Account({
                                 setExpandedNftOfferKey(null)
                               }}
                             >
-                              Show fewer {activeNftOffersTabLabel} NFT offers
+                              {ta('actions.show-fewer-nft-offers', { type: activeNftOffersTabLabel })}
                             </button>
                           )}
                         </div>
@@ -9356,14 +9383,14 @@ export default function Account({
                         className={`object-tab-btn ${paychannelsTab === 'incoming' ? 'active' : ''}`}
                         onClick={() => setPaychannelsTab('incoming')}
                       >
-                        Incoming
+                        {ta('tabs.incoming')}
                       </button>
                       <button
                         type="button"
                         className={`object-tab-btn ${paychannelsTab === 'outgoing' ? 'active' : ''}`}
                         onClick={() => setPaychannelsTab('outgoing')}
                       >
-                        Outgoing
+                        {ta('tabs.outgoing')}
                       </button>
                     </div>
                   </div>
@@ -9393,7 +9420,7 @@ export default function Account({
                           fiatRate: pageFiatRate,
                           asText: true
                         })
-                        const counterpartLabel = activePaychannelsTab === 'outgoing' ? 'To' : 'From'
+                        const counterpartLabel = activePaychannelsTab === 'outgoing' ? ta('labels.to') : ta('labels.from')
                         const amountDisplay = amountText || '-'
                         const balanceDisplay = balanceText || '-'
                         const balanceFiatText = balanceFiatNode || '—'
@@ -9422,7 +9449,7 @@ export default function Account({
                                 </div>
                               </div>
                               <div className="asset-value paychannel-metrics">
-                                <span className="paychannel-metric-caption">Amount / Balance</span>
+                                <span className="paychannel-metric-caption">{ta('labels.amount-balance')}</span>
                                 <div className="paychannel-metric-main">
                                   <span className="paychannel-metric-balance">{balanceDisplay}</span>
                                   <span className="paychannel-metric-separator">/</span>
@@ -9465,11 +9492,11 @@ export default function Account({
                                   </span>
                                 </div>
                                 <div className="detail-row">
-                                  <span>Amount:</span>
+                                  <span>{ta('labels.amount')}:</span>
                                   <span>{amountDisplay}</span>
                                 </div>
                                 <div className="detail-row">
-                                  <span>Balance:</span>
+                                  <span>{ta('labels.balance')}:</span>
                                   <span>
                                     {balanceDisplay}
                                     {balanceFiatText !== '—' && (
@@ -9482,7 +9509,7 @@ export default function Account({
                                 </div>
                                 {channelObjectId && (
                                   <div className="detail-row">
-                                    <span>Object:</span>
+                                    <span>{ta('labels.object')}:</span>
                                     <span className="copy-inline">
                                       <span>{shortHash(channelObjectId)}</span>
                                       <Link
@@ -9491,7 +9518,7 @@ export default function Account({
                                         onClick={(event) => event.stopPropagation()}
                                       >
                                         <LinkIcon />
-                                        <span className="tooltiptext no-brake">Object page</span>
+                                        <span className="tooltiptext no-brake">{ta('tooltips.object-page')}</span>
                                       </Link>
                                       <span onClick={(event) => event.stopPropagation()}>
                                         <CopyButton text={channelObjectId} />
@@ -9517,7 +9544,9 @@ export default function Account({
                               )
                             }
                           >
-                            Show {Math.min(OBJECT_LOAD_MORE_STEP, activePaychannelsRemainingCount)} more paychannels
+                            {ta('actions.show-more-paychannels', {
+                              count: Math.min(OBJECT_LOAD_MORE_STEP, activePaychannelsRemainingCount)
+                            })}
                           </button>
                         )}
                         {activePaychannelsShowMoreAvailable && (
@@ -9526,7 +9555,7 @@ export default function Account({
                             className="asset-compact-toggle"
                             onClick={() => setPaychannelsDisplayLimit(activePaychannelsList.length)}
                           >
-                            Show all paychannels
+                            {ta('actions.show-all-paychannels')}
                           </button>
                         )}
                         {showPaychannelsFewerButton && (
@@ -9535,7 +9564,7 @@ export default function Account({
                             className="asset-compact-toggle"
                             onClick={() => setPaychannelsDisplayLimit(OBJECT_PREVIEW_LIMIT)}
                           >
-                            Show fewer paychannels
+                            {ta('actions.show-fewer-paychannels')}
                           </button>
                         )}
                       </div>
@@ -9549,7 +9578,7 @@ export default function Account({
               <>
                 <div className="section-header-row object-section-header-row">
                   <div className="section-title object-section-title">
-                    Activated accounts{' '}
+                    {ta('sections.activated-accounts')}{' '}
                     {(!activatedAccountsLoading || activatedAccountsCount > 0) && (
                       <span className="object-title-count" suppressHydrationWarning>
                         <span className="tooltip">
@@ -9576,23 +9605,23 @@ export default function Account({
                     <button
                       className="tx-filter-toggle tooltip"
                       onClick={reloadActivatedAccounts}
-                      aria-label="Reload activated accounts"
+                      aria-label={ta('aria.reload-activated-accounts')}
                       type="button"
                       disabled={!data?.address || activatedAccountsLoading || activatedAccountsLoadingMore}
                     >
                       <FaArrowsRotate
                         className={`tx-refresh-icon ${activatedAccountsLoading || activatedAccountsLoadingMore ? 'spinning' : ''}`}
                       />
-                      <span className="tooltiptext">Update</span>
+                      <span className="tooltiptext">{ta('actions.update')}</span>
                     </button>
                     <button
                       className={`tx-filter-toggle tooltip ${showActivatedAccountsFilters ? 'active' : ''}`}
                       onClick={() => setShowActivatedAccountsFilters((prev) => !prev)}
-                      aria-label="Toggle activated accounts filters"
+                      aria-label={ta('aria.toggle-activated-accounts-filters')}
                       type="button"
                     >
                       <FaGear />
-                      <span className="tooltiptext">Settings</span>
+                      <span className="tooltiptext">{ta('labels.settings')}</span>
                     </button>
                   </div>
                 </div>
@@ -9601,13 +9630,13 @@ export default function Account({
                   <div className="tx-filters-panel">
                     <div className="tx-filter-grid">
                       <label className="tx-filter-field">
-                        <span>Order</span>
+                        <span>{ta('labels.order')}</span>
                         <select
                           value={activatedAccountsOrder}
                           onChange={(event) => setActivatedAccountsOrder(event.target.value)}
                         >
-                          <option value="desc">Latest first</option>
-                          <option value="asc">Oldest first</option>
+                          <option value="desc">{ta('filters.latest-first')}</option>
+                          <option value="asc">{ta('filters.oldest-first')}</option>
                         </select>
                       </label>
                     </div>
@@ -9617,7 +9646,7 @@ export default function Account({
                 {activatedAccountsLoading ? (
                   <div className="asset-item object-load-status">
                     <span className="tx-inline-load object-load-status-text">
-                      <span>Loading activated accounts</span>
+                      <span>{ta('messages.loading-activated-accounts')}</span>
                       <span className="waiting inline" aria-hidden="true"></span>
                     </span>
                   </div>
@@ -9689,23 +9718,23 @@ export default function Account({
                               {isExpanded && (
                                 <div className="asset-details" onClick={(e) => e.stopPropagation()}>
                                   <div className="detail-row">
-                                    <span>Address:</span>
+                                    <span>{ta('labels.address')}:</span>
                                     <span className="copy-inline">
                                       <AddressWithIconInline data={child} name="account" options={{ short: 6 }} />
                                       <CopyButton text={child.account} />
                                     </span>
                                   </div>
                                   <div className="detail-row">
-                                    <span>Balance funded:</span>
+                                    <span>{ta('labels.balance-funded')}:</span>
                                     <span>{amountFormat(activationAmountDrops, { precise: 'nice' })}</span>
                                   </div>
                                   <div className="detail-row">
-                                    <span>Activated:</span>
+                                    <span>{ta('labels.activated')}:</span>
                                     <span>{activationTimeFull}</span>
                                   </div>
                                   {child.txHash && (
                                     <div className="detail-row">
-                                      <span>Activation tx:</span>
+                                      <span>{ta('labels.activation-tx')}:</span>
                                       <span className="copy-inline">
                                         <Link
                                           href={`/tx/${child.txHash}`}
@@ -9719,7 +9748,7 @@ export default function Account({
                                   )}
                                   {currentBalanceDrops !== null && !child.deletedAt && !child.deletedTxHash && (
                                     <div className="detail-row">
-                                      <span>Balance now:</span>
+                                      <span>{ta('labels.balance-now')}:</span>
                                       <span className="tx-detail-stacked-amount">
                                         <span>{amountFormat(currentBalanceDrops, { precise: 'nice' })}</span>
                                         {!!currentBalanceFiatText && (
@@ -9734,13 +9763,13 @@ export default function Account({
                                     <>
                                       {lastSubmittedFull && (
                                         <div className="detail-row">
-                                          <span>Last active:</span>
+                                          <span>{ta('labels.last-active')}:</span>
                                           <span title={String(lastSubmittedFull)}>{lastSubmittedFull}</span>
                                         </div>
                                       )}
                                       {child.lastSubmittedTxHash && (
                                         <div className="detail-row">
-                                          <span>Last submitted tx:</span>
+                                          <span>{ta('labels.last-submitted-tx')}:</span>
                                           <span className="copy-inline">
                                             <Link
                                               href={`/tx/${child.lastSubmittedTxHash}`}
@@ -9758,13 +9787,13 @@ export default function Account({
                                     <>
                                       {deletedFull && (
                                         <div className="detail-row">
-                                          <span>Deleted:</span>
+                                          <span>{ta('labels.deleted')}:</span>
                                           <span title={String(deletedFull)}>{deletedFull}</span>
                                         </div>
                                       )}
                                       {child.deletedTxHash && (
                                         <div className="detail-row">
-                                          <span>Delete tx:</span>
+                                          <span>{ta('labels.delete-tx')}:</span>
                                           <span className="copy-inline">
                                             <Link
                                               href={`/tx/${child.deletedTxHash}`}
@@ -9802,17 +9831,17 @@ export default function Account({
                               >
                                 {activatedAccountsLoadingMore ? (
                                   <>
-                                    Loading
+                                    {ta('states.loading')}
                                     <span className="waiting inline" aria-hidden="true"></span>
                                   </>
                                 ) : (
-                                  'Load 20 more activated accounts'
+                                  ta('actions.load-more-activated-accounts', { count: 20 })
                                 )}
                               </button>
                             </div>
                           ) : isMobile ? (
                             <div className="tx-mobile-actions">
-                              <span className="tx-mobile-end-label">End of list.</span>
+                              <span className="tx-mobile-end-label">{ta('messages.end-of-list')}</span>
                             </div>
                           ) : null}
                         </div>
@@ -9826,12 +9855,11 @@ export default function Account({
             {!showObjectsLoadStatus && !hasColumn4ObjectSections && (
               <>
                 <div className="section-header-row object-section-header-row">
-                  <div className="section-title object-section-title">Objects</div>
+                  <div className="section-title object-section-title">{ta('sections.objects')}</div>
                 </div>
                 <div className="asset-item object-load-status">
                   <span className="object-load-status-text">
-                    No DEX orders, checks, escrows, NFT offers, paychannels, issued tokens, issued MPTs, or activated
-                    accounts.
+                    {ta('empty.no-account-objects')}
                   </span>
                 </div>
               </>
