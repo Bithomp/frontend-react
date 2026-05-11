@@ -9687,6 +9687,7 @@ export default function Account({
                             ? Number(child.initialBalance)
                             : 0
                           const activationAmountDrops = Math.round(activationAmount * 1000000)
+                          const collapsedActivationAmountText = `${shortNiceNumber(activationAmount, 2, 1) || '0'} ${nativeCurrency}`
                           const currentBalance = Number.isFinite(Number(child?.balance)) ? Number(child.balance) : null
                           const currentBalanceDrops =
                             currentBalance === null ? null : Math.round(currentBalance * 1000000)
@@ -9726,11 +9727,11 @@ export default function Account({
                                 <div className="asset-value tx-collapsed-change">
                                   {activationAmount > 0 ? (
                                     <span className="tx-inline-change red">
-                                      -{amountFormat(activationAmountDrops, { precise: 'nice' })}
+                                      -{collapsedActivationAmountText}
                                     </span>
                                   ) : (
                                     <span className="tx-inline-change grey">
-                                      {amountFormat(activationAmountDrops, { precise: 'nice' })}
+                                      {collapsedActivationAmountText}
                                     </span>
                                   )}
                                 </div>
