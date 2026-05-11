@@ -9840,9 +9840,12 @@ export default function Account({
 
       <style jsx>{`
         .account-container {
+          width: 100%;
           max-width: 1600px;
           margin: 0 auto;
           padding: 20px;
+          box-sizing: border-box;
+          overflow-x: clip;
         }
 
         .historical-banner {
@@ -9965,6 +9968,7 @@ export default function Account({
           gap: 12px;
           position: relative;
           z-index: 1;
+          min-width: 0;
         }
 
         .info-section:hover,
@@ -9983,18 +9987,25 @@ export default function Account({
           align-items: center;
           justify-content: space-between;
           gap: 10px;
+          min-width: 0;
         }
 
         .section-title {
           font-size: 15px;
           font-weight: 600;
           color: var(--text);
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .tx-header-actions {
           display: inline-flex;
           align-items: center;
           gap: 8px;
+          min-width: 0;
+          flex: 0 1 auto;
         }
 
         .tx-filter-toggle {
@@ -10008,6 +10019,7 @@ export default function Account({
           align-items: center;
           justify-content: center;
           cursor: pointer;
+          flex: 0 0 auto;
         }
 
         .tx-filter-toggle:hover,
@@ -10190,6 +10202,25 @@ export default function Account({
         .tx-status-text {
           text-align: center;
           margin: 16px 0;
+        }
+
+        .transactions-section {
+          max-width: 100%;
+          overflow-x: clip;
+        }
+
+        .transactions-section :global(ins),
+        .transactions-section :global(iframe),
+        .transactions-section :global(.adsbygoogle) {
+          max-width: 100% !important;
+        }
+
+        .transactions-section :global(ins.adsbygoogle),
+        .transactions-section :global(.adsbygoogle) {
+          width: 100% !important;
+          min-width: 0 !important;
+          overflow: hidden !important;
+          display: block !important;
         }
 
         .tx-mobile-actions {
@@ -11020,6 +11051,9 @@ export default function Account({
           transition: all 0.2s ease;
           position: relative;
           z-index: 1;
+          min-width: 0;
+          max-width: 100%;
+          box-sizing: border-box;
         }
 
         .asset-item:hover {
@@ -11129,6 +11163,8 @@ export default function Account({
           display: flex;
           flex-direction: column;
           gap: 8px;
+          min-width: 0;
+          max-width: 100%;
         }
 
         .info-section .cards-list {

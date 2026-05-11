@@ -53,6 +53,10 @@
     line-height: 1;
     text-decoration: none;
     white-space: nowrap;
+    max-width: 160px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition:
       color 0.16s ease,
       border-color 0.16s ease,
@@ -69,6 +73,14 @@
       outline: none;
       border-color: var(--accent-link);
       box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 30%, transparent);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .transactions-section .section-link {
+      max-width: 34vw;
+      padding-left: 8px;
+      padding-right: 8px;
     }
   }
 
