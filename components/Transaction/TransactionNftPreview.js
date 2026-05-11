@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
 import { AddressWithIconInline, shortHash } from '../../utils/format'
 import { decode } from '../../utils'
 import { collectionNameText, NftImage, nftName } from '../../utils/nft'
@@ -106,6 +107,8 @@ export const TransactionNftPreviewLink = ({ preview, size = 180, className = '',
 }
 
 export const TransactionNftPreviewPanel = ({ preview }) => {
+  const { t: txT } = useTranslation('transaction')
+
   if (!preview?.nft || !preview?.id) return null
 
   const title = nftName(preview.nft, { maxLength: 80 }) || 'NFT'
@@ -142,7 +145,9 @@ export const TransactionNftPreviewPanel = ({ preview }) => {
           >
             {details.map((item) => (
               <span key={item.label} style={{ display: 'contents' }}>
-                <span className={`grey bold ${item.labelClassName || ''}`.trim()}>{item.label}</span>
+                <span className={`grey bold ${item.labelClassName || ''}`.trim()}>
+                  {txT(`labels.${item.label}`, { defaultValue: item.label })}
+                </span>
                 <span style={{ minWidth: 0, overflowWrap: 'anywhere', textAlign: 'left' }}>
                   {item.addressData ? (
                     <span className="copy-inline">

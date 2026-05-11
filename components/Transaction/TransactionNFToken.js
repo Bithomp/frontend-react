@@ -207,13 +207,6 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {nftPreview && (
-        <tr>
-          <TData colSpan="2">
-            <TransactionNftPreviewPanel preview={nftPreview} />
-          </TData>
-        </tr>
-      )}
       {txType === 'NFTokenMint' && tx.Issuer && (
         <tr>
           <TData>Issuer</TData>
@@ -284,6 +277,14 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
       )}
 
       {outcome?.nftokenChanges?.length > 0 && nftokenChanges(outcome?.nftokenChanges, txType)}
+
+      {nftPreview && (
+        <tr>
+          <TData colSpan="2">
+            <TransactionNftPreviewPanel preview={nftPreview} />
+          </TData>
+        </tr>
+      )}
 
       {/* show created offer details */}
       {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') &&
