@@ -10982,15 +10982,19 @@ export default function Account({
 
         .time-machine-btn {
           flex: 1;
+          min-height: 40px;
           border: 1px solid var(--border-color);
           border-radius: 8px;
           background: var(--background-table);
           color: var(--text);
           font-size: 13px;
-          font-weight: 600;
+          font-weight: 800;
           padding: 8px 10px;
           cursor: pointer;
           transition: all 0.16s ease;
+          box-shadow:
+            inset 0 0 0 1px color-mix(in srgb, var(--button-additional) 72%, transparent),
+            0 2px 4px color-mix(in srgb, var(--text-main) 10%, transparent);
         }
 
         .time-machine-btn:hover {
@@ -10998,28 +11002,44 @@ export default function Account({
         }
 
         .time-machine-btn-update {
-          background: color-mix(in srgb, var(--accent-link) 82%, #ffffff 18%);
-          color: #06272d;
-          border-color: var(--accent-link);
-          font-weight: 800;
+          background: color-mix(in srgb, var(--accent-link) 58%, #002c37 42%);
+          color: #fff;
+          border-color: color-mix(in srgb, var(--accent-link) 44%, #002c37 56%);
         }
 
         .time-machine-btn-update:hover {
-          background: color-mix(in srgb, var(--accent-link) 90%, #ffffff 10%);
+          background: color-mix(in srgb, var(--accent-link) 66%, #002c37 34%);
+          border-color: color-mix(in srgb, var(--accent-link) 54%, #002c37 46%);
           opacity: 1;
         }
 
         .time-machine-btn-reset {
           color: var(--text);
-          border-color: color-mix(in srgb, var(--text-secondary) 52%, var(--border-color));
-          background: color-mix(in srgb, var(--background-table) 72%, var(--text-main) 28%);
-          font-weight: 700;
+          border-color: color-mix(in srgb, var(--accent-link) 38%, var(--text-secondary));
+          background: color-mix(in srgb, var(--accent-link) 10%, var(--button-additional));
         }
 
         .time-machine-btn-reset:hover {
           color: var(--accent-link);
           border-color: var(--accent-link);
-          background: color-mix(in srgb, var(--background-table) 78%, var(--accent-link) 22%);
+          background: color-mix(in srgb, var(--accent-link) 16%, var(--button-additional));
+        }
+
+        :global(body.dark) .time-machine-btn-update {
+          background: color-mix(in srgb, var(--accent-link) 78%, #ffffff 22%);
+          color: #06272d;
+          border-color: color-mix(in srgb, var(--accent-link) 78%, #ffffff 22%);
+        }
+
+        :global(body.dark) .time-machine-btn-update:hover {
+          background: color-mix(in srgb, var(--accent-link) 86%, #ffffff 14%);
+          border-color: color-mix(in srgb, var(--accent-link) 86%, #ffffff 14%);
+        }
+
+        :global(body.dark) .time-machine-btn-reset {
+          color: var(--text-main);
+          border-color: color-mix(in srgb, var(--accent-link) 32%, var(--text-secondary));
+          background: color-mix(in srgb, var(--accent-link) 18%, var(--background-table));
         }
 
         @media (max-width: 560px) {
