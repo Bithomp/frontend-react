@@ -10998,17 +10998,28 @@ export default function Account({
         }
 
         .time-machine-btn-update {
-          background: var(--accent-link);
-          color: #fff;
+          background: color-mix(in srgb, var(--accent-link) 82%, #ffffff 18%);
+          color: #06272d;
           border-color: var(--accent-link);
+          font-weight: 800;
         }
 
         .time-machine-btn-update:hover {
-          opacity: 0.9;
+          background: color-mix(in srgb, var(--accent-link) 90%, #ffffff 10%);
+          opacity: 1;
         }
 
         .time-machine-btn-reset {
-          color: var(--text-secondary);
+          color: var(--text);
+          border-color: color-mix(in srgb, var(--text-secondary) 52%, var(--border-color));
+          background: color-mix(in srgb, var(--background-table) 72%, var(--text-main) 28%);
+          font-weight: 700;
+        }
+
+        .time-machine-btn-reset:hover {
+          color: var(--accent-link);
+          border-color: var(--accent-link);
+          background: color-mix(in srgb, var(--background-table) 78%, var(--accent-link) 22%);
         }
 
         @media (max-width: 560px) {
@@ -12027,11 +12038,12 @@ export default function Account({
         }
 
         .card-action-btn {
-          border: 1px solid color-mix(in srgb, var(--text-secondary) 30%, var(--border-color));
+          border: 1px solid color-mix(in srgb, var(--text-secondary) 48%, var(--border-color));
           border-radius: 6px;
-          background: color-mix(in srgb, var(--background-input) 88%, var(--text-main) 12%);
+          background: color-mix(in srgb, var(--background-input) 76%, var(--text-main) 24%);
           color: var(--text);
           font-size: 12px;
+          font-weight: 700;
           padding: 5px 8px;
           display: inline-flex;
           align-items: center;
@@ -12045,7 +12057,7 @@ export default function Account({
 
         .card-action-btn:hover {
           border-color: var(--text-secondary);
-          background: color-mix(in srgb, var(--background-input) 74%, var(--text-main) 26%);
+          background: color-mix(in srgb, var(--background-input) 64%, var(--text-main) 36%);
         }
 
         .card-action-btn:active {
@@ -12077,10 +12089,10 @@ export default function Account({
 
         .card-action-btn.disabled,
         .card-action-btn:disabled {
-          color: var(--text-secondary);
-          border-color: color-mix(in srgb, var(--text-secondary) 18%, var(--border-color));
-          background: color-mix(in srgb, var(--background-main) 82%, var(--background-input));
-          opacity: 0.75;
+          color: color-mix(in srgb, var(--text) 68%, var(--text-secondary));
+          border-color: color-mix(in srgb, var(--text-secondary) 34%, var(--border-color));
+          background: color-mix(in srgb, var(--background-input) 70%, var(--text-main) 18%);
+          opacity: 1;
           cursor: not-allowed;
         }
 
