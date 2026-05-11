@@ -4451,10 +4451,20 @@ export default function Account({
                     <div className="asset-details">
                       <div className="detail-row">
                         <span>{ta('labels.available')}:</span>
-                        <span className="copy-inline">
-                          <span>{nativeAvailable}</span>
-                          <span onClick={(event) => event.stopPropagation()}>
-                            <CopyButton text={nativeAvailable} />
+                        <span className="amount-with-fiat">
+                          <span className="copy-inline">
+                            <span>{amountFormat(nativeAvailableDrops, { precise: 'nice' })}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={nativeAvailable} />
+                            </span>
+                          </span>
+                          <span className="fiat-line" suppressHydrationWarning>
+                            {tokenToFiat({
+                              amount: nativeAvailableDrops,
+                              selectedCurrency,
+                              fiatRate: pageFiatRate,
+                              asText: true
+                            })}
                           </span>
                         </span>
                       </div>
