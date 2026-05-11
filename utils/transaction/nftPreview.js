@@ -30,5 +30,7 @@ export const getTransactionNftPreview = (data) => {
   const id = nft?.[idKey] || nftId
   if (!nft || !id) return null
 
-  return { id, nft }
+  const change = nftChanges.find((entry) => entry?.[idKey] === id) || nftChanges[0] || null
+
+  return { id, nft, change }
 }

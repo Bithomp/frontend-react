@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { AddressWithIconInline, shortHash } from '../../utils/format'
+import { decode } from '../../utils'
 import { collectionNameText, NftImage, nftName } from '../../utils/nft'
 import CopyButton from '../UI/CopyButton'
 
@@ -16,12 +17,22 @@ const nftCollectionName = (nft) =>
   textValue(nft?.metadata?.collection_name) ||
   textValue(nft?.metadata?.collectionName)
 
-const nftDetails = (nft, title, id) =>
-  [
+const nftFlagList = (flags) => {
+  if (!flags) return ''
+
+  return Object.keys(flags)
+    .filter((key) => key !== 'sellToken' && flags[key])
+    .join(', ')
+}
+
+const nftDetails = (nft, change, title, id) => {
+  const decodedUri = change?.uri ? decode(change.uri) : textValue(nft?.uri)
+  const decodedPreviousUri = change?.previousURI ? decode(change.previousURI) : ''
+  const flags = nftFlagList(nft?.flags)
+
+  return [
     { label: 'Name', value: title },
     { label: 'Collection', value: nftCollectionName(nft) },
-    { label: 'Taxon', value: nft?.nftokenTaxon ?? nft?.taxon },
-    { label: 'Serial', value: nft?.sequence },
     {
       label: 'Issuer',
       value: nft?.issuer,
@@ -32,8 +43,15 @@ const nftDetails = (nft, title, id) =>
           }
         : null
     },
-    { label: 'NFT ID', value: id, link: id ? `/nft/${id}` : '' }
+    { label: 'Transfer fee', value: nft?.transferFee !== undefined ? `${nft.transferFee / 1000}%` : '' },
+    { label: 'Flags', value: flags },
+    { label: 'Taxon', value: nft?.nftokenTaxon ?? nft?.taxon },
+    { label: 'Serial', value: nft?.sequence },
+    { label: 'NFT ID', value: id, link: id ? `/nft/${id}` : '' },
+    { label: 'Previous URI', value: decodedPreviousUri, copy: true },
+    { label: 'URI', value: decodedUri, copy: true }
   ].filter((item) => item.value !== undefined && item.value !== null && item.value !== '')
+}
 
 export const TransactionNftPreviewLink = ({ preview, size = 180, className = '', withTitle = false }) => {
   if (!preview?.nft || !preview?.id) return null
@@ -84,7 +102,7 @@ export const TransactionNftPreviewPanel = ({ preview }) => {
   if (!preview?.nft || !preview?.id) return null
 
   const title = nftName(preview.nft, { maxLength: 80 }) || 'NFT'
-  const details = nftDetails(preview.nft, title, preview.id)
+  const details = nftDetails(preview.nft, preview.change, title, preview.id)
 
   return (
     <div
@@ -127,6 +145,10 @@ export const TransactionNftPreviewPanel = ({ preview }) => {
                   ) : item.link ? (
                     <span className="copy-inline">
                       <Link href={item.link}>{shortHash(item.value, 8)}</Link> <CopyButton text={item.value} />
+                    </span>
+                  ) : item.copy ? (
+                    <span className="copy-inline">
+                      <span>{item.value}</span> <CopyButton text={item.value} />
                     </span>
                   ) : (
                     item.value

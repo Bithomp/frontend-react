@@ -87,7 +87,7 @@ const nftData = (change, nftInfo, txType, { hideNftId = false } = {}) => {
   )
 }
 
-const nftokenChanges = (changes, nftokens, txType, { hideNftId = false } = {}) => {
+const nftokenChanges = (changes, nftokens, txType, { hideNftId = false, hideNftData = false } = {}) => {
   /*
   [
     {
@@ -167,7 +167,7 @@ const nftokenChanges = (changes, nftokens, txType, { hideNftId = false } = {}) =
             } else if (nftChnages[i].status === 'removed') {
               addressFrom = { address: change.address, addressDetails: change.addressDetails }
             }
-          } else {
+          } else if (!hideNftData) {
             output.push(
               <tr key="nft-modify-header">
                 <TData className="bold">
@@ -237,30 +237,34 @@ const nftokenChanges = (changes, nftokens, txType, { hideNftId = false } = {}) =
               <AddressWithIconFilled data={addressTo} name="address" />
             </TData>
           </tr>
-          <tr>
-            <TData className="bold">
-              <br />
-              NFT Data
-            </TData>
-            <TData>
-              <br />
-              <br />
-            </TData>
-          </tr>
-          <tr>
-            <TData colSpan="2">
-              <hr />
-            </TData>
-          </tr>
-          {nftData(changes?.[0].nftokenChanges[0], nftokens[changes?.[0].nftokenChanges[0].nftokenID], txType, {
-            hideNftId
-          })}
-          <tr>
-            <TData colSpan="2">
-              <hr />
-              <br />
-            </TData>
-          </tr>
+          {!hideNftData && (
+            <>
+              <tr>
+                <TData className="bold">
+                  <br />
+                  NFT Data
+                </TData>
+                <TData>
+                  <br />
+                  <br />
+                </TData>
+              </tr>
+              <tr>
+                <TData colSpan="2">
+                  <hr />
+                </TData>
+              </tr>
+              {nftData(changes?.[0].nftokenChanges[0], nftokens[changes?.[0].nftokenChanges[0].nftokenID], txType, {
+                hideNftId
+              })}
+              <tr>
+                <TData colSpan="2">
+                  <hr />
+                  <br />
+                </TData>
+              </tr>
+            </>
+          )}
         </>
       )}
     </>
@@ -462,7 +466,8 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
 
       {outcome?.nftokenChanges?.length > 0 &&
         nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType, {
-          hideNftId: !!nftPreview
+          hideNftId: !!nftPreview,
+          hideNftData: !!nftPreview
         })}
 
       {/* show created offer details */}
