@@ -24,9 +24,9 @@ import SEO from '../components/SEO'
 let ws = null
 
 function sendData() {
-  if (ws.readyState) {
+  if (ws?.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ command: 'subscribe', streams: ['ledger'], id: 1 }))
-  } else {
+  } else if (ws) {
     setTimeout(sendData, 1000)
   }
 }
@@ -35,10 +35,15 @@ export default function LastLedgerInformation() {
   const { t } = useTranslation()
 
   const [ledger, setLedger] = useState(null)
-  const [update, setUpdate] = useState(true)
 
-  const connect = () => {
-    ws = new WebSocket(wssServer)
+  const connect = (shouldReconnect = () => true) => {
+    if (!wssServer || !/^wss?:\/\//.test(wssServer)) return
+
+    try {
+      ws = new WebSocket(wssServer)
+    } catch {
+      return
+    }
 
     ws.onopen = () => {
       sendData()
@@ -86,20 +91,24 @@ export default function LastLedgerInformation() {
     }
 
     ws.onclose = () => {
-      if (update) {
-        connect()
-      }
+      if (shouldReconnect()) connect(shouldReconnect)
     }
   }
 
   useEffect(() => {
+    let active = true
+
     if (navigator.onLine) {
-      connect()
+      connect(() => active)
     }
     return () => {
+      active = false
       setLedger(null)
-      setUpdate(false)
-      if (ws) ws.close()
+      if (ws) {
+        ws.onclose = null
+        ws.close()
+        ws = null
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
