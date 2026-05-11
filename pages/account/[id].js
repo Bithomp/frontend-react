@@ -575,6 +575,7 @@ export default function Account({
   const { t, i18n } = useTranslation()
   const { t: txErrorT } = useTranslation('transaction-errors')
   const ta = (key, values) => t(`detail.${key}`, { ns: 'account', nativeCurrency, ...values })
+  const formatCountText = (count) => Number(count || 0).toLocaleString(i18n.language || undefined)
   const router = useRouter()
   const { Canvas } = useQRCode()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
@@ -3391,7 +3392,7 @@ export default function Account({
                           {' '}
                           {ta('counts.for-addresses', {
                             count: signerAccountsTotal,
-                            formattedCount: fullNiceNumber(signerAccountsTotal)
+                            formattedCount: formatCountText(signerAccountsTotal)
                           })}
                         </>
                       )}
@@ -3488,7 +3489,7 @@ export default function Account({
                           {' '}
                           {ta('counts.for-addresses', {
                             count: nftMinterAccountsTotal,
-                            formattedCount: `${fullNiceNumber(nftMinterAccountsTotal)}${nftMinterAccountsMarker ? '+' : ''}`
+                            formattedCount: `${formatCountText(nftMinterAccountsTotal)}${nftMinterAccountsMarker ? '+' : ''}`
                           })}
                         </>
                       )}
