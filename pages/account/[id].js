@@ -9994,6 +9994,7 @@ export default function Account({
           font-size: 15px;
           font-weight: 600;
           color: var(--text);
+          flex: 1 1 auto;
           min-width: 0;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -10005,7 +10006,7 @@ export default function Account({
           align-items: center;
           gap: 8px;
           min-width: 0;
-          flex: 0 1 auto;
+          flex: 0 0 auto;
         }
 
         .tx-filter-toggle {
@@ -10422,6 +10423,7 @@ export default function Account({
 
         .tx-collapsed-change {
           min-width: 96px;
+          max-width: 46%;
           display: inline-flex;
           flex-direction: column;
           align-items: flex-end;
@@ -10436,6 +10438,9 @@ export default function Account({
           font-size: 14px;
           font-weight: 600;
           line-height: 1.2;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
           white-space: nowrap;
         }
 
@@ -11601,7 +11606,17 @@ export default function Account({
           display: inline-flex;
           align-items: center;
           gap: 6px;
+          flex: 1 1 auto;
           min-width: 0;
+          max-width: 100%;
+        }
+
+        .object-title-count {
+          flex: 0 1 auto;
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .nft-header-block {
@@ -11948,6 +11963,40 @@ export default function Account({
           .paychannel-metrics {
             width: 100%;
             align-items: flex-start;
+          }
+        }
+
+        .activated-account-card .tx-asset-logo {
+          flex: 1 1 auto;
+          padding-right: 52px;
+        }
+
+        .activated-account-card .tx-collapsed-meta {
+          max-width: 100%;
+          overflow: hidden;
+        }
+
+        .activated-account-card .tx-collapsed-change {
+          flex: 0 1 42%;
+          min-width: 0;
+          max-width: 42%;
+        }
+
+        @media (max-width: 560px) {
+          .object-section-header-row {
+            gap: 8px;
+          }
+
+          .object-section-header-row .section-title {
+            font-size: 14px;
+          }
+
+          .activated-account-card .tx-asset-main {
+            gap: 8px;
+          }
+
+          .activated-account-card .tx-collapsed-change {
+            max-width: 44%;
           }
         }
 
