@@ -419,7 +419,9 @@
     "counts": {
       "addresses_one": "アドレス",
       "addresses_other": "アドレス",
-      "more": "+{{count}} more"
+      "more": "+{{count}} more",
+      "for-addresses_one": "1件のアドレスで",
+      "for-addresses_other": "{{formattedCount}}件のアドレスで"
     },
     "roles": {
       "regular-key": "regular key",

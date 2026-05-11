@@ -419,7 +419,9 @@
     "counts": {
       "addresses_one": "주소",
       "addresses_other": "주소",
-      "more": "+{{count}} more"
+      "more": "+{{count}} more",
+      "for-addresses_one": "주소 1개에 대해",
+      "for-addresses_other": "주소 {{formattedCount}}개에 대해"
     },
     "roles": {
       "regular-key": "regular key",

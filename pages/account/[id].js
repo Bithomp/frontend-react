@@ -3384,9 +3384,11 @@ export default function Account({
                         ' ' + ta('states.unavailable')
                       ) : (
                         <>
-                          {' '}{ta('phrases.for')}{' '}
-                          <span className="bold">{fullNiceNumber(signerAccountsTotal)}</span>{' '}
-                          {ta('counts.addresses', { count: signerAccountsTotal })}
+                          {' '}
+                          {ta('counts.for-addresses', {
+                            count: signerAccountsTotal,
+                            formattedCount: fullNiceNumber(signerAccountsTotal)
+                          })}
                         </>
                       )}
                     </span>
@@ -3479,9 +3481,11 @@ export default function Account({
                         ' ' + ta('states.unavailable')
                       ) : (
                         <>
-                          {' '}{ta('phrases.for')}{' '}
-                          <span className="bold">{fullNiceNumber(nftMinterAccountsTotal)}</span>
-                          {nftMinterAccountsMarker ? '+' : ''} {ta('counts.addresses', { count: nftMinterAccountsTotal })}
+                          {' '}
+                          {ta('counts.for-addresses', {
+                            count: nftMinterAccountsTotal,
+                            formattedCount: `${fullNiceNumber(nftMinterAccountsTotal)}${nftMinterAccountsMarker ? '+' : ''}`
+                          })}
                         </>
                       )}
                     </span>

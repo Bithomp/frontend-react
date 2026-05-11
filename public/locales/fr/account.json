@@ -419,7 +419,9 @@
     "counts": {
       "addresses_one": "adresse",
       "addresses_other": "adresses",
-      "more": "+{{count}} more"
+      "more": "+{{count}} more",
+      "for-addresses_one": "pour une adresse",
+      "for-addresses_other": "pour {{formattedCount}} adresses"
     },
     "roles": {
       "regular-key": "regular key",

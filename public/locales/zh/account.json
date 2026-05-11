@@ -419,7 +419,9 @@
     "counts": {
       "addresses_one": "地址",
       "addresses_other": "地址",
-      "more": "+{{count}} more"
+      "more": "+{{count}} more",
+      "for-addresses_one": "用于 1 个地址",
+      "for-addresses_other": "用于 {{formattedCount}} 个地址"
     },
     "roles": {
       "regular-key": "regular key",

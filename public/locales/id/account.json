@@ -419,7 +419,9 @@
     "counts": {
       "addresses_one": "alamat",
       "addresses_other": "alamat",
-      "more": "+{{count}} more"
+      "more": "+{{count}} more",
+      "for-addresses_one": "untuk satu alamat",
+      "for-addresses_other": "untuk {{formattedCount}} alamat"
     },
     "roles": {
       "regular-key": "regular key",
