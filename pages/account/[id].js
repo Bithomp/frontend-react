@@ -12033,19 +12033,27 @@ export default function Account({
         }
 
         .activated-account-card .tx-asset-logo {
-          flex: 1 1 auto;
+          flex: 1 1 0;
+          min-width: 0;
           padding-right: 52px;
         }
 
         .activated-account-card .tx-collapsed-meta {
+          min-width: 0;
+          max-width: none;
+          overflow: visible;
+        }
+
+        .activated-account-card .tx-collapsed-meta :global(table) {
+          min-width: 0 !important;
+          width: auto;
           max-width: 100%;
-          overflow: hidden;
         }
 
         .activated-account-card .tx-collapsed-change {
-          flex: 0 1 42%;
-          min-width: 0;
-          max-width: 42%;
+          flex: 0 0 auto;
+          min-width: max-content;
+          max-width: min(38%, 220px);
         }
 
         @media (max-width: 560px) {
