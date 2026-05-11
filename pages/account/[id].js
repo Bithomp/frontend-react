@@ -6677,6 +6677,12 @@ export default function Account({
                           ? ta('transactions.regular-key-set')
                           : ta('transactions.regular-key-removed')
                         : null
+                      const paymentCollapsedLabel =
+                        txType === 'Payment' && counterparty
+                          ? isSource
+                            ? ta('transactions.payment-to')
+                            : ta('transactions.payment-from')
+                          : null
                       const txTypeShortLabel =
                         dexOfferShortLabel ||
                         ammCreateShortLabel ||
@@ -6690,30 +6696,30 @@ export default function Account({
                         nftOfferLegacyLabel ||
                         nftMintSpecialLabel ||
                         fallbackTxTypeLabel
-                      const txTypeCollapsedLabel =
-                        isSelfPayment || isAccountDeleteTx || isRipplingTransaction
-                          ? txTypeShortLabel
-                          : isDidTx
-                            ? txTypeShortLabel
-                            : isNftMintTx
-                              ? txTypeShortLabel
-                              : isNftBurnTx
-                                ? txTypeShortLabel
-                                : tx?.TransactionType === 'TrustSet'
-                                  ? counterparty
-                                    ? `${isSource ? ta('phrases.to') : ta('phrases.from')}`
-                                    : ''
-                                  : isNftOfferTx
-                                    ? txTypeShortLabel
-                                    : isDexOfferTx
-                                      ? txTypeShortLabel
-                                      : txType === 'EscrowCreate'
-                                        ? txTypeShortLabel
-                                        : txType === 'CheckCreate'
-                                          ? txTypeShortLabel
-                                          : counterparty
-                                            ? `${txTypeShortLabel} ${isSource ? ta('phrases.to') : ta('phrases.from')}`
-                                            : txTypeShortLabel
+                      const txTypeCollapsedLabel = (() => {
+                        if (
+                          isSelfPayment ||
+                          isAccountDeleteTx ||
+                          isRipplingTransaction ||
+                          isDidTx ||
+                          isNftMintTx ||
+                          isNftBurnTx ||
+                          isNftOfferTx ||
+                          isDexOfferTx ||
+                          txType === 'EscrowCreate' ||
+                          txType === 'CheckCreate'
+                        ) {
+                          return txTypeShortLabel
+                        }
+
+                        if (tx?.TransactionType === 'TrustSet') {
+                          return counterparty ? `${isSource ? ta('phrases.to') : ta('phrases.from')}` : ''
+                        }
+
+                        if (paymentCollapsedLabel) return paymentCollapsedLabel
+                        if (counterparty) return `${txTypeShortLabel} ${isSource ? ta('phrases.to') : ta('phrases.from')}`
+                        return txTypeShortLabel
+                      })()
                       const showBrokerInCollapsedTitle =
                         isBrokeredNftAccept &&
                         !!brokerAddress &&

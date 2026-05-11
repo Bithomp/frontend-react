@@ -540,7 +540,9 @@
       "transferred-nft-to-lower": "transferred NFT to",
       "sold-nft-to-lower": "sold NFT to",
       "received-nft-from-lower": "received NFT from",
-      "bought-nft-from-lower": "bought NFT from"
+      "bought-nft-from-lower": "bought NFT from",
+      "payment-from": "Payment from",
+      "payment-to": "Payment to"
     },
     "nft-offers": {
       "private-to-you": "Private offer to you",

@@ -547,7 +547,9 @@
       "transferred-nft-to-lower": "передал NFT кому",
       "sold-nft-to-lower": "продал NFT кому",
       "received-nft-from-lower": "получил NFT от",
-      "bought-nft-from-lower": "купил NFT у"
+      "bought-nft-from-lower": "купил NFT у",
+      "payment-from": "Платёж от",
+      "payment-to": "Платёж кому"
     },
     "nft-offers": {
       "private-to-you": "Приватное предложение вам",

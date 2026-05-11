@@ -545,7 +545,9 @@
       "transferred-nft-to-lower": "NFT 전송 대상",
       "sold-nft-to-lower": "NFT 판매 대상",
       "received-nft-from-lower": "NFT 수신 출처",
-      "bought-nft-from-lower": "NFT 구매 출처"
+      "bought-nft-from-lower": "NFT 구매 출처",
+      "payment-from": "결제 출처",
+      "payment-to": "결제 대상"
     },
     "nft-offers": {
       "private-to-you": "나에게 온 비공개 오퍼",

@@ -545,7 +545,9 @@
       "transferred-nft-to-lower": "将 NFT 转给",
       "sold-nft-to-lower": "将 NFT 卖给",
       "received-nft-from-lower": "收到 NFT，来自",
-      "bought-nft-from-lower": "购买 NFT，来自"
+      "bought-nft-from-lower": "购买 NFT，来自",
+      "payment-from": "付款来自",
+      "payment-to": "付款至"
     },
     "nft-offers": {
       "private-to-you": "给你的私有报价",

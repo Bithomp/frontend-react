@@ -545,7 +545,9 @@
       "transferred-nft-to-lower": "NFT転送先",
       "sold-nft-to-lower": "NFT販売先",
       "received-nft-from-lower": "NFT受取元",
-      "bought-nft-from-lower": "NFT購入元"
+      "bought-nft-from-lower": "NFT購入元",
+      "payment-from": "支払い元",
+      "payment-to": "支払い先"
     },
     "nft-offers": {
       "private-to-you": "あなた宛てのプライベートオファー",

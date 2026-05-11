@@ -545,7 +545,9 @@
       "transferred-nft-to-lower": "übertrug NFT an",
       "sold-nft-to-lower": "verkaufte NFT an",
       "received-nft-from-lower": "erhielt NFT von",
-      "bought-nft-from-lower": "kaufte NFT von"
+      "bought-nft-from-lower": "kaufte NFT von",
+      "payment-from": "Zahlung von",
+      "payment-to": "Zahlung an"
     },
     "nft-offers": {
       "private-to-you": "Privates Angebot an dich",

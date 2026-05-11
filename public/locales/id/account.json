@@ -545,7 +545,9 @@
       "transferred-nft-to-lower": "mentransfer NFT ke",
       "sold-nft-to-lower": "menjual NFT ke",
       "received-nft-from-lower": "menerima NFT dari",
-      "bought-nft-from-lower": "membeli NFT dari"
+      "bought-nft-from-lower": "membeli NFT dari",
+      "payment-from": "Pembayaran dari",
+      "payment-to": "Pembayaran ke"
     },
     "nft-offers": {
       "private-to-you": "Penawaran privat untuk Anda",
