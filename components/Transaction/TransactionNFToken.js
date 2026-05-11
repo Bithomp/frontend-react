@@ -436,7 +436,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
             <tr>
               <TData>Price</TData>
               <TData>
-                {amountFormat(acceptedPriceAmount, { tooltip: 'right', icon: true })}
+                <span className="bold">{amountFormat(acceptedPriceAmount, { tooltip: 'right', icon: true })}</span>
                 {tokenToFiat({
                   amount: acceptedPriceAmount,
                   selectedCurrency,
