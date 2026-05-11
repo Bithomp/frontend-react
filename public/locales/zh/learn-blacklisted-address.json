@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "黑名单地址",
+    "description": "介绍 {{explorerName}} 上的黑名单地址是什么、为什么会显示欺诈警告，以及账户如何以及为什么会被列入黑名单。"
+  },
+  "h1": "欺诈警告。{{explorerName}} 上的黑名单账户",
+  "images": {
+    "coverAlt": "黑名单账户",
+    "exampleAlt": "黑名单账户示例",
+    "exampleCaption": "黑名单账户示例"
+  },
+  "intro": "{{explorerName}} 上也可能发生欺诈，就像任何其他区块链一样，因此用户必须保持警惕。",
+  "safety": {
+    "verify": "始终验证任何网站、钱包或交易请求的真实性。",
+    "keys": "切勿分享你的私钥或恢复短语。",
+    "scams": "警惕承诺高回报、提供免费 {{nativeCurrency}} 空投，或冒充可信实体的骗局。",
+    "tools": "如果你对某笔交易或某个网站不确定，请使用可靠工具核实细节并保护你的资产。"
+  },
+  "fraudAlert": "在我们的网站上，标有 \"Fraud Alert\" 的账户表示它们可能涉及诈骗、钓鱼或其他恶意活动。我们会突出显示这些账户，以便用户在与其交互前得到提醒。",
+  "warning": "为了保护你的资产，我们强烈建议在与被标记的账户交互时保持谨慎。",
+  "reasonsIntro": "账户可能因以下原因被标记为 Fraud Alert：",
+  "reasons": {
+    "stolenFunds": "接收过被盗资金。",
+    "scams": "与骗局有关，例如虚假 giveaway。",
+    "spam": "发送垃圾交易，或以某种方式表现出恶意行为。"
+  },
+  "sources": "我们可以根据客观的用户报告自行标记账户，也可以通过合作伙伴 API 接收欺诈警告。",
+  "related": {
+    "title": "相关文章",
+    "xrplArticle": "XRP、XRP Ledger、Ripple - 关键区别",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Bithomp XRP Ledger Explorer 的优势",
+    "bithompAdvantagesXahau": "Xahau Explorer 的优势",
+    "blackholed": "{{explorerName}} 上的 Blackholed 地址"
+  }
+}

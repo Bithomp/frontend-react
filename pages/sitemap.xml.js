@@ -140,8 +140,6 @@ function generateSiteMap(posts) {
     'whales/receivers',
     'whales/senders',
     'whales/submitters',
-    'learn/blackholed-address',
-    'learn/blacklisted-address',
     'learn/verified-domain',
     'learn/ripple-usd',
     'learn/the-bithomp-explorer-advantages',

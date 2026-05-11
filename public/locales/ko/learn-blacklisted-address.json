@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "블랙리스트 주소",
+    "description": "{{explorerName}}의 블랙리스트 주소가 무엇인지, 왜 사기 경고가 표시되는지, 계정이 어떻게 그리고 왜 블랙리스트에 오르는지 설명합니다."
+  },
+  "h1": "사기 경고. {{explorerName}}의 블랙리스트 계정",
+  "images": {
+    "coverAlt": "블랙리스트 계정",
+    "exampleAlt": "블랙리스트 계정 예시",
+    "exampleCaption": "블랙리스트 계정 예시"
+  },
+  "intro": "{{explorerName}}에서도 다른 블록체인과 마찬가지로 사기가 발생할 수 있으므로 사용자는 항상 주의해야 합니다.",
+  "safety": {
+    "verify": "웹사이트, 지갑, 트랜잭션 요청의 진위를 항상 확인하세요.",
+    "keys": "비밀 키나 복구 문구를 절대 공유하지 마세요.",
+    "scams": "높은 수익을 약속하거나 무료 {{nativeCurrency}} 지급을 내세우거나 신뢰할 수 있는 기관을 사칭하는 사기에 주의하세요.",
+    "tools": "트랜잭션이나 웹사이트가 의심스럽다면 신뢰할 수 있는 도구로 세부 정보를 확인하고 자산을 보호하세요."
+  },
+  "fraudAlert": "저희 웹사이트에서 \"Fraud Alert\"가 표시된 계정은 사기, 피싱 또는 기타 악의적인 활동과 관련되었을 가능성이 있는 계정으로 표시됩니다. 사용자가 상호작용하기 전에 경고할 수 있도록 이러한 계정을 강조합니다.",
+  "warning": "자산 보호를 위해 표시된 계정과 상호작용할 때는 각별히 주의하시기 바랍니다.",
+  "reasonsIntro": "계정은 다음과 같은 경우 Fraud Alert로 표시될 수 있습니다:",
+  "reasons": {
+    "stolenFunds": "도난당한 자금을 받은 경우.",
+    "scams": "가짜 giveaway와 같은 사기와 관련된 경우.",
+    "spam": "스팸 트랜잭션을 보내거나 악의적으로 행동하는 경우."
+  },
+  "sources": "저희는 객관적인 사용자 신고를 바탕으로 직접 계정을 표시하거나 파트너 API를 통해 사기 경고를 받을 수 있습니다.",
+  "related": {
+    "title": "관련 글",
+    "xrplArticle": "XRP, XRP Ledger, Ripple - 주요 차이점",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Bithomp XRP Ledger Explorer의 장점",
+    "bithompAdvantagesXahau": "Xahau Explorer의 장점",
+    "blackholed": "{{explorerName}}의 Blackholed 주소"
+  }
+}

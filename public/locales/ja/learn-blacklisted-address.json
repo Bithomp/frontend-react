@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "ブラックリスト登録アドレス",
+    "description": "{{explorerName}} のブラックリスト登録アドレスとは何か、なぜ詐欺警告が表示されるのか、どのような理由でアカウントが登録されるのかを説明します。"
+  },
+  "h1": "詐欺警告。{{explorerName}} のブラックリスト登録アカウント",
+  "images": {
+    "coverAlt": "ブラックリスト登録アカウント",
+    "exampleAlt": "ブラックリスト登録アカウントの例",
+    "exampleCaption": "ブラックリスト登録アカウントの例"
+  },
+  "intro": "{{explorerName}} でも他のブロックチェーンと同じように詐欺が発生する可能性があるため、ユーザーは常に注意する必要があります。",
+  "safety": {
+    "verify": "ウェブサイト、ウォレット、トランザクション要求の正当性を必ず確認してください。",
+    "keys": "秘密鍵やリカバリーフレーズを決して共有しないでください。",
+    "scams": "高い利益を約束したり、無料の {{nativeCurrency}} 配布をうたったり、信頼できる組織になりすましたりする詐欺に注意してください。",
+    "tools": "トランザクションやウェブサイトに不安がある場合は、信頼できるツールで詳細を確認し、資産を守ってください。"
+  },
+  "fraudAlert": "当サイトでは、\"Fraud Alert\" と表示されたアカウントは、詐欺、フィッシング、その他の悪意ある活動に関与している可能性があるものとして扱われます。これらのアカウントは、ユーザーがやり取りする前に警告できるよう強調表示されます。",
+  "warning": "資産を保護するため、警告が付いたアカウントとやり取りする際は十分に注意することを強く推奨します。",
+  "reasonsIntro": "アカウントは次のような場合に Fraud Alert の対象になることがあります:",
+  "reasons": {
+    "stolenFunds": "盗まれた資金を受け取った場合。",
+    "scams": "偽の giveaway などの詐欺に関連している場合。",
+    "spam": "スパムトランザクションを送信する、または悪意ある挙動を示す場合。"
+  },
+  "sources": "当社は客観的なユーザー報告に基づいてアカウントを独自にマークすることも、パートナーの API から詐欺警告を受け取ることもあります。",
+  "related": {
+    "title": "関連記事",
+    "xrplArticle": "XRP、XRP Ledger、Ripple - 主な違い",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Bithomp XRP Ledger Explorer の利点",
+    "bithompAdvantagesXahau": "Xahau Explorer の利点",
+    "blackholed": "{{explorerName}} の Blackholed アドレス"
+  }
+}

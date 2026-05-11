@@ -1,0 +1,47 @@
+{
+  "seo": {
+    "title": "{{explorerName}} 上的 Blackholed 地址",
+    "description": "介绍 XRP Ledger 和 Xahau Ledger 上的 Blackholed 地址是什么、为什么重要，以及账户如何变成 Blackholed。"
+  },
+  "h1": "{{explorerName}} 上的 Blackholed 地址是什么？",
+  "images": {
+    "coverAlt": "Blackholed 账户",
+    "coverCaption": "{{explorerName}} 上的 Blackholed 账户",
+    "exampleAlt": "Blackholed 账户示例",
+    "exampleCaption": "Blackholed 账户示例"
+  },
+  "paragraphs": {
+    "intro": "Blackholed 地址是 {{explorerName}} 上的钱包地址，一旦资金进入其中，就无法再取回或花费。这类地址会变成 <strong>永久无法管理</strong> 的状态，因此不能再从这些地址签署交易。因此，保存在这些地址中的任何 {{nativeCurrency}} 都会永久退出流通，并且 <strong>不能再从这些地址发行新的代币</strong>。Blackholed 地址可以为了特定目的被有意创建，也可能因为各种原因意外出现。",
+    "reason": "将账户设为 Blackholed 的主要原因之一，是防止滥用或未经授权的访问。这对代币发行方尤其重要，因为他们希望确保发行后 <strong>没有人能够修改代币设置或冻结资产</strong>。通过将发行账户设为 Blackholed，他们可以证明代币供应量是 <strong>不可变的，并且不受中心化控制</strong>。",
+    "how": "账户通过 <strong>禁用 master key</strong> 并 <strong>将 regular key 设置为一个公开已知的特殊 Blackholed 地址</strong>（例如 <addressOne>rrrrrrrrrrrrrrrrrrrrBZbvji</addressOne>）来变成 Blackholed。如果同时 <strong>没有启用的 signer list</strong>，该账户就会完全无法访问。",
+    "conclusion": "Blackholed 地址在 {{explorerName}} 生态系统中具有重要作用：它们可以增强安全性、保证不可变性，并影响整体代币供应量。通过永久锁定账户，项目可以证明去中心化并防止未经授权的修改。虽然 Blackholing 是一个有用的工具，但由于过程不可逆，必须谨慎使用。"
+  },
+  "exampleIntro": "我们来看一个 Blackholed 账户示例，以及它在我们网站上的显示方式。你可以看到，我们会标明：",
+  "exampleBullets": {
+    "blackholed": "该账户是 Blackholed，",
+    "when": "它具体是在什么时候变成 Blackholed 的，",
+    "masterKey": "它的 master key 已被禁用，",
+    "regularKey": "它的 regular key 被设置为 {{explorerName}} 上公开已知的特殊地址之一。"
+  },
+  "specialAddresses": {
+    "title": "{{explorerName}} 上的特殊地址",
+    "intro": "{{explorerName}} 包含几个公开已知的 Blackholed 地址：",
+    "address": "地址",
+    "name": "名称",
+    "meanings": {
+      "accountZero": "{{explorerName}} 中数值 0 的 base58 编码。{{daemon}} 在点对点通信中将其用作 {{nativeCurrency}} 的发行方。",
+      "addressOne": "{{explorerName}} 中数值 1 的 base58 编码。在 RippleState 条目中用作 trustline 余额发行方的占位地址。",
+      "rippleName": "过去 Ripple 曾用它来保留 Ripple Names，要求用户向该账户发送 {{nativeCurrency}}。",
+      "nanAddress": "由旧版本 ripple-lib 在使用 {{explorerName}} 的 base58 字符串编码格式编码 NaN 时生成。"
+    }
+  },
+  "conclusionTitle": "总结",
+  "related": {
+    "title": "相关文章",
+    "xrplArticle": "XRP、XRP Ledger、Ripple - 关键区别",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Bithomp XRP Ledger Explorer 的优势",
+    "bithompAdvantagesXahau": "Xahau Explorer 的优势",
+    "blacklisted": "{{explorerName}} 上的黑名单地址"
+  }
+}

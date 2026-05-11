@@ -1,0 +1,47 @@
+{
+  "seo": {
+    "title": "Alamat blackholed di {{explorerName}}",
+    "description": "Apa itu alamat blackholed di XRP Ledger dan Xahau Ledger, mengapa penting, dan bagaimana akun menjadi blackholed."
+  },
+  "h1": "Apa itu alamat blackholed di {{explorerName}}?",
+  "images": {
+    "coverAlt": "Akun blackholed",
+    "coverCaption": "Akun blackholed di {{explorerName}}",
+    "exampleAlt": "Contoh akun blackholed",
+    "exampleCaption": "Contoh akun blackholed"
+  },
+  "paragraphs": {
+    "intro": "Alamat blackholed adalah alamat dompet di {{explorerName}} yang dananya tidak dapat diambil atau dibelanjakan lagi. Alamat seperti ini <strong>tidak dapat dikelola secara permanen</strong>, sehingga transaksi tidak bisa ditandatangani dari alamat tersebut. Akibatnya, {{nativeCurrency}} apa pun yang tersimpan di alamat ini dikeluarkan secara permanen dari peredaran dan <strong>tidak ada token baru yang dapat diterbitkan dari alamat tersebut</strong>. Alamat blackholed dapat dibuat secara sengaja untuk tujuan tertentu atau terjadi tanpa sengaja karena berbagai alasan.",
+    "reason": "Salah satu alasan utama membuat akun menjadi blackholed adalah untuk mencegah penyalahgunaan atau akses tidak sah. Ini sangat penting bagi penerbit token yang ingin memastikan bahwa <strong>tidak ada pihak yang dapat mengubah pengaturan token atau membekukan aset</strong> setelah penerbitan. Dengan membuat akun penerbit menjadi blackholed, mereka menunjukkan bahwa pasokan token bersifat <strong>tetap dan bebas dari kendali terpusat</strong>.",
+    "how": "Sebuah akun menjadi blackholed dengan cara <strong>menonaktifkan master key</strong> dan <strong>mengatur regular key ke alamat blackholed khusus yang diketahui publik</strong>, seperti <addressOne>rrrrrrrrrrrrrrrrrrrrBZbvji</addressOne>. Jika <strong>tidak ada signer list aktif</strong>, akun tersebut sepenuhnya tidak dapat diakses.",
+    "conclusion": "Alamat blackholed memiliki peran penting dalam ekosistem {{explorerName}} dengan meningkatkan keamanan, menegakkan sifat yang tidak dapat diubah, dan memengaruhi total pasokan token. Dengan mengunci akun secara permanen, proyek dapat memastikan desentralisasi dan mencegah perubahan yang tidak sah. Meskipun blackholing adalah alat yang berguna, proses ini harus dilakukan dengan hati-hati karena tidak dapat dibatalkan."
+  },
+  "exampleIntro": "Mari lihat salah satu contoh akun blackholed dan bagaimana akun tersebut ditandai di situs kami. Seperti yang terlihat, kami menampilkan bahwa:",
+  "exampleBullets": {
+    "blackholed": "akun ini blackholed,",
+    "when": "kapan tepatnya akun tersebut menjadi blackholed,",
+    "masterKey": "master key-nya dinonaktifkan,",
+    "regularKey": "regular key-nya diatur ke salah satu alamat khusus yang diketahui publik di {{explorerName}}."
+  },
+  "specialAddresses": {
+    "title": "Alamat khusus di {{explorerName}}",
+    "intro": "{{explorerName}} memiliki beberapa alamat blackholed yang diketahui publik:",
+    "address": "Alamat",
+    "name": "Nama",
+    "meanings": {
+      "accountZero": "Encoding base58 dari nilai 0 di {{explorerName}}. Digunakan oleh {{daemon}} sebagai penerbit {{nativeCurrency}} dalam komunikasi peer-to-peer.",
+      "addressOne": "Encoding base58 dari nilai 1 di {{explorerName}}. Digunakan sebagai placeholder untuk penerbit saldo trustline dalam entri RippleState.",
+      "rippleName": "Sebelumnya digunakan oleh Ripple untuk mencadangkan Ripple Names dengan mewajibkan pengguna mengirim {{nativeCurrency}} ke akun ini.",
+      "nanAddress": "Dihasilkan oleh versi lama ripple-lib saat meng-encode NaN menggunakan format string base58 milik {{explorerName}}."
+    }
+  },
+  "conclusionTitle": "Kesimpulan",
+  "related": {
+    "title": "Artikel terkait",
+    "xrplArticle": "XRP, XRP Ledger, Ripple - perbedaan utama",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Keunggulan Bithomp XRP Ledger Explorer",
+    "bithompAdvantagesXahau": "Keunggulan Xahau Explorer",
+    "blacklisted": "Alamat dalam daftar hitam di {{explorerName}}"
+  }
+}

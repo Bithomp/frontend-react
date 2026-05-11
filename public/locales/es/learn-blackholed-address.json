@@ -1,0 +1,47 @@
+{
+  "seo": {
+    "title": "Direcciones blackholed en {{explorerName}}",
+    "description": "Qué son las direcciones blackholed en XRP Ledger y Xahau Ledger, por qué importan y cómo una cuenta llega a estar blackholed."
+  },
+  "h1": "¿Qué son las direcciones blackholed en {{explorerName}}?",
+  "images": {
+    "coverAlt": "Cuentas blackholed",
+    "coverCaption": "Cuentas blackholed en {{explorerName}}",
+    "exampleAlt": "Ejemplo de cuenta blackholed",
+    "exampleCaption": "Ejemplo de una cuenta blackholed"
+  },
+  "paragraphs": {
+    "intro": "Las direcciones blackholed son direcciones de billetera en {{explorerName}} desde las que los fondos nunca pueden recuperarse ni gastarse. Estas direcciones quedan <strong>permanentemente imposibles de administrar</strong>, por lo que no se pueden firmar transacciones desde ellas. Como resultado, cualquier {{nativeCurrency}} que permanezca en esas direcciones se retira de circulación de forma permanente y <strong>no se pueden emitir más tokens desde ellas</strong>. Las direcciones blackholed pueden crearse intencionalmente para fines concretos o surgir de forma no intencional por varias razones.",
+    "reason": "Una razón principal para hacer blackhole a una cuenta es evitar el uso indebido o el acceso no autorizado. Esto es especialmente importante para emisores de tokens que quieren garantizar que <strong>nadie pueda modificar la configuración del token ni congelar activos</strong> después de la emisión. Al hacer blackhole a la cuenta emisora, demuestran que el suministro del token es <strong>inmutable y libre de control central</strong>.",
+    "how": "Una cuenta se vuelve blackholed al <strong>desactivar la clave maestra</strong> y <strong>establecer su clave regular en una dirección blackholed especial y públicamente conocida</strong>, como <addressOne>rrrrrrrrrrrrrrrrrrrrBZbvji</addressOne>. Si <strong>no hay una lista activa de firmantes</strong>, la cuenta queda completamente inaccesible.",
+    "conclusion": "Las direcciones blackholed cumplen un papel importante en el ecosistema de {{explorerName}} al mejorar la seguridad, reforzar la inmutabilidad y afectar el suministro total de tokens. Al bloquear cuentas de forma permanente, los proyectos pueden garantizar descentralización y evitar modificaciones no autorizadas. Aunque el blackholing es una herramienta útil, debe usarse con cuidado porque el proceso es irreversible."
+  },
+  "exampleIntro": "Veamos un ejemplo de una cuenta blackholed y cómo se destaca en nuestro sitio web. Como puedes ver, indicamos:",
+  "exampleBullets": {
+    "blackholed": "que esta cuenta está blackholed,",
+    "when": "cuándo exactamente quedó blackholed,",
+    "masterKey": "que su clave maestra está desactivada,",
+    "regularKey": "que su clave regular está configurada en una de las direcciones especiales públicamente conocidas de {{explorerName}}."
+  },
+  "specialAddresses": {
+    "title": "Direcciones especiales en {{explorerName}}",
+    "intro": "{{explorerName}} incluye varias direcciones blackholed públicamente conocidas:",
+    "address": "Dirección",
+    "name": "Nombre",
+    "meanings": {
+      "accountZero": "La codificación base58 del valor 0 en {{explorerName}}. {{daemon}} la usa como emisor de {{nativeCurrency}} en comunicaciones peer-to-peer.",
+      "addressOne": "La codificación base58 del valor 1 en {{explorerName}}. Se usa como marcador para el emisor de un saldo de trustline en entradas RippleState.",
+      "rippleName": "Anteriormente fue usada por Ripple para reservar Ripple Names, obligando a los usuarios a enviar {{nativeCurrency}} a esta cuenta.",
+      "nanAddress": "Generada por versiones antiguas de ripple-lib al codificar NaN con el formato de cadena base58 de {{explorerName}}."
+    }
+  },
+  "conclusionTitle": "Conclusión",
+  "related": {
+    "title": "Artículos relacionados",
+    "xrplArticle": "XRP, XRP Ledger y Ripple - diferencias clave",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Ventajas de Bithomp XRP Ledger Explorer",
+    "bithompAdvantagesXahau": "Ventajas de Xahau Explorer",
+    "blacklisted": "Direcciones en lista negra en {{explorerName}}"
+  }
+}

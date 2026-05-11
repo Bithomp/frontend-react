@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Blacklisted Addresses",
+    "description": "What blacklisted addresses are on {{explorerName}}, why a fraud alert is displayed, and how and why accounts become blacklisted."
+  },
+  "h1": "Fraud Alert. Blacklisted accounts on {{explorerName}}",
+  "images": {
+    "coverAlt": "Blacklisted accounts on the ledger",
+    "exampleAlt": "Blacklisted account example",
+    "exampleCaption": "Example of a blacklisted account"
+  },
+  "intro": "Fraud can occur on {{explorerName}}, just like on any other blockchain, so users must remain vigilant.",
+  "safety": {
+    "verify": "Always verify the authenticity of any website, wallet, or transaction request.",
+    "keys": "Never share your secret keys or phrases.",
+    "scams": "Exercise caution regarding scams that promise high returns, offer free {{nativeCurrency}} giveaways, or impersonate trusted entities.",
+    "tools": "If you're uncertain about a transaction or website, use reliable tools to verify the details and protect your assets."
+  },
+  "fraudAlert": "On our website, accounts marked with a \"Fraud Alert\" are flagged as potentially involved in scams, phishing, or other malicious activities. These accounts are highlighted to warn users before they interact with them.",
+  "warning": "We strongly recommend proceeding with caution when engaging with flagged accounts to ensure the safety of your assets.",
+  "reasonsIntro": "Accounts may be flagged with a Fraud Alert if they:",
+  "reasons": {
+    "stolenFunds": "Received stolen funds.",
+    "scams": "Are associated with scams, such as giveaway scams.",
+    "spam": "Send spam transactions or behave maliciously in some way."
+  },
+  "sources": "We can flag accounts ourselves based on objective user reports or receive fraud alerts through our partners' APIs.",
+  "related": {
+    "title": "Related Articles",
+    "xrplArticle": "XRP, XRP Ledger, Ripple - key differences",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Advantages of Bithomp XRP Ledger Explorer",
+    "bithompAdvantagesXahau": "Advantages of Xahau Explorer",
+    "blackholed": "Blackholed addresses on {{explorerName}}"
+  }
+}

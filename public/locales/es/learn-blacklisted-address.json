@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Direcciones en lista negra",
+    "description": "Qué son las direcciones en lista negra en {{explorerName}}, por qué se muestra una alerta de fraude y cómo y por qué una cuenta llega a estar en lista negra."
+  },
+  "h1": "Alerta de fraude. Cuentas en lista negra en {{explorerName}}",
+  "images": {
+    "coverAlt": "Cuentas en lista negra",
+    "exampleAlt": "Ejemplo de cuenta en lista negra",
+    "exampleCaption": "Ejemplo de una cuenta en lista negra"
+  },
+  "intro": "El fraude puede ocurrir en {{explorerName}}, igual que en cualquier otra blockchain, por lo que los usuarios deben mantenerse atentos.",
+  "safety": {
+    "verify": "Verifica siempre la autenticidad de cualquier sitio web, billetera o solicitud de transacción.",
+    "keys": "Nunca compartas tus claves secretas ni tus frases de recuperación.",
+    "scams": "Ten cuidado con las estafas que prometen altos rendimientos, ofrecen regalos gratuitos de {{nativeCurrency}} o se hacen pasar por entidades de confianza.",
+    "tools": "Si tienes dudas sobre una transacción o un sitio web, usa herramientas fiables para verificar los detalles y proteger tus activos."
+  },
+  "fraudAlert": "En nuestro sitio web, las cuentas marcadas con \"Fraud Alert\" se señalan como potencialmente involucradas en estafas, phishing u otras actividades maliciosas. Estas cuentas se resaltan para advertir a los usuarios antes de que interactúen con ellas.",
+  "warning": "Recomendamos encarecidamente actuar con cautela al interactuar con cuentas marcadas para proteger tus activos.",
+  "reasonsIntro": "Las cuentas pueden recibir una alerta de fraude si:",
+  "reasons": {
+    "stolenFunds": "Recibieron fondos robados.",
+    "scams": "Están asociadas con estafas, como sorteos falsos.",
+    "spam": "Envían transacciones spam o se comportan de forma maliciosa."
+  },
+  "sources": "Podemos marcar cuentas nosotros mismos a partir de reportes objetivos de usuarios o recibir alertas de fraude mediante las API de nuestros socios.",
+  "related": {
+    "title": "Artículos relacionados",
+    "xrplArticle": "XRP, XRP Ledger y Ripple - diferencias clave",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Ventajas de Bithomp XRP Ledger Explorer",
+    "bithompAdvantagesXahau": "Ventajas de Xahau Explorer",
+    "blackholed": "Direcciones blackholed en {{explorerName}}"
+  }
+}

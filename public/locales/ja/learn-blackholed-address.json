@@ -1,0 +1,47 @@
+{
+  "seo": {
+    "title": "{{explorerName}} の Blackholed アドレス",
+    "description": "XRP Ledger と Xahau Ledger における Blackholed アドレスとは何か、なぜ重要なのか、アカウントがどのように Blackholed になるのかを説明します。"
+  },
+  "h1": "{{explorerName}} の Blackholed アドレスとは？",
+  "images": {
+    "coverAlt": "Blackholed アカウント",
+    "coverCaption": "{{explorerName}} の Blackholed アカウント",
+    "exampleAlt": "Blackholed アカウントの例",
+    "exampleCaption": "Blackholed アカウントの例"
+  },
+  "paragraphs": {
+    "intro": "Blackholed アドレスとは、{{explorerName}} 上のウォレットアドレスのうち、資金を二度と取り戻したり使用したりできないアドレスです。これらのアドレスは <strong>永久に管理不能</strong> となり、そのアドレスからトランザクションに署名することはできません。その結果、これらのアドレスにある {{nativeCurrency}} は流通から永久に除外され、<strong>そのアドレスから新しいトークンを発行することもできなくなります</strong>。Blackholed アドレスは特定の目的で意図的に作成されることもあれば、さまざまな理由で意図せず発生することもあります。",
+    "reason": "アカウントを Blackholed にする主な理由の一つは、不正利用や許可されていないアクセスを防ぐことです。これは、発行後に <strong>誰もトークン設定を変更したり資産を凍結したりできない</strong> ようにしたいトークン発行者にとって特に重要です。発行アカウントを Blackholed にすることで、トークン供給が <strong>不変で中央集権的な管理から独立している</strong> ことを示せます。",
+    "how": "アカウントは、<strong>マスターキーを無効化</strong> し、<strong>regular key を公開されている特別な Blackholed アドレス</strong>、たとえば <addressOne>rrrrrrrrrrrrrrrrrrrrBZbvji</addressOne> に設定することで Blackholed になります。さらに <strong>有効な signer list が設定されていない</strong> 場合、そのアカウントには完全にアクセスできなくなります。",
+    "conclusion": "Blackholed アドレスは、セキュリティの向上、不変性の確保、トークン供給全体への影響という点で、{{explorerName}} のエコシステムにおいて重要な役割を果たします。アカウントを永久にロックすることで、プロジェクトは分散性を示し、許可されていない変更を防ぐことができます。ただし、Blackholing は便利な仕組みである一方、元に戻せないため慎重に行う必要があります。"
+  },
+  "exampleIntro": "Blackholed アカウントの例と、当サイトでどのように表示されるかを見てみましょう。ここでは次の情報を示しています:",
+  "exampleBullets": {
+    "blackholed": "このアカウントが Blackholed であること、",
+    "when": "いつ Blackholed になったか、",
+    "masterKey": "マスターキーが無効化されていること、",
+    "regularKey": "regular key が {{explorerName}} 上の公開された特別なアドレスの一つに設定されていること。"
+  },
+  "specialAddresses": {
+    "title": "{{explorerName}} の特別なアドレス",
+    "intro": "{{explorerName}} には、公開されている Blackholed アドレスがいくつかあります:",
+    "address": "アドレス",
+    "name": "名前",
+    "meanings": {
+      "accountZero": "{{explorerName}} における値 0 の base58 エンコードです。{{daemon}} がピアツーピア通信で {{nativeCurrency}} の発行者として使用します。",
+      "addressOne": "{{explorerName}} における値 1 の base58 エンコードです。RippleState エントリ内の trustline 残高の発行者を表すプレースホルダーとして使用されます。",
+      "rippleName": "以前、Ripple Names を予約するために Ripple が使用していたアドレスで、ユーザーはこのアカウントに {{nativeCurrency}} を送る必要がありました。",
+      "nanAddress": "古いバージョンの ripple-lib が、{{explorerName}} の base58 文字列エンコード形式で NaN をエンコードした際に生成したアドレスです。"
+    }
+  },
+  "conclusionTitle": "まとめ",
+  "related": {
+    "title": "関連記事",
+    "xrplArticle": "XRP、XRP Ledger、Ripple - 主な違い",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Bithomp XRP Ledger Explorer の利点",
+    "bithompAdvantagesXahau": "Xahau Explorer の利点",
+    "blacklisted": "{{explorerName}} のブラックリスト登録アドレス"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "seo": {
+    "title": "Blackholed-адреса в {{explorerName}}",
+    "description": "Что такое blackholed-адреса в XRP Ledger и Xahau Ledger, почему они важны и как аккаунты становятся blackholed."
+  },
+  "h1": "Что такое blackholed-адреса в {{explorerName}}?",
+  "images": {
+    "coverAlt": "Blackholed-аккаунты",
+    "coverCaption": "Blackholed-аккаунты в {{explorerName}}",
+    "exampleAlt": "Пример blackholed-аккаунта",
+    "exampleCaption": "Пример blackholed-аккаунта"
+  },
+  "paragraphs": {
+    "intro": "Blackholed-адреса — это адреса кошельков в {{explorerName}}, с которых средства уже невозможно вернуть или потратить. Такие адреса <strong>навсегда становятся неуправляемыми</strong>: с них нельзя подписывать транзакции. В результате любой {{nativeCurrency}} на этих адресах навсегда выводится из обращения, а <strong>новые токены с них больше нельзя выпускать</strong>. Blackholed-адреса могут создаваться специально для конкретных целей или появляться непреднамеренно по разным причинам.",
+    "reason": "Одна из основных причин сделать аккаунт blackholed — предотвратить злоупотребление или несанкционированный доступ. Это особенно важно для эмитентов токенов, которые хотят гарантировать, что <strong>никто не сможет изменить настройки токена или заморозить активы</strong> после выпуска. Делая аккаунт эмитента blackholed, они показывают, что предложение токена <strong>неизменно и не контролируется централизованно</strong>.",
+    "how": "Аккаунт становится blackholed, когда у него <strong>отключают master key</strong> и <strong>назначают regular key на специальный публично известный blackholed-адрес</strong>, например <addressOne>rrrrrrrrrrrrrrrrrrrrBZbvji</addressOne>. Если при этом <strong>нет активного signer list</strong>, аккаунт становится полностью недоступным.",
+    "conclusion": "Blackholed-адреса играют важную роль в экосистеме {{explorerName}}: они повышают безопасность, закрепляют неизменность и влияют на общее предложение токенов. Постоянно блокируя аккаунты, проекты могут подтвердить децентрализацию и предотвратить несанкционированные изменения. Но blackholing — необратимый процесс, поэтому использовать его нужно очень внимательно."
+  },
+  "exampleIntro": "Посмотрим пример blackholed-аккаунта и как он выделяется на нашем сайте. Как видно, мы показываем:",
+  "exampleBullets": {
+    "blackholed": "что аккаунт является blackholed,",
+    "when": "когда именно он стал blackholed,",
+    "masterKey": "что его master key отключен,",
+    "regularKey": "что его regular key назначен на один из специальных публично известных адресов в {{explorerName}}."
+  },
+  "specialAddresses": {
+    "title": "Специальные адреса в {{explorerName}}",
+    "intro": "В {{explorerName}} есть несколько публично известных blackholed-адресов:",
+    "address": "Адрес",
+    "name": "Название",
+    "meanings": {
+      "accountZero": "Base58-кодирование значения 0 в {{explorerName}}. Используется {{daemon}} как эмитент {{nativeCurrency}} в peer-to-peer коммуникациях.",
+      "addressOne": "Base58-кодирование значения 1 в {{explorerName}}. Используется как placeholder для эмитента баланса trustline в RippleState-записях.",
+      "rippleName": "Ранее использовался Ripple для резервирования Ripple Names: пользователи должны были отправить {{nativeCurrency}} на этот аккаунт.",
+      "nanAddress": "Сгенерирован старыми версиями ripple-lib при кодировании NaN в формате base58-строки {{explorerName}}."
+    }
+  },
+  "conclusionTitle": "Вывод",
+  "related": {
+    "title": "Связанные статьи",
+    "xrplArticle": "XRP, XRP Ledger и Ripple — ключевые различия",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Преимущества Bithomp XRP Ledger Explorer",
+    "bithompAdvantagesXahau": "Преимущества Xahau Explorer",
+    "blacklisted": "Адреса в черном списке в {{explorerName}}"
+  }
+}

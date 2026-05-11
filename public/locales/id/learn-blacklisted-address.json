@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Alamat dalam daftar hitam",
+    "description": "Apa itu alamat dalam daftar hitam di {{explorerName}}, mengapa peringatan penipuan ditampilkan, serta bagaimana dan mengapa akun masuk daftar hitam."
+  },
+  "h1": "Peringatan penipuan. Akun dalam daftar hitam di {{explorerName}}",
+  "images": {
+    "coverAlt": "Akun dalam daftar hitam",
+    "exampleAlt": "Contoh akun dalam daftar hitam",
+    "exampleCaption": "Contoh akun dalam daftar hitam"
+  },
+  "intro": "Penipuan dapat terjadi di {{explorerName}}, seperti di blockchain lainnya, sehingga pengguna harus tetap waspada.",
+  "safety": {
+    "verify": "Selalu periksa keaslian situs web, dompet, atau permintaan transaksi apa pun.",
+    "keys": "Jangan pernah membagikan secret key atau frasa pemulihan Anda.",
+    "scams": "Berhati-hatilah terhadap penipuan yang menjanjikan keuntungan tinggi, menawarkan giveaway {{nativeCurrency}} gratis, atau menyamar sebagai pihak tepercaya.",
+    "tools": "Jika Anda ragu tentang transaksi atau situs web, gunakan alat yang tepercaya untuk memverifikasi detail dan melindungi aset Anda."
+  },
+  "fraudAlert": "Di situs kami, akun yang ditandai dengan \"Fraud Alert\" dianggap berpotensi terlibat dalam scam, phishing, atau aktivitas berbahaya lainnya. Akun-akun ini disorot untuk memperingatkan pengguna sebelum berinteraksi dengannya.",
+  "warning": "Kami sangat menyarankan untuk berhati-hati saat berinteraksi dengan akun yang ditandai demi menjaga keamanan aset Anda.",
+  "reasonsIntro": "Akun dapat diberi tanda Fraud Alert jika:",
+  "reasons": {
+    "stolenFunds": "Menerima dana curian.",
+    "scams": "Terkait dengan penipuan, misalnya giveaway palsu.",
+    "spam": "Mengirim transaksi spam atau berperilaku jahat dengan cara tertentu."
+  },
+  "sources": "Kami dapat menandai akun sendiri berdasarkan laporan pengguna yang objektif atau menerima peringatan penipuan melalui API mitra kami.",
+  "related": {
+    "title": "Artikel terkait",
+    "xrplArticle": "XRP, XRP Ledger, Ripple - perbedaan utama",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Keunggulan Bithomp XRP Ledger Explorer",
+    "bithompAdvantagesXahau": "Keunggulan Xahau Explorer",
+    "blackholed": "Alamat blackholed di {{explorerName}}"
+  }
+}

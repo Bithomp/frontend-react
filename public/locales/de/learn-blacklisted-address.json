@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Adressen auf der Blacklist",
+    "description": "Was Blacklist-Adressen im {{explorerName}} sind, warum ein Betrugswarnhinweis angezeigt wird und wie und warum Konten auf die Blacklist kommen."
+  },
+  "h1": "Betrugswarnung. Blacklist-Konten im {{explorerName}}",
+  "images": {
+    "coverAlt": "Konten auf der Blacklist",
+    "exampleAlt": "Beispiel für ein Blacklist-Konto",
+    "exampleCaption": "Beispiel für ein Konto auf der Blacklist"
+  },
+  "intro": "Betrug kann im {{explorerName}} genauso vorkommen wie auf jeder anderen Blockchain, daher müssen Nutzer wachsam bleiben.",
+  "safety": {
+    "verify": "Prüfen Sie immer die Echtheit jeder Website, Wallet oder Transaktionsanfrage.",
+    "keys": "Teilen Sie niemals Ihre geheimen Schlüssel oder Wiederherstellungsphrasen.",
+    "scams": "Seien Sie vorsichtig bei Betrugsversuchen, die hohe Renditen versprechen, kostenlose {{nativeCurrency}}-Giveaways anbieten oder vertrauenswürdige Stellen imitieren.",
+    "tools": "Wenn Sie bei einer Transaktion oder Website unsicher sind, verwenden Sie zuverlässige Tools, um die Details zu prüfen und Ihre Assets zu schützen."
+  },
+  "fraudAlert": "Auf unserer Website werden Konten mit der Markierung \"Fraud Alert\" als möglicherweise mit Betrug, Phishing oder anderen schädlichen Aktivitäten verbunden gekennzeichnet. Diese Konten werden hervorgehoben, um Nutzer vor einer Interaktion zu warnen.",
+  "warning": "Wir empfehlen dringend, bei der Interaktion mit markierten Konten vorsichtig vorzugehen, um Ihre Assets zu schützen.",
+  "reasonsIntro": "Konten können mit einem Fraud Alert markiert werden, wenn sie:",
+  "reasons": {
+    "stolenFunds": "gestohlene Gelder erhalten haben.",
+    "scams": "mit Betrugsmaschen verbunden sind, zum Beispiel Giveaway-Scams.",
+    "spam": "Spam-Transaktionen senden oder sich anderweitig bösartig verhalten."
+  },
+  "sources": "Wir können Konten selbst auf Grundlage objektiver Nutzerberichte markieren oder Betrugswarnungen über APIs unserer Partner erhalten.",
+  "related": {
+    "title": "Verwandte Artikel",
+    "xrplArticle": "XRP, XRP Ledger, Ripple - die wichtigsten Unterschiede",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Vorteile des Bithomp XRP Ledger Explorers",
+    "bithompAdvantagesXahau": "Vorteile des Xahau Explorers",
+    "blackholed": "Blackholed-Adressen im {{explorerName}}"
+  }
+}

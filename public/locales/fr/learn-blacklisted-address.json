@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Adresses sur liste noire",
+    "description": "Ce que sont les adresses sur liste noire sur {{explorerName}}, pourquoi une alerte de fraude s'affiche et comment et pourquoi des comptes sont signalés."
+  },
+  "h1": "Alerte de fraude. Comptes sur liste noire sur {{explorerName}}",
+  "images": {
+    "coverAlt": "Comptes sur liste noire",
+    "exampleAlt": "Exemple de compte sur liste noire",
+    "exampleCaption": "Exemple de compte sur liste noire"
+  },
+  "intro": "La fraude peut exister sur {{explorerName}}, comme sur n'importe quelle autre blockchain, les utilisateurs doivent donc rester vigilants.",
+  "safety": {
+    "verify": "Vérifiez toujours l'authenticité de tout site web, portefeuille ou demande de transaction.",
+    "keys": "Ne partagez jamais vos clés secrètes ni vos phrases de récupération.",
+    "scams": "Soyez prudent face aux escroqueries qui promettent des rendements élevés, proposent des distributions gratuites de {{nativeCurrency}} ou imitent des entités de confiance.",
+    "tools": "Si vous avez un doute concernant une transaction ou un site web, utilisez des outils fiables pour vérifier les détails et protéger vos actifs."
+  },
+  "fraudAlert": "Sur notre site, les comptes marqués \"Fraud Alert\" sont signalés comme pouvant être impliqués dans des arnaques, du phishing ou d'autres activités malveillantes. Ces comptes sont mis en évidence afin d'avertir les utilisateurs avant toute interaction.",
+  "warning": "Nous recommandons fortement de faire preuve de prudence lors de toute interaction avec des comptes signalés afin de protéger vos actifs.",
+  "reasonsIntro": "Des comptes peuvent être marqués avec une alerte de fraude s'ils :",
+  "reasons": {
+    "stolenFunds": "Ont reçu des fonds volés.",
+    "scams": "Sont associés à des arnaques, par exemple de faux giveaways.",
+    "spam": "Envoient des transactions spam ou se comportent de manière malveillante."
+  },
+  "sources": "Nous pouvons signaler des comptes nous-mêmes à partir de rapports utilisateurs objectifs, ou recevoir des alertes de fraude via les API de nos partenaires.",
+  "related": {
+    "title": "Articles liés",
+    "xrplArticle": "XRP, XRP Ledger, Ripple - différences clés",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Avantages de Bithomp XRP Ledger Explorer",
+    "bithompAdvantagesXahau": "Avantages de Xahau Explorer",
+    "blackholed": "Adresses blackholed sur {{explorerName}}"
+  }
+}

@@ -1,4 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
@@ -12,107 +13,98 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn-blacklisted-address']))
     }
   }
 }
 
 export default function BlacklistedAddress() {
+  const { t } = useTranslation('learn-blacklisted-address')
+
   return (
     <>
       <SEO
-        title="Blacklisted Addresses"
-        description={
-          'What are blacklisted addresses on ' +
-          explorerName +
-          ', why fraud alert is displayed, how and why accounts become blacklisted.'
-        }
+        title={t('seo.title')}
+        description={t('seo.description', { explorerName })}
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/blacklisted-picture.jpg', width: 1520, height: 1084, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
-          <h1>Fraud Alert. Blacklisted accounts on {explorerName}</h1>
+          <h1>{t('h1', { explorerName })}</h1>
 
           <Image
             src="/images/pages/blacklisted-address-cover.png"
-            alt="Blacklisted Accounts on XRPL"
+            alt={t('images.coverAlt')}
             width={1520}
             height={1084}
             className="max-w-full h-auto object-contain"
             priority
           />
 
-          <p>Fraud can occur on {explorerName}, just like on any other blockchain, so users must remain vigilant.</p>
+          <p>{t('intro', { explorerName })}</p>
           <ul>
-            <li>Always verify the authenticity of any website, wallet, or transaction request.</li>
-            <li>Never share your secret keys or phrases.</li>
+            <li>{t('safety.verify')}</li>
+            <li>{t('safety.keys')}</li>
             <li>
-              Exercise caution regarding scams that promise high returns, offer free {nativeCurrency} giveaways, or
-              impersonate trusted entities.
+              {t('safety.scams', { nativeCurrency })}
             </li>
-            <li>
-              If you're uncertain about a transaction or website, use reliable tools to verify the details and protect
-              your assets.
-            </li>
+            <li>{t('safety.tools')}</li>
           </ul>
-          <p>
-            On our website, accounts marked with a "Fraud Alert" are flagged as potentially involved in scams, phishing,
-            or other malicious activities. These accounts are highlighted to warn users before they interact with them.
-          </p>
+          <p>{t('fraudAlert')}</p>
           <figure>
             <Image
               src={'/images/pages/blacklisted-address-screen.png'}
-              alt="Blacklisted Account on XRPL-example"
+              alt={t('images.exampleAlt')}
               width={1520}
               height={673}
               className="w-full h-auto object-contain scale-110"
               priority
             />
-            <figcaption>Example of a blacklisted account</figcaption>
+            <figcaption>{t('images.exampleCaption')}</figcaption>
           </figure>
           <p>
-            <strong>
-              We strongly recommend proceeding with caution when engaging with flagged accounts to ensure the safety of
-              your assets.
-            </strong>
+            <strong>{t('warning')}</strong>
           </p>
-          <p>Accounts may be flagged with a Fraud Alert if they:</p>
+          <p>{t('reasonsIntro')}</p>
           <ul>
-            <li>Received stolen funds.</li>
-            <li>Are associated with scams (e.g., giveaway scams).</li>
-            <li>Send spam transactions or behave maliciously in some way.</li>
+            <li>{t('reasons.stolenFunds')}</li>
+            <li>{t('reasons.scams')}</li>
+            <li>{t('reasons.spam')}</li>
           </ul>
-          <p>
-            We can flag accounts ourselves based on objective user reports or receive fraud alerts through our partners'
-            APIs.
-          </p>
-          <h3>Related Articles</h3>
+          <p>{t('sources')}</p>
+          <h3>{t('related.title')}</h3>
 
           <ul>
             {!xahauNetwork && (
               <>
                 <li>
-                  <Link href="/learn/xrpl-article">XRP, XRP Ledger, Ripple – key differences</Link>
+                  <Link href="/learn/xrpl-article">{t('related.xrplArticle')}</Link>
                 </li>
                 <li>
-                  <Link href="/learn/ripple-usd">Ripple USD</Link>
+                  <Link href="/learn/ripple-usd">{t('related.rippleUsd')}</Link>
                 </li>
                 <li>
-                  <Link href="/learn/the-bithomp-explorer-advantages">Advantages of Bithomp XRP Ledger Explorer</Link>
+                  <Link href="/learn/the-bithomp-explorer-advantages">
+                    {t('related.bithompAdvantagesXrpl')}
+                  </Link>
                 </li>
               </>
             )}
 
             {xahauNetwork && (
               <li>
-                <Link href="/learn/the-bithomp-explorer-advantages">Advantages of Xahau Explorer</Link>
+                <Link href="/learn/the-bithomp-explorer-advantages">
+                  {t('related.bithompAdvantagesXahau')}
+                </Link>
               </li>
             )}
 
             <li>
-              <Link href="/learn/blackholed-address">Blackholed addresses on {explorerName}</Link>
+              <Link href="/learn/blackholed-address">
+                {t('related.blackholed', { explorerName })}
+              </Link>
             </li>
           </ul>
         </article>

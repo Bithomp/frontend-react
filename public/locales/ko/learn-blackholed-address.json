@@ -1,0 +1,47 @@
+{
+  "seo": {
+    "title": "{{explorerName}}의 Blackholed 주소",
+    "description": "XRP Ledger와 Xahau Ledger에서 Blackholed 주소가 무엇인지, 왜 중요한지, 계정이 어떻게 Blackholed 상태가 되는지 설명합니다."
+  },
+  "h1": "{{explorerName}}의 Blackholed 주소란 무엇인가요?",
+  "images": {
+    "coverAlt": "Blackholed 계정",
+    "coverCaption": "{{explorerName}}의 Blackholed 계정",
+    "exampleAlt": "Blackholed 계정 예시",
+    "exampleCaption": "Blackholed 계정 예시"
+  },
+  "paragraphs": {
+    "intro": "Blackholed 주소는 {{explorerName}} 지갑 주소 중 자금을 다시 회수하거나 사용할 수 없는 주소입니다. 이러한 주소는 <strong>영구적으로 관리할 수 없는 상태</strong>가 되어 해당 주소에서 트랜잭션에 서명할 수 없습니다. 그 결과, 이 주소에 보관된 {{nativeCurrency}}는 유통량에서 영구적으로 제외되며 <strong>해당 주소에서 더 이상 토큰을 발행할 수도 없습니다</strong>. Blackholed 주소는 특정 목적을 위해 의도적으로 만들 수 있고, 다양한 이유로 의도치 않게 발생할 수도 있습니다.",
+    "reason": "계정을 Blackholed 상태로 만드는 주요 이유 중 하나는 오용이나 무단 접근을 방지하는 것입니다. 이는 발행 후 <strong>아무도 토큰 설정을 변경하거나 자산을 동결할 수 없도록</strong> 보장하려는 토큰 발행자에게 특히 중요합니다. 발행 계정을 Blackholed로 만들면 토큰 공급량이 <strong>변경 불가능하며 중앙 통제에서 자유롭다</strong>는 점을 보여줄 수 있습니다.",
+    "how": "계정은 <strong>마스터 키를 비활성화</strong>하고 <strong>regular key를 공개적으로 알려진 특수 Blackholed 주소</strong>인 <addressOne>rrrrrrrrrrrrrrrrrrrrBZbvji</addressOne> 같은 주소로 설정하면 Blackholed 상태가 됩니다. <strong>활성 signer list가 없으면</strong> 해당 계정은 완전히 접근할 수 없습니다.",
+    "conclusion": "Blackholed 주소는 보안을 강화하고, 변경 불가능성을 보장하며, 전체 토큰 공급량에 영향을 주기 때문에 {{explorerName}} 생태계에서 중요한 역할을 합니다. 계정을 영구적으로 잠그면 프로젝트는 탈중앙화를 보장하고 무단 변경을 방지할 수 있습니다. 다만 Blackholing은 유용한 도구이지만 되돌릴 수 없으므로 신중하게 사용해야 합니다."
+  },
+  "exampleIntro": "Blackholed 계정의 예시와 웹사이트에서 어떻게 표시되는지 살펴보겠습니다. 여기서는 다음 내용을 보여줍니다:",
+  "exampleBullets": {
+    "blackholed": "이 계정이 Blackholed 상태라는 점,",
+    "when": "정확히 언제 Blackholed 상태가 되었는지,",
+    "masterKey": "마스터 키가 비활성화되어 있다는 점,",
+    "regularKey": "regular key가 {{explorerName}}의 공개적으로 알려진 특수 주소 중 하나로 설정되어 있다는 점."
+  },
+  "specialAddresses": {
+    "title": "{{explorerName}}의 특수 주소",
+    "intro": "{{explorerName}}에는 공개적으로 알려진 Blackholed 주소가 몇 가지 있습니다:",
+    "address": "주소",
+    "name": "이름",
+    "meanings": {
+      "accountZero": "{{explorerName}}에서 값 0을 base58로 인코딩한 주소입니다. {{daemon}}가 피어 투 피어 통신에서 {{nativeCurrency}}의 발행자로 사용합니다.",
+      "addressOne": "{{explorerName}}에서 값 1을 base58로 인코딩한 주소입니다. RippleState 항목에서 trustline 잔액 발행자의 placeholder로 사용됩니다.",
+      "rippleName": "과거 Ripple Names를 예약하기 위해 Ripple이 사용했으며, 사용자는 이 계정으로 {{nativeCurrency}}를 보내야 했습니다.",
+      "nanAddress": "이전 버전의 ripple-lib가 {{explorerName}}의 base58 문자열 인코딩 형식으로 NaN을 인코딩할 때 생성한 주소입니다."
+    }
+  },
+  "conclusionTitle": "결론",
+  "related": {
+    "title": "관련 글",
+    "xrplArticle": "XRP, XRP Ledger, Ripple - 주요 차이점",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Bithomp XRP Ledger Explorer의 장점",
+    "bithompAdvantagesXahau": "Xahau Explorer의 장점",
+    "blacklisted": "{{explorerName}}의 블랙리스트 주소"
+  }
+}

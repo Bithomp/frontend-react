@@ -1,4 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { Trans, useTranslation } from 'next-i18next'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
@@ -12,18 +13,46 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn-blackholed-address']))
     }
   }
 }
 
 export default function BlackholedAddress() {
+  const { t } = useTranslation('learn-blackholed-address')
   const imagePath = '/images/' + (xahauNetwork ? 'xahau' : 'xrpl') + 'explorer/learn/blackholed-address/'
+  const specialAddresses = [
+    {
+      address: 'rrrrrrrrrrrrrrrrrrrrrhoLvTp',
+      href: '/account/rrrrrrrrrrrrrrrrrrrrrhoLvTp',
+      name: 'ACCOUNT_ZERO',
+      meaning: 'accountZero'
+    },
+    {
+      address: 'rrrrrrrrrrrrrrrrrrrrBZbvji',
+      href: '/account/rrrrrrrrrrrrrrrrrrrrBZbvji',
+      name: 'ADDRESS_ONE',
+      meaning: 'addressOne'
+    },
+    {
+      address: 'rrrrrrrrrrrrrrrrrNAMEtxvNvQ',
+      href: '/account/rrrrrrrrrrrrrrrrrNAMEtxvNvQ',
+      name: 'Ripple Name Black-hole',
+      meaning: 'rippleName'
+    },
+    {
+      address: 'rrrrrrrrrrrrrrrrrrrn5RM1rHd',
+      href: '/account/rrrrrrrrrrrrrrrrrrrn5RM1rHd',
+      name: 'NaN Address',
+      meaning: 'nanAddress'
+    }
+  ]
+
   return (
     <>
       <SEO
-        title={'Blackholed Addresses on ' + explorerName}
-        description="What are blackholed addresses on XRP and Xahau Ledgers, why they are important, how accounts become blackholed."
+        title={t('seo.title', { explorerName })}
+        description={t('seo.description')}
         noindex={network !== 'mainnet'}
         image={{
           file: '/xrplexplorer/learn/blackholed-address/cover.png',
@@ -35,159 +64,121 @@ export default function BlackholedAddress() {
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
-          <h1>What Are Blackholed Addresses on {explorerName}?</h1>
+          <h1>{t('h1', { explorerName })}</h1>
           <div className="flex justify-center">
             <figure>
               <Image
                 src={imagePath + 'cover.png'}
-                alt="Blackholed Accounts"
+                alt={t('images.coverAlt')}
                 width={1520}
                 height={857}
                 className="w-full h-auto object-contain scale-110"
                 priority
               />
-              <figcaption>Blackholed accounts on {explorerName}</figcaption>
+              <figcaption>{t('images.coverCaption', { explorerName })}</figcaption>
             </figure>
           </div>
 
           <p>
-            Blackholed addresses are {explorerName} wallet addresses from which funds can never be retrieved or spent.
-            These addresses are <strong>permanently unmanageable</strong>, making it impossible to sign transactions
-            from them. As a result, any {nativeCurrency} held in these addresses is permanently removed from circulation
-            and <strong>no more tokens can be issued from them</strong>. Blackholed addresses can be created
-            intentionally for specific purposes or occur unintentionally due to various reasons.
+            <Trans
+              ns="learn-blackholed-address"
+              i18nKey="paragraphs.intro"
+              values={{ explorerName, nativeCurrency }}
+              components={{ strong: <strong /> }}
+            />
           </p>
           <p>
-            One primary reason for blackholing an account is to prevent misuse or unauthorized access. This is
-            particularly important for token issuers who want to ensure that{' '}
-            <strong>no one can modify token settings or freeze assets</strong> after issuance. By blackholing the
-            issuing account, they demonstrate that the token supply is{' '}
-            <strong>immutable and free from central control</strong>.
+            <Trans ns="learn-blackholed-address" i18nKey="paragraphs.reason" components={{ strong: <strong /> }} />
           </p>
           <p>
-            An account becomes blackholed by <strong>disabling the master key</strong> and{' '}
-            <strong>setting its regular key to a special publicly known blackholed address</strong> like{' '}
-            <Link href="/account/rrrrrrrrrrrrrrrrrrrrBZbvji">rrrrrrrrrrrrrrrrrrrrBZbvji</Link>. If{' '}
-            <strong>no active signer list</strong> is assigned, the account is completely inaccessible.
+            <Trans
+              ns="learn-blackholed-address"
+              i18nKey="paragraphs.how"
+              components={{
+                strong: <strong />,
+                addressOne: <Link href="/account/rrrrrrrrrrrrrrrrrrrrBZbvji" />
+              }}
+            />
           </p>
           <figure>
             <Image
               src={imagePath + 'blackholed-account-screen.png'}
-              alt="Blackholed Account-example"
+              alt={t('images.exampleAlt')}
               width={1520}
               height={857}
               className="w-full h-auto object-contain scale-110"
               priority
             />
-            <figcaption>Example of a blackholed account</figcaption>
+            <figcaption>{t('images.exampleCaption')}</figcaption>
           </figure>
-          <p>
-            Let’s view one of the examples of a blackholed account and how it is highlighted on our website. As you can
-            see, we mention that:
-          </p>
+          <p>{t('exampleIntro')}</p>
           <ul>
-            <li>this account is blackholed,</li>
-            <li>when exactly it was blackholed,</li>
-            <li>its master key is disabled,</li>
-            <li>its regular key is set to one of the special publicly known addresses on {explorerName}.</li>
+            <li>{t('exampleBullets.blackholed')}</li>
+            <li>{t('exampleBullets.when')}</li>
+            <li>{t('exampleBullets.masterKey')}</li>
+            <li>{t('exampleBullets.regularKey', { explorerName })}</li>
           </ul>
-          <h1>Special Addresses on {explorerName}</h1>
-          <p>{explorerName} includes several publicly known blackholed addresses:</p>
+          <h1>{t('specialAddresses.title', { explorerName })}</h1>
+          <p>{t('specialAddresses.intro', { explorerName })}</p>
+          {specialAddresses.map(({ address, href, name, meaning }, index) => (
+            <div key={address}>
+              <p>
+                {index + 1}. {t('specialAddresses.address')}:{' '}
+                <strong>
+                  <Link href={href}>{address}</Link>
+                </strong>
+              </p>
+              <p>
+                {t('specialAddresses.name')}: <strong>{name}</strong>
+              </p>
+              <p>
+                {t(`specialAddresses.meanings.${meaning}`, {
+                  explorerName,
+                  nativeCurrency,
+                  daemon: xahauNetwork ? 'xahaud' : 'rippled'
+                })}
+              </p>
+            </div>
+          ))}
+          <h3>{t('conclusionTitle')}</h3>
           <p>
-            1. Address:{' '}
-            <strong>
-              <Link href="/account/rrrrrrrrrrrrrrrrrrrrrhoLvTp">rrrrrrrrrrrrrrrrrrrrrhoLvTp</Link>
-            </strong>
+            <Trans
+              ns="learn-blackholed-address"
+              i18nKey="paragraphs.conclusion"
+              values={{ explorerName }}
+            />
           </p>
-          <p>
-            Name: <strong>ACCOUNT_ZERO</strong>
-          </p>
-          <p>
-            Meaning: The base58 encoding of the value 0 in the {explorerName}. Used by{' '}
-            {xahauNetwork ? 'xahaud' : 'rippled'} as the issuer for {nativeCurrency} in peer-to-peer communications.
-          </p>
-          <p>
-            2. Address:{' '}
-            <strong>
-              <Link href="/account/rrrrrrrrrrrrrrrrrrrrBZbvji">rrrrrrrrrrrrrrrrrrrrBZbvji</Link>
-            </strong>
-          </p>
-          <p>
-            Name: <strong>ADDRESS_ONE</strong>
-          </p>
-          <p>
-            Meaning: The base58 encoding of the value 1 in the {explorerName}. Used as a placeholder for the issuer of a
-            trustline balance in RippleState entries.
-          </p>
-          <p>
-            3. Address:{' '}
-            <strong>
-              <Link href="/account/rrrrrrrrrrrrrrrrrNAMEtxvNvQ">rrrrrrrrrrrrrrrrrNAMEtxvNvQ</Link>
-            </strong>
-          </p>
-          <p>
-            Name: <strong>Ripple Name Black-hole</strong>
-          </p>
-          <p>
-            Meaning: Previously used by Ripple to reserve Ripple Names by requiring users to send {nativeCurrency} to
-            this account.
-          </p>
-          <p>
-            4. Address:{' '}
-            <strong>
-              <Link href="/account/rrrrrrrrrrrrrrrrrrrn5RM1rHd">rrrrrrrrrrrrrrrrrrrn5RM1rHd</Link>
-            </strong>
-          </p>
-          <p>
-            Name: <strong>NaN Address</strong>
-          </p>
-          <p>
-            Meaning: Generated by older versions of ripple-lib when encoding NaN using the {explorerName}'s base58
-            string encoding format.
-          </p>
-          <h3>Conclusion</h3>
-          <p>
-            Blackholed addresses serve an important role in the {explorerName} ecosystem by enhancing security,
-            enforcing immutability, and affecting the overall token supply. By permanently locking accounts, projects
-            can ensure decentralization and prevent unauthorized modifications. While blackholing is a useful tool, it
-            should be done with careful consideration, as the process is irreversible.
-          </p>
-          <h3>Related Articles</h3>
+          <h3>{t('related.title')}</h3>
+          <ul>
+            {!xahauNetwork && (
+              <>
+                <li>
+                  <Link href="/learn/xrpl-article">{t('related.xrplArticle')}</Link>
+                </li>
+                <li>
+                  <Link href="/learn/ripple-usd">{t('related.rippleUsd')}</Link>
+                </li>
+                <li>
+                  <Link href="/learn/the-bithomp-explorer-advantages">
+                    {t('related.bithompAdvantagesXrpl')}
+                  </Link>
+                </li>
+              </>
+            )}
 
-<ul>
-  {!xahauNetwork && (
-    <>
-      <li>
-        <Link href="/learn/xrpl-article">
-          XRP, XRP Ledger, Ripple – key differences
-        </Link>
-      </li>
-      <li>
-        <Link href="/learn/ripple-usd">
-          Ripple USD
-        </Link>
-      </li>
-      <li>
-        <Link href="/learn/the-bithomp-explorer-advantages">
-          Advantages of Bithomp XRP Ledger Explorer
-        </Link>
-      </li>
-    </>
-  )}
-
-  {xahauNetwork && (
-    <li>
-      <Link href="/learn/the-bithomp-explorer-advantages">
-        Advantages of Xahau Explorer
-      </Link>
-    </li>
-  )}
- <li>
-    <Link href="/learn/blacklisted-address">
-      Blacklisted addresses on {explorerName}
-    </Link>
-  </li>
-</ul>
+            {xahauNetwork && (
+              <li>
+                <Link href="/learn/the-bithomp-explorer-advantages">
+                  {t('related.bithompAdvantagesXahau')}
+                </Link>
+              </li>
+            )}
+            <li>
+              <Link href="/learn/blacklisted-address">
+                {t('related.blacklisted', { explorerName })}
+              </Link>
+            </li>
+          </ul>
         </article>
       </div>
     </>

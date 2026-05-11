@@ -1,0 +1,47 @@
+{
+  "seo": {
+    "title": "Adresses blackholed sur {{explorerName}}",
+    "description": "Ce que sont les adresses blackholed sur XRP Ledger et Xahau Ledger, pourquoi elles sont importantes et comment un compte devient blackholed."
+  },
+  "h1": "Que sont les adresses blackholed sur {{explorerName}} ?",
+  "images": {
+    "coverAlt": "Comptes blackholed",
+    "coverCaption": "Comptes blackholed sur {{explorerName}}",
+    "exampleAlt": "Exemple de compte blackholed",
+    "exampleCaption": "Exemple de compte blackholed"
+  },
+  "paragraphs": {
+    "intro": "Les adresses blackholed sont des adresses de portefeuille sur {{explorerName}} depuis lesquelles les fonds ne peuvent plus jamais être récupérés ni dépensés. Ces adresses sont <strong>définitivement impossibles à gérer</strong>, ce qui rend impossible la signature de transactions depuis celles-ci. Ainsi, tout {{nativeCurrency}} détenu sur ces adresses est retiré définitivement de la circulation et <strong>aucun nouveau token ne peut plus être émis depuis elles</strong>. Les adresses blackholed peuvent être créées volontairement pour des objectifs précis ou apparaître involontairement pour diverses raisons.",
+    "reason": "L'une des principales raisons de blackholer un compte est d'empêcher les abus ou les accès non autorisés. C'est particulièrement important pour les émetteurs de tokens qui veulent garantir que <strong>personne ne pourra modifier les paramètres du token ni geler les actifs</strong> après l'émission. En blackholant le compte émetteur, ils démontrent que l'offre du token est <strong>immuable et indépendante d'un contrôle centralisé</strong>.",
+    "how": "Un compte devient blackholed en <strong>désactivant la master key</strong> et en <strong>définissant sa regular key sur une adresse blackholed spéciale et publiquement connue</strong>, comme <addressOne>rrrrrrrrrrrrrrrrrrrrBZbvji</addressOne>. Si <strong>aucune liste active de signataires</strong> n'est définie, le compte devient totalement inaccessible.",
+    "conclusion": "Les adresses blackholed jouent un rôle important dans l'écosystème {{explorerName}} : elles renforcent la sécurité, imposent l'immutabilité et influencent l'offre totale de tokens. En verrouillant définitivement des comptes, les projets peuvent garantir la décentralisation et empêcher les modifications non autorisées. Même si le blackholing est un outil utile, il doit être utilisé avec prudence, car le processus est irréversible."
+  },
+  "exampleIntro": "Regardons un exemple de compte blackholed et la manière dont il est mis en évidence sur notre site. Comme vous pouvez le voir, nous indiquons :",
+  "exampleBullets": {
+    "blackholed": "que ce compte est blackholed,",
+    "when": "à quel moment exact il a été blackholed,",
+    "masterKey": "que sa master key est désactivée,",
+    "regularKey": "que sa regular key pointe vers l'une des adresses spéciales publiquement connues sur {{explorerName}}."
+  },
+  "specialAddresses": {
+    "title": "Adresses spéciales sur {{explorerName}}",
+    "intro": "{{explorerName}} comprend plusieurs adresses blackholed publiquement connues :",
+    "address": "Adresse",
+    "name": "Nom",
+    "meanings": {
+      "accountZero": "L'encodage base58 de la valeur 0 dans {{explorerName}}. Utilisée par {{daemon}} comme émetteur de {{nativeCurrency}} dans les communications pair à pair.",
+      "addressOne": "L'encodage base58 de la valeur 1 dans {{explorerName}}. Utilisée comme valeur de remplacement pour l'émetteur d'un solde de trustline dans les entrées RippleState.",
+      "rippleName": "Anciennement utilisée par Ripple pour réserver des Ripple Names en demandant aux utilisateurs d'envoyer du {{nativeCurrency}} vers ce compte.",
+      "nanAddress": "Générée par d'anciennes versions de ripple-lib lors de l'encodage de NaN avec le format de chaîne base58 de {{explorerName}}."
+    }
+  },
+  "conclusionTitle": "Conclusion",
+  "related": {
+    "title": "Articles liés",
+    "xrplArticle": "XRP, XRP Ledger, Ripple - différences clés",
+    "rippleUsd": "Ripple USD",
+    "bithompAdvantagesXrpl": "Avantages de Bithomp XRP Ledger Explorer",
+    "bithompAdvantagesXahau": "Avantages de Xahau Explorer",
+    "blacklisted": "Adresses sur liste noire sur {{explorerName}}"
+  }
+}
