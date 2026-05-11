@@ -8,6 +8,7 @@ import {
   fullDateAndTime,
   nftIdLink,
   nftOfferLink,
+  tokenToFiat,
   timeFromNow
 } from '../../utils/format'
 import { decode } from '../../utils'
@@ -305,12 +306,62 @@ const showAllOfferLinks = (changes) => {
   return indexes
 }
 
+const hasAmount = (amount) => amount !== null && typeof amount !== 'undefined'
+
+const absoluteAmount = (amount) => {
+  if (!hasAmount(amount)) return null
+
+  if (typeof amount === 'object') {
+    const value = String(amount.value ?? '')
+    const valueInConvertCurrencies = amount.valueInConvertCurrencies
+      ? Object.fromEntries(
+          Object.entries(amount.valueInConvertCurrencies).map(([currency, fiatValue]) => [
+            currency,
+            String(fiatValue).replace(/^-/, '')
+          ])
+        )
+      : amount.valueInConvertCurrencies
+
+    return {
+      ...amount,
+      value: value.replace(/^-/, ''),
+      valueInConvertCurrencies
+    }
+  }
+
+  return String(amount).replace(/^-/, '')
+}
+
+const acceptedNftPriceAmount = (specification, outcome) => {
+  const directAmount =
+    specification?.nftokenOffer?.amount ??
+    specification?.amount ??
+    specification?.destination?.amount ??
+    specification?.source?.amount
+
+  if (hasAmount(directAmount)) return absoluteAmount(directAmount)
+
+  const changedOfferAmount = outcome?.nftokenOfferChanges
+    ?.flatMap((change) => change?.nftokenOfferChanges || [])
+    ?.find((offerChange) => hasAmount(offerChange?.amount))?.amount
+
+  if (hasAmount(changedOfferAmount)) return absoluteAmount(changedOfferAmount)
+
+  const positiveBalanceChange = outcome?.balanceChanges
+    ?.flatMap((change) => change?.balanceChanges || [])
+    ?.filter((change) => Number(change?.value) > 0)
+    ?.sort((a, b) => Math.abs(Number(b.value)) - Math.abs(Number(a.value)))?.[0]
+
+  return positiveBalanceChange ? absoluteAmount(positiveBalanceChange) : null
+}
+
 export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { specification, tx, outcome } = data
 
   const txType = tx?.TransactionType
   const nftPreview = getTransactionNftPreview(data)
+  const acceptedPriceAmount = txType === 'NFTokenAcceptOffer' ? acceptedNftPriceAmount(specification, outcome) : null
 
   const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
 
@@ -379,6 +430,20 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
             <tr>
               <TData>Buy offer</TData>
               <TData>{nftOfferLink(tx.NFTokenBuyOffer)}</TData>
+            </tr>
+          )}
+          {acceptedPriceAmount && (
+            <tr>
+              <TData>Price</TData>
+              <TData>
+                {amountFormat(acceptedPriceAmount, { tooltip: 'right', icon: true })}
+                {tokenToFiat({
+                  amount: acceptedPriceAmount,
+                  selectedCurrency,
+                  fiatRate: pageFiatRate,
+                  absolute: true
+                })}
+              </TData>
             </tr>
           )}
           {tx.NFTokenBrokerFee && tx.NFTokenBrokerFee !== '0' && (
