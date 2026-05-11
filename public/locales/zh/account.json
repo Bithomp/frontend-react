@@ -1,4 +1,8 @@
 {
+  "index": {
+    "seo-description": "{{ledgerName}} 账户详情、交易、NFT、代币等信息",
+    "description": "在这里，您可以查看账户的全部信息，包括交易、代币、NFT 等。"
+  },
   "button": {
     "set-did": "设置 DID",
     "update-did": "更新DID",

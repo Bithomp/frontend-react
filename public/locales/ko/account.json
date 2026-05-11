@@ -1,4 +1,8 @@
 {
+  "index": {
+    "seo-description": "{{ledgerName}} 계정의 상세 정보, 트랜잭션, NFT, 토큰 등",
+    "description": "여기에서 트랜잭션, 토큰, NFT 등을 포함한 계정의 모든 정보를 확인할 수 있습니다."
+  },
   "button": {
     "set-did": "DID 설정",
     "update-did": "DID 업데이트",

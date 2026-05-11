@@ -1,4 +1,8 @@
 {
+  "index": {
+    "seo-description": "Detail akun, transaksi, NFT, token, dan lainnya untuk akun {{ledgerName}}",
+    "description": "Di sini Anda dapat melihat semua informasi tentang akun, termasuk transaksi, token, NFT, dan lainnya."
+  },
   "button": {
     "set-did": "Atur DID",
     "update-did": "Perbarui DID",

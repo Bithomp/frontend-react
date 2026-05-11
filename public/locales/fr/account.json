@@ -1,4 +1,8 @@
 {
+  "index": {
+    "seo-description": "Détails de compte, transactions, NFT, tokens et plus encore pour les comptes {{ledgerName}}",
+    "description": "Vous pourrez voir ici toutes les informations du compte, y compris les transactions, les tokens, les NFT et plus encore."
+  },
   "button": {
     "set-did": "Définir un DID",
     "update-did": "Mettre à jour le DID",

@@ -1,4 +1,8 @@
 {
+  "index": {
+    "seo-description": "{{ledgerName}}アカウントの詳細、トランザクション、NFT、トークンなど",
+    "description": "ここでは、トランザクション、トークン、NFTなど、アカウントに関するすべての情報を確認できます。"
+  },
   "button": {
     "set-did": "DIDを設定",
     "update-did": "DIDを更新",
