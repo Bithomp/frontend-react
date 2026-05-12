@@ -55,6 +55,32 @@ export const getPaidAlertPlanTier = (tier) =>
 
 export const getAlertPlan = (tier) => ALERT_PLAN_TIERS[getAlertPlanTier(tier)]
 
+const metadataLimitValue = (metadata, key) => {
+  const rawValue = metadata?.[key]
+  if (rawValue === undefined || rawValue === null || rawValue === '') return null
+
+  const value = Number(rawValue)
+  return Number.isFinite(value) && value >= 0 ? value : null
+}
+
+export const getAlertPlanForPackage = (packageItem) => {
+  const metadata = packageItem?.metadata || {}
+  const tier = getAlertPlanTier(metadata.tier || DEFAULT_ALERT_PLAN_TIER)
+  const basePlan = getAlertPlan(tier)
+  const connectionsLimit = metadataLimitValue(metadata, 'connections')
+  const listenersLimit = metadataLimitValue(metadata, 'listeners')
+  const hasMetadataLimits = connectionsLimit !== null || listenersLimit !== null
+
+  return {
+    ...basePlan,
+    tier,
+    label: metadata.tier ? basePlan.label : hasMetadataLimits ? 'Custom' : basePlan.label,
+    connections: connectionsLimit ?? basePlan.connections,
+    listeners: listenersLimit ?? basePlan.listeners,
+    hasMetadataLimits
+  }
+}
+
 export const alertTierOptions = Object.keys(ALERT_PLAN_TIERS)
   .filter((tier) => ALERT_PLAN_TIERS[tier].prices)
   .map((tier) => ({ value: tier, label: ALERT_PLAN_TIERS[tier].label }))

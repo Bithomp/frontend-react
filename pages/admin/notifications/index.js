@@ -44,7 +44,7 @@ import {
   normalizeNotificationEvent,
   notificationEventSupports
 } from '@/utils/notificationRules'
-import { DEFAULT_ALERT_PLAN_TIER, getAlertPlan, getAlertPlanTier } from '@/utils/notificationPlans'
+import { DEFAULT_ALERT_PLAN_TIER, getAlertPlanForPackage } from '@/utils/notificationPlans'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -166,6 +166,9 @@ const alertPlanLimitText = (plan) =>
   `${plan.label} allows ${plan.connections} channel${plan.connections === 1 ? '' : 's'} and ${plan.listeners} rule${
     plan.listeners === 1 ? '' : 's'
   }.`
+
+const showAlertPlanUpgrade = (plan, activeBotPackage) =>
+  !activeBotPackage || (plan.tier === DEFAULT_ALERT_PLAN_TIER && !plan.hasMetadataLimits)
 
 const firstRuleOperator = (rule) =>
   NOTIFICATION_NUMBER_OPERATOR_OPTIONS.find((option) => Object.prototype.hasOwnProperty.call(rule || {}, option.value))?.value
@@ -403,9 +406,10 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const notificationDataUnavailable = !!error
   const activeProPackage = activePackage(notificationPackages, 'bithomp_pro')
   const activeBotPackage = activePackage(notificationPackages, 'bot')
-  const alertPlanTier = getAlertPlanTier(activeBotPackage?.tier || DEFAULT_ALERT_PLAN_TIER)
-  const alertPlan = getAlertPlan(alertPlanTier)
+  const alertPlan = getAlertPlanForPackage(activeBotPackage)
   const channelLimitReached = channels.length >= alertPlan.connections
+  const ruleLimitReached = rules.length >= alertPlan.listeners
+  const canShowAlertPlanUpgrade = showAlertPlanUpgrade(alertPlan, activeBotPackage)
   const hasActiveProSubscription = !!activeProPackage
   const balanceHistoryAddressOptions = useMemo(
     () =>
@@ -487,6 +491,12 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const firstChannelForEvent = (event) => channels.find((channel) => channelSupportsEvent(channel, event))?.id || ''
 
   const openAddRule = () => {
+    if (ruleLimitReached) {
+      setRuleFormMessage(`Rule limit reached. ${alertPlanLimitText(alertPlan)}`)
+      setShowRuleForm(false)
+      return
+    }
+
     const event = notificationEventOptions[0]?.value || defaultRuleEvent
     setEditingRule(null)
     setRuleFormData({
@@ -496,7 +506,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       name: defaultRuleName(rules.length + 1)
     })
     setRuleFormErrors({})
-    setRuleFormMessage(rules.length >= alertPlan.listeners ? `Rule limit reached. ${alertPlanLimitText(alertPlan)}` : '')
+    setRuleFormMessage('')
     setShowRuleForm(true)
   }
 
@@ -575,7 +585,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const validateChannelForm = () => {
     const errors = {}
     let message = ''
-    if (!editingChannel && channels.length >= alertPlan.connections) {
+    if (!editingChannel && channelLimitReached) {
       message = `Channel limit reached. ${alertPlanLimitText(alertPlan)}`
     }
     if (!formData.name?.trim()) {
@@ -602,7 +612,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const validateRuleForm = () => {
     const errors = {}
     let message = ''
-    if (!editingRule && rules.length >= alertPlan.listeners) {
+    if (!editingRule && ruleLimitReached) {
       message = `Rule limit reached. ${alertPlanLimitText(alertPlan)}`
     }
     const selectedRuleChannel = channels.find((channel) => String(channel.id) === String(ruleFormData.connectionId))
@@ -785,6 +795,20 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const renderChannelForm = () => {
     const showInitialChannelForm = !isLoading && !notificationDataUnavailable && channels.length === 0
     if (!showChannelForm && !showInitialChannelForm) return null
+
+    if (!editingChannel && channelLimitReached) {
+      return (
+        <div className="notification-limit-notice">
+          <strong>Channel limit reached.</strong>
+          <span>
+            {alertPlanLimitText(alertPlan)}{' '}
+            {canShowAlertPlanUpgrade && (
+              <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more channels.</Link>
+            )}
+          </span>
+        </div>
+      )
+    }
 
     return (
       <form className="notification-form" onSubmit={handleSaveChannel}>
@@ -1128,6 +1152,21 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
   const renderRuleForm = () => {
     if (!showRuleForm) return null
+
+    if (!editingRule && ruleLimitReached) {
+      return (
+        <div className="notification-limit-notice">
+          <strong>Rule limit reached.</strong>
+          <span>
+            {alertPlanLimitText(alertPlan)}{' '}
+            {canShowAlertPlanUpgrade && (
+              <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more rules.</Link>
+            )}
+          </span>
+        </div>
+      )
+    }
+
     const ruleFilterFields = getNotificationFilterFields(ruleFormData.event)
 
     return (
@@ -1137,7 +1176,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             <strong>{alertPlan.label} alerts plan</strong>
             <span>
               {alertPlanLimitText(alertPlan)}{' '}
-              {alertPlanTier === DEFAULT_ALERT_PLAN_TIER && (
+              {canShowAlertPlanUpgrade && (
                 <Link href={notificationsSubscriptionHref}>Upgrade for more alert channels and rules.</Link>
               )}
             </span>
@@ -1466,9 +1505,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                   {channels.length > 0 &&
                     !showChannelForm &&
                     (channelLimitReached ? (
-                      <Link href={notificationsSubscriptionHref} className="button-action thin">
-                        Upgrade plan
-                      </Link>
+                      canShowAlertPlanUpgrade ? (
+                        <Link href={notificationsSubscriptionHref} className="button-action thin">
+                          Upgrade plan
+                        </Link>
+                      ) : (
+                        <button className="button-action thin" disabled type="button">
+                          Limit reached
+                        </button>
+                      )
                     ) : (
                       <AddChannelButton onClick={() => openAddChannel()} />
                     ))}
@@ -1479,7 +1524,9 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                     <strong>Channel limit reached.</strong>
                     <span>
                       {alertPlanLimitText(alertPlan)}{' '}
-                      <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more channels.</Link>
+                      {canShowAlertPlanUpgrade && (
+                        <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more channels.</Link>
+                      )}
                     </span>
                   </div>
                 )}
@@ -1509,10 +1556,34 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                       <h2>Alert rules</h2>
                       <p>Rules listen for events and send matching alerts to a channel.</p>
                     </div>
-                    <button className="button-action thin" onClick={openAddRule} type="button">
-                      Add rule
-                    </button>
+                    {ruleLimitReached && !editingRule ? (
+                      canShowAlertPlanUpgrade ? (
+                        <Link href={notificationsSubscriptionHref} className="button-action thin">
+                          Upgrade plan
+                        </Link>
+                      ) : (
+                        <button className="button-action thin" disabled type="button">
+                          Limit reached
+                        </button>
+                      )
+                    ) : (
+                      <button className="button-action thin" onClick={openAddRule} type="button">
+                        Add rule
+                      </button>
+                    )}
                   </div>
+
+                  {ruleLimitReached && !showRuleForm && !editingRule && (
+                    <div className="notification-limit-notice">
+                      <strong>Rule limit reached.</strong>
+                      <span>
+                        {alertPlanLimitText(alertPlan)}{' '}
+                        {canShowAlertPlanUpgrade && (
+                          <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more rules.</Link>
+                        )}
+                      </span>
+                    </div>
+                  )}
 
                   {!editingRule && renderRuleForm()}
 
