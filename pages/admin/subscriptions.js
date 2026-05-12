@@ -115,21 +115,34 @@ const API_TIER_LABELS = {
 }
 
 const tierValue = (row) => {
-  const value = row?.tier || row?.metadata?.tier || row?.metadata?.planTier || row?.metadata?.plan || ''
+  const value = row?.metadata?.tier || ''
   return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
+}
+
+const botLimitLabel = (metadata = {}) => {
+  const parts = []
+
+  if (typeof metadata.connections === 'number') {
+    parts.push(`${metadata.connections} channel${metadata.connections === 1 ? '' : 's'}`)
+  }
+
+  if (typeof metadata.listeners === 'number') {
+    parts.push(`${metadata.listeners} rule${metadata.listeners === 1 ? '' : 's'}`)
+  }
+
+  return parts.join(' / ')
 }
 
 const tierLabel = (row) => {
   if (!['bot', 'token'].includes(row?.type)) return ''
 
   const tier = tierValue(row)
-  if (!tier) return ''
 
   if (row.type === 'bot') {
-    return ALERT_PLAN_TIERS[tier]?.label || tier
+    return tier ? ALERT_PLAN_TIERS[tier]?.label || tier : botLimitLabel(row?.metadata)
   }
 
-  return API_TIER_LABELS[tier] || tier
+  return tier ? API_TIER_LABELS[tier] || tier : ''
 }
 
 const packageList = (packages, width) => {
