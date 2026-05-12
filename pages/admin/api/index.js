@@ -12,6 +12,15 @@ import CopyButton from '../../../components/UI/CopyButton'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { IoMdCreate, IoMdCheckmark, IoMdClose } from 'react-icons/io'
 
+const maskApiToken = (token) => {
+  if (!token) return ''
+
+  const value = String(token)
+  if (value.length <= 8) return '*'.repeat(value.length)
+
+  return `${value.slice(0, 4)}${'*'.repeat(value.length - 8)}${value.slice(-4)}`
+}
+
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
@@ -35,6 +44,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
   const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [descriptionEdit, setDescriptionEdit] = useState('')
   const [descriptionSaving, setDescriptionSaving] = useState(false)
+  const [tokenRevealed, setTokenRevealed] = useState(false)
 
   useEffect(() => {
     if (sessionToken) {
@@ -54,6 +64,10 @@ export default function Api({ sessionToken, openEmailLogin }) {
       setDescriptionEdit(apiData.description)
     }
   }, [apiData?.description])
+
+  useEffect(() => {
+    setTokenRevealed(false)
+  }, [apiData?.token])
 
   const getApiData = async () => {
     setLoading(true)
@@ -237,7 +251,30 @@ export default function Api({ sessionToken, openEmailLogin }) {
                         <tr>
                           <td className="right">Token</td>
                           <td className="left">
-                            {apiData.token} <CopyButton text={apiData.token} />{' '}
+                            <CopyButton
+                              ariaLabel={tokenRevealed ? 'Copy API token' : 'Show and copy API token'}
+                              buttonClassName={tokenRevealed ? 'brake' : 'no-brake'}
+                              buttonStyle={{
+                                background: 'none',
+                                border: 0,
+                                color: 'var(--accent-link)',
+                                cursor: 'pointer',
+                                fontFamily:
+                                  'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                                fontSize: 'inherit',
+                                padding: 0,
+                                textAlign: 'left',
+                                textDecoration: 'underline'
+                              }}
+                              clickTooltipOnly
+                              copyText={tokenRevealed ? 'Copy API token' : 'Show and copy API token'}
+                              onCopy={() => setTokenRevealed(true)}
+                              text={apiData.token}
+                              title={tokenRevealed ? 'Copy API token' : 'Show and copy API token'}
+                              tooltipClassName="below no-brake"
+                            >
+                              {tokenRevealed ? apiData.token : maskApiToken(apiData.token)}
+                            </CopyButton>{' '}
                           </td>
                         </tr>
                         <tr>

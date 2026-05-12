@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 
 const copyTextToClipboard = async (text) => {
@@ -9,14 +9,55 @@ const copyTextToClipboard = async (text) => {
   }
 }
 
-export default function CopyButton({ text, copyText, size = 20, tooltipClassName = '' }) {
+export default function CopyButton({
+  text,
+  copyText,
+  size = 20,
+  tooltipClassName = '',
+  children,
+  className = '',
+  buttonClassName = '',
+  buttonStyle,
+  ariaLabel,
+  title,
+  onCopy,
+  clickTooltipOnly = false
+}) {
   const { t } = useTranslation()
 
   const [isCopied, setIsCopied] = useState(false)
   const [isTooltipEnabled, setIsTooltipEnabled] = useState(true)
   const [isTooltipOpen, setIsTooltipOpen] = useState(false)
+  const hasFocusRef = useRef(false)
+  const isHoveringRef = useRef(false)
+
+  const restoreTooltipWhenIdle = () => {
+    if (!hasFocusRef.current && !isHoveringRef.current) {
+      setIsTooltipEnabled(true)
+    }
+  }
+
+  const handleMouseEnter = () => {
+    isHoveringRef.current = true
+  }
+
+  const handleMouseLeave = () => {
+    isHoveringRef.current = false
+    restoreTooltipWhenIdle()
+  }
+
+  const handleFocus = () => {
+    hasFocusRef.current = true
+  }
+
+  const handleBlur = () => {
+    hasFocusRef.current = false
+    restoreTooltipWhenIdle()
+  }
 
   const handleCopyClick = () => {
+    if (onCopy) onCopy()
+    setIsTooltipEnabled(true)
     setIsTooltipOpen(true)
     copyTextToClipboard(text)
       .then(() => {
@@ -24,11 +65,8 @@ export default function CopyButton({ text, copyText, size = 20, tooltipClassName
         setTimeout(() => {
           setIsCopied(false)
           setIsTooltipOpen(false)
-          setIsTooltipEnabled(false)
+          setIsTooltipEnabled(!hasFocusRef.current && !isHoveringRef.current)
         }, 1000)
-        setTimeout(() => {
-          setIsTooltipEnabled(true)
-        }, 5000)
       })
       .catch(() => {
         console.log('Error copying text')
@@ -36,6 +74,37 @@ export default function CopyButton({ text, copyText, size = 20, tooltipClassName
   }
 
   if (!text) return ''
+
+  const tooltipText = isCopied ? t('button.copied') : copyText || t('button.copy')
+  const shouldRenderTooltip = isTooltipEnabled && (!clickTooltipOnly || isTooltipOpen)
+
+  if (children) {
+    return (
+      <span
+        className={`tooltip ${className}`.trim()}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <button
+          aria-label={ariaLabel || copyText || t('button.copy')}
+          className={buttonClassName}
+          onClick={handleCopyClick}
+          style={buttonStyle}
+          title={title || copyText || t('button.copy')}
+          type="button"
+        >
+          {children}
+        </button>
+        {shouldRenderTooltip && (
+          <span className={`tooltiptext ${tooltipClassName} ${isTooltipOpen ? 'is-visible' : ''}`.trim()}>
+            {tooltipText}
+          </span>
+        )}
+      </span>
+    )
+  }
 
   const notCopiedStyle = {
     outline: 'none',
@@ -48,7 +117,14 @@ export default function CopyButton({ text, copyText, size = 20, tooltipClassName
   }
 
   return (
-    <span className="tooltip" style={{ wordBreak: 'keep-all' }}>
+    <span
+      className="tooltip"
+      onBlur={handleBlur}
+      onFocus={handleFocus}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{ wordBreak: 'keep-all' }}
+    >
       <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
@@ -72,9 +148,9 @@ export default function CopyButton({ text, copyText, size = 20, tooltipClassName
           />
         </g>
       </svg>
-      {isTooltipEnabled && (
+      {shouldRenderTooltip && (
         <span className={`tooltiptext ${tooltipClassName} ${isTooltipOpen ? 'is-visible' : ''}`.trim()}>
-          {isCopied ? t('button.copied') : copyText || t('button.copy')}
+          {tooltipText}
         </span>
       )}
     </span>

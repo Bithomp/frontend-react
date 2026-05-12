@@ -38,6 +38,7 @@ export default function Admin({
   const [checkedPackageData, setCheckedPackageData] = useState(false)
   const [packageData, setPackageData] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
+  const [showPrioritySupport, setShowPrioritySupport] = useState(false)
 
   useEffect(() => {
     redirectTokenRun()
@@ -166,6 +167,7 @@ export default function Admin({
     setPartnerData(null)
     setPackageData(null)
     setCheckedPackageData(false)
+    setShowPrioritySupport(false)
   }
 
   return (
@@ -210,21 +212,34 @@ export default function Admin({
                   </tr>
                 </tbody>
               </table>
-              {packageData && partnerData && (
-                <span>
+              <br />
+              <br />
+              <div style={{ display: 'inline-flex', gap: '12px', alignItems: 'center', justifyContent: 'center' }}>
+                {packageData && partnerData && (
+                  <button
+                    aria-controls="priority-support-message"
+                    aria-expanded={showPrioritySupport}
+                    className="button-action secondary"
+                    onClick={() => setShowPrioritySupport((visible) => !visible)}
+                    type="button"
+                  >
+                    Contact support
+                  </button>
+                )}
+                <button className="button-action" onClick={onLogOut}>
+                  Log out
+                </button>
+              </div>
+              {packageData && partnerData && showPrioritySupport && (
+                <div id="priority-support-message">
                   <br />
                   For priority support, please use subject <b>PRO user {partnerData.id}</b> when sending us an e-mail to{' '}
                   <b>
                     <Mailto email="pro@bithomp.com" headers={{ subject: 'PRO user ' + partnerData.id }} />
                   </b>
                   .
-                </span>
+                </div>
               )}
-              <br />
-              <br />
-              <button className="button-action" onClick={onLogOut}>
-                Log out
-              </button>
             </>
           ) : (
             <>

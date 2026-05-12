@@ -988,6 +988,25 @@ body.dark {
       border-top: 6px solid var(--tooltip-bg);
     }
 
+    &.below {
+      top: calc(100% + 10px);
+      bottom: auto;
+
+      &:before {
+        top: auto;
+        bottom: 100%;
+        border-top: 0;
+        border-bottom: 7px solid var(--tooltip-arrow-border-color);
+      }
+
+      &:after {
+        top: auto;
+        bottom: 100%;
+        border-top: 0;
+        border-bottom: 6px solid var(--tooltip-bg);
+      }
+    }
+
     &.right {
       --tooltip-shift-x: 0%;
       left: 0;
