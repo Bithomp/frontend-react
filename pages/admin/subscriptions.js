@@ -22,6 +22,7 @@ import NotificationsBot from '../../components/Admin/subscriptions/Notifications
 import ListTransactions from '../../components/ListTransactions'
 import { LinkTx } from '../../utils/links'
 import { bidFullServiceName, bidTypeToName } from '../../utils/bids'
+import { ALERT_PLAN_TIERS } from '../../utils/notificationPlans'
 
 //PayPal option starts
 /*
@@ -103,6 +104,34 @@ const tabTotype = (tab) => {
   }
 }
 
+const API_TIER_LABELS = {
+  free: 'Free',
+  basic: 'Basic',
+  standard: 'Standard',
+  premium: 'Premium',
+  enterprise: 'Enterprise',
+  enterprise2: 'Enterprise II',
+  enterprise3: 'Enterprise III'
+}
+
+const tierValue = (row) => {
+  const value = row?.tier || row?.metadata?.tier || row?.metadata?.planTier || row?.metadata?.plan || ''
+  return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
+}
+
+const tierLabel = (row) => {
+  if (!['bot', 'token'].includes(row?.type)) return ''
+
+  const tier = tierValue(row)
+  if (!tier) return ''
+
+  if (row.type === 'bot') {
+    return ALERT_PLAN_TIERS[tier]?.label || tier
+  }
+
+  return API_TIER_LABELS[tier] || tier
+}
+
 const packageList = (packages, width) => {
   return (
     <div style={{ textAlign: 'left' }}>
@@ -111,6 +140,7 @@ const packageList = (packages, width) => {
           <thead>
             <tr>
               <th>Type</th>
+              <th>Tier</th>
               <th>Created</th>
               <th>Start</th>
               <th>Expire</th>
@@ -121,6 +151,7 @@ const packageList = (packages, width) => {
               return (
                 <tr key={index}>
                   <td>{bidTypeToName(row.type)}</td>
+                  <td>{tierLabel(row) || '-'}</td>
                   <td>{fullDateAndTime(row.createdAt)}</td>
                   <td>{fullDateAndTime(row.startedAt)}</td>
                   <td>
@@ -144,6 +175,7 @@ const packageList = (packages, width) => {
                   </td>
                   <td>
                     <p>Type: {row.type}</p>
+                    {tierLabel(row) && <p>Tier: {tierLabel(row)}</p>}
                     <p>
                       Created: <br />
                       {fullDateAndTime(row.createdAt)}
