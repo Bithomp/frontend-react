@@ -55,6 +55,10 @@ $width: 340px;
       top: 12px;
     }
 
+    @media (max-width: 440px) {
+      inset-inline: 8px;
+    }
+
     &__wrap {
       position: sticky !important;
       top: 95px;
@@ -67,6 +71,10 @@ $width: 340px;
       @media (max-width: 1300px) {
         gap: 8px;
         margin-bottom: 8px;
+      }
+
+      @media (max-width: 440px) {
+        gap: 6px;
       }
 
       .dropdown {
@@ -275,7 +283,9 @@ $width: 340px;
   }
 
   @media (max-width: 440px) {
-    padding: 6px 8px;
+    gap: 6px;
+    font-size: 14px;
+    padding: 6px 10px;
   }
 
   @media (min-width: 440px) {

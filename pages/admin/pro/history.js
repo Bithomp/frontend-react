@@ -1210,9 +1210,7 @@ export default function History({
                     )}
                   </>
                 )}
-                <br />
-                <br />
-                {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+                {errorMessage && <div className="center orange bold pro-history-error">{errorMessage}</div>}
               </>
             </FiltersFrame>
           </>
