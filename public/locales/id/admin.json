@@ -94,6 +94,7 @@
     "from": "Dari",
     "destination-tag": "Tag tujuan",
     "fiat-equivalent": "Setara fiat",
+    "fiat": "Fiat",
     "fiat-equivalent-currency": "Setara fiat ({{currency}})",
     "transaction": "Transaksi",
     "memo": "Catatan",
@@ -118,7 +119,10 @@
     "enterprise": "Perusahaan",
     "enterprise2": "Perusahaan 2",
     "enterprise3": "Perusahaan 3",
-    "custom": "Kustom"
+    "custom": "Kustom",
+    "free-non-commercial": "Gratis (penggunaan non-komersial)",
+    "on-demand-basic": "On-demand Basic",
+    "on-demand-premium": "On-demand Premium"
   },
   "profile": {
     "email": "E-mail",
@@ -312,26 +316,26 @@
         "project-title": "Dukung proyek ini",
         "project-text": "Langganan Anda membantu kami terus mengembangkan."
       },
-      "more-coming": "Lebih banyak fitur Pro akan hadir.",
       "subscribe": "Pilih periode berlangganan."
     },
     "api": {
-      "check-docs": "Periksa dokumentasi untuk batasan dan harga API:",
       "why-title": "akses API",
-      "intro": "Gunakan API untuk mengintegrasikan data penjelajah ke dalam aplikasi atau alur kerja Anda.",
-      "benefits": {
-        "limits-title": "Batasan yang jelas",
-        "limits-text": "Pilih tingkatan yang sesuai dengan volume permintaan Anda.",
-        "features-title": "Data penjelajah",
-        "features-text": "Akses akun, transaksi, token, NFT, dan data jaringan."
-      },
+      "plan-table-title": "Harga dan batas",
+      "testnet-free": "Bithomp API gratis di jaringan uji.",
+      "max-requests-minute": "Permintaan maks. / menit",
+      "max-requests-day": "Permintaan maks. / 24 jam",
+      "nft-content-plan": "Paket konten NFT",
+      "price-month": "Harga / bulan",
+      "per-request": "per permintaan",
+      "show-advanced-plans": "Tampilkan paket lanjutan",
+      "hide-advanced-plans": "Sembunyikan paket lanjutan",
+      "advanced-plan-note": "Pada paket ini, endpoint NFT, NFTs, dan NFT offers mengembalikan assets dengan URL langsung ke gambar dan video yang di-cache dan diubah ukurannya. Anda bisa mendapatkan lebih dari 100 hasil untuk token, transaksi, dan whales dalam satu permintaan, mendapatkan aktivasi historis, daftar AMMs berdasarkan ID, dan lainnya.",
       "subscribe": "Pilih tingkatan dan periode berlangganan."
     },
     "alerts": {
       "why-title": "Bot peringatan",
       "intro": "Peringatan {{explorerName}} memberi tahu Anda tentang penawaran NFT, penjualan NFT, dan perubahan saldo akun yang dipantau.",
       "destinations": "Kirim peringatan ke email, Slack, Discord, atau X.",
-      "rules-before": "Buat saluran dan aturan di",
       "balance-before": "Peringatan perubahan saldo menggunakan alamat dari",
       "subscribe": "Pilih paket peringatan dan periode penagihan.",
       "alerts-day": "Peringatan / hari",

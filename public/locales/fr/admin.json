@@ -94,6 +94,7 @@
     "from": "De",
     "destination-tag": "Tag de destination",
     "fiat-equivalent": "Équivalent fiat",
+    "fiat": "Fiat",
     "fiat-equivalent-currency": "Équivalent fiat ({{currency}})",
     "transaction": "Opération",
     "memo": "Mémo",
@@ -118,7 +119,10 @@
     "enterprise": "Entreprise",
     "enterprise2": "Entreprise 2",
     "enterprise3": "Entreprise 3",
-    "custom": "Personnalisé"
+    "custom": "Personnalisé",
+    "free-non-commercial": "Gratuit (usage non commercial)",
+    "on-demand-basic": "On-demand Basic",
+    "on-demand-premium": "On-demand Premium"
   },
   "profile": {
     "email": "E-mail",
@@ -312,26 +316,26 @@
         "project-title": "Soutenir le projet",
         "project-text": "Votre abonnement nous aide à continuer le développement."
       },
-      "more-coming": "D’autres fonctions Pro arrivent.",
       "subscribe": "Choisissez une période d’abonnement."
     },
     "api": {
-      "check-docs": "Consultez la documentation pour les limites et tarifs de l’API :",
       "why-title": "Accès API",
-      "intro": "Utilisez l’API pour intégrer les données de l’explorateur dans votre application ou votre flux de travail.",
-      "benefits": {
-        "limits-title": "Limites claires",
-        "limits-text": "Choisissez un niveau adapté à votre volume de requêtes.",
-        "features-title": "Données de l’explorateur",
-        "features-text": "Accédez aux données des comptes, transactions, tokens, NFT et du réseau."
-      },
+      "plan-table-title": "Prix et limites",
+      "testnet-free": "Bithomp API est gratuite sur les réseaux de test.",
+      "max-requests-minute": "Requêtes max. / minute",
+      "max-requests-day": "Requêtes max. / 24 h",
+      "nft-content-plan": "Plan de contenu NFT",
+      "price-month": "Prix / mois",
+      "per-request": "par requête",
+      "show-advanced-plans": "Afficher les plans avancés",
+      "hide-advanced-plans": "Masquer les plans avancés",
+      "advanced-plan-note": "Avec ces plans, les endpoints NFT, NFTs et NFT offers renvoient des assets avec des URLs directes vers des images et vidéos mises en cache et redimensionnées. Vous pouvez obtenir plus de 100 résultats pour les tokens, transactions et whales en une requête, obtenir les activations historiques, lister les AMMs par leurs IDs, et plus.",
       "subscribe": "Choisissez un niveau et une période d’abonnement."
     },
     "alerts": {
       "why-title": "Bot d’alertes",
       "intro": "Les alertes {{explorerName}} vous avertissent des offres NFT, des ventes NFT et des changements de solde des comptes surveillés.",
       "destinations": "Envoyez les alertes par e-mail, Slack, Discord ou X.",
-      "rules-before": "Créez des canaux et des règles sur",
       "balance-before": "Les alertes de changement de solde utilisent les adresses de",
       "subscribe": "Choisissez un forfait d’alertes et une période de facturation.",
       "alerts-day": "Alertes / jour",

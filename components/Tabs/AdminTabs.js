@@ -11,12 +11,11 @@ export default function AdminTabs({ name, tab }) {
     { value: 'profile', label: t('tabs.profile') },
     { value: 'watchlist', label: t('tabs.watchlist') },
     { value: 'pro', label: t('tabs.my-addresses') },
-    { value: 'api', label: 'API' },
-    { value: 'notifications', label: t('tabs.alerts') }
+    { value: 'notifications', label: t('tabs.alerts') },
+    { value: 'api', label: 'API' }
   ]
 
   if (!devNet) {
-    mainTabs.splice(2, 0, { value: 'subscriptions', label: t('tabs.subscriptions') })
     mainTabs.splice(4, 0, { value: 'referrals', label: t('tabs.referrals') })
   }
 
@@ -30,8 +29,6 @@ export default function AdminTabs({ name, tab }) {
   const changePage = (tab) => {
     if (tab === 'api') {
       router.push('/admin/api')
-    } else if (tab === 'subscriptions') {
-      router.push('/admin/subscriptions')
     } else if (tab === 'profile') {
       router.push('/admin')
     } else if (tab === 'api-info') {

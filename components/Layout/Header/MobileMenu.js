@@ -7,7 +7,6 @@ import WalletProviderIcon from '../../UI/WalletProviderIcon'
 
 import { IoIosRocket } from 'react-icons/io'
 import { FaUserLarge } from 'react-icons/fa6'
-import { GrMoney } from 'react-icons/gr'
 import {
   IoStatsChart,
   IoWallet,
@@ -53,7 +52,8 @@ import {
   IoPersonAddOutline,
   IoLogoGithub,
   IoGitBranchOutline,
-  IoRocketOutline
+  IoRocketOutline,
+  IoNotificationsOutline
 } from 'react-icons/io5'
 import { FaSignOutAlt, FaEye, FaUserCheck, FaUserFriends } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
@@ -193,16 +193,16 @@ export default function MobileMenu({
                 <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> {t('menu.pro.watchlist')}
               </Link>
 
-              <Link href="/admin/subscriptions" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <GrMoney style={iconStyle} /> {t('menu.pro.subscriptions')}
-              </Link>
-
               <Link href="/admin/referrals" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <FaUserFriends style={iconStyle} /> {t('menu.pro.referrals')}
               </Link>
 
               <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> {t('menu.pro.my-addresses')}
+              </Link>
+
+              <Link href="/admin/notifications" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <IoNotificationsOutline style={iconStyle} /> {t('menu.pro.alerts')}
               </Link>
 
               <Link href="/admin/api" className="mobile-menu-item" onClick={mobileMenuToggle}>

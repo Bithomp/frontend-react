@@ -222,10 +222,6 @@ export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
         <p>{t('subscriptions.alerts.intro', { explorerName })}</p>
         <p>{t('subscriptions.alerts.destinations')}</p>
         <p>
-          {t('subscriptions.alerts.rules-before')}{' '}
-          <Link href="/admin/notifications">{t('tabs.alerts')}</Link>.
-        </p>
-        <p>
           {t('subscriptions.alerts.balance-before')}{' '}
           <Link href="/admin/pro">{t('tabs.my-addresses')}</Link>.
         </p>

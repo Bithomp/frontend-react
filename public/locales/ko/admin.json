@@ -94,6 +94,7 @@
     "from": "보낸 곳",
     "destination-tag": "대상 태그",
     "fiat-equivalent": "법정화폐 환산",
+    "fiat": "Fiat",
     "fiat-equivalent-currency": "법정화폐 환산 ({{currency}})",
     "transaction": "트랜잭션",
     "memo": "메모",
@@ -118,7 +119,10 @@
     "enterprise": "기업",
     "enterprise2": "엔터프라이즈 2",
     "enterprise3": "엔터프라이즈 3",
-    "custom": "맞춤형"
+    "custom": "맞춤형",
+    "free-non-commercial": "무료(비상업적 사용)",
+    "on-demand-basic": "On-demand Basic",
+    "on-demand-premium": "On-demand Premium"
   },
   "profile": {
     "email": "이메일",
@@ -312,26 +316,26 @@
         "project-title": "프로젝트를 지원하세요",
         "project-text": "귀하의 구독은 우리가 계속 발전하는 데 도움이 됩니다."
       },
-      "more-coming": "더 많은 Pro 기능이 출시될 예정입니다.",
       "subscribe": "구독 기간을 선택하세요."
     },
     "api": {
-      "check-docs": "API 한도 및 가격에 대한 설명서를 확인하세요.",
       "why-title": "API 액세스",
-      "intro": "API를 사용하여 탐색기 데이터를 앱이나 워크플로에 통합하세요.",
-      "benefits": {
-        "limits-title": "명확한 한계",
-        "limits-text": "요청량과 일치하는 계층을 선택하세요.",
-        "features-title": "탐색기 데이터",
-        "features-text": "계정, 거래, 토큰, NFT 및 네트워크 데이터에 액세스하세요."
-      },
+      "plan-table-title": "가격 및 한도",
+      "testnet-free": "Bithomp API는 테스트 네트워크에서 무료입니다.",
+      "max-requests-minute": "최대 요청 수 / 분",
+      "max-requests-day": "최대 요청 수 / 24시간",
+      "nft-content-plan": "NFT 콘텐츠 플랜",
+      "price-month": "가격 / 월",
+      "per-request": "요청당",
+      "show-advanced-plans": "고급 플랜 보기",
+      "hide-advanced-plans": "고급 플랜 숨기기",
+      "advanced-plan-note": "이 플랜에서는 NFT, NFTs, NFT offers 엔드포인트가 캐시 및 크기 조정된 이미지와 동영상의 직접 URL이 포함된 assets를 반환합니다. 한 번의 요청으로 tokens, transactions, whales에 대해 100개 이상의 결과를 받을 수 있고, 과거 활성화 내역, ID별 AMMs 목록 등을 가져올 수 있습니다.",
       "subscribe": "등급과 구독 기간을 선택하세요."
     },
     "alerts": {
       "why-title": "알림 봇",
       "intro": "{{explorerName}}알림은 NFT 제안, NFT 판매 및 감시된 계정 잔액 변경 사항에 대해 알려줍니다.",
       "destinations": "이메일, Slack, Discord 또는 X로 알림을 보냅니다.",
-      "rules-before": "채널과 규칙을 생성합니다.",
       "balance-before": "잔액 변경 알림은 다음 주소를 사용합니다.",
       "subscribe": "알림 계획과 청구 기간을 선택하세요.",
       "alerts-day": "알림/일",

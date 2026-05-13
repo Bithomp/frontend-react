@@ -117,8 +117,8 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     const ref = referral.referralCode
 
     return {
-      api: `${server}${localePath('/admin/subscriptions', i18n.language)}?tab=api&ref=${ref}`,
-      pro: `${server}${localePath('/admin/subscriptions', i18n.language)}?ref=${ref}`,
+      api: `${server}${localePath('/admin/api', i18n.language)}?ref=${ref}#api-subscription`,
+      pro: `${server}${localePath('/admin', i18n.language)}?ref=${ref}#bithomp-pro-subscription`,
       username: `${server}${localePath('/username', i18n.language)}?ref=${ref}`,
       landing: `${server}?ref=${ref}`
     }
@@ -284,10 +284,11 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
             <Link href="/username">Username</Link>
           </li>
           <li>
-            <Link href="/admin/subscriptions">Bithomp Pro</Link> {t('subscriptions.subscription', { ns: 'admin' })}
+            <Link href="/admin#bithomp-pro-subscription">Bithomp Pro</Link>{' '}
+            {t('subscriptions.subscription', { ns: 'admin' })}
           </li>
           <li>
-            <Link href="/admin/subscriptions?tab=api">{t('referrals.api-access', { ns: 'admin' })}</Link>
+            <Link href="/admin/api#api-subscription">{t('referrals.api-access', { ns: 'admin' })}</Link>
           </li>
         </ul>
 

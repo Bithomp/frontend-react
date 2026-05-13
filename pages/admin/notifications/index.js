@@ -11,6 +11,8 @@ import AddChannelButton from '@/components/Admin/notifications/AddChannelButton'
 import InputField from '@/components/Admin/notifications/InputField'
 import ChannelCard from '@/components/Admin/notifications/ChannelCard'
 import RuleCard from '@/components/Admin/notifications/RuleCard'
+import SubscriptionManager from '@/components/Admin/subscriptions/SubscriptionManager'
+import NotificationsBotSubscription from '@/components/Admin/subscriptions/NotificationsBot'
 import AdminTabs from '@/components/Tabs/AdminTabs'
 import Dialog from '@/components/UI/Dialog'
 import CountrySelect from '@/components/UI/CountrySelect'
@@ -73,7 +75,7 @@ const initialRuleForm = {
   xrpCafeURL: false
 }
 
-const notificationsSubscriptionHref = '/admin/subscriptions?tab=notifications'
+const notificationsSubscriptionHref = '#alerts-subscription'
 
 const setupGuides = [
   {
@@ -339,7 +341,13 @@ const buildRuleSettings = (formData) => {
   return settings
 }
 
-export default function Notifications({ sessionToken, openEmailLogin }) {
+export default function Notifications({
+  sessionToken,
+  openEmailLogin,
+  setSignRequest,
+  setProExpire,
+  setSubscriptionExpired
+}) {
   const { t } = useTranslation('admin')
   const booleanFilterOptions = [
     { value: 'any', label: t('common.any') },
@@ -435,6 +443,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const activeProPackage = activePackage(notificationPackages, 'bithomp_pro')
   const activeBotPackage = activePackage(notificationPackages, 'bot')
   const alertPlan = getAlertPlanForPackage(activeBotPackage)
+  const notificationLimitsReady = notificationPrerequisitesLoaded && !loadingNotificationPrerequisites
   const channelLimitReached = channels.length >= alertPlan.connections
   const ruleLimitReached = rules.length >= alertPlan.listeners
   const canShowAlertPlanUpgrade = showAlertPlanUpgrade(alertPlan, activeBotPackage)
@@ -481,7 +490,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   }, [sessionToken])
 
   const openAddChannel = (type = NOTIFICATION_CHANNEL_TYPES.EMAIL) => {
-    if (channelLimitReached) {
+    if (notificationLimitsReady && channelLimitReached) {
       setFormMessage(`${t('notifications.channel-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`)
       setShowChannelForm(false)
       return
@@ -519,7 +528,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const firstChannelForEvent = (event) => channels.find((channel) => channelSupportsEvent(channel, event))?.id || ''
 
   const openAddRule = () => {
-    if (ruleLimitReached) {
+    if (notificationLimitsReady && ruleLimitReached) {
       setRuleFormMessage(`${t('notifications.rule-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`)
       setShowRuleForm(false)
       return
@@ -613,7 +622,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const validateChannelForm = () => {
     const errors = {}
     let message = ''
-    if (!editingChannel && channelLimitReached) {
+    if (!editingChannel && notificationLimitsReady && channelLimitReached) {
       message = `${t('notifications.channel-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`
     }
     if (!formData.name?.trim()) {
@@ -640,7 +649,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const validateRuleForm = () => {
     const errors = {}
     let message = ''
-    if (!editingRule && ruleLimitReached) {
+    if (!editingRule && notificationLimitsReady && ruleLimitReached) {
       message = `${t('notifications.rule-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`
     }
     const selectedRuleChannel = channels.find((channel) => String(channel.id) === String(ruleFormData.connectionId))
@@ -824,7 +833,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     const showInitialChannelForm = !isLoading && !notificationDataUnavailable && channels.length === 0
     if (!showChannelForm && !showInitialChannelForm) return null
 
-    if (!editingChannel && channelLimitReached) {
+    if (!editingChannel && notificationLimitsReady && channelLimitReached) {
       return (
         <div className="notification-limit-notice">
           <strong>{t('notifications.channel-limit-reached')}</strong>
@@ -974,7 +983,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           {notificationPrerequisitesLoaded && !hasActiveProSubscription && (
             <small>
               {t('notifications.pro-required-before')}{' '}
-              <Link href="/admin/subscriptions?tab=pro">Bithomp Pro</Link>.
+              <Link href="/admin#bithomp-pro-subscription">Bithomp Pro</Link>.
             </small>
           )}
           {notificationPrerequisitesLoaded &&
@@ -1198,7 +1207,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const renderRuleForm = () => {
     if (!showRuleForm) return null
 
-    if (!editingRule && ruleLimitReached) {
+    if (!editingRule && notificationLimitsReady && ruleLimitReached) {
       return (
         <div className="notification-limit-notice">
           <strong>{t('notifications.rule-limit-reached')}</strong>
@@ -1502,6 +1511,20 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             </div>
           </section>
 
+          {!isLoading && !partnerMissing && !tokenRequired && (
+            <SubscriptionManager
+              id="alerts-subscription"
+              openEmailLogin={openEmailLogin}
+              packageType="bot"
+              PlanComponent={NotificationsBotSubscription}
+              sessionToken={sessionToken}
+              setProExpire={setProExpire}
+              setSignRequest={setSignRequest}
+              setSubscriptionExpired={setSubscriptionExpired}
+              title={t('tabs.alerts-bot')}
+            />
+          )}
+
           {isLoading && <p className="center">{t('notifications.loading-alerts')}</p>}
 
           {partnerMissing && (
@@ -1557,6 +1580,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                     <p>{t('notifications.channels.subtitle')}</p>
                   </div>
                   {channels.length > 0 &&
+                    notificationLimitsReady &&
                     !showChannelForm &&
                     (channelLimitReached ? (
                       canShowAlertPlanUpgrade ? (
@@ -1573,7 +1597,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                     ))}
                 </div>
 
-                {channels.length > 0 && channelLimitReached && !showChannelForm && (
+                {channels.length > 0 && notificationLimitsReady && channelLimitReached && !showChannelForm && (
                   <div className="notification-limit-notice">
                     <strong>{t('notifications.channel-limit-reached')}</strong>
                     <span>
@@ -1610,7 +1634,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                       <h2>{t('notifications.rules.title')}</h2>
                       <p>{t('notifications.rules.subtitle')}</p>
                     </div>
-                    {ruleLimitReached && !editingRule ? (
+                    {notificationLimitsReady && ruleLimitReached && !editingRule ? (
                       canShowAlertPlanUpgrade ? (
                         <Link href={notificationsSubscriptionHref} className="button-action thin">
                           {t('notifications.upgrade-plan')}
@@ -1627,7 +1651,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                     )}
                   </div>
 
-                  {ruleLimitReached && !showRuleForm && !editingRule && (
+                  {notificationLimitsReady && ruleLimitReached && !showRuleForm && !editingRule && (
                     <div className="notification-limit-notice">
                       <strong>{t('notifications.rule-limit-reached')}</strong>
                       <span>

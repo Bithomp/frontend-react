@@ -94,6 +94,7 @@
     "from": "Von",
     "destination-tag": "Destination-Tag",
     "fiat-equivalent": "Fiat-Gegenwert",
+    "fiat": "Fiat",
     "fiat-equivalent-currency": "Fiat-Gegenwert ({{currency}})",
     "transaction": "Transaktion",
     "memo": "Notiz",
@@ -118,7 +119,10 @@
     "enterprise": "Unternehmen",
     "enterprise2": "Unternehmen 2",
     "enterprise3": "Unternehmen 3",
-    "custom": "Individuell"
+    "custom": "Individuell",
+    "free-non-commercial": "Kostenlos (nicht-kommerzielle Nutzung)",
+    "on-demand-basic": "On-demand Basic",
+    "on-demand-premium": "On-demand Premium"
   },
   "profile": {
     "email": "E-Mail",
@@ -312,26 +316,26 @@
         "project-title": "Unterstützen Sie das Projekt",
         "project-text": "Ihr Abonnement hilft uns, weiterzuentwickeln."
       },
-      "more-coming": "Weitere Pro-Funktionen folgen.",
       "subscribe": "Wählen Sie einen Abonnementzeitraum."
     },
     "api": {
-      "check-docs": "Informationen zu API-Limits und Preisen finden Sie in der Dokumentation:",
       "why-title": "API-Zugriff",
-      "intro": "Verwenden Sie die API, um Explorer-Daten in Ihre App oder Ihren Workflow zu integrieren.",
-      "benefits": {
-        "limits-title": "Klare Grenzen",
-        "limits-text": "Wählen Sie eine Stufe, die Ihrem Anfragevolumen entspricht.",
-        "features-title": "Explorer-Daten",
-        "features-text": "Greifen Sie auf Konto-, Transaktions-, Token-, NFT- und Netzwerkdaten zu."
-      },
+      "plan-table-title": "Preise und Limits",
+      "testnet-free": "Die Bithomp API ist in Testnetzwerken kostenlos.",
+      "max-requests-minute": "Max. Anfragen / Minute",
+      "max-requests-day": "Max. Anfragen / 24h",
+      "nft-content-plan": "NFT Content Plan",
+      "price-month": "Preis / Monat",
+      "per-request": "pro Anfrage",
+      "show-advanced-plans": "Erweiterte Pläne anzeigen",
+      "hide-advanced-plans": "Erweiterte Pläne ausblenden",
+      "advanced-plan-note": "Bei diesen Plänen geben die NFT-, NFTs- und NFT offers-Endpunkte assets mit direkten URLs zu gecachten und skalierten Bildern und Videos zurück. Sie können mehr als 100 Ergebnisse für Tokens, Transaktionen und whales in einer Anfrage erhalten, historische Aktivierungen abrufen, AMMs nach ihren IDs auflisten und mehr.",
       "subscribe": "Wählen Sie eine Stufe und einen Abonnementzeitraum."
     },
     "alerts": {
       "why-title": "Warnungs-Bot",
       "intro": "{{explorerName}}-Benachrichtigungen benachrichtigen Sie über NFT-Angebote, NFT-Verkäufe und Änderungen des beobachteten Kontostands.",
       "destinations": "Senden Sie Benachrichtigungen an E-Mail, Slack, Discord oder X.",
-      "rules-before": "Erstellen Sie Kanäle und Regeln für die",
       "balance-before": "Für Benachrichtigungen zu Kontostandsänderungen werden Adressen von verwendet",
       "subscribe": "Wählen Sie einen Benachrichtigungsplan und einen Abrechnungszeitraum.",
       "alerts-day": "Warnungen/Tag",

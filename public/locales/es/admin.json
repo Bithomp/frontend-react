@@ -94,6 +94,7 @@
     "from": "De",
     "destination-tag": "Etiqueta de destino",
     "fiat-equivalent": "Equivalente en fiat",
+    "fiat": "Fiat",
     "fiat-equivalent-currency": "Equivalente en fiat ({{currency}})",
     "transaction": "Transacción",
     "memo": "Nota",
@@ -118,7 +119,10 @@
     "enterprise": "Empresa",
     "enterprise2": "Empresa 2",
     "enterprise3": "Empresa 3",
-    "custom": "Personalizado"
+    "custom": "Personalizado",
+    "free-non-commercial": "Gratis (uso no comercial)",
+    "on-demand-basic": "On-demand Basic",
+    "on-demand-premium": "On-demand Premium"
   },
   "profile": {
     "email": "Correo electrónico",
@@ -312,26 +316,26 @@
         "project-title": "Apoya el proyecto",
         "project-text": "Tu suscripción nos ayuda a seguir construyendo."
       },
-      "more-coming": "Más funciones Pro están por llegar.",
       "subscribe": "Elija un período de suscripción."
     },
     "api": {
-      "check-docs": "Consulte la documentación para conocer los límites y precios de API:",
       "why-title": "Acceso API",
-      "intro": "Utilice la API para integrar datos del explorador en su aplicación o flujo de trabajo.",
-      "benefits": {
-        "limits-title": "Límites claros",
-        "limits-text": "Elija un nivel que coincida con su volumen de solicitudes.",
-        "features-title": "Datos del explorador",
-        "features-text": "Acceda a datos de cuentas, transacciones, tokens, NFT y redes."
-      },
+      "plan-table-title": "Precios y límites",
+      "testnet-free": "Bithomp API es gratis en redes de prueba.",
+      "max-requests-minute": "Solicitudes máx. / minuto",
+      "max-requests-day": "Solicitudes máx. / 24 h",
+      "nft-content-plan": "Plan de contenido NFT",
+      "price-month": "Precio / mes",
+      "per-request": "por solicitud",
+      "show-advanced-plans": "Mostrar planes avanzados",
+      "hide-advanced-plans": "Ocultar planes avanzados",
+      "advanced-plan-note": "En estos planes, los endpoints NFT, NFTs y NFT offers devuelven assets con URLs directas a imágenes y videos almacenados en caché y redimensionados. Puede obtener más de 100 resultados de tokens, transacciones y whales en una solicitud, obtener activaciones históricas, listar AMMs por sus IDs y más.",
       "subscribe": "Elija un nivel y período de suscripción."
     },
     "alerts": {
       "why-title": "robot de alertas",
       "intro": "Las alertas de {{explorerName}} le notifican sobre ofertas de NFT, ventas de NFT y cambios en el saldo de cuentas observadas.",
       "destinations": "Envíe alertas por correo electrónico, Slack, Discord o X.",
-      "rules-before": "Crear canales y reglas en el",
       "balance-before": "Las alertas de cambio de saldo utilizan direcciones de",
       "subscribe": "Elija un plan de alertas y un período de facturación.",
       "alerts-day": "Alertas / día",

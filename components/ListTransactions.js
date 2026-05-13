@@ -3,6 +3,7 @@ import { useWidth } from '../utils'
 import { amountFormat, fullDateAndTime, AddressWithIconInline } from '../utils/format'
 import { niceNumber } from '../utils/format'
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
 
 import { LinkTx } from '../utils/links'
 
@@ -46,6 +47,7 @@ const fiatAmountAt = async (payment) => {
 }
 
 export default function ListTransactions({ transactions }) {
+  const { t } = useTranslation('admin')
   const width = useWidth()
   const [transactionList, setTransactionList] = useState([])
 
@@ -66,15 +68,15 @@ export default function ListTransactions({ transactions }) {
     <>
       {transactionList?.length > 0 && (
         <>
-          {width > 600 ? (
+          {width > 760 ? (
             <table className="table-large">
               <thead>
                 <tr>
-                  <th>Date & Time</th>
-                  <th>From</th>
-                  <th>Amount</th>
-                  <th>Fiat</th>
-                  <th>Memo</th>
+                  <th>{t('table.date-time')}</th>
+                  <th>{t('table.from')}</th>
+                  <th>{t('table.amount')}</th>
+                  <th>{t('table.fiat')}</th>
+                  <th>{t('table.memo')}</th>
                   <th>Tx</th>
                 </tr>
               </thead>
@@ -84,7 +86,7 @@ export default function ListTransactions({ transactions }) {
                     <tr key={index}>
                       <td>{fullDateAndTime(payment.processedAt)}</td>
                       <td>
-                        <AddressWithIconInline data={payment} name="sourceAddress" options={{ short: 8 }} />
+                        <AddressWithIconInline data={payment} name="sourceAddress" options={{ short: 6 }} />
                       </td>
                       <td>{amountFormat(payment.amount)}</td>
                       <td>{payment.fiatAmount}</td>
@@ -109,14 +111,14 @@ export default function ListTransactions({ transactions }) {
                       <td>
                         <p>{fullDateAndTime(payment.processedAt)}</p>
                         <p>
-                          From: <br />
-                          <AddressWithIconInline data={payment} name="sourceAddress" options={{ short: 8 }} />
+                          {t('table.from')}: <br />
+                          <AddressWithIconInline data={payment} name="sourceAddress" options={{ short: 6 }} />
                         </p>
-                        <p>Amount: {amountFormat(payment.amount)}</p>
-                        <p>Fiat equivalent: {payment.fiatAmount}</p>
-                        <p>Memo: {payment.memos?.[0]?.data}</p>
+                        <p>{t('table.amount')}: {amountFormat(payment.amount)}</p>
+                        <p>{t('table.fiat-equivalent')}: {payment.fiatAmount}</p>
+                        <p>{t('table.memo')}: {payment.memos?.[0]?.data}</p>
                         <p>
-                          Transaction: <LinkTx tx={payment.hash} icon={true} />
+                          {t('table.transaction')}: <LinkTx tx={payment.hash} icon={true} />
                         </p>
                       </td>
                     </tr>

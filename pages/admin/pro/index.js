@@ -448,7 +448,7 @@ export default function Pro({
                       {subscriptionExpired ? (
                         <>
                           {t('pro.activate-analysis-before', { ns: 'admin' })}{' '}
-                          <Link href="/admin/subscriptions?tab=pro">
+                          <Link href="/admin#bithomp-pro-subscription">
                             {t('pro.purchase-pro-link', { ns: 'admin' })}
                           </Link>.
                         </>

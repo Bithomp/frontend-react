@@ -60,7 +60,7 @@ export default function InfiniteScrolling({
                     ) : (
                       <Trans i18nKey="general.renew-bithomp-pro">
                         Your Bithomp Pro subscription has expired.
-                        <Link href="/admin/subscriptions">Renew your subscription</Link>.
+                        <Link href="/admin#bithomp-pro-subscription">Renew your subscription</Link>.
                       </Trans>
                     )}
                   </>

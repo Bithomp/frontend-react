@@ -94,6 +94,7 @@
     "from": "来自",
     "destination-tag": "目标标签",
     "fiat-equivalent": "法币等值",
+    "fiat": "Fiat",
     "fiat-equivalent-currency": "法币等值（{{currency}}）",
     "transaction": "交易",
     "memo": "备注",
@@ -118,7 +119,10 @@
     "enterprise": "企业",
     "enterprise2": "企业 2",
     "enterprise3": "企业 3",
-    "custom": "自定义"
+    "custom": "自定义",
+    "free-non-commercial": "免费（非商业用途）",
+    "on-demand-basic": "On-demand Basic",
+    "on-demand-premium": "On-demand Premium"
   },
   "profile": {
     "email": "电子邮件",
@@ -312,26 +316,26 @@
         "project-title": "支持项目",
         "project-text": "你的订阅帮助我们持续建设。"
       },
-      "more-coming": "更多 Pro 功能即将推出。",
       "subscribe": "选择订阅周期。"
     },
     "api": {
-      "check-docs": "查看文档了解 API 限制和价格：",
       "why-title": "API 访问",
-      "intro": "使用 API 将浏览器数据集成到你的应用或工作流中。",
-      "benefits": {
-        "limits-title": "清晰限制",
-        "limits-text": "选择符合请求量的套餐。",
-        "features-title": "浏览器数据",
-        "features-text": "访问账户、交易、代币、NFT 和网络数据。"
-      },
+      "plan-table-title": "价格和限制",
+      "testnet-free": "Bithomp API 在测试网络中免费。",
+      "max-requests-minute": "最大请求数 / 分钟",
+      "max-requests-day": "最大请求数 / 24 小时",
+      "nft-content-plan": "NFT 内容套餐",
+      "price-month": "价格 / 月",
+      "per-request": "每次请求",
+      "show-advanced-plans": "显示高级套餐",
+      "hide-advanced-plans": "隐藏高级套餐",
+      "advanced-plan-note": "在这些套餐中，NFT、NFTs 和 NFT offers 端点会返回 assets，其中包含指向缓存和调整尺寸后的图片、视频的直接 URL。你可以在一次请求中获取超过 100 条 tokens、transactions 和 whales 结果，获取历史激活记录，按 ID 列出 AMMs 等。",
       "subscribe": "选择套餐和订阅周期。"
     },
     "alerts": {
       "why-title": "提醒机器人",
       "intro": "{{explorerName}} 提醒会通知你 NFT 报价、NFT 销售以及已关注账户的余额变化。",
       "destinations": "通过 e-mail、Slack、Discord 或 X 发送提醒。",
-      "rules-before": "在以下页面创建频道和规则：",
       "balance-before": "余额变化提醒使用来自以下页面的地址：",
       "subscribe": "选择提醒套餐和计费周期。",
       "alerts-day": "提醒 / 天",

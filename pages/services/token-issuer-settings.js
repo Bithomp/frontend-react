@@ -623,7 +623,7 @@ export default function TokenIssuerSettings({
               ) : (
                 <>
                   {ts('account-control.proExpired')}{' '}
-                  <Link href="/admin/subscriptions">{ts('account-control.renew')}</Link>
+                  <Link href="/admin#bithomp-pro-subscription">{ts('account-control.renew')}</Link>
                 </>
               )}
             </div>

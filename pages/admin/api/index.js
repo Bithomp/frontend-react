@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosAdmin } from '../../../utils/axios'
-import Link from 'next/link'
 
 import SEO from '../../../components/SEO'
 
@@ -10,6 +9,8 @@ import { isDomainValid, isUrlValid } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import CopyButton from '../../../components/UI/CopyButton'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
+import SubscriptionManager from '../../../components/Admin/subscriptions/SubscriptionManager'
+import ApiSubscriptionPlan from '../../../components/Admin/subscriptions/Api'
 import { IoMdCreate, IoMdCheckmark, IoMdClose } from 'react-icons/io'
 import styles from '@/styles/pages/admin.module.scss'
 
@@ -33,12 +34,6 @@ const ApiDataSkeleton = ({ t }) => (
           </td>
         </tr>
         <tr>
-          <td className="right">{t('table.status')}</td>
-          <td className="left">
-            <span className={`${styles.skeletonLine} ${styles.small}`}></span>
-          </td>
-        </tr>
-        <tr>
           <td className="right">{t('table.domain')}</td>
           <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span className={`${styles.skeletonLine} ${styles.wide}`}></span>
@@ -50,12 +45,6 @@ const ApiDataSkeleton = ({ t }) => (
           <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span className={`${styles.skeletonLine} ${styles.wide}`}></span>
             <span className={`${styles.skeletonLine} ${styles.tiny}`}></span>
-          </td>
-        </tr>
-        <tr>
-          <td className="right">{t('api.tier', { ns: 'admin' })}</td>
-          <td className="left">
-            <span className={`${styles.skeletonLine} ${styles.small}`}></span>
           </td>
         </tr>
       </tbody>
@@ -78,7 +67,14 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Api({ sessionToken, openEmailLogin, clientReady }) {
+export default function Api({
+  sessionToken,
+  openEmailLogin,
+  clientReady,
+  setSignRequest,
+  setProExpire,
+  setSubscriptionExpired
+}) {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
   const [apiData, setApiData] = useState(null)
@@ -194,9 +190,6 @@ export default function Api({ sessionToken, openEmailLogin, clientReady }) {
     }
     */
   }
-
-  const now = new Date()
-  const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
   const saveDomain = async () => {
     setErrorMessage('')
@@ -337,38 +330,6 @@ export default function Api({ sessionToken, openEmailLogin, clientReady }) {
                           </td>
                         </tr>
                         <tr>
-                          <td className="right">{t('table.status')}</td>
-                          <td className="left">
-                            {apiData.locked ? (
-                              <b className="red">{t('status.locked', { ns: 'admin' })}</b>
-                            ) : (
-                              <>
-                                {apiData.tier === 'free' ? (
-                                  <b className="green">{t('status.active', { ns: 'admin' })}</b>
-                                ) : (
-                                  <>
-                                    {apiData.expirationAt ? (
-                                      <>
-                                        {new Date(apiData.expirationAt) > nowDate ? (
-                                          <>
-                                            <b className="green">{t('status.active', { ns: 'admin' })}</b>{' '}
-                                            {t('profile.until', { ns: 'admin' })}
-                                          </>
-                                        ) : (
-                                          <b className="red">{t('status.expired', { ns: 'admin' })}</b>
-                                        )}
-                                        <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
-                                      </>
-                                    ) : (
-                                      <b className="green">{t('status.active', { ns: 'admin' })}</b>
-                                    )}
-                                  </>
-                                )}
-                              </>
-                            )}
-                          </td>
-                        </tr>
-                        <tr>
                           <td className="right">{t('table.domain')}</td>
                           <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             {!isEditingDomain ? (
@@ -485,17 +446,19 @@ export default function Api({ sessionToken, openEmailLogin, clientReady }) {
                             )}
                           </td>
                         </tr>
-                        <tr>
-                          <td className="right">{t('api.tier', { ns: 'admin' })}</td>
-                          <td className="left">{apiData.tier}</td>
-                        </tr>
                       </tbody>
                     </table>
-                    <br />
-                    <br />
-                    <Link className="button-action" href="/admin/subscriptions?tab=api">
-                      {t('api.manage-subscription', { ns: 'admin' })}
-                    </Link>
+                    <SubscriptionManager
+                      id="api-subscription"
+                      openEmailLogin={openEmailLogin}
+                      packageType="token"
+                      PlanComponent={ApiSubscriptionPlan}
+                      sessionToken={sessionToken}
+                      setProExpire={setProExpire}
+                      setSignRequest={setSignRequest}
+                      setSubscriptionExpired={setSubscriptionExpired}
+                      title="API"
+                    />
                   </>
                 ) : (
                   <div>

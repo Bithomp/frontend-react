@@ -61,6 +61,14 @@
   min-width: 230px;
 }
 
+.profileTable {
+  width: min(100%, 760px);
+
+  td:first-child {
+    width: 38%;
+  }
+}
+
 @keyframes admin-skeleton-shimmer {
   100% {
     transform: translateX(100%);

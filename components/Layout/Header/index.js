@@ -38,7 +38,6 @@ import {
   IoSettingsOutline,
   IoAtOutline,
   IoStarOutline,
-  IoCardOutline,
   IoPeopleOutline,
   IoLocationOutline,
   IoKeyOutline,
@@ -76,7 +75,8 @@ import {
   IoPersonAddOutline,
   IoLogoGithub,
   IoGitBranchOutline,
-  IoRocketOutline
+  IoRocketOutline,
+  IoNotificationsOutline
 } from 'react-icons/io5'
 import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
@@ -930,10 +930,6 @@ export default function Header({
                   <IoStarOutline className="menu-item-icon" />
                   {t('menu.pro.watchlist')}
                 </Link>
-                <Link href="/admin/subscriptions">
-                  <IoCardOutline className="menu-item-icon" />
-                  {t('menu.pro.subscriptions')}
-                </Link>
                 <Link href="/admin/referrals">
                   <IoPeopleOutline className="menu-item-icon" />
                   {t('menu.pro.referrals')}
@@ -941,6 +937,10 @@ export default function Header({
                 <Link href="/admin/pro">
                   <IoLocationOutline className="menu-item-icon" />
                   {t('menu.pro.my-addresses')}
+                </Link>
+                <Link href="/admin/notifications">
+                  <IoNotificationsOutline className="menu-item-icon" />
+                  {t('menu.pro.alerts')}
                 </Link>
                 <Link href="/admin/api">
                   <IoKeyOutline className="menu-item-icon" />

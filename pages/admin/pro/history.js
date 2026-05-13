@@ -34,7 +34,6 @@ import { getAccountTransactionTypeIcon, getTransactionTypeLabel } from '../../..
 const sampleHistoryAddresses = [
   'rDLNm4ehD7XQCtYKWuMjEKY7TCfmf3CwzH',
   'r3sQYvXxc82iSNs5DnUUvXtcQQQqigCdW',
-  'rhWTXC2m2gGGA9WozUaoMm6kLAVPb1tcS3',
   'raWYT6DD2XFAvjCqRPsCCzr1CMBzJydf9E',
   'r3LAichpcBeZWk7LLSZcfSQcqYsvQ6beBc'
 ]
@@ -471,13 +470,7 @@ const HistoryTransaction = ({ activity }) => {
   )
 }
 
-export default function History({
-  queryAddress,
-  selectedCurrency,
-  setSelectedCurrency,
-  sessionToken,
-  openEmailLogin
-}) {
+export default function History({ queryAddress, selectedCurrency, setSelectedCurrency, sessionToken, openEmailLogin }) {
   const router = useRouter()
   const width = useWidth()
   const sampleMode = !sessionToken
@@ -1086,7 +1079,10 @@ export default function History({
                 {addressesToCheck.length > 0 && (
                   <>
                     {!width || width > 800 ? (
-                      <table className="table-large no-hover pro-history-table" style={width > 800 ? { minWidth: 940 } : {}}>
+                      <table
+                        className="table-large no-hover pro-history-table"
+                        style={width > 800 ? { minWidth: 940 } : {}}
+                      >
                         <thead>
                           <tr>
                             <th className="center">#</th>
@@ -1189,8 +1185,8 @@ export default function History({
                                       {t('table.fiat-equivalent-currency', {
                                         ns: 'admin',
                                         currency: selectedCurrency.toUpperCase()
-                                      })}:{' '}
-                                      {showFiat(a.amountInFiats, selectedCurrency)}
+                                      })}
+                                      : {showFiat(a.amountInFiats, selectedCurrency)}
                                     </p>
                                   </td>
                                 </tr>

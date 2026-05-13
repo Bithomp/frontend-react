@@ -1,7 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import Mailto from 'react-protected-mailto'
 
 import SEO from '../../components/SEO'
@@ -11,21 +10,17 @@ import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
 import styles from '@/styles/pages/admin.module.scss'
 import BillingCountry from '../../components/Admin/BillingCountry'
+import SubscriptionManager from '../../components/Admin/subscriptions/SubscriptionManager'
+import BithompProSubscription from '../../components/Admin/subscriptions/BithompPro'
 
 const AdminProfileSkeleton = ({ t }) => (
   <>
-    <table className="table-large no-hover shrink" aria-hidden="true">
+    <table className={`table-large no-hover shrink ${styles.profileTable}`} aria-hidden="true">
       <tbody>
         <tr>
           <td className="left">{t('profile.email', { ns: 'admin' })}</td>
           <td className="left">
             <span className={`${styles.skeletonLine} ${styles.wide}`}></span>
-          </td>
-        </tr>
-        <tr>
-          <td className="left">Bithomp Pro</td>
-          <td className="left">
-            <span className={`${styles.skeletonLine} ${styles.small}`}></span>
           </td>
         </tr>
         <tr>
@@ -64,7 +59,9 @@ export default function Admin({
   redirectToken,
   account,
   setAccount,
+  setSignRequest,
   setProExpire,
+  setSubscriptionExpired,
   sessionToken,
   setSessionToken,
   signOutPro,
@@ -234,33 +231,12 @@ export default function Admin({
             <AdminProfileSkeleton t={t} />
           ) : sessionToken && loggedUserData ? (
             <>
-              <table className="table-large no-hover shrink">
+              <table className={`table-large no-hover shrink ${styles.profileTable}`}>
                 <tbody>
                   <tr>
                     <td className="left">{t('profile.email', { ns: 'admin' })}</td>
                     <td className="left">
                       <b>{loggedUserData.email}</b>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="left">Bithomp Pro</td>
-                    <td className="left">
-                      {checkedPackageData ? (
-                        <>
-                          {packageData ? (
-                            <>
-                              <b className="green">{t('status.active', { ns: 'admin' })}</b>
-                              {packageData.expiredAt && (
-                                <> {t('profile.until', { ns: 'admin' })} {new Date(packageData.expiredAt * 1000).toLocaleDateString()}</>
-                              )}
-                            </>
-                          ) : (
-                            <Link href="/admin/subscriptions?tab=pro">{t('button.activate', { ns: 'admin' })}</Link>
-                          )}
-                        </>
-                      ) : (
-                        '...'
-                      )}
                     </td>
                   </tr>
                   <tr>
@@ -279,6 +255,18 @@ export default function Admin({
                   </tr>
                 </tbody>
               </table>
+              <SubscriptionManager
+                id="bithomp-pro-subscription"
+                initiallyExpanded={checkedPackageData && !packageData}
+                openEmailLogin={openEmailLogin}
+                packageType="bithomp_pro"
+                PlanComponent={BithompProSubscription}
+                sessionToken={sessionToken}
+                setProExpire={setProExpire}
+                setSignRequest={setSignRequest}
+                setSubscriptionExpired={setSubscriptionExpired}
+                title="Bithomp Pro"
+              />
               <br />
               <br />
               <div style={{ display: 'inline-flex', gap: '12px', alignItems: 'center', justifyContent: 'center' }}>

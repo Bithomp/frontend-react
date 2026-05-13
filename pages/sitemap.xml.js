@@ -58,7 +58,6 @@ const pages = [
   { loc: 'submit-account-information', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin/watchlist', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/subscriptions', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin/referrals', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin/pro', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin/pro/history', changefreq: 'yearly', priority: '0.5' },

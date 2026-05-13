@@ -94,6 +94,7 @@
     "from": "送信元",
     "destination-tag": "宛先タグ",
     "fiat-equivalent": "法定通貨換算",
+    "fiat": "Fiat",
     "fiat-equivalent-currency": "法定通貨換算（{{currency}}）",
     "transaction": "トランザクション",
     "memo": "メモ",
@@ -118,7 +119,10 @@
     "enterprise": "企業",
     "enterprise2": "エンタープライズ 2",
     "enterprise3": "エンタープライズ 3",
-    "custom": "カスタム"
+    "custom": "カスタム",
+    "free-non-commercial": "無料（非商用利用）",
+    "on-demand-basic": "On-demand Basic",
+    "on-demand-premium": "On-demand Premium"
   },
   "profile": {
     "email": "メール",
@@ -312,26 +316,26 @@
         "project-title": "プロジェクトをサポートする",
         "project-text": "あなたのサブスクリプションは、私たちが構築を続けるのに役立ちます。"
       },
-      "more-coming": "さらに多くの Pro 機能が登場します。",
       "subscribe": "サブスクリプション期間を選択します。"
     },
     "api": {
-      "check-docs": "API の制限と価格については、ドキュメントを確認してください。",
       "why-title": "APIアクセス",
-      "intro": "API を使用して、エクスプローラー データをアプリまたはワークフローに統合します。",
-      "benefits": {
-        "limits-title": "限界をクリアする",
-        "limits-text": "リクエスト量に一致する層を選択してください。",
-        "features-title": "エクスプローラーのデータ",
-        "features-text": "アカウント、トランザクション、トークン、NFT、ネットワーク データにアクセスします。"
-      },
+      "plan-table-title": "価格と制限",
+      "testnet-free": "Bithomp API はテストネットワークでは無料です。",
+      "max-requests-minute": "最大リクエスト数 / 分",
+      "max-requests-day": "最大リクエスト数 / 24時間",
+      "nft-content-plan": "NFT コンテンツプラン",
+      "price-month": "価格 / 月",
+      "per-request": "リクエストごと",
+      "show-advanced-plans": "高度なプランを表示",
+      "hide-advanced-plans": "高度なプランを非表示",
+      "advanced-plan-note": "これらのプランでは、NFT、NFTs、NFT offers エンドポイントが、キャッシュおよびリサイズ済みの画像・動画への直接 URL を含む assets を返します。1 回のリクエストで tokens、transactions、whales の 100 件超の結果、履歴上のアクティベーション、ID ごとの AMMs リストなどを取得できます。",
       "subscribe": "レベルとサブスクリプション期間を選択します。"
     },
     "alerts": {
       "why-title": "アラートボット",
       "intro": "{{explorerName}}アラートは、NFT オファー、NFT 販売、監視されているアカウント残高の変更について通知します。",
       "destinations": "アラートを電子メール、Slack、Discord、または X に送信します。",
-      "rules-before": "にチャネルとルールを作成します。",
       "balance-before": "残高変更アラートは次のアドレスを使用します",
       "subscribe": "アラート プランと請求期間を選択します。",
       "alerts-day": "アラート/日",

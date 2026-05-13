@@ -94,6 +94,7 @@
     "from": "From",
     "destination-tag": "Destination tag",
     "fiat-equivalent": "Fiat equivalent",
+    "fiat": "Fiat",
     "fiat-equivalent-currency": "Fiat equivalent ({{currency}})",
     "transaction": "Transaction",
     "memo": "Memo",
@@ -118,7 +119,10 @@
     "enterprise": "Enterprise",
     "enterprise2": "Enterprise 2",
     "enterprise3": "Enterprise 3",
-    "custom": "Custom"
+    "custom": "Custom",
+    "free-non-commercial": "Free (non-commercial use)",
+    "on-demand-basic": "On-demand Basic",
+    "on-demand-premium": "On-demand Premium"
   },
   "profile": {
     "email": "Email",
@@ -312,26 +316,26 @@
         "project-title": "Support the project",
         "project-text": "Your subscription helps us keep building."
       },
-      "more-coming": "More Pro features are coming.",
       "subscribe": "Choose a subscription period."
     },
     "api": {
-      "check-docs": "Check the documentation for API limits and pricing:",
       "why-title": "API access",
-      "intro": "Use the API to integrate explorer data into your app or workflow.",
-      "benefits": {
-        "limits-title": "Clear limits",
-        "limits-text": "Pick a tier that matches your request volume.",
-        "features-title": "Explorer data",
-        "features-text": "Access account, transaction, token, NFT, and network data."
-      },
+      "plan-table-title": "Price and limits",
+      "testnet-free": "Bithomp API is free on the test networks.",
+      "max-requests-minute": "Max requests / minute",
+      "max-requests-day": "Max requests / 24h",
+      "nft-content-plan": "NFT content plan",
+      "price-month": "Price / month",
+      "per-request": "per request",
+      "show-advanced-plans": "Show advanced plans",
+      "hide-advanced-plans": "Hide advanced plans",
+      "advanced-plan-note": "On these plans the NFT, NFTs, and NFT offers endpoints return assets with direct URLs to cached and resized images and videos. You can get over 100 results for tokens, transactions, and whales in one request, get historical activations, list AMMs by their IDs, and more.",
       "subscribe": "Choose a tier and subscription period."
     },
     "alerts": {
       "why-title": "Alerts bot",
       "intro": "{{explorerName}} alerts notify you about NFT offers, NFT sales, and watched account balance changes.",
       "destinations": "Send alerts to email, Slack, Discord, or X.",
-      "rules-before": "Create channels and rules on the",
       "balance-before": "Balance change alerts use addresses from",
       "subscribe": "Choose an alerts plan and billing period.",
       "alerts-day": "Alerts / day",

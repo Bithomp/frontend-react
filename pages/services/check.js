@@ -332,7 +332,7 @@ export default function IssueCheck({
                     <Trans
                       i18nKey="shared.subscription-expired"
                       ns="services"
-                      components={[<Link key="0" href="/admin/subscriptions" />]}
+                      components={[<Link key="0" href="/admin#bithomp-pro-subscription" />]}
                     />
                   </span>
                 </>

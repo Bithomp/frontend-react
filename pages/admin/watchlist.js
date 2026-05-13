@@ -260,7 +260,7 @@ export default function Watchlist({
                   <>
                     {' '}
                     {t('watchlist.limit-subscribe-before', { ns: 'admin' })}{' '}
-                    <Link href="/admin/subscriptions">Bithomp Pro</Link>.
+                    <Link href="/admin#bithomp-pro-subscription">Bithomp Pro</Link>.
                   </>
                 )}
               </p>
