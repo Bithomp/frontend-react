@@ -464,6 +464,7 @@
     "filters-help": "このルールが適用されるときに絞り込むフィルターを追加します。",
     "toggle-rule-enabled": "ルールを有効に切り替える",
     "enabled-help": "このルールを削除せずに一時停止します。",
+    "paused-reason": "理由: {{reason}}",
     "toggle-external-links": "外部リンクを切り替えます",
     "include-external-links": "外部リンクを含める",
     "external-links-help": "利用可能な場合は、マーケットプレイスまたはエクスプローラーのリンクを追加します。",
@@ -695,6 +696,7 @@
       "event-required": "イベントは必須です。",
       "connection-not-found": "チャンネルが見つかりませんでした。",
       "listener-disabled": "ルールは無効になっています。",
+      "listener-no-rules": "このルールの条件が設定されていません。",
       "package-tier-required": "有料アラート プランが必要です。",
       "package-limit-reached": "プランの制限に達しました。"
     },

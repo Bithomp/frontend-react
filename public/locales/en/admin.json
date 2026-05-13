@@ -464,6 +464,7 @@
     "filters-help": "Add filters to narrow when this rule fires.",
     "toggle-rule-enabled": "Toggle rule enabled",
     "enabled-help": "Pause this rule without deleting it.",
+    "paused-reason": "Reason: {{reason}}",
     "toggle-external-links": "Toggle external links",
     "include-external-links": "Include external links",
     "external-links-help": "Add marketplace or explorer links when available.",
@@ -695,6 +696,7 @@
       "event-required": "Event is required.",
       "connection-not-found": "Channel was not found.",
       "listener-disabled": "Rule is disabled.",
+      "listener-no-rules": "No rule conditions are configured.",
       "package-tier-required": "A paid alerts plan is required.",
       "package-limit-reached": "Plan limit reached."
     },

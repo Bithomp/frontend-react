@@ -464,6 +464,7 @@
     "filters-help": "이 규칙이 실행될 때 범위를 좁히려면 필터를 추가하세요.",
     "toggle-rule-enabled": "토글 규칙 활성화됨",
     "enabled-help": "이 규칙을 삭제하지 않고 일시중지하세요.",
+    "paused-reason": "이유: {{reason}}",
     "toggle-external-links": "외부 링크 전환",
     "include-external-links": "외부 링크 포함",
     "external-links-help": "가능한 경우 마켓플레이스 또는 탐색기 링크를 추가하세요.",
@@ -695,6 +696,7 @@
       "event-required": "이벤트가 필요합니다.",
       "connection-not-found": "채널을 찾을 수 없습니다.",
       "listener-disabled": "규칙이 비활성화되었습니다.",
+      "listener-no-rules": "이 규칙에 설정된 조건이 없습니다.",
       "package-tier-required": "유료 알림 계획이 필요합니다.",
       "package-limit-reached": "요금제 한도에 도달했습니다."
     },

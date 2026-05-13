@@ -464,6 +464,7 @@
     "filters-help": "Fügen Sie Filter hinzu, um einzugrenzen, wann diese Regel ausgelöst wird.",
     "toggle-rule-enabled": "Umschaltregel aktiviert",
     "enabled-help": "Pausieren Sie diese Regel, ohne sie zu löschen.",
+    "paused-reason": "Grund: {{reason}}",
     "toggle-external-links": "Externe Links umschalten",
     "include-external-links": "Fügen Sie externe Links ein",
     "external-links-help": "Fügen Sie Marktplatz- oder Explorer-Links hinzu, sofern verfügbar.",
@@ -695,6 +696,7 @@
       "event-required": "Veranstaltung ist erforderlich.",
       "connection-not-found": "Kanal wurde nicht gefunden.",
       "listener-disabled": "Regel ist deaktiviert.",
+      "listener-no-rules": "Für diese Regel sind keine Bedingungen konfiguriert.",
       "package-tier-required": "Es ist ein kostenpflichtiger Benachrichtigungsplan erforderlich.",
       "package-limit-reached": "Planlimit erreicht."
     },

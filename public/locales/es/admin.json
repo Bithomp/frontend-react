@@ -464,6 +464,7 @@
     "filters-help": "Agregue filtros para limitar cuándo se activa esta regla.",
     "toggle-rule-enabled": "Regla de alternancia habilitada",
     "enabled-help": "Pausa esta regla sin eliminarla.",
+    "paused-reason": "Motivo: {{reason}}",
     "toggle-external-links": "Alternar enlaces externos",
     "include-external-links": "Incluir enlaces externos",
     "external-links-help": "Agregue enlaces de Marketplace o Explorer cuando estén disponibles.",
@@ -695,6 +696,7 @@
       "event-required": "Se requiere evento.",
       "connection-not-found": "No se encontró el canal.",
       "listener-disabled": "La regla está deshabilitada.",
+      "listener-no-rules": "No hay condiciones configuradas para esta regla.",
       "package-tier-required": "Se requiere un plan de alertas pagado.",
       "package-limit-reached": "Se alcanzó el límite del plan."
     },

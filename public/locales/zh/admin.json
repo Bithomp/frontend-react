@@ -464,6 +464,7 @@
     "filters-help": "添加筛选条件以缩小规则触发范围。",
     "toggle-rule-enabled": "切换规则启用状态",
     "enabled-help": "暂停此规则而不删除。",
+    "paused-reason": "原因：{{reason}}",
     "toggle-external-links": "切换外部链接",
     "include-external-links": "包含外部链接",
     "external-links-help": "可用时添加市场或浏览器链接。",
@@ -695,6 +696,7 @@
       "event-required": "事件为必填项。",
       "connection-not-found": "未找到频道。",
       "listener-disabled": "规则已禁用。",
+      "listener-no-rules": "此规则未配置条件。",
       "package-tier-required": "需要付费提醒套餐。",
       "package-limit-reached": "已达到套餐限制。"
     },

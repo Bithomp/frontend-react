@@ -42,9 +42,11 @@ const fieldLabelMap = {
 }
 
 const disableReasonMap = {
+  no_rules: 'notifications.errors.listener-no-rules',
   'errors.connection.not_found': 'notifications.errors.connection-not-found',
   'errors.connection.settings_required': 'notifications.errors.connection-settings-required',
   'errors.listener.disabled': 'notifications.errors.listener-disabled',
+  'errors.listener.no_rules': 'notifications.errors.listener-no-rules',
   'errors.package.tier_required': 'notifications.errors.package-tier-required',
   'errors.package.limit_reached': 'notifications.errors.package-limit-reached'
 }
@@ -144,7 +146,8 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
   const settings = rule.settings || {}
   const conditionText = parseConditions(settings.rules, t)
   const enabled = isRuleEnabled(rule.enabled)
-  const disableReason = enabled ? '' : formatDisableReason(settings.disableReason, t)
+  const rawDisableReason = settings.disableReason || settings.disable_reason || rule.disableReason || rule.disable_reason
+  const disableReason = enabled ? '' : formatDisableReason(rawDisableReason, t)
 
   return (
     <Card className="notification-card notification-rule-card">
@@ -154,7 +157,11 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
           <div className={`notification-rule-status ${enabled ? 'enabled' : 'paused'}`}>
             {enabled ? t('status.enabled') : t('status.paused')}
           </div>
-          {disableReason && <div className="notification-rule-disable-reason">{disableReason}</div>}
+          {disableReason && (
+            <div className="notification-rule-disable-reason">
+              {t('notifications.paused-reason', { reason: disableReason })}
+            </div>
+          )}
         </div>
         <div className="notification-card-actions">
           {onExecutions && (

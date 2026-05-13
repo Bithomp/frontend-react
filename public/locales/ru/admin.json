@@ -468,6 +468,7 @@
     "filters-help": "Добавьте фильтры, чтобы уточнить, когда сработает правило.",
     "toggle-rule-enabled": "Переключить правило",
     "enabled-help": "Приостановить правило без удаления.",
+    "paused-reason": "Причина: {{reason}}",
     "toggle-external-links": "Переключить внешние ссылки",
     "include-external-links": "Добавлять внешние ссылки",
     "external-links-help": "Добавлять ссылки на маркетплейсы или обозреватель, когда они доступны.",
@@ -703,6 +704,7 @@
       "event-required": "Событие обязательно.",
       "connection-not-found": "Канал не найден.",
       "listener-disabled": "Правило отключено.",
+      "listener-no-rules": "Для правила не настроены условия.",
       "package-tier-required": "Требуется платный тариф алертов.",
       "package-limit-reached": "Достигнут лимит тарифа."
     },

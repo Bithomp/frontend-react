@@ -464,6 +464,7 @@
     "filters-help": "Tambahkan filter untuk mempersempit saat aturan ini diaktifkan.",
     "toggle-rule-enabled": "Alihkan aturan diaktifkan",
     "enabled-help": "Jeda aturan ini tanpa menghapusnya.",
+    "paused-reason": "Alasan: {{reason}}",
     "toggle-external-links": "Alihkan tautan eksternal",
     "include-external-links": "Sertakan tautan eksternal",
     "external-links-help": "Tambahkan tautan pasar atau penjelajah bila tersedia.",
@@ -695,6 +696,7 @@
       "event-required": "Acara diperlukan.",
       "connection-not-found": "Saluran tidak ditemukan.",
       "listener-disabled": "Aturan dinonaktifkan.",
+      "listener-no-rules": "Belum ada kondisi yang dikonfigurasi untuk aturan ini.",
       "package-tier-required": "Diperlukan paket peringatan berbayar.",
       "package-limit-reached": "Batas paket tercapai."
     },

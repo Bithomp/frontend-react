@@ -464,6 +464,7 @@
     "filters-help": "Ajoutez des filtres pour préciser quand cette règle se déclenche.",
     "toggle-rule-enabled": "Activer ou désactiver la règle",
     "enabled-help": "Mettez cette règle en pause sans la supprimer.",
+    "paused-reason": "Raison : {{reason}}",
     "toggle-external-links": "Activer ou désactiver les liens externes",
     "include-external-links": "Inclure les liens externes",
     "external-links-help": "Ajoutez des liens de marketplace ou d’explorateur si disponibles.",
@@ -695,6 +696,7 @@
       "event-required": "L’événement est requis.",
       "connection-not-found": "Canal introuvable.",
       "listener-disabled": "La règle est désactivée.",
+      "listener-no-rules": "Aucune condition n’est configurée pour cette règle.",
       "package-tier-required": "Un forfait d’alertes payant est requis.",
       "package-limit-reached": "Limite du forfait atteinte."
     },
