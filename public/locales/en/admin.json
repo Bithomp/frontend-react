@@ -580,7 +580,8 @@
           "Incoming webhooks",
           "Add to workspace",
           "Copy webhook URL"
-        ]
+        ],
+        "portal-link": "Open Slack API apps"
       },
       "twitter_api": {
         "title": "X / Twitter",
@@ -590,7 +591,8 @@
           "Project app",
           "Read and write permissions",
           "Keys and tokens"
-        ]
+        ],
+        "portal-link": "Open X Developer Portal"
       }
     },
     "destination": {

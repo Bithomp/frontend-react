@@ -588,7 +588,8 @@
           "Входящие webhooks",
           "Добавить в workspace",
           "Скопировать Webhook URL"
-        ]
+        ],
+        "portal-link": "Открыть Slack API apps"
       },
       "twitter_api": {
         "title": "X / Twitter",
@@ -598,7 +599,8 @@
           "Приложение проекта",
           "Права чтения и записи",
           "Ключи и токены"
-        ]
+        ],
+        "portal-link": "Открыть X Developer Portal"
       }
     },
     "destination": {

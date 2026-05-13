@@ -580,7 +580,8 @@
           "Webhook masuk",
           "Tambahkan ke ruang kerja",
           "Salinwebhook URL"
-        ]
+        ],
+        "portal-link": "Buka Slack API apps"
       },
       "twitter_api": {
         "title": "X / Twitter",
@@ -590,7 +591,8 @@
           "Aplikasi proyek",
           "Izin Read and write",
           "Kunci dan token"
-        ]
+        ],
+        "portal-link": "Buka X Developer Portal"
       }
     },
     "destination": {

@@ -419,7 +419,8 @@
     }
 
     .notification-guide-link {
-      display: inline-flex;
+      display: flex;
+      width: fit-content;
       margin-top: 9px;
       color: var(--accent-link);
       font-size: 13px;

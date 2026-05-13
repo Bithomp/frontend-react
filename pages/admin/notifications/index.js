@@ -96,6 +96,8 @@ const setupGuides = [
     title: 'Slack',
     description: 'Create an incoming webhook in Slack, choose a channel, then paste the webhook URL here.',
     steps: ['Slack app directory', 'Incoming Webhooks', 'Add to workspace', 'Copy Webhook URL'],
+    portalHref: 'https://api.slack.com/apps',
+    portalLabel: 'Open Slack API apps',
     guideHref: '/admin/notifications/slack-guide'
   },
   {
@@ -105,6 +107,8 @@ const setupGuides = [
     description:
       'Use the API Key, API Key Secret, Access Token, and Access Token Secret from the X Developer Portal app.',
     steps: ['Developer Portal', 'Project app', 'Read and write permissions', 'Keys and tokens'],
+    portalHref: 'https://developer.twitter.com/en/portal/dashboard',
+    portalLabel: 'Open X Developer Portal',
     guideHref: '/admin/notifications/x-guide'
   }
 ]
@@ -874,6 +878,18 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                       </li>
                     ))}
                   </ol>
+                  {selectedGuide.portalHref && (
+                    <a
+                      href={selectedGuide.portalHref}
+                      className="notification-guide-link"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {t(`notifications.guides.${selectedGuide.type}.portal-link`, {
+                        defaultValue: selectedGuide.portalLabel
+                      })}
+                    </a>
+                  )}
                   {selectedGuide.guideHref && (
                     <Link href={selectedGuide.guideHref} className="notification-guide-link">
                       {t('notifications.detailed-setup-guide')}

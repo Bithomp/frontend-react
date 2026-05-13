@@ -580,7 +580,8 @@
           "受信 Webhook",
           "ワークスペースに追加",
           "webhook URLをコピーする"
-        ]
+        ],
+        "portal-link": "Slack API apps を開く"
       },
       "twitter_api": {
         "title": "X / Twitter",
@@ -590,7 +591,8 @@
           "プロジェクトアプリ",
           "Read and write 権限",
           "キーとトークン"
-        ]
+        ],
+        "portal-link": "X Developer Portal を開く"
       }
     },
     "destination": {

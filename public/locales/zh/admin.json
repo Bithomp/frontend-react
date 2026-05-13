@@ -580,7 +580,8 @@
           "传入 Webhook",
           "添加到工作区",
           "复制 Webhook 地址"
-        ]
+        ],
+        "portal-link": "打开 Slack API apps"
       },
       "twitter_api": {
         "title": "X / Twitter",
@@ -590,7 +591,8 @@
           "项目应用",
           "读写权限",
           "密钥和令牌"
-        ]
+        ],
+        "portal-link": "打开 X Developer Portal"
       }
     },
     "destination": {

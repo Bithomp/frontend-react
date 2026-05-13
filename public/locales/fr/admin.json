@@ -580,7 +580,8 @@
           "Webhooks entrants",
           "Ajouter à l’espace de travail",
           "Copier l’URL du webhook"
-        ]
+        ],
+        "portal-link": "Ouvrir Slack API apps"
       },
       "twitter_api": {
         "title": "X / Twitter",
@@ -590,7 +591,8 @@
           "Application du projet",
           "Autorisations de lecture et d’écriture",
           "Keys and tokens"
-        ]
+        ],
+        "portal-link": "Ouvrir X Developer Portal"
       }
     },
     "destination": {

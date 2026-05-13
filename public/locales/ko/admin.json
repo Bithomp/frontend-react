@@ -580,7 +580,8 @@
           "수신 웹훅",
           "작업공간에 추가",
           "webhook URL복사"
-        ]
+        ],
+        "portal-link": "Slack API apps 열기"
       },
       "twitter_api": {
         "title": "X / Twitter",
@@ -590,7 +591,8 @@
           "프로젝트 앱",
           "Read and write 권한",
           "키와 토큰"
-        ]
+        ],
+        "portal-link": "X Developer Portal 열기"
       }
     },
     "destination": {
