@@ -237,7 +237,9 @@ export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
       <div className="alerts-subscribe-selects center">
         <Select
           options={translatedTierOptions}
-          getOptionLabel={(option) => <div style={{ width: width > 400 ? '110px' : '160px' }}>{option.label}</div>}
+          getOptionLabel={(option) => (
+            <div style={{ width: width > 400 ? '170px' : '160px', whiteSpace: 'nowrap' }}>{option.label}</div>
+          )}
           onChange={(selected) => {
             setInnerTier(selected.value)
           }}

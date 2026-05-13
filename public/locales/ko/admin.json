@@ -267,8 +267,10 @@
     }
   },
   "billing": {
+    "country": "청구 국가",
     "choose-country": "청구서 수신 국가 선택",
-    "country-is": "청구서 수신 국가는 다음과 같습니다."
+    "country-is": "청구서 수신 국가는 다음과 같습니다.",
+    "edit-country": "청구 국가 수정"
   },
   "subscriptions": {
     "subscription": "신청",

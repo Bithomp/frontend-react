@@ -267,8 +267,10 @@
     }
   },
   "billing": {
+    "country": "País de facturación",
     "choose-country": "Elija el país de facturación",
-    "country-is": "El país de facturación es"
+    "country-is": "El país de facturación es",
+    "edit-country": "Editar país de facturación"
   },
   "subscriptions": {
     "subscription": "suscripción",

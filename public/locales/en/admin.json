@@ -267,8 +267,10 @@
     }
   },
   "billing": {
+    "country": "Billing country",
     "choose-country": "Choose billing country",
-    "country-is": "Billing country is"
+    "country-is": "Billing country is",
+    "edit-country": "Edit billing country"
   },
   "subscriptions": {
     "subscription": "subscription",

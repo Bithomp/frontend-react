@@ -84,7 +84,9 @@ export default function Api({ setPayPeriod, setTier, tier }) {
       <div className="center">
         <Select
           options={tierOptions}
-          getOptionLabel={(option) => <div style={{ width: width > 400 ? '100px' : '160px' }}>{option.label}</div>}
+          getOptionLabel={(option) => (
+            <div style={{ width: width > 400 ? '170px' : '160px', whiteSpace: 'nowrap' }}>{option.label}</div>
+          )}
           onChange={(selected) => {
             setInnerTier(selected.value)
           }}

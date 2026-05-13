@@ -1,6 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -104,6 +104,11 @@ const tabTotype = (tab) => {
   }
 }
 
+const normalizeSubscriptionsTab = (tab) => {
+  if (tab === 'bot') return 'notifications'
+  return ['pro', 'api', 'notifications'].includes(tab) ? tab : 'pro'
+}
+
 const tierValue = (row) => {
   const value = row?.metadata?.tier || ''
   return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
@@ -135,75 +140,46 @@ const tierLabel = (row, t) => {
   return tier ? t(`plans.${tier}`, { defaultValue: tier }) : ''
 }
 
-const packageList = (packages, width, t) => {
+const packageList = (packages, t, status = 'active') => {
   return (
-    <div style={{ textAlign: 'left' }}>
-      {width > 600 ? (
-        <table className="table-large no-hover">
-          <thead>
-            <tr>
-              <th>{t('table.type')}</th>
-              <th>{t('api.tier')}</th>
-              <th>{t('table.created')}</th>
-              <th>{t('table.start')}</th>
-              <th>{t('table.expire')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {packages?.map((row, index) => {
-              return (
-                <tr key={index}>
-                  <td>{bidTypeToName(row.type)}</td>
-                  <td>{tierLabel(row, t) || '-'}</td>
-                  <td>{fullDateAndTime(row.createdAt)}</td>
-                  <td>{fullDateAndTime(row.startedAt)}</td>
-                  <td>
-                    {!row.expiredAt && row.metadata?.forever
-                      ? t('common.never')
-                      : fullDateAndTime(row.expiredAt + 1, 'expiration')}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      ) : (
-        <table className="table-mobile">
-          <tbody>
-            {packages?.map((row, index) => {
-              return (
-                <tr key={index}>
-                  <td style={{ padding: '5px' }} className="center">
-                    <b>{index + 1}</b>
-                  </td>
-                  <td>
-                    <p>
-                      {t('table.type')}: {bidTypeToName(row.type)}
-                    </p>
-                    {tierLabel(row, t) && (
-                      <p>
-                        {t('api.tier')}: {tierLabel(row, t)}
-                      </p>
-                    )}
-                    <p>
-                      {t('table.created')}: <br />
-                      {fullDateAndTime(row.createdAt)}
-                    </p>
-                    <p>
-                      {t('table.start')}: <br />
-                      {fullDateAndTime(row.startedAt)}
-                    </p>
-                    <p>
-                      {t('table.expire')}: <br />
-                      {!row.expiredAt && row.metadata?.forever ? t('common.never') : fullDateAndTime(row.expiredAt + 1)}
-                    </p>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      )}
+    <div className="subscription-package-list">
+      {packages?.map((row) => {
+        const tier = tierLabel(row, t)
+        const expires = !row.expiredAt && row.metadata?.forever
+          ? t('common.never')
+          : fullDateAndTime(row.expiredAt + 1, 'expiration')
+
+        return (
+          <article
+            className={`subscription-package-card ${status === 'expired' ? 'is-expired' : 'is-active'}`}
+            key={row.id || `${row.type}-${row.startedAt}`}
+          >
+            <div className="subscription-package-card-header">
+              <div>
+                <span className="subscription-package-eyebrow">
+                  {status === 'expired' ? t('subscriptions.expired-title') : t('subscriptions.active-title')}
+                </span>
+                <h3>{bidTypeToName(row.type)}</h3>
+              </div>
+              {tier && <span className="subscription-package-tier">{tier}</span>}
+            </div>
+            <dl className="subscription-package-card-grid">
+              <div>
+                <dt>{t('table.created')}</dt>
+                <dd>{fullDateAndTime(row.createdAt)}</dd>
+              </div>
+              <div>
+                <dt>{t('table.start')}</dt>
+                <dd>{fullDateAndTime(row.startedAt)}</dd>
+              </div>
+              <div>
+                <dt>{t('table.expire')}</dt>
+                <dd>{expires}</dd>
+              </div>
+            </dl>
+          </article>
+        )
+      })}
     </div>
   )
 }
@@ -223,7 +199,7 @@ export default function Subscriptions({
 
   const [ref] = useCookie('ref')
   const [errorMessage, setErrorMessage] = useState('')
-  const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
+  const [loading, setLoading] = useState(true)
   const [newAndActivePackages, setNewAndActivePackages] = useState([])
   const [expiredPackages, setExpiredPackages] = useState([])
   const [payPeriod, setPayPeriod] = useState('m3')
@@ -235,22 +211,32 @@ export default function Subscriptions({
   const [bidData, setBidData] = useState(null)
   const [paymentErrorMessage, setPaymentErrorMessage] = useState('')
   const [step, setStep] = useState(0)
-  const [subscriptionsTab, setSubscriptionsTab] = useState(tabQuery)
+  const [subscriptionsTab, setSubscriptionsTab] = useState(normalizeSubscriptionsTab(tabQuery))
   const [transactions, setTransactions] = useState([])
   const [receiptVisible, setReceiptVisible] = useState(receiptQuery === 'true')
-  const subscriptionsTabList = [
-    { value: 'pro', label: 'Bithomp Pro' },
-    { value: 'api', label: 'API' },
-    { value: 'notifications', label: t('tabs.alerts-bot', { ns: 'admin' }) }
-  ]
+  const subscriptionsTabList = useMemo(
+    () => [
+      { value: 'pro', label: 'Bithomp Pro' },
+      { value: 'api', label: 'API' },
+      { value: 'notifications', label: t('tabs.alerts-bot', { ns: 'admin' }) }
+    ],
+    [t]
+  )
+  const selectedPackageType = tabTotype(subscriptionsTab)
 
   useEffect(() => {
     if (sessionToken) {
-      getApiData()
       getTransactions()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionToken])
+
+  useEffect(() => {
+    if (sessionToken) {
+      getApiData(selectedPackageType)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionToken, selectedPackageType])
 
   useEffect(() => {
     let queryAddList = []
@@ -282,11 +268,13 @@ export default function Subscriptions({
     }
   }
 
-  const getApiData = async () => {
+  const getApiData = async (packageType = selectedPackageType) => {
     setLoading(true)
     setErrorMessage('')
+    setNewAndActivePackages([])
+    setExpiredPackages([])
 
-    const packagesData = await axiosAdmin.get('partner/packages').catch((error) => {
+    const packagesData = await axiosAdmin.get(`partner/packages?type=${encodeURIComponent(packageType)}`).catch((error) => {
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response.data.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
@@ -320,12 +308,13 @@ export default function Subscriptions({
       //for each package, check if it is expired
       let newAndActive = []
       let expired = []
-      packagesData.data.packages.forEach((packageItem) => {
+      const packages = Array.isArray(packagesData.data.packages) ? packagesData.data.packages : []
+      packages.forEach((packageItem) => {
         if (packageItem.expiredAt && timestampExpired(packageItem.expiredAt)) {
           expired.push(packageItem)
         } else {
           newAndActive.push(packageItem)
-          if (packageItem.type === 'bithomp_pro') {
+          if (packageType === 'bithomp_pro' && packageItem.type === 'bithomp_pro') {
             setSubscriptionExpired(false)
             setProExpire(JSON.stringify(packageItem.expiredAt * 1000))
           }
@@ -562,6 +551,11 @@ export default function Subscriptions({
   const setSubscriptionsTabAndRestartSteps = (tab) => {
     resetPaymentFlow({ clearReceipt: true })
     setBidData(null)
+    setNewAndActivePackages([])
+    setExpiredPackages([])
+    if (sessionToken) {
+      setLoading(true)
+    }
     setSubscriptionsTab(tab)
   }
 
@@ -578,6 +572,14 @@ export default function Subscriptions({
 
         <AdminTabs name="mainTabs" tab="subscriptions" />
 
+        <Tabs
+          tabList={subscriptionsTabList}
+          tab={subscriptionsTab}
+          setTab={setSubscriptionsTabAndRestartSteps}
+          name="subscriptions"
+          style={{ marginTop: '20px', marginBottom: '20px' }}
+        />
+
         <div className="center">
           {sessionToken ? (
             <>
@@ -586,29 +588,20 @@ export default function Subscriptions({
                 setBillingCountry={setBillingCountry}
                 choosingCountry={choosingCountry}
                 setChoosingCountry={setChoosingCountry}
+                showSelected={false}
               />
-              <br />
-              <br />
 
               {!choosingCountry && (
                 <>
                   {loading && (
-                    <div className="center">
-                      <br />
-                      <br />
+                    <div className="center subscription-loading">
                       <span className="waiting"></span>
-                      <br />
-                      {t('general.loading')}
-                      <br />
-                      <br />
+                      <span>{t('general.loading')}</span>
                     </div>
                   )}
 
-                  {newAndActivePackages?.length > 0 && (
-                    <>
-                      <h4 className="center">{t('subscriptions.active-title', { ns: 'admin' })}</h4>
-                      {packageList(newAndActivePackages, width, (key, options) => t(key, { ns: 'admin', ...options }))}
-                    </>
+                  {!loading && newAndActivePackages?.length > 0 && (
+                    packageList(newAndActivePackages, (key, options) => t(key, { ns: 'admin', ...options }))
                   )}
 
                   {errorMessage && (
@@ -618,18 +611,10 @@ export default function Subscriptions({
                     </div>
                   )}
 
-                  <Tabs
-                    tabList={subscriptionsTabList}
-                    tab={subscriptionsTab}
-                    setTab={setSubscriptionsTabAndRestartSteps}
-                    name="subscriptions"
-                    style={{ marginTop: '20px' }}
-                  />
-
-                  {!(!billingCountry || loading) && (
+                  {billingCountry && (
                     <>
                       {step < 2 && (
-                        <>
+                        <section className="subscription-offer-section">
                           {subscriptionsTab === 'pro' && <Pro setPayPeriod={setPayPeriod} />}
                           {subscriptionsTab === 'api' && (
                             <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />
@@ -639,9 +624,8 @@ export default function Subscriptions({
                           )}
 
                           <button
-                            className="button-action narrow"
+                            className="button-action narrow subscription-purchase-button"
                             onClick={onPurchaseClick}
-                            style={{ height: '37px', marginLeft: '10px', marginTop: '20px' }}
                           >
                             {t('button.purchase', { ns: 'admin' })}
                           </button>
@@ -665,7 +649,7 @@ export default function Subscriptions({
                               </PayPalScriptProvider>
                             </div>
                           */}
-                        </>
+                        </section>
                       )}
 
                       <div className="center">
@@ -853,11 +837,8 @@ export default function Subscriptions({
                     </>
                   )}
 
-                  {expiredPackages?.length > 0 && (
-                    <>
-                      <h4 className="center">{t('subscriptions.expired-title', { ns: 'admin' })}</h4>
-                      {packageList(expiredPackages, width, (key, options) => t(key, { ns: 'admin', ...options }))}
-                    </>
+                  {!loading && expiredPackages?.length > 0 && (
+                    packageList(expiredPackages, (key, options) => t(key, { ns: 'admin', ...options }), 'expired')
                   )}
 
                   {transactions?.length > 0 && (
@@ -871,14 +852,6 @@ export default function Subscriptions({
             </>
           ) : (
             <div className="center">
-              <Tabs
-                tabList={subscriptionsTabList}
-                tab={subscriptionsTab}
-                setTab={setSubscriptionsTab}
-                name="subscriptions"
-                style={{ marginTop: '20px' }}
-              />
-
               {subscriptionsTab === 'pro' && <Pro setPayPeriod={setPayPeriod} />}
               {subscriptionsTab === 'api' && <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />}
               {subscriptionsTab === 'notifications' && (
@@ -896,7 +869,128 @@ export default function Subscriptions({
           )}
         </div>
       </div>
-      <style jsx>{`
+      <style jsx global>{`
+        .subscription-loading {
+          display: flex;
+          min-height: 86px;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          margin: 8px auto 18px;
+          color: var(--text-secondary);
+        }
+
+        .subscription-package-list {
+          display: grid;
+          gap: 12px;
+          max-width: 920px;
+          margin: 0 auto 24px;
+          text-align: left;
+        }
+
+        .subscription-package-card {
+          padding: 18px 20px;
+          border: 1px solid color-mix(in srgb, var(--accent-link) 28%, var(--table-frame));
+          border-radius: 14px;
+          background: color-mix(in srgb, var(--background-secondary) 90%, transparent);
+          box-shadow: 0 10px 28px color-mix(in srgb, var(--accent-link) 8%, transparent);
+        }
+
+        .subscription-package-card.is-expired {
+          border-color: color-mix(in srgb, var(--text-secondary) 26%, var(--table-frame));
+          box-shadow: none;
+          opacity: 0.84;
+        }
+
+        .subscription-package-card-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          margin-bottom: 16px;
+        }
+
+        .subscription-package-eyebrow {
+          display: block;
+          margin-bottom: 5px;
+          color: var(--text-secondary);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .subscription-package-card h3 {
+          margin: 0;
+          font-size: 24px;
+          line-height: 1.15;
+        }
+
+        .subscription-package-tier {
+          flex: 0 0 auto;
+          max-width: min(48%, 360px);
+          padding: 7px 11px;
+          border-radius: 999px;
+          color: var(--accent-link);
+          background: color-mix(in srgb, var(--accent-link) 10%, transparent);
+          font-size: 14px;
+          font-weight: 800;
+          line-height: 1.2;
+          text-align: right;
+        }
+
+        .subscription-package-card-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 10px;
+          margin: 0;
+        }
+
+        .subscription-package-card-grid div {
+          min-width: 0;
+          padding: 12px;
+          border: 1px solid color-mix(in srgb, var(--button-additional) 60%, transparent);
+          border-radius: 10px;
+          background: color-mix(in srgb, var(--background-main) 72%, transparent);
+        }
+
+        .subscription-package-card-grid dt {
+          margin: 0 0 5px;
+          color: var(--text-secondary);
+          font-size: 12px;
+          font-weight: 700;
+        }
+
+        .subscription-package-card-grid dd {
+          margin: 0;
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 1.25;
+        }
+
+        .subscription-offer-section {
+          max-width: 920px;
+          margin: 0 auto;
+          text-align: left;
+        }
+
+        .subscription-offer-section > h4 {
+          text-align: center;
+        }
+
+        .subscription-offer-section p {
+          line-height: 1.5;
+        }
+
+        .subscription-purchase-button {
+          display: flex;
+          min-height: 39px;
+          margin: 22px auto 0;
+          align-items: center;
+          justify-content: center;
+        }
+
         .subscription-success {
           max-width: 760px;
           margin: 20px auto;
@@ -918,6 +1012,24 @@ export default function Subscriptions({
 
         .subscription-success-next p {
           margin: 0 0 16px;
+        }
+
+        @media only screen and (max-width: 520px) {
+          .subscription-package-card-header {
+            display: block;
+          }
+
+          .subscription-package-tier {
+            display: block;
+            max-width: 100%;
+            width: fit-content;
+            margin-top: 4px;
+            text-align: left;
+          }
+
+          .subscription-package-card-grid {
+            grid-template-columns: 1fr;
+          }
         }
       `}</style>
     </>

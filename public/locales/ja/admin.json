@@ -267,8 +267,10 @@
     }
   },
   "billing": {
+    "country": "請求先の国",
     "choose-country": "請求先の国を選択してください",
-    "country-is": "請求先国は"
+    "country-is": "請求先国は",
+    "edit-country": "請求先の国を編集"
   },
   "subscriptions": {
     "subscription": "サブスクリプション",

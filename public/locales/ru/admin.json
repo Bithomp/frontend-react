@@ -267,8 +267,10 @@
     }
   },
   "billing": {
+    "country": "Страна для оплаты",
     "choose-country": "Выберите страну для оплаты",
-    "country-is": "Страна для оплаты"
+    "country-is": "Страна для оплаты",
+    "edit-country": "Изменить страну для оплаты"
   },
   "subscriptions": {
     "subscription": "подписка",

@@ -267,8 +267,10 @@
     }
   },
   "billing": {
+    "country": "账单国家/地区",
     "choose-country": "选择账单国家/地区",
-    "country-is": "账单国家/地区为"
+    "country-is": "账单国家/地区为",
+    "edit-country": "编辑账单国家/地区"
   },
   "subscriptions": {
     "subscription": "订阅",

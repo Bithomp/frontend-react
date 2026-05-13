@@ -10,6 +10,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
 import styles from '@/styles/pages/admin.module.scss'
+import BillingCountry from '../../components/Admin/BillingCountry'
 
 const AdminProfileSkeleton = ({ t }) => (
   <>
@@ -23,6 +24,12 @@ const AdminProfileSkeleton = ({ t }) => (
         </tr>
         <tr>
           <td className="left">Bithomp Pro</td>
+          <td className="left">
+            <span className={`${styles.skeletonLine} ${styles.small}`}></span>
+          </td>
+        </tr>
+        <tr>
+          <td className="left">{t('billing.country', { ns: 'admin' })}</td>
           <td className="left">
             <span className={`${styles.skeletonLine} ${styles.small}`}></span>
           </td>
@@ -73,6 +80,8 @@ export default function Admin({
   const [errorMessage, setErrorMessage] = useState('')
   const [showPrioritySupport, setShowPrioritySupport] = useState(false)
   const [profileLoaded, setProfileLoaded] = useState(false)
+  const [billingCountry, setBillingCountry] = useState('')
+  const [choosingBillingCountry, setChoosingBillingCountry] = useState(false)
 
   useEffect(() => {
     redirectTokenRun()
@@ -144,6 +153,7 @@ export default function Admin({
 
     if (partnerDataRaw?.data) {
       setPartnerData(partnerDataRaw.data)
+      setBillingCountry(partnerDataRaw.data.country || '')
       /*
         {
           "bithompProPackageID": 48,
@@ -207,6 +217,8 @@ export default function Admin({
     setCheckedPackageData(false)
     setShowPrioritySupport(false)
     setProfileLoaded(false)
+    setBillingCountry('')
+    setChoosingBillingCountry(false)
   }
 
   return (
@@ -249,6 +261,20 @@ export default function Admin({
                       ) : (
                         '...'
                       )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="left">{t('billing.country', { ns: 'admin' })}</td>
+                    <td className="left">
+                      <BillingCountry
+                        billingCountry={billingCountry}
+                        compact={true}
+                        setBillingCountry={setBillingCountry}
+                        choosingCountry={choosingBillingCountry}
+                        setChoosingCountry={setChoosingBillingCountry}
+                        showLabel={false}
+                        onSaved={(country) => setPartnerData((prev) => ({ ...(prev || {}), country }))}
+                      />
                     </td>
                   </tr>
                 </tbody>

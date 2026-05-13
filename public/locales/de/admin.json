@@ -267,8 +267,10 @@
     }
   },
   "billing": {
+    "country": "Rechnungsland",
     "choose-country": "Wählen Sie das Rechnungsland",
-    "country-is": "Rechnungsland ist"
+    "country-is": "Rechnungsland ist",
+    "edit-country": "Rechnungsland bearbeiten"
   },
   "subscriptions": {
     "subscription": "Abonnement",

@@ -267,8 +267,10 @@
     }
   },
   "billing": {
+    "country": "Negara penagihan",
     "choose-country": "Pilih negara penagihan",
-    "country-is": "Negara penagihan adalah"
+    "country-is": "Negara penagihan adalah",
+    "edit-country": "Edit negara penagihan"
   },
   "subscriptions": {
     "subscription": "berlangganan",

@@ -5,7 +5,7 @@ import axios from 'axios'
 
 import { countriesTranslated } from '../../utils'
 
-export default function CountrySelect({ countryCode, setCountryCode, type }) {
+export default function CountrySelect({ countryCode, setCountryCode, type, menuPortalTarget, menuPosition, styles }) {
   const { i18n } = useTranslation()
   const [countries, setCountries] = useState(null)
 
@@ -95,6 +95,9 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
       value={selectCountry}
       onChange={onCountryChange}
       isSearchable={true}
+      menuPortalTarget={menuPortalTarget}
+      menuPosition={menuPosition}
+      styles={styles}
       className="country-select"
       classNamePrefix="react-select"
       instanceId="country-select"
