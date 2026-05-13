@@ -6152,7 +6152,11 @@ export default function Account({
                         }
                       }
                       const specialAmountRaw =
-                        txType === 'EscrowCreate' ? tx?.Amount : txType === 'CheckCreate' ? tx?.SendMax : null
+                        txType === 'EscrowCreate'
+                          ? tx?.Amount
+                          : txType === 'CheckCreate'
+                            ? txdata?.specification?.sendMax
+                            : null
                       const txSpecialAmountDisplay = buildTxAmountDisplay({
                         amount: specialAmountRaw,
                         sign: isSource ? -1 : 1,
