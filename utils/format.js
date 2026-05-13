@@ -1439,7 +1439,7 @@ export const niceNumber = (n, fractionDigits = null, currency = null, maxFractio
     }
     if (fractionDigits) {
       const factor = Math.pow(10, fractionDigits)
-      n = Math.floor(n * factor) / factor
+      n = Math.round((n + Number.EPSILON) * factor) / factor
     }
     return n.toLocaleString(undefined, options)
   } else {
@@ -1597,20 +1597,20 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
   } else if (n > 9999) {
     output = appendMagnitudeSuffix(niceNumber(n / 1000, largeNumberFractionDigits, currency), 'K', currency)
   } else if (n > 999) {
-    output = niceNumber(Math.floor(n), 0, currency)
+    output = niceNumber(Math.round(n), 0, currency)
   } else if (n === 0) {
     output = niceNumber(0, 0, currency)
   } else {
     const pow = Math.pow(10, smallNumberFractionDigits)
-    const roundedDownValue = Math.floor(n * pow) / pow
-    const shouldUseTinyFormat = n < 1 && roundedDownValue === 0
+    const displayValue = Math.round((n + Number.EPSILON) * pow) / pow
+    const shouldUseTinyFormat = n < 1 && displayValue === 0
 
     if (shouldUseTinyFormat) {
       output = currency
         ? formatTinyCurrency(n, currency, Math.max(smallNumberFractionDigits, 2))
         : formatTinyNumber(n, Math.max(smallNumberFractionDigits, 2))
     } else {
-      output = niceNumber(roundedDownValue, smallNumberFractionDigits, currency)
+      output = niceNumber(displayValue, smallNumberFractionDigits, currency)
     }
   }
   return beforeNumber + output
