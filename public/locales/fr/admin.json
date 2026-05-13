@@ -260,7 +260,7 @@
       },
       "add-wallet": "Ajouter un portefeuille",
       "period": "Période",
-      "remove-dust": "Retirer les poussières",
+      "remove-dust": "Masquer les transactions insignifiantes",
       "tax-platform": "Plateforme d’export fiscal",
       "csv-for": "CSV pour {{platform}}",
       "koinly-note": "Koinly importe ce fichier comme CSV de portefeuille générique."

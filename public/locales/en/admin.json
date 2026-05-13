@@ -260,7 +260,7 @@
       },
       "add-wallet": "Add wallet",
       "period": "Period",
-      "remove-dust": "Remove dust",
+      "remove-dust": "Hide insignificant transactions",
       "tax-platform": "Tax export platform",
       "csv-for": "CSV for {{platform}}",
       "koinly-note": "Koinly imports this file as a generic wallet CSV."

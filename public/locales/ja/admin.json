@@ -260,7 +260,7 @@
       },
       "add-wallet": "ウォレットを追加する",
       "period": "期間",
-      "remove-dust": "ほこりを取り除く",
+      "remove-dust": "重要でない取引を非表示",
       "tax-platform": "税金輸出プラットフォーム",
       "csv-for": "{{platform}}のCSV",
       "koinly-note": "Koinly は、このファイルを汎用ウォレット CSV としてインポートします。"

@@ -260,7 +260,7 @@
       },
       "add-wallet": "添加钱包",
       "period": "周期",
-      "remove-dust": "移除小额余额",
+      "remove-dust": "隐藏不重要的交易",
       "tax-platform": "税务导出平台",
       "csv-for": "{{platform}} 的 CSV",
       "koinly-note": "Koinly 会将此文件作为通用钱包 CSV 导入。"

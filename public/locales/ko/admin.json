@@ -260,7 +260,7 @@
       },
       "add-wallet": "지갑 추가",
       "period": "기간",
-      "remove-dust": "먼지 제거",
+      "remove-dust": "중요하지 않은 거래 숨기기",
       "tax-platform": "세금 수출 플랫폼",
       "csv-for": "{{platform}}에 대한 CSV",
       "koinly-note": "Koinly는 이 파일을 일반 지갑 CSV로 가져옵니다."

@@ -260,7 +260,7 @@
       },
       "add-wallet": "Tambahkan dompet",
       "period": "Periode",
-      "remove-dust": "Hapus debu",
+      "remove-dust": "Sembunyikan transaksi tidak signifikan",
       "tax-platform": "Platform ekspor pajak",
       "csv-for": "CSV untuk {{platform}}",
       "koinly-note": "Koinly mengimpor file ini sebagai CSV dompet umum."

@@ -260,7 +260,7 @@
       },
       "add-wallet": "Agregar billetera",
       "period": "Período",
-      "remove-dust": "Quitar el polvo",
+      "remove-dust": "Ocultar transacciones insignificantes",
       "tax-platform": "Plataforma de exportación de impuestos",
       "csv-for": "CSV para {{platform}}",
       "koinly-note": "Koinly importa este archivo como una billetera CSV genérica."

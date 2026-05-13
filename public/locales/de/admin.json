@@ -260,7 +260,7 @@
       },
       "add-wallet": "Wallet hinzufügen",
       "period": "Zeitraum",
-      "remove-dust": "Staub entfernen",
+      "remove-dust": "Unbedeutende Transaktionen ausblenden",
       "tax-platform": "Steuerexportplattform",
       "csv-for": "CSV für {{platform}}",
       "koinly-note": "Koinly importiert diese Datei als generische Wallet-CSV."
