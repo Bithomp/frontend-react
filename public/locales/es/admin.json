@@ -708,6 +708,56 @@
       "rules": "Cree reglas de alerta de {{explorerName}} después de iniciar sesión.",
       "channels": "Envíe alertas por correo electrónico, Slack, Discord o X."
     },
+    "slack-guide": {
+      "seo-title": "Guía de configuración de notificaciones de Slack",
+      "seo-description": "Cómo crear una Slack Incoming Webhook URL para alertas.",
+      "eyebrow": "Configuración de Slack",
+      "title": "Configurar alertas de Slack",
+      "intro": "Cree una app de Slack, active Incoming Webhooks y copie la URL del webhook en Alertas.",
+      "before-title": "Antes de empezar",
+      "before": {
+        "workspace": "Use un workspace de Slack donde pueda crear o instalar apps.",
+        "channel": "Elija el canal que debe recibir las alertas antes de crear el webhook.",
+        "private": "Mantenga privada la URL del webhook. Cualquiera que la tenga puede publicar en ese canal.",
+        "recreate": "Cree un nuevo webhook si necesita mover las alertas a otro canal."
+      },
+      "back": "Volver a Alertas",
+      "open-portal": "Abrir Slack API apps",
+      "steps": [
+        {
+          "title": "Crear una app de Slack",
+          "text": "Abra la página de apps de Slack API y cree una nueva app para el workspace donde deben publicarse las alertas.",
+          "images": [
+            "Abra Your Apps en Slack API y haga clic en Create an App.",
+            "Elija From scratch para configurar la app manualmente.",
+            "Después de crear la app, abra Incoming Webhooks en el menú izquierdo."
+          ]
+        },
+        {
+          "title": "Activar Incoming Webhooks",
+          "text": "Incoming Webhooks permite que Alertas publique mensajes en un canal de Slack mediante una URL de webhook privada.",
+          "images": [
+            "Active Activate Incoming Webhooks para la app.",
+            "Desplácese hasta Webhook URLs for Your Workspace y haga clic en Add New Webhook."
+          ]
+        },
+        {
+          "title": "Elegir un canal y copiar la URL del webhook",
+          "text": "Seleccione el canal de Slack que debe recibir alertas, autorice la app y copie la URL de webhook generada.",
+          "images": [
+            "Elija el canal para el webhook y haga clic en Allow.",
+            "Copie la nueva Webhook URL desde la página Incoming Webhooks."
+          ]
+        },
+        {
+          "title": "Pegar el webhook en Alertas",
+          "text": "Vuelva a Alertas, elija Slack, introduzca un nombre privado de canal, pegue la URL del webhook y guarde el canal.",
+          "images": [
+            "Pegue la Slack Incoming Webhook URL en el campo Webhook URL de Alertas."
+          ]
+        }
+      ]
+    },
     "x-guide": {
       "seo-title": "Guía de configuración de notificaciones X",
       "seo-description": "Cómo crear claves X API para alertas.",

@@ -708,6 +708,56 @@
       "rules": "Buat aturan peringatan {{explorerName}} setelah masuk.",
       "channels": "Kirim peringatan ke email, Slack, Discord, atau X."
     },
+    "slack-guide": {
+      "seo-title": "Panduan pengaturan notifikasi Slack",
+      "seo-description": "Cara membuat Slack Incoming Webhook URL untuk alert.",
+      "eyebrow": "Pengaturan Slack",
+      "title": "Siapkan alert Slack",
+      "intro": "Buat app Slack, aktifkan Incoming Webhooks, lalu salin URL webhook ke Alerts.",
+      "before-title": "Sebelum mulai",
+      "before": {
+        "workspace": "Gunakan workspace Slack tempat Anda dapat membuat atau memasang app.",
+        "channel": "Pilih channel yang harus menerima alert sebelum membuat webhook.",
+        "private": "Jaga URL webhook tetap privat. Siapa pun yang memilikinya dapat memposting ke channel tersebut.",
+        "recreate": "Buat webhook baru jika Anda perlu memindahkan alert ke channel lain."
+      },
+      "back": "Kembali ke Alerts",
+      "open-portal": "Buka Slack API apps",
+      "steps": [
+        {
+          "title": "Buat app Slack",
+          "text": "Buka halaman app Slack API dan buat app baru untuk workspace tempat alert akan diposting.",
+          "images": [
+            "Buka Your Apps di Slack API dan klik Create an App.",
+            "Pilih From scratch agar Anda dapat mengonfigurasi app secara manual.",
+            "Setelah app dibuat, buka Incoming Webhooks dari menu kiri."
+          ]
+        },
+        {
+          "title": "Aktifkan Incoming Webhooks",
+          "text": "Incoming Webhooks memungkinkan Alerts memposting pesan ke channel Slack menggunakan URL webhook privat.",
+          "images": [
+            "Aktifkan Activate Incoming Webhooks untuk app.",
+            "Gulir ke Webhook URLs for Your Workspace dan klik Add New Webhook."
+          ]
+        },
+        {
+          "title": "Pilih channel dan salin URL webhook",
+          "text": "Pilih channel Slack yang harus menerima alert, izinkan app, lalu salin URL webhook yang dibuat.",
+          "images": [
+            "Pilih channel untuk webhook, lalu klik Allow.",
+            "Salin Webhook URL baru dari halaman Incoming Webhooks."
+          ]
+        },
+        {
+          "title": "Tempel webhook ke Alerts",
+          "text": "Kembali ke Alerts, pilih Slack, masukkan nama channel privat, tempel URL webhook, lalu simpan channel.",
+          "images": [
+            "Tempel Slack Incoming Webhook URL ke kolom Webhook URL di Alerts."
+          ]
+        }
+      ]
+    },
     "x-guide": {
       "seo-title": "* Panduan pengaturan notifikasi",
       "seo-description": "Cara membuat kunci X API untuk peringatan.",

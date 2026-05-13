@@ -95,7 +95,8 @@ const setupGuides = [
     icon: FaSlack,
     title: 'Slack',
     description: 'Create an incoming webhook in Slack, choose a channel, then paste the webhook URL here.',
-    steps: ['Slack app directory', 'Incoming Webhooks', 'Add to workspace', 'Copy Webhook URL']
+    steps: ['Slack app directory', 'Incoming Webhooks', 'Add to workspace', 'Copy Webhook URL'],
+    guideHref: '/admin/notifications/slack-guide'
   },
   {
     type: NOTIFICATION_CHANNEL_TYPES.TWITTER,

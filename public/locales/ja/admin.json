@@ -708,6 +708,56 @@
       "rules": "サインインした後、{{explorerName}}アラート ルールを作成します。",
       "channels": "アラートを電子メール、Slack、Discord、または X に送信します。"
     },
+    "slack-guide": {
+      "seo-title": "Slack通知の設定ガイド",
+      "seo-description": "アラート用のSlack Incoming Webhook URLを作成する方法。",
+      "eyebrow": "Slack設定",
+      "title": "Slackアラートを設定",
+      "intro": "Slackアプリを作成し、Incoming Webhooksを有効にして、webhook URLをAlertsにコピーします。",
+      "before-title": "始める前に",
+      "before": {
+        "workspace": "アプリを作成またはインストールできるSlackワークスペースを使用してください。",
+        "channel": "webhookを作成する前に、アラートを受け取るチャンネルを選んでください。",
+        "private": "webhook URLは非公開にしてください。URLを知っている人はそのチャンネルに投稿できます。",
+        "recreate": "アラートを別のチャンネルへ移す必要がある場合は、新しいwebhookを作成してください。"
+      },
+      "back": "Alertsに戻る",
+      "open-portal": "Slack API appsを開く",
+      "steps": [
+        {
+          "title": "Slackアプリを作成",
+          "text": "Slack APIのアプリページを開き、アラートを投稿するワークスペース用の新しいアプリを作成します。",
+          "images": [
+            "Slack APIでYour Appsを開き、Create an Appをクリックします。",
+            "手動で設定できるようにFrom scratchを選択します。",
+            "アプリを作成したら、左メニューからIncoming Webhooksを開きます。"
+          ]
+        },
+        {
+          "title": "Incoming Webhooksを有効化",
+          "text": "Incoming Webhooksにより、Alertsは非公開のwebhook URLを使ってSlackチャンネルにメッセージを投稿できます。",
+          "images": [
+            "アプリでActivate Incoming Webhooksをオンにします。",
+            "Webhook URLs for Your Workspaceまでスクロールし、Add New Webhookをクリックします。"
+          ]
+        },
+        {
+          "title": "チャンネルを選択してwebhook URLをコピー",
+          "text": "アラートを受け取るSlackチャンネルを選び、アプリを許可して、生成されたwebhook URLをコピーします。",
+          "images": [
+            "webhook用のチャンネルを選択し、Allowをクリックします。",
+            "Incoming Webhooksページで新しいWebhook URLをコピーします。"
+          ]
+        },
+        {
+          "title": "Alertsにwebhookを貼り付け",
+          "text": "Alertsに戻り、Slackを選択し、非公開のチャンネル名を入力してwebhook URLを貼り付け、チャンネルを保存します。",
+          "images": [
+            "Slack Incoming Webhook URLをAlertsのWebhook URLフィールドに貼り付けます。"
+          ]
+        }
+      ]
+    },
     "x-guide": {
       "seo-title": "X通知設定ガイド",
       "seo-description": "アラート用の X API キーを作成する方法。",

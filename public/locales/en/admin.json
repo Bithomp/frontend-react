@@ -708,6 +708,56 @@
       "rules": "Create {{explorerName}} alert rules after signing in.",
       "channels": "Send alerts to email, Slack, Discord, or X."
     },
+    "slack-guide": {
+      "seo-title": "Slack notification setup guide",
+      "seo-description": "How to create a Slack Incoming Webhook URL for alerts.",
+      "eyebrow": "Slack setup",
+      "title": "Set up Slack alerts",
+      "intro": "Create a Slack app, enable Incoming Webhooks, and copy the webhook URL into Alerts.",
+      "before-title": "Before you start",
+      "before": {
+        "workspace": "Use a Slack workspace where you can create or install apps.",
+        "channel": "Choose the channel that should receive alerts before creating the webhook.",
+        "private": "Keep the webhook URL private. Anyone with it can post to that channel.",
+        "recreate": "Create a new webhook if you need to move alerts to another channel."
+      },
+      "back": "Back to Alerts",
+      "open-portal": "Open Slack API apps",
+      "steps": [
+        {
+          "title": "Create a Slack app",
+          "text": "Open the Slack API app page and create a new app for the workspace where alerts should be posted.",
+          "images": [
+            "Open Your Apps in Slack API and click Create an App.",
+            "Choose From scratch so you can configure the app manually.",
+            "After the app is created, open Incoming Webhooks from the left menu."
+          ]
+        },
+        {
+          "title": "Enable Incoming Webhooks",
+          "text": "Incoming Webhooks let Alerts post messages into a Slack channel using a private webhook URL.",
+          "images": [
+            "Turn Activate Incoming Webhooks on for the app.",
+            "Scroll to Webhook URLs for Your Workspace and click Add New Webhook."
+          ]
+        },
+        {
+          "title": "Choose a channel and copy the webhook URL",
+          "text": "Select the Slack channel that should receive alerts, allow the app, and copy the generated webhook URL.",
+          "images": [
+            "Choose the channel for the webhook, then click Allow.",
+            "Copy the new Webhook URL from the Incoming Webhooks page."
+          ]
+        },
+        {
+          "title": "Paste the webhook into Alerts",
+          "text": "Return to Alerts, choose Slack, enter a private channel name, paste the webhook URL, and save the channel.",
+          "images": [
+            "Paste the Slack Incoming Webhook URL into the Webhook URL field in Alerts."
+          ]
+        }
+      ]
+    },
     "x-guide": {
       "seo-title": "X notification setup guide",
       "seo-description": "How to create X API keys for alerts.",

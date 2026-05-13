@@ -95,7 +95,7 @@ export default function XNotificationGuide() {
               <h1>{t('notifications.x-guide.title')}</h1>
               <p>{t('notifications.x-guide.intro')}</p>
             </div>
-            <div className="notification-guide-x" aria-hidden="true">
+            <div className="notification-guide-icon" aria-hidden="true">
               <FaXTwitter />
             </div>
           </section>

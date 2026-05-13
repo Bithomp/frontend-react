@@ -67,6 +67,7 @@ const pages = [
   { loc: 'admin/api/statistics', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin/api/charts', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin/notifications', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/notifications/slack-guide', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin/notifications/x-guide', changefreq: 'yearly', priority: '0.5' },
 
   { loc: 'object', changefreq: 'yearly', priority: '0.4' },

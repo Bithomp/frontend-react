@@ -708,6 +708,56 @@
       "rules": "로그인 후{{explorerName}}경고 규칙을 생성합니다.",
       "channels": "이메일, Slack, Discord 또는 X로 알림을 보냅니다."
     },
+    "slack-guide": {
+      "seo-title": "Slack 알림 설정 가이드",
+      "seo-description": "Alerts용 Slack Incoming Webhook URL을 만드는 방법입니다.",
+      "eyebrow": "Slack 설정",
+      "title": "Slack Alerts 설정",
+      "intro": "Slack app을 만들고 Incoming Webhooks를 활성화한 다음 webhook URL을 Alerts에 복사합니다.",
+      "before-title": "시작하기 전에",
+      "before": {
+        "workspace": "app을 만들거나 설치할 수 있는 Slack workspace를 사용하세요.",
+        "channel": "webhook을 만들기 전에 Alerts를 받을 channel을 선택하세요.",
+        "private": "webhook URL은 비공개로 유지하세요. 이 URL을 가진 사람은 해당 channel에 게시할 수 있습니다.",
+        "recreate": "Alerts를 다른 channel로 옮겨야 한다면 새 webhook을 만드세요."
+      },
+      "back": "Alerts로 돌아가기",
+      "open-portal": "Slack API apps 열기",
+      "steps": [
+        {
+          "title": "Slack app 만들기",
+          "text": "Slack API app 페이지를 열고 Alerts를 게시할 workspace용 새 app을 만듭니다.",
+          "images": [
+            "Slack API에서 Your Apps를 열고 Create an App을 클릭합니다.",
+            "app을 직접 설정할 수 있도록 From scratch를 선택합니다.",
+            "app이 만들어지면 왼쪽 메뉴에서 Incoming Webhooks를 엽니다."
+          ]
+        },
+        {
+          "title": "Incoming Webhooks 활성화",
+          "text": "Incoming Webhooks를 사용하면 Alerts가 비공개 webhook URL로 Slack channel에 메시지를 게시할 수 있습니다.",
+          "images": [
+            "app에서 Activate Incoming Webhooks를 켭니다.",
+            "Webhook URLs for Your Workspace로 스크롤한 뒤 Add New Webhook을 클릭합니다."
+          ]
+        },
+        {
+          "title": "channel을 선택하고 webhook URL 복사",
+          "text": "Alerts를 받을 Slack channel을 선택하고 app을 허용한 다음 생성된 webhook URL을 복사합니다.",
+          "images": [
+            "webhook용 channel을 선택한 다음 Allow를 클릭합니다.",
+            "Incoming Webhooks 페이지에서 새 Webhook URL을 복사합니다."
+          ]
+        },
+        {
+          "title": "Alerts에 webhook 붙여넣기",
+          "text": "Alerts로 돌아가 Slack을 선택하고 비공개 channel 이름을 입력한 뒤 webhook URL을 붙여넣고 channel을 저장합니다.",
+          "images": [
+            "Slack Incoming Webhook URL을 Alerts의 Webhook URL 필드에 붙여넣습니다."
+          ]
+        }
+      ]
+    },
     "x-guide": {
       "seo-title": "X 알림 설정 가이드",
       "seo-description": "경고용 X API 키를 생성하는 방법.",

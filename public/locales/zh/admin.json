@@ -708,6 +708,56 @@
       "rules": "登录后可创建 {{explorerName}} 提醒规则。",
       "channels": "通过 e-mail、Slack、Discord 或 X 发送提醒。"
     },
+    "slack-guide": {
+      "seo-title": "Slack 通知设置指南",
+      "seo-description": "如何为提醒创建 Slack Incoming Webhook URL。",
+      "eyebrow": "Slack 设置",
+      "title": "设置 Slack 提醒",
+      "intro": "创建 Slack app，启用 Incoming Webhooks，并将 webhook URL 复制到 Alerts。",
+      "before-title": "开始之前",
+      "before": {
+        "workspace": "使用可以创建或安装 app 的 Slack workspace。",
+        "channel": "在创建 webhook 之前，先选择接收提醒的频道。",
+        "private": "请将 webhook URL 保密。任何拥有该 URL 的人都可以向该频道发布消息。",
+        "recreate": "如果需要把提醒移动到其他频道，请创建新的 webhook。"
+      },
+      "back": "返回 Alerts",
+      "open-portal": "打开 Slack API apps",
+      "steps": [
+        {
+          "title": "创建 Slack app",
+          "text": "打开 Slack API app 页面，为接收提醒的 workspace 创建一个新 app。",
+          "images": [
+            "在 Slack API 中打开 Your Apps，然后点击 Create an App。",
+            "选择 From scratch，以便手动配置 app。",
+            "创建 app 后，从左侧菜单打开 Incoming Webhooks。"
+          ]
+        },
+        {
+          "title": "启用 Incoming Webhooks",
+          "text": "Incoming Webhooks 允许 Alerts 使用私密 webhook URL 向 Slack 频道发布消息。",
+          "images": [
+            "为该 app 打开 Activate Incoming Webhooks。",
+            "滚动到 Webhook URLs for Your Workspace，然后点击 Add New Webhook。"
+          ]
+        },
+        {
+          "title": "选择频道并复制 webhook URL",
+          "text": "选择接收提醒的 Slack 频道，允许 app，然后复制生成的 webhook URL。",
+          "images": [
+            "选择 webhook 使用的频道，然后点击 Allow。",
+            "从 Incoming Webhooks 页面复制新的 Webhook URL。"
+          ]
+        },
+        {
+          "title": "将 webhook 粘贴到 Alerts",
+          "text": "返回 Alerts，选择 Slack，输入私密频道名称，粘贴 webhook URL，然后保存频道。",
+          "images": [
+            "将 Slack Incoming Webhook URL 粘贴到 Alerts 的 Webhook URL 字段中。"
+          ]
+        }
+      ]
+    },
     "x-guide": {
       "seo-title": "X 通知设置指南",
       "seo-description": "如何为提醒创建 X API 密钥。",

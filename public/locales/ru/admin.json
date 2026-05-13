@@ -716,6 +716,56 @@
       "rules": "Создавайте правила алертов {{explorerName}} после входа.",
       "channels": "Отправляйте алерты в email, Slack, Discord или X."
     },
+    "slack-guide": {
+      "seo-title": "Руководство по настройке Slack-уведомлений",
+      "seo-description": "Как создать Slack Incoming Webhook URL для алертов.",
+      "eyebrow": "Настройка Slack",
+      "title": "Настройка Slack-алертов",
+      "intro": "Создайте Slack app, включите Incoming Webhooks и скопируйте webhook URL в алерты.",
+      "before-title": "Перед началом",
+      "before": {
+        "workspace": "Используйте Slack workspace, где вы можете создавать или устанавливать apps.",
+        "channel": "Выберите канал, который должен получать алерты, до создания webhook.",
+        "private": "Храните webhook URL приватно. Любой, у кого он есть, сможет публиковать сообщения в этот канал.",
+        "recreate": "Создайте новый webhook, если нужно перенести алерты в другой канал."
+      },
+      "back": "Назад к Алертам",
+      "open-portal": "Открыть Slack API apps",
+      "steps": [
+        {
+          "title": "Создайте Slack app",
+          "text": "Откройте страницу Slack API apps и создайте новую app для workspace, куда должны публиковаться алерты.",
+          "images": [
+            "Откройте Your Apps в Slack API и нажмите Create an App.",
+            "Выберите From scratch, чтобы настроить app вручную.",
+            "После создания app откройте Incoming Webhooks в левом меню."
+          ]
+        },
+        {
+          "title": "Включите Incoming Webhooks",
+          "text": "Incoming Webhooks позволяют Алертам публиковать сообщения в Slack-канал через приватный webhook URL.",
+          "images": [
+            "Включите Activate Incoming Webhooks для app.",
+            "Прокрутите до Webhook URLs for Your Workspace и нажмите Add New Webhook."
+          ]
+        },
+        {
+          "title": "Выберите канал и скопируйте webhook URL",
+          "text": "Выберите Slack-канал для алертов, разрешите app доступ и скопируйте созданный webhook URL.",
+          "images": [
+            "Выберите канал для webhook и нажмите Allow.",
+            "Скопируйте новый Webhook URL на странице Incoming Webhooks."
+          ]
+        },
+        {
+          "title": "Вставьте webhook в Алерты",
+          "text": "Вернитесь в Алерты, выберите Slack, укажите приватное имя канала, вставьте webhook URL и сохраните канал.",
+          "images": [
+            "Вставьте Slack Incoming Webhook URL в поле Webhook URL в Алертах."
+          ]
+        }
+      ]
+    },
     "x-guide": {
       "seo-title": "Руководство по настройке X-уведомлений",
       "seo-description": "Как создать X API-ключи для алертов.",
