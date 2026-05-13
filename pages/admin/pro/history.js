@@ -32,6 +32,7 @@ import Avatar from '../../../components/UI/Avatar'
 import { getAccountTransactionTypeIcon, getTransactionTypeLabel } from '../../../utils/transaction'
 
 const sampleHistoryAddresses = [
+  'rDLNm4ehD7XQCtYKWuMjEKY7TCfmf3CwzH',
   'r3sQYvXxc82iSNs5DnUUvXtcQQQqigCdW',
   'rhWTXC2m2gGGA9WozUaoMm6kLAVPb1tcS3',
   'raWYT6DD2XFAvjCqRPsCCzr1CMBzJydf9E',
