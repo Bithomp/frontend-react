@@ -17,9 +17,9 @@
   "col-percent": "Anteil",
   "updated-at": "Zuletzt aktualisiert",
   "category": {
-    "escrowRipple": "Ripple Escrow",
+    "escrowRipple": "Ripple-Escrow",
     "ripple": "Ripple",
-    "escrowService": "Service Escrow",
+    "escrowService": "Service-Escrow",
     "escrowRest": "Sonstige Escrow",
     "rest": "Aktive Wallets",
     "service": "Bekannte Services",

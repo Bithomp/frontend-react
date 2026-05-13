@@ -144,18 +144,18 @@
     "donate": "捐赠",
     "sponsored": {
       "title": "赞助",
-      "buy": "购买瑞波币",
+      "buy": "购买 XRP",
       "earn": "赚取 XRP",
       "link-label": "{{title}} 赞助商链接"
     },
     "learn-more": {
       "title": "了解更多",
       "buy-wallet": "买钱包",
-      "xrp-wallets": "瑞波币钱包",
+      "xrp-wallets": "XRP 钱包",
       "xahau-wallets": "Xahau 钱包",
-      "xrpl-ripple": "XRP、XRPL、瑞波币",
+      "xrpl-ripple": "XRP、XRPL、Ripple",
       "verified-domains": "已验证的域名",
-      "ripple-usd": "瑞波币美元",
+      "ripple-usd": "Ripple USD",
       "nft-minting": "如何铸造NFT",
       "learn-page": "查看我们的学习页面"
     }
@@ -283,7 +283,7 @@
         "transfers": "转账",
         "for-sale": "列出"
       },
-      "escrows": "托管",
+      "escrows": "Escrow",
       "amms": "AMM 池",
       "nodes": "节点"
     },

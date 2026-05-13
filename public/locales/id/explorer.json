@@ -1,8 +1,8 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Pencarian {{explorerSearchName}} — akun, transaksi, token, NFT",
-      "description": "Gunakan {{explorerSearchAttribution}} untuk mencari alamat {{nativeCurrency}}, hash transaksi, username, CTID, NFT, token, AMM, dan objek ledger di {{ledgerName}}.",
+      "title": "Pencarian {{explorerSearchName}}: akun, transaksi, token, dan NFT {{ledgerName}}",
+      "description": "Gunakan {{explorerSearchAttribution}} untuk mencari alamat, hash transaksi, username, CTID, NFT, token, AMM, dan objek ledger di {{ledgerName}}.",
       "heading": "Pencarian {{explorerSearchName}}"
     },
     "testnet": {

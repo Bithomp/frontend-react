@@ -56,10 +56,10 @@ export const getServerSideProps = async (context) => {
 }
 
 const initialChannelForm = {
-  name: ''
+  name: '',
 }
 
-const defaultRuleName = (index = 1) => `Rule ${index}`
+const defaultRuleName = (t, index = 1) => t('notifications.default-rule-name', { index })
 const defaultRuleEvent = xahauNetwork ? NOTIFICATION_EVENT_TYPES.URITOKEN_SELL : NOTIFICATION_EVENT_TYPES.NFTOKEN_SALE
 
 const initialRuleForm = {
@@ -69,29 +69,11 @@ const initialRuleForm = {
   externalUrl: true,
   filters: {},
   fiatCurrency: 'usd',
-  name: defaultRuleName(),
+  name: '',
   xrpCafeURL: false
 }
 
 const notificationsSubscriptionHref = '/admin/subscriptions?tab=notifications'
-
-const booleanFilterOptions = [
-  { value: 'any', label: 'Any' },
-  { value: 'true', label: 'Yes' },
-  { value: 'false', label: 'No' }
-]
-
-const destinationFilterOptions = [
-  { value: 'any', label: 'Any destination' },
-  { value: 'specific', label: 'Specific address' },
-  { value: 'none', label: 'No destination' }
-]
-
-const brokerDestinationFilterOptions = [
-  ...destinationFilterOptions,
-  { value: 'knownBroker', label: 'Known broker' },
-  { value: 'noneOrKnownBroker', label: 'No destination or known broker' }
-]
 
 const setupGuides = [
   {
@@ -127,17 +109,17 @@ const setupGuides = [
 ]
 
 const apiErrorMessages = {
-  'errors.connection.has_listeners': 'To delete this channel, first delete the rules using it or move them to another channel.',
-  'errors.connection.settings_required': 'Enter the required channel settings.',
-  'errors.listener.action_required': 'Choose what this rule should do.',
-  'errors.listener.event_invalid': 'Choose a supported event type.',
-  'errors.listener.event_required': 'Choose an event type.',
-  'errors.listener.name_required': 'Enter a rule name.'
+  'errors.connection.has_listeners': 'notifications.errors.connection-has-listeners',
+  'errors.connection.settings_required': 'notifications.errors.connection-settings-required-short',
+  'errors.listener.action_required': 'notifications.errors.action-required',
+  'errors.listener.event_invalid': 'notifications.errors.event-invalid',
+  'errors.listener.event_required': 'notifications.errors.event-required',
+  'errors.listener.name_required': 'notifications.errors.rule-name-required'
 }
 
-const errorText = (error, fallback) => {
+const errorText = (error, fallback, t) => {
   const code = error?.response?.data?.error
-  return apiErrorMessages[code] || code || error?.message || fallback
+  return (apiErrorMessages[code] && t(apiErrorMessages[code])) || code || error?.message || fallback
 }
 
 const listenerConnectionId = (listener) => listener?.channel?.id || listener?.partnerConnectionID || ''
@@ -155,17 +137,26 @@ const formEnabledBoolean = (value) => value === true
 
 const filterValue = (filters, key) => filters?.[key] || {}
 
-const filterLabel = (field) => field.label.replace('{nativeCurrency}', nativeCurrency)
+const filterLabel = (field, t) =>
+  t(`notifications.filters.${field.key}`, {
+    defaultValue: field.label,
+    nativeCurrency
+  })
 
 const ruleKey = (key, fiatCurrency = 'usd') => key.replace('{fiatCurrency}', fiatCurrency || 'usd')
 
 const activePackage = (packages, type) =>
   packages.find((item) => item.type === type && !(item.expiredAt && timestampExpired(item.expiredAt))) || null
 
-const alertPlanLimitText = (plan) =>
-  `${plan.label} allows ${plan.connections} channel${plan.connections === 1 ? '' : 's'} and ${plan.listeners} rule${
-    plan.listeners === 1 ? '' : 's'
-  }.`
+const alertPlanLimitText = (plan, t) =>
+  t('notifications.plan-limit', {
+    plan: t(`plans.${plan.tier}`, { defaultValue: plan.label }),
+    channels: plan.connections,
+    rules: plan.listeners
+  })
+
+const notificationChannelLabel = (type, t) =>
+  t(`notifications.channel-type.${type}`, { defaultValue: getNotificationChannelLabel(type) })
 
 const showAlertPlanUpgrade = (plan, activeBotPackage) =>
   !activeBotPackage || (plan.tier === DEFAULT_ALERT_PLAN_TIER && !plan.hasMetadataLimits)
@@ -345,6 +336,29 @@ const buildRuleSettings = (formData) => {
 
 export default function Notifications({ sessionToken, openEmailLogin }) {
   const { t } = useTranslation('admin')
+  const booleanFilterOptions = [
+    { value: 'any', label: t('common.any') },
+    { value: 'true', label: t('common.yes') },
+    { value: 'false', label: t('common.no') }
+  ]
+  const destinationFilterOptions = [
+    { value: 'any', label: t('notifications.destination.any') },
+    { value: 'specific', label: t('notifications.destination.specific') },
+    { value: 'none', label: t('notifications.destination.none') }
+  ]
+  const brokerDestinationFilterOptions = [
+    ...destinationFilterOptions,
+    { value: 'knownBroker', label: t('notifications.destination.known-broker') },
+    { value: 'noneOrKnownBroker', label: t('notifications.destination.none-or-known-broker') }
+  ]
+  const numberOperatorOptions = NOTIFICATION_NUMBER_OPERATOR_OPTIONS.map((option) => ({
+    ...option,
+    label: t(`notifications.number-operators.${option.value}`, { defaultValue: option.label })
+  }))
+  const txTypeOperatorOptions = NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS.map((option) => ({
+    ...option,
+    label: t(`notifications.tx-type-operators.${option.value}`, { defaultValue: option.label })
+  }))
   const { rules, channels, isLoading, error, refetch } = useNotifications({ enabled: !!sessionToken })
   const createProfile = useCreateNotificationProfile()
   const createChannel = useCreateNotificationChannel()
@@ -384,15 +398,24 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
         .filter((channel) => channelSupportsEvent(channel, ruleFormData.event))
         .map((channel) => ({
           value: channel.id,
-          label: channel.name || getNotificationChannelLabel(channel.type)
+          label: channel.name || notificationChannelLabel(channel.type, t)
         })),
-    [channels, ruleFormData.event]
+    [channels, ruleFormData.event, t]
   )
   const selectedRuleChannelOption = useMemo(
     () => ruleChannelOptions.find((option) => String(option.value) === String(ruleFormData.connectionId)) || null,
     [ruleChannelOptions, ruleFormData.connectionId]
   )
-  const notificationEventOptions = useMemo(() => getNotificationEventOptions({ xahau: xahauNetwork }), [])
+  const notificationEventOptions = useMemo(
+    () =>
+      getNotificationEventOptions({ xahau: xahauNetwork }).map((option) => ({
+        ...option,
+        label: t(`notifications.events.${option.value}.label`, { defaultValue: option.label }),
+        description: t(`notifications.events.${option.value}.description`, { defaultValue: option.description }),
+        group: t(`notifications.event-groups.${option.group}`, { defaultValue: option.group })
+      })),
+    [t]
+  )
   const notificationTxTypeOptions = useMemo(() => getNotificationTxTypeOptions({ xahau: xahauNetwork }), [])
   const selectedFiatCurrencyOption = useMemo(
     () => NOTIFICATION_FIAT_CURRENCY_OPTIONS.find((option) => option.value === ruleFormData.fiatCurrency) || null,
@@ -454,7 +477,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
   const openAddChannel = (type = NOTIFICATION_CHANNEL_TYPES.EMAIL) => {
     if (channelLimitReached) {
-      setFormMessage(`Channel limit reached. ${alertPlanLimitText(alertPlan)}`)
+      setFormMessage(`${t('notifications.channel-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`)
       setShowChannelForm(false)
       return
     }
@@ -492,7 +515,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
   const openAddRule = () => {
     if (ruleLimitReached) {
-      setRuleFormMessage(`Rule limit reached. ${alertPlanLimitText(alertPlan)}`)
+      setRuleFormMessage(`${t('notifications.rule-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`)
       setShowRuleForm(false)
       return
     }
@@ -503,7 +526,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       ...initialRuleForm,
       connectionId: firstChannelForEvent(event),
       event,
-      name: defaultRuleName(rules.length + 1)
+      name: defaultRuleName(t, rules.length + 1)
     })
     setRuleFormErrors({})
     setRuleFormMessage('')
@@ -586,20 +609,20 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     const errors = {}
     let message = ''
     if (!editingChannel && channelLimitReached) {
-      message = `Channel limit reached. ${alertPlanLimitText(alertPlan)}`
+      message = `${t('notifications.channel-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`
     }
     if (!formData.name?.trim()) {
-      errors.name = 'Enter a channel name.'
+      errors.name = t('notifications.errors.channel-name-required')
     }
 
     selectedChannel.fields.forEach((field) => {
       const value = formData[field.id]?.trim()
       if (field.required && !value) {
-        errors[field.id] = `${field.label} is required.`
+        errors[field.id] = t('notifications.errors.field-required', { field: t(`notifications.fields.${field.id}`, { defaultValue: field.label }) })
       } else if (value && field.validate) {
         const validation = field.validate(value)
         if (validation !== true) {
-          errors[field.id] = validation
+          errors[field.id] = t(`notifications.errors.invalid-${field.id}`, { defaultValue: validation })
         }
       }
     })
@@ -613,57 +636,57 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     const errors = {}
     let message = ''
     if (!editingRule && ruleLimitReached) {
-      message = `Rule limit reached. ${alertPlanLimitText(alertPlan)}`
+      message = `${t('notifications.rule-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`
     }
     const selectedRuleChannel = channels.find((channel) => String(channel.id) === String(ruleFormData.connectionId))
     if (!ruleFormData.connectionId) {
-      errors.connectionId = 'Choose a channel.'
+      errors.connectionId = t('notifications.errors.choose-channel')
     } else if (!channelSupportsEvent(selectedRuleChannel, ruleFormData.event)) {
       errors.connectionId = isBalanceChangeEvent(ruleFormData.event)
-        ? 'Balance change alerts can only use an Email channel.'
-        : 'Email channels can only be used for balance change alerts.'
+        ? t('notifications.errors.balance-email-only')
+        : t('notifications.errors.email-balance-only')
     }
     if (!ruleFormData.name?.trim()) {
-      errors.name = 'Enter a rule name.'
+      errors.name = t('notifications.errors.rule-name-required')
     }
     if (!notificationEventOptions.some((option) => option.value === ruleFormData.event)) {
-      errors.event = 'Choose a supported event.'
+      errors.event = t('notifications.errors.event-invalid-short')
     }
 
     getNotificationFilterFields(ruleFormData.event).forEach((field) => {
       const filter = filterValue(ruleFormData.filters, field.key)
       if (field.required && !isFilled(filter.value)) {
-        errors[field.key] = `Choose ${filterLabel(field).toLowerCase()}.`
+        errors[field.key] = t('notifications.errors.choose-field', { field: filterLabel(field, t).toLowerCase() })
       }
       if (field.type === 'proAddress') {
         if (!hasActiveProSubscription) {
-          errors[field.key] = 'Bithomp Pro subscription is required.'
+          errors[field.key] = t('notifications.errors.pro-required')
         } else if (balanceHistoryAddressOptions.length === 0) {
-          errors[field.key] = 'Enable balance history for a verified address first.'
+          errors[field.key] = t('notifications.errors.enable-history-first')
         } else if (isFilled(filter.value) && !balanceHistoryAddressOptions.some((option) => option.value === filter.value)) {
-          errors[field.key] = 'Choose an address with enabled balance history.'
+          errors[field.key] = t('notifications.errors.choose-history-address')
         }
       }
       if (field.type === 'address' && isFilled(filter.value) && !isAddressValid(filter.value)) {
-        errors[field.key] = 'Choose a valid address.'
+        errors[field.key] = t('notifications.errors.valid-address')
       }
       if (field.type === 'number' && isFilled(filter.value) && !Number.isFinite(Number(filter.value))) {
-        errors[field.key] = 'Enter a valid number.'
+        errors[field.key] = t('notifications.errors.valid-number')
       }
       if (field.type === 'txType') {
         const operator = filter.operator || '$eq'
         if (operator === '$eq' && isFilled(filter.value) && !notificationTxTypeOptions.some((option) => option.value === filter.value)) {
-          errors[field.key] = 'Choose a supported transaction type.'
+          errors[field.key] = t('notifications.errors.tx-type-supported')
         }
         if (
           (operator === '$in' || operator === '$nin') &&
           filter.values?.some((value) => !notificationTxTypeOptions.some((option) => option.value === value))
         ) {
-          errors[field.key] = 'Choose supported transaction types.'
+          errors[field.key] = t('notifications.errors.tx-types-supported')
         }
       }
       if (field.type === 'destination' && filter.mode === 'specific' && !isAddressValid(filter.value)) {
-        errors[field.key] = 'Choose a valid destination address.'
+        errors[field.key] = t('notifications.errors.valid-destination')
       }
     })
 
@@ -676,11 +699,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     event.preventDefault()
     setProfileMessage('')
     if (!partnerName.trim()) {
-      setProfileMessage('Enter your organization or account name.')
+      setProfileMessage(t('notifications.errors.profile-name-required'))
       return
     }
     if (!partnerCountry) {
-      setProfileMessage('Choose your country.')
+      setProfileMessage(t('notifications.errors.country-required'))
       return
     }
 
@@ -688,7 +711,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       await createProfile.mutate({ name: partnerName.trim(), country: partnerCountry })
       await refetch()
     } catch (error) {
-      setProfileMessage(errorText(error, 'Could not finish notification setup.'))
+      setProfileMessage(errorText(error, t('notifications.errors.setup-failed'), t))
     }
   }
 
@@ -716,7 +739,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       await refetch()
       closeChannelForm()
     } catch (error) {
-      setFormMessage(errorText(error, 'Could not save notification channel.'))
+      setFormMessage(errorText(error, t('notifications.errors.save-channel-failed'), t))
     }
   }
 
@@ -749,7 +772,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       closeRuleForm()
       await refetch()
     } catch (error) {
-      setRuleFormMessage(errorText(error, 'Could not save notification rule.'))
+      setRuleFormMessage(errorText(error, t('notifications.errors.save-rule-failed'), t))
     }
   }
 
@@ -799,11 +822,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     if (!editingChannel && channelLimitReached) {
       return (
         <div className="notification-limit-notice">
-          <strong>Channel limit reached.</strong>
+          <strong>{t('notifications.channel-limit-reached')}</strong>
           <span>
-            {alertPlanLimitText(alertPlan)}{' '}
+            {alertPlanLimitText(alertPlan, t)}{' '}
             {canShowAlertPlanUpgrade && (
-              <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more channels.</Link>
+              <Link href={notificationsSubscriptionHref}>{t('notifications.upgrade-add-channels')}</Link>
             )}
           </span>
         </div>
@@ -814,7 +837,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       <form className="notification-form" onSubmit={handleSaveChannel}>
         <div className="notification-form-grid">
           <div className="notification-channel-picker">
-            <span>Channel type</span>
+            <span>{t('notifications.channel-type-label')}</span>
             <div className="notification-channel-type-grid">
               {setupGuides.map((guide) => {
                 const Icon = guide.icon
@@ -829,7 +852,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                     type="button"
                   >
                     <Icon />
-                    <strong>{guide.title}</strong>
+                    <strong>{t(`notifications.guides.${guide.type}.title`, { defaultValue: guide.title })}</strong>
                   </button>
                 )
               })}
@@ -838,19 +861,21 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           {selectedGuide && selectedGuide.steps.length > 0 && (
             <div className="notification-selected-guide">
               <div>
-                <strong>{selectedGuide.title}</strong>
-                <p>{selectedGuide.description}</p>
+                <strong>{t(`notifications.guides.${selectedGuide.type}.title`, { defaultValue: selectedGuide.title })}</strong>
+                <p>{t(`notifications.guides.${selectedGuide.type}.description`, { defaultValue: selectedGuide.description })}</p>
               </div>
               {selectedGuide.steps.length > 0 && (
                 <div>
                   <ol>
-                    {selectedGuide.steps.map((step) => (
-                      <li key={step}>{step}</li>
+                    {selectedGuide.steps.map((step, index) => (
+                      <li key={step}>
+                        {t(`notifications.guides.${selectedGuide.type}.steps.${index}`, { defaultValue: step })}
+                      </li>
                     ))}
                   </ol>
                   {selectedGuide.guideHref && (
                     <Link href={selectedGuide.guideHref} className="notification-guide-link">
-                      Detailed setup guide
+                      {t('notifications.detailed-setup-guide')}
                     </Link>
                   )}
                 </div>
@@ -860,23 +885,23 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           <InputField
             className={channelType === NOTIFICATION_CHANNEL_TYPES.TWITTER ? 'notification-field-wide' : ''}
             error={formErrors.name}
-            helpText="A short private name for this channel."
+            helpText={t('notifications.channel-name-help')}
             id="name"
-            label="Channel name"
+            label={t('notifications.channel-name')}
             onChange={handleInputChange}
-            placeholder="My alerts"
+            placeholder={t('notifications.channel-name-placeholder')}
             required
             value={formData.name || ''}
           />
           {selectedChannel.fields.map((field) => (
             <InputField
               error={formErrors[field.id]}
-              helpText={field.helpText}
+              helpText={t(`notifications.field-help.${field.id}`, { defaultValue: field.helpText })}
               id={field.id}
               key={field.id}
-              label={field.label}
+              label={t(`notifications.fields.${field.id}`, { defaultValue: field.label })}
               onChange={handleInputChange}
-              placeholder={field.placeholder}
+              placeholder={t(`notifications.field-placeholder.${field.id}`, { defaultValue: field.placeholder })}
               required={field.required}
               type={field.type}
               value={formData[field.id] || ''}
@@ -886,11 +911,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
         {formMessage && <p className="red center">{formMessage}</p>}
         <div className="notification-form-actions">
           <button className="button-action" disabled={savingChannel} type="submit">
-            {savingChannel ? 'Saving...' : editingChannel ? 'Save channel' : 'Add channel'}
+            {savingChannel
+              ? t('common.saving')
+              : editingChannel
+                ? t('notifications.actions.save-channel')
+                : t('notifications.actions.add-channel')}
           </button>
           {(channels.length > 0 || editingChannel) && (
             <button className="button-action thin secondary" onClick={closeChannelForm} type="button">
-              Cancel
+              {t('button.cancel')}
             </button>
           )}
         </div>
@@ -907,7 +936,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       return (
         <div className={fieldClassName} key={field.key}>
           <span>
-            {filterLabel(field)}
+            {filterLabel(field, t)}
             {field.required ? ' *' : ''}
           </span>
           <Select
@@ -922,20 +951,21 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             isSearchable={true}
             onChange={(option) => handleRuleFilterChange(field.key, { value: option?.value || '' })}
             options={balanceHistoryAddressOptions}
-            placeholder={loadingNotificationPrerequisites ? 'Loading addresses...' : 'Choose address'}
+            placeholder={loadingNotificationPrerequisites ? t('notifications.loading-addresses') : t('notifications.choose-address')}
             value={selectedOption}
           />
           {notificationPrerequisitesLoaded && !hasActiveProSubscription && (
             <small>
-              Balance change alerts require an active{' '}
-              <Link href="/admin/subscriptions?tab=pro">Bithomp Pro subscription</Link>.
+              {t('notifications.pro-required-before')}{' '}
+              <Link href="/admin/subscriptions?tab=pro">Bithomp Pro</Link>.
             </small>
           )}
           {notificationPrerequisitesLoaded &&
             hasActiveProSubscription &&
             balanceHistoryAddressOptions.length === 0 && (
             <small>
-              Connect an address and enable balance history in <Link href="/admin/pro">My addresses</Link> first.
+              {t('notifications.enable-history-before')}{' '}
+              <Link href="/admin/pro">{t('tabs.my-addresses')}</Link> {t('notifications.enable-history-after')}.
             </small>
           )}
           {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
@@ -948,15 +978,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
         <div className={`${fieldClassName} notification-address-field`} key={field.key}>
           <AddressInput
             hideButton={true}
-            placeholder="Enter address or username"
+            placeholder={t('notifications.enter-address-username')}
             rawData={{ address: filter.value || '' }}
             setInnerValue={(value) => handleRuleFilterChange(field.key, { value })}
             setValue={(value) => handleRuleFilterChange(field.key, { value })}
-            title={`${filterLabel(field)}${field.required ? ' *' : ''}`}
+            title={`${filterLabel(field, t)}${field.required ? ' *' : ''}`}
             type="address"
           />
-          {field.required && <small>Required for this rule.</small>}
-          {field.helpText && <small>{field.helpText}</small>}
+          {field.required && <small>{t('notifications.required-for-rule')}</small>}
+          {field.helpText && <small>{t(`notifications.field-help.${field.key}`, { defaultValue: field.helpText })}</small>}
           {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
         </div>
       )
@@ -964,12 +994,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
     if (field.type === 'number') {
       const selectedOperator =
-        NOTIFICATION_NUMBER_OPERATOR_OPTIONS.find((option) => option.value === (filter.operator || '$gte')) ||
-        NOTIFICATION_NUMBER_OPERATOR_OPTIONS[0]
+        numberOperatorOptions.find((option) => option.value === (filter.operator || '$gte')) || numberOperatorOptions[0]
       return (
         <div className={fieldClassName} key={field.key}>
           <span>
-            {filterLabel(field)}
+            {filterLabel(field, t)}
             {field.required ? ' *' : ''}
           </span>
           <div className={`notification-filter-number${field.exactOnly ? ' exact' : ''}`}>
@@ -980,7 +1009,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 instanceId={`notification-rule-${field.key}-operator`}
                 isSearchable={false}
                 onChange={(option) => handleRuleFilterChange(field.key, { operator: option?.value || '$gte' })}
-                options={NOTIFICATION_NUMBER_OPERATOR_OPTIONS}
+                options={numberOperatorOptions}
                 value={selectedOperator}
               />
             )}
@@ -994,7 +1023,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
               value={filter.value || ''}
             />
           </div>
-          {field.helpText && <small>{field.helpText}</small>}
+          {field.helpText && <small>{t(`notifications.field-help.${field.key}`, { defaultValue: field.helpText })}</small>}
           {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
         </div>
       )
@@ -1002,15 +1031,14 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
     if (field.type === 'txType') {
       const selectedOperator =
-        NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS.find((option) => option.value === (filter.operator || '$eq')) ||
-        NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS[0]
+        txTypeOperatorOptions.find((option) => option.value === (filter.operator || '$eq')) || txTypeOperatorOptions[0]
       const isMulti = selectedOperator.value === '$in' || selectedOperator.value === '$nin'
       const selectedTxType = notificationTxTypeOptions.find((option) => option.value === filter.value) || null
       const selectedTxTypes = notificationTxTypeOptions.filter((option) => filter.values?.includes(option.value))
 
       return (
         <div className={fieldClassName} key={field.key}>
-          <span>{filterLabel(field)}</span>
+          <span>{filterLabel(field, t)}</span>
           <div className="notification-filter-tx-type">
             <Select
               className="simple-select"
@@ -1024,7 +1052,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                   values: []
                 })
               }
-              options={NOTIFICATION_TX_TYPE_OPERATOR_OPTIONS}
+              options={txTypeOperatorOptions}
               value={selectedOperator}
             />
             <Select
@@ -1045,7 +1073,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 }
               }}
               options={notificationTxTypeOptions}
-              placeholder={isMulti ? 'Choose transaction types' : 'Any transaction type'}
+              placeholder={isMulti ? t('notifications.choose-tx-types') : t('notifications.any-tx-type')}
               value={isMulti ? selectedTxTypes : selectedTxType}
             />
           </div>
@@ -1058,14 +1086,14 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       return (
         <div className={`${fieldClassName} notification-token-field`} key={field.key}>
           <span>
-            {filterLabel(field)}
+            {filterLabel(field, t)}
             {field.required ? ' *' : ''}
           </span>
           <TokenSelector
             value={filter.value || {}}
             onChange={(value) => handleRuleFilterChange(field.key, { value })}
           />
-          <small>Choose {nativeCurrency} or an issued token.</small>
+          <small>{t('notifications.choose-token', { nativeCurrency })}</small>
         </div>
       )
     }
@@ -1076,7 +1104,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       return (
         <div className="notification-field notification-address-field" key={field.key}>
           <span>
-            {filterLabel(field)}
+            {filterLabel(field, t)}
             {field.required ? ' *' : ''}
           </span>
           <Select
@@ -1096,11 +1124,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           {(filter.mode || 'any') === 'specific' && (
             <AddressInput
               hideButton={true}
-              placeholder="Enter destination address or username"
+              placeholder={t('notifications.enter-destination')}
               rawData={{ address: filter.value || '' }}
               setInnerValue={(value) => handleRuleFilterChange(field.key, { value })}
               setValue={(value) => handleRuleFilterChange(field.key, { value })}
-              title="Destination address"
+              title={t('notifications.destination-address')}
               type="address"
             />
           )}
@@ -1114,7 +1142,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       return (
         <label className="notification-field" key={field.key}>
           <span>
-            {filterLabel(field)}
+            {filterLabel(field, t)}
             {field.required ? ' *' : ''}
           </span>
           <Select
@@ -1133,18 +1161,18 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     return (
       <label className={fieldClassName} key={field.key}>
         <span>
-          {filterLabel(field)}
+          {filterLabel(field, t)}
           {field.required ? ' *' : ''}
         </span>
         <input
           className="input-text"
           name={field.key}
           onChange={(event) => handleRuleFilterChange(field.key, { value: event.target.value })}
-          placeholder={field.placeholder?.replace('{nativeCurrency}', nativeCurrency) || filterLabel(field)}
+          placeholder={field.placeholder?.replace('{nativeCurrency}', nativeCurrency) || filterLabel(field, t)}
           type="text"
           value={filter.value || ''}
         />
-        {field.helpText && <small>{field.helpText}</small>}
+        {field.helpText && <small>{t(`notifications.field-help.${field.key}`, { defaultValue: field.helpText })}</small>}
         {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
       </label>
     )
@@ -1156,11 +1184,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
     if (!editingRule && ruleLimitReached) {
       return (
         <div className="notification-limit-notice">
-          <strong>Rule limit reached.</strong>
+          <strong>{t('notifications.rule-limit-reached')}</strong>
           <span>
-            {alertPlanLimitText(alertPlan)}{' '}
+            {alertPlanLimitText(alertPlan, t)}{' '}
             {canShowAlertPlanUpgrade && (
-              <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more rules.</Link>
+              <Link href={notificationsSubscriptionHref}>{t('notifications.upgrade-add-rules')}</Link>
             )}
           </span>
         </div>
@@ -1173,16 +1201,20 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       <form className="notification-form" onSubmit={handleSaveRule}>
         <div className="notification-form-grid">
           <div className="notification-rule-requirement">
-            <strong>{alertPlan.label} alerts plan</strong>
+            <strong>
+              {t('notifications.alerts-plan', {
+                plan: t(`plans.${alertPlan.tier}`, { defaultValue: alertPlan.label })
+              })}
+            </strong>
             <span>
-              {alertPlanLimitText(alertPlan)}{' '}
+              {alertPlanLimitText(alertPlan, t)}{' '}
               {canShowAlertPlanUpgrade && (
-                <Link href={notificationsSubscriptionHref}>Upgrade for more alert channels and rules.</Link>
+                <Link href={notificationsSubscriptionHref}>{t('notifications.upgrade-more')}</Link>
               )}
             </span>
           </div>
           <div className="notification-rule-event-picker">
-            <span>Event</span>
+            <span>{t('notifications.event')}</span>
             <div className="notification-rule-event-grid">
               {notificationEventOptions.map((option) => {
                 const active = option.value === ruleFormData.event
@@ -1221,7 +1253,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             {ruleFormErrors.event && <strong>{ruleFormErrors.event}</strong>}
           </div>
           <label className="notification-field">
-            <span>Channel</span>
+            <span>{t('notifications.channel')}</span>
             <Select
               className="simple-select"
               classNamePrefix="react-select"
@@ -1233,31 +1265,31 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 setRuleFormMessage('')
               }}
               options={ruleChannelOptions}
-              placeholder="Choose channel"
+              placeholder={t('notifications.choose-channel')}
               value={selectedRuleChannelOption}
             />
             <small>
               {isBalanceChangeEvent(ruleFormData.event)
-                ? 'Balance change alerts are sent by Email.'
-                : 'Email channels are only available for balance change alerts.'}
+                ? t('notifications.balance-email-note')
+                : t('notifications.email-balance-note')}
             </small>
             {ruleFormErrors.connectionId && <strong>{ruleFormErrors.connectionId}</strong>}
           </label>
           <InputField
             error={ruleFormErrors.name}
-            helpText="A short name shown only in your notification settings."
+            helpText={t('notifications.rule-name-help')}
             id="name"
-            label="Rule name"
+            label={t('notifications.rule-name')}
             onChange={handleRuleInputChange}
-            placeholder="High-value NFT sales"
+            placeholder={t('notifications.rule-name-placeholder')}
             required
             value={ruleFormData.name}
           />
           {ruleFilterFields.length > 0 && (
             <div className="notification-rule-filter-panel">
               <div className="notification-rule-filter-header">
-                <strong>Filters</strong>
-                <span>Leave optional fields empty to match any value.</span>
+                <strong>{t('notifications.filters-title')}</strong>
+                <span>{t('notifications.filters-help')}</span>
               </div>
               <div className="notification-rule-filter-grid">
                 {ruleFilterFields.map((field) => renderRuleFilterField(field))}
@@ -1265,7 +1297,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             </div>
           )}
           <label className="notification-field">
-            <span>Fiat currency</span>
+            <span>{t('notifications.fiat-currency')}</span>
             <Select
               className="simple-select"
               classNamePrefix="react-select"
@@ -1276,66 +1308,74 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 setRuleFormMessage('')
               }}
               options={NOTIFICATION_FIAT_CURRENCY_OPTIONS}
-              placeholder="Choose currency"
+              placeholder={t('notifications.choose-currency')}
               value={selectedFiatCurrencyOption}
             />
-            <small>Used for fiat values in notification text.</small>
+            <small>{t('notifications.fiat-help')}</small>
           </label>
           <div className="notification-toggle-card">
             <button
-              aria-label="Toggle rule enabled"
+              aria-label={t('notifications.toggle-rule-enabled')}
               aria-pressed={formEnabledBoolean(ruleFormData.enabled)}
               className={`notification-toggle-control${formEnabledBoolean(ruleFormData.enabled) ? ' active' : ''}`}
               onClick={() => handleRuleBooleanToggle('enabled')}
               type="button"
             />
             <span className="notification-toggle-copy">
-              <strong>Enabled</strong>
-              <small>Start sending matching alerts as soon as this rule is saved.</small>
+              <strong>{t('status.enabled')}</strong>
+              <small>{t('notifications.enabled-help')}</small>
             </span>
           </div>
           {notificationEventSupports(ruleFormData.event, 'externalUrl') && (
             <div className="notification-toggle-card">
               <button
-                aria-label="Toggle external NFT links"
+                aria-label={t('notifications.toggle-external-links')}
                 aria-pressed={!!ruleFormData.externalUrl}
                 className={`notification-toggle-control${ruleFormData.externalUrl ? ' active' : ''}`}
                 onClick={() => handleRuleBooleanToggle('externalUrl')}
                 type="button"
               />
               <span className="notification-toggle-copy">
-                <strong>Include external NFT links</strong>
-                <small>Add marketplace or media links when the event payload includes them.</small>
+                <strong>{t('notifications.include-external-links')}</strong>
+                <small>{t('notifications.external-links-help')}</small>
               </span>
             </div>
           )}
           {notificationEventSupports(ruleFormData.event, 'xrpCafeURL') && (
             <div className="notification-toggle-card">
               <button
-                aria-label="Toggle XRP Cafe link"
+                aria-label={t('notifications.toggle-xrp-cafe')}
                 aria-pressed={!!ruleFormData.xrpCafeURL}
                 className={`notification-toggle-control${ruleFormData.xrpCafeURL ? ' active' : ''}`}
                 onClick={() => handleRuleBooleanToggle('xrpCafeURL')}
                 type="button"
               />
               <span className="notification-toggle-copy">
-                <strong>Include XRP Cafe link</strong>
-                <small>Add an XRP Cafe URL for NFT alerts.</small>
+                <strong>{t('notifications.include-xrp-cafe')}</strong>
+                <small>{t('notifications.xrp-cafe-help')}</small>
               </span>
             </div>
           )}
           <div className="notification-rule-summary">
-            <strong>{ruleFormData.name || 'New notification rule'}</strong>
-            <span>{getNotificationEventDescription(ruleFormData.event)}</span>
+            <strong>{ruleFormData.name || t('notifications.new-rule')}</strong>
+            <span>
+              {t(`notifications.events.${ruleFormData.event}.description`, {
+                defaultValue: getNotificationEventDescription(ruleFormData.event)
+              })}
+            </span>
           </div>
         </div>
         {ruleFormMessage && <p className="red center">{ruleFormMessage}</p>}
         <div className="notification-form-actions">
           <button className="button-action" disabled={savingRule} type="submit">
-            {savingRule ? 'Saving...' : editingRule ? 'Save rule' : 'Add rule'}
+            {savingRule
+              ? t('common.saving')
+              : editingRule
+                ? t('notifications.actions.save-rule')
+                : t('notifications.actions.add-rule')}
           </button>
           <button className="button-action thin secondary" onClick={closeRuleForm} type="button">
-            Cancel
+            {t('button.cancel')}
           </button>
         </div>
       </form>
@@ -1349,15 +1389,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           <div className="notification-executions-empty-icon" aria-hidden="true">
             <span className="loader" />
           </div>
-          <h3>No executions yet</h3>
-          <p>Checking recent delivery attempts for this rule.</p>
+          <h3>{t('notifications.executions.none-title')}</h3>
+          <p>{t('notifications.executions.loading-text')}</p>
           <div className="notification-executions-stats">
             <span>
-              <small>Total</small>
+              <small>{t('table.total')}</small>
               <strong>0</strong>
             </span>
             <span>
-              <small>Loaded</small>
+              <small>{t('notifications.executions.loaded')}</small>
               <strong>0</strong>
             </span>
           </div>
@@ -1380,15 +1420,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           <div className="notification-executions-empty-icon" aria-hidden="true">
             <MdHistory />
           </div>
-          <h3>No executions yet</h3>
-          <p>This rule has not matched any events yet, so no notifications have been sent.</p>
+          <h3>{t('notifications.executions.none-title')}</h3>
+          <p>{t('notifications.executions.none-text')}</p>
           <div className="notification-executions-stats">
             <span>
-              <small>Total</small>
+              <small>{t('table.total')}</small>
               <strong>{total}</strong>
             </span>
             <span>
-              <small>Loaded</small>
+              <small>{t('notifications.executions.loaded')}</small>
               <strong>{count}</strong>
             </span>
           </div>
@@ -1400,11 +1440,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       <div className="notification-executions">
         <div className="notification-executions-stats">
           <span>
-            <small>Total</small>
+            <small>{t('table.total')}</small>
             <strong>{total}</strong>
           </span>
           <span>
-            <small>Loaded</small>
+            <small>{t('notifications.executions.loaded')}</small>
             <strong>{count}</strong>
           </span>
         </div>
@@ -1412,7 +1452,9 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           {executions.map((execution, index) => (
             <article className="notification-execution-item" key={execution.id || execution.createdAt || index}>
               <div className="notification-execution-item-header">
-                <strong>{execution.status || execution.result || `Execution #${execution.id || index + 1}`}</strong>
+                <strong>
+                  {execution.status || execution.result || t('notifications.executions.number', { id: execution.id || index + 1 })}
+                </strong>
                 {(execution.createdAt || execution.created_at) && <span>{execution.createdAt || execution.created_at}</span>}
               </div>
               <pre className="notification-executions-json">{JSON.stringify(execution, null, 2)}</pre>
@@ -1432,11 +1474,9 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
         <>
           <section className="notification-hero">
             <div>
-              <p className="notification-eyebrow">{explorerName} alerts</p>
-              <h2>Alerts</h2>
-              <p>
-                Connect Slack, Discord, Email, or X/Twitter, then create rules for the events your team wants to see.
-              </p>
+              <p className="notification-eyebrow">{t('notifications.eyebrow', { explorerName })}</p>
+              <h2>{t('tabs.alerts')}</h2>
+              <p>{t('notifications.hero-text')}</p>
             </div>
             <div className="notification-hero-visual" aria-hidden="true">
               <MdWebhook />
@@ -1445,36 +1485,33 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             </div>
           </section>
 
-          {isLoading && <p className="center">Loading alerts...</p>}
+          {isLoading && <p className="center">{t('notifications.loading-alerts')}</p>}
 
           {partnerMissing && (
             <section className="notification-setup-card">
               <div>
-                <h2>Finish alerts setup</h2>
-                <p>
-                  Alerts need an admin profile before channels can be saved. This name is private and helps us attach
-                  alert settings to your account.
-                </p>
+                <h2>{t('notifications.finish-setup')}</h2>
+                <p>{t('notifications.finish-setup-text')}</p>
               </div>
               <form onSubmit={handleCreateProfile}>
                 <InputField
                   id="partnerName"
-                  label="Profile name"
+                  label={t('notifications.profile-name')}
                   onChange={(event) => {
                     setPartnerName(event.target.value)
                     setProfileMessage('')
                   }}
-                  placeholder="Company or account name"
+                  placeholder={t('notifications.profile-name-placeholder')}
                   required
                   value={partnerName}
                 />
                 <label className="notification-field">
-                  <span>Country</span>
+                  <span>{t('table.country')}</span>
                   <CountrySelect countryCode={partnerCountry} setCountryCode={setPartnerCountry} type="onlySelect" />
                 </label>
                 {profileMessage && <p className="red center">{profileMessage}</p>}
                 <button className="button-action" disabled={createProfile.isLoading} type="submit">
-                  {createProfile.isLoading ? 'Saving...' : 'Finish setup'}
+                  {createProfile.isLoading ? t('common.saving') : t('notifications.finish-setup')}
                 </button>
               </form>
             </section>
@@ -1482,15 +1519,15 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
           {tokenRequired && (
             <section className="notification-status warning">
-              <strong>Session expired.</strong>
-              <span>Please sign in again to manage alerts.</span>
+              <strong>{t('notifications.session-expired')}</strong>
+              <span>{t('notifications.sign-in-again')}</span>
             </section>
           )}
 
           {notificationDataUnavailable && !partnerMissing && !tokenRequired && (
             <section className="notification-status warning">
-              <strong>Could not load saved alerts.</strong>
-              <span>{errorText(error, 'Please try again later.')}</span>
+              <strong>{t('notifications.load-failed')}</strong>
+              <span>{errorText(error, t('common.try-again-later'), t)}</span>
             </section>
           )}
 
@@ -1499,19 +1536,19 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
               <section className="admin-notification-section">
                 <div className="admin-notification-section-header">
                   <div>
-                    <h2>Alert channels</h2>
-                    <p>Saved destinations for alerts.</p>
+                    <h2>{t('notifications.channels.title')}</h2>
+                    <p>{t('notifications.channels.subtitle')}</p>
                   </div>
                   {channels.length > 0 &&
                     !showChannelForm &&
                     (channelLimitReached ? (
                       canShowAlertPlanUpgrade ? (
                         <Link href={notificationsSubscriptionHref} className="button-action thin">
-                          Upgrade plan
+                          {t('notifications.upgrade-plan')}
                         </Link>
                       ) : (
                         <button className="button-action thin" disabled type="button">
-                          Limit reached
+                          {t('notifications.limit-reached')}
                         </button>
                       )
                     ) : (
@@ -1521,11 +1558,11 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
                 {channels.length > 0 && channelLimitReached && !showChannelForm && (
                   <div className="notification-limit-notice">
-                    <strong>Channel limit reached.</strong>
+                    <strong>{t('notifications.channel-limit-reached')}</strong>
                     <span>
-                      {alertPlanLimitText(alertPlan)}{' '}
+                      {alertPlanLimitText(alertPlan, t)}{' '}
                       {canShowAlertPlanUpgrade && (
-                        <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more channels.</Link>
+                        <Link href={notificationsSubscriptionHref}>{t('notifications.upgrade-add-channels')}</Link>
                       )}
                     </span>
                   </div>
@@ -1553,33 +1590,33 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 <section className="admin-notification-section">
                   <div className="admin-notification-section-header">
                     <div>
-                      <h2>Alert rules</h2>
-                      <p>Rules listen for events and send matching alerts to a channel.</p>
+                      <h2>{t('notifications.rules.title')}</h2>
+                      <p>{t('notifications.rules.subtitle')}</p>
                     </div>
                     {ruleLimitReached && !editingRule ? (
                       canShowAlertPlanUpgrade ? (
                         <Link href={notificationsSubscriptionHref} className="button-action thin">
-                          Upgrade plan
+                          {t('notifications.upgrade-plan')}
                         </Link>
                       ) : (
                         <button className="button-action thin" disabled type="button">
-                          Limit reached
+                          {t('notifications.limit-reached')}
                         </button>
                       )
                     ) : (
                       <button className="button-action thin" onClick={openAddRule} type="button">
-                        Add rule
+                        {t('notifications.actions.add-rule')}
                       </button>
                     )}
                   </div>
 
                   {ruleLimitReached && !showRuleForm && !editingRule && (
                     <div className="notification-limit-notice">
-                      <strong>Rule limit reached.</strong>
+                      <strong>{t('notifications.rule-limit-reached')}</strong>
                       <span>
-                        {alertPlanLimitText(alertPlan)}{' '}
+                        {alertPlanLimitText(alertPlan, t)}{' '}
                         {canShowAlertPlanUpgrade && (
-                          <Link href={notificationsSubscriptionHref}>Choose a paid alerts plan to add more rules.</Link>
+                          <Link href={notificationsSubscriptionHref}>{t('notifications.upgrade-add-rules')}</Link>
                         )}
                       </span>
                     </div>
@@ -1589,8 +1626,8 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
 
                   {rules.length === 0 ? (
                     <div className="notification-empty-state">
-                      <h2>No alert rules yet</h2>
-                      <p>Add a rule for one of your channels.</p>
+                      <h2>{t('notifications.no-rules-title')}</h2>
+                      <p>{t('notifications.no-rules-text')}</p>
                     </div>
                   ) : (
                     <div className="notification-rule-list">
@@ -1618,7 +1655,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             isOpen={!!channelToDelete}
             onClose={() => setChannelToDelete(null)}
             size="small"
-            title="Delete channel"
+            title={t('notifications.delete-channel')}
           >
             <div className="notification-delete-confirm">
               <div className="notification-delete-confirm-icon" aria-hidden="true">
@@ -1626,24 +1663,24 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
               </div>
               <div>
                 <p className="notification-delete-confirm-text">
-                  Delete <strong>{channelToDelete?.name || getNotificationChannelLabel(channelToDelete?.type)}</strong>?
+                  {t('notifications.delete-question')}{' '}
+                  <strong>{channelToDelete?.name || notificationChannelLabel(channelToDelete?.type, t)}</strong>?
                 </p>
-                <p className="notification-delete-confirm-note">
-                  This saved destination will be removed from your account. Delete or move its rules before deleting the
-                  channel.
-                </p>
+                <p className="notification-delete-confirm-note">{t('notifications.delete-channel-note')}</p>
                 <div className="notification-delete-confirm-target">
-                  <span className="notification-delete-confirm-label">Channel</span>
+                  <span className="notification-delete-confirm-label">{t('notifications.channel')}</span>
                   <strong className="notification-delete-confirm-name">
-                    {channelToDelete?.name || getNotificationChannelLabel(channelToDelete?.type)}
+                    {channelToDelete?.name || notificationChannelLabel(channelToDelete?.type, t)}
                   </strong>
                 </div>
               </div>
             </div>
-            {deleteChannel.error && <p className="red">{errorText(deleteChannel.error, 'Could not delete channel.')}</p>}
+            {deleteChannel.error && (
+              <p className="red">{errorText(deleteChannel.error, t('notifications.errors.delete-channel-failed'), t)}</p>
+            )}
             <div className="notification-dialog-actions notification-dialog-actions-end">
               <button className="button-action thin secondary" onClick={() => setChannelToDelete(null)} type="button">
-                Cancel
+                {t('button.cancel')}
               </button>
               <button
                 className="button-action thin warning"
@@ -1651,7 +1688,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 onClick={handleDeleteChannel}
                 type="button"
               >
-                {deleteChannel.isLoading ? 'Deleting...' : 'Delete'}
+                {deleteChannel.isLoading ? t('common.deleting') : t('button.delete')}
               </button>
             </div>
           </Dialog>
@@ -1660,7 +1697,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             isOpen={!!ruleToDelete}
             onClose={() => setRuleToDelete(null)}
             size="small"
-            title="Delete rule"
+            title={t('notifications.delete-rule')}
           >
             <div className="notification-delete-confirm">
               <div className="notification-delete-confirm-icon" aria-hidden="true">
@@ -1668,21 +1705,21 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
               </div>
               <div>
                 <p className="notification-delete-confirm-text">
-                  Delete <strong>{ruleToDelete?.name || `Rule #${ruleToDelete?.id}`}</strong>?
+                  {t('notifications.delete-question')} <strong>{ruleToDelete?.name || t('notifications.rule-number', { id: ruleToDelete?.id })}</strong>?
                 </p>
-                <p className="notification-delete-confirm-note">
-                  This listener rule will be removed. Matching events will no longer send this notification.
-                </p>
+                <p className="notification-delete-confirm-note">{t('notifications.delete-rule-note')}</p>
                 <div className="notification-delete-confirm-target">
-                  <span className="notification-delete-confirm-label">Rule</span>
-                  <strong className="notification-delete-confirm-name">{ruleToDelete?.name || `Rule #${ruleToDelete?.id}`}</strong>
+                  <span className="notification-delete-confirm-label">{t('notifications.rule')}</span>
+                  <strong className="notification-delete-confirm-name">
+                    {ruleToDelete?.name || t('notifications.rule-number', { id: ruleToDelete?.id })}
+                  </strong>
                 </div>
               </div>
             </div>
             {deleteRule.error && <p className="red">{deleteRule.error?.response?.data?.error || deleteRule.error?.message}</p>}
             <div className="notification-dialog-actions notification-dialog-actions-end">
               <button className="button-action thin secondary" onClick={() => setRuleToDelete(null)} type="button">
-                Cancel
+                {t('button.cancel')}
               </button>
               <button
                 className="button-action thin warning"
@@ -1690,7 +1727,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
                 onClick={handleDeleteRule}
                 type="button"
               >
-                {deleteRule.isLoading ? 'Deleting...' : 'Delete'}
+                {deleteRule.isLoading ? t('common.deleting') : t('button.delete')}
               </button>
             </div>
           </Dialog>
@@ -1699,7 +1736,7 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
             isOpen={!!executionsRule}
             onClose={() => setExecutionsRule(null)}
             size="large"
-            title={`Executions: ${executionsRule?.name || executionsRule?.event || ''}`}
+            title={t('notifications.executions.title', { name: executionsRule?.name || executionsRule?.event || '' })}
           >
             <div className="notification-executions-dialog">{renderExecutionsDialogContent()}</div>
           </Dialog>
@@ -1709,13 +1746,13 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
           <br />
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto' }}>
-              <p>Set up custom alert rules for {explorerName} events.</p>
-              <p>Get notified via Slack, Discord, Email and more.</p>
+              <p>{t('notifications.guest.rules', { explorerName })}</p>
+              <p>{t('notifications.guest.channels')}</p>
             </div>
             <br />
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
-                Register or Sign In
+                {t('button.register-sign-in')}
               </button>
             </center>
           </div>

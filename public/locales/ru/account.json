@@ -169,7 +169,7 @@
       "transaction-id-tracking": "Отслеживание ID транзакций",
       "global-freeze": "Глобальная заморозка",
       "authorized-minter": "Авторизованный minter",
-      "trustline-clawback": "Clawback trustline",
+      "trustline-clawback": "Trustline Clawback",
       "specified-sell-exactly": "Точно продать",
       "specified-pay-up-to": "Заплатить до",
       "specified-receive-at-least": "Получить минимум",
@@ -445,10 +445,10 @@
     "issuer-settings": {
       "global-freeze": "глобальная заморозка",
       "fee": "комиссия {{fee}}",
-      "rippling": "rippling",
-      "clawback": "clawback",
+      "rippling": "Rippling",
+      "clawback": "Clawback",
       "no-freeze": "без заморозки",
-      "escrow": "escrow",
+      "escrow": "Escrow",
       "not-configured": "не настроено"
     },
     "achievements": {

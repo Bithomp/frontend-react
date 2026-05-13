@@ -1,8 +1,8 @@
 {
   "seo": {
     "mainnet": {
-      "title": "{{explorerSearchName}} Suche — Konten, Transaktionen, Token, NFTs",
-      "description": "Nutze {{explorerSearchAttribution}}, um {{nativeCurrency}} Adressen, Transaktions-Hashes, Benutzernamen, CTIDs, NFTs, Token, AMMs und Ledger-Objekte im {{ledgerName}} zu suchen.",
+      "title": "{{explorerSearchName}} Suche: {{ledgerName}} Konten, Transaktionen, Token und NFTs",
+      "description": "Nutze {{explorerSearchAttribution}}, um Adressen, Transaktions-Hashes, Benutzernamen, CTIDs, NFTs, Token, AMMs und Ledger-Objekte im {{ledgerName}} zu suchen.",
       "heading": "{{explorerSearchName}} Suche"
     },
     "testnet": {

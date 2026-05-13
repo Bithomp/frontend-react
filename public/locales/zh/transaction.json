@@ -41,7 +41,7 @@
     "specifiedFee": "指定花费{{fee}}作为交易费用。",
     "memosThirdParty": {
       "prefix": "备忘录由第三方添加",
-      "suffix": "完成了托管。"
+      "suffix": "完成了Escrow。"
     },
     "affectedAccounts": {
       "prefix": "有",
@@ -127,7 +127,7 @@
     "Credential type": "凭证类型",
     "Data": "数据",
     "Deep frozen": "深度冷冻",
-    "Default ripple": "默认 Rippling",
+    "Default ripple": "Default Ripple",
     "Delay seconds": "延迟秒数",
     "Delegate": "代表",
     "Delegate index": "代表索引",
@@ -142,9 +142,9 @@
     "EPrice": "电子价格",
     "Email hash": "电子邮件哈希",
     "Emit Parent TX": "发出父级 TX",
-    "Escrow amount": "托管金额",
-    "Escrow sequence": "托管序列",
-    "Escrow source": "托管来源",
+    "Escrow amount": "Escrow金额",
+    "Escrow sequence": "Escrow序列",
+    "Escrow source": "Escrow来源",
     "Exchange": "兑换",
     "Exchanges": "兑换",
     "Exchange rate": "汇率",
@@ -254,7 +254,7 @@
     "Subject": "主题",
     "Taker gets": "接受者获得",
     "Taker pays": "接受者付款",
-    "This Escrow was finished by the third party (not by Source or Destination), anyone can finish time-based escrow when the time passed.": "此托管由第三方完成（不是由来源或目的地）。任何人都可以在时间过后完成基于时间的托管。",
+    "This Escrow was finished by the third party (not by Source or Destination), anyone can finish time-based escrow when the time passed.": "此Escrow由第三方完成（不是由来源或目的地）。任何人都可以在时间过后完成基于时间的Escrow。",
     "This Offer does not consume Offers that exactly match it, and instead becomes an Offer object in the ledger. It still consumes Offers that cross it.": "该报价不会消耗与其完全匹配的报价，而是成为账本中的报价对象。它仍然消耗与其交叉的报价。",
     "This offer is an Immediate or Cancel order, meaning it will execute only against existing matching offers in the ledger at the time of submission. It does not create a standing offer. Any portion of the offer that cannot be immediately filled is canceled. If no matches are found, the offer does nothing but still completes successfully.": "此优惠是立即订单或取消订单。它仅针对提交时现有的匹配报价执行，并且不会创建长期报价。",
     "This offer is a Fill or Kill order, meaning it will only execute if it can be fully filled immediately. It does not create a standing offer in the ledger. If the full amount cannot be exchanged at the time of submission, the offer is automatically canceled.": "此报价是“成交或取消”订单。仅当可以立即完全填写并且不创建长期报价时，它才会执行。",
@@ -270,7 +270,7 @@
     "Transfer from": "转自",
     "Transfer to": "转至",
     "Trust to the issuer": "对发行人的信任",
-    "Trustline Clawback": "Trustline 追回",
+    "Trustline Clawback": "Trustline Clawback",
     "Trustline Locking": "Trustline 锁定",
     "TshCollect": "TshCollect",
     "Tx hash": "Tx 哈希值",
@@ -301,7 +301,7 @@
     "ticketSequenceRich": "<bold>票</bold> 序列"
   },
   "tooltips": {
-    "Allow Trustline tokens issued by this account to be held in escrow.": "允许托管此账户发行的 Trustline 代币。",
+    "Allow Trustline tokens issued by this account to be held in escrow.": "允许Escrow此账户发行的 Trustline 代币。",
     "Another account that can mint NFTs for that account.": "另一个可以为该账户铸造 NFT 的账户。",
     "Block incoming Checks.": "阻止传入支票。",
     "Block incoming NFT Offers.": "阻止传入的 NFT 优惠。",

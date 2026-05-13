@@ -1,3 +1,800 @@
 {
-  "header": "管理员"
+  "header": "管理",
+  "tabs": {
+    "profile": "个人资料",
+    "watchlist": "关注列表",
+    "my-addresses": "我的地址",
+    "subscriptions": "订阅",
+    "referrals": "推荐",
+    "alerts": "提醒",
+    "alerts-bot": "提醒机器人",
+    "api": {
+      "information": "信息",
+      "statistics": "统计",
+      "requests": "请求",
+      "charts": "图表"
+    },
+    "pro": {
+      "addresses": "地址",
+      "balance-changes": "余额变化"
+    }
+  },
+  "button": {
+    "activate": "激活",
+    "contact-support": "联系支持",
+    "logout": "退出登录",
+    "register-sign-in": "注册或登录",
+    "save": "保存",
+    "cancel": "取消",
+    "search": "搜索",
+    "remove": "移除",
+    "add": "添加",
+    "view-history": "查看历史",
+    "view": "查看",
+    "enable": "启用",
+    "view-guide": "查看指南",
+    "set-avatar": "设置头像",
+    "verify": "验证",
+    "load-more-data": "加载更多数据",
+    "purchase": "购买",
+    "pay": "支付",
+    "edit": "编辑",
+    "delete": "删除"
+  },
+  "status": {
+    "active": "有效",
+    "expired": "已过期",
+    "locked": "已锁定",
+    "enabled": "已启用",
+    "paused": "已暂停"
+  },
+  "common": {
+    "loading": "加载中...",
+    "loading-data": "正在加载数据...",
+    "no-data": "无数据",
+    "no-data-to-show": "没有可显示的数据",
+    "not-found": "未找到",
+    "never": "从不",
+    "any": "任意",
+    "yes": "是",
+    "no": "否",
+    "none": "无",
+    "unknown": "未知",
+    "on": "开",
+    "off": "关",
+    "saving": "保存中...",
+    "deleting": "删除中...",
+    "try-again-later": "请稍后再试。"
+  },
+  "general": {
+    "loading": "加载中..."
+  },
+  "table": {
+    "status": "状态",
+    "domain": "域名",
+    "description": "描述",
+    "timestamp": "时间戳",
+    "response": "响应",
+    "country": "国家/地区",
+    "count": "数量",
+    "address": "地址",
+    "addresses": "地址",
+    "balance": "余额",
+    "price": "价格",
+    "name": "名称",
+    "created": "创建时间",
+    "updated": "更新时间",
+    "start": "开始",
+    "expire": "到期",
+    "type": "类型",
+    "date-time": "日期 / 时间",
+    "service": "服务",
+    "total": "总计",
+    "amount": "金额",
+    "from": "来自",
+    "destination-tag": "目标标签",
+    "fiat-equivalent": "法币等值",
+    "fiat-equivalent-currency": "法币等值（{{currency}}）",
+    "transaction": "交易",
+    "memo": "备注",
+    "transfer-fee": "转账费用",
+    "network-fee": "网络费用",
+    "balance-change": "余额变化",
+    "ledger-amount": "账本金额",
+    "check": "支票"
+  },
+  "period": {
+    "m1": "1个月",
+    "m3": "3个月",
+    "m6": "6个月",
+    "y1": "1年"
+  },
+  "plans": {
+    "trial": "试用",
+    "free": "免费",
+    "basic": "基础",
+    "standard": "标准",
+    "premium": "高级",
+    "enterprise": "企业",
+    "enterprise2": "企业 2",
+    "enterprise3": "企业 3",
+    "custom": "自定义"
+  },
+  "profile": {
+    "email": "电子邮件",
+    "until": "至",
+    "priority-support-before": "如需优先支持，请在邮件主题中使用",
+    "priority-support-after": "并发送邮件至",
+    "guest": {
+      "profile": "管理你的个人资料和订阅。",
+      "security": "登录后可访问账户工具和私密设置。",
+      "pro": "管理 Pro 订阅和权益。",
+      "history": "启用余额历史和税务导出。",
+      "api": "创建 API 密钥并查看使用情况。",
+      "watchlist": "维护私密地址和 NFT 关注列表。",
+      "avatars": "为已验证地址设置头像。"
+    }
+  },
+  "form": {
+    "error": {
+      "domain-empty": "请输入域名。",
+      "domain-invalid": "请输入有效域名。",
+      "description-empty": "请输入描述。",
+      "description-short": "描述太短。"
+    }
+  },
+  "api": {
+    "token": "令牌",
+    "tier": "套餐",
+    "data-title": "API 数据",
+    "documentation": "文档",
+    "copy-token": "复制令牌",
+    "show-copy-token": "显示并复制令牌",
+    "edit-domain": "编辑域名",
+    "save-domain": "保存域名",
+    "edit-description": "编辑描述",
+    "save-description": "保存描述",
+    "manage-subscription": "管理订阅",
+    "registration": "API 访问注册",
+    "domain-placeholder": "example.com",
+    "description-placeholder": "简短项目描述",
+    "request-key": "申请 API 密钥",
+    "guest": {
+      "keys": "创建并管理 API 密钥。",
+      "stats": "查看 API 使用统计和请求日志。"
+    },
+    "requests": {
+      "seo": "API 请求",
+      "title": "API 请求",
+      "guest": {
+        "logs": "搜索最近的 API 请求日志。",
+        "performance": "检查响应状态和耗时。"
+      }
+    },
+    "statistics": {
+      "seo": "API 统计",
+      "urls-title": "URL 统计",
+      "ips-title": "IP 统计",
+      "guest": {
+        "analytics": "查看端点使用分析。",
+        "patterns": "按 URL 和 IP 查找请求模式。"
+      }
+    },
+    "charts": {
+      "seo": "API 图表",
+      "requests-count": "请求数量",
+      "guest": {
+        "charts": "在图表中跟踪 API 活动。",
+        "metrics": "按时间查看使用指标。"
+      }
+    }
+  },
+  "watchlist": {
+    "limit": "你最多可以向关注列表添加 {{count}} 个项目。",
+    "limit-subscribe-before": "订阅",
+    "last-signed": "最后签名的交易",
+    "last-affecting": "最后影响的交易",
+    "last-signed-tx": "最后签名的交易",
+    "address-title": "地址关注列表",
+    "nft-title": "NFT 关注列表",
+    "entity-title": "地址或 NFT ID",
+    "entity-placeholder": "输入地址或 NFT ID",
+    "private-name": "私密名称",
+    "guest": {
+      "manage": "管理私密地址和 NFT 关注列表。",
+      "track": "在一处跟踪余额、活动和 NFT 报价。"
+    },
+    "errors": {
+      "entity-required": "请输入地址或 NFT ID。",
+      "name-required": "请输入私密名称。",
+      "entity-invalid": "请输入有效地址或 NFT ID。",
+      "already-exists": "此 {{type}} 已在你的关注列表中。"
+    }
+  },
+  "pro": {
+    "verified-addresses": "已验证地址",
+    "features-intro": "已验证地址可解锁这些 Pro 功能：",
+    "features": {
+      "history": "余额历史和税务导出。",
+      "escrows": "自动完成Escrow。",
+      "escrows-note": "当地址有足够储备且Escrow可完成时",
+      "nft-offers": "自动取消 NFT 报价。",
+      "nft-offers-note": "当报价无效或过期时"
+    },
+    "balance-history": "余额历史",
+    "bot-settings": "机器人设置",
+    "no-verified-addresses": "还没有已验证地址。",
+    "activate-analysis-before": "通过以下方式激活余额历史",
+    "purchase-pro-link": "Bithomp Pro",
+    "add-limit": "你已达到当前套餐的地址数量上限。",
+    "verify-first": "验证地址以启用 Pro 工具。",
+    "address-placeholder": "输入地址",
+    "address-name-placeholder": "私密地址名称",
+    "guest": {
+      "verify": "验证你的地址所有权。",
+      "history": "启用余额历史、导出和机器人设置。"
+    },
+    "errors": {
+      "no-email": "验证前请先在资料中添加邮箱。"
+    },
+    "settings": {
+      "auto-escrow": "自动Escrow",
+      "execute-escrows": "自动执行Escrow",
+      "auto-cancel-nft": "自动取消 NFT 报价",
+      "cancel-nft": "自动取消 NFT 报价"
+    },
+    "history": {
+      "seo": "余额历史",
+      "title": "余额历史",
+      "sample-title": "示例数据",
+      "sample-text": "这是示例导出。登录并添加 Pro 地址后可加载你的历史。",
+      "sign-in-pro": "打开我的地址",
+      "sample-unavailable": "示例数据暂不可用。",
+      "order": {
+        "latest": "最新优先",
+        "earliest": "最早优先",
+        "native-low": "{{currency}} 金额从低到高",
+        "native-high": "{{currency}} 金额从高到低",
+        "fiat-low": "法币金额从低到高",
+        "fiat-high": "法币金额从高到低"
+      },
+      "add-wallet": "添加钱包",
+      "period": "周期",
+      "remove-dust": "移除小额余额",
+      "tax-platform": "税务导出平台",
+      "csv-for": "{{platform}} 的 CSV",
+      "koinly-note": "Koinly 会将此文件作为通用钱包 CSV 导入。"
+    }
+  },
+  "billing": {
+    "choose-country": "选择账单国家/地区",
+    "country-is": "账单国家/地区为"
+  },
+  "subscriptions": {
+    "subscription": "订阅",
+    "seo": "订阅",
+    "active-title": "你的有效订阅",
+    "expired-title": "已过期订阅",
+    "payment-details": "付款详情",
+    "activation-note": "付款确认后服务将被激活。",
+    "payment-received": "已收到付款",
+    "service-activating": "{{service}} 正在激活。",
+    "activating": "正在激活服务...",
+    "next-step": "下一步",
+    "alerts-next-step": "打开提醒以创建频道和规则。",
+    "transactions": "交易",
+    "last-payments": "最近付款",
+    "pro": {
+      "why-title": "为什么选择 Bithomp Pro？",
+      "intro": "Bithomp Pro 可解锁更多账户工具并取消多项限制。",
+      "benefits": {
+        "reports-title": "报告",
+        "reports-link": "余额历史",
+        "reports-text": "税务导出和账户活动工具。",
+        "services-title": "服务",
+        "services": {
+          "send": "发送付款",
+          "check": "发行方检查",
+          "escrow": "创建Escrow"
+        },
+        "scroll-title": "更多数据",
+        "scroll-text": "更多行和更深滚动：",
+        "limits-title": "更高限制",
+        "limits-text": "更多项目：",
+        "avatars-title": "头像",
+        "avatars-text": "为已验证地址设置头像：",
+        "ads-title": "无广告",
+        "ads-text": "使用无广告的浏览器。",
+        "support-title": "优先支持",
+        "support-text": "更快获得支持帮助。",
+        "project-title": "支持项目",
+        "project-text": "你的订阅帮助我们持续建设。"
+      },
+      "more-coming": "更多 Pro 功能即将推出。",
+      "subscribe": "选择订阅周期。"
+    },
+    "api": {
+      "check-docs": "查看文档了解 API 限制和价格：",
+      "why-title": "API 访问",
+      "intro": "使用 API 将浏览器数据集成到你的应用或工作流中。",
+      "benefits": {
+        "limits-title": "清晰限制",
+        "limits-text": "选择符合请求量的套餐。",
+        "features-title": "浏览器数据",
+        "features-text": "访问账户、交易、代币、NFT 和网络数据。"
+      },
+      "subscribe": "选择套餐和订阅周期。"
+    },
+    "alerts": {
+      "why-title": "提醒机器人",
+      "intro": "{{explorerName}} 提醒会通知你 NFT 报价、NFT 销售以及已关注账户的余额变化。",
+      "destinations": "通过 e-mail、Slack、Discord 或 X 发送提醒。",
+      "rules-before": "在以下页面创建频道和规则：",
+      "balance-before": "余额变化提醒使用来自以下页面的地址：",
+      "subscribe": "选择提醒套餐和计费周期。",
+      "alerts-day": "提醒 / 天",
+      "alerts-week": "提醒 / 周",
+      "price-month": "{{price}} EUR / 月",
+      "price-year-alt": "{{price}} EUR / 年",
+      "plan-description": {
+        "trial": "用于在选择付费套餐前测试一个提醒目标。",
+        "basic": "适合个人监控和小型提醒配置。",
+        "standard": "适合需要更多频道、规则和提醒量的主动监控。"
+      }
+    }
+  },
+  "referrals": {
+    "title": "推荐计划",
+    "commission": "20% 佣金",
+    "intro-before": "邀请用户并赚取",
+    "intro-after": "来自符合条件的购买。",
+    "earn-when": "被推荐用户购买以下内容时你可获得收益：",
+    "api-access": "API 访问",
+    "paid-before": "奖励会",
+    "instantly": "即时",
+    "paid-as": "作为",
+    "paid-after": "并可领取到你的收款地址。",
+    "how-it-works": "工作方式：",
+    "steps": {
+      "link": "创建你的推荐链接。",
+      "share": "与用户分享。",
+      "earn": "购买完成后获得奖励。"
+    },
+    "no-limit-before": "没有",
+    "no-limit": "数量限制",
+    "no-limit-after": "适用于你可推荐的用户数量。",
+    "links-title": "你的推荐链接",
+    "link": "链接",
+    "payout-address": "收款地址",
+    "payout-address-help": "奖励会发送到此地址。",
+    "save-address": "保存收款地址",
+    "unredeemed_one": "{{count}} 个未领取 Check",
+    "unredeemed_other": "{{count}} 个未领取 Check",
+    "redeem_one": "将 {{count}} 个 Check 领取到",
+    "redeem_other": "将 {{count}} 个 Check 领取到",
+    "payments": "推荐付款",
+    "payments-note": "最近的推荐奖励及其领取状态。",
+    "reward-amount": "奖励金额",
+    "check-expires": "支票到期时间",
+    "no-payments": "还没有推荐付款。",
+    "status": {
+      "issued": "已签发",
+      "redeemed": "已领取",
+      "expired": "已过期",
+      "pending": "待处理",
+      "not-eligible": "不符合条件",
+      "not-issued": "未签发",
+      "cashed": "已领取",
+      "canceled": "已取消",
+      "failed": "失败"
+    },
+    "any": "任意",
+    "how-summary": "简要说明",
+    "code-works-before": "你的推荐代码可用于",
+    "code-works-on": "{{siteName}} 上的页面，并带有",
+    "code-works-after": "参数。",
+    "browser-save-before": "浏览器会保存推荐来源",
+    "browser-save-bold": "30 天",
+    "browser-save-after": "购买可稍后在同一浏览器中完成。",
+    "your-links-before": "你的链接：",
+    "example": "示例",
+    "no-code": "你还没有推荐代码。",
+    "requirements-title": "要求",
+    "requirements-summary": "付款前",
+    "requirements-text": "领取奖励前请添加收款地址。奖励仅适用于符合条件的付费购买。",
+    "edit-address": "编辑收款地址",
+    "address-placeholder": "输入 {{ledgerName}} 地址",
+    "request-code": "申请推荐代码",
+    "unredeemed": "{{count}} 个未领取 Check",
+    "redeem": "将 {{count}} 个 Check 领取到",
+    "errors": {
+      "address-required": "请输入收款地址。",
+      "address-invalid": "请输入有效的收款地址。"
+    }
+  },
+  "notifications": {
+    "eyebrow": "{{explorerName}} 提醒",
+    "hero-text": "为账户和 NFT 提醒创建频道和规则。",
+    "loading-alerts": "正在加载提醒...",
+    "finish-setup": "完成设置",
+    "finish-setup-text": "创建通知频道前请先添加资料信息。",
+    "profile-name": "资料名称",
+    "profile-name-placeholder": "公司或项目名称",
+    "session-expired": "会话已过期",
+    "sign-in-again": "请重新登录。",
+    "load-failed": "无法加载提醒。",
+    "upgrade-plan": "升级套餐",
+    "limit-reached": "已达到限制",
+    "channel-limit-reached": "已达到频道限制。",
+    "rule-limit-reached": "已达到规则限制。",
+    "upgrade-add-channels": "升级以添加更多频道。",
+    "upgrade-add-rules": "升级以添加更多规则。",
+    "upgrade-more": "升级以获得更高限制。",
+    "plan-limit": "{{plan}} 套餐：{{channels}} 个频道和 {{rules}} 条规则。",
+    "alerts-plan": "{{plan}} 提醒套餐",
+    "channel-type": {
+      "email": "e-mail",
+      "slack_webhook": "Slack",
+      "discord_webhook": "Discord",
+      "twitter_api": "X / Twitter"
+    },
+    "detailed-setup-guide": "详细设置指南",
+    "channel-name": "频道名称",
+    "channel-name-help": "用于识别此频道的私密名称。",
+    "channel-name-placeholder": "主 Slack 频道",
+    "channel-number": "频道 #{{id}}",
+    "rule-number": "规则 #{{id}}",
+    "default-rule-name": "规则 #{{index}}",
+    "rules-connected_one": "已连接 {{count}} 条规则",
+    "rules-connected_other": "已连接 {{count}} 条规则",
+    "event": "事件",
+    "channel": "频道",
+    "rule": "规则",
+    "fiat": "法币",
+    "fiat-currency": "法币货币",
+    "choose-currency": "选择货币",
+    "fiat-help": "用于此规则中的法币价格筛选。",
+    "choose-channel": "选择频道",
+    "balance-email-note": "余额变化提醒只能通过 e-mail 发送。",
+    "email-balance-note": "Email 频道仅用于余额变化提醒。",
+    "rule-name": "规则名称",
+    "rule-name-help": "此规则的私密名称。",
+    "rule-name-placeholder": "高价值 NFT 销售",
+    "filters-title": "筛选器",
+    "filters-help": "添加筛选条件以缩小规则触发范围。",
+    "toggle-rule-enabled": "切换规则启用状态",
+    "enabled-help": "暂停此规则而不删除。",
+    "toggle-external-links": "切换外部链接",
+    "include-external-links": "包含外部链接",
+    "external-links-help": "可用时添加市场或浏览器链接。",
+    "toggle-xrp-cafe": "切换 xrp.cafe 链接",
+    "include-xrp-cafe": "包含 xrp.cafe 链接",
+    "xrp-cafe-help": "为支持的 NFT 提醒添加 xrp.cafe 链接。",
+    "new-rule": "新规则",
+    "no-rules-title": "还没有规则",
+    "no-rules-text": "创建规则以开始发送提醒。",
+    "delete-channel": "删除频道",
+    "delete-rule": "删除规则",
+    "delete-question": "删除",
+    "delete-channel-note": "必须先移除此频道关联的规则。",
+    "delete-rule-note": "此操作无法撤销。",
+    "open-alerts": "打开提醒",
+    "pro-required-before": "此筛选器需要",
+    "enable-history-before": "启用余额历史：",
+    "enable-history-after": "然后才能使用此筛选器",
+    "loading-addresses": "正在加载地址...",
+    "choose-address": "选择地址",
+    "enter-address-username": "输入地址或用户名",
+    "required-for-rule": "此规则必填。",
+    "choose-tx-types": "选择交易类型",
+    "any-tx-type": "任意交易类型",
+    "choose-token": "选择 {{nativeCurrency}} 或已发行代币。",
+    "enter-destination": "输入目标地址",
+    "destination-address": "目标地址",
+    "every-matching-event": "每个匹配事件",
+    "external-links": "外部链接",
+    "email-balance-only": "NFT 提醒请使用 Slack、Discord 或 X。",
+    "balance-email-only": "余额变化提醒请使用 e-mail。",
+    "field-required": "{{field}} 为必填项。",
+    "limit": {
+      "channels": "{{count}} 个频道",
+      "channels_one": "{{count}} 个频道",
+      "channels_other": "{{count}} 个频道",
+      "rules": "{{count}} 条规则",
+      "rules_one": "{{count}} 条规则",
+      "rules_other": "{{count}} 条规则"
+    },
+    "channels": {
+      "title": "频道",
+      "subtitle": "提醒发送到的位置。"
+    },
+    "rules": {
+      "title": "规则",
+      "subtitle": "提醒发送的条件。"
+    },
+    "actions": {
+      "add-channel": "添加频道",
+      "save-channel": "保存频道",
+      "edit-channel": "编辑频道",
+      "delete-channel": "删除频道",
+      "add-rule": "添加规则",
+      "save-rule": "保存规则",
+      "edit-rule": "编辑规则",
+      "delete-rule": "删除规则",
+      "show-executions": "显示执行记录"
+    },
+    "fields": {
+      "webhook": "Webhook 地址",
+      "username": "机器人用户名",
+      "email": "Email 地址",
+      "consumer_key": "API 密钥",
+      "consumer_secret": "API 密钥密文",
+      "access_token_key": "访问令牌",
+      "access_token_secret": "访问令牌密文",
+      "bot-username": "机器人用户名",
+      "email-address": "e-mail 地址",
+      "api-key": "API 密钥",
+      "access-token": "访问令牌"
+    },
+    "field-help": {
+      "webhook": "传入 Webhook 地址。",
+      "username": "机器人显示的名称。",
+      "email": "接收提醒的地址。",
+      "consumer_key": "在 X 中显示为 API Key。",
+      "consumer_secret": "与 API Key 一起仅显示一次。",
+      "access_token_key": "在应用获得读写权限后生成。",
+      "access_token_secret": "与访问令牌一起生成，并妥善保密。"
+    },
+    "field-placeholder": {
+      "webhook": "https://hooks.example.com/...",
+      "username": "Bithomp Bot",
+      "email": "name@example.com",
+      "consumer_key": "来自 X 的 API 密钥",
+      "consumer_secret": "来自 X 的 API 密钥密文",
+      "access_token_key": "来自 X 的访问令牌",
+      "access_token_secret": "来自 X 的访问令牌密文"
+    },
+    "guides": {
+      "email": {
+        "title": "Email",
+        "description": "使用接收 {{explorerName}} 提醒的邮箱，无需 webhook 设置。",
+        "steps": [
+
+        ]
+      },
+      "discord_webhook": {
+        "title": "Discord",
+        "description": "在需要发布提醒的 Discord 服务器频道中创建 Webhook。",
+        "steps": [
+          "服务器设置",
+          "集成",
+          "网络钩子",
+          "复制 Webhook 地址"
+        ]
+      },
+      "slack_webhook": {
+        "title": "Slack",
+        "description": "在 Slack 中创建传入 Webhook，选择频道，然后在这里粘贴 Webhook 地址。",
+        "steps": [
+          "Slack 应用目录",
+          "传入 Webhook",
+          "添加到工作区",
+          "复制 Webhook 地址"
+        ]
+      },
+      "twitter_api": {
+        "title": "X / Twitter",
+        "description": "使用 X Developer Portal 应用中的 API Key、API Key Secret、Access Token 和 Access Token Secret。",
+        "steps": [
+          "开发者门户",
+          "项目应用",
+          "读写权限",
+          "密钥和令牌"
+        ]
+      }
+    },
+    "destination": {
+      "any": "任意目标",
+      "specific": "指定地址",
+      "none": "无目标",
+      "known-broker": "已知经纪方",
+      "none-or-known-broker": "无目标或已知经纪方"
+    },
+    "operators": {
+      "is": "是",
+      "is-not": "不是",
+      "in": "在",
+      "not-in": "不在",
+      "exists": "存在",
+      "and": "且",
+      "or": "或"
+    },
+    "number-operators": {
+      "$gte": "至少",
+      "$lte": "至多",
+      "$gt": "大于",
+      "$lt": "小于",
+      "$eq": "等于"
+    },
+    "tx-type-operators": {
+      "$eq": "是",
+      "$in": "包含",
+      "$nin": "排除"
+    },
+    "event-groups": {
+      "NFT": "NFT",
+      "Account": "账户"
+    },
+    "events": {
+      "nftoken_sale": {
+        "label": "NFT 销售",
+        "description": "检测到 NFT 销售时。"
+      },
+      "nftoken_create_sell_offer": {
+        "label": "NFT 出售报价",
+        "description": "创建新的 NFT 出售报价时。"
+      },
+      "uritoken_sell": {
+        "label": "NFT 销售",
+        "description": "检测到 NFT 销售时。"
+      },
+      "uritoken_create_sell_offer": {
+        "label": "NFT 出售报价",
+        "description": "创建新的 NFT 出售报价时。"
+      },
+      "balances_change": {
+        "label": "余额变化",
+        "description": "当关注的 Pro 地址余额发生变化时。"
+      }
+    },
+    "filters": {
+      "address": "地址",
+      "tx_type": "交易类型",
+      "issuer": "发行方",
+      "taxon": "分类号",
+      "price": "{{nativeCurrency}} 价格",
+      "price_usd": "USD 价格",
+      "account": "卖方账户",
+      "destination": "目标",
+      "amount": "金额",
+      "token": "令牌",
+      "known_broker": "已知经纪方"
+    },
+    "errors": {
+      "channel-name-required": "请输入频道名称。",
+      "field-required": "{{field}} 为必填项。",
+      "invalid-webhook": "请输入有效的 Webhook 地址。",
+      "invalid-email": "请输入有效的 e-mail 地址。",
+      "choose-channel": "请选择频道。",
+      "email-balance-only": "e-mail 频道只能用于余额变化提醒。",
+      "balance-email-only": "余额变化提醒只能通过 e-mail 发送。",
+      "rule-name-required": "请输入规则名称。",
+      "event-invalid-short": "请选择支持的事件。",
+      "choose-field": "请选择 {{field}}。",
+      "pro-required": "此筛选条件需要 Bithomp Pro。",
+      "enable-history-first": "请先为至少一个地址启用余额历史。",
+      "choose-history-address": "请选择余额历史地址。",
+      "valid-address": "请输入有效地址。",
+      "valid-number": "请输入有效数字。",
+      "tx-type-supported": "请选择支持的交易类型。",
+      "tx-types-supported": "只能选择支持的交易类型。",
+      "valid-destination": "请输入有效目标地址。",
+      "profile-name-required": "请输入资料名称。",
+      "country-required": "请选择国家/地区。",
+      "setup-failed": "无法完成设置。",
+      "save-channel-failed": "无法保存频道。",
+      "save-rule-failed": "无法保存规则。",
+      "delete-channel-failed": "无法删除频道。",
+      "connection-has-listeners": "删除此频道前请先删除已连接的规则。",
+      "connection-settings-required-short": "需要频道设置。",
+      "connection-settings-required": "发送提醒前必须完成频道设置。",
+      "action-required": "需要规则操作。",
+      "event-invalid": "不支持此事件。",
+      "event-required": "事件为必填项。",
+      "connection-not-found": "未找到频道。",
+      "listener-disabled": "规则已禁用。",
+      "package-tier-required": "需要付费提醒套餐。",
+      "package-limit-reached": "已达到套餐限制。"
+    },
+    "executions": {
+      "title": "{{name}} 的执行记录",
+      "none-title": "无执行记录",
+      "loading-text": "正在加载最近执行记录...",
+      "none-text": "还没有执行记录。",
+      "loaded": "已加载",
+      "number": "执行 #{{id}}"
+    },
+    "guest": {
+      "rules": "登录后可创建 {{explorerName}} 提醒规则。",
+      "channels": "通过 e-mail、Slack、Discord 或 X 发送提醒。"
+    },
+    "x-guide": {
+      "seo-title": "X 通知设置指南",
+      "seo-description": "如何为提醒创建 X API 密钥。",
+      "eyebrow": "X / Twitter 设置",
+      "title": "设置 X 提醒",
+      "intro": "创建 X 开发者应用，启用写入权限，并将四个必需密钥复制到 Alerts。",
+      "before-title": "开始之前",
+      "before": {
+        "account": "使用专门发布提醒的 X 账户。",
+        "private": "请妥善保管所有生成的密钥。",
+        "write": "应用必须具有读写权限。",
+        "regenerate": "更改权限后重新生成访问令牌。"
+      },
+      "back": "返回提醒",
+      "open-portal": "打开 X 开发者门户",
+      "steps": [
+        {
+          "title": "创建或打开你的 X 账户",
+          "text": "使用将发布提醒的 X 账户。截图展示了新账户创建的完整流程，包括 e-mail 确认和个人资料设置。",
+          "images": [
+            "打开 X 并选择创建账户；如果机器人账户已存在，则登录。",
+            "输入账户名称、e-mail 地址和出生日期。",
+            "选择 X 个性化选项并继续。",
+            "检查账户信息并点击注册。",
+            "完成 X 账户验证。",
+            "复制 X 通过 e-mail 发送的验证码。",
+            "为账户添加头像，或按所选设置继续。",
+            "确认账户已打开到 X 首页。"
+          ]
+        },
+        {
+          "title": "申请 X 开发者访问权限",
+          "text": "打开 X 开发者门户，选择可用的免费开发者账户选项，并用简明说明填写提醒机器人用途协议表单。",
+          "images": [
+            "打开 X Developer Platform 页面。",
+            "在开发者计划页面选择免费账户选项。",
+            "打开开发者协议表单并填写预期用途。",
+            "勾选必需的政策复选框并提交表单。"
+          ]
+        },
+        {
+          "title": "打开项目应用并生成密钥",
+          "text": "开发者门户会创建项目和应用。打开该应用，然后使用 Keys and tokens 生成 Alerts 频道所需的 API 密钥对和访问令牌对。",
+          "images": [
+            "从开发者门户控制台打开默认项目和应用。",
+            "查看项目概览并从左侧菜单选择应用。",
+            "打开应用设置，并在 User authentication settings 下点击 Set up。",
+            "打开 Keys and tokens，生成 API Key、API Key Secret、Access Token 和 Access Token Secret。",
+            "保存 API Key 和 API Key Secret。它们对应 Bithomp Alerts 中的前两个字段。",
+            "保存 Access Token 和 Access Token Secret。如果它们是在 Read Only 权限下创建的，请接着更新权限。"
+          ]
+        },
+        {
+          "title": "启用写入权限",
+          "text": "应用必须具有读写权限，才能发布提醒。更改权限后，重新生成 Access Token 和 Access Token Secret，使新令牌可以写入。",
+          "images": [
+            "在用户身份验证设置中选择读写权限。",
+            "选择 Web App、Automated App 或 Bot 作为应用类型。",
+            "填写必需的 Callback URI / Redirect URL 和 Website URL 字段。",
+            "使用你的公开 callback 和网站 URL，然后保存设置。",
+            "当 X 提示时确认权限更改。",
+            "保存后，X 会显示 OAuth 2.0 Client ID 和 Client Secret。它们不是 Alerts 频道的四个字段。"
+          ]
+        },
+        {
+          "title": "将密钥复制到 Bithomp Alerts",
+          "text": "保存 Read and write 后返回 Keys and tokens。将 API Key、API Key Secret、Access Token 和 Access Token Secret 粘贴到 Alerts 页面对应字段中。如果 Access Token 是在更改权限前生成的，请先重新生成。",
+          "images": [
+
+          ]
+        }
+      ]
+    },
+    "rules-connected": "已连接 {{count}} 条规则",
+    "channel-type-label": "频道类型"
+  },
+  "errors": {
+    "token": {
+      "required": "请重新登录。"
+    },
+    "partner": {
+      "not_found": "未找到资料。"
+    }
+  },
+  "error": {
+    "Network Error": "网络错误，请重试。",
+    "payment": "付款错误。",
+    "payment-partly": "已收到 {{received}} {{currency}}，需要 {{required}} {{currency}}。"
+  }
 }

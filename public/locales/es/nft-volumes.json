@@ -1,6 +1,6 @@
 {
   "header": "Volúmenes en ventas NFT",
-  "text0": "Para este periodo, la red tuvo {{allSales}} {{currency}} en ventas en el mercado {{saleType}} NFT por valor de {{allVolume}}.",
+  "text0": "Para este periodo, {{explorerName}} tuvo {{allSales}} ventas {{saleType}} de NFT en {{currency}} por valor de {{allVolume}}.",
   "collections": {
     "desc": "Esta es la lista de colecciones de NFT. Los volúmenes aquí no incluyen las ventas primarias (acuñaciones) las cuales fueron hechas en 2 transacciones (pago y transferencia de NFT)."
   },

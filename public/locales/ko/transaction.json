@@ -41,7 +41,7 @@
     "specifiedFee": "트랜잭션 수수료로 {{fee}} 사용이 지정되었습니다.",
     "memosThirdParty": {
       "prefix": "메모는 Escrow를 완료한 제3자",
-      "suffix": "에 의해 추가되었습니다."
+      "suffix": "Escrow를 완료했습니다."
     },
     "affectedAccounts": {
       "prefix": "이 트랜잭션의 영향을 받은 계정은",
@@ -127,7 +127,7 @@
     "Credential type": "자격 증명 유형",
     "Data": "데이터",
     "Deep frozen": "깊은 동결",
-    "Default ripple": "기본 리플링",
+    "Default ripple": "Default Rippling",
     "Delay seconds": "지연 초",
     "Delegate": "대리자",
     "Delegate index": "대리자 인덱스",
@@ -211,7 +211,7 @@
     "NFT taxon": "NFT 택슨",
     "Network ID": "네트워크 ID",
     "New status": "새 상태",
-    "No direct ripple": "직접 리플 없음",
+    "No direct ripple": "No direct Ripple",
     "No freeze": "동결 없음",
     "Note": "참고",
     "Offer": "오퍼",
@@ -236,7 +236,7 @@
     "Regular key": "Regular Key",
     "Repeat count": "반복 횟수",
     "Require authorization": "승인 필요",
-    "Rippling": "리플링",
+    "Rippling": "Rippling",
     "Sell offer": "매도 오퍼",
     "Sell order": "매도 주문",
     "Sequence": "시퀀스",

@@ -49,7 +49,7 @@
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer",
+      "explorer": "Penjelajah AMM",
       "learn": "Apa itu AMM?",
       "deposit": "Deposit AMM",
       "withdraw": "Withdraw AMM",
@@ -94,7 +94,7 @@
     },
     "network": {
       "blockchain": "Blockchain",
-      "dapps": "Dapps",
+      "dapps": "Aplikasi",
       "nodes": "Node",
       "governance": "Tata kelola",
       "activations": "Akun yang Telah Aktif (grafik)",
@@ -114,7 +114,7 @@
     "developers": {
       "developers": "Pengembang",
       "account-generation": "Generasi Akun",
-      "faucet": "Faucet",
+      "faucet": "Keran",
       "api": "API",
       "images": "Gambar Token/NFT/Alamat",
       "bithomp-tools": "Alat Bithomp"
@@ -170,8 +170,8 @@
       "90d": "90 hari"
     },
     "target-table-select": {
-      "01": "L1 - Main table",
-      "02": "L2 - My table"
+      "01": "L1 - Meja utama",
+      "02": "L2 - Meja saya"
     }
   },
   "signin": {
@@ -186,7 +186,7 @@
       "enter-amount": "Masukkan jumlah"
     },
     "expiration": "Kedaluwarsa",
-    "target-table": "Target table",
+    "target-table": "Tabel sasaran",
     "statuses": {
       "check-app": "Ikuti petunjuk di aplikasi {{appName}}."
     },
@@ -208,13 +208,13 @@
       "my-nft-offers": "Penawaran NFT Saya"
     },
     "confirm": {
-      "set-did": "Setting a DID",
+      "set-did": "Menyetel DID",
       "set-domain": "Mengatur Domain",
       "set-avatar": "Mengatur Avatar",
       "nft-create-transfer-offer-header": "Kirim NFT",
       "nft-transfer": "Saya menawarkan NFT ini GRATIS kepada akun Tujuan, <2>akun tujuan perlu menerima transfer NFT</2>.",
       "nft-accept-sell-offer-header": "Pembelian NFT",
-      "nft-accept-buy-offer-header": "Selling NFT",
+      "nft-accept-buy-offer-header": "Menjual NFT",
       "nft-create-sell-offer-header": "Daftar Jual",
       "nft-create-buy-offer-header": "Buat Penawaran Beli",
       "nft-accept-offer": "Saya mengakui bahwa {{webSiteName}} memberi saya akses ke pasar terdesentralisasi, dan tidak dapat memverifikasi atau menjamin keaslian dan legalitas NFT apa pun. Saya mengkonfirmasi bahwa saya telah membaca <4>Syarat dan Ketentuan</4>, dan saya setuju dengan semua syarat untuk membeli, menjual, atau menggunakan NFT apa pun di {{webSiteName}}.",
@@ -235,7 +235,7 @@
       "counteroffer": "Anda memberikan tawaran tambahan, seharusnya langsung diterima dalam 20 detik. Jika tidak, Anda bisa membatalkannya kapan saja.",
       "nft-price": "Harga NFT",
       "fee": "Biaya {{serviceName}} ({{feeText}})",
-      "total": "Total"
+      "total": "Jumlah"
     }
   },
   "footer": {
@@ -248,7 +248,7 @@
     }
   },
   "home": {
-    "title": "{{homeExplorerName}} | Cari transaksi, akun, NFT, dan data ledger",
+    "title": "{{homeExplorerName}} | Cari transaksi, akun, NFT, dan data {{nativeCurrency}}",
     "description": "{{homeExplorerAttribution}} memungkinkan Anda mencari dan menelusuri alamat {{nativeCurrency}}, transaksi, token, NFT, saldo, dan aktivitas on-chain di {{ledgerName}}. Trading, mint NFT, kelola AMM, kirim transaksi, dan gunakan alat akun.",
     "h1": "{{homeExplorerName}} dan alat ledger",
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
@@ -288,7 +288,7 @@
       "nodes": "Node"
     },
     "teaser": {
-      "topDapps": "Top Dapps",
+      "topDapps": "Aplikasi Teratas",
       "topNftCollections": "Koleksi NFT Teratas",
       "topTokens": "Top Token",
       "topAmms": "Top Pool AMM",
@@ -374,10 +374,10 @@
     "text": "Klik <2>di sini</2> untuk memeriksa halaman utama kami."
   },
   "receipt": {
-    "quantity": "qty.",
+    "quantity": "jumlah.",
     "items": "item",
     "price": "harga",
-    "total": "total",
+    "total": "jumlah",
     "paid": "dibayar",
     "order-id": "ID pesanan"
   },
@@ -395,7 +395,7 @@
     "sign": "Tanda tangan",
     "nft": {
       "add-another-sell-offer": "Tambahkan penawaran penjualan lainnya",
-      "transfer": "Transfer NFT",
+      "transfer": "Mentransfer NFT",
       "update-sell-offer": "Update penawaran penjualan",
       "cancel-sell-offer-for": "Batalkan Penawaran Jual untuk {{amount}}",
       "cancel-buy-offer-for": "Batalkan Penawaran Beli untuk {{amount}}",
@@ -513,7 +513,7 @@
     "updated": "Diperbarui",
     "currency": "Mata Uang",
     "currency-issuer": "Penerbit Mata Uang",
-    "destination-tag": "Destination tag",
+    "destination-tag": "Label tujuan",
     "uri": "URI",
     "mints": "Mints",
     "view": "Lihat",
@@ -610,12 +610,12 @@
       "show": "tampilkan",
       "hide": "sembunyikan",
       "see-on": "Lihat di <2><0>{{marketplace}}</0></2>",
-      "valid": "valid",
+      "valid": "sah",
       "invalid": "tidak valid",
       "no-votes": "Tidak ada suara."
     },
     "filter": {
-      "valid": "Valid",
+      "valid": "Sah",
       "invalid": "Tidak Valid",
       "active": "Semua yang Aktif",
       "historical": "Historis",

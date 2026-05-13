@@ -9,7 +9,7 @@
   "token-tabs": {
     "tokens": "Токены",
     "amms": "LP токены",
-    "mpts": "MPT"
+    "mpts": "МПТ"
   },
   "search-select": {
     "currency": "Валюта",
@@ -94,7 +94,7 @@
     },
     "network": {
       "blockchain": "Блокчейн",
-      "dapps": "Dapps",
+      "dapps": "Децентрализованные приложения",
       "nodes": "Ноды",
       "governance": "Правление",
       "activations": "Активированные адреса (график)",
@@ -248,7 +248,7 @@
     }
   },
   "home": {
-    "title": "{{homeExplorerName}} | Поиск транзакций, аккаунтов, NFT и данных ledger",
+    "title": "{{homeExplorerName}} | Поиск транзакций, аккаунтов, NFT и данных {{nativeCurrency}}",
     "description": "{{homeExplorerAttribution}} позволяет искать и просматривать {{nativeCurrency}} адреса, транзакции, токены, NFT, балансы и on-chain активность в {{ledgerName}}. Торгуйте, создавайте NFT, управляйте AMM, отправляйте транзакции и используйте инструменты аккаунта.",
     "h1": "{{homeExplorerName}} и инструменты ledger",
     "search-placeholder": "Поиск по Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
@@ -283,7 +283,7 @@
         "transfers": "Продано",
         "for-sale": "Продается"
       },
-      "escrows": "Эскроу",
+      "escrows": "Escrow",
       "amms": "Пулы AMM",
       "nodes": "Ноды"
     },
@@ -678,7 +678,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Эксплорер",
-      "sub": "Просматривайте транзакции, адреса, токены и NFT в {{nativeCurrency}} Ledger быстро и удобно.",
+      "sub": "Просматривайте транзакции, адреса, токены и NFT в {{nativeCurrency}} быстро и удобно — это быстрый способ исследовать {{nativeCurrency}}.",
       "topNftCollections": "Топ коллекции NFT",
       "amm": "Информация об АММ пуле",
       "object": "Информация об объекте",

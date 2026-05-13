@@ -104,59 +104,49 @@ const tabTotype = (tab) => {
   }
 }
 
-const API_TIER_LABELS = {
-  free: 'Free',
-  basic: 'Basic',
-  standard: 'Standard',
-  premium: 'Premium',
-  enterprise: 'Enterprise',
-  enterprise2: 'Enterprise II',
-  enterprise3: 'Enterprise III'
-}
-
 const tierValue = (row) => {
   const value = row?.metadata?.tier || ''
   return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
 }
 
-const botLimitLabel = (metadata = {}) => {
+const botLimitLabel = (metadata = {}, t) => {
   const parts = []
 
   if (typeof metadata.connections === 'number') {
-    parts.push(`${metadata.connections} channel${metadata.connections === 1 ? '' : 's'}`)
+    parts.push(t('notifications.limit.channels', { count: metadata.connections }))
   }
 
   if (typeof metadata.listeners === 'number') {
-    parts.push(`${metadata.listeners} rule${metadata.listeners === 1 ? '' : 's'}`)
+    parts.push(t('notifications.limit.rules', { count: metadata.listeners }))
   }
 
   return parts.join(' / ')
 }
 
-const tierLabel = (row) => {
+const tierLabel = (row, t) => {
   if (!['bot', 'token'].includes(row?.type)) return ''
 
   const tier = tierValue(row)
 
   if (row.type === 'bot') {
-    return tier ? ALERT_PLAN_TIERS[tier]?.label || tier : botLimitLabel(row?.metadata)
+    return tier ? t(`plans.${tier}`, { defaultValue: ALERT_PLAN_TIERS[tier]?.label || tier }) : botLimitLabel(row?.metadata, t)
   }
 
-  return tier ? API_TIER_LABELS[tier] || tier : ''
+  return tier ? t(`plans.${tier}`, { defaultValue: tier }) : ''
 }
 
-const packageList = (packages, width) => {
+const packageList = (packages, width, t) => {
   return (
     <div style={{ textAlign: 'left' }}>
       {width > 600 ? (
         <table className="table-large no-hover">
           <thead>
             <tr>
-              <th>Type</th>
-              <th>Tier</th>
-              <th>Created</th>
-              <th>Start</th>
-              <th>Expire</th>
+              <th>{t('table.type')}</th>
+              <th>{t('api.tier')}</th>
+              <th>{t('table.created')}</th>
+              <th>{t('table.start')}</th>
+              <th>{t('table.expire')}</th>
             </tr>
           </thead>
           <tbody>
@@ -164,12 +154,12 @@ const packageList = (packages, width) => {
               return (
                 <tr key={index}>
                   <td>{bidTypeToName(row.type)}</td>
-                  <td>{tierLabel(row) || '-'}</td>
+                  <td>{tierLabel(row, t) || '-'}</td>
                   <td>{fullDateAndTime(row.createdAt)}</td>
                   <td>{fullDateAndTime(row.startedAt)}</td>
                   <td>
                     {!row.expiredAt && row.metadata?.forever
-                      ? 'Never'
+                      ? t('common.never')
                       : fullDateAndTime(row.expiredAt + 1, 'expiration')}
                   </td>
                 </tr>
@@ -187,19 +177,25 @@ const packageList = (packages, width) => {
                     <b>{index + 1}</b>
                   </td>
                   <td>
-                    <p>Type: {row.type}</p>
-                    {tierLabel(row) && <p>Tier: {tierLabel(row)}</p>}
                     <p>
-                      Created: <br />
+                      {t('table.type')}: {bidTypeToName(row.type)}
+                    </p>
+                    {tierLabel(row, t) && (
+                      <p>
+                        {t('api.tier')}: {tierLabel(row, t)}
+                      </p>
+                    )}
+                    <p>
+                      {t('table.created')}: <br />
                       {fullDateAndTime(row.createdAt)}
                     </p>
                     <p>
-                      Start: <br />
+                      {t('table.start')}: <br />
                       {fullDateAndTime(row.startedAt)}
                     </p>
                     <p>
-                      Expire: <br />
-                      {!row.expiredAt && row.metadata?.forever ? 'Never' : fullDateAndTime(row.expiredAt + 1)}
+                      {t('table.expire')}: <br />
+                      {!row.expiredAt && row.metadata?.forever ? t('common.never') : fullDateAndTime(row.expiredAt + 1)}
                     </p>
                   </td>
                 </tr>
@@ -212,12 +208,6 @@ const packageList = (packages, width) => {
   )
 }
 
-const subscriptionsTabList = [
-  { value: 'pro', label: 'Bithomp Pro' },
-  { value: 'api', label: 'API' },
-  { value: 'notifications', label: 'Alerts Bot' }
-]
-
 export default function Subscriptions({
   setSignRequest,
   receiptQuery,
@@ -227,7 +217,7 @@ export default function Subscriptions({
   sessionToken,
   openEmailLogin
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'admin'])
   const router = useRouter()
   const width = useWidth()
 
@@ -248,6 +238,11 @@ export default function Subscriptions({
   const [subscriptionsTab, setSubscriptionsTab] = useState(tabQuery)
   const [transactions, setTransactions] = useState([])
   const [receiptVisible, setReceiptVisible] = useState(receiptQuery === 'true')
+  const subscriptionsTabList = [
+    { value: 'pro', label: 'Bithomp Pro' },
+    { value: 'api', label: 'API' },
+    { value: 'notifications', label: t('tabs.alerts-bot', { ns: 'admin' }) }
+  ]
 
   useEffect(() => {
     if (sessionToken) {
@@ -577,7 +572,7 @@ export default function Subscriptions({
 
   return (
     <>
-      <SEO title="Subscription" />
+      <SEO title={t('subscriptions.seo', { ns: 'admin' })} />
       <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
@@ -611,8 +606,8 @@ export default function Subscriptions({
 
                   {newAndActivePackages?.length > 0 && (
                     <>
-                      <h4 className="center">Your active subscriptions</h4>
-                      {packageList(newAndActivePackages, width)}
+                      <h4 className="center">{t('subscriptions.active-title', { ns: 'admin' })}</h4>
+                      {packageList(newAndActivePackages, width, (key, options) => t(key, { ns: 'admin', ...options }))}
                     </>
                   )}
 
@@ -648,7 +643,7 @@ export default function Subscriptions({
                             onClick={onPurchaseClick}
                             style={{ height: '37px', marginLeft: '10px', marginTop: '20px' }}
                           >
-                            Purchase
+                            {t('button.purchase', { ns: 'admin' })}
                           </button>
 
                           {/*
@@ -676,25 +671,25 @@ export default function Subscriptions({
                       <div className="center">
                         {payData && step === 1 && (
                           <>
-                            <h4 className="center">Subscription payment details</h4>
+                            <h4 className="center">{t('subscriptions.payment-details', { ns: 'admin' })}</h4>
                             {width > 600 ? (
                               <table className="table-large shrink">
                                 <tbody>
                                   <tr>
-                                    <td className="right">Address</td>
+                                    <td className="right">{t('table.address', { ns: 'admin' })}</td>
                                     <td className="left">
                                       {payData.bid.destinationAddress}{' '}
                                       <CopyButton text={payData.bid.destinationAddress} />
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td className="right">Destination tag</td>
+                                    <td className="right">{t('table.destination-tag', { ns: 'admin' })}</td>
                                     <td className="left bold">
                                       {payData.bid.destinationTag} <CopyButton text={payData.bid.destinationTag} />
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td className="right">Amount</td>
+                                    <td className="right">{t('table.amount', { ns: 'admin' })}</td>
                                     <td className="left">
                                       {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)}{' '}
                                       {payData.bid.currency} <CopyButton text={payData.bid.price} />
@@ -705,16 +700,16 @@ export default function Subscriptions({
                             ) : (
                               <div className="left">
                                 <p>
-                                  Address: <br />
+                                  {t('table.address', { ns: 'admin' })}: <br />
                                   {payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} />
                                 </p>
                                 <p>
-                                  Destination tag:
+                                  {t('table.destination-tag', { ns: 'admin' })}:
                                   <br />
                                   <b>{payData.bid.destinationTag}</b> <CopyButton text={payData.bid.destinationTag} />
                                 </p>
                                 <p>
-                                  Amount:
+                                  {t('table.amount', { ns: 'admin' })}:
                                   <br />
                                   {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)}{' '}
                                   {payData.bid.currency} <CopyButton text={payData.bid.price} />
@@ -754,32 +749,29 @@ export default function Subscriptions({
                                   })
                                 }
                               >
-                                Pay
+                                {t('button.pay', { ns: 'admin' })}
                               </button>
                             </p>
                             <br />
-                            Your subscription will be activated when the payment is received.
+                            {t('subscriptions.activation-note', { ns: 'admin' })}
                           </>
                         )}
 
                         {(receiptVisible || step === 2) && (
                           <div className="subscription-success">
-                            <p className="center orange bold">We have received your payment.</p>
+                            <p className="center orange bold">{t('subscriptions.payment-received', { ns: 'admin' })}</p>
                             <p className="center">
                               {completedServiceName
-                                ? `${completedServiceName} is being activated.`
-                                : 'Your subscription is being activated.'}
+                                ? t('subscriptions.service-activating', { ns: 'admin', service: completedServiceName })
+                                : t('subscriptions.activating', { ns: 'admin' })}
                             </p>
 
                             {completedIsNotifications && (
                               <div className="subscription-success-next">
-                                <h4>Next step</h4>
-                                <p>
-                                  Open Alerts to create a channel, then add rules for the ledger events you want to
-                                  receive.
-                                </p>
+                                <h4>{t('subscriptions.next-step', { ns: 'admin' })}</h4>
+                                <p>{t('subscriptions.alerts-next-step', { ns: 'admin' })}</p>
                                 <Link href="/admin/notifications" className="button-action narrow">
-                                  Open Alerts
+                                  {t('notifications.open-alerts', { ns: 'admin' })}
                                 </Link>
                               </div>
                             )}
@@ -796,14 +788,14 @@ export default function Subscriptions({
 
                         {bidData?.transactions?.length > 0 && (
                           <div style={{ marginTop: '20px', textAlign: 'left' }}>
-                            <h4 className="center">Transactions</h4>
+                            <h4 className="center">{t('subscriptions.transactions', { ns: 'admin' })}</h4>
                             {width > 600 ? (
                               <table className="table-large shrink">
                                 <thead>
                                   <tr>
-                                    <th>Date & Time</th>
-                                    <th>From</th>
-                                    <th>Amount</th>
+                                    <th>{t('table.date-time', { ns: 'admin' })}</th>
+                                    <th>{t('table.from', { ns: 'admin' })}</th>
+                                    <th>{t('table.amount', { ns: 'admin' })}</th>
                                     <th>Tx</th>
                                   </tr>
                                 </thead>
@@ -836,13 +828,17 @@ export default function Subscriptions({
                                         <td>
                                           <p>{fullDateAndTime(payment.processedAt)}</p>
                                           <p>
-                                            From: <br />
+                                            {t('table.from', { ns: 'admin' })}: <br />
                                             {addressLink(payment.sourceAddress)}
                                           </p>
-                                          <p>Amount: {amountFormat(payment.amount)}</p>
-                                          <p>Fiat equivalent: {payment.fiatAmount}</p>
                                           <p>
-                                            Transaction: <LinkTx tx={payment.hash} icon={true} />
+                                            {t('table.amount', { ns: 'admin' })}: {amountFormat(payment.amount)}
+                                          </p>
+                                          <p>
+                                            {t('table.fiat-equivalent', { ns: 'admin' })}: {payment.fiatAmount}
+                                          </p>
+                                          <p>
+                                            {t('table.transaction', { ns: 'admin' })}: <LinkTx tx={payment.hash} icon={true} />
                                           </p>
                                         </td>
                                       </tr>
@@ -859,14 +855,14 @@ export default function Subscriptions({
 
                   {expiredPackages?.length > 0 && (
                     <>
-                      <h4 className="center">Your expired subscriptions</h4>
-                      {packageList(expiredPackages, width)}
+                      <h4 className="center">{t('subscriptions.expired-title', { ns: 'admin' })}</h4>
+                      {packageList(expiredPackages, width, (key, options) => t(key, { ns: 'admin', ...options }))}
                     </>
                   )}
 
                   {transactions?.length > 0 && (
                     <div style={{ marginTop: '20px', textAlign: 'left' }}>
-                      <h4 className="center">Your last payments</h4>
+                      <h4 className="center">{t('subscriptions.last-payments', { ns: 'admin' })}</h4>
                       <ListTransactions transactions={transactions} />
                     </div>
                   )}
@@ -893,7 +889,7 @@ export default function Subscriptions({
 
               <center>
                 <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
+                  {t('button.register-sign-in', { ns: 'admin' })}
                 </button>
               </center>
             </div>

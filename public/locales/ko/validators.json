@@ -10,8 +10,8 @@
     "last-seen": "마지막 확인",
     "text": {
       "domain-verified-toml": "검증된 도메인 (TOML 파일)",
-      "unl": "In the Unique Node List (UNL)",
-      "negative-unl": "in the Negative UNL"
+      "unl": "고유 노드 목록(UNL)에서\n네거티브 UNL의",
+      "negative-unl": "Negative UNL 中"
     }
   },
   "domain-legacy": "도메인 (증명 오래됨)",

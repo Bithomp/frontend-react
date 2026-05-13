@@ -13,7 +13,7 @@
     "desc": "Berikut adalah daftar Pasar NFT di {{explorerName}}. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
   },
   "issuers": {
-   "desc": "Ini adalah daftar penerbit NFT di {{explorerName}}. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit, klik tautan dalam kolom Volume Penjualan."
+    "desc": "Ini adalah daftar penerbit NFT di {{explorerName}}. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit, klik tautan dalam kolom Volume Penjualan."
   },
   "sales-chart": "Grafik penjualan",
   "volumes-chart": "Grafik volume"

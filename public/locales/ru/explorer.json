@@ -1,8 +1,8 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Поиск {{explorerSearchName}} — аккаунты, транзакции, токены, NFT",
-      "description": "Используйте {{explorerSearchAttribution}}, чтобы искать {{nativeCurrency}} адреса, хэши транзакций, usernames, CTID, NFT, токены, AMM и объекты ledger в {{ledgerName}}.",
+      "title": "Поиск {{explorerSearchName}}: аккаунты, транзакции, токены и NFT в {{ledgerName}}",
+      "description": "Используйте {{explorerSearchAttribution}}, чтобы искать адреса, хэши транзакций, usernames, CTID, NFT, токены, AMM и объекты ledger в {{ledgerName}}.",
       "heading": "Поиск {{explorerSearchName}}"
     },
     "testnet": {
@@ -17,7 +17,7 @@
     }
   },
   "intro": {
-    "subtitle": "Просматривайте транзакции, адреса, токены и NFT в {{nativeCurrency}} Ledger быстро и удобно.",
+    "subtitle": "Просматривайте транзакции, адреса, токены и NFT в {{nativeCurrency}} быстро и удобно — это быстрый способ исследовать {{nativeCurrency}}.",
     "home-link-prefix": "Нужны живая статистика, ценовые инструменты, крупные переводы, валидаторы и amendments? Откройте",
     "home-link-label": "главную страницу {{explorerName}}"
   },

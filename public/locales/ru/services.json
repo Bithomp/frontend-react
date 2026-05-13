@@ -208,7 +208,7 @@
     "required": "обязательно",
     "feeTitle": "Комиссия в {{nativeCurrency}}",
     "feePlaceholder": "Введите комиссию в {{nativeCurrency}}",
-    "sourceTag": "Source tag",
+    "sourceTag": "Исходный тег",
     "sourceTagPlaceholder": "Введите source tag",
     "agreeTerms": "Я согласен с <0>условиями использования</0>.",
     "agreeFlagged": "Я понимаю риски и хочу продолжить отправку средств на этот помеченный аккаунт",
@@ -410,7 +410,7 @@
     "addDigest": "Добавить <0>Digest</0> (рекомендуется)",
     "digestHelp": "Digest рассчитывается из metadata. Он используется, чтобы проверить, что URI и metadata не были изменены.",
     "loadMetadata": "Загрузить metadata",
-    "metadataLabel": "Metadata:",
+    "metadataLabel": "Метаданные:",
     "metadataPlaceholder": "Вставьте JSON metadata здесь",
     "digestLabel": "Digest:",
     "digestPlaceholder": "Digest",
@@ -538,7 +538,7 @@
         "description": "Если включено, другие аккаунты не могут создавать trustlines к этому аккаунту."
       },
       "depositAuth": {
-        "name": "Deposit Authorization",
+        "name": "Разрешение на депозит",
         "description": "Если включено, аккаунт может получать средства только от предварительно авторизованных аккаунтов."
       },
       "disallowIncomingNFTokenOffer": {
@@ -550,7 +550,7 @@
         "description": "Если включено, другие аккаунты не могут отправлять Remit-транзакции на этот аккаунт."
       },
       "tshCollect": {
-        "name": "Transactional Stakeholder (TSH) Collect",
+        "name": "Сбор заинтересованных сторон транзакции (TSH)",
         "description": "Если включено, аккаунт может собирать TSH rewards с транзакций."
       },
       "requireAuth": {
@@ -566,7 +566,7 @@
         "description": "Разрешает держать токены, выпущенные этим аккаунтом, в escrow. Если флаг не включён, такие токены нельзя поместить в escrow. После включения этот флаг нельзя отключить."
       },
       "defaultRipple": {
-        "name": "Default rippling",
+        "name": "Default Rippling",
         "description": "Настройка для эмитентов токенов. Если включено, rippling разрешается на всех trustlines по умолчанию. Это влияет на то, как платежи проходят через ваш аккаунт."
       },
       "disableMaster": {

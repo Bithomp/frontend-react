@@ -21,7 +21,7 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function Charts({ sessionToken, openEmailLogin }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'admin'])
   const width = useWidth()
 
   const [errorMessage, setErrorMessage] = useState('')
@@ -63,7 +63,7 @@ export default function Charts({ sessionToken, openEmailLogin }) {
 
   return (
     <>
-      <SEO title="API charts" />
+      <SEO title={t('api.charts.seo', { ns: 'admin' })} />
       <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
@@ -79,7 +79,7 @@ export default function Charts({ sessionToken, openEmailLogin }) {
 
             <div className="center">
               <div style={{ marginTop: '20px', textAlign: 'left' }}>
-                <h4 className="center">Requests count</h4>
+                <h4 className="center">{t('api.charts.requests-count', { ns: 'admin' })}</h4>
                 {!loading && chartData?.length > 0 && (
                   <div style={{ maxWidth: '800px', margin: 'auto' }}>
                     <SimpleChart data={chartData} />
@@ -87,7 +87,7 @@ export default function Charts({ sessionToken, openEmailLogin }) {
                 )}
                 {!loading && chartData.length === 0 && (
                   <div className="center" style={{ marginTop: '20px' }}>
-                    no data available
+                    {t('common.no-data', { ns: 'admin' })}
                   </div>
                 )}
                 {loading && (
@@ -106,13 +106,13 @@ export default function Charts({ sessionToken, openEmailLogin }) {
         ) : (
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-              <p>- View API usage charts and analytics.</p>
-              <p>- Monitor request patterns and performance metrics.</p>
+              <p>- {t('api.charts.guest.charts', { ns: 'admin' })}</p>
+              <p>- {t('api.charts.guest.metrics', { ns: 'admin' })}</p>
             </div>
             <br />
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
-                Register or Sign In
+                {t('button.register-sign-in', { ns: 'admin' })}
               </button>
             </center>
           </div>

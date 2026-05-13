@@ -283,9 +283,9 @@
     },
     "actions": {
       "create": "Buat AMM",
-      "deposit": "Deposit",
-      "withdraw": "Withdraw",
-      "vote": "Vote"
+      "deposit": "Setoran",
+      "withdraw": "Mundur",
+      "vote": "Pilih"
     },
     "create": {
       "risks": "Saya mengakui dan memahami risiko XRPL AMM, termasuk impermanent loss, risiko penarikan dana, volatilitas pasar, dan dampak membuat pool yang tidak seimbang. Saya setuju berpartisipasi dengan risiko sendiri."
@@ -410,11 +410,11 @@
     "addDigest": "Tambahkan <0>Digest</0> (direkomendasikan)",
     "digestHelp": "Digest dihitung dari metadata. Ini digunakan untuk memverifikasi bahwa URI dan metadata tidak diubah.",
     "loadMetadata": "Muat metadata",
-    "metadataLabel": "Metadata:",
+    "metadataLabel": "Metadatanya:",
     "metadataPlaceholder": "Tempel metadata JSON Anda di sini",
     "digestLabel": "Digest:",
     "digestPlaceholder": "Digest",
-    "mintAndSend": "Mint and Send (Remit)",
+    "mintAndSend": "Mint dan Kirim (Kirim)",
     "mintAndSendReserve": "Anda akan membayar Object Reserve dalam XAH agar NFT disimpan di akun Destination.",
     "metadataLoading": "Mencoba memuat metadata dari URI...",
     "metadataLoadingAttempt": "Mencoba memuat metadata dari URI... ({{attempt}}/24 percobaan)",
@@ -554,19 +554,19 @@
         "description": "Jika aktif, akun lain tidak dapat mengirim transaksi Remit ke akun ini."
       },
       "tshCollect": {
-        "name": "Transactional Stakeholder (TSH) Collect",
+        "name": "Pemangku Kepentingan Transaksional (TSH) Kumpulkan",
         "description": "Jika aktif, akun ini dapat mengumpulkan reward TSH dari transaksi."
       },
       "allowTrustLineClawback": {
         "name": "Trustline Clawback",
-        "description": "Mengizinkan akun menarik kembali token yang diterbitkannya. Hanya dapat diatur jika owner directory kosong. Setelah diatur, flag ini tidak dapat dibatalkan."
+        "description": "Mengizinkan akun menarik kembali token yang diterbitkannya. Hanya dapat diatur jika owner directory kosong. Setelah diatur, flag ini tidak dapat dibatalkan. Akun tidak boleh memiliki trustlines, offers, Escrows, payment channels, checks, atau signer lists."
       },
       "allowTrustLineLocking": {
         "name": "Trustline Locking",
         "description": "Mengizinkan token yang diterbitkan akun ini disimpan dalam escrow. Setelah aktif, flag ini tidak dapat dinonaktifkan."
       },
       "defaultRipple": {
-        "name": "Default rippling",
+        "name": "Default Rippling",
         "description": "Pengaturan untuk penerbit token. Jika aktif, rippling diizinkan pada semua trustline secara default."
       },
       "disableMaster": {

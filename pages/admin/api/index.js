@@ -11,6 +11,7 @@ import { getIsSsrMobile } from '../../../utils/mobile'
 import CopyButton from '../../../components/UI/CopyButton'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { IoMdCreate, IoMdCheckmark, IoMdClose } from 'react-icons/io'
+import styles from '@/styles/pages/admin.module.scss'
 
 const maskApiToken = (token) => {
   if (!token) return ''
@@ -20,6 +21,52 @@ const maskApiToken = (token) => {
 
   return `${value.slice(0, 4)}${'*'.repeat(value.length - 8)}${value.slice(-4)}`
 }
+
+const ApiDataSkeleton = ({ t }) => (
+  <>
+    <table className="table-large no-hover" aria-hidden="true">
+      <tbody>
+        <tr>
+          <td className="right">{t('api.token', { ns: 'admin' })}</td>
+          <td className="left">
+            <span className={`${styles.skeletonLine} ${styles.token}`}></span>
+          </td>
+        </tr>
+        <tr>
+          <td className="right">{t('table.status')}</td>
+          <td className="left">
+            <span className={`${styles.skeletonLine} ${styles.small}`}></span>
+          </td>
+        </tr>
+        <tr>
+          <td className="right">{t('table.domain')}</td>
+          <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span className={`${styles.skeletonLine} ${styles.wide}`}></span>
+            <span className={`${styles.skeletonLine} ${styles.tiny}`}></span>
+          </td>
+        </tr>
+        <tr>
+          <td className="right">{t('table.description')}</td>
+          <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span className={`${styles.skeletonLine} ${styles.wide}`}></span>
+            <span className={`${styles.skeletonLine} ${styles.tiny}`}></span>
+          </td>
+        </tr>
+        <tr>
+          <td className="right">{t('api.tier', { ns: 'admin' })}</td>
+          <td className="left">
+            <span className={`${styles.skeletonLine} ${styles.small}`}></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <br />
+    <span className={`button-action ${styles.skeletonAction} ${styles.skeletonActionWide}`}>
+      <span className={`${styles.skeletonLine} ${styles.buttonSkeletonLine}`}></span>
+    </span>
+  </>
+)
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -31,10 +78,11 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Api({ sessionToken, openEmailLogin }) {
+export default function Api({ sessionToken, openEmailLogin, clientReady }) {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
   const [apiData, setApiData] = useState(null)
+  const [apiDataLoaded, setApiDataLoaded] = useState(false)
   const [domain, setDomain] = useState('')
   const [apiDescription, setApiDescription] = useState('')
   const [loading, setLoading] = useState(false)
@@ -49,6 +97,9 @@ export default function Api({ sessionToken, openEmailLogin }) {
   useEffect(() => {
     if (sessionToken) {
       getApiData()
+    } else {
+      setApiData(null)
+      setApiDataLoaded(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionToken])
@@ -71,19 +122,25 @@ export default function Api({ sessionToken, openEmailLogin }) {
 
   const getApiData = async () => {
     setLoading(true)
+    setApiDataLoaded(false)
     setErrorMessage('')
-    const data = await axiosAdmin.get('partner/accessToken').catch((error) => {
+
+    let data = null
+    try {
+      data = await axiosAdmin.get('partner/accessToken')
+    } catch (error) {
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
           openEmailLogin()
         }
       }
-      setLoading(false)
-    })
-    setLoading(false)
+    }
 
-    setApiData(data?.data)
+    setLoading(false)
+    setApiDataLoaded(true)
+
+    setApiData(data?.data || null)
     /*
     {
       "token": "werwerw-werwer-werc",
@@ -93,6 +150,8 @@ export default function Api({ sessionToken, openEmailLogin }) {
     }
     */
   }
+
+  const apiDataPending = !clientReady || (sessionToken && (!apiDataLoaded || loading))
 
   const requestApiKey = async () => {
     setErrorMessage('')
@@ -221,27 +280,15 @@ export default function Api({ sessionToken, openEmailLogin }) {
 
         {sessionToken ? (
           <div className="center">
-            <h4 className="center">API data</h4>
-            Documentation:{' '}
+            <h4 className="center">{t('api.data-title', { ns: 'admin' })}</h4>
+            {t('api.documentation', { ns: 'admin' })}:{' '}
             <a href="https://docs.bithomp.com" target="_blank" rel="noreferrer">
               https://docs.bithomp.com
             </a>
             <br />
             <br />
-            {loading ? (
-              <table className="table-large">
-                <tbody>
-                  <tr>
-                    <td className="center" colSpan="2">
-                      <span className="waiting"></span>
-                      <br />
-                      {t('general.loading')}
-                      <br />
-                      <br />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            {apiDataPending ? (
+              <ApiDataSkeleton t={t} />
             ) : (
               <>
                 {apiData ? (
@@ -249,10 +296,14 @@ export default function Api({ sessionToken, openEmailLogin }) {
                     <table className="table-large no-hover">
                       <tbody>
                         <tr>
-                          <td className="right">Token</td>
+                          <td className="right">{t('api.token', { ns: 'admin' })}</td>
                           <td className="left">
                             <CopyButton
-                              ariaLabel={tokenRevealed ? 'Copy API token' : 'Show and copy API token'}
+                              ariaLabel={
+                                tokenRevealed
+                                  ? t('api.copy-token', { ns: 'admin' })
+                                  : t('api.show-copy-token', { ns: 'admin' })
+                              }
                               buttonClassName={tokenRevealed ? 'brake' : 'no-brake'}
                               buttonStyle={{
                                 background: 'none',
@@ -267,10 +318,18 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 textDecoration: 'underline'
                               }}
                               clickTooltipOnly
-                              copyText={tokenRevealed ? 'Copy API token' : 'Show and copy API token'}
+                              copyText={
+                                tokenRevealed
+                                  ? t('api.copy-token', { ns: 'admin' })
+                                  : t('api.show-copy-token', { ns: 'admin' })
+                              }
                               onCopy={() => setTokenRevealed(true)}
                               text={apiData.token}
-                              title={tokenRevealed ? 'Copy API token' : 'Show and copy API token'}
+                              title={
+                                tokenRevealed
+                                  ? t('api.copy-token', { ns: 'admin' })
+                                  : t('api.show-copy-token', { ns: 'admin' })
+                              }
                               tooltipClassName="below no-brake"
                             >
                               {tokenRevealed ? apiData.token : maskApiToken(apiData.token)}
@@ -281,26 +340,27 @@ export default function Api({ sessionToken, openEmailLogin }) {
                           <td className="right">{t('table.status')}</td>
                           <td className="left">
                             {apiData.locked ? (
-                              <b className="red">locked</b>
+                              <b className="red">{t('status.locked', { ns: 'admin' })}</b>
                             ) : (
                               <>
                                 {apiData.tier === 'free' ? (
-                                  <b className="green">active</b>
+                                  <b className="green">{t('status.active', { ns: 'admin' })}</b>
                                 ) : (
                                   <>
                                     {apiData.expirationAt ? (
                                       <>
                                         {new Date(apiData.expirationAt) > nowDate ? (
                                           <>
-                                            <b className="green">active</b> until
+                                            <b className="green">{t('status.active', { ns: 'admin' })}</b>{' '}
+                                            {t('profile.until', { ns: 'admin' })}
                                           </>
                                         ) : (
-                                          <b className="red">expired</b>
+                                          <b className="red">{t('status.expired', { ns: 'admin' })}</b>
                                         )}
                                         <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
                                       </>
                                     ) : (
-                                      <b className="green">active</b>
+                                      <b className="green">{t('status.active', { ns: 'admin' })}</b>
                                     )}
                                   </>
                                 )}
@@ -317,8 +377,8 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 <button
                                   className="button-icon"
                                   type="button"
-                                  aria-label="Edit domain"
-                                  title="Edit domain"
+                                  aria-label={t('api.edit-domain', { ns: 'admin' })}
+                                  title={t('api.edit-domain', { ns: 'admin' })}
                                   onClick={() => {
                                     setDomainEdit(apiData.domain || '')
                                     setIsEditingDomain(true)
@@ -342,8 +402,8 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 <button
                                   className="button-icon"
                                   type="button"
-                                  aria-label="Save domain"
-                                  title="Save"
+                                  aria-label={t('api.save-domain', { ns: 'admin' })}
+                                  title={t('button.save', { ns: 'admin' })}
                                   onClick={saveDomain}
                                   disabled={domainSaving}
                                 >
@@ -353,8 +413,8 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 <button
                                   className="button-icon"
                                   type="button"
-                                  aria-label="Cancel"
-                                  title="Cancel"
+                                  aria-label={t('button.cancel', { ns: 'admin' })}
+                                  title={t('button.cancel', { ns: 'admin' })}
                                   onClick={() => {
                                     setDomainEdit(apiData.domain || '')
                                     setIsEditingDomain(false)
@@ -376,8 +436,8 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 <button
                                   className="button-icon"
                                   type="button"
-                                  aria-label="Edit description"
-                                  title="Edit description"
+                                  aria-label={t('api.edit-description', { ns: 'admin' })}
+                                  title={t('api.edit-description', { ns: 'admin' })}
                                   onClick={() => {
                                     setDescriptionEdit(apiData.description || '')
                                     setIsEditingDescription(true)
@@ -400,8 +460,8 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 <button
                                   className="button-icon"
                                   type="button"
-                                  aria-label="Save description"
-                                  title="Save"
+                                  aria-label={t('api.save-description', { ns: 'admin' })}
+                                  title={t('button.save', { ns: 'admin' })}
                                   onClick={saveDescription}
                                   disabled={descriptionSaving}
                                 >
@@ -411,8 +471,8 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 <button
                                   className="button-icon"
                                   type="button"
-                                  aria-label="Cancel"
-                                  title="Cancel"
+                                  aria-label={t('button.cancel', { ns: 'admin' })}
+                                  title={t('button.cancel', { ns: 'admin' })}
                                   onClick={() => {
                                     setDescriptionEdit(apiData.description || '')
                                     setIsEditingDescription(false)
@@ -426,7 +486,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                           </td>
                         </tr>
                         <tr>
-                          <td className="right">Tier</td>
+                          <td className="right">{t('api.tier', { ns: 'admin' })}</td>
                           <td className="left">{apiData.tier}</td>
                         </tr>
                       </tbody>
@@ -434,15 +494,15 @@ export default function Api({ sessionToken, openEmailLogin }) {
                     <br />
                     <br />
                     <Link className="button-action" href="/admin/subscriptions?tab=api">
-                      Manage your API subscription
+                      {t('api.manage-subscription', { ns: 'admin' })}
                     </Link>
                   </>
                 ) : (
                   <div>
-                    <h4>API registration</h4>
+                    <h4>{t('api.registration', { ns: 'admin' })}</h4>
                     <p>
                       <input
-                        placeholder='Your website domain or "localhost" for a local project'
+                        placeholder={t('api.domain-placeholder', { ns: 'admin' })}
                         value={domain}
                         onChange={(e) => {
                           setDomain(e.target.value)
@@ -454,7 +514,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                     </p>
                     <p>
                       <input
-                        placeholder="Description how API will be used"
+                        placeholder={t('api.description-placeholder', { ns: 'admin' })}
                         value={apiDescription}
                         onChange={(e) => {
                           setApiDescription(e.target.value)
@@ -464,7 +524,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                       />
                     </p>
                     <button className="button-action" onClick={requestApiKey}>
-                      Request API key
+                      {t('api.request-key', { ns: 'admin' })}
                     </button>
                     <br />
                   </div>
@@ -478,13 +538,13 @@ export default function Api({ sessionToken, openEmailLogin }) {
         ) : (
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-              <p>- Access and manage your API keys and settings.</p>
-              <p>- View API documentation and usage statistics.</p>
+              <p>- {t('api.guest.keys', { ns: 'admin' })}</p>
+              <p>- {t('api.guest.stats', { ns: 'admin' })}</p>
             </div>
             <br />
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
-                Register or Sign In
+                {t('button.register-sign-in', { ns: 'admin' })}
               </button>
             </center>
           </div>

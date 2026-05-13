@@ -38,7 +38,7 @@
     "badges": {
       "new": "NEU"
     },
-    "explorer": "{{explorerName}} Explorer",
+    "explorer": "{{explorerName}}-Explorer",
     "token-menu": {
       "multi-purpose": "Multi-Purpose-Token",
       "top-holders": "Top-Inhaber",
@@ -49,7 +49,7 @@
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer",
+      "explorer": "AMM-Explorer",
       "learn": "Was ist AMM?",
       "deposit": "AMM-Einzahlung",
       "withdraw": "AMM-Auszahlung",
@@ -94,7 +94,7 @@
     },
     "network": {
       "blockchain": "Blockchain",
-      "dapps": "Dapps",
+      "dapps": "DApps",
       "nodes": "Knoten",
       "governance": "Governance",
       "activations": "Aktivierte Konten (Diagramm)",
@@ -129,7 +129,7 @@
     },
     "pro": {
       "profile": "Profil",
-      "watchlist": "Watchlist",
+      "watchlist": "Beobachtungsliste",
       "subscriptions": "Abonnements",
       "referrals": "Empfehlungen",
       "my-addresses": "Meine Adressen",
@@ -208,7 +208,7 @@
       "my-nft-offers": "Meine NFT Angebote"
     },
     "confirm": {
-      "set-did": "Setting a DID",
+      "set-did": "Festlegen einer DID",
       "set-domain": "Eine Domain definieren",
       "set-avatar": "Ein Avatar definieren",
       "nft-create-transfer-offer-header": "NFT Transfer",
@@ -235,7 +235,7 @@
       "counteroffer": "Sie machen ein Gegenangebot, das innerhalb von 20 Sekunden automatisch angenommen werden sollte. Wenn es nicht akzeptiert wird, können Sie es jederzeit stornieren.",
       "nft-price": "NFT Preis",
       "fee": "{{serviceName}} Gebühr ({{feeText}})",
-      "total": "Total"
+      "total": "Gesamt"
     }
   },
   "footer": {
@@ -280,7 +280,7 @@
         "burned": "Vernichtet",
         "owners": "Aktuelle Besitzer",
         "issuers": "Emittenten",
-        "transfers": "Transfers",
+        "transfers": "Überweisungen",
         "for-sale": "Zum Verkauf"
       },
       "escrows": "Escrows",
@@ -288,7 +288,7 @@
       "nodes": "Knoten"
     },
     "teaser": {
-      "topDapps": "Top Dapps",
+      "topDapps": "Top-DApps",
       "topNftCollections": "Top NFT-Sammlungen",
       "topTokens": "Top Token",
       "topAmms": "Top AMM-Pools",
@@ -348,7 +348,7 @@
     "account-count": "Anzahl Konten",
     "inception": "Beginn",
     "balance-update": "Kontostand Akualisierung",
-    "details": "Details",
+    "details": "Einzelheiten",
     "address": "Adresse",
     "genesis-balance": "Genesis Kontostand",
     "rippletrade-username": "Rippletrade Benutzernamen",
@@ -677,7 +677,7 @@
   },
   "explorer": {
     "header": {
-      "main": "{{explorerName}} Explorer",
+      "main": "{{explorerName}}-Explorer",
       "sub": "Scanne {{nativeCurrency}}-Transaktionen, -Konten, -Token und NFTs – der schnelle und vertrauenswürdige Weg, das {{nativeCurrency}} Ledger zu erkunden.",
       "amm": "AMM-Pool-Informationen",
       "object": "Objektinformation",

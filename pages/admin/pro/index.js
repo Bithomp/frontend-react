@@ -29,7 +29,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired }) => {
+const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired, t }) => {
   let styles = {}
   if (mobile) {
     styles = { ...styles, lineHeight: '1.8em', fontSize: '1.1em' }
@@ -51,7 +51,7 @@ const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired }) => {
         style={{ ...styles, marginTop: 0 }}
         disabled={subscriptionExpired}
       >
-        {mobile ? 'Auto Escrow Execution' : 'Execute Escrows'}
+        {mobile ? t('pro.settings.auto-escrow', { ns: 'admin' }) : t('pro.settings.execute-escrows', { ns: 'admin' })}
       </CheckBox>
       {!xahauNetwork && (
         <CheckBox
@@ -65,7 +65,9 @@ const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired }) => {
           style={{ ...styles, marginTop: 10 }}
           disabled={subscriptionExpired}
         >
-          {mobile ? 'Auto Cancelation of Expired NFT offers' : 'Cancel Expired NFT Offers'}
+          {mobile
+            ? t('pro.settings.auto-cancel-nft', { ns: 'admin' })
+            : t('pro.settings.cancel-nft', { ns: 'admin' })}
         </CheckBox>
       )}
     </>
@@ -174,7 +176,7 @@ export default function Pro({
 
   const addAddressClicked = () => {
     if (!account?.pro) {
-      setErrorMessage('There is no pro email')
+      setErrorMessage(t('pro.errors.no-email', { ns: 'admin' }))
       return
     }
 
@@ -219,7 +221,7 @@ export default function Pro({
       <div className={`pro-address-actions${options?.mobile ? ' mobile' : ''}`}>
         {address.crawler && (
           <Link className="button-action narrow thin" href={'/admin/pro/history?address=' + address.address}>
-            {options?.mobile ? 'View history' : 'View'}
+            {options?.mobile ? t('button.view-history', { ns: 'admin' }) : t('button.view', { ns: 'admin' })}
           </Link>
         )}
         {!(address.crawler && address.crawler.status !== 'paused') && (
@@ -230,7 +232,7 @@ export default function Pro({
             }}
             disabled={subscriptionExpired}
           >
-            Enable
+            {t('button.enable', { ns: 'admin' })}
           </button>
         )}
       </div>
@@ -239,9 +241,9 @@ export default function Pro({
 
   return (
     <>
-      <SEO title="My addresses" />
+      <SEO title={t('tabs.my-addresses', { ns: 'admin' })} />
       <div className="page-admin content-center">
-        <h1 className="center">My addresses</h1>
+        <h1 className="center">{t('tabs.my-addresses', { ns: 'admin' })}</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
 
@@ -254,27 +256,27 @@ export default function Pro({
             target="_blank"
             rel="noreferrer"
           >
-            View guide
+            {t('button.view-guide', { ns: 'admin' })}
           </Link>
         </div>
 
         {sessionToken ? (
           <>
-            <h4 className="center">Verified addresses</h4>
+            <h4 className="center">{t('pro.verified-addresses', { ns: 'admin' })}</h4>
             <div>
-              Pro accounts can use the following features:
+              {t('pro.features-intro', { ns: 'admin' })}
               <ul>
-                <li>View and Export your personal historical balance changes</li>
+                <li>{t('pro.features.history', { ns: 'admin' })}</li>
                 <li>
-                  Auto execution of time based escrows
+                  {t('pro.features.escrows', { ns: 'admin' })}
                   <br />
-                  (that you created or that have your address as a destination)
+                  ({t('pro.features.escrows-note', { ns: 'admin' })})
                 </li>
                 {!xahauNetwork && (
                   <li>
-                    Auto cancelation of expired NFT offers
+                    {t('pro.features.nft-offers', { ns: 'admin' })}
                     <br />
-                    (offers that you created and offers from others for NFTs you own)
+                    ({t('pro.features.nft-offers-note', { ns: 'admin' })})
                   </li>
                 )}
               </ul>
@@ -288,10 +290,10 @@ export default function Pro({
                     <thead>
                       <tr>
                         <th className="center">#</th>
-                        <th className="left">Address</th>
-                        <th className="right">Balance history</th>
-                        <th className="left">Bot settings</th>
-                        <th className="center">Remove</th>
+                        <th className="left">{t('table.address', { ns: 'admin' })}</th>
+                        <th className="right">{t('pro.balance-history', { ns: 'admin' })}</th>
+                        <th className="left">{t('pro.bot-settings', { ns: 'admin' })}</th>
+                        <th className="center">{t('button.remove', { ns: 'admin' })}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -326,7 +328,7 @@ export default function Pro({
                                               })
                                             }
                                           >
-                                            Set Avatar
+                                            {t('button.set-avatar', { ns: 'admin' })}
                                           </a>
                                         )}
                                       </td>
@@ -339,7 +341,7 @@ export default function Pro({
                                 {addressButtons(a)}
                               </td>
                               <td className="left">
-                                <SettingsCheckBoxes a={a} subscriptionExpired={subscriptionExpired} />
+                                <SettingsCheckBoxes a={a} subscriptionExpired={subscriptionExpired} t={t} />
                               </td>
                               <td className="center red">
                                 <MdDelete
@@ -355,7 +357,9 @@ export default function Pro({
                       ) : (
                         <tr>
                           <td colSpan="100" className="center">
-                            {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                            {loadingVerifiedAddresses
+                              ? t('common.loading-data', { ns: 'admin' })
+                              : t('pro.no-verified-addresses', { ns: 'admin' })}
                           </td>
                         </tr>
                       )}
@@ -376,12 +380,14 @@ export default function Pro({
                               </td>
                               <td>
                                 <p>
-                                  Address: <b className="orange">{a.name}</b> -{' '}
+                                  {t('table.address', { ns: 'admin' })}: <b className="orange">{a.name}</b> -{' '}
                                   {addressLink(a.address, { short: true })}
                                 </p>
-                                <p>Status: {crawlerStatus(a.crawler, { inline: true })}</p>
                                 <p>
-                                  <SettingsCheckBoxes a={a} mobile={true} subscriptionExpired={subscriptionExpired} />
+                                  {t('table.status', { ns: 'admin' })}: {crawlerStatus(a.crawler, { inline: true })}
+                                </p>
+                                <p>
+                                  <SettingsCheckBoxes a={a} mobile={true} subscriptionExpired={subscriptionExpired} t={t} />
                                 </p>
                                 <p>
                                   {addressButtons(a, { mobile: true })}
@@ -404,7 +410,7 @@ export default function Pro({
                                           })
                                         }
                                       >
-                                        Set Avatar
+                                        {t('button.set-avatar', { ns: 'admin' })}
                                       </a>
                                       ,{' '}
                                     </>
@@ -415,7 +421,7 @@ export default function Pro({
                                       removeProAddress(a.id, afterVerifiedAddressesUpdate)
                                     }}
                                   >
-                                    Remove
+                                    {t('button.remove', { ns: 'admin' })}
                                   </a>
                                 </p>
                               </td>
@@ -425,7 +431,9 @@ export default function Pro({
                       ) : (
                         <tr>
                           <td colSpan="100" className="center">
-                            {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                            {loadingVerifiedAddresses
+                              ? t('common.loading-data', { ns: 'admin' })
+                              : t('pro.no-verified-addresses', { ns: 'admin' })}
                           </td>
                         </tr>
                       )}
@@ -439,15 +447,17 @@ export default function Pro({
                     <>
                       {subscriptionExpired ? (
                         <>
-                          In order to activate Data Analyses, please{' '}
-                          <Link href="/admin/subscriptions?tab=pro">purchase the Bithomp Pro subscription</Link>.
+                          {t('pro.activate-analysis-before', { ns: 'admin' })}{' '}
+                          <Link href="/admin/subscriptions?tab=pro">
+                            {t('pro.purchase-pro-link', { ns: 'admin' })}
+                          </Link>.
                         </>
                       ) : (
-                        'You can add up to 5 addresses for data analyses. If you need more, please contact us.'
+                        t('pro.add-limit', { ns: 'admin' })
                       )}
                     </>
                   ) : (
-                    <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
+                    <>{t('pro.verify-first', { ns: 'admin' })}</>
                   )}
                   {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
                   {((verifiedAddresses?.length < 5 && !subscriptionExpired) ||
@@ -461,8 +471,8 @@ export default function Pro({
                           style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}
                         >
                           <AddressInput
-                            title="Address"
-                            placeholder="Enter address"
+                            title={t('table.address', { ns: 'admin' })}
+                            placeholder={t('pro.address-placeholder', { ns: 'admin' })}
                             setInnerValue={setAddressToVerify}
                             hideButton={true}
                             rawData={rawData}
@@ -471,8 +481,8 @@ export default function Pro({
                         </span>
                         <span style={{ width: width > 851 ? '30%' : '100%' }}>
                           <FormInput
-                            title="Private name"
-                            placeholder="Enter address name"
+                            title={t('watchlist.private-name', { ns: 'admin' })}
+                            placeholder={t('pro.address-name-placeholder', { ns: 'admin' })}
                             setInnerValue={setAddressName}
                             defaultValue={rawData?.addressDetails?.username}
                             hideButton={true}
@@ -486,7 +496,7 @@ export default function Pro({
                           onClick={addAddressClicked}
                           disabled={!addressToVerify || !addressName}
                         >
-                          Verify
+                          {t('button.verify', { ns: 'admin' })}
                         </button>
                       </center>
                     </>
@@ -500,13 +510,13 @@ export default function Pro({
         ) : (
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-              <p>- Verify your addresses to access Pro features.</p>
-              <p>- View historical balances and manage automation settings.</p>
+              <p>- {t('pro.guest.verify', { ns: 'admin' })}</p>
+              <p>- {t('pro.guest.history', { ns: 'admin' })}</p>
             </div>
             <br />
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
-                Register or Sign In
+                {t('button.register-sign-in', { ns: 'admin' })}
               </button>
             </center>
           </div>

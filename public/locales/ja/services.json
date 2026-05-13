@@ -554,12 +554,12 @@
         "description": "有効にすると、他のアカウントはこのアカウントへ Remit トランザクションを送信できません。"
       },
       "tshCollect": {
-        "name": "Transactional Stakeholder (TSH) Collect",
+        "name": "トランザクション関係者 (TSH) の収集",
         "description": "有効にすると、このアカウントはトランザクションから TSH rewards を収集できます。"
       },
       "allowTrustLineClawback": {
         "name": "Trustline Clawback",
-        "description": "アカウントが発行したトークンを取り戻せるようにします。owner directory が空の場合のみ設定できます。一度設定すると元に戻せません。"
+        "description": "アカウントが発行したトークンを取り戻せるようにします。owner directory が空の場合のみ設定できます。一度設定すると元に戻せません。 アカウントに trustlines、offers、Escrows、payment channels、checks、signer lists がない場合のみ設定できます。"
       },
       "allowTrustLineLocking": {
         "name": "Trustline Locking",

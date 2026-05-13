@@ -27,7 +27,7 @@ let minDate = now.setDate(now.getDate() - 5) // 5 days ago
 minDate = new Date(minDate)
 
 export default function Requests({ sessionToken, openEmailLogin }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'admin'])
   const width = useWidth()
 
   const [errorMessage, setErrorMessage] = useState('')
@@ -63,7 +63,7 @@ export default function Requests({ sessionToken, openEmailLogin }) {
 
   return (
     <>
-      <SEO title="API requests" />
+      <SEO title={t('api.requests.seo', { ns: 'admin' })} />
       <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
@@ -76,24 +76,24 @@ export default function Requests({ sessionToken, openEmailLogin }) {
               <DateAndTimeRange setPeriod={setPeriod} minDate={minDate} />
               {width < 500 && <br />}
               <button className="button-action narrow thin" onClick={getData}>
-                Search
+                {t('button.search', { ns: 'admin' })}
               </button>
             </center>
 
             <div className="center">
               <div style={{ marginTop: '20px', textAlign: 'left' }}>
-                <h4 className="center">The last 50 API requests (the last 5 days)</h4>
+                <h4 className="center">{t('api.requests.title', { ns: 'admin' })}</h4>
                 {width > 1240 ? (
                   <table className="table-large">
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Timestamp</th>
-                        <th>Response</th>
+                        <th>{t('table.timestamp', { ns: 'admin' })}</th>
+                        <th>{t('table.response', { ns: 'admin' })}</th>
                         <th>IP</th>
-                        <th className="center">Country</th>
+                        <th className="center">{t('table.country', { ns: 'admin' })}</th>
                         <th>URL</th>
-                        <th className="right">Status</th>
+                        <th className="right">{t('table.status', { ns: 'admin' })}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -131,7 +131,7 @@ export default function Requests({ sessionToken, openEmailLogin }) {
                       {apiRequests?.requests?.length === 0 && (
                         <tr className="center">
                           <td colSpan="100">
-                            <b>no data available</b>
+                            <b>{t('common.no-data', { ns: 'admin' })}</b>
                           </td>
                         </tr>
                       )}
@@ -160,10 +160,12 @@ export default function Requests({ sessionToken, openEmailLogin }) {
                             </td>
                             <td>
                               <p>{fullDateAndTime(req.createdAt / 1000)}</p>
-                              <p>Response: {req.completedAt - req.createdAt} ms</p>
+                              <p>
+                                {t('table.response', { ns: 'admin' })}: {req.completedAt - req.createdAt} ms
+                              </p>
                               <p>IP: {req.ip}</p>
                               <p>
-                                Country: {req.country}{' '}
+                                {t('table.country', { ns: 'admin' })}: {req.country}{' '}
                                 <ReactCountryFlag
                                   countryCode={req.country}
                                   style={{
@@ -177,7 +179,9 @@ export default function Requests({ sessionToken, openEmailLogin }) {
                                 <br />
                                 <span style={{ wordBreak: 'break-all' }}>{req.url}</span>
                               </p>
-                              <p>Status: {req.status}</p>
+                              <p>
+                                {t('table.status', { ns: 'admin' })}: {req.status}
+                              </p>
                             </td>
                           </tr>
                         )
@@ -194,13 +198,13 @@ export default function Requests({ sessionToken, openEmailLogin }) {
         ) : (
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-              <p>- View detailed API request logs and information.</p>
-              <p>- Monitor recent API calls and their performance.</p>
+              <p>- {t('api.requests.guest.logs', { ns: 'admin' })}</p>
+              <p>- {t('api.requests.guest.performance', { ns: 'admin' })}</p>
             </div>
             <br />
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
-                Register or Sign In
+                {t('button.register-sign-in', { ns: 'admin' })}
               </button>
             </center>
           </div>

@@ -9,6 +9,38 @@ import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
+import styles from '@/styles/pages/admin.module.scss'
+
+const AdminProfileSkeleton = ({ t }) => (
+  <>
+    <table className="table-large no-hover shrink" aria-hidden="true">
+      <tbody>
+        <tr>
+          <td className="left">{t('profile.email', { ns: 'admin' })}</td>
+          <td className="left">
+            <span className={`${styles.skeletonLine} ${styles.wide}`}></span>
+          </td>
+        </tr>
+        <tr>
+          <td className="left">Bithomp Pro</td>
+          <td className="left">
+            <span className={`${styles.skeletonLine} ${styles.small}`}></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <br />
+    <div style={{ display: 'inline-flex', gap: '12px', alignItems: 'center', justifyContent: 'center' }}>
+      <span className={`button-action ${styles.skeletonAction}`}>
+        <span className={`${styles.skeletonLine} ${styles.buttonSkeletonLine}`}></span>
+      </span>
+      <span className={`button-action ${styles.skeletonAction}`}>
+        <span className={`${styles.skeletonLine} ${styles.buttonSkeletonLine}`}></span>
+      </span>
+    </div>
+  </>
+)
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -29,7 +61,8 @@ export default function Admin({
   sessionToken,
   setSessionToken,
   signOutPro,
-  openEmailLogin
+  openEmailLogin,
+  clientReady
 }) {
   const { t } = useTranslation()
 
@@ -39,11 +72,14 @@ export default function Admin({
   const [packageData, setPackageData] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [showPrioritySupport, setShowPrioritySupport] = useState(false)
+  const [profileLoaded, setProfileLoaded] = useState(false)
 
   useEffect(() => {
     redirectTokenRun()
     if (sessionToken) {
       getLoggedUserData()
+    } else {
+      setProfileLoaded(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionToken])
@@ -76,6 +112,7 @@ export default function Admin({
   }
 
   const getLoggedUserData = async () => {
+    setProfileLoaded(false)
     const data = await axiosAdmin.get('user').catch((error) => {
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
@@ -158,6 +195,7 @@ export default function Admin({
     } else {
       setCheckedPackageData(true)
     }
+    setProfileLoaded(true)
   }
 
   const onLogOut = () => {
@@ -168,6 +206,7 @@ export default function Admin({
     setPackageData(null)
     setCheckedPackageData(false)
     setShowPrioritySupport(false)
+    setProfileLoaded(false)
   }
 
   return (
@@ -179,12 +218,14 @@ export default function Admin({
         <AdminTabs name="mainTabs" tab="profile" />
 
         <div className="center">
-          {sessionToken && loggedUserData ? (
+          {!clientReady || (sessionToken && !profileLoaded) ? (
+            <AdminProfileSkeleton t={t} />
+          ) : sessionToken && loggedUserData ? (
             <>
               <table className="table-large no-hover shrink">
                 <tbody>
                   <tr>
-                    <td className="left">E-mail</td>
+                    <td className="left">{t('profile.email', { ns: 'admin' })}</td>
                     <td className="left">
                       <b>{loggedUserData.email}</b>
                     </td>
@@ -196,13 +237,13 @@ export default function Admin({
                         <>
                           {packageData ? (
                             <>
-                              <b className="green">Active</b>
+                              <b className="green">{t('status.active', { ns: 'admin' })}</b>
                               {packageData.expiredAt && (
-                                <> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}</>
+                                <> {t('profile.until', { ns: 'admin' })} {new Date(packageData.expiredAt * 1000).toLocaleDateString()}</>
                               )}
                             </>
                           ) : (
-                            <Link href="/admin/subscriptions?tab=pro">Activate</Link>
+                            <Link href="/admin/subscriptions?tab=pro">{t('button.activate', { ns: 'admin' })}</Link>
                           )}
                         </>
                       ) : (
@@ -223,17 +264,18 @@ export default function Admin({
                     onClick={() => setShowPrioritySupport((visible) => !visible)}
                     type="button"
                   >
-                    Contact support
+                    {t('button.contact-support', { ns: 'admin' })}
                   </button>
                 )}
                 <button className="button-action" onClick={onLogOut}>
-                  Log out
+                  {t('button.logout', { ns: 'admin' })}
                 </button>
               </div>
               {packageData && partnerData && showPrioritySupport && (
                 <div id="priority-support-message">
                   <br />
-                  For priority support, please use subject <b>PRO user {partnerData.id}</b> when sending us an e-mail to{' '}
+                  {t('profile.priority-support-before', { ns: 'admin' })} <b>PRO user {partnerData.id}</b>{' '}
+                  {t('profile.priority-support-after', { ns: 'admin' })}{' '}
                   <b>
                     <Mailto email="pro@bithomp.com" headers={{ subject: 'PRO user ' + partnerData.id }} />
                   </b>
@@ -244,16 +286,16 @@ export default function Admin({
           ) : (
             <>
               <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-                <p>– Manage your Bithomp Pro subscription.</p>
-                <p>– Search your account history and export data as CSV, including for tax purposes.</p>
-                <p>– Manage your API keys and view detailed API statistics.</p>
-                <p>– Access and organize your Watchlist.</p>
-                <p>– Set avatars and manage bots for your accounts.</p>
+                <p>- {t('profile.guest.pro', { ns: 'admin' })}</p>
+                <p>- {t('profile.guest.history', { ns: 'admin' })}</p>
+                <p>- {t('profile.guest.api', { ns: 'admin' })}</p>
+                <p>- {t('profile.guest.watchlist', { ns: 'admin' })}</p>
+                <p>- {t('profile.guest.avatars', { ns: 'admin' })}</p>
               </div>
               <br />
               <center>
                 <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
+                  {t('button.register-sign-in', { ns: 'admin' })}
                 </button>
               </center>
             </>

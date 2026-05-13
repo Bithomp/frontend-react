@@ -46,13 +46,13 @@ const getRewardStatus = (reward) => {
 
 const badge = (text, colorClass) => <span className={colorClass}>{text}</span>
 
-const checkCell = (reward) => {
+const checkCell = (reward, t) => {
   // No reward => self purchase => not eligible
-  if (!reward) return badge('not eligible', 'orange')
+  if (!reward) return badge(t('referrals.status.not-eligible'), 'orange')
 
   // Reward exists but cannot issue (no create tx hash) => not issued (no links)
   // This is separate from "failed" status (which is missing checkID).
-  if (!reward.checkCreateTxHash) return badge('not issued', 'red')
+  if (!reward.checkCreateTxHash) return badge(t('referrals.status.not-issued'), 'red')
 
   const st = getRewardStatus(reward)
 
@@ -60,7 +60,7 @@ const checkCell = (reward) => {
   if (st === 'cashed' && reward.checkCashedTxHash) {
     return (
       <>
-        {badge('cashed', 'green')} <LinkTx tx={reward.checkCashedTxHash} icon={true} />
+        {badge(t('referrals.status.cashed'), 'green')} <LinkTx tx={reward.checkCashedTxHash} icon={true} />
       </>
     )
   }
@@ -68,19 +68,19 @@ const checkCell = (reward) => {
   if (st === 'canceled' && reward.checkCanceledTxHash) {
     return (
       <>
-        {badge('canceled', 'red')} <LinkTx tx={reward.checkCanceledTxHash} icon={true} />
+        {badge(t('referrals.status.canceled'), 'red')} <LinkTx tx={reward.checkCanceledTxHash} icon={true} />
       </>
     )
   }
 
   if (st === 'failed') {
-    return badge('failed', 'red')
+    return badge(t('referrals.status.failed'), 'red')
   }
 
   if (st === 'expired') {
     return (
       <>
-        {badge('expired', 'red')} <LinkTx tx={reward.checkCreateTxHash} icon={true} />
+        {badge(t('referrals.status.expired'), 'red')} <LinkTx tx={reward.checkCreateTxHash} icon={true} />
       </>
     )
   }
@@ -88,7 +88,7 @@ const checkCell = (reward) => {
   // issued
   return (
     <>
-      {badge('issued', 'green')} <LinkTx tx={reward.checkCreateTxHash} icon={true} />
+      {badge(t('referrals.status.issued'), 'green')} <LinkTx tx={reward.checkCreateTxHash} icon={true} />
     </>
   )
 }
@@ -194,13 +194,13 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     setErrorMessage('')
 
     if (!address) {
-      setErrorMessage('Please enter a destination address for rewards.')
+      setErrorMessage(t('referrals.errors.address-required', { ns: 'admin' }))
       addressRef.current?.focus?.()
       return
     }
 
     if (!isAddressValid(address)) {
-      setErrorMessage('Invalid address.')
+      setErrorMessage(t('referrals.errors.address-invalid', { ns: 'admin' }))
       addressRef.current?.focus?.()
       return
     }
@@ -226,13 +226,13 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     setErrorMessage('')
 
     if (!address) {
-      setErrorMessage('Please enter a destination address for rewards.')
+      setErrorMessage(t('referrals.errors.address-required', { ns: 'admin' }))
       addressRef.current?.focus?.()
       return
     }
 
     if (!isAddressValid(address)) {
-      setErrorMessage('Invalid address.')
+      setErrorMessage(t('referrals.errors.address-invalid', { ns: 'admin' }))
       addressRef.current?.focus?.()
       return
     }
@@ -264,50 +264,53 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
   return (
     <>
-      <SEO title="Referrals" />
+      <SEO title={t('tabs.referrals', { ns: 'admin' })} />
 
       <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
         <AdminTabs name="mainTabs" tab="referrals" />
 
-        <h4 className="center">Affiliate program</h4>
+        <h4 className="center">{t('referrals.title', { ns: 'admin' })}</h4>
 
         <p>
-          Join our Affiliate Program and earn <b>10% commission</b> on paid services.
+          {t('referrals.intro-before', { ns: 'admin' })} <b>{t('referrals.commission', { ns: 'admin' })}</b>{' '}
+          {t('referrals.intro-after', { ns: 'admin' })}
         </p>
 
-        <p>You earn 10% when your referral purchases:</p>
+        <p>{t('referrals.earn-when', { ns: 'admin' })}</p>
         <ul>
           <li>
             <Link href="/username">Username</Link>
           </li>
           <li>
-            <Link href="/admin/subscriptions">Bithomp Pro</Link> subscription
+            <Link href="/admin/subscriptions">Bithomp Pro</Link> {t('subscriptions.subscription', { ns: 'admin' })}
           </li>
           <li>
-            <Link href="/admin/subscriptions?tab=api">API access</Link>
+            <Link href="/admin/subscriptions?tab=api">{t('referrals.api-access', { ns: 'admin' })}</Link>
           </li>
         </ul>
 
         <p>
-          Commissions are paid <b>instantly</b> as an <b>{ledgerName} Check</b>, which you can <b>redeem immediately</b>{' '}
-          to receive your funds.
+          {t('referrals.paid-before', { ns: 'admin' })} <b>{t('referrals.instantly', { ns: 'admin' })}</b>{' '}
+          {t('referrals.paid-as', { ns: 'admin' })} <b>{ledgerName} Check</b>,{' '}
+          {t('referrals.paid-after', { ns: 'admin' })}
         </p>
 
         {!referral && (
           <>
-            <p>How it works:</p>
+            <p>{t('referrals.how-it-works', { ns: 'admin' })}</p>
             <ul>
-              <li>Get your personal referral link</li>
-              <li>Share it with your audience</li>
-              <li>Earn 10% commission on every completed purchase</li>
+              <li>{t('referrals.steps.link', { ns: 'admin' })}</li>
+              <li>{t('referrals.steps.share', { ns: 'admin' })}</li>
+              <li>{t('referrals.steps.earn', { ns: 'admin' })}</li>
             </ul>
           </>
         )}
 
         <p>
-          There is <b>no limit</b> to your earnings.
+          {t('referrals.no-limit-before', { ns: 'admin' })} <b>{t('referrals.no-limit', { ns: 'admin' })}</b>{' '}
+          {t('referrals.no-limit-after', { ns: 'admin' })}
         </p>
 
         {sessionToken ? (
@@ -324,32 +327,36 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
               <>
                 {/* Code section */}
                 <div>
-                  <h4 className="center">Your referral links</h4>
+                  <h4 className="center">{t('referrals.links-title', { ns: 'admin' })}</h4>
 
                   {referral ? (
                     <>
                       <details>
                         <summary style={{ cursor: 'pointer' }}>
-                          <span className="link bold">How it works</span> (links, tracking, examples)
+                          <span className="link bold">{t('referrals.how-it-works', { ns: 'admin' })}</span>{' '}
+                          ({t('referrals.how-summary', { ns: 'admin' })})
                         </summary>
 
                         <div>
                           <p>
-                            Your referral code works on <b>any</b> link on {siteName}. Add{' '}
-                            <b>?ref={referral?.referralCode}</b> to links to a <b>transaction</b>, <b>account</b>,{' '}
-                            <b>NFT</b>, or any other page.
+                            {t('referrals.code-works-before', { ns: 'admin' })} <b>{t('referrals.any', { ns: 'admin' })}</b>{' '}
+                            {t('referrals.code-works-on', { ns: 'admin', siteName })}{' '}
+                            <b>?ref={referral?.referralCode}</b> {t('referrals.code-works-after', { ns: 'admin' })}
                           </p>
                           <p>
-                            When someone opens such a link, the code is <b>saved in their browser</b>. If they purchase
-                            later, you receive the reward automatically.
+                            {t('referrals.browser-save-before', { ns: 'admin' })}{' '}
+                            <b>{t('referrals.browser-save-bold', { ns: 'admin' })}</b>.{' '}
+                            {t('referrals.browser-save-after', { ns: 'admin' })}
                           </p>
 
                           {referralLinks && (
                             <>
                               <p>
-                                Your <span className="bold">Bithomp Pro</span> link{' '}
-                                <CopyButton text={referralLinks.pro} />, <span className="bold">API</span> link{' '}
-                                <CopyButton text={referralLinks.api} />, <span className="bold">Username</span> link{' '}
+                                {t('referrals.your-links-before', { ns: 'admin' })}{' '}
+                                <span className="bold">Bithomp Pro</span> {t('referrals.link', { ns: 'admin' })}{' '}
+                                <CopyButton text={referralLinks.pro} />, <span className="bold">API</span>{' '}
+                                {t('referrals.link', { ns: 'admin' })} <CopyButton text={referralLinks.api} />,
+                                <span className="bold"> Username</span> {t('referrals.link', { ns: 'admin' })}{' '}
                                 <CopyButton text={referralLinks.username} />
                               </p>
                             </>
@@ -357,29 +364,26 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                         </div>
                       </details>
                       <p>
-                        Example: <span className="brake bold">{referralLinks.landing}</span>{' '}
+                        {t('referrals.example', { ns: 'admin' })}: <span className="brake bold">{referralLinks.landing}</span>{' '}
                         <CopyButton text={referralLinks.landing} />
                       </p>
                     </>
                   ) : (
-                    <p>You don’t have a referral code yet. Enter a destination address for rewards and request one.</p>
+                    <p>{t('referrals.no-code', { ns: 'admin' })}</p>
                   )}
                 </div>
 
                 <div>
                   <br />
-                  <h4 className="center">Payout address</h4>
+                  <h4 className="center">{t('referrals.payout-address', { ns: 'admin' })}</h4>
                   <details style={{ margin: '0 auto 16px' }}>
                     <summary style={{ cursor: 'pointer' }}>
-                      <span className="bold blue">Important requirements</span> (activated wallet, no exchanges, no
-                      self-referrals)
+                      <span className="bold blue">{t('referrals.requirements-title', { ns: 'admin' })}</span>{' '}
+                      ({t('referrals.requirements-summary', { ns: 'admin' })})
                     </summary>
 
                     <p style={{ marginTop: 10 }}>
-                      ⚠️ The destination address for referral rewards must be an <b>activated</b>, self-custody wallet
-                      you control. Do
-                      <b> not</b> use exchange/custodial addresses or addresses that require a Destination Tag. Rewards
-                      are sent via on-ledger <b>Checks</b> and may be lost. <b>Self-referrals are not allowed</b>.
+                      {t('referrals.requirements-text', { ns: 'admin' })}
                     </p>
                   </details>
                 </div>
@@ -387,17 +391,17 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                   <table className="table-large no-hover">
                     <tbody>
                       <tr>
-                        <td className="right">Created</td>
+                        <td className="right">{t('table.created', { ns: 'admin' })}</td>
                         <td className="left">{fullDateAndTime(referral.createdAt)}</td>
                       </tr>
                       {referral.createdAt !== referral.updatedAt && (
                         <tr>
-                          <td className="right">Updated</td>
+                          <td className="right">{t('table.updated', { ns: 'admin' })}</td>
                           <td className="left">{fullDateAndTime(referral.updatedAt)}</td>
                         </tr>
                       )}
                       <tr>
-                        <td className="right">Payout address</td>
+                        <td className="right">{t('referrals.payout-address', { ns: 'admin' })}</td>
                         <td className="left">
                           {!editingAddress ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
@@ -406,8 +410,8 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                               <button
                                 className="button-icon"
                                 type="button"
-                                aria-label="Edit destination address"
-                                title="Edit"
+                                aria-label={t('referrals.edit-address', { ns: 'admin' })}
+                                title={t('button.edit', { ns: 'admin' })}
                                 onClick={() => {
                                   setEditingAddress(true)
                                   setTimeout(() => addressRef.current?.focus?.(), 0)
@@ -420,7 +424,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                               <div style={{ minWidth: 320, flex: '1 1 420px' }}>
                                 <AddressInput
-                                  placeholder={'Enter ' + ledgerName + ' address'}
+                                  placeholder={t('referrals.address-placeholder', { ns: 'admin', ledgerName })}
                                   setInnerValue={setAddress}
                                   hideButton={true}
                                   rawData={referral}
@@ -432,8 +436,8 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                               <button
                                 className="button-icon"
                                 type="button"
-                                aria-label="Save destination address"
-                                title="Save"
+                                aria-label={t('referrals.save-address', { ns: 'admin' })}
+                                title={t('button.save', { ns: 'admin' })}
                                 onClick={savePayoutAddress}
                                 disabled={savingAddress}
                               >
@@ -443,8 +447,8 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                               <button
                                 className="button-icon"
                                 type="button"
-                                aria-label="Cancel"
-                                title="Cancel"
+                                aria-label={t('button.cancel', { ns: 'admin' })}
+                                title={t('button.cancel', { ns: 'admin' })}
                                 onClick={() => {
                                   setAddress(referral.address || '')
                                   setEditingAddress(false)
@@ -464,7 +468,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                 ) : (
                   <div style={{ width: 520, maxWidth: '100%', margin: '20px auto 0' }}>
                     <AddressInput
-                      placeholder={'Enter ' + ledgerName + ' address'}
+                      placeholder={t('referrals.address-placeholder', { ns: 'admin', ledgerName })}
                       setInnerValue={setAddress}
                       hideButton={true}
                       type="address"
@@ -474,7 +478,8 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
                     <div className="center" style={{ marginTop: 16 }}>
                       <button className="button-action" onClick={requestCode} disabled={savingAddress}>
-                        Request referral code {savingAddress && <span className="waiting inline"></span>}
+                        {t('referrals.request-code', { ns: 'admin' })}{' '}
+                        {savingAddress && <span className="waiting inline"></span>}
                       </button>
                     </div>
                   </div>
@@ -485,22 +490,19 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                 {issuedChecksCount > 0 && referral?.address ? (
                   <div className="box center" style={{ maxWidth: 900, margin: '0 auto 16px' }}>
                     <span className="orange bold">
-                      You have {issuedChecksCount} unredeemed Check{issuedChecksCount > 1 ? 's' : ''}.
+                      {t('referrals.unredeemed', { ns: 'admin', count: issuedChecksCount })}
                     </span>{' '}
-                    Go to your address and redeem {issuedChecksCount > 1 ? 'them' : 'it'}:{' '}
+                    {t('referrals.redeem', { ns: 'admin', count: issuedChecksCount })}:{' '}
                     <LinkAccount address={referral.address} />
                   </div>
                 ) : null}
 
                 {/* Payments */}
                 <div>
-                  <h4 className="center">Payments</h4>
+                  <h4 className="center">{t('referrals.payments', { ns: 'admin' })}</h4>
 
                   <p>
-                    This table shows all payments made using your referral code. If <span className="bold">Reward</span>{' '}
-                    is missing, the payment is not eligible (self-purchase). If Reward exists but the{' '}
-                    <span className="bold">Check</span> is <span className="bold">not issued</span>, we could not create
-                    the on-ledger Check. 🕒 Checks expire in <span className="bold">1 month</span>.
+                    {t('referrals.payments-note', { ns: 'admin' })}
                   </p>
 
                   {Array.isArray(paymentsData?.payments) && paymentsData.payments.length ? (
@@ -509,11 +511,11 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                         <table className="table-large no-hover">
                           <thead>
                             <tr>
-                              <th>Date & Time</th>
-                              <th>Service</th>
-                              <th>Reward amount</th>
-                              <th>Check</th>
-                              <th>Check expires</th>
+                              <th>{t('table.date-time', { ns: 'admin' })}</th>
+                              <th>{t('table.service', { ns: 'admin' })}</th>
+                              <th>{t('referrals.reward-amount', { ns: 'admin' })}</th>
+                              <th>{t('table.check', { ns: 'admin' })}</th>
+                              <th>{t('referrals.check-expires', { ns: 'admin' })}</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -522,7 +524,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                                 <td>{fullDateAndTime(p.paidAt)}</td>
                                 <td>{bidFullServiceName(p)}</td>
                                 <td className="right">{p.reward?.amount ? amountFormat(p.reward.amount) : ''}</td>
-                                <td>{checkCell(p.reward)}</td>
+                                <td>{checkCell(p.reward, (key) => t(key, { ns: 'admin' }))}</td>
                                 <td>
                                   {getRewardStatus(p.reward) === 'issued' ? (
                                     <>
@@ -547,13 +549,23 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                                   <b>{i + 1}</b>
                                 </td>
                                 <td>
-                                  <p>Date & Time: {fullDateAndTime(p.paidAt)}</p>
-                                  <p>Service: {bidFullServiceName(p)}</p>
-                                  {p.reward?.amount ? <p>Reward amount: {amountFormat(p.reward.amount)}</p> : null}
-                                  <p>Check: {checkCell(p.reward)}</p>
+                                  <p>
+                                    {t('table.date-time', { ns: 'admin' })}: {fullDateAndTime(p.paidAt)}
+                                  </p>
+                                  <p>
+                                    {t('table.service', { ns: 'admin' })}: {bidFullServiceName(p)}
+                                  </p>
+                                  {p.reward?.amount ? (
+                                    <p>
+                                      {t('referrals.reward-amount', { ns: 'admin' })}: {amountFormat(p.reward.amount)}
+                                    </p>
+                                  ) : null}
+                                  <p>
+                                    {t('table.check', { ns: 'admin' })}: {checkCell(p.reward, (key) => t(key, { ns: 'admin' }))}
+                                  </p>
                                   {getRewardStatus(p.reward) === 'issued' ? (
                                     <p>
-                                      Check expires: {timeFromNow(p.reward.expirationAt, i18n)}
+                                      {t('referrals.check-expires', { ns: 'admin' })}: {timeFromNow(p.reward.expirationAt, i18n)}
                                       <br />
                                       {fullDateAndTime(p.reward.expirationAt, 'expiration')}
                                     </p>
@@ -566,7 +578,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                       )}
                     </>
                   ) : (
-                    <p>No payments yet.</p>
+                    <p>{t('referrals.no-payments', { ns: 'admin' })}</p>
                   )}
                 </div>
               </>
@@ -580,7 +592,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
           <div className="center">
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
-                Register or Sign In
+                {t('button.register-sign-in', { ns: 'admin' })}
               </button>
             </center>
           </div>

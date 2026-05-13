@@ -169,7 +169,7 @@
       "transaction-id-tracking": "Suivi de l'ID de transaction",
       "global-freeze": "Gel global",
       "authorized-minter": "Minter autorisé",
-      "trustline-clawback": "Clawback de trustline",
+      "trustline-clawback": "Trustline Clawback",
       "specified-sell-exactly": "Vendre exactement le montant indiqué",
       "specified-pay-up-to": "Payer jusqu'à",
       "specified-receive-at-least": "Recevoir au moins",
@@ -209,7 +209,7 @@
       "offer-id": "Offer ID",
       "expiration": "Expiration",
       "check-id": "Check ID",
-      "expire": "Expire",
+      "expire": "Expiration",
       "unlock": "Déverrouillage",
       "escrow-id": "Escrow ID",
       "offer-type": "Type d'offre",
@@ -311,7 +311,7 @@
       "paychannels": "Canaux de paiement",
       "outgoing-paychannels": "Canaux de paiement sortants",
       "incoming-paychannels": "Canaux de paiement entrants",
-      "transactions": "Transactions",
+      "transactions": "Opérations",
       "issuer-settings": "Paramètres de l'émetteur",
       "issued-tokens": "Tokens émis",
       "issued-mpts": "MPT émis",
@@ -433,20 +433,20 @@
     },
     "account-control": {
       "blackholed": "Blackholed",
-      "regular-key-and-multisig": "regKey + multisig",
+      "regular-key-and-multisig": "regKey + multisignature",
       "regular-key-short": "regKey",
       "multisig": "multisig",
       "master-disabled": "master désactivé",
       "free-rekey-spent": "changement de clé gratuit utilisé",
-      "standard": "standard"
+      "standard": "norme"
     },
     "issuer-settings": {
       "global-freeze": "gel global",
       "fee": "frais {{fee}}",
-      "rippling": "rippling",
-      "clawback": "clawback",
+      "rippling": "Rippling",
+      "clawback": "Clawback",
       "no-freeze": "sans gel",
-      "escrow": "escrow",
+      "escrow": "Escrow",
       "not-configured": "non configuré"
     },
     "achievements": {

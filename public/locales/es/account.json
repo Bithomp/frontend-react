@@ -169,7 +169,7 @@
       "transaction-id-tracking": "Seguimiento de ID de transacción",
       "global-freeze": "Congelación global",
       "authorized-minter": "Emisor autorizado",
-      "trustline-clawback": "Clawback de trustline",
+      "trustline-clawback": "Trustline Clawback",
       "specified-sell-exactly": "Vender exactamente lo indicado",
       "specified-pay-up-to": "Pagar hasta",
       "specified-receive-at-least": "Recibir al menos",
@@ -323,7 +323,7 @@
     "tabs": {
       "all": "Todos",
       "tokens": "Tokens",
-      "tokens-lower": "tokens",
+      "tokens-lower": "fichas",
       "lp-tokens": "Tokens LP",
       "nfts": "NFT",
       "private-lower": "privadas",
@@ -443,10 +443,10 @@
     "issuer-settings": {
       "global-freeze": "congelación global",
       "fee": "comisión {{fee}}",
-      "rippling": "rippling",
-      "clawback": "clawback",
+      "rippling": "Rippling",
+      "clawback": "Clawback",
       "no-freeze": "sin congelación",
-      "escrow": "escrow",
+      "escrow": "Escrow",
       "not-configured": "no configurado"
     },
     "achievements": {

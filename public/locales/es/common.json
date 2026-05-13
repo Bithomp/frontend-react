@@ -49,7 +49,7 @@
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer",
+      "explorer": "Explorador AMM",
       "learn": "¿Qué es AMM?",
       "deposit": "Depósito AMM",
       "withdraw": "Retiro AMM",
@@ -94,7 +94,7 @@
     },
     "network": {
       "blockchain": "Blockchain",
-      "dapps": "Dapps",
+      "dapps": "DApps",
       "nodes": "Nodos",
       "governance": "Gobierno",
       "activations": "Cuentas activadas (gráfica)",
@@ -135,7 +135,7 @@
       "my-addresses": "Mis direcciones",
       "api-management": "Gestión de API"
     },
-    "legal": "Legal",
+    "legal": "Legales",
     "disclaimer": "Advertencia",
     "privacy-policy": "Política de privacidad",
     "terms-and-conditions": "Términos y condiciones",
@@ -170,8 +170,8 @@
       "90d": "90 días"
     },
     "target-table-select": {
-      "01": "L1 - Main table",
-      "02": "L2 - My table"
+      "01": "L1 - Mesa principal",
+      "02": "L2 - Mi mesa"
     }
   },
   "signin": {
@@ -186,7 +186,7 @@
       "enter-amount": "Introducir cantidad"
     },
     "expiration": "Caducidad",
-    "target-table": "Target table",
+    "target-table": "Tabla de objetivos",
     "statuses": {
       "check-app": "Por favor, sigue las siguientes instrucciones en tu app {{appName}}."
     },
@@ -220,7 +220,7 @@
       "nft-accept-offer": "Admito que {{webSiteName}} me da acceso a un mercado descentralizado, y que no puede ser verificada o garantizada la autenticidad y legitimidad de ningún NFT. Confirmo que he leido los <4>Términos y condiciones</4>, y estoy conforme con todos los términos de compra, venta o uso de cualquier NFT en {{webSiteName}}.",
       "nft-create-sell-offer": "Comprendo, que una vez firmado el listado, el NFT puede ser adquirido instantaneamente.",
       "nft-burn-header": "Quemando el NFT",
-      "nft-burn": "Entiendo que el NFT será eliminado permanéntemente, queriendo decir que no podrá ser poseido,trasnsferido, comprado o vendido. Esta acción es irreversible."
+      "nft-burn": "Entiendo que el NFT será eliminado permanentemente, lo que significa que no podrá ser poseído, transferido, comprado ni vendido. Esta acción es irreversible."
     },
     "set-account": {
       "domain": "Dominio",
@@ -248,7 +248,7 @@
     }
   },
   "home": {
-    "title": "{{homeExplorerName}} | Busca transacciones, cuentas, NFT y datos del ledger",
+    "title": "{{homeExplorerName}} | Busca transacciones, cuentas, NFT y datos de {{nativeCurrency}}",
     "description": "{{homeExplorerAttribution}} te permite buscar y explorar direcciones {{nativeCurrency}}, transacciones, tokens, NFT, saldos y actividad on-chain en {{ledgerName}}. Opera, crea NFT, gestiona AMM, envía transacciones y usa herramientas de cuenta.",
     "h1": "{{homeExplorerName}} y herramientas del ledger",
     "search-placeholder": "Buscar por Dirección / Transacción / NFT / Nombre de usuario / PayString / Oferta",
@@ -288,7 +288,7 @@
       "nodes": "Nodos"
     },
     "teaser": {
-      "topDapps": "Top Dapps",
+      "topDapps": "Mejores Dapps",
       "topNftCollections": "Top Colecciones NFT",
       "topTokens": "Top Tokens",
       "topAmms": "Top Pools AMM",
@@ -552,7 +552,7 @@
     "type": "Tipo",
     "status": "Estado",
     "hash": "Hash",
-    "serial": "Serial",
+    "serial": "Serie",
     "taxon": "Taxón",
     "placed": "Creado",
     "accepted": "Aceptado",
@@ -577,7 +577,7 @@
     "transferred": "Transferido",
     "burned": "Quemado",
     "attributes": "Atributos",
-    "metadata": "Metadata",
+    "metadata": "Metadatos",
     "ledger-data": "Ledger-data",
     "history": "Histórico",
     "sell-offers": "Ofertas de venta",

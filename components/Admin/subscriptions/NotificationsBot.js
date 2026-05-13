@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
 import { explorerName, useWidth } from '../../../utils'
 import {
   ALERT_PLAN_TIERS,
@@ -24,18 +25,22 @@ const optionIndex = (val) => {
   }
 }
 
-const PlanTable = () => (
+const planLabel = (t, key, fallback) => t(`plans.${key}`, { defaultValue: fallback })
+const planDescription = (t, key, options) => t(`subscriptions.alerts.plan-description.${key}`, options)
+const periodLabel = (t, value) => t(`period.${value}`, value)
+
+const PlanTable = ({ t }) => (
   <div className="alerts-plan-table-wrap">
     <table className="table-large no-hover alerts-plan-table alerts-plan-table-desktop">
       <thead>
         <tr>
-          <th>Tier</th>
-          <th>Price</th>
-          <th>Channels</th>
-          <th>Rules</th>
-          <th>Alerts/day</th>
-          <th>Alerts/week</th>
-          <th>Description</th>
+          <th>{t('api.tier')}</th>
+          <th>{t('table.price')}</th>
+          <th>{t('notifications.channels.title')}</th>
+          <th>{t('notifications.rules.title')}</th>
+          <th>{t('subscriptions.alerts.alerts-day')}</th>
+          <th>{t('subscriptions.alerts.alerts-week')}</th>
+          <th>{t('table.description')}</th>
         </tr>
       </thead>
       <tbody>
@@ -44,13 +49,13 @@ const PlanTable = () => (
           return (
             <tr key={key}>
               <td>
-                <b>{plan.label}</b>
+                <b>{planLabel(t, key, plan.label)}</b>
               </td>
               <td className="alerts-plan-price">
                 {plan.prices ? (
                   <>
-                    <span>{plan.prices.month.eur} EUR / month</span>
-                    <span>or {plan.prices.year.eur} EUR / year</span>
+                    <span>{t('subscriptions.alerts.price-month', { price: plan.prices.month.eur })}</span>
+                    <span>{t('subscriptions.alerts.price-year-alt', { price: plan.prices.year.eur })}</span>
                   </>
                 ) : (
                   plan.price
@@ -61,11 +66,7 @@ const PlanTable = () => (
               <td className="right">{plan.executionsDay}</td>
               <td className="right">{plan.executionsWeek}</td>
               <td>
-                {key === 'basic'
-                  ? `For personal ${explorerName} monitoring and small alert setups.`
-                  : key === 'standard'
-                    ? `For active ${explorerName} monitoring with more channels, rules, and alert volume.`
-                    : plan.description}
+                {planDescription(t, key, { explorerName, defaultValue: plan.description })}
               </td>
             </tr>
           )
@@ -78,27 +79,25 @@ const PlanTable = () => (
         return (
           <div className="alerts-plan-card" key={key}>
             <div className="alerts-plan-card-header">
-              <strong>{plan.label}</strong>
-              <span>{plan.prices ? `${plan.prices.month.eur} EUR / month` : plan.price}</span>
+              <strong>{planLabel(t, key, plan.label)}</strong>
+              <span>{plan.prices ? t('subscriptions.alerts.price-month', { price: plan.prices.month.eur }) : plan.price}</span>
             </div>
-            {plan.prices && <div className="alerts-plan-card-price">or {plan.prices.year.eur} EUR / year</div>}
+            {plan.prices && (
+              <div className="alerts-plan-card-price">
+                {t('subscriptions.alerts.price-year-alt', { price: plan.prices.year.eur })}
+              </div>
+            )}
             <div className="alerts-plan-card-grid">
-              <span>Channels</span>
+              <span>{t('notifications.channels.title')}</span>
               <strong>{plan.connections}</strong>
-              <span>Rules</span>
+              <span>{t('notifications.rules.title')}</span>
               <strong>{plan.listeners}</strong>
-              <span>Alerts/day</span>
+              <span>{t('subscriptions.alerts.alerts-day')}</span>
               <strong>{plan.executionsDay}</strong>
-              <span>Alerts/week</span>
+              <span>{t('subscriptions.alerts.alerts-week')}</span>
               <strong>{plan.executionsWeek}</strong>
             </div>
-            <p>
-              {key === 'basic'
-                ? `For personal ${explorerName} monitoring and small alert setups.`
-                : key === 'standard'
-                  ? `For active ${explorerName} monitoring with more channels, rules, and alert volume.`
-                  : plan.description}
-            </p>
+            <p>{planDescription(t, key, { explorerName, defaultValue: plan.description })}</p>
           </div>
         )
       })}
@@ -195,17 +194,21 @@ const PlanTable = () => (
 )
 
 export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
+  const { t } = useTranslation('admin')
   const normalizedTier = getPaidAlertPlanTier(tier)
+  const translatedPlanOptions = (tier) =>
+    alertPlanOptionList(tier).map((option) => ({ ...option, label: periodLabel(t, option.value) }))
   const [innerTier, setInnerTier] = useState(normalizedTier)
-  const [optionValue, setOptionValue] = useState(alertPlanOptionList(normalizedTier)[1])
+  const [optionValue, setOptionValue] = useState(translatedPlanOptions(normalizedTier)[1])
   const width = useWidth()
 
-  const optionsList = alertPlanOptionList(innerTier)
-  const selectedTierOption = alertTierOptions.find((option) => option.value === innerTier) || alertTierOptions[1]
+  const optionsList = translatedPlanOptions(innerTier)
+  const translatedTierOptions = alertTierOptions.map((option) => ({ ...option, label: planLabel(t, option.value, option.label) }))
+  const selectedTierOption = translatedTierOptions.find((option) => option.value === innerTier) || translatedTierOptions[1]
 
   useEffect(() => {
     const index = optionIndex(optionValue.value)
-    const selectedOption = alertPlanOptionList(innerTier)[index]
+    const selectedOption = translatedPlanOptions(innerTier)[index]
     setTier(innerTier)
     setOptionValue(selectedOption)
     setPayPeriod(selectedOption.value)
@@ -214,26 +217,26 @@ export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
 
   return (
     <>
-      <h4 className="center">Why Purchase an Alerts Bot Subscription?</h4>
+      <h4 className="center">{t('subscriptions.alerts.why-title')}</h4>
       <div style={{ textAlign: 'left' }}>
-        <p>Use alert channels and rules to receive updates for {explorerName} activity.</p>
-        <p>✅ Send alerts to Email, Discord, Slack, or X/Twitter.</p>
+        <p>{t('subscriptions.alerts.intro', { explorerName })}</p>
+        <p>{t('subscriptions.alerts.destinations')}</p>
         <p>
-          ✅ Create NFT sale, NFT listing, and Pro address balance-change rules on the{' '}
-          <Link href="/admin/notifications">Alerts page</Link>.
+          {t('subscriptions.alerts.rules-before')}{' '}
+          <Link href="/admin/notifications">{t('tabs.alerts')}</Link>.
         </p>
         <p>
-          ✅ Balance change alerts require verified addresses with balance history enabled in{' '}
-          <Link href="/admin/pro">My addresses</Link>.
+          {t('subscriptions.alerts.balance-before')}{' '}
+          <Link href="/admin/pro">{t('tabs.my-addresses')}</Link>.
         </p>
-        <PlanTable />
+        <PlanTable t={t} />
       </div>
 
-      <p>Subscribe to Alerts Bot!</p>
+      <p>{t('subscriptions.alerts.subscribe')}</p>
 
       <div className="alerts-subscribe-selects center">
         <Select
-          options={alertTierOptions}
+          options={translatedTierOptions}
           getOptionLabel={(option) => <div style={{ width: width > 400 ? '110px' : '160px' }}>{option.label}</div>}
           onChange={(selected) => {
             setInnerTier(selected.value)
@@ -256,7 +259,7 @@ export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
             setPayPeriod(selected.value)
             setOptionValue(selected)
           }}
-          defaultValue={alertPlanOptionList(normalizedTier)[1]}
+          defaultValue={translatedPlanOptions(normalizedTier)[1]}
           isSearchable={false}
           className="simple-select"
           classNamePrefix="react-select"

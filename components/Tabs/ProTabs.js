@@ -1,12 +1,14 @@
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import Tabs from '.'
 
 export default function ProTabs({ tab }) {
   const router = useRouter()
+  const { t } = useTranslation('admin')
 
   const tabList = [
-    { value: 'addresses', label: 'Addresses' },
-    { value: 'balance-changes', label: 'Balance changes' }
+    { value: 'addresses', label: t('tabs.pro.addresses') },
+    { value: 'balance-changes', label: t('tabs.pro.balance-changes') }
   ]
 
   const changePage = (tab) => {

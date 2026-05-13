@@ -10,7 +10,7 @@
     "tecCANT_ACCEPT_OWN_NFTOKEN_OFFER": "该交易试图接受同一账户发出的购买或出售不可替代代币的要约。",
     "tecCLAIM": "未指定的失败，交易成本被破坏。",
     "tecCRYPTOCONDITION_ERROR": "此 EscrowCreate 或 EscrowFinish 事务包含格式错误或不匹配的加密条件。",
-    "tecDIR_FULL": "交易尝试将对象（例如信任线、支票、托管或支付渠道）添加到账户的所有者目录中，但该账户无法在账本中拥有更多对象。",
+    "tecDIR_FULL": "交易尝试将对象（例如信任线、支票、Escrow或支付渠道）添加到账户的所有者目录中，但该账户无法在账本中拥有更多对象。",
     "tecDUPLICATE": "事务尝试创建一个已存在的对象（例如 DepositPreauth 授权）。",
     "tecDST_TAG_NEEDED": "付款交易省略了目标标签，但目标账户启用了 lsfRequireDestTag 标志。",
     "tecEXPIRED": "交易尝试创建一个其提供的过期时间已过的对象（例如报价或支票）。",

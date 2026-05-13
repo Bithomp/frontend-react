@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { useTranslation } from 'next-i18next'
 import { MdDelete, MdEdit, MdHistory } from 'react-icons/md'
 
 import Card from '@/components/UI/Card'
@@ -11,39 +12,53 @@ import {
 } from '@/utils/notificationRules'
 
 const operatorMap = {
-  $eq: 'is',
-  $ne: 'is not',
+  $eq: 'notifications.operators.is',
+  $ne: 'notifications.operators.is-not',
   $gt: '>',
   $gte: '>=',
   $lt: '<',
   $lte: '<=',
-  $in: 'in',
-  $nin: 'not in',
-  $exists: 'exists'
+  $in: 'notifications.operators.in',
+  $nin: 'notifications.operators.not-in',
+  $exists: 'notifications.operators.exists'
 }
 
 const addressConditionFields = new Set(['account', 'address', 'currency_issuer', 'destination', 'issuer'])
 
 const fieldLabelMap = {
-  price_usd: 'price USD',
-  tx_type: 'transaction type'
+  account: 'notifications.filters.account',
+  address: 'notifications.filters.address',
+  amount: 'notifications.filters.amount',
+  currency: 'notifications.filters.token',
+  currency_issuer: 'notifications.filters.issuer',
+  destination: 'notifications.filters.destination',
+  issuer: 'notifications.filters.issuer',
+  known_broker: 'notifications.filters.known_broker',
+  price: 'notifications.filters.price',
+  price_usd: 'notifications.filters.price_usd',
+  taxon: 'notifications.filters.taxon',
+  token: 'notifications.filters.token',
+  tx_type: 'notifications.filters.tx_type'
 }
 
 const disableReasonMap = {
-  'errors.connection.not_found': 'The alert channel was not found.',
-  'errors.connection.settings_required': 'The alert channel is missing required settings.',
-  'errors.listener.disabled': 'The rule was disabled by the system.',
-  'errors.package.tier_required': 'Your current alerts plan does not allow this rule.',
-  'errors.package.limit_reached': 'Your current alerts plan limit was reached.'
+  'errors.connection.not_found': 'notifications.errors.connection-not-found',
+  'errors.connection.settings_required': 'notifications.errors.connection-settings-required',
+  'errors.listener.disabled': 'notifications.errors.listener-disabled',
+  'errors.package.tier_required': 'notifications.errors.package-tier-required',
+  'errors.package.limit_reached': 'notifications.errors.package-limit-reached'
 }
 
-const fieldLabel = (field) => fieldLabelMap[field] || field.replace(/[._]/g, ' ')
+const fieldLabel = (field, t) => {
+  const mapped = fieldLabelMap[field]
+  return mapped ? t(mapped) : field.replace(/[._]/g, ' ')
+}
 
 const isRuleEnabled = (enabled) => enabled !== false && enabled !== 0 && enabled !== '0' && enabled !== 'false'
 
-const formatDisableReason = (reason) => {
+const formatDisableReason = (reason, t) => {
   if (!reason) return ''
-  if (disableReasonMap[reason]) return disableReasonMap[reason]
+  if (disableReasonMap[reason]) return t(disableReasonMap[reason])
 
   return String(reason)
     .replace(/^errors\./, '')
@@ -51,8 +66,8 @@ const formatDisableReason = (reason) => {
     .replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
-function renderConditionValue(field, value) {
-  if (value === null) return 'none'
+function renderConditionValue(field, value, t) {
+  if (value === null) return t('common.none')
 
   if (Array.isArray(value)) {
     return (
@@ -65,7 +80,7 @@ function renderConditionValue(field, value) {
   }
 
   if (typeof value === 'boolean') {
-    return value ? 'yes' : 'no'
+    return value ? t('common.yes') : t('common.no')
   }
 
   if (addressConditionFields.has(field) && typeof value === 'string' && isAddressValid(value)) {
@@ -84,65 +99,67 @@ function joinConditionNodes(nodes, separator) {
   ))
 }
 
-function formatCondition(field, opObj) {
+function formatCondition(field, opObj, t) {
   if (typeof opObj !== 'object' || opObj === null) return null
   const nodes = Object.entries(opObj).map(([op, value]) => (
     <span className="notification-rule-filter-chip" key={`${field}-${op}`}>
-      <span>{fieldLabel(field)}</span>
-      <em>{operatorMap[op] || op}</em>
-      <strong>{renderConditionValue(field, value)}</strong>
+      <span>{fieldLabel(field, t)}</span>
+      <em>{operatorMap[op]?.startsWith?.('notifications.') ? t(operatorMap[op]) : operatorMap[op] || op}</em>
+      <strong>{renderConditionValue(field, value, t)}</strong>
     </span>
   ))
 
-  return joinConditionNodes(nodes, 'and')
+  return joinConditionNodes(nodes, t('notifications.operators.and'))
 }
 
-function parseConditions(conditions) {
+function parseConditions(conditions, t) {
   if (!conditions || typeof conditions !== 'object') return null
   const parts = []
 
   for (const [key, value] of Object.entries(conditions)) {
     if (key === '$or' && Array.isArray(value)) {
-      const orParts = value.map((sub) => parseConditions(sub)).filter(Boolean)
+      const orParts = value.map((sub) => parseConditions(sub, t)).filter(Boolean)
       if (orParts.length) {
         parts.push(
           <span className="notification-rule-filter-group" key={key}>
-            ({joinConditionNodes(orParts, 'OR')})
+            ({joinConditionNodes(orParts, t('notifications.operators.or'))})
           </span>
         )
       }
     } else if (typeof value === 'object' && value !== null) {
-      const condition = formatCondition(key, value)
+      const condition = formatCondition(key, value, t)
       if (condition) {
         parts.push(<Fragment key={key}>{condition}</Fragment>)
       }
     }
   }
 
-  return parts.length ? joinConditionNodes(parts, 'AND') : null
+  return parts.length ? joinConditionNodes(parts, t('notifications.operators.and')) : null
 }
 
 export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit, onExecutions, rule }) {
+  const { t } = useTranslation('admin')
   const eventLabel = getNotificationEventLabel(rule.event)
+  const channelLabel = rule.channel?.name || t(`notifications.channel-type.${rule.channel?.type}`, { defaultValue: rule.channel?.type })
   const settings = rule.settings || {}
-  const conditionText = parseConditions(settings.rules)
+  const conditionText = parseConditions(settings.rules, t)
   const enabled = isRuleEnabled(rule.enabled)
-  const disableReason = enabled ? '' : formatDisableReason(settings.disableReason)
+  const disableReason = enabled ? '' : formatDisableReason(settings.disableReason, t)
 
   return (
     <Card className="notification-card notification-rule-card">
       <div className="notification-card-header">
         <div>
-          <div className="notification-rule-title">{rule.name || `Rule #${rule.id}`}</div>
+          <div className="notification-rule-title">{rule.name || t('notifications.rule-number', { id: rule.id })}</div>
           <div className={`notification-rule-status ${enabled ? 'enabled' : 'paused'}`}>
-            {enabled ? 'Enabled' : 'Paused'}
+            {enabled ? t('status.enabled') : t('status.paused')}
           </div>
           {disableReason && <div className="notification-rule-disable-reason">{disableReason}</div>}
         </div>
         <div className="notification-card-actions">
           {onExecutions && (
             <button
-              aria-label="Show notification executions"
+              aria-label={t('notifications.actions.show-executions')}
               className="icon-button"
               disabled={loadingExecutions}
               onClick={() => onExecutions(rule)}
@@ -152,13 +169,18 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
             </button>
           )}
           {onEdit && (
-            <button aria-label="Edit notification rule" className="icon-button" onClick={() => onEdit(rule)} type="button">
+            <button
+              aria-label={t('notifications.actions.edit-rule')}
+              className="icon-button"
+              onClick={() => onEdit(rule)}
+              type="button"
+            >
               <MdEdit />
             </button>
           )}
           {onDelete && (
             <button
-              aria-label="Delete notification rule"
+              aria-label={t('notifications.actions.delete-rule')}
               className="icon-button notification-delete-button"
               disabled={deleting}
               onClick={() => onDelete(rule)}
@@ -171,31 +193,33 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
       </div>
       <div className="notification-rule-meta">
         <span>
-          <small>Event</small>
-          <strong>{eventLabel}</strong>
+          <small>{t('notifications.event')}</small>
+          <strong>{t(`notifications.events.${rule.event}.label`, { defaultValue: eventLabel })}</strong>
         </span>
         <span>
-          <small>Channel</small>
-          <strong>{rule.channel?.name || rule.channel?.type || 'Unknown'}</strong>
+          <small>{t('notifications.channel')}</small>
+          <strong>{channelLabel || t('common.unknown')}</strong>
         </span>
         <span>
-          <small>Fiat</small>
+          <small>{t('notifications.fiat')}</small>
           <strong>{getNotificationFiatCurrencyLabel(settings.fiatCurrency || 'usd')}</strong>
         </span>
       </div>
       <div className="notification-rule-options">
         {notificationEventSupports(rule.event, 'externalUrl') && (
           <span className={settings.externalUrl === false ? 'muted' : ''}>
-            External links {settings.externalUrl === false ? 'off' : 'on'}
+            {t('notifications.external-links')} {settings.externalUrl === false ? t('common.off') : t('common.on')}
           </span>
         )}
         {notificationEventSupports(rule.event, 'xrpCafeURL') && (
-          <span className={settings.xrpCafeURL ? '' : 'muted'}>XRP Cafe {settings.xrpCafeURL ? 'on' : 'off'}</span>
+          <span className={settings.xrpCafeURL ? '' : 'muted'}>
+            XRP Cafe {settings.xrpCafeURL ? t('common.on') : t('common.off')}
+          </span>
         )}
       </div>
       <div className="notification-rule-condition">
-        <span>Filters</span>
-        <strong>{conditionText || 'Every matching event'}</strong>
+        <span>{t('notifications.filters-title')}</span>
+        <strong>{conditionText || t('notifications.every-matching-event')}</strong>
       </div>
     </Card>
   )

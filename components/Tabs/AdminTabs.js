@@ -1,28 +1,30 @@
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import Tabs from '.'
 import { devNet } from '../../utils'
 
 export default function AdminTabs({ name, tab }) {
   const router = useRouter()
+  const { t } = useTranslation('admin')
 
   const mainTabs = [
-    { value: 'profile', label: 'Profile' },
-    { value: 'watchlist', label: 'Watchlist' },
-    { value: 'pro', label: 'My addresses' },
+    { value: 'profile', label: t('tabs.profile') },
+    { value: 'watchlist', label: t('tabs.watchlist') },
+    { value: 'pro', label: t('tabs.my-addresses') },
     { value: 'api', label: 'API' },
-    { value: 'notifications', label: 'Alerts' }
+    { value: 'notifications', label: t('tabs.alerts') }
   ]
 
   if (!devNet) {
-    mainTabs.splice(2, 0, { value: 'subscriptions', label: 'Subscriptions' })
-    mainTabs.splice(4, 0, { value: 'referrals', label: 'Referrals' })
+    mainTabs.splice(2, 0, { value: 'subscriptions', label: t('tabs.subscriptions') })
+    mainTabs.splice(4, 0, { value: 'referrals', label: t('tabs.referrals') })
   }
 
   const apiTabs = [
-    { value: 'api-info', label: 'Information' },
-    { value: 'api-statistics', label: 'Statistics' },
-    { value: 'api-requests', label: 'Requests' },
-    { value: 'api-charts', label: 'Charts' }
+    { value: 'api-info', label: t('tabs.api.information') },
+    { value: 'api-statistics', label: t('tabs.api.statistics') },
+    { value: 'api-requests', label: t('tabs.api.requests') },
+    { value: 'api-charts', label: t('tabs.api.charts') }
   ]
 
   const changePage = (tab) => {

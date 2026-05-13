@@ -1,3 +1,800 @@
 {
-  "header": "관리"
+  "header": "관리",
+  "tabs": {
+    "profile": "프로필",
+    "watchlist": "관심 목록",
+    "my-addresses": "내 주소",
+    "subscriptions": "구독",
+    "referrals": "추천",
+    "alerts": "알림",
+    "alerts-bot": "알림 봇",
+    "api": {
+      "information": "정보",
+      "statistics": "통계",
+      "requests": "요청",
+      "charts": "차트"
+    },
+    "pro": {
+      "addresses": "주소",
+      "balance-changes": "잔액 변경"
+    }
+  },
+  "button": {
+    "activate": "활성화",
+    "contact-support": "지원팀 문의",
+    "logout": "로그아웃",
+    "register-sign-in": "가입 또는 로그인",
+    "save": "저장",
+    "cancel": "취소",
+    "search": "검색",
+    "remove": "제거",
+    "add": "추가",
+    "view-history": "기록 보기",
+    "view": "보기",
+    "enable": "활성화",
+    "view-guide": "가이드 보기",
+    "set-avatar": "아바타 설정",
+    "verify": "확인",
+    "load-more-data": "데이터 더 불러오기",
+    "purchase": "구매",
+    "pay": "결제",
+    "edit": "수정",
+    "delete": "삭제"
+  },
+  "status": {
+    "active": "활성",
+    "expired": "만료됨",
+    "locked": "잠김",
+    "enabled": "활성화됨",
+    "paused": "일시 중지됨"
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "loading-data": "데이터 로딩 중...",
+    "no-data": "데이터 없음",
+    "no-data-to-show": "표시할 데이터 없음",
+    "not-found": "찾을 수 없음",
+    "never": "없음",
+    "any": "모두",
+    "yes": "예",
+    "no": "아니요",
+    "none": "없음",
+    "unknown": "알 수 없음",
+    "on": "켜짐",
+    "off": "꺼짐",
+    "saving": "저장 중...",
+    "deleting": "삭제 중...",
+    "try-again-later": "나중에 다시 시도하세요."
+  },
+  "general": {
+    "loading": "로딩 중..."
+  },
+  "table": {
+    "status": "상태",
+    "domain": "도메인",
+    "description": "설명",
+    "timestamp": "타임스탬프",
+    "response": "응답",
+    "country": "국가",
+    "count": "개수",
+    "address": "주소",
+    "addresses": "주소",
+    "balance": "잔액",
+    "price": "가격",
+    "name": "이름",
+    "created": "생성됨",
+    "updated": "업데이트됨",
+    "start": "시작",
+    "expire": "만료",
+    "type": "유형",
+    "date-time": "날짜 / 시간",
+    "service": "서비스",
+    "total": "합계",
+    "amount": "금액",
+    "from": "보낸 곳",
+    "destination-tag": "대상 태그",
+    "fiat-equivalent": "법정화폐 환산",
+    "fiat-equivalent-currency": "법정화폐 환산 ({{currency}})",
+    "transaction": "트랜잭션",
+    "memo": "메모",
+    "transfer-fee": "전송 수수료",
+    "network-fee": "네트워크 수수료",
+    "balance-change": "잔액 변경",
+    "ledger-amount": "원장 금액",
+    "check": "체크"
+  },
+  "period": {
+    "m1": "1개월",
+    "m3": "3개월",
+    "m6": "6개월",
+    "y1": "1년"
+  },
+  "plans": {
+    "trial": "체험",
+    "free": "무료",
+    "basic": "기초적인",
+    "standard": "기준",
+    "premium": "프리미엄",
+    "enterprise": "기업",
+    "enterprise2": "엔터프라이즈 2",
+    "enterprise3": "엔터프라이즈 3",
+    "custom": "맞춤형"
+  },
+  "profile": {
+    "email": "이메일",
+    "until": "까지",
+    "priority-support-before": "우선 지원을 받으려면 제목을 사용하세요.",
+    "priority-support-after": "우리에게 이메일을 보낼 때",
+    "guest": {
+      "profile": "프로필과 구독을 관리하세요.",
+      "security": "계정 도구 및 개인 설정에 액세스하려면 로그인하세요.",
+      "pro": "Pro 구독과 혜택을 관리합니다.",
+      "history": "잔액 기록과 세금 내보내기를 활성화합니다.",
+      "api": "API 키를 만들고 사용량을 확인합니다.",
+      "watchlist": "비공개 주소 및 NFT 관심 목록을 관리합니다.",
+      "avatars": "확인된 주소의 아바타를 설정합니다."
+    }
+  },
+  "form": {
+    "error": {
+      "domain-empty": "도메인을 입력하세요.",
+      "domain-invalid": "유효한 도메인을 입력하세요.",
+      "description-empty": "설명을 입력하세요.",
+      "description-short": "설명이 너무 짧습니다."
+    }
+  },
+  "api": {
+    "token": "토큰",
+    "tier": "층",
+    "data-title": "API 데이터",
+    "documentation": "선적 서류 비치",
+    "copy-token": "토큰 복사",
+    "show-copy-token": "토큰 표시 및 복사",
+    "edit-domain": "도메인 수정",
+    "save-domain": "도메인 저장",
+    "edit-description": "설명 수정",
+    "save-description": "설명 저장",
+    "manage-subscription": "구독 관리",
+    "registration": "API 접근 등록",
+    "domain-placeholder": "example.com",
+    "description-placeholder": "짧은 프로젝트 설명",
+    "request-key": "API 키 요청",
+    "guest": {
+      "keys": "API 키를 생성하고 관리합니다.",
+      "stats": "API 사용 통계 및 요청 로그를 봅니다."
+    },
+    "requests": {
+      "seo": "API 요청",
+      "title": "API 요청",
+      "guest": {
+        "logs": "최근 API 요청 로그를 검색합니다.",
+        "performance": "응답 상태와 시기를 확인하세요."
+      }
+    },
+    "statistics": {
+      "seo": "API 통계",
+      "urls-title": "URL 통계",
+      "ips-title": "IP 통계",
+      "guest": {
+        "analytics": "엔드포인트 사용량 분석을 검토합니다.",
+        "patterns": "URL과 IP로 요청 패턴을 찾아보세요."
+      }
+    },
+    "charts": {
+      "seo": "API 차트",
+      "requests-count": "요청 수",
+      "guest": {
+        "charts": "차트에서 API 활동을 추적합니다.",
+        "metrics": "시간 경과에 따른 사용량 측정항목을 모니터링하세요."
+      }
+    }
+  },
+  "watchlist": {
+    "limit": "관심 목록에 최대{{count}}항목을 추가할 수 있습니다.",
+    "limit-subscribe-before": "구독하기",
+    "last-signed": "마지막으로 서명된 거래",
+    "last-affecting": "마지막으로 영향을 미치는 거래",
+    "last-signed-tx": "마지막으로 서명된 거래",
+    "address-title": "주소 관심 목록",
+    "nft-title": "NFT 관심 목록",
+    "entity-title": "주소 또는 NFT ID",
+    "entity-placeholder": "주소 또는 NFT ID를 입력하세요",
+    "private-name": "개인 이름",
+    "guest": {
+      "manage": "개인 주소 및 NFT 관심 목록을 관리하세요.",
+      "track": "잔액, 활동, NFT 제안을 한 곳에서 추적하세요."
+    },
+    "errors": {
+      "entity-required": "주소 또는 NFT ID를 입력하세요.",
+      "name-required": "비공개 이름을 입력하세요.",
+      "entity-invalid": "유효한 주소 또는 NFT ID를 입력하세요.",
+      "already-exists": "이{{type}}는 이미 관심 목록에 있습니다."
+    }
+  },
+  "pro": {
+    "verified-addresses": "확인된 주소",
+    "features-intro": "확인된 주소는 다음 Pro 기능을 잠금 해제합니다.",
+    "features": {
+      "history": "잔액 내역 및 세금 내보내기.",
+      "escrows": "Escrow 자동 완료.",
+      "escrows-note": "주소에 충분한 여유가 있고 Escrow가 완료될 수 있을 때",
+      "nft-offers": "NFT 제안을 자동 취소합니다.",
+      "nft-offers-note": "제안이 유효하지 않거나 만료된 경우"
+    },
+    "balance-history": "잔액 내역",
+    "bot-settings": "봇 설정",
+    "no-verified-addresses": "아직 확인된 주소가 없습니다.",
+    "activate-analysis-before": "다음으로 잔액 내역을 활성화하세요.",
+    "purchase-pro-link": "Bithomp Pro",
+    "add-limit": "요금제의 주소 한도에 도달했습니다.",
+    "verify-first": "Pro 도구를 활성화하려면 주소를 확인하세요.",
+    "address-placeholder": "주소를 입력하세요",
+    "address-name-placeholder": "개인 주소 이름",
+    "guest": {
+      "verify": "주소의 소유권을 확인하세요.",
+      "history": "잔액 내역, 내보내기 및 봇 설정을 활성화합니다."
+    },
+    "errors": {
+      "no-email": "확인하기 전에 프로필에 이메일을 추가하세요."
+    },
+    "settings": {
+      "auto-escrow": "자동 Escrow",
+      "execute-escrows": "자동으로 Escrow 실행",
+      "auto-cancel-nft": "NFT 제안 자동 취소",
+      "cancel-nft": "NFT 제안 자동 취소"
+    },
+    "history": {
+      "seo": "잔액 내역",
+      "title": "잔액 내역",
+      "sample-title": "샘플 데이터",
+      "sample-text": "샘플 내보내기입니다. 로그인하고 Pro 주소를 추가하여 자신의 기록을 로드하세요.",
+      "sign-in-pro": "내 주소 열기",
+      "sample-unavailable": "현재 샘플 데이터를 사용할 수 없습니다.",
+      "order": {
+        "latest": "최신순",
+        "earliest": "가장 빠른 것부터",
+        "native-low": "{{currency}}금액이 낮음에서 높음",
+        "native-high": "{{currency}}금액이 높음에서 낮음",
+        "fiat-low": "법정화폐 금액이 낮은 순",
+        "fiat-high": "법정화폐 금액 높음에서 낮음"
+      },
+      "add-wallet": "지갑 추가",
+      "period": "기간",
+      "remove-dust": "먼지 제거",
+      "tax-platform": "세금 수출 플랫폼",
+      "csv-for": "{{platform}}에 대한 CSV",
+      "koinly-note": "Koinly는 이 파일을 일반 지갑 CSV로 가져옵니다."
+    }
+  },
+  "billing": {
+    "choose-country": "청구서 수신 국가 선택",
+    "country-is": "청구서 수신 국가는 다음과 같습니다."
+  },
+  "subscriptions": {
+    "subscription": "신청",
+    "seo": "구독",
+    "active-title": "활성 구독",
+    "expired-title": "만료된 구독",
+    "payment-details": "결제 세부정보",
+    "activation-note": "결제가 확인된 후 서비스가 활성화됩니다.",
+    "payment-received": "결제 완료",
+    "service-activating": "{{service}}가 활성화 중입니다.",
+    "activating": "서비스 활성화 중...",
+    "next-step": "다음 단계",
+    "alerts-next-step": "채널과 규칙을 생성하려면 알림을 엽니다.",
+    "transactions": "업무",
+    "last-payments": "마지막 지불",
+    "pro": {
+      "why-title": "왜 Bithomp Pro인가요?",
+      "intro": "Bithomp Pro는 추가 계정 도구를 제공하고 여러 제한을 해제합니다.",
+      "benefits": {
+        "reports-title": "보고서",
+        "reports-link": "잔액 내역",
+        "reports-text": "세금 수출 및 계정 활동 도구.",
+        "services-title": "서비스",
+        "services": {
+          "send": "지불금 보내기",
+          "check": "발급자 확인",
+          "escrow": "Escrow 생성"
+        },
+        "scroll-title": "더 많은 데이터",
+        "scroll-text": "더 많은 행과 더 깊은 스크롤",
+        "limits-title": "더 높은 한도",
+        "limits-text": "더 많은 항목",
+        "avatars-title": "아바타",
+        "avatars-text": "확인된 주소에 대한 아바타 설정",
+        "ads-title": "광고 없음",
+        "ads-text": "광고 없이 탐색기를 사용해보세요.",
+        "support-title": "우선 지원",
+        "support-text": "지원팀에서 더 빠른 도움을 받으세요.",
+        "project-title": "프로젝트를 지원하세요",
+        "project-text": "귀하의 구독은 우리가 계속 발전하는 데 도움이 됩니다."
+      },
+      "more-coming": "더 많은 Pro 기능이 출시될 예정입니다.",
+      "subscribe": "구독 기간을 선택하세요."
+    },
+    "api": {
+      "check-docs": "API 한도 및 가격에 대한 설명서를 확인하세요.",
+      "why-title": "API 액세스",
+      "intro": "API를 사용하여 탐색기 데이터를 앱이나 워크플로에 통합하세요.",
+      "benefits": {
+        "limits-title": "명확한 한계",
+        "limits-text": "요청량과 일치하는 계층을 선택하세요.",
+        "features-title": "탐색기 데이터",
+        "features-text": "계정, 거래, 토큰, NFT 및 네트워크 데이터에 액세스하세요."
+      },
+      "subscribe": "등급과 구독 기간을 선택하세요."
+    },
+    "alerts": {
+      "why-title": "알림 봇",
+      "intro": "{{explorerName}}알림은 NFT 제안, NFT 판매 및 감시된 계정 잔액 변경 사항에 대해 알려줍니다.",
+      "destinations": "이메일, Slack, Discord 또는 X로 알림을 보냅니다.",
+      "rules-before": "채널과 규칙을 생성합니다.",
+      "balance-before": "잔액 변경 알림은 다음 주소를 사용합니다.",
+      "subscribe": "알림 계획과 청구 기간을 선택하세요.",
+      "alerts-day": "알림/일",
+      "alerts-week": "알림/주",
+      "price-month": "{{price}}EUR/월",
+      "price-year-alt": "{{price}}EUR/년",
+      "plan-description": {
+        "trial": "유료 요금제를 선택하기 전에 하나의 알림 대상을 테스트합니다.",
+        "basic": "개인 모니터링 및 소규모 경고 설정용.",
+        "standard": "더 많은 채널, 규칙 및 경고 볼륨을 갖춘 활성 모니터링용입니다."
+      }
+    }
+  },
+  "referrals": {
+    "title": "추천 프로그램",
+    "commission": "수수료 20%",
+    "intro-before": "사용자를 초대하고 수익을 얻으세요",
+    "intro-after": "적격 구매에서.",
+    "earn-when": "추천된 사용자가 다음을 구매하면 수익을 얻을 수 있습니다.",
+    "api-access": "API 액세스",
+    "paid-before": "보상이 지급됩니다",
+    "instantly": "곧",
+    "paid-as": "로",
+    "paid-after": "지급 주소로 교환할 수 있습니다.",
+    "how-it-works": "작동 방식:",
+    "steps": {
+      "link": "추천 링크를 만드세요.",
+      "share": "사용자와 공유하세요.",
+      "earn": "구매가 완료되면 보상을 받으세요."
+    },
+    "no-limit-before": "있다",
+    "no-limit": "제한 없음",
+    "no-limit-after": "당신이 추천할 수 있는 사용자 수에 따라.",
+    "links-title": "귀하의 추천 링크",
+    "link": "링크",
+    "payout-address": "지급 주소",
+    "payout-address-help": "보상은 이 주소로 발송됩니다.",
+    "save-address": "지급 주소 저장",
+    "unredeemed_one": "{{count}}미교환 수표",
+    "unredeemed_other": "{{count}}미사용 수표",
+    "redeem_one": "{{count}}수표를 다음 대상으로 교환하세요.",
+    "redeem_other": "{{count}}수표를 교환하세요.",
+    "payments": "추천 지급",
+    "payments-note": "최근 추천 보상 및 사용 상태입니다.",
+    "reward-amount": "보상금액",
+    "check-expires": "수표 만료",
+    "no-payments": "아직 추천 결제가 없습니다.",
+    "status": {
+      "issued": "발급됨",
+      "redeemed": "상환됨",
+      "expired": "만료됨",
+      "pending": "보류 중",
+      "not-eligible": "대상 아님",
+      "not-issued": "미발행",
+      "cashed": "수령됨",
+      "canceled": "취소됨",
+      "failed": "실패"
+    },
+    "any": "모든",
+    "how-summary": "요약",
+    "code-works-before": "추천 코드는",
+    "code-works-on": "{{siteName}}의 페이지에서",
+    "code-works-after": "를 URL에 추가하면 작동합니다.",
+    "browser-save-before": "브라우저는 추천 정보를",
+    "browser-save-bold": "30일 동안",
+    "browser-save-after": "저장합니다. 같은 브라우저에서 나중에 구매할 수 있습니다.",
+    "your-links-before": "내 링크:",
+    "example": "예시",
+    "no-code": "아직 추천 코드가 없습니다.",
+    "requirements-title": "요건",
+    "requirements-summary": "지급 전",
+    "requirements-text": "보상을 받기 전에 지급 주소를 추가하세요. 보상은 조건에 맞는 유료 구매에만 제공됩니다.",
+    "edit-address": "지급 주소 수정",
+    "address-placeholder": "{{ledgerName}} 주소 입력",
+    "request-code": "추천 코드 요청",
+    "unredeemed": "미수령 Check {{count}}개",
+    "redeem": "Check {{count}}개를 다음 주소로 수령:",
+    "errors": {
+      "address-required": "지급 주소를 입력하세요.",
+      "address-invalid": "유효한 지급 주소를 입력하세요."
+    }
+  },
+  "notifications": {
+    "eyebrow": "{{explorerName}}경고",
+    "hero-text": "계정 및 NFT 알림에 대한 채널과 규칙을 만듭니다.",
+    "loading-alerts": "알림 로드 중...",
+    "finish-setup": "설정 완료",
+    "finish-setup-text": "알림 채널을 만들기 전에 프로필 세부 정보를 추가하세요.",
+    "profile-name": "프로필 이름",
+    "profile-name-placeholder": "회사 또는 프로젝트 이름",
+    "session-expired": "세션이 만료되었습니다.",
+    "sign-in-again": "다시 로그인해 주세요.",
+    "load-failed": "알림을 로드할 수 없습니다.",
+    "upgrade-plan": "업그레이드 계획",
+    "limit-reached": "한도 도달",
+    "channel-limit-reached": "채널 한도에 도달했습니다.",
+    "rule-limit-reached": "규칙 한도에 도달했습니다.",
+    "upgrade-add-channels": "더 많은 채널을 추가하려면 업그레이드하세요.",
+    "upgrade-add-rules": "더 많은 규칙을 추가하려면 업그레이드하세요.",
+    "upgrade-more": "한도를 높이려면 업그레이드하세요.",
+    "plan-limit": "{{plan}}계획:{{channels}}채널 및{{rules}}규칙.",
+    "alerts-plan": "{{plan}}경고 계획",
+    "channel-type": {
+      "email": "이메일",
+      "slack_webhook": "Slack",
+      "discord_webhook": "Discord",
+      "twitter_api": "X / Twitter"
+    },
+    "detailed-setup-guide": "자세한 설정 가이드",
+    "channel-name": "채널 이름",
+    "channel-name-help": "이 채널을 인식하기 위한 비공개 이름입니다.",
+    "channel-name-placeholder": "메인 Slack 채널",
+    "channel-number": "채널 번호{{id}}",
+    "rule-number": "규칙 #{{id}}",
+    "default-rule-name": "규칙 #{{index}}",
+    "rules-connected_one": "{{count}}개 규칙 연결됨",
+    "rules-connected_other": "{{count}}개 규칙 연결됨",
+    "event": "이벤트",
+    "channel": "채널",
+    "rule": "규칙",
+    "fiat": "명령",
+    "fiat-currency": "명목화폐",
+    "choose-currency": "통화 선택",
+    "fiat-help": "이 규칙에서는 법정화폐 가격 필터에 사용됩니다.",
+    "choose-channel": "채널 선택",
+    "balance-email-note": "잔액 변경 알림은 이메일로만 보낼 수 있습니다.",
+    "email-balance-note": "이메일 채널은 잔액 변경 알림용으로 예약되어 있습니다.",
+    "rule-name": "규칙 이름",
+    "rule-name-help": "이 규칙의 개인 이름입니다.",
+    "rule-name-placeholder": "높은 가치의 NFT 판매",
+    "filters-title": "필터",
+    "filters-help": "이 규칙이 실행될 때 범위를 좁히려면 필터를 추가하세요.",
+    "toggle-rule-enabled": "토글 규칙 활성화됨",
+    "enabled-help": "이 규칙을 삭제하지 않고 일시중지하세요.",
+    "toggle-external-links": "외부 링크 전환",
+    "include-external-links": "외부 링크 포함",
+    "external-links-help": "가능한 경우 마켓플레이스 또는 탐색기 링크를 추가하세요.",
+    "toggle-xrp-cafe": "xrp.cafe링크 전환",
+    "include-xrp-cafe": "xrp.cafe링크 포함",
+    "xrp-cafe-help": "지원되는 NFT 경고에 대한xrp.cafe링크를 추가합니다.",
+    "new-rule": "새로운 규칙",
+    "no-rules-title": "아직 규칙이 없습니다.",
+    "no-rules-text": "알림 전송을 시작하려면 규칙을 만드세요.",
+    "delete-channel": "채널 삭제",
+    "delete-rule": "규칙 삭제",
+    "delete-question": "삭제",
+    "delete-channel-note": "이 채널에 연결된 규칙을 먼저 제거해야 합니다.",
+    "delete-rule-note": "이 작업은 취소할 수 없습니다.",
+    "open-alerts": "공개 알림",
+    "pro-required-before": "이 필터에는",
+    "enable-history-before": "잔액 내역 활성화",
+    "enable-history-after": "이 필터를 사용하기 전에",
+    "loading-addresses": "주소 로드 중...",
+    "choose-address": "주소 선택",
+    "enter-address-username": "주소 또는 사용자 이름을 입력하세요.",
+    "required-for-rule": "이 규칙에 필요합니다.",
+    "choose-tx-types": "거래 유형 선택",
+    "any-tx-type": "모든 거래 유형",
+    "choose-token": "{{nativeCurrency}}또는 발급된 토큰을 선택하세요.",
+    "enter-destination": "목적지 주소를 입력하세요",
+    "destination-address": "목적지 주소",
+    "every-matching-event": "일치하는 모든 이벤트",
+    "external-links": "외부 링크",
+    "email-balance-only": "NFT 알림에는 Slack, Discord 또는 X를 사용하세요.",
+    "balance-email-only": "잔액 변경 알림을 받으려면 이메일을 사용하세요.",
+    "field-required": "{{field}}가 필요합니다.",
+    "limit": {
+      "channels": "{{count}}개 채널",
+      "channels_one": "{{count}}개 채널",
+      "channels_other": "{{count}}개 채널",
+      "rules": "{{count}}개 규칙",
+      "rules_one": "{{count}}개 규칙",
+      "rules_other": "{{count}}개 규칙"
+    },
+    "channels": {
+      "title": "채널",
+      "subtitle": "경고가 전송되는 곳."
+    },
+    "rules": {
+      "title": "규칙",
+      "subtitle": "알림이 전송되는 경우."
+    },
+    "actions": {
+      "add-channel": "채널 추가",
+      "save-channel": "채널 저장",
+      "edit-channel": "채널 수정",
+      "delete-channel": "채널 삭제",
+      "add-rule": "규칙 추가",
+      "save-rule": "규칙 저장",
+      "edit-rule": "규칙 수정",
+      "delete-rule": "규칙 삭제",
+      "show-executions": "실행 표시"
+    },
+    "fields": {
+      "webhook": "Webhook URL",
+      "username": "봇 사용자 이름",
+      "email": "이메일 주소",
+      "consumer_key": "API 키",
+      "consumer_secret": "API 키 시크릿",
+      "access_token_key": "액세스 토큰",
+      "access_token_secret": "액세스 토큰 시크릿",
+      "bot-username": "봇 사용자 이름",
+      "email-address": "이메일 주소",
+      "api-key": "API 키",
+      "access-token": "액세스 토큰"
+    },
+    "field-help": {
+      "webhook": "수신 Webhook URL.",
+      "username": "봇이 표시하는 이름입니다.",
+      "email": "알림을 받아야 하는 주소입니다.",
+      "consumer_key": "X에서는 API Key로 표시됩니다.",
+      "consumer_secret": "API Key와 함께 한 번만 표시됩니다.",
+      "access_token_key": "앱에 Read and write 권한을 부여한 후 생성합니다.",
+      "access_token_secret": "Access Token과 함께 생성하고 비공개로 보관하세요."
+    },
+    "field-placeholder": {
+      "webhook": "https://hooks.example.com/...",
+      "username": "빗썸 봇",
+      "email": "이름@example.com",
+      "consumer_key": "X의 API Key",
+      "consumer_secret": "X의 API Key Secret",
+      "access_token_key": "X의 Access Token",
+      "access_token_secret": "X의 Access Token Secret"
+    },
+    "guides": {
+      "email": {
+        "title": "이메일",
+        "description": "{{explorerName}}경고를 수신해야 하는 사서함을 사용합니다. 웹훅 설정이 필요하지 않습니다.",
+        "steps": [
+
+        ]
+      },
+      "discord_webhook": {
+        "title": "Discord",
+        "description": "알림이 게시되어야 하는 Discord 서버 채널에 웹훅을 생성하세요.",
+        "steps": [
+          "서버 설정",
+          "통합",
+          "웹훅",
+          "webhook URL복사"
+        ]
+      },
+      "slack_webhook": {
+        "title": "Slack",
+        "description": "Slack에서 수신 Webhook을 만들고 채널을 선택한 다음 여기에 Webhook URL을 붙여넣습니다.",
+        "steps": [
+          "Slack 앱 디렉토리",
+          "수신 웹훅",
+          "작업공간에 추가",
+          "webhook URL복사"
+        ]
+      },
+      "twitter_api": {
+        "title": "X / Twitter",
+        "description": "X Developer Portal 앱의 API Key, API Key Secret, Access Token, Access Token Secret을 사용하세요.",
+        "steps": [
+          "개발자 포털",
+          "프로젝트 앱",
+          "Read and write 권한",
+          "키와 토큰"
+        ]
+      }
+    },
+    "destination": {
+      "any": "모든 목적지",
+      "specific": "특정 주소",
+      "none": "목적지 없음",
+      "known-broker": "알려진 브로커",
+      "none-or-known-broker": "목적지나 알려진 브로커 없음"
+    },
+    "operators": {
+      "is": "같음",
+      "is-not": "아니다",
+      "in": "포함",
+      "not-in": "안에는 없어",
+      "exists": "존재한다",
+      "and": "그리고",
+      "or": "또는"
+    },
+    "number-operators": {
+      "$gte": "적어도",
+      "$lte": "기껏해야",
+      "$gt": "이상",
+      "$lt": "미만",
+      "$eq": "정확히"
+    },
+    "tx-type-operators": {
+      "$eq": "같음",
+      "$in": "포함하다",
+      "$nin": "들어오지 못하게 하다"
+    },
+    "event-groups": {
+      "NFT": "NFT",
+      "Account": "계정"
+    },
+    "events": {
+      "nftoken_sale": {
+        "label": "NFT 판매",
+        "description": "NFT 판매가 감지된 경우."
+      },
+      "nftoken_create_sell_offer": {
+        "label": "NFT 판매 제안",
+        "description": "새로운 NFT 판매 제안이 생성될 때."
+      },
+      "uritoken_sell": {
+        "label": "NFT 판매",
+        "description": "NFT 판매가 감지된 경우."
+      },
+      "uritoken_create_sell_offer": {
+        "label": "NFT 판매 제안",
+        "description": "새로운 NFT 판매 제안이 생성될 때."
+      },
+      "balances_change": {
+        "label": "밸런스 변경",
+        "description": "시청 중인 Pro 주소 잔액이 변경될 때."
+      }
+    },
+    "filters": {
+      "address": "주소",
+      "tx_type": "거래 유형",
+      "issuer": "발급자",
+      "taxon": "분류군",
+      "price": "{{nativeCurrency}}가격",
+      "price_usd": "가격(USD)",
+      "account": "판매자 계정",
+      "destination": "목적지",
+      "amount": "양",
+      "token": "토큰",
+      "known_broker": "알려진 브로커"
+    },
+    "errors": {
+      "channel-name-required": "채널 이름을 입력하세요.",
+      "field-required": "{{field}}가 필요합니다.",
+      "invalid-webhook": "유효한webhook URL를 입력하세요.",
+      "invalid-email": "유효한 이메일 주소를 입력하세요.",
+      "choose-channel": "채널을 선택하세요.",
+      "email-balance-only": "이메일 채널은 잔액 변경 알림에만 사용할 수 있습니다.",
+      "balance-email-only": "잔액 변경 알림은 이메일로만 보낼 수 있습니다.",
+      "rule-name-required": "규칙 이름을 입력하세요.",
+      "event-invalid-short": "지원되는 이벤트를 선택하세요.",
+      "choose-field": "{{field}}를 선택하세요.",
+      "pro-required": "이 필터에는 Bithomp Pro가 필요합니다.",
+      "enable-history-first": "먼저 하나 이상의 주소에 대한 잔액 내역을 활성화하세요.",
+      "choose-history-address": "잔액 내역 주소를 선택하세요.",
+      "valid-address": "유효한 주소를 입력하세요.",
+      "valid-number": "유효한 숫자를 입력하세요.",
+      "tx-type-supported": "지원되는 거래 유형을 선택하세요.",
+      "tx-types-supported": "지원되는 거래 유형만 선택하세요.",
+      "valid-destination": "유효한 목적지 주소를 입력하세요.",
+      "profile-name-required": "프로필 이름을 입력하세요.",
+      "country-required": "국가를 선택하세요.",
+      "setup-failed": "설정을 완료할 수 없습니다.",
+      "save-channel-failed": "채널을 저장할 수 없습니다.",
+      "save-rule-failed": "규칙을 저장할 수 없습니다.",
+      "delete-channel-failed": "채널을 삭제할 수 없습니다.",
+      "connection-has-listeners": "이 채널을 삭제하기 전에 연결된 규칙을 삭제하세요.",
+      "connection-settings-required-short": "채널 설정이 필요합니다.",
+      "connection-settings-required": "알림을 보내려면 채널 설정이 필요합니다.",
+      "action-required": "규칙 작업이 필요합니다.",
+      "event-invalid": "이 이벤트는 지원되지 않습니다.",
+      "event-required": "이벤트가 필요합니다.",
+      "connection-not-found": "채널을 찾을 수 없습니다.",
+      "listener-disabled": "규칙이 비활성화되었습니다.",
+      "package-tier-required": "유료 알림 계획이 필요합니다.",
+      "package-limit-reached": "요금제 한도에 도달했습니다."
+    },
+    "executions": {
+      "title": "{{name}}에 대한 실행",
+      "none-title": "처형 없음",
+      "loading-text": "최근 실행 로드 중...",
+      "none-text": "아직 기록된 처형이 없습니다.",
+      "loaded": "짐을 실은",
+      "number": "실행 #{{id}}"
+    },
+    "guest": {
+      "rules": "로그인 후{{explorerName}}경고 규칙을 생성합니다.",
+      "channels": "이메일, Slack, Discord 또는 X로 알림을 보냅니다."
+    },
+    "x-guide": {
+      "seo-title": "X 알림 설정 가이드",
+      "seo-description": "경고용 X API 키를 생성하는 방법.",
+      "eyebrow": "X / 트위터 설정",
+      "title": "X 알림 설정",
+      "intro": "X 개발자 앱을 만들고, 쓰기 권한을 활성화하고, 4개의 필수 키를 경고에 복사하세요.",
+      "before-title": "시작하기 전에",
+      "before": {
+        "account": "알림 게시 전용 X 계정을 사용하세요.",
+        "private": "생성된 모든 키를 비공개로 유지하세요.",
+        "write": "앱에Read and write권한이 있어야 합니다.",
+        "regenerate": "권한을 변경한 후 Access Token을 다시 생성합니다."
+      },
+      "back": "알림으로 돌아가기",
+      "open-portal": "X Developer Portal 열기",
+      "steps": [
+        {
+          "title": "X 계정 생성 또는 개설",
+          "text": "경고를 게시해야 하는 X 계정을 사용하십시오. 스크린샷은 이메일 확인 및 프로필 설정을 포함한 전체 신규 계정 흐름을 보여줍니다.",
+          "images": [
+            "X를 열고 계정 생성을 선택하거나, 봇 계정이 이미 있는 경우 로그인합니다.",
+            "계정 이름, 이메일 주소, 생년월일을 입력하세요.",
+            "X 사용자 정의 옵션을 선택하고 계속하십시오.",
+            "계정 세부정보를 검토하고 가입을 클릭하세요.",
+            "X 계정 인증 확인을 완료합니다.",
+            "X가 보낸 이메일에서 인증 코드를 복사하세요.",
+            "계정의 프로필 사진을 추가하거나 선택한 설정을 계속 진행하세요.",
+            "계정이 X 홈 페이지에 열리는지 확인합니다."
+          ]
+        },
+        {
+          "title": "X 개발자 액세스 신청",
+          "text": "X Developer Portal을 열고 사용 가능한 무료 개발자 계정 옵션을 선택한 다음 알림 봇에 대한 간단한 설명으로 동의 양식을 작성하세요.",
+          "images": [
+            "X 개발자 플랫폼 페이지를 엽니다.",
+            "개발자 플랜 페이지에서 무료 계정 옵션을 선택하세요.",
+            "개발자 계약 양식을 열고 사용 목적을 입력하세요.",
+            "필수 정책 확인란을 수락하고 양식을 제출하세요."
+          ]
+        },
+        {
+          "title": "프로젝트 앱 열기 및 키 생성",
+          "text": "Developer Portal은 프로젝트와 앱을 생성합니다. 해당 앱을 연 다음 Keys and tokens에서 Alerts 채널에 필요한 API Key 쌍과 Access Token 쌍을 생성합니다.",
+          "images": [
+            "Developer Portal 대시보드에서 기본 프로젝트와 앱을 엽니다.",
+            "프로젝트 개요를 확인하고 왼쪽 메뉴에서 앱을 선택하세요.",
+            "앱 설정을 열고 사용자 인증 설정에서 설정을 클릭하세요.",
+            "Keys and tokens를 열어 API Key, API Key Secret, Access Token, Access Token Secret을 생성합니다.",
+            "API Key와 API Key Secret을 저장합니다. 이는 Bithomp Alerts의 처음 두 필드와 일치합니다.",
+            "Access Token과 Access Token Secret을 저장합니다. Read Only 권한으로 생성된 경우 다음 단계에서 권한을 업데이트합니다."
+          ]
+        },
+        {
+          "title": "쓰기 권한 활성화",
+          "text": "앱이 알림을 게시하려면 먼저 Read and write 권한이 있어야 합니다. 권한을 변경한 후 새 토큰이 쓸 수 있도록 Access Token과 Access Token Secret을 다시 생성합니다.",
+          "images": [
+            "사용자 인증 설정에서 Read and write 권한을 선택합니다.",
+            "앱 유형으로 웹 앱, 자동화된 앱 또는 봇을 선택합니다.",
+            "필수 콜백 URI/리디렉션 URL 및 웹사이트 URL 필드를 입력합니다.",
+            "공개 콜백과 웹사이트 URL을 사용한 다음 설정을 저장하세요.",
+            "X가 요청할 때 권한 변경을 확인하십시오.",
+            "X는 저장 후 OAuth 2.0 클라이언트 ID와 클라이언트 비밀번호를 표시합니다. 이는 4개의 경고 채널 필드가 아닙니다."
+          ]
+        },
+        {
+          "title": "키를 Bithomp Alerts에 복사합니다",
+          "text": "Read and write를 저장한 후 Keys and tokens로 돌아갑니다. API Key, API Key Secret, Access Token, Access Token Secret을 Alerts 페이지의 해당 필드에 붙여넣습니다. 권한을 변경하기 전에 Access Token이 생성된 경우 먼저 다시 생성하세요.",
+          "images": [
+
+          ]
+        }
+      ]
+    },
+    "rules-connected": "{{count}}개 규칙 연결됨",
+    "channel-type-label": "채널 유형"
+  },
+  "errors": {
+    "token": {
+      "required": "다시 로그인해 주세요."
+    },
+    "partner": {
+      "not_found": "프로필을 찾을 수 없습니다."
+    }
+  },
+  "error": {
+    "Network Error": "네트워크 오류입니다. 다시 시도해 주세요.",
+    "payment": "결제 오류입니다.",
+    "payment-partly": "{{received}}{{currency}}를 수신했으며{{required}}{{currency}}가 필요합니다."
+  }
 }

@@ -21,7 +21,7 @@
   "child-count_many": "{{count}} Kinder",
   "child-count_other": "{{count}} Kinder",
   "descendants": "Nachkommen",
-  "show-details": "Details",
+  "show-details": "Einzelheiten",
   "hide-details": "Weniger",
   "show-more-children": "{{count}} weitere anzeigen",
   "show-more-children-left": "{{count}} weitere anzeigen ({{left}} übrig)",

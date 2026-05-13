@@ -1,4 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { FaXTwitter } from 'react-icons/fa6'
 
@@ -74,26 +75,25 @@ const guideSteps = [
 ]
 
 export default function XNotificationGuide() {
+  const { t } = useTranslation('admin')
+
   return (
     <>
       <SEO
-        title="X Bot Setup Guide"
-        description="Step-by-step guide for creating X developer credentials used by Bithomp Alerts."
+        title={t('notifications.x-guide.seo-title')}
+        description={t('notifications.x-guide.seo-description')}
         noindex={true}
       />
       <div className={adminNotificationGuide}>
         <div className="page-admin content-center notification-guide-page">
-          <h1 className="center">Admin</h1>
+          <h1 className="center">{t('header')}</h1>
           <AdminTabs name="mainTabs" tab="notifications" />
 
           <section className="notification-guide-hero">
             <div>
-              <div className="notification-guide-eyebrow">Alerts channel setup</div>
-              <h1>X bot setup guide</h1>
-              <p>
-                Follow these steps to create the X developer app credentials needed by the Alerts X / Twitter channel.
-                Bithomp needs four values from X: API Key, API Key Secret, Access Token, and Access Token Secret.
-              </p>
+              <div className="notification-guide-eyebrow">{t('notifications.x-guide.eyebrow')}</div>
+              <h1>{t('notifications.x-guide.title')}</h1>
+              <p>{t('notifications.x-guide.intro')}</p>
             </div>
             <div className="notification-guide-x" aria-hidden="true">
               <FaXTwitter />
@@ -101,27 +101,37 @@ export default function XNotificationGuide() {
           </section>
 
           <section className="notification-guide-note">
-            <h2>Before you start</h2>
+            <h2>{t('notifications.x-guide.before-title')}</h2>
             <ul className="notification-guide-checklist">
-              <li>Use the X account that should publish alerts.</li>
-              <li>Keep API secrets private and never paste them into public chats or docs.</li>
-              <li>The app needs write permission because it posts alerts.</li>
-              <li>If a secret is exposed, regenerate it in the X Developer Portal.</li>
+              <li>{t('notifications.x-guide.before.account')}</li>
+              <li>{t('notifications.x-guide.before.private')}</li>
+              <li>{t('notifications.x-guide.before.write')}</li>
+              <li>{t('notifications.x-guide.before.regenerate')}</li>
             </ul>
           </section>
 
           {guideSteps.map((step, index) => (
             <section className="notification-guide-step" key={step.title}>
               <h2>
-                {index + 1}. {step.title}
+                {index + 1}. {t(`notifications.x-guide.steps.${index}.title`, { defaultValue: step.title })}
               </h2>
-              <p>{step.text}</p>
+              <p>{t(`notifications.x-guide.steps.${index}.text`, { defaultValue: step.text })}</p>
               {step.images.length > 0 && (
                 <div className="notification-guide-images">
-                  {step.images.map((image) => (
+                  {step.images.map((image, imageIndex) => (
                     <figure className="notification-guide-figure" key={image.file}>
-                      <img alt={image.caption} loading="lazy" src={imagePath + image.file} />
-                      <figcaption>{image.caption}</figcaption>
+                      <img
+                        alt={t(`notifications.x-guide.steps.${index}.images.${imageIndex}`, {
+                          defaultValue: image.caption
+                        })}
+                        loading="lazy"
+                        src={imagePath + image.file}
+                      />
+                      <figcaption>
+                        {t(`notifications.x-guide.steps.${index}.images.${imageIndex}`, {
+                          defaultValue: image.caption
+                        })}
+                      </figcaption>
                     </figure>
                   ))}
                 </div>
@@ -131,10 +141,10 @@ export default function XNotificationGuide() {
 
           <div className="notification-guide-actions">
             <Link href="/admin/notifications" className="button-action">
-              Back to Alerts
+              {t('notifications.x-guide.back')}
             </Link>
             <a href="https://developer.twitter.com/en/portal/dashboard" className="button-action" target="_blank" rel="noreferrer">
-              Open X Developer Portal
+              {t('notifications.x-guide.open-portal')}
             </a>
           </div>
         </div>

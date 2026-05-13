@@ -1,8 +1,8 @@
 {
   "seo": {
     "mainnet": {
-      "title": "{{explorerSearchName}} 検索 — アカウント、トランザクション、トークン、NFT",
-      "description": "{{explorerSearchAttribution}} で、{{ledgerName}} 上の {{nativeCurrency}} アドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、AMM、Ledger オブジェクトを検索できます。",
+      "title": "{{explorerSearchName}} 検索: {{ledgerName}} のアカウント、トランザクション、トークン、NFT",
+      "description": "{{explorerSearchAttribution}} で、{{ledgerName}} 上のアドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、AMM、Ledger オブジェクトを検索できます。",
       "heading": "{{explorerSearchName}} 検索"
     },
     "testnet": {
@@ -17,7 +17,7 @@
     }
   },
   "intro": {
-    "subtitle": "{{nativeCurrency}} のトランザクション、アカウント、トークン、NFT をすばやく信頼できる方法で検索できます。",
+    "subtitle": "{{nativeCurrency}} のトランザクション、アカウント、トークン、NFT を検索し、{{nativeCurrency}} をすばやく信頼できる方法で探索できます。",
     "home-link-prefix": "ライブ統計、価格ツール、大口送金、バリデータ、Amendments を探していますか？",
     "home-link-label": "{{explorerName}} のホームページ"
   },

@@ -1,3 +1,800 @@
 {
-  "header": "管理"
+  "header": "管理",
+  "tabs": {
+    "profile": "プロフィール",
+    "watchlist": "ウォッチリスト",
+    "my-addresses": "自分のアドレス",
+    "subscriptions": "サブスクリプション",
+    "referrals": "紹介",
+    "alerts": "アラート",
+    "alerts-bot": "アラートボット",
+    "api": {
+      "information": "情報",
+      "statistics": "統計",
+      "requests": "リクエスト",
+      "charts": "チャート"
+    },
+    "pro": {
+      "addresses": "アドレス",
+      "balance-changes": "残高変更"
+    }
+  },
+  "button": {
+    "activate": "有効化",
+    "contact-support": "サポートに連絡",
+    "logout": "ログアウト",
+    "register-sign-in": "登録またはログイン",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "search": "検索",
+    "remove": "削除",
+    "add": "追加",
+    "view-history": "履歴を表示",
+    "view": "表示",
+    "enable": "有効にする",
+    "view-guide": "ガイドを表示",
+    "set-avatar": "アバターを設定",
+    "verify": "確認",
+    "load-more-data": "さらに読み込む",
+    "purchase": "購入",
+    "pay": "支払う",
+    "edit": "編集",
+    "delete": "削除"
+  },
+  "status": {
+    "active": "有効",
+    "expired": "期限切れ",
+    "locked": "ロック済み",
+    "enabled": "有効",
+    "paused": "一時停止"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "loading-data": "データを読み込み中...",
+    "no-data": "データなし",
+    "no-data-to-show": "表示するデータがありません",
+    "not-found": "見つかりません",
+    "never": "なし",
+    "any": "すべて",
+    "yes": "はい",
+    "no": "いいえ",
+    "none": "なし",
+    "unknown": "不明",
+    "on": "オン",
+    "off": "オフ",
+    "saving": "保存中...",
+    "deleting": "削除中...",
+    "try-again-later": "後でもう一度お試しください。"
+  },
+  "general": {
+    "loading": "読み込み中..."
+  },
+  "table": {
+    "status": "ステータス",
+    "domain": "ドメイン",
+    "description": "説明",
+    "timestamp": "時刻",
+    "response": "応答",
+    "country": "国",
+    "count": "件数",
+    "address": "アドレス",
+    "addresses": "アドレス",
+    "balance": "残高",
+    "price": "価格",
+    "name": "名前",
+    "created": "作成日",
+    "updated": "更新日",
+    "start": "開始",
+    "expire": "期限",
+    "type": "種類",
+    "date-time": "日時",
+    "service": "サービス",
+    "total": "合計",
+    "amount": "金額",
+    "from": "送信元",
+    "destination-tag": "宛先タグ",
+    "fiat-equivalent": "法定通貨換算",
+    "fiat-equivalent-currency": "法定通貨換算（{{currency}}）",
+    "transaction": "トランザクション",
+    "memo": "メモ",
+    "transfer-fee": "送金手数料",
+    "network-fee": "ネットワーク手数料",
+    "balance-change": "残高変更",
+    "ledger-amount": "台帳金額",
+    "check": "チェック"
+  },
+  "period": {
+    "m1": "1か月",
+    "m3": "3か月",
+    "m6": "6か月",
+    "y1": "1年"
+  },
+  "plans": {
+    "trial": "トライアル",
+    "free": "無料",
+    "basic": "基本",
+    "standard": "標準",
+    "premium": "プレミアム",
+    "enterprise": "企業",
+    "enterprise2": "エンタープライズ 2",
+    "enterprise3": "エンタープライズ 3",
+    "custom": "カスタム"
+  },
+  "profile": {
+    "email": "メール",
+    "until": "まで",
+    "priority-support-before": "優先サポートについては、件名を使用してください",
+    "priority-support-after": "私たちに電子メールを送信するとき",
+    "guest": {
+      "profile": "プロフィールと購読を管理します。",
+      "security": "サインインしてアカウント ツールとプライベート設定にアクセスします。",
+      "pro": "Proサブスクリプションと特典を管理します。",
+      "history": "残高履歴と税務エクスポートを有効にします。",
+      "api": "APIキーを作成し、利用状況を確認します。",
+      "watchlist": "非公開のアドレスとNFTのウォッチリストを管理します。",
+      "avatars": "確認済みアドレスのアバターを設定します。"
+    }
+  },
+  "form": {
+    "error": {
+      "domain-empty": "ドメインを入力します。",
+      "domain-invalid": "有効なドメインを入力してください。",
+      "description-empty": "説明を入力します。",
+      "description-short": "説明が短すぎます。"
+    }
+  },
+  "api": {
+    "token": "トークン",
+    "tier": "階層",
+    "data-title": "APIデータ",
+    "documentation": "ドキュメント",
+    "copy-token": "トークンをコピーする",
+    "show-copy-token": "トークンの表示とコピー",
+    "edit-domain": "ドメインの編集",
+    "save-domain": "ドメインの保存",
+    "edit-description": "説明の編集",
+    "save-description": "説明を保存する",
+    "manage-subscription": "サブスクリプションの管理",
+    "registration": "APIアクセス登録",
+    "domain-placeholder": "例.com",
+    "description-placeholder": "プロジェクトの簡単な説明",
+    "request-key": "APIキーをリクエストする",
+    "guest": {
+      "keys": "API キーを作成および管理します。",
+      "stats": "API 使用状況の統計とリクエスト ログを表示します。"
+    },
+    "requests": {
+      "seo": "APIリクエスト",
+      "title": "APIリクエスト",
+      "guest": {
+        "logs": "最近の API リクエスト ログを検索します。",
+        "performance": "応答状況とタイミングを確認します。"
+      }
+    },
+    "statistics": {
+      "seo": "API統計",
+      "urls-title": "URL統計",
+      "ips-title": "IP統計",
+      "guest": {
+        "analytics": "エンドポイントの使用状況分析を確認します。",
+        "patterns": "URL と IP でリクエスト パターンを検索します。"
+      }
+    },
+    "charts": {
+      "seo": "APIチャート",
+      "requests-count": "リクエスト数",
+      "guest": {
+        "charts": "API アクティビティをチャートで追跡します。",
+        "metrics": "使用状況メトリクスを経時的に監視します。"
+      }
+    }
+  },
+  "watchlist": {
+    "limit": "最大{{count}}アイテムをウォッチリストに追加できます。",
+    "limit-subscribe-before": "購読する",
+    "last-signed": "最後に署名されたトランザクション",
+    "last-affecting": "最後に影響を及ぼしたトランザクション",
+    "last-signed-tx": "最後に署名されたトランザクション",
+    "address-title": "アドレスウォッチリスト",
+    "nft-title": "NFTウォッチリスト",
+    "entity-title": "住所またはNFT ID",
+    "entity-placeholder": "アドレスまたはNFT IDを入力してください",
+    "private-name": "個人名",
+    "guest": {
+      "manage": "プライベートアドレスとNFTウォッチリストを管理します。",
+      "track": "残高、アクティビティ、NFT オファーを 1 か所で追跡します。"
+    },
+    "errors": {
+      "entity-required": "アドレスまたはNFT IDを入力します。",
+      "name-required": "プライベート名を入力します。",
+      "entity-invalid": "有効なアドレスまたは NFT ID を入力してください。",
+      "already-exists": "この{{type}}はすでにウォッチリストに含まれています。"
+    }
+  },
+  "pro": {
+    "verified-addresses": "確認済みの住所",
+    "features-intro": "確認されたアドレスでは、次の Pro 機能のロックが解除されます。",
+    "features": {
+      "history": "履歴と税輸出のバランスをとる。",
+      "escrows": "自動終了Escrow。",
+      "escrows-note": "アドレスに十分な余裕があり、Escrowを完了できる場合",
+      "nft-offers": "NFTオファーの自動キャンセル。",
+      "nft-offers-note": "オファーが無効または期限切れになったとき"
+    },
+    "balance-history": "残高履歴",
+    "bot-settings": "ボットの設定",
+    "no-verified-addresses": "確認されたアドレスはまだありません。",
+    "activate-analysis-before": "残高履歴を有効にする",
+    "purchase-pro-link": "Bithomp Pro",
+    "add-limit": "プランのアドレス制限に達しました。",
+    "verify-first": "Pro tools を有効にするにはアドレスを確認してください。",
+    "address-placeholder": "住所を入力してください",
+    "address-name-placeholder": "プライベートアドレス名",
+    "guest": {
+      "verify": "アドレスの所有権を確認します。",
+      "history": "残高履歴、エクスポート、ボット設定を有効にします。"
+    },
+    "errors": {
+      "no-email": "確認する前に、プロフィールに電子メールを追加してください。"
+    },
+    "settings": {
+      "auto-escrow": "自動Escrow",
+      "execute-escrows": "Escrowを自動的に実行する",
+      "auto-cancel-nft": "NFTオファーの自動キャンセル",
+      "cancel-nft": "NFTオファーを自動的にキャンセルする"
+    },
+    "history": {
+      "seo": "残高履歴",
+      "title": "残高履歴",
+      "sample-title": "サンプルデータ",
+      "sample-text": "これはサンプルのエクスポートです。サインインして Pro アドレスを追加し、自分の履歴をロードします。",
+      "sign-in-pro": "私のアドレスを開く",
+      "sample-unavailable": "現在サンプルデータは入手できません。",
+      "order": {
+        "latest": "最新順",
+        "earliest": "早い順",
+        "native-low": "{{currency}}金額が低いものから高いものまで",
+        "native-high": "{{currency}}金額の上限から下限まで",
+        "fiat-low": "法定通貨の金額が低いものから高いものまで",
+        "fiat-high": "法定通貨の金額が高い順に低い"
+      },
+      "add-wallet": "ウォレットを追加する",
+      "period": "期間",
+      "remove-dust": "ほこりを取り除く",
+      "tax-platform": "税金輸出プラットフォーム",
+      "csv-for": "{{platform}}のCSV",
+      "koinly-note": "Koinly は、このファイルを汎用ウォレット CSV としてインポートします。"
+    }
+  },
+  "billing": {
+    "choose-country": "請求先の国を選択してください",
+    "country-is": "請求先国は"
+  },
+  "subscriptions": {
+    "subscription": "サブスクリプション",
+    "seo": "定期購入",
+    "active-title": "アクティブなサブスクリプション",
+    "expired-title": "期限切れのサブスクリプション",
+    "payment-details": "お支払い詳細",
+    "activation-note": "サービスは支払いが確認された後に有効になります。",
+    "payment-received": "支払いを受け取りました",
+    "service-activating": "{{service}}がアクティブ化されています。",
+    "activating": "サービスをアクティブ化しています...",
+    "next-step": "次のステップ",
+    "alerts-next-step": "アラートを開いてチャネルとルールを作成します。",
+    "transactions": "取引",
+    "last-payments": "最後の支払い",
+    "pro": {
+      "why-title": "なぜ Bithomp Pro?",
+      "intro": "Bithomp Pro は追加のアカウントツールを利用可能にし、いくつかの制限を解除します。",
+      "benefits": {
+        "reports-title": "レポート",
+        "reports-link": "残高履歴",
+        "reports-text": "税輸出および口座活動ツール。",
+        "services-title": "サービス",
+        "services": {
+          "send": "支払いを送信する",
+          "check": "発行者チェック",
+          "escrow": "Escrowの作成"
+        },
+        "scroll-title": "さらなるデータ",
+        "scroll-text": "より多くの行とより深いスクロール",
+        "limits-title": "上限値",
+        "limits-text": "その他のアイテム",
+        "avatars-title": "アバター",
+        "avatars-text": "確認済みのアドレスのアバターを設定します",
+        "ads-title": "広告なし",
+        "ads-text": "広告なしでエクスプローラーを使用してください。",
+        "support-title": "優先サポート",
+        "support-text": "サポートから迅速なサポートを受けられます。",
+        "project-title": "プロジェクトをサポートする",
+        "project-text": "あなたのサブスクリプションは、私たちが構築を続けるのに役立ちます。"
+      },
+      "more-coming": "さらに多くの Pro 機能が登場します。",
+      "subscribe": "サブスクリプション期間を選択します。"
+    },
+    "api": {
+      "check-docs": "API の制限と価格については、ドキュメントを確認してください。",
+      "why-title": "APIアクセス",
+      "intro": "API を使用して、エクスプローラー データをアプリまたはワークフローに統合します。",
+      "benefits": {
+        "limits-title": "限界をクリアする",
+        "limits-text": "リクエスト量に一致する層を選択してください。",
+        "features-title": "エクスプローラーのデータ",
+        "features-text": "アカウント、トランザクション、トークン、NFT、ネットワーク データにアクセスします。"
+      },
+      "subscribe": "レベルとサブスクリプション期間を選択します。"
+    },
+    "alerts": {
+      "why-title": "アラートボット",
+      "intro": "{{explorerName}}アラートは、NFT オファー、NFT 販売、監視されているアカウント残高の変更について通知します。",
+      "destinations": "アラートを電子メール、Slack、Discord、または X に送信します。",
+      "rules-before": "にチャネルとルールを作成します。",
+      "balance-before": "残高変更アラートは次のアドレスを使用します",
+      "subscribe": "アラート プランと請求期間を選択します。",
+      "alerts-day": "アラート/日",
+      "alerts-week": "アラート/週",
+      "price-month": "{{price}}ユーロ / 月",
+      "price-year-alt": "{{price}}ユーロ / 年",
+      "plan-description": {
+        "trial": "有料プランを選択する前に 1 つのアラート宛先をテストする場合。",
+        "basic": "個人的な監視と小規模なアラート設定用。",
+        "standard": "より多くのチャネル、ルール、アラート量を使用したアクティブな監視用。"
+      }
+    }
+  },
+  "referrals": {
+    "title": "紹介プログラム",
+    "commission": "20%の手数料",
+    "intro-before": "ユーザーを招待して収入を得る",
+    "intro-after": "対象となる購入から。",
+    "earn-when": "紹介されたユーザーが以下を購入すると収益が得られます。",
+    "api-access": "APIアクセス",
+    "paid-before": "報酬が支払われる",
+    "instantly": "即座に",
+    "paid-as": "として",
+    "paid-after": "支払いアドレスに引き換えることができます。",
+    "how-it-works": "仕組み:",
+    "steps": {
+      "link": "紹介リンクを作成します。",
+      "share": "それらをユーザーと共有します。",
+      "earn": "購入が完了すると特典を受け取ります。"
+    },
+    "no-limit-before": "がある",
+    "no-limit": "制限なし",
+    "no-limit-after": "紹介できるユーザーの数に応じて。",
+    "links-title": "あなたの紹介リンク",
+    "link": "リンク",
+    "payout-address": "支払いアドレス",
+    "payout-address-help": "特典はこのアドレスに送信されます。",
+    "save-address": "支払いアドレスを保存する",
+    "unredeemed_one": "{{count}}未償還小切手",
+    "unredeemed_other": "{{count}}未償還小切手",
+    "redeem_one": "{{count}}小切手を引き換える",
+    "redeem_other": "{{count}}小切手を引き換えて、",
+    "payments": "紹介料の支払い",
+    "payments-note": "最近の紹介報酬とその引き換えステータス。",
+    "reward-amount": "報酬額",
+    "check-expires": "小切手の有効期限が切れます",
+    "no-payments": "紹介料の支払いはまだありません。",
+    "status": {
+      "issued": "発行済み",
+      "redeemed": "償還されました",
+      "expired": "期限切れ",
+      "pending": "保留中",
+      "not-eligible": "対象外",
+      "not-issued": "未発行",
+      "cashed": "換金済み",
+      "canceled": "キャンセル済み",
+      "failed": "失敗"
+    },
+    "any": "任意の",
+    "how-summary": "概要",
+    "code-works-before": "紹介コードは",
+    "code-works-on": "{{siteName}} のページで",
+    "code-works-after": "をURLに追加すると機能します。",
+    "browser-save-before": "ブラウザは紹介情報を",
+    "browser-save-bold": "30日間",
+    "browser-save-after": "保存します。同じブラウザなら後で購入できます。",
+    "your-links-before": "あなたのリンク:",
+    "example": "例",
+    "no-code": "紹介コードはまだありません。",
+    "requirements-title": "条件",
+    "requirements-summary": "支払い前",
+    "requirements-text": "報酬を受け取る前に支払い先アドレスを追加してください。報酬は対象となる有料購入のみで利用できます。",
+    "edit-address": "支払い先アドレスを編集",
+    "address-placeholder": "{{ledgerName}} アドレスを入力",
+    "request-code": "紹介コードをリクエスト",
+    "unredeemed": "未換金のCheck {{count}}件",
+    "redeem": "{{count}}件のCheckを換金:",
+    "errors": {
+      "address-required": "支払い先アドレスを入力してください。",
+      "address-invalid": "有効な支払い先アドレスを入力してください。"
+    }
+  },
+  "notifications": {
+    "eyebrow": "{{explorerName}}アラート",
+    "hero-text": "アカウントとNFTアラートのチャネルとルールを作成します。",
+    "loading-alerts": "アラートを読み込んでいます...",
+    "finish-setup": "セットアップを完了する",
+    "finish-setup-text": "通知チャネルを作成する前に、プロファイルの詳細を追加します。",
+    "profile-name": "プロファイル名",
+    "profile-name-placeholder": "会社名またはプロジェクト名",
+    "session-expired": "セッションが期限切れになりました",
+    "sign-in-again": "再度サインインしてください。",
+    "load-failed": "アラートを読み込めませんでした。",
+    "upgrade-plan": "アップグレードプラン",
+    "limit-reached": "限界に達しました",
+    "channel-limit-reached": "チャンネル制限に達しました。",
+    "rule-limit-reached": "ルールの制限に達しました。",
+    "upgrade-add-channels": "アップグレードしてチャンネルを追加します。",
+    "upgrade-add-rules": "さらにルールを追加するにはアップグレードしてください。",
+    "upgrade-more": "アップグレードして上限を高めます。",
+    "plan-limit": "{{plan}}プラン:{{channels}}チャネルと{{rules}}ルール。",
+    "alerts-plan": "{{plan}}アラート プラン",
+    "channel-type": {
+      "email": "電子メール",
+      "slack_webhook": "Slack",
+      "discord_webhook": "Discord",
+      "twitter_api": "X / Twitter"
+    },
+    "detailed-setup-guide": "詳細なセットアップガイド",
+    "channel-name": "チャンネル名",
+    "channel-name-help": "このチャネルを認識するためのプライベート名。",
+    "channel-name-placeholder": "メインの Slack チャンネル",
+    "channel-number": "チャンネル番号{{id}}",
+    "rule-number": "ルール #{{id}}",
+    "default-rule-name": "ルール #{{index}}",
+    "rules-connected_one": "{{count}}件のルールが接続済み",
+    "rules-connected_other": "{{count}}件のルールが接続済み",
+    "event": "イベント",
+    "channel": "チャネル",
+    "rule": "ルール",
+    "fiat": "フィアット",
+    "fiat-currency": "法定通貨",
+    "choose-currency": "通貨を選択してください",
+    "fiat-help": "このルールの法定価格フィルターに使用されます。",
+    "choose-channel": "チャンネルを選択してください",
+    "balance-email-note": "残高変更アラートはメールでのみ送信できます。",
+    "email-balance-note": "電子メール チャネルは残高変更アラート用に予約されています。",
+    "rule-name": "ルール名",
+    "rule-name-help": "このルールのプライベート名。",
+    "rule-name-placeholder": "高額NFTセール",
+    "filters-title": "フィルター",
+    "filters-help": "このルールが適用されるときに絞り込むフィルターを追加します。",
+    "toggle-rule-enabled": "ルールを有効に切り替える",
+    "enabled-help": "このルールを削除せずに一時停止します。",
+    "toggle-external-links": "外部リンクを切り替えます",
+    "include-external-links": "外部リンクを含める",
+    "external-links-help": "利用可能な場合は、マーケットプレイスまたはエクスプローラーのリンクを追加します。",
+    "toggle-xrp-cafe": "xrp.cafeリンクを切り替えます",
+    "include-xrp-cafe": "xrp.cafeリンクを含める",
+    "xrp-cafe-help": "サポートされている NFT アラートのxrp.cafeリンクを追加します。",
+    "new-rule": "新しいルール",
+    "no-rules-title": "まだルールはありません",
+    "no-rules-text": "アラートの送信を開始するルールを作成します。",
+    "delete-channel": "チャンネルの削除",
+    "delete-rule": "ルールの削除",
+    "delete-question": "消去",
+    "delete-channel-note": "このチャネルに接続されているルールを最初に削除する必要があります。",
+    "delete-rule-note": "この操作は元に戻すことができません。",
+    "open-alerts": "アラートを開く",
+    "pro-required-before": "このフィルターに必要なものは、",
+    "enable-history-before": "残高履歴を有効にする",
+    "enable-history-after": "このフィルターを使用する前に",
+    "loading-addresses": "アドレスを読み込んでいます...",
+    "choose-address": "住所を選択してください",
+    "enter-address-username": "アドレスまたはユーザー名を入力してください",
+    "required-for-rule": "このルールでは必須です。",
+    "choose-tx-types": "取引タイプの選択",
+    "any-tx-type": "あらゆる取引タイプ",
+    "choose-token": "{{nativeCurrency}}または発行済みトークンを選択します。",
+    "enter-destination": "宛先アドレスを入力してください",
+    "destination-address": "宛先アドレス",
+    "every-matching-event": "マッチングイベントごとに",
+    "external-links": "外部リンク",
+    "email-balance-only": "NFT アラートには Slack、Discord、または X を使用します。",
+    "balance-email-only": "残高変更アラートには電子メールを使用します。",
+    "field-required": "{{field}}は必須です。",
+    "limit": {
+      "channels": "{{count}}件のチャンネル",
+      "channels_one": "{{count}}件のチャンネル",
+      "channels_other": "{{count}}件のチャンネル",
+      "rules": "{{count}}件のルール",
+      "rules_one": "{{count}}件のルール",
+      "rules_other": "{{count}}件のルール"
+    },
+    "channels": {
+      "title": "チャンネル",
+      "subtitle": "アラートが送信される場所。"
+    },
+    "rules": {
+      "title": "ルール",
+      "subtitle": "アラートが送信されたとき。"
+    },
+    "actions": {
+      "add-channel": "チャンネルを追加",
+      "save-channel": "チャンネルを保存する",
+      "edit-channel": "チャンネルを編集する",
+      "delete-channel": "チャンネルの削除",
+      "add-rule": "ルールの追加",
+      "save-rule": "ルールの保存",
+      "edit-rule": "ルールの編集",
+      "delete-rule": "ルールの削除",
+      "show-executions": "処刑を表示する"
+    },
+    "fields": {
+      "webhook": "Webhook URL",
+      "username": "ボットのユーザー名",
+      "email": "電子メールアドレス",
+      "consumer_key": "APIキー",
+      "consumer_secret": "APIキーシークレット",
+      "access_token_key": "アクセストークン",
+      "access_token_secret": "アクセストークンシークレット",
+      "bot-username": "ボットのユーザー名",
+      "email-address": "電子メールアドレス",
+      "api-key": "APIキー",
+      "access-token": "アクセストークン"
+    },
+    "field-help": {
+      "webhook": "受信用 Webhook URL。",
+      "username": "ボットによって表示される名前。",
+      "email": "アラートを受信するアドレス。",
+      "consumer_key": "X では API Key として表示されます。",
+      "consumer_secret": "API Key と一緒に1回だけ表示されます。",
+      "access_token_key": "アプリに Read and write 権限を付与した後で生成します。",
+      "access_token_secret": "Access Token と一緒に生成し、非公開で保管してください。"
+    },
+    "field-placeholder": {
+      "webhook": "https://hooks.example.com/...",
+      "username": "ビトンプボット",
+      "email": "名前@example.com",
+      "consumer_key": "X の API Key",
+      "consumer_secret": "X の API Key Secret",
+      "access_token_key": "X の Access Token",
+      "access_token_secret": "X の Access Token Secret"
+    },
+    "guides": {
+      "email": {
+        "title": "電子メール",
+        "description": "{{explorerName}}アラートを受信するメールボックスを使用します。 Webhook の設定は必要ありません。",
+        "steps": [
+
+        ]
+      },
+      "discord_webhook": {
+        "title": "Discord",
+        "description": "アラートを投稿する必要がある Discord サーバー チャネルに Webhook を作成します。",
+        "steps": [
+          "サーバー設定",
+          "統合",
+          "Webhook",
+          "webhook URLをコピーする"
+        ]
+      },
+      "slack_webhook": {
+        "title": "Slack",
+        "description": "Slack で受信 Webhook を作成し、チャンネルを選択して、ここに Webhook URL を貼り付けます。",
+        "steps": [
+          "Slack アプリのディレクトリ",
+          "受信 Webhook",
+          "ワークスペースに追加",
+          "webhook URLをコピーする"
+        ]
+      },
+      "twitter_api": {
+        "title": "X / Twitter",
+        "description": "X Developer Portal アプリの API Key、API Key Secret、Access Token、Access Token Secret を使用します。",
+        "steps": [
+          "開発者ポータル",
+          "プロジェクトアプリ",
+          "Read and write 権限",
+          "キーとトークン"
+        ]
+      }
+    },
+    "destination": {
+      "any": "任意の目的地",
+      "specific": "特定の住所",
+      "none": "目的地なし",
+      "known-broker": "有名なブローカー",
+      "none-or-known-broker": "宛先または既知のブローカーがありません"
+    },
+    "operators": {
+      "is": "は",
+      "is-not": "ではありません",
+      "in": "に含む",
+      "not-in": "入っていない",
+      "exists": "存在します",
+      "and": "そして",
+      "or": "または"
+    },
+    "number-operators": {
+      "$gte": "少なくとも",
+      "$lte": "せいぜい",
+      "$gt": "より多い",
+      "$lt": "未満",
+      "$eq": "その通り"
+    },
+    "tx-type-operators": {
+      "$eq": "一致",
+      "$in": "含む",
+      "$nin": "除外する"
+    },
+    "event-groups": {
+      "NFT": "NFT",
+      "Account": "アカウント"
+    },
+    "events": {
+      "nftoken_sale": {
+        "label": "NFTセール",
+        "description": "NFTセールが検出されたとき。"
+      },
+      "nftoken_create_sell_offer": {
+        "label": "NFT販売オファー",
+        "description": "新しい NFT 販売オファーが作成されたとき。"
+      },
+      "uritoken_sell": {
+        "label": "NFTセール",
+        "description": "NFTセールが検出されたとき。"
+      },
+      "uritoken_create_sell_offer": {
+        "label": "NFT販売オファー",
+        "description": "新しい NFT 販売オファーが作成されたとき。"
+      },
+      "balances_change": {
+        "label": "バランス変更",
+        "description": "監視されている Pro のアドレスバランスが変更されたとき。"
+      }
+    },
+    "filters": {
+      "address": "住所",
+      "tx_type": "取引タイプ",
+      "issuer": "発行者",
+      "taxon": "分類群",
+      "price": "価格 ({{nativeCurrency}})",
+      "price_usd": "米ドルでの価格",
+      "account": "販売者アカウント",
+      "destination": "行き先",
+      "amount": "額",
+      "token": "トークン",
+      "known_broker": "有名なブローカー"
+    },
+    "errors": {
+      "channel-name-required": "チャンネル名を入力します。",
+      "field-required": "{{field}}は必須です。",
+      "invalid-webhook": "有効なwebhook URLを入力してください。",
+      "invalid-email": "有効な電子メール アドレスを入力してください。",
+      "choose-channel": "チャンネルを選択してください。",
+      "email-balance-only": "電子メール チャネルは、残高変更アラートにのみ使用できます。",
+      "balance-email-only": "残高変更アラートは電子メールでのみ送信できます。",
+      "rule-name-required": "ルール名を入力します。",
+      "event-invalid-short": "サポートされているイベントを選択します。",
+      "choose-field": "{{field}}を選択します。",
+      "pro-required": "このフィルターには Bithomp Pro が必要です。",
+      "enable-history-first": "まず、少なくとも 1 つの住所の残高履歴を有効にします。",
+      "choose-history-address": "残高履歴アドレスを選択します。",
+      "valid-address": "有効なアドレスを入力してください。",
+      "valid-number": "有効な番号を入力してください。",
+      "tx-type-supported": "サポートされているトランザクション タイプを選択します。",
+      "tx-types-supported": "サポートされているトランザクション タイプのみを選択してください。",
+      "valid-destination": "有効な宛先アドレスを入力してください。",
+      "profile-name-required": "プロファイル名を入力します。",
+      "country-required": "国を選択してください。",
+      "setup-failed": "セットアップを完了できませんでした。",
+      "save-channel-failed": "チャンネルを保存できませんでした。",
+      "save-rule-failed": "ルールを保存できませんでした。",
+      "delete-channel-failed": "チャンネルを削除できませんでした。",
+      "connection-has-listeners": "このチャネルを削除する前に、接続されているルールを削除してください。",
+      "connection-settings-required-short": "チャンネル設定が必要です。",
+      "connection-settings-required": "アラートを送信するには、チャネル設定が必要です。",
+      "action-required": "ルールアクションが必要です。",
+      "event-invalid": "このイベントはサポートされていません。",
+      "event-required": "イベントは必須です。",
+      "connection-not-found": "チャンネルが見つかりませんでした。",
+      "listener-disabled": "ルールは無効になっています。",
+      "package-tier-required": "有料アラート プランが必要です。",
+      "package-limit-reached": "プランの制限に達しました。"
+    },
+    "executions": {
+      "title": "{{name}}の実行",
+      "none-title": "処刑なし",
+      "loading-text": "最近の実行をロードしています...",
+      "none-text": "まだ処刑は記録されていない。",
+      "loaded": "ロード済み",
+      "number": "実行番号{{id}}"
+    },
+    "guest": {
+      "rules": "サインインした後、{{explorerName}}アラート ルールを作成します。",
+      "channels": "アラートを電子メール、Slack、Discord、または X に送信します。"
+    },
+    "x-guide": {
+      "seo-title": "X通知設定ガイド",
+      "seo-description": "アラート用の X API キーを作成する方法。",
+      "eyebrow": "X / ツイッターの設定",
+      "title": "X アラートを設定する",
+      "intro": "X 開発者アプリを作成し、書き込み権限を有効にして、4 つの必要なキーをアラートにコピーします。",
+      "before-title": "始める前に",
+      "before": {
+        "account": "アラートの発行専用の X アカウントを使用します。",
+        "private": "生成されたすべてのキーを秘密にしておきます。",
+        "write": "アプリにはRead and write権限が必要です。",
+        "regenerate": "権限を変更した後、Access Tokenを再生成します。"
+      },
+      "back": "アラートに戻る",
+      "open-portal": "X Developer Portal を開く",
+      "steps": [
+        {
+          "title": "X アカウントを作成または開く",
+          "text": "アラートを発行する X アカウントを使用します。スクリーンショットは、電子メールの確認やプロファイルのセットアップを含む、新しいアカウントの完全なフローを示しています。",
+          "images": [
+            "X を開いて [アカウントの作成] を選択するか、ボット アカウントが既に存在する場合はサインインします。",
+            "アカウント名、メールアドレス、生年月日を入力します。",
+            "X カスタマイズ オプションを選択して続行します。",
+            "アカウントの詳細を確認し、「サインアップ」をクリックします。",
+            "X アカウント認証チェックを完了します。",
+            "X から送信された電子メールから確認コードをコピーします。",
+            "アカウントのプロフィール写真を追加するか、選択した設定を続行します。",
+            "アカウントが X ホームページに開かれていることを確認します。"
+          ]
+        },
+        {
+          "title": "X 開発者アクセスを申請する",
+          "text": "X Developer Portal を開き、利用可能な無料の開発者アカウントを選択し、アラートボットの簡単な説明を含む同意フォームに入力します。",
+          "images": [
+            "X 開発者プラットフォームのページを開きます。",
+            "開発者プラン ページで [無料アカウント] オプションを選択します。",
+            "開発者契約フォームを開いて、使用目的を記入します。",
+            "必要なポリシーのチェックボックスに同意し、フォームを送信します。"
+          ]
+        },
+        {
+          "title": "プロジェクト アプリを開いてキーを生成する",
+          "text": "Developer Portal はプロジェクトとアプリを作成します。そのアプリを開き、Keys and tokens で Alerts チャンネルに必要な API Key ペアと Access Token ペアを生成します。",
+          "images": [
+            "Developer Portal のダッシュボードからデフォルトのプロジェクトとアプリを開きます。",
+            "プロジェクト概要を確認し、左側のメニューからアプリを選択します。",
+            "アプリの設定を開き、ユーザー認証設定の下にある [セットアップ] をクリックします。",
+            "Keys and tokens を開いて、API Key、API Key Secret、Access Token、Access Token Secret を生成します。",
+            "API Key と API Key Secret を保存します。これらは Bithomp Alerts の最初の2つのフィールドに対応します。",
+            "Access Token と Access Token Secret を保存します。Read Only 権限で作成されている場合は、次に権限を更新します。"
+          ]
+        },
+        {
+          "title": "書き込み権限を有効にする",
+          "text": "アプリはアラートを公開する前に Read and write 権限を持っている必要があります。権限を変更した後、新しいトークンが書き込めるように Access Token と Access Token Secret を再生成します。",
+          "images": [
+            "ユーザー認証設定で Read and write 権限を選択します。",
+            "アプリの種類として [Web アプリ]、[自動化されたアプリ]、または [ボット] を選択します。",
+            "必要なコールバック URI / リダイレクト URL および Web サイト URL フィールドに入力します。",
+            "パブリック コールバックと Web サイトの URL を使用し、設定を保存します。",
+            "X が尋ねたら、権限の変更を確認します。",
+            "保存後、X には OAuth 2.0 Client ID と Client Secret が表示されます。これらは Alerts チャンネルの4つのフィールドではありません。"
+          ]
+        },
+        {
+          "title": "キーを Bithomp Alerts にコピーします",
+          "text": "Read and write を保存した後、Keys and tokens に戻ります。API Key、API Key Secret、Access Token、Access Token Secret を Alerts ページの対応するフィールドに貼り付けます。権限を変更する前に Access Token が生成されていた場合は、先に再生成してください。",
+          "images": [
+
+          ]
+        }
+      ]
+    },
+    "rules-connected": "{{count}}件のルールが接続済み",
+    "channel-type-label": "チャンネル種別"
+  },
+  "errors": {
+    "token": {
+      "required": "再度サインインしてください。"
+    },
+    "partner": {
+      "not_found": "プロフィールが見つかりませんでした。"
+    }
+  },
+  "error": {
+    "Network Error": "ネットワークエラー。もう一度試してください。",
+    "payment": "支払いエラー。",
+    "payment-partly": "{{received}}{{currency}}を受信しました。{{required}}{{currency}}が必要です。"
+  }
 }

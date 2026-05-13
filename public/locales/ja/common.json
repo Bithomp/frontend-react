@@ -248,7 +248,7 @@
     }
   },
   "home": {
-    "title": "{{homeExplorerName}} | トランザクション、アカウント、NFT、Ledgerデータを検索",
+    "title": "{{homeExplorerName}} | {{nativeCurrency}} のトランザクション、アカウント、NFT、Ledgerデータを検索",
     "description": "{{homeExplorerAttribution}} では、{{ledgerName}} 上の {{nativeCurrency}} アドレス、トランザクション、トークン、NFT、残高、オンチェーン activity を検索できます。取引、NFT ミント、AMM 管理、トランザクション送信、アカウントツールも利用できます。",
     "h1": "{{homeExplorerName}} と Ledger ツール",
     "search-placeholder": "アドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
@@ -283,7 +283,7 @@
         "transfers": "トランスファー",
         "for-sale": "販売中"
       },
-      "escrows": "エスクロー",
+      "escrows": "Escrow",
       "amms": "AMMプール",
       "nodes": "ノード"
     },

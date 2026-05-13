@@ -9,7 +9,7 @@ import { axiosAdmin } from '../../utils/axios'
 
 export default function BillingCountry({ billingCountry, setBillingCountry, choosingCountry, setChoosingCountry }) {
   const router = useRouter()
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation('admin')
   const [countries, setCountries] = useState(null)
 
   useEffect(() => {
@@ -79,11 +79,11 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
     <>
       {(!billingCountry || choosingCountry) && !loading ? (
         <>
-          <h4>Choose your country of residence</h4>
+          <h4>{t('billing.choose-country')}</h4>
           <CountrySelect countryCode={billingCountry} setCountryCode={setBillingCountry} type="onlySelect" />
           <br />
           <button onClick={() => saveCountry()} className="button-action">
-            Save
+            {t('button.save')}
           </button>
           <br />
         </>
@@ -91,7 +91,7 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
         <>
           {billingCountry && (
             <>
-              Your billing country is{' '}
+              {t('billing.country-is')}{' '}
               <a onClick={() => setChoosingCountry(true)}>{countries?.getNameTranslated?.(billingCountry) || billingCountry}</a>
             </>
           )}

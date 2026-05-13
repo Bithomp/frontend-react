@@ -1,3 +1,818 @@
 {
-  "header": "Панель управления"
+  "header": "Панель управления",
+  "tabs": {
+    "profile": "Профиль",
+    "watchlist": "Список наблюдения",
+    "my-addresses": "Мои адреса",
+    "subscriptions": "Подписки",
+    "referrals": "Рефералы",
+    "alerts": "Алерты",
+    "alerts-bot": "Бот алертов",
+    "api": {
+      "information": "Информация",
+      "statistics": "Статистика",
+      "requests": "Запросы",
+      "charts": "Графики"
+    },
+    "pro": {
+      "addresses": "Адреса",
+      "balance-changes": "Изменения баланса"
+    }
+  },
+  "button": {
+    "activate": "Активировать",
+    "contact-support": "Связаться с поддержкой",
+    "logout": "Выйти",
+    "register-sign-in": "Зарегистрироваться или войти",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "search": "Поиск",
+    "remove": "Удалить",
+    "add": "Добавить",
+    "view-history": "История",
+    "view": "Открыть",
+    "enable": "Включить",
+    "view-guide": "Открыть руководство",
+    "set-avatar": "Установить аватар",
+    "verify": "Подтвердить",
+    "load-more-data": "Загрузить еще",
+    "purchase": "Купить",
+    "pay": "Оплатить",
+    "edit": "Изменить",
+    "delete": "Удалить"
+  },
+  "status": {
+    "active": "активен",
+    "expired": "Истекла",
+    "locked": "Заблокировано",
+    "enabled": "Включено",
+    "paused": "Пауза"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "loading-data": "Загрузка данных...",
+    "no-data": "Нет данных",
+    "no-data-to-show": "Нет данных для показа",
+    "not-found": "Не найдено",
+    "never": "Никогда",
+    "any": "Любой",
+    "yes": "Да",
+    "no": "Нет",
+    "none": "Нет",
+    "unknown": "Неизвестно",
+    "on": "вкл.",
+    "off": "выкл.",
+    "saving": "Сохранение...",
+    "deleting": "Удаление...",
+    "try-again-later": "Попробуйте позже."
+  },
+  "general": {
+    "loading": "Загрузка..."
+  },
+  "table": {
+    "status": "Статус",
+    "domain": "Домен",
+    "description": "Описание",
+    "timestamp": "Время",
+    "response": "Ответ",
+    "country": "Страна",
+    "count": "Количество",
+    "address": "Адрес",
+    "addresses": "Адреса",
+    "balance": "Баланс",
+    "price": "Цена",
+    "name": "Название",
+    "created": "Создано",
+    "updated": "Обновлено",
+    "start": "Начало",
+    "expire": "Окончание",
+    "type": "Тип",
+    "date-time": "Дата / время",
+    "service": "Сервис",
+    "total": "Всего",
+    "amount": "Сумма",
+    "from": "От",
+    "destination-tag": "Тег назначения",
+    "fiat-equivalent": "Эквивалент в фиате",
+    "fiat-equivalent-currency": "Эквивалент в фиате ({{currency}})",
+    "transaction": "Транзакция",
+    "memo": "Примечание",
+    "transfer-fee": "Комиссия перевода",
+    "network-fee": "Комиссия сети",
+    "balance-change": "Изменение баланса",
+    "ledger-amount": "Сумма в реестре",
+    "check": "Чек"
+  },
+  "period": {
+    "m1": "1 месяц",
+    "m3": "3 месяца",
+    "m6": "6 месяцев",
+    "y1": "1 год"
+  },
+  "plans": {
+    "trial": "Пробный",
+    "free": "Бесплатно",
+    "basic": "Базовый",
+    "standard": "Стандартный",
+    "premium": "Премиум",
+    "enterprise": "Предприятие",
+    "enterprise2": "Предприятие 2",
+    "enterprise3": "Предприятие 3",
+    "custom": "Индивидуальный"
+  },
+  "profile": {
+    "email": "Email",
+    "until": "до",
+    "priority-support-before": "Для приоритетной поддержки используйте тему",
+    "priority-support-after": "при отправке письма на",
+    "guest": {
+      "profile": "Управляйте профилем и подписками.",
+      "security": "Войдите, чтобы открыть инструменты аккаунта и приватные настройки.",
+      "pro": "Управляйте подпиской Pro и преимуществами.",
+      "history": "Включайте историю баланса и налоговый экспорт.",
+      "api": "Создавайте API-ключи и смотрите использование.",
+      "watchlist": "Ведите приватные списки адресов и NFT.",
+      "avatars": "Устанавливайте аватары для подтвержденных адресов."
+    }
+  },
+  "form": {
+    "error": {
+      "domain-empty": "Укажите домен.",
+      "domain-invalid": "Укажите корректный домен.",
+      "description-empty": "Добавьте описание.",
+      "description-short": "Описание слишком короткое."
+    }
+  },
+  "api": {
+    "token": "Токен",
+    "tier": "Тариф",
+    "data-title": "Данные API",
+    "documentation": "Документация",
+    "copy-token": "Скопировать токен",
+    "show-copy-token": "Показать и скопировать токен",
+    "edit-domain": "Изменить домен",
+    "save-domain": "Сохранить домен",
+    "edit-description": "Изменить описание",
+    "save-description": "Сохранить описание",
+    "manage-subscription": "Управлять подпиской",
+    "registration": "Регистрация доступа к API",
+    "domain-placeholder": "example.com",
+    "description-placeholder": "Короткое описание проекта",
+    "request-key": "Запросить API-ключ",
+    "guest": {
+      "keys": "Создавайте и управляйте API-ключами.",
+      "stats": "Смотрите статистику API и журнал запросов."
+    },
+    "requests": {
+      "seo": "Запросы API",
+      "title": "Запросы API",
+      "guest": {
+        "logs": "Ищите недавние запросы API.",
+        "performance": "Проверяйте статус ответа и время выполнения."
+      }
+    },
+    "statistics": {
+      "seo": "Статистика API",
+      "urls-title": "Статистика URL",
+      "ips-title": "Статистика IP",
+      "guest": {
+        "analytics": "Смотрите аналитику использования эндпоинтов.",
+        "patterns": "Находите шаблоны запросов по URL и IP."
+      }
+    },
+    "charts": {
+      "seo": "Графики API",
+      "requests-count": "Количество запросов",
+      "guest": {
+        "charts": "Отслеживайте активность API на графиках.",
+        "metrics": "Смотрите метрики использования во времени."
+      }
+    }
+  },
+  "watchlist": {
+    "limit": "Можно добавить до {{count}} элементов в список наблюдения.",
+    "limit-subscribe-before": "Оформите подписку на",
+    "last-signed": "Последняя подписанная транзакция",
+    "last-affecting": "Последняя влияющая транзакция",
+    "last-signed-tx": "Последняя подписанная транзакция",
+    "address-title": "Адреса в наблюдении",
+    "nft-title": "NFT в наблюдении",
+    "entity-title": "Адрес или NFT ID",
+    "entity-placeholder": "Введите адрес или NFT ID",
+    "private-name": "Приватное название",
+    "guest": {
+      "manage": "Управляйте приватным списком адресов и NFT.",
+      "track": "Отслеживайте балансы, активность и NFT-офферы в одном месте."
+    },
+    "errors": {
+      "entity-required": "Введите адрес или NFT ID.",
+      "name-required": "Введите приватное название.",
+      "entity-invalid": "Введите корректный адрес или NFT ID.",
+      "already-exists": "Этот {{type}} уже есть в списке наблюдения."
+    }
+  },
+  "pro": {
+    "verified-addresses": "Подтвержденные адреса",
+    "features-intro": "Подтвержденные адреса открывают функции Pro:",
+    "features": {
+      "history": "История баланса и налоговый экспорт.",
+      "escrows": "Автоматическое завершение escrow.",
+      "escrows-note": "когда на адресе достаточно резерва и escrow можно завершить",
+      "nft-offers": "Автоматическая отмена NFT-офферов.",
+      "nft-offers-note": "когда оффер становится недействительным или истекает"
+    },
+    "balance-history": "История баланса",
+    "bot-settings": "Настройки бота",
+    "no-verified-addresses": "Пока нет подтвержденных адресов.",
+    "activate-analysis-before": "Активируйте историю баланса через",
+    "purchase-pro-link": "Bithomp Pro",
+    "add-limit": "Достигнут лимит адресов для вашего тарифа.",
+    "verify-first": "Подтвердите адрес, чтобы включить Pro-инструменты.",
+    "address-placeholder": "Введите адрес",
+    "address-name-placeholder": "Приватное имя адреса",
+    "guest": {
+      "verify": "Подтверждайте владение адресами.",
+      "history": "Включайте историю баланса, экспорт и настройки бота."
+    },
+    "errors": {
+      "no-email": "Добавьте email в профиль перед подтверждением."
+    },
+    "settings": {
+      "auto-escrow": "Авто-escrow",
+      "execute-escrows": "Автоматически выполнять escrow",
+      "auto-cancel-nft": "Автоотмена NFT-офферов",
+      "cancel-nft": "Автоматически отменять NFT-офферы"
+    },
+    "history": {
+      "seo": "История баланса",
+      "title": "История баланса",
+      "sample-title": "Пример данных",
+      "sample-text": "Это пример экспорта. Войдите и добавьте Pro-адрес, чтобы загрузить свою историю.",
+      "sign-in-pro": "Открыть Мои адреса",
+      "sample-unavailable": "Пример данных сейчас недоступен.",
+      "order": {
+        "latest": "Сначала новые",
+        "earliest": "Сначала старые",
+        "native-low": "Сумма {{currency}} по возрастанию",
+        "native-high": "Сумма {{currency}} по убыванию",
+        "fiat-low": "Фиатная сумма по возрастанию",
+        "fiat-high": "Фиатная сумма по убыванию"
+      },
+      "add-wallet": "Добавить кошелек",
+      "period": "Период",
+      "remove-dust": "Убрать пыль",
+      "tax-platform": "Платформа налогового экспорта",
+      "csv-for": "CSV для {{platform}}",
+      "koinly-note": "Koinly импортирует этот файл как универсальный CSV кошелька."
+    }
+  },
+  "billing": {
+    "choose-country": "Выберите страну для оплаты",
+    "country-is": "Страна для оплаты"
+  },
+  "subscriptions": {
+    "subscription": "подписка",
+    "seo": "Подписки",
+    "active-title": "Ваши активные подписки",
+    "expired-title": "Истекшие подписки",
+    "payment-details": "Данные для оплаты",
+    "activation-note": "Сервис активируется после подтверждения платежа.",
+    "payment-received": "Платеж получен",
+    "service-activating": "{{service}} активируется.",
+    "activating": "Активация сервиса...",
+    "next-step": "Следующий шаг",
+    "alerts-next-step": "Откройте Алерты, чтобы создать каналы и правила.",
+    "transactions": "Транзакции",
+    "last-payments": "Последние платежи",
+    "pro": {
+      "why-title": "Зачем Bithomp Pro?",
+      "intro": "Bithomp Pro открывает дополнительные инструменты аккаунта и снимает часть лимитов.",
+      "benefits": {
+        "reports-title": "Отчеты",
+        "reports-link": "История баланса",
+        "reports-text": "налоговый экспорт и инструменты активности аккаунта.",
+        "services-title": "Сервисы",
+        "services": {
+          "send": "Отправить платеж",
+          "check": "Проверка эмитента",
+          "escrow": "Создать escrow"
+        },
+        "scroll-title": "Больше данных",
+        "scroll-text": "Больше строк и глубокая прокрутка в",
+        "limits-title": "Повышенные лимиты",
+        "limits-text": "Больше элементов в",
+        "avatars-title": "Аватары",
+        "avatars-text": "Устанавливайте аватары для подтвержденных адресов в",
+        "ads-title": "Без рекламы",
+        "ads-text": "Используйте обозреватель без рекламы.",
+        "support-title": "Приоритетная поддержка",
+        "support-text": "Получайте более быструю помощь поддержки.",
+        "project-title": "Поддержка проекта",
+        "project-text": "Ваша подписка помогает нам развивать проект."
+      },
+      "more-coming": "Скоро появятся новые Pro-функции.",
+      "subscribe": "Выберите срок подписки."
+    },
+    "api": {
+      "check-docs": "Смотрите документацию по лимитам и ценам API:",
+      "why-title": "Доступ к API",
+      "intro": "Используйте API, чтобы интегрировать данные обозревателя в приложение или рабочий процесс.",
+      "benefits": {
+        "limits-title": "Понятные лимиты",
+        "limits-text": "Выберите тариф под ваш объем запросов.",
+        "features-title": "Данные обозревателя",
+        "features-text": "Получайте данные аккаунтов, транзакций, токенов, NFT и сети."
+      },
+      "subscribe": "Выберите тариф и срок подписки."
+    },
+    "alerts": {
+      "why-title": "Бот алертов",
+      "intro": "Алерты {{explorerName}} сообщают о NFT-офферах, NFT-продажах и изменениях баланса отслеживаемых аккаунтов.",
+      "destinations": "Отправляйте алерты в email, Slack, Discord или X.",
+      "rules-before": "Создавайте каналы и правила на странице",
+      "balance-before": "Алерты изменения баланса используют адреса из",
+      "subscribe": "Выберите тариф алертов и период оплаты.",
+      "alerts-day": "Алертов / день",
+      "alerts-week": "Алертов / неделю",
+      "price-month": "{{price}} EUR / месяц",
+      "price-year-alt": "{{price}} EUR / год",
+      "plan-description": {
+        "trial": "Для теста одного направления алертов перед выбором платного тарифа.",
+        "basic": "Для личного мониторинга и небольших наборов алертов.",
+        "standard": "Для активного мониторинга с большим числом каналов, правил и алертов."
+      }
+    }
+  },
+  "referrals": {
+    "title": "Реферальная программа",
+    "commission": "20% комиссии",
+    "intro-before": "Приглашайте пользователей и получайте",
+    "intro-after": "с подходящих покупок.",
+    "earn-when": "Вы зарабатываете, когда приглашенный пользователь покупает:",
+    "api-access": "доступ к API",
+    "paid-before": "Вознаграждения выплачиваются",
+    "instantly": "мгновенно",
+    "paid-as": "как",
+    "paid-after": "который можно погасить на адрес выплат.",
+    "how-it-works": "Как это работает:",
+    "steps": {
+      "link": "Создайте реферальные ссылки.",
+      "share": "Поделитесь ими с пользователями.",
+      "earn": "Получайте вознаграждения после завершенных покупок."
+    },
+    "no-limit-before": "Нет",
+    "no-limit": "ограничения",
+    "no-limit-after": "на количество приглашенных пользователей.",
+    "links-title": "Ваши реферальные ссылки",
+    "link": "ссылка",
+    "payout-address": "Адрес выплат",
+    "payout-address-help": "Вознаграждения отправляются на этот адрес.",
+    "save-address": "Сохранить адрес выплат",
+    "unredeemed_one": "{{count}} непогашенный чек",
+    "unredeemed_other": "{{count}} непогашенного чека",
+    "redeem_one": "Погасить {{count}} чек на",
+    "redeem_other": "Погасить {{count}} чека на",
+    "payments": "Реферальные выплаты",
+    "payments-note": "Последние реферальные вознаграждения и их статус погашения.",
+    "reward-amount": "Сумма вознаграждения",
+    "check-expires": "Чек истекает",
+    "no-payments": "Реферальных выплат пока нет.",
+    "status": {
+      "issued": "Выпущен",
+      "redeemed": "Погашен",
+      "expired": "Истек",
+      "pending": "Ожидает",
+      "not-eligible": "Не подходит",
+      "not-issued": "Не выпущен",
+      "cashed": "Погашен",
+      "canceled": "Отменен",
+      "failed": "Ошибка"
+    },
+    "unredeemed_few": "{{count}} непогашенных чека",
+    "unredeemed_many": "{{count}} непогашенных чеков",
+    "redeem_few": "Погасить {{count}} чека на",
+    "redeem_many": "Погасить {{count}} чеков на",
+    "any": "любой",
+    "how-summary": "кратко",
+    "code-works-before": "Ваш реферальный код работает на",
+    "code-works-on": "странице на {{siteName}} с",
+    "code-works-after": "в URL.",
+    "browser-save-before": "Браузер запоминает реферала на",
+    "browser-save-bold": "30 дней",
+    "browser-save-after": "Покупку можно сделать позже в том же браузере.",
+    "your-links-before": "Ваши ссылки для",
+    "example": "Пример",
+    "no-code": "У вас пока нет реферального кода.",
+    "requirements-title": "Требования",
+    "requirements-summary": "перед выплатой",
+    "requirements-text": "Добавьте адрес выплат перед погашением вознаграждений. Вознаграждения доступны только за подходящие оплаченные покупки.",
+    "edit-address": "Изменить адрес выплат",
+    "address-placeholder": "Введите адрес {{ledgerName}}",
+    "request-code": "Запросить реферальный код",
+    "unredeemed": "{{count}} непогашенных чеков",
+    "redeem": "Погасить {{count}} чеков на",
+    "errors": {
+      "address-required": "Введите адрес выплат.",
+      "address-invalid": "Введите корректный адрес выплат."
+    }
+  },
+  "notifications": {
+    "eyebrow": "Алерты {{explorerName}}",
+    "hero-text": "Создавайте каналы и правила для алертов аккаунтов и NFT.",
+    "loading-alerts": "Загрузка алертов...",
+    "finish-setup": "Завершить настройку",
+    "finish-setup-text": "Добавьте данные профиля перед созданием каналов уведомлений.",
+    "profile-name": "Название профиля",
+    "profile-name-placeholder": "Компания или проект",
+    "session-expired": "Сессия истекла",
+    "sign-in-again": "Войдите снова.",
+    "load-failed": "Не удалось загрузить алерты.",
+    "upgrade-plan": "Улучшить тариф",
+    "limit-reached": "Лимит достигнут",
+    "channel-limit-reached": "Достигнут лимит каналов.",
+    "rule-limit-reached": "Достигнут лимит правил.",
+    "upgrade-add-channels": "Улучшите тариф, чтобы добавить больше каналов.",
+    "upgrade-add-rules": "Улучшите тариф, чтобы добавить больше правил.",
+    "upgrade-more": "Улучшите тариф для более высоких лимитов.",
+    "plan-limit": "Тариф {{plan}}: {{channels}} и {{rules}}.",
+    "alerts-plan": "Тариф алертов {{plan}}",
+    "channel-type": {
+      "email": "Email",
+      "slack_webhook": "Slack",
+      "discord_webhook": "Discord",
+      "twitter_api": "X / Twitter"
+    },
+    "detailed-setup-guide": "Подробное руководство",
+    "channel-name": "Название канала",
+    "channel-name-help": "Приватное название, по которому вы узнаете этот канал.",
+    "channel-name-placeholder": "Основной канал Slack",
+    "channel-number": "Канал #{{id}}",
+    "rule-number": "Правило #{{id}}",
+    "default-rule-name": "Правило #{{index}}",
+    "rules-connected_one": "{{count}} правило подключено",
+    "rules-connected_other": "{{count}} правил подключено",
+    "event": "Событие",
+    "channel": "Канал",
+    "rule": "Правило",
+    "fiat": "Фиат",
+    "fiat-currency": "Фиатная валюта",
+    "choose-currency": "Выберите валюту",
+    "fiat-help": "Используется для фиатных фильтров цены в этом правиле.",
+    "choose-channel": "Выберите канал",
+    "balance-email-note": "Алерты изменения баланса можно отправлять только по email.",
+    "email-balance-note": "Email-каналы используются только для алертов изменения баланса.",
+    "rule-name": "Название правила",
+    "rule-name-help": "Приватное название для этого правила.",
+    "rule-name-placeholder": "Крупная продажа NFT",
+    "filters-title": "Фильтры",
+    "filters-help": "Добавьте фильтры, чтобы уточнить, когда сработает правило.",
+    "toggle-rule-enabled": "Переключить правило",
+    "enabled-help": "Приостановить правило без удаления.",
+    "toggle-external-links": "Переключить внешние ссылки",
+    "include-external-links": "Добавлять внешние ссылки",
+    "external-links-help": "Добавлять ссылки на маркетплейсы или обозреватель, когда они доступны.",
+    "toggle-xrp-cafe": "Переключить ссылки xrp.cafe",
+    "include-xrp-cafe": "Добавлять ссылки xrp.cafe",
+    "xrp-cafe-help": "Добавлять ссылки xrp.cafe для поддерживаемых NFT-алертов.",
+    "new-rule": "Новое правило",
+    "no-rules-title": "Правил пока нет",
+    "no-rules-text": "Создайте правило, чтобы начать отправлять алерты.",
+    "delete-channel": "Удалить канал",
+    "delete-rule": "Удалить правило",
+    "delete-question": "Удалить",
+    "delete-channel-note": "Сначала нужно удалить правила, подключенные к этому каналу.",
+    "delete-rule-note": "Это действие нельзя отменить.",
+    "open-alerts": "Открыть Алерты",
+    "pro-required-before": "Для этого фильтра требуется",
+    "enable-history-before": "Включите историю баланса в",
+    "enable-history-after": "перед использованием этого фильтра",
+    "loading-addresses": "Загрузка адресов...",
+    "choose-address": "Выберите адрес",
+    "enter-address-username": "Введите адрес или username",
+    "required-for-rule": "Обязательно для этого правила.",
+    "choose-tx-types": "Выберите типы транзакций",
+    "any-tx-type": "Любой тип транзакции",
+    "choose-token": "Выберите {{nativeCurrency}} или выпущенный токен.",
+    "enter-destination": "Введите адрес назначения",
+    "destination-address": "Адрес назначения",
+    "every-matching-event": "Каждое подходящее событие",
+    "external-links": "Внешние ссылки",
+    "email-balance-only": "Используйте Slack, Discord или X для NFT-алертов.",
+    "balance-email-only": "Используйте email для алертов изменения баланса.",
+    "field-required": "Поле {{field}} обязательно.",
+    "limit": {
+      "channels": "{{count}} каналов",
+      "channels_one": "{{count}} канал",
+      "channels_other": "{{count}} каналов",
+      "rules": "{{count}} правил",
+      "rules_one": "{{count}} правило",
+      "rules_other": "{{count}} правил",
+      "channels_few": "{{count}} канала",
+      "channels_many": "{{count}} каналов",
+      "rules_few": "{{count}} правила",
+      "rules_many": "{{count}} правил"
+    },
+    "channels": {
+      "title": "Каналы",
+      "subtitle": "Куда отправляются алерты."
+    },
+    "rules": {
+      "title": "Правила",
+      "subtitle": "Когда отправляются алерты."
+    },
+    "actions": {
+      "add-channel": "Добавить канал",
+      "save-channel": "Сохранить канал",
+      "edit-channel": "Изменить канал",
+      "delete-channel": "Удалить канал",
+      "add-rule": "Добавить правило",
+      "save-rule": "Сохранить правило",
+      "edit-rule": "Изменить правило",
+      "delete-rule": "Удалить правило",
+      "show-executions": "Показать выполнения"
+    },
+    "fields": {
+      "webhook": "Webhook URL",
+      "username": "Имя бота",
+      "email": "Email-адрес",
+      "consumer_key": "API-ключ",
+      "consumer_secret": "Секретный ключ API",
+      "access_token_key": "Токен доступа",
+      "access_token_secret": "Секрет токена доступа",
+      "bot-username": "Имя бота",
+      "email-address": "Email-адрес",
+      "api-key": "API-ключ",
+      "access-token": "Токен доступа"
+    },
+    "field-help": {
+      "webhook": "URL входящего webhook.",
+      "username": "Имя, которое будет показывать бот.",
+      "email": "Адрес, который будет получать алерты.",
+      "consumer_key": "В X это поле называется API Key.",
+      "consumer_secret": "Показывается один раз вместе с API Key.",
+      "access_token_key": "Сгенерируйте после включения прав чтения и записи.",
+      "access_token_secret": "Сгенерируйте вместе с Access Token и храните в секрете."
+    },
+    "field-placeholder": {
+      "webhook": "https://hooks.example.com/...",
+      "username": "Bithomp Bot",
+      "email": "name@example.com",
+      "consumer_key": "API Key из X",
+      "consumer_secret": "API Key Secret из X",
+      "access_token_key": "Access Token из X",
+      "access_token_secret": "Access Token Secret из X"
+    },
+    "guides": {
+      "email": {
+        "title": "Email",
+        "description": "Используйте почтовый ящик, который должен получать алерты {{explorerName}}.",
+        "steps": [
+
+        ]
+      },
+      "discord_webhook": {
+        "title": "Discord",
+        "description": "Создайте webhook в канале Discord, куда нужно публиковать алерты.",
+        "steps": [
+          "Настройки сервера",
+          "Интеграции",
+          "Вебхуки",
+          "Скопировать Webhook URL"
+        ]
+      },
+      "slack_webhook": {
+        "title": "Slack",
+        "description": "Создайте входящий webhook в Slack, выберите канал и вставьте URL webhook здесь.",
+        "steps": [
+          "Каталог приложений Slack",
+          "Входящие webhooks",
+          "Добавить в workspace",
+          "Скопировать Webhook URL"
+        ]
+      },
+      "twitter_api": {
+        "title": "X / Twitter",
+        "description": "Используйте API Key, API Key Secret, Access Token и Access Token Secret из приложения в портале разработчика X.",
+        "steps": [
+          "Портал разработчика",
+          "Приложение проекта",
+          "Права чтения и записи",
+          "Ключи и токены"
+        ]
+      }
+    },
+    "destination": {
+      "any": "Любое назначение",
+      "specific": "Конкретный адрес",
+      "none": "Без назначения",
+      "known-broker": "Известный брокер",
+      "none-or-known-broker": "Без назначения или известный брокер"
+    },
+    "operators": {
+      "is": "равно",
+      "is-not": "не равно",
+      "in": "входит в",
+      "not-in": "не входит в",
+      "exists": "существует",
+      "and": "и",
+      "or": "или"
+    },
+    "number-operators": {
+      "$gte": "Не меньше",
+      "$lte": "Не больше",
+      "$gt": "Больше",
+      "$lt": "Меньше",
+      "$eq": "Ровно"
+    },
+    "tx-type-operators": {
+      "$eq": "Равно",
+      "$in": "Включить",
+      "$nin": "Исключить"
+    },
+    "event-groups": {
+      "NFT": "NFT",
+      "Account": "Аккаунт"
+    },
+    "events": {
+      "nftoken_sale": {
+        "label": "Продажа NFT",
+        "description": "Когда обнаружена продажа NFT."
+      },
+      "nftoken_create_sell_offer": {
+        "label": "Оффер продажи NFT",
+        "description": "Когда создан новый оффер продажи NFT."
+      },
+      "uritoken_sell": {
+        "label": "Продажа NFT",
+        "description": "Когда обнаружена продажа NFT."
+      },
+      "uritoken_create_sell_offer": {
+        "label": "Оффер продажи NFT",
+        "description": "Когда создан новый оффер продажи NFT."
+      },
+      "balances_change": {
+        "label": "Изменение баланса",
+        "description": "Когда меняется баланс отслеживаемого Pro-адреса."
+      }
+    },
+    "filters": {
+      "address": "Адрес",
+      "tx_type": "Тип транзакции",
+      "issuer": "Эмитент",
+      "taxon": "Таксон",
+      "price": "Цена в {{nativeCurrency}}",
+      "price_usd": "Цена в USD",
+      "account": "Аккаунт продавца",
+      "destination": "Назначение",
+      "amount": "Сумма",
+      "token": "Токен",
+      "known_broker": "Известный брокер"
+    },
+    "errors": {
+      "channel-name-required": "Введите название канала.",
+      "field-required": "Поле {{field}} обязательно.",
+      "invalid-webhook": "Введите корректный Webhook URL.",
+      "invalid-email": "Введите корректный email-адрес.",
+      "choose-channel": "Выберите канал.",
+      "email-balance-only": "Email-каналы можно использовать только для алертов изменения баланса.",
+      "balance-email-only": "Алерты изменения баланса можно отправлять только по email.",
+      "rule-name-required": "Введите название правила.",
+      "event-invalid-short": "Выберите поддерживаемое событие.",
+      "choose-field": "Выберите {{field}}.",
+      "pro-required": "Для этого фильтра требуется Bithomp Pro.",
+      "enable-history-first": "Сначала включите историю баланса хотя бы для одного адреса.",
+      "choose-history-address": "Выберите адрес с историей баланса.",
+      "valid-address": "Введите корректный адрес.",
+      "valid-number": "Введите корректное число.",
+      "tx-type-supported": "Выберите поддерживаемый тип транзакции.",
+      "tx-types-supported": "Выберите только поддерживаемые типы транзакций.",
+      "valid-destination": "Введите корректный адрес назначения.",
+      "profile-name-required": "Введите название профиля.",
+      "country-required": "Выберите страну.",
+      "setup-failed": "Не удалось завершить настройку.",
+      "save-channel-failed": "Не удалось сохранить канал.",
+      "save-rule-failed": "Не удалось сохранить правило.",
+      "delete-channel-failed": "Не удалось удалить канал.",
+      "connection-has-listeners": "Удалите подключенные правила перед удалением канала.",
+      "connection-settings-required-short": "Требуются настройки канала.",
+      "connection-settings-required": "Перед отправкой алертов нужны настройки канала.",
+      "action-required": "Требуется действие правила.",
+      "event-invalid": "Это событие не поддерживается.",
+      "event-required": "Событие обязательно.",
+      "connection-not-found": "Канал не найден.",
+      "listener-disabled": "Правило отключено.",
+      "package-tier-required": "Требуется платный тариф алертов.",
+      "package-limit-reached": "Достигнут лимит тарифа."
+    },
+    "executions": {
+      "title": "Выполнения для {{name}}",
+      "none-title": "Выполнений нет",
+      "loading-text": "Загрузка последних выполнений...",
+      "none-text": "Выполнений пока нет.",
+      "loaded": "Загружено",
+      "number": "Выполнение #{{id}}"
+    },
+    "guest": {
+      "rules": "Создавайте правила алертов {{explorerName}} после входа.",
+      "channels": "Отправляйте алерты в email, Slack, Discord или X."
+    },
+    "x-guide": {
+      "seo-title": "Руководство по настройке X-уведомлений",
+      "seo-description": "Как создать X API-ключи для алертов.",
+      "eyebrow": "Настройка X / Twitter",
+      "title": "Настройка алертов X",
+      "intro": "Создайте приложение разработчика X, включите права на запись и скопируйте четыре нужных ключа в алерты.",
+      "before-title": "Перед началом",
+      "before": {
+        "account": "Используйте отдельный аккаунт X для публикации алертов.",
+        "private": "Храните все сгенерированные ключи приватно.",
+        "write": "У приложения должны быть права чтения и записи.",
+        "regenerate": "Пересоздайте токен доступа после изменения прав."
+      },
+      "back": "Назад к Алертам",
+      "open-portal": "Открыть портал разработчика X",
+      "steps": [
+        {
+          "title": "Создайте или откройте аккаунт X",
+          "text": "Используйте аккаунт X, который будет публиковать уведомления. На скриншотах показан полный процесс создания нового аккаунта, включая подтверждение e-mail и настройку профиля.",
+          "images": [
+            "Откройте X и выберите создание аккаунта или войдите, если аккаунт бота уже существует.",
+            "Введите имя аккаунта, адрес e-mail и дату рождения.",
+            "Выберите настройки персонализации X и продолжите.",
+            "Проверьте данные аккаунта и нажмите Зарегистрироваться.",
+            "Пройдите проверку аккаунта X.",
+            "Скопируйте код подтверждения из письма от X.",
+            "Добавьте изображение профиля для аккаунта или продолжите с выбранной настройкой.",
+            "Убедитесь, что аккаунт открывается на главной странице X."
+          ]
+        },
+        {
+          "title": "Запросите доступ разработчика X",
+          "text": "Откройте портал разработчика X, выберите доступный бесплатный вариант аккаунта разработчика и заполните форму соглашения с простым описанием бота уведомлений.",
+          "images": [
+            "Откройте страницу платформы разработчиков X.",
+            "Выберите бесплатный вариант аккаунта на странице тарифов разработчика.",
+            "Откройте форму соглашения разработчика и заполните описание использования.",
+            "Отметьте обязательные пункты политики и отправьте форму."
+          ]
+        },
+        {
+          "title": "Откройте приложение проекта и создайте ключи",
+          "text": "Портал разработчика создает проект и приложение. Откройте это приложение, затем в разделе ключей и токенов создайте пару API-ключей и пару токенов доступа, необходимые для канала алертов.",
+          "images": [
+            "Откройте проект и приложение по умолчанию из панели портала разработчика.",
+            "Проверьте обзор проекта и выберите приложение в левом меню.",
+            "Откройте настройки приложения и нажмите кнопку настройки в разделе аутентификации пользователя.",
+            "Откройте раздел ключей и токенов, чтобы создать API Key, API Key Secret, Access Token и Access Token Secret.",
+            "Сохраните API Key и API Key Secret. Они соответствуют первым двум полям в Bithomp Alerts.",
+            "Сохраните Access Token и Access Token Secret. Если они были созданы только с правом чтения, дальше измените права."
+          ]
+        },
+        {
+          "title": "Включите права на запись",
+          "text": "У приложения должны быть права чтения и записи, прежде чем оно сможет публиковать алерты. После изменения прав создайте Access Token и Access Token Secret заново, чтобы новый токен мог отправлять публикации.",
+          "images": [
+            "В настройках аутентификации пользователя выберите права чтения и записи.",
+            "Выберите тип приложения: Web App, Automated App или Bot.",
+            "Заполните обязательные поля Callback URI / Redirect URL и Website URL.",
+            "Укажите публичные URL для callback и сайта, затем сохраните настройки.",
+            "Подтвердите изменение прав, когда X попросит это сделать.",
+            "После сохранения X покажет OAuth 2.0 Client ID и Client Secret. Это не те четыре поля, которые нужны для канала алертов."
+          ]
+        },
+        {
+          "title": "Скопируйте ключи в Bithomp Alerts",
+          "text": "Вернитесь в раздел ключей и токенов после сохранения прав чтения и записи. Вставьте API Key, API Key Secret, Access Token и Access Token Secret в соответствующие поля на странице алертов. Если Access Token был создан до изменения прав, сначала создайте его заново.",
+          "images": [
+
+          ]
+        }
+      ]
+    },
+    "rules-connected": "{{count}} правил подключено",
+    "rules-connected_few": "{{count}} правила подключено",
+    "rules-connected_many": "{{count}} правил подключено",
+    "channels_one": "{{count}} канал",
+    "channels_few": "{{count}} канала",
+    "channels_many": "{{count}} каналов",
+    "channels_other": "{{count}} каналов",
+    "rules_one": "{{count}} правило",
+    "rules_few": "{{count}} правила",
+    "rules_many": "{{count}} правил",
+    "rules_other": "{{count}} правил",
+    "channel-type-label": "Тип канала"
+  },
+  "errors": {
+    "token": {
+      "required": "Войдите снова."
+    },
+    "partner": {
+      "not_found": "Профиль не найден."
+    }
+  },
+  "error": {
+    "Network Error": "Ошибка сети. Попробуйте снова.",
+    "payment": "Ошибка платежа.",
+    "payment-partly": "Получено {{received}} {{currency}}, требуется {{required}} {{currency}}."
+  }
 }

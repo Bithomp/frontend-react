@@ -1,54 +1,16 @@
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
 import { useWidth } from '../../../utils'
+import { useTranslation } from 'next-i18next'
 
-const options = {
-  basic: [
-    { value: 'm1', label: '1 month', price: '30 EUR' },
-    { value: 'm3', label: '3 months', price: '90 EUR' },
-    { value: 'm6', label: '6 months', price: '180 EUR' },
-    { value: 'y1', label: '1 year', price: '300 EUR' }
-  ],
-  standard: [
-    { value: 'm1', label: '1 month', price: '100 EUR' },
-    { value: 'm3', label: '3 months', price: '300 EUR' },
-    { value: 'm6', label: '6 months', price: '600 EUR' },
-    { value: 'y1', label: '1 year', price: '1000 EUR' }
-  ],
-  premium: [
-    { value: 'm1', label: '1 month', price: '250 EUR' },
-    { value: 'm3', label: '3 months', price: '750 EUR' },
-    { value: 'm6', label: '6 months', price: '1500 EUR' },
-    { value: 'y1', label: '1 year', price: '2500 EUR' }
-  ],
-  enterprise: [
-    { value: 'm1', label: '1 month', price: '500 EUR' },
-    { value: 'm3', label: '3 months', price: '1500 EUR' },
-    { value: 'm6', label: '6 months', price: '3000 EUR' },
-    { value: 'y1', label: '1 year', price: '5000 EUR' }
-  ],
-  enterprise2: [
-    { value: 'm1', label: '1 month', price: '1000 EUR' },
-    { value: 'm3', label: '3 months', price: '3000 EUR' },
-    { value: 'm6', label: '6 months', price: '6000 EUR' },
-    { value: 'y1', label: '1 year', price: '10000 EUR' }
-  ],
-  enterprise3: [
-    { value: 'm1', label: '1 month', price: '2000 EUR' },
-    { value: 'm3', label: '3 months', price: '6000 EUR' },
-    { value: 'm6', label: '6 months', price: '12000 EUR' },
-    { value: 'y1', label: '1 year', price: '20000 EUR' }
-  ]
+const priceOptions = {
+  basic: ['30 EUR', '90 EUR', '180 EUR', '300 EUR'],
+  standard: ['100 EUR', '300 EUR', '600 EUR', '1000 EUR'],
+  premium: ['250 EUR', '750 EUR', '1500 EUR', '2500 EUR'],
+  enterprise: ['500 EUR', '1500 EUR', '3000 EUR', '5000 EUR'],
+  enterprise2: ['1000 EUR', '3000 EUR', '6000 EUR', '10000 EUR'],
+  enterprise3: ['2000 EUR', '6000 EUR', '12000 EUR', '20000 EUR']
 }
-
-const tierOptions = [
-  { value: 'basic', label: 'Basic' },
-  { value: 'standard', label: 'Standard' },
-  { value: 'premium', label: 'Premium' },
-  { value: 'enterprise', label: 'Enterprise' },
-  { value: 'enterprise2', label: 'Enterprise II' },
-  { value: 'enterprise3', label: 'Enterprise III' }
-]
 
 const optionIndex = (val) => {
   switch (val) {
@@ -66,6 +28,23 @@ const optionIndex = (val) => {
 }
 
 export default function Api({ setPayPeriod, setTier, tier }) {
+  const { t } = useTranslation('admin')
+  const periodValues = ['m1', 'm3', 'm6', 'y1']
+  const periodLabels = [t('period.m1'), t('period.m3'), t('period.m6'), t('period.y1')]
+  const options = Object.fromEntries(
+    Object.entries(priceOptions).map(([key, prices]) => [
+      key,
+      periodValues.map((value, index) => ({ value, label: periodLabels[index], price: prices[index] }))
+    ])
+  )
+  const tierOptions = [
+    { value: 'basic', label: t('plans.basic') },
+    { value: 'standard', label: t('plans.standard') },
+    { value: 'premium', label: t('plans.premium') },
+    { value: 'enterprise', label: t('plans.enterprise') },
+    { value: 'enterprise2', label: t('plans.enterprise2') },
+    { value: 'enterprise3', label: t('plans.enterprise3') }
+  ]
   const [innerTier, setInnerTier] = useState(tier)
   const [optionsList, setOptionsList] = useState(options[tier])
   const [optionValue, setOptionValue] = useState(options[tier][1])
@@ -84,26 +63,23 @@ export default function Api({ setPayPeriod, setTier, tier }) {
   return (
     <>
       <div className="left">
-        Check documentation and choose your API plan:{' '}
+        {t('subscriptions.api.check-docs')}{' '}
         <a href="https://docs.bithomp.com/#price-and-limits" target="_blank" rel="noreferrer">
           https://docs.bithomp.com/#price-and-limits
         </a>
         <br />
       </div>
-      <h4 className="center">Why Purchase an API Subscription?</h4>
+      <h4 className="center">{t('subscriptions.api.why-title')}</h4>
       <div style={{ textAlign: 'left' }}>
-        <p>Purchasing an API subscription can be beneficial for several reasons:</p>
+        <p>{t('subscriptions.api.intro')}</p>
         <p>
-          ✅ <b>Increased rate limits</b>: Paid plans offer higher request limits, which include more requests per
-          minute as well as more requests per day. This is particularly crucial for applications requiring real-time
-          data.
+          <b>{t('subscriptions.api.benefits.limits-title')}</b>: {t('subscriptions.api.benefits.limits-text')}
         </p>
         <p>
-          ✅ <b>Access to advanced features</b>: Subscribing to a paid plan grants access to additional features,
-          including specialized endpoints that are not available in the Free tier.
+          <b>{t('subscriptions.api.benefits.features-title')}</b>: {t('subscriptions.api.benefits.features-text')}
         </p>
       </div>
-      <p>Subscribe to our API!</p>
+      <p>{t('subscriptions.api.subscribe')}</p>
 
       <div className="center">
         <Select

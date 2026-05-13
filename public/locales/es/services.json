@@ -117,7 +117,7 @@
     "intro": "Crea o modifica una Trustline que vincula dos cuentas.",
     "learn-text": "Las Trustlines son estructuras en {{explorerName}} para mantener tokens. Las Trustlines aplican la regla de que no puedes hacer que otra persona mantenga un token que no quiere. <0>Más información sobre las Trustlines de {{explorerName}}</0>.",
     "view-top-tokens": "Ver TOP Tokens",
-    "simple": "Simple",
+    "simple": "Sencillo",
     "advanced": "Avanzado",
     "token": "Token",
     "limit-total-supply": "el límite se establecerá en el suministro total:",
@@ -554,19 +554,19 @@
         "description": "Si está activado, otras cuentas no pueden enviar transacciones Remit a esta cuenta."
       },
       "tshCollect": {
-        "name": "Transactional Stakeholder (TSH) Collect",
+        "name": "Cobro de parte interesada transaccional (TSH)",
         "description": "Si está activado, esta cuenta puede cobrar recompensas TSH de transacciones."
       },
       "allowTrustLineClawback": {
         "name": "Trustline Clawback",
-        "description": "Permite a la cuenta recuperar tokens que ha emitido. Solo se puede establecer si la cuenta tiene el owner directory vacío. Después de establecer este flag, no se puede revertir."
+        "description": "Permite a la cuenta recuperar tokens que ha emitido. Solo se puede establecer si la cuenta tiene el owner directory vacío. Después de establecer este flag, no se puede revertir. La cuenta no debe tener trustlines, offers, Escrows, payment channels, checks ni signer lists."
       },
       "allowTrustLineLocking": {
         "name": "Trustline Locking",
         "description": "Permite que los tokens emitidos por esta cuenta se mantengan en escrow. Después de activarlo, no se puede desactivar."
       },
       "defaultRipple": {
-        "name": "Default rippling",
+        "name": "Default Rippling",
         "description": "Configuración para emisores de tokens. Si está activada, permite rippling en todas las trustlines por defecto."
       },
       "disableMaster": {

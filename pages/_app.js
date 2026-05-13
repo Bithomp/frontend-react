@@ -973,6 +973,8 @@ const MyApp = ({ Component, pageProps }) => {
     (signRequest || isValidUUID(uuid) || hasWalletConnectWallet)
   const bodyBackgroundStyle = pageProps.isSsrMobile ? undefined : { backgroundImage: getBackgroundImage() }
   const shouldDeferHomepageChrome = pageProps.isSsrMobile && pathname === '/' && !nonCriticalUiReady
+  const clientAccount = isClient ? account : null
+  const clientSessionToken = isClient ? sessionToken : null
 
   if (pagesWithoutWrapper.includes(pathname)) {
     return <Component />
@@ -998,14 +1000,14 @@ const MyApp = ({ Component, pageProps }) => {
               ) : (
                 <Header
                   setSignRequest={setSignRequest}
-                  account={account}
+                  account={clientAccount}
                   signOut={signOut}
                   setActiveWallet={setActiveWallet}
                   signOutPro={signOutPro}
                   selectedCurrency={selectedCurrency}
                   setSelectedCurrency={setSelectedCurrency}
                   countryCode={countryCode}
-                  sessionToken={sessionToken}
+                  sessionToken={clientSessionToken}
                   fiatRate={liveFiatRate}
                   openEmailLogin={openEmailLogin}
                 />
@@ -1033,7 +1035,7 @@ const MyApp = ({ Component, pageProps }) => {
               {(signRequest || isValidUUID(uuid)) && (
                 <SignForm
                   setSignRequest={setSignRequest}
-                  account={account}
+                  account={clientAccount}
                   signRequest={signRequest}
                   uuid={uuid}
                   setRefreshPage={setRefreshPage}
@@ -1059,7 +1061,7 @@ const MyApp = ({ Component, pageProps }) => {
                   {...pageProps}
                   refreshPage={refreshPage}
                   setSignRequest={setSignRequest}
-                  account={account}
+                  account={clientAccount}
                   setAccount={setAccount}
                   signOut={signOut}
                   selectedCurrency={selectedCurrency}
@@ -1069,8 +1071,9 @@ const MyApp = ({ Component, pageProps }) => {
                   signOutPro={signOutPro}
                   subscriptionExpired={subscriptionExpired}
                   setSubscriptionExpired={setSubscriptionExpired}
-                  sessionToken={sessionToken}
+                  sessionToken={clientSessionToken}
                   setSessionToken={setSessionToken}
+                  clientReady={isClient}
                   fiatRate={liveFiatRate}
                   openEmailLogin={openEmailLogin}
                   countryCode={countryCode}

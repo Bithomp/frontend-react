@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'next-i18next'
 
 import { FaDiscord, FaEnvelope, FaSlack } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
@@ -17,11 +18,11 @@ const iconMap = {
 const DetailRow = ({ label, value, mono = false }) => (
   <div className="notification-card-detail-row">
     <span>{label}</span>
-    <strong className={mono ? 'mono' : ''}>{value || 'N/A'}</strong>
+    <strong className={mono ? 'mono' : ''}>{value || '-'}</strong>
   </div>
 )
 
-const ChannelSpecificDetails = ({ channel }) => {
+const ChannelSpecificDetails = ({ channel, t }) => {
   if (!channel.settings) {
     return null
   }
@@ -36,25 +37,25 @@ const ChannelSpecificDetails = ({ channel }) => {
       return (
         <div className="notification-card-details">
           <DetailRow label="Webhook" mono value={channel.settings.webhook} />
-          <DetailRow label="Bot username" value={channel.settings.username} />
+          <DetailRow label={t('notifications.fields.bot-username')} value={channel.settings.username} />
         </div>
       )
     case NOTIFICATION_CHANNEL_TYPES.EMAIL:
       return (
         <div className="notification-card-details">
-          <DetailRow label="Email address" mono value={channel.settings.email || channel.settings.webhook} />
+          <DetailRow label={t('notifications.fields.email-address')} mono value={channel.settings.email || channel.settings.webhook} />
         </div>
       )
     case NOTIFICATION_CHANNEL_TYPES.TWITTER:
       return (
         <div className="notification-card-details">
           <DetailRow
-            label="API Key"
+            label={t('notifications.fields.api-key')}
             mono
             value={channel.settings.consumer_key ? `...${channel.settings.consumer_key.slice(-8)}` : ''}
           />
           <DetailRow
-            label="Access token"
+            label={t('notifications.fields.access-token')}
             mono
             value={channel.settings.access_token_key ? `...${channel.settings.access_token_key.slice(-8)}` : ''}
           />
@@ -66,6 +67,7 @@ const ChannelSpecificDetails = ({ channel }) => {
 }
 
 export default function ChannelCard({ channel, deleting, editing, onDelete, onEdit }) {
+  const { t } = useTranslation('admin')
   const Icon = channel.type ? iconMap[channel.type] : null
 
   return (
@@ -79,14 +81,18 @@ export default function ChannelCard({ channel, deleting, editing, onDelete, onEd
               })}
           </span>
           <div>
-            <strong>{channel.name || `Channel #${channel.id}`}</strong>
-            <span className="notification-channel-type">{getNotificationChannelLabel(channel.type)}</span>
+            <strong>{channel.name || t('notifications.channel-number', { id: channel.id })}</strong>
+            <span className="notification-channel-type">
+              {t(`notifications.channel-type.${channel.type}`, {
+                defaultValue: getNotificationChannelLabel(channel.type)
+              })}
+            </span>
           </div>
         </div>
         <div className="notification-card-actions">
           {onEdit && (
             <button
-              aria-label="Edit notification channel"
+              aria-label={t('notifications.actions.edit-channel')}
               className="icon-button"
               disabled={editing}
               onClick={() => onEdit(channel)}
@@ -97,7 +103,7 @@ export default function ChannelCard({ channel, deleting, editing, onDelete, onEd
           )}
           {onDelete && (
             <button
-              aria-label="Delete notification channel"
+              aria-label={t('notifications.actions.delete-channel')}
               className="icon-button notification-delete-button"
               disabled={deleting}
               onClick={() => onDelete(channel)}
@@ -108,9 +114,9 @@ export default function ChannelCard({ channel, deleting, editing, onDelete, onEd
           )}
         </div>
       </div>
-      <ChannelSpecificDetails channel={channel} />
+      <ChannelSpecificDetails channel={channel} t={t} />
       <div className="notification-card-usage">
-        <span>{channel.rules.length === 1 ? '1 rule connected' : `${channel.rules.length} rules connected`}</span>
+        <span>{t('notifications.rules-connected', { count: channel.rules.length })}</span>
       </div>
     </Card>
   )

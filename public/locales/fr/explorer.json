@@ -1,23 +1,23 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Recherche {{explorerSearchName}} — comptes, transactions, jetons, NFT",
-      "description": "Utilisez {{explorerSearchAttribution}} pour rechercher des adresses {{nativeCurrency}}, des hashes de transaction, des noms d’utilisateur, des CTID, des NFT, des jetons, des AMM et des objets du registre sur {{ledgerName}}.",
+      "title": "Recherche {{explorerSearchName}} : comptes, transactions, tokens et NFT {{ledgerName}}",
+      "description": "Utilisez {{explorerSearchAttribution}} pour rechercher des adresses, des hashes de transaction, des noms d’utilisateur, des CTID, des NFT, des Tokens, des AMM et des objets du registre sur {{ledgerName}}.",
       "heading": "Recherche {{explorerSearchName}}"
     },
     "testnet": {
-      "title": "Rechercher sur XRPL Testnet — comptes, transactions, jetons, NFT",
-      "description": "Recherchez des adresses XRPL Testnet, des hashes de transaction, des noms d'utilisateur, des CTID, des NFT, des jetons et des objets du registre. Besoin de coins ? Utilisez le faucet testnet.",
+      "title": "Rechercher sur XRPL Testnet — comptes, transactions, Tokens, NFT",
+      "description": "Recherchez des adresses XRPL Testnet, des hashes de transaction, des noms d'utilisateur, des CTID, des NFT, des Tokens et des objets du registre. Besoin de coins ? Utilisez le faucet testnet.",
       "heading": "Rechercher sur XRPL Testnet"
     },
     "devnet": {
-      "title": "Rechercher sur XRPL Devnet — comptes, transactions, jetons, NFT",
-      "description": "Recherchez des adresses XRPL Devnet, des hashes de transaction, des noms d'utilisateur, des CTID, des NFT, des jetons et des objets du registre. Besoin de coins ? Utilisez le faucet devnet.",
+      "title": "Rechercher sur XRPL Devnet — comptes, transactions, Tokens, NFT",
+      "description": "Recherchez des adresses XRPL Devnet, des hashes de transaction, des noms d'utilisateur, des CTID, des NFT, des Tokens et des objets du registre. Besoin de coins ? Utilisez le faucet devnet.",
       "heading": "Rechercher sur XRPL Devnet"
     }
   },
   "intro": {
-    "subtitle": "Explorez les transactions, comptes, jetons et NFT {{nativeCurrency}} rapidement et de manière fiable sur le {{nativeCurrency}} Ledger.",
+    "subtitle": "Explorez les transactions, comptes, Tokens et NFT {{nativeCurrency}} rapidement et de manière fiable sur le {{nativeCurrency}} Ledger.",
     "home-link-prefix": "Vous cherchez des statistiques en direct, des outils de prix, les plus gros transferts, des validateurs et des amendments ? Visitez la",
     "home-link-label": "page d’accueil de {{explorerName}}"
   },

@@ -164,7 +164,7 @@
       "transaction-id-tracking": "Transaction ID tracking",
       "global-freeze": "Global freeze",
       "authorized-minter": "Authorized minter",
-      "trustline-clawback": "Trustline clawback",
+      "trustline-clawback": "Trustline Clawback",
       "specified-sell-exactly": "Specified sell exactly",
       "specified-pay-up-to": "Specified pay up to",
       "specified-receive-at-least": "Specified receive at least",

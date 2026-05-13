@@ -169,7 +169,7 @@
       "transaction-id-tracking": "거래 ID 추적",
       "global-freeze": "전역 동결",
       "authorized-minter": "승인된 민터",
-      "trustline-clawback": "Trustline 회수",
+      "trustline-clawback": "Trustline Clawback",
       "specified-sell-exactly": "지정한 만큼 정확히 판매",
       "specified-pay-up-to": "최대 지불",
       "specified-receive-at-least": "최소 수령",
@@ -443,10 +443,10 @@
     "issuer-settings": {
       "global-freeze": "전역 동결",
       "fee": "수수료 {{fee}}",
-      "rippling": "rippling",
-      "clawback": "clawback",
+      "rippling": "Rippling",
+      "clawback": "Clawback",
       "no-freeze": "freeze 없음",
-      "escrow": "escrow",
+      "escrow": "Escrow",
       "not-configured": "설정되지 않음"
     },
     "achievements": {

@@ -49,7 +49,7 @@
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
-      "explorer": "AMM explorer",
+      "explorer": "AMM 탐색기",
       "learn": "AMM이란?",
       "deposit": "AMM 예치",
       "withdraw": "AMM 출금",
@@ -94,7 +94,7 @@
     },
     "network": {
       "blockchain": "블록체인",
-      "dapps": "Dapps",
+      "dapps": "Dapp",
       "nodes": "노드",
       "governance": "거버넌스",
       "activations": "활성화된 계정 (차트)",
@@ -248,7 +248,7 @@
     }
   },
   "home": {
-    "title": "{{homeExplorerName}} | 트랜잭션, 계정, NFT, Ledger 데이터 검색",
+    "title": "{{homeExplorerName}} | {{nativeCurrency}} 트랜잭션, 계정, NFT, Ledger 데이터 검색",
     "description": "{{homeExplorerAttribution}}에서 {{ledgerName}}의 {{nativeCurrency}} 주소, 트랜잭션, 토큰, NFT, 잔액, 온체인 활동을 검색하고 살펴볼 수 있습니다. 거래, NFT 민팅, AMM 관리, 트랜잭션 제출, 계정 도구도 사용할 수 있습니다.",
     "h1": "{{homeExplorerName}} 및 Ledger 도구",
     "search-placeholder": "주소/거래/NFT/사용자명/페이스트링/제안/통화 해시로 검색하기",

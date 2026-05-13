@@ -1,0 +1,68 @@
+.skeletonLine {
+  display: inline-block;
+  width: 140px;
+  max-width: 100%;
+  height: 1.2em;
+  min-height: 17px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-muted) 18%, transparent);
+  overflow: hidden;
+  position: relative;
+  vertical-align: middle;
+
+  &:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, #fff 38%, transparent), transparent);
+    animation: admin-skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+.tiny {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  border-radius: 6px;
+}
+
+.small {
+  width: 80px;
+}
+
+.wide {
+  width: 220px;
+}
+
+.token {
+  width: 320px;
+}
+
+.buttonSkeletonLine {
+  width: 72%;
+}
+
+.skeletonAction {
+  pointer-events: none;
+  background: color-mix(in srgb, var(--text-muted) 10%, transparent);
+  border-color: color-mix(in srgb, var(--text-muted) 16%, transparent);
+  color: transparent;
+  box-shadow: none;
+  text-shadow: none;
+
+  &:hover {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.skeletonActionWide {
+  min-width: 230px;
+}
+
+@keyframes admin-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

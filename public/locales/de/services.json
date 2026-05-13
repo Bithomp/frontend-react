@@ -446,7 +446,7 @@
     "fields": "Kontofelder",
     "notSet": "Nicht gesetzt",
     "setStatus": "Gesetzt",
-    "permanent": "Permanent",
+    "permanent": "Dauerhaft",
     "readMore": "Mehr lesen",
     "readLess": "Weniger lesen",
     "clear": "Löschen",
@@ -559,14 +559,14 @@
       },
       "allowTrustLineClawback": {
         "name": "Trustline Clawback",
-        "description": "Erlaubt dem Konto, ausgegebene Tokens zurückzuholen. Nur möglich, wenn das owner directory leer ist. Nach dem Setzen kann dieses Flag nicht rückgängig gemacht werden."
+        "description": "Erlaubt dem Konto, ausgegebene Tokens zurückzuholen. Nur möglich, wenn das owner directory leer ist. Nach dem Setzen kann dieses Flag nicht rückgängig gemacht werden. Das Konto darf keine trustlines, offers, Escrows, payment channels, checks oder signer lists haben."
       },
       "allowTrustLineLocking": {
         "name": "Trustline Locking",
         "description": "Erlaubt, von diesem Konto ausgegebene Tokens in escrow zu halten. Nach dem Aktivieren kann dieses Flag nicht deaktiviert werden."
       },
       "defaultRipple": {
-        "name": "Default rippling",
+        "name": "Default Rippling",
         "description": "Einstellung für Token-Emittenten. Wenn aktiviert, ist rippling auf allen trustlines standardmäßig erlaubt."
       },
       "disableMaster": {

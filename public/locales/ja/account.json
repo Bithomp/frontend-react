@@ -169,7 +169,7 @@
       "transaction-id-tracking": "トランザクションID追跡",
       "global-freeze": "グローバル凍結",
       "authorized-minter": "承認済みミンター",
-      "trustline-clawback": "TrustlineのClawback",
+      "trustline-clawback": "Trustline Clawback",
       "specified-sell-exactly": "指定量を正確に売却",
       "specified-pay-up-to": "最大支払い額",
       "specified-receive-at-least": "最低受取額",
@@ -446,7 +446,7 @@
       "rippling": "rippling",
       "clawback": "clawback",
       "no-freeze": "凍結なし",
-      "escrow": "escrow",
+      "escrow": "Escrow",
       "not-configured": "未設定"
     },
     "achievements": {

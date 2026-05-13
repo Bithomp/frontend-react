@@ -85,7 +85,7 @@
     "description": "Créer une transaction Escrow",
     "unlock-after": "Déverrouiller après <0>(lorsque les fonds peuvent être libérés)</0>",
     "cancel-after": "Annuler après <0>(lorsque l'escrow expire)</0>",
-    "condition": "Condition",
+    "condition": "État",
     "condition-placeholder": "PREIMAGE-SHA-256",
     "condition-warning": "Si vous le perdez, vous ne pourrez pas libérer les fonds.",
     "created": "Escrow créé avec succès",
@@ -414,7 +414,7 @@
     "metadataPlaceholder": "Collez vos métadonnées JSON ici",
     "digestLabel": "Digest :",
     "digestPlaceholder": "Digest",
-    "mintAndSend": "Mint and Send (Remit)",
+    "mintAndSend": "Mint et Envoyer (Remit)",
     "mintAndSendReserve": "Vous paierez l’Object Reserve en XAH pour que le NFT soit détenu sur le compte de destination.",
     "metadataLoading": "Tentative de chargement des métadonnées depuis l’URI...",
     "metadataLoadingAttempt": "Tentative de chargement des métadonnées depuis l’URI... ({{attempt}}/24 tentatives)",
@@ -554,19 +554,19 @@
         "description": "Si activé, les autres comptes ne peuvent pas envoyer de transactions Remit à ce compte."
       },
       "tshCollect": {
-        "name": "Transactional Stakeholder (TSH) Collect",
+        "name": "Collecte des parties prenantes transactionnelles (TSH)",
         "description": "Si activé, ce compte peut collecter des récompenses TSH depuis les transactions."
       },
       "allowTrustLineClawback": {
         "name": "Trustline Clawback",
-        "description": "Autorise le compte à récupérer les tokens qu’il a émis. Activable seulement si le owner directory est vide. Après activation, ce flag ne peut pas être annulé."
+        "description": "Autorise le compte à récupérer les tokens qu’il a émis. Activable seulement si le owner directory est vide. Après activation, ce flag ne peut pas être annulé. Le compte ne doit pas avoir de trustlines, offers, Escrows, payment channels, checks ni signer lists."
       },
       "allowTrustLineLocking": {
         "name": "Trustline Locking",
         "description": "Permet aux tokens émis par ce compte d’être détenus en escrow. Après activation, ce flag ne peut pas être désactivé."
       },
       "defaultRipple": {
-        "name": "Default rippling",
+        "name": "Default Rippling",
         "description": "Réglage pour les émetteurs de tokens. S’il est activé, le rippling est autorisé par défaut sur toutes les trustlines."
       },
       "disableMaster": {

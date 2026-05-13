@@ -36,7 +36,7 @@ export default function Watchlist({
   sessionToken,
   openEmailLogin
 }) {
-  const { t, i18n } = useTranslation()
+  const { t, i18n } = useTranslation(['common', 'admin'])
   const width = useWidth()
 
   const [errorMessage, setErrorMessage] = useState('')
@@ -106,12 +106,12 @@ export default function Watchlist({
     let type = null
 
     if (!entetyToAdd) {
-      setErrorMessage('Please enter Address or NFT ID')
+      setErrorMessage(t('watchlist.errors.entity-required', { ns: 'admin' }))
       return
     }
 
     if (!entetyName) {
-      setErrorMessage('Please enter a Private name for it')
+      setErrorMessage(t('watchlist.errors.name-required', { ns: 'admin' }))
       return
     }
 
@@ -122,12 +122,17 @@ export default function Watchlist({
     } else if (xahauNetwork && isIdValid(entetyToAdd)) {
       type = 'uritoken'
     } else {
-      setErrorMessage('Invalid Address or NFT ID')
+      setErrorMessage(t('watchlist.errors.entity-invalid', { ns: 'admin' }))
       return
     }
 
     if (data?.favorites?.find((a) => a.entity === entetyToAdd)) {
-      setErrorMessage('The ' + (type === 'address' ? 'Address' : 'NFT') + ' is already in the list.')
+      setErrorMessage(
+        t('watchlist.errors.already-exists', {
+          ns: 'admin',
+          type: type === 'address' ? t('table.address', { ns: 'admin' }) : 'NFT'
+        })
+      )
       return
     }
 
@@ -209,11 +214,11 @@ export default function Watchlist({
 
   const lastTx = (ledgerInfo, type) => {
     if (!ledgerInfo) {
-      return 'Loading...'
+      return t('common.loading', { ns: 'admin' })
     }
 
     if (ledgerInfo.previousTxnID === ledgerInfo.lastSubmittedTxHash && type === 'previousTxn') {
-      return 'The last signed tx'
+      return t('watchlist.last-signed-tx', { ns: 'admin' })
     }
 
     if (ledgerInfo?.activated) {
@@ -235,12 +240,12 @@ export default function Watchlist({
         </>
       )
     }
-    return 'Not found'
+    return t('common.not-found', { ns: 'admin' })
   }
 
   return (
     <>
-      <SEO title="Watchlist" />
+      <SEO title={t('tabs.watchlist', { ns: 'admin' })} />
       <div className="page-whatchlist content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
@@ -250,33 +255,33 @@ export default function Watchlist({
           <>
             {rendered ? (
               <p>
-                You can add up to {subscriptionExpired ? 20 : 100} favorite addresses or NFTs to the watchlist.
+                {t('watchlist.limit', { ns: 'admin', count: subscriptionExpired ? 20 : 100 })}
                 {subscriptionExpired && (
                   <>
                     {' '}
-                    If you want to add more, please subscribe to the{' '}
+                    {t('watchlist.limit-subscribe-before', { ns: 'admin' })}{' '}
                     <Link href="/admin/subscriptions">Bithomp Pro</Link>.
                   </>
                 )}
               </p>
             ) : (
-              <p>Loading...</p>
+              <p>{t('common.loading', { ns: 'admin' })}</p>
             )}
 
             <div>
               {addresses?.length > 0 && (
                 <>
-                  <h4 className="center">Address Watchlist</h4>
+                  <h4 className="center">{t('watchlist.address-title', { ns: 'admin' })}</h4>
                   {!width || width > 750 ? (
                     <table className="table-large no-hover">
                       <thead>
                         <tr>
                           <th className="center">#</th>
-                          <th className="left">Address</th>
-                          <th className="right">Balance</th>
-                          <th className="right">Last Signed Tx</th>
-                          <th className="right">Last Affecting Tx</th>
-                          <th className="center">Remove</th>
+                          <th className="left">{t('table.address', { ns: 'admin' })}</th>
+                          <th className="right">{t('table.balance', { ns: 'admin' })}</th>
+                          <th className="right">{t('watchlist.last-signed', { ns: 'admin' })}</th>
+                          <th className="right">{t('watchlist.last-affecting', { ns: 'admin' })}</th>
+                          <th className="center">{t('button.remove', { ns: 'admin' })}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -328,10 +333,11 @@ export default function Watchlist({
                             </td>
                             <td>
                               <p>
-                                Address: <b className="orange">{a.name}</b> - {addressLink(a.entity, { short: true })}
+                                {t('table.address', { ns: 'admin' })}: <b className="orange">{a.name}</b> -{' '}
+                                {addressLink(a.entity, { short: true })}
                               </p>
                               <p>
-                                Balance:{' '}
+                                {t('table.balance', { ns: 'admin' })}:{' '}
                                 <b className="green">
                                   {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
                                 </b>
@@ -341,7 +347,9 @@ export default function Watchlist({
                                   fiatRate
                                 })}
                               </p>
-                              <p>Last signed Tx: {lastTx(a.info?.ledgerInfo, 'lastSubmitted')}</p>
+                              <p>
+                                {t('watchlist.last-signed', { ns: 'admin' })}: {lastTx(a.info?.ledgerInfo, 'lastSubmitted')}
+                              </p>
                               <p>
                                 <a
                                   onClick={() => {
@@ -349,7 +357,7 @@ export default function Watchlist({
                                   }}
                                   className="red"
                                 >
-                                  Remove
+                                  {t('button.remove', { ns: 'admin' })}
                                 </a>
                               </p>
                             </td>
@@ -363,15 +371,15 @@ export default function Watchlist({
 
               {nfts?.length > 0 && (
                 <>
-                  <h4 className="center">NFT Watchlist</h4>
+                  <h4 className="center">{t('watchlist.nft-title', { ns: 'admin' })}</h4>
                   {!width || width > 750 ? (
                     <table className="table-large no-hover">
                       <thead>
                         <tr>
                           <th className="center">#</th>
                           <th className="left">NFT</th>
-                          <th className="right">Price</th>
-                          <th className="center">Remove</th>
+                          <th className="right">{t('table.price', { ns: 'admin' })}</th>
+                          <th className="center">{t('button.remove', { ns: 'admin' })}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -417,10 +425,12 @@ export default function Watchlist({
                             </td>
                             <td>
                               <p>
-                                Name: <b className="orange">{a.name}</b>
+                                {t('table.name', { ns: 'admin' })}: <b className="orange">{a.name}</b>
                               </p>
                               <p>NFT: {nftIdLink(a.entity)}</p>
-                              <p>Price: {nftPriceData(t, a.info?.sellOffers, account?.address)}</p>
+                              <p>
+                                {t('table.price', { ns: 'admin' })}: {nftPriceData(t, a.info?.sellOffers, account?.address)}
+                              </p>
                               <p>
                                 <a
                                   onClick={() => {
@@ -428,7 +438,7 @@ export default function Watchlist({
                                   }}
                                   className="red"
                                 >
-                                  Remove
+                                  {t('button.remove', { ns: 'admin' })}
                                 </a>
                               </p>
                             </td>
@@ -451,8 +461,8 @@ export default function Watchlist({
                         style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}
                       >
                         <AddressInput
-                          title="Address or NFT"
-                          placeholder="Enter Username, Address or NFT ID"
+                          title={t('watchlist.entity-title', { ns: 'admin' })}
+                          placeholder={t('watchlist.entity-placeholder', { ns: 'admin' })}
                           setInnerValue={setEntityToAdd}
                           hideButton={true}
                           rawData={data}
@@ -461,8 +471,8 @@ export default function Watchlist({
                       </span>
                       <span style={{ width: width > 851 ? '30%' : '100%' }}>
                         <FormInput
-                          title="Private name"
-                          placeholder="Name"
+                          title={t('watchlist.private-name', { ns: 'admin' })}
+                          placeholder={t('table.name', { ns: 'admin' })}
                           setInnerValue={setEntetyName}
                           hideButton={true}
                         />
@@ -476,7 +486,7 @@ export default function Watchlist({
                         onClick={addEntetyClicked}
                         disabled={!entetyToAdd || !entetyName}
                       >
-                        Add {loading && <span className="waiting inline"></span>}
+                        {t('button.add', { ns: 'admin' })} {loading && <span className="waiting inline"></span>}
                       </button>
                     </center>
                     <br />
@@ -490,13 +500,13 @@ export default function Watchlist({
         ) : (
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-              <p>- Manage your favorite addresses and NFTs.</p>
-              <p>- Keep track of balances and recent activity.</p>
+              <p>- {t('watchlist.guest.manage', { ns: 'admin' })}</p>
+              <p>- {t('watchlist.guest.track', { ns: 'admin' })}</p>
             </div>
             <br />
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
-                Register or Sign In
+                {t('button.register-sign-in', { ns: 'admin' })}
               </button>
             </center>
           </div>

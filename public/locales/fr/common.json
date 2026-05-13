@@ -60,7 +60,7 @@
       "about-us": "À propos de nous"
     },
     "services": {
-      "services": "Services",
+      "services": "Prestations",
       "send": "Envoyer un paiement",
       "reward-auto-claim": "Réclamation automatique des récompenses",
       "add-token": "Ajouter un token (Trustline)",
@@ -90,11 +90,11 @@
       "nfts": "NFTs de compte",
       "offers": "Offres de compte",
       "marketplaces": "Marchés",
-      "collections": "Collections"
+      "collections": "Collectes"
     },
     "network": {
       "blockchain": "Blockchain",
-      "dapps": "Dapps",
+      "dapps": "DApps",
       "nodes": "Nœuds",
       "governance": "Gouvernance",
       "activations": "Comptes activés (graphique)",
@@ -248,8 +248,8 @@
     }
   },
   "home": {
-    "title": "{{homeExplorerName}} | Recherchez transactions, comptes, NFT et données du registre",
-    "description": "{{homeExplorerAttribution}} vous permet de rechercher et explorer des adresses {{nativeCurrency}}, transactions, jetons, NFT, soldes et activité on-chain sur {{ledgerName}}. Échangez, créez des NFT, gérez les AMM, envoyez des transactions et utilisez les outils de compte.",
+    "title": "{{homeExplorerName}} | Recherchez transactions, comptes, NFT et données {{nativeCurrency}}",
+    "description": "{{homeExplorerAttribution}} vous permet de rechercher et explorer des adresses {{nativeCurrency}}, transactions, Tokens, NFT, soldes et activité on-chain sur {{ledgerName}}. Échangez, créez des NFT, gérez les AMM, envoyez des transactions et utilisez les outils de compte.",
     "h1": "{{homeExplorerName}} et outils du registre",
     "search-placeholder": "Rechercher par Adresse / Transaction / NFT / Nom d'utilisateur / PayString / Offre / Hash",
     "search-placeholder-short": "Adresse / Transaction / Nom d'utilisateur",
@@ -266,12 +266,12 @@
       "network": "Réseau",
       "ledger-index": "Indice du registre",
       "close-time": "Heure de fermeture",
-      "transactions": "Transactions",
+      "transactions": "Opérations",
       "quorum": "Quorum de validation",
       "proposers": "Proposeurs",
       "accounts": "Comptes",
       "accountsActiveLast24h": "Comptes actifs",
-      "transactionsLast24h": "Transactions",
+      "transactionsLast24h": "Opérations",
       "paymentsLast24h": "Paiements",
       "feesLast24h": "Frais",
       "usernames": "Noms d'utilisateur",
@@ -288,9 +288,9 @@
       "nodes": "Nœuds"
     },
     "teaser": {
-      "topDapps": "Top Dapps",
+      "topDapps": "Meilleurs Dapps",
       "topNftCollections": "Top Collections NFT",
-      "topTokens": "Top Jetons",
+      "topTokens": "Top Tokens",
       "topAmms": "Top Pools AMM",
       "topValidators": "Validateurs",
       "topAmendments": "Derniers Amendements",
@@ -302,7 +302,7 @@
     "ledger": "Registre",
     "ledger-closed-at": "Registre fermé à",
     "ledger-interval": "Intervalle du registre",
-    "transactions": "Transactions",
+    "transactions": "Opérations",
     "transaction-speed": "Transactions par seconde",
     "proposers": "Proposeurs",
     "validation-quorum": "Quorum de validation",
@@ -331,7 +331,7 @@
     "for-sale-with-destination": "NFTs en vente directe"
   },
   "alerts": {
-    "text0": "Recevez une notification lorsque le prix du marché {{nativeCurrency}}/USD ou {{nativeCurrency}}/BTC change de plus de 5 % dans l'heure ou plus de 10 % dans la journée.",
+    "text0": "Recevez une notification lorsque le prix du marché {{nativeCurrency}}/USD ou {{nativeCurrency}}/BTC indiqué par <6>{{linkText}}</6> change de plus de 5 % dans l'heure ou plus de 10 % dans la journée.",
     "text1": "Suivez le canal Telegram : <1>bithomp</1> ou le compte X : <4>XRP_PriceAlerts</4>.",
     "last-alerts": "Dernières 50 alertes",
     "date-and-time": "Date & heure",
@@ -346,7 +346,7 @@
     "ledger-continue": "Parce que l'état du XRP Ledger est enregistré dans chaque version de registre, le registre peut continuer sans l'historique manquant.",
     "ledger-index": "Indice du registre",
     "account-count": "Nombre de comptes",
-    "inception": "Inception",
+    "inception": "Création",
     "balance-update": "Mise à jour du solde",
     "details": "Détails",
     "address": "Adresse",
@@ -360,7 +360,7 @@
     "email": "Votre adresse e-mail :",
     "url": "URL de votre site/app :",
     "description": "Description du projet et détails d'utilisation de l'API :",
-    "success": "Merci. Le jeton API a été envoyé à votre e-mail.",
+    "success": "Merci. Le Token API a été envoyé à votre e-mail.",
     "error": {
       "url-empty": "Veuillez entrer l'URL de votre site/app.",
       "url-invalid": "Veuillez entrer une URL valide.",
@@ -565,10 +565,10 @@
     "volume": "Volume des ventes",
     "price": "Prix",
     "external-url": "URL externe",
-    "description": "Description",
-    "collection": "Collection",
+    "description": "Descriptif",
+    "collection": "Collecte",
     "collection-family": "Famille de collection",
-    "transfer-fee": "Royalty",
+    "transfer-fee": "Redevance",
     "flag": "Drapeau",
     "flags": "Drapeaux",
     "count": "Montant",
@@ -648,7 +648,7 @@
     "marketplaces": "Marchés",
     "brokers": "Courtiers",
     "charts": "Graphiques",
-    "collections": "Collections",
+    "collections": "Collectes",
     "image": "Image",
     "video": "Vidéo",
     "audio": "Audio",
@@ -661,7 +661,7 @@
     "sell": "Vendre",
     "buyNow": "Acheter maintenant (Public + places de marché intégrées)",
     "publicAndKnownBrokers": "Public et places de marché",
-    "public": "Public",
+    "public": "Publique",
     "knownBrokers": "Places de marché",
     "onSale": "Sont en vente",
     "bids": "Offres",
@@ -695,7 +695,7 @@
     "searching-for-addresses": "Recherche d'adresses...",
     "menu": {
       "account": "Compte",
-      "transactions": "Transactions",
+      "transactions": "Opérations",
       "tokens": "Tokens"
     },
     "different-network": "Cette transaction provient du réseau <1>{{networkNameOrId}}</1>",

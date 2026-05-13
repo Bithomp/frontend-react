@@ -482,7 +482,7 @@ export default function History({
   const width = useWidth()
   const sampleMode = !sessionToken
 
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
   const [data, setData] = useState(null)
   const [activities, setActivities] = useState([])
@@ -746,7 +746,7 @@ export default function History({
         setLoading(false)
         if (error.response?.data?.error === 'errors.token.required') {
           if (sampleMode) {
-            setErrorMessage('Sample tax report data is not available right now.')
+            setErrorMessage(t('pro.history.sample-unavailable', { ns: 'admin' }))
           } else {
             openEmailLogin()
           }
@@ -907,9 +907,9 @@ export default function History({
 
   return (
     <>
-      <SEO title="My addresses: history" />
+      <SEO title={t('pro.history.seo', { ns: 'admin' })} />
       <div className="page-pro-history">
-        <h1 className="center">Pro address balances history</h1>
+        <h1 className="center">{t('pro.history.title', { ns: 'admin' })}</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
 
@@ -922,16 +922,16 @@ export default function History({
             target="_blank"
             rel="noreferrer"
           >
-            View guide
+            {t('button.view-guide', { ns: 'admin' })}
           </Link>
         </div>
 
         {sampleMode && (
           <div className="pro-history-demo-note">
-            <b>Try tax reports with sample wallets.</b>
+            <b>{t('pro.history.sample-title', { ns: 'admin' })}</b>
             <span>
-              Use these synced wallets to test filters, pagination, CSV exports, and tax report formats. Want to add your
-              own address? <Link href="/admin/pro">Sign in to Bithomp Pro</Link>.
+              {t('pro.history.sample-text', { ns: 'admin' })}{' '}
+              <Link href="/admin/pro">{t('pro.history.sign-in-pro', { ns: 'admin' })}</Link>.
             </span>
           </div>
         )}
@@ -942,12 +942,18 @@ export default function History({
               order={order}
               setOrder={setOrder}
               orderList={[
-                { value: 'DESC', label: 'Latest first' },
-                { value: 'ASC', label: 'Earliest first' },
-                { value: 'nativeCurrencyAmountLow', label: nativeCurrency.toUpperCase() + ': low to high' },
-                { value: 'nativeCurrencyAmountHigh', label: nativeCurrency.toUpperCase() + ': high to low' },
-                { value: 'fiatAmountLow', label: 'FIAT: low to high' },
-                { value: 'fiatAmountHigh', label: 'FIAT: high to low' }
+                { value: 'DESC', label: t('pro.history.order.latest', { ns: 'admin' }) },
+                { value: 'ASC', label: t('pro.history.order.earliest', { ns: 'admin' }) },
+                {
+                  value: 'nativeCurrencyAmountLow',
+                  label: t('pro.history.order.native-low', { ns: 'admin', currency: nativeCurrency.toUpperCase() })
+                },
+                {
+                  value: 'nativeCurrencyAmountHigh',
+                  label: t('pro.history.order.native-high', { ns: 'admin', currency: nativeCurrency.toUpperCase() })
+                },
+                { value: 'fiatAmountLow', label: t('pro.history.order.fiat-low', { ns: 'admin' }) },
+                { value: 'fiatAmountHigh', label: t('pro.history.order.fiat-high', { ns: 'admin' }) }
               ]}
               count={filteredActivities?.length || 0}
               total={removeDust ? filteredActivities?.length || 0 : data?.total || 0}
@@ -970,13 +976,13 @@ export default function History({
                       className="button-action narrow thin"
                       onClick={() => getProAddressHistory({ marker: data.marker })}
                     >
-                      Load more data
+                      {t('button.load-more-data', { ns: 'admin' })}
                     </button>
                     <br />
                     <br />
                   </div>
                 )}
-                <div className="pro-history-address-title">Addresses</div>
+                <div className="pro-history-address-title">{t('table.addresses', { ns: 'admin' })}</div>
                 {verifiedAddresses?.length > 0 ? (
                   <>
                     {verifiedAddresses.map((address, i) => (
@@ -1008,7 +1014,7 @@ export default function History({
                     {sampleMode && (
                       <div className="pro-history-add-wallet">
                         <Link href="/admin/pro" className="button-action narrow thin secondary">
-                          Add your wallet
+                          {t('pro.history.add-wallet', { ns: 'admin' })}
                         </Link>
                       </div>
                     )}
@@ -1016,19 +1022,19 @@ export default function History({
                 ) : (
                   <>
                     {loadingVerifiedAddresses ? (
-                      'Loading data...'
+                      t('common.loading-data', { ns: 'admin' })
                     ) : (
                       <div>
                         <br />
                         <Link href="/admin/pro" className="button-action narrow thin">
-                          Add
+                          {t('button.add', { ns: 'admin' })}
                         </Link>
                       </div>
                     )}
                   </>
                 )}
                 <div>
-                  Period
+                  {t('pro.history.period', { ns: 'admin' })}
                   <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
                 </div>
                 <div>
@@ -1040,11 +1046,11 @@ export default function History({
                       setPage(0)
                     }}
                   >
-                    Remove dust transactions
+                    {t('pro.history.remove-dust', { ns: 'admin' })}
                   </CheckBox>
                 </div>
                 <div>
-                  Tax Export Platform
+                  {t('pro.history.tax-platform', { ns: 'admin' })}
                   <RadioOptions
                     tabList={platformList}
                     tab={platformCSVExport}
@@ -1064,14 +1070,14 @@ export default function History({
                       className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
                       uFEFF={platformCSVExport === 'BlockPit' ? false : undefined}
                     >
-                      <DownloadIcon /> CSV for {platformCSVExport}
+                      <DownloadIcon /> {t('pro.history.csv-for', { ns: 'admin', platform: platformCSVExport })}
                     </CSVLink>
                   )}
                   {platformCSVExport === 'Koinly' && (
                     <>
                       <br />
                       <br />
-                      Let us know if we miss koinlyIDs for your tokens. We will add them to the system.
+                      {t('pro.history.koinly-note', { ns: 'admin' })}
                     </>
                   )}
                 </div>
@@ -1084,13 +1090,13 @@ export default function History({
                         <thead>
                           <tr>
                             <th className="center">#</th>
-                            <th>Timestamp</th>
-                            {addressesToCheck.length > 1 && <th>Address</th>}
-                            <th>Transaction</th>
-                            <th>Memo</th>
-                            <th className="right">Transfer Fee</th>
-                            <th className="right">Network Fee</th>
-                            <th className="right">Balance change</th>
+                            <th>{t('table.timestamp', { ns: 'admin' })}</th>
+                            {addressesToCheck.length > 1 && <th>{t('table.address', { ns: 'admin' })}</th>}
+                            <th>{t('table.transaction', { ns: 'admin' })}</th>
+                            <th>{t('table.memo', { ns: 'admin' })}</th>
+                            <th className="right">{t('table.transfer-fee', { ns: 'admin' })}</th>
+                            <th className="right">{t('table.network-fee', { ns: 'admin' })}</th>
+                            <th className="right">{t('table.balance-change', { ns: 'admin' })}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1142,7 +1148,9 @@ export default function History({
                           ) : (
                             <tr>
                               <td colSpan="100" className="center">
-                                {loading ? 'Loading data...' : 'There is no data to show here.'}
+                                {loading
+                                  ? t('common.loading-data', { ns: 'admin' })
+                                  : t('common.no-data-to-show', { ns: 'admin' })}
                               </td>
                             </tr>
                           )}
@@ -1158,22 +1166,30 @@ export default function History({
                                   <td style={{ padding: '5px' }}>#{a.index}</td>
                                   <td>
                                     <p>
-                                      Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
+                                      {t('table.timestamp', { ns: 'admin' })}: <b>{fullDateAndTime(a.timestamp)}</b>
                                     </p>
                                     {addressesToCheck.length > 1 && (
                                       <p>
-                                        Address: <b>{addressName(a.address)}</b>
+                                        {t('table.address', { ns: 'admin' })}: <b>{addressName(a.address)}</b>
                                       </p>
                                     )}
                                     <div className="pro-history-mobile-tx">
-                                      Transaction: <HistoryTransaction activity={a} />
+                                      {t('table.transaction', { ns: 'admin' })}: <HistoryTransaction activity={a} />
                                     </div>
-                                    {a.memo && <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>}
+                                    {a.memo && (
+                                      <p>
+                                        {t('table.memo', { ns: 'admin' })}:{' '}
+                                        {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}
+                                      </p>
+                                    )}
                                     <p>
-                                      Ledger Amount: <b>{showAmount(a.amount)}</b>
+                                      {t('table.ledger-amount', { ns: 'admin' })}: <b>{showAmount(a.amount)}</b>
                                     </p>
                                     <p>
-                                      {selectedCurrency.toUpperCase()} equavalent:{' '}
+                                      {t('table.fiat-equivalent-currency', {
+                                        ns: 'admin',
+                                        currency: selectedCurrency.toUpperCase()
+                                      })}:{' '}
                                       {showFiat(a.amountInFiats, selectedCurrency)}
                                     </p>
                                   </td>
@@ -1183,7 +1199,9 @@ export default function History({
                           ) : (
                             <tr>
                               <td colSpan="100" className="center">
-                                {loading ? 'Loading data...' : 'There is no data to show here.'}
+                                {loading
+                                  ? t('common.loading-data', { ns: 'admin' })
+                                  : t('common.no-data-to-show', { ns: 'admin' })}
                               </td>
                             </tr>
                           )}

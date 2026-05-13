@@ -57,6 +57,17 @@ const pages = [
 
   { loc: 'submit-account-information', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/watchlist', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/subscriptions', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/referrals', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/pro', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/pro/history', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/api', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/api/requests', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/api/statistics', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/api/charts', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/notifications', changefreq: 'yearly', priority: '0.5' },
+  { loc: 'admin/notifications/x-guide', changefreq: 'yearly', priority: '0.5' },
 
   { loc: 'object', changefreq: 'yearly', priority: '0.4' },
   { loc: 'about-us', changefreq: 'yearly', priority: '0.4' },
@@ -126,7 +137,6 @@ function generateSiteMap(posts) {
   const noTranslatedPages = [
     'dapps',
     'the-chain-of-blocks-summit',
-    'admin',
     'advertise',
     'eaas',
     'build-unl',

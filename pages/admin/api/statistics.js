@@ -20,7 +20,7 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function Statistics({ sessionToken, openEmailLogin }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const width = useWidth()
@@ -53,7 +53,7 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
 
   return (
     <>
-      <SEO title="API statistics" />
+      <SEO title={t('api.statistics.seo', { ns: 'admin' })} />
       <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
@@ -63,13 +63,13 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
         {sessionToken ? (
           <div className="center">
             <div style={{ marginTop: '20px', textAlign: 'left' }}>
-              <h4 className="center">20 most common URLs in the last 24h</h4>
+              <h4 className="center">{t('api.statistics.urls-title', { ns: 'admin' })}</h4>
               {width > 750 ? (
                 <table className="table-large">
                   <thead>
                     <tr>
                       <th></th>
-                      <th className="right">Count</th>
+                      <th className="right">{t('table.count', { ns: 'admin' })}</th>
                       <th>URL</th>
                     </tr>
                   </thead>
@@ -95,7 +95,7 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
                     {!statistics?.urls?.[0] && (
                       <tr>
                         <td colSpan="100" className="center">
-                          <b>no data available</b>
+                          <b>{t('common.no-data', { ns: 'admin' })}</b>
                         </td>
                       </tr>
                     )}
@@ -120,7 +120,9 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
                             <b>{i + 1}</b>
                           </td>
                           <td>
-                            <p>Count: {item.count}</p>
+                            <p>
+                              {t('table.count', { ns: 'admin' })}: {item.count}
+                            </p>
                             <p>
                               URL:
                               <br />
@@ -133,7 +135,7 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
                     {!statistics?.urls?.[0] && (
                       <tr>
                         <td colSpan="100" className="center">
-                          <b>no data available</b>
+                          <b>{t('common.no-data', { ns: 'admin' })}</b>
                         </td>
                       </tr>
                     )}
@@ -143,14 +145,14 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
             </div>
 
             <div style={{ marginTop: '20px', textAlign: 'left' }}>
-              <h4 className="center">The most common IPs in the last 24h</h4>
+              <h4 className="center">{t('api.statistics.ips-title', { ns: 'admin' })}</h4>
               <table className="table-large">
                 <thead>
                   <tr>
                     <th></th>
-                    <th className="right">Count</th>
+                    <th className="right">{t('table.count', { ns: 'admin' })}</th>
                     <th className="right">IP</th>
-                    <th className="right">Country</th>
+                    <th className="right">{t('table.country', { ns: 'admin' })}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -176,7 +178,7 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
                   {!statistics?.ips?.[0] && (
                     <tr>
                       <td colSpan="100" className="center">
-                        <b>no data available</b>
+                        <b>{t('common.no-data', { ns: 'admin' })}</b>
                       </td>
                     </tr>
                   )}
@@ -190,13 +192,13 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
         ) : (
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-              <p>- View API usage statistics and analytics.</p>
-              <p>- Monitor endpoint performance and usage patterns.</p>
+              <p>- {t('api.statistics.guest.analytics', { ns: 'admin' })}</p>
+              <p>- {t('api.statistics.guest.patterns', { ns: 'admin' })}</p>
             </div>
             <br />
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
-                Register or Sign In
+                {t('button.register-sign-in', { ns: 'admin' })}
               </button>
             </center>
           </div>

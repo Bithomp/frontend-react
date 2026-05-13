@@ -81,21 +81,21 @@
     "button": "发送付款"
   },
   "escrow": {
-    "title": "创建托管",
-    "description": "创建托管交易",
+    "title": "创建Escrow",
+    "description": "创建Escrow交易",
     "unlock-after": "<0>后解锁（当资金可以释放时）</0>",
-    "cancel-after": "<0>后取消（当托管到期时）</0>",
+    "cancel-after": "<0>后取消（当Escrow到期时）</0>",
     "condition": "条件",
     "condition-placeholder": "原像-SHA-256",
     "condition-warning": "如果你丢失了它，你将无法释放资金。",
-    "created": "托管创建成功",
+    "created": "Escrow创建成功",
     "unlock": "解锁",
     "cancel-after-result": "之后取消",
     "fulfillment": "履约值",
     "errors": {
       "advanced-pro": "高级选项（费用、来源标签、条件）仅适用于登录的 Bithomp Pro 订阅者。",
       "unlock-or-condition": "您必须指定解锁时间或条件（或两者）。",
-      "conditional-time": "有条件托管必须具有解锁时间或到期时间（或两者）。",
+      "conditional-time": "有条件Escrow必须具有解锁时间或到期时间（或两者）。",
       "condition-hex": "条件必须是有效的十六进制字符串。",
       "condition-characters": "条件只能包含十六进制字符。",
       "unlock-future": "解锁时间必须是将来的时间。",
@@ -103,9 +103,9 @@
       "cancel-after-unlock": "取消时间必须晚于解锁时间。",
       "generate-condition": "未能生成条件"
     },
-    "intro": "在此页面上，您可以创建托管来安全锁定 {{nativeCurrency}}，直到满足基于时间或基于条件的要求。",
+    "intro": "在此页面上，您可以创建Escrow来安全锁定 {{nativeCurrency}}，直到满足基于时间或基于条件的要求。",
     "view-guide": "查看我们的指南：",
-    "guide-link": "如何在 {{explorerName}} 上创建托管",
+    "guide-link": "如何在 {{explorerName}} 上创建Escrow",
     "advanced-options": "高级选项",
     "generate-condition": "生成随机条件",
     "fulfillment-warning": "我们不保存/保留履行。请复制并安全保存。"
@@ -392,7 +392,7 @@
     "loginFirst": "先登录",
     "loginSellOffer": "如果您想在同一交易中添加卖出报价。",
     "initialListingPrice": "初始挂牌价{{suffix}}（金额）：",
-    "inXrp": "（瑞波币）",
+    "inXrp": "（XRP）",
     "currency": "货币",
     "destinationTitle": "目的地（{{status}} - 接收 NFT 的账户）：",
     "destinationOptional": "可选",
@@ -488,7 +488,7 @@
     "errSignIn": "请登录您的账户。",
     "errPro": "高级选项仅适用于登录的 Bithomp Pro 订阅者。",
     "errUnknownFlag": "未知标志：{{flag}}",
-    "errOwnerDir": "仅当账户没有信任线、优惠、托管、支付渠道、支票或签名者列表时才能启用",
+    "errOwnerDir": "仅当账户没有信任线、优惠、Escrow、支付渠道、支票或签名者列表时才能启用",
     "errGlobalFreeze": "启用“无冻结”时无法更改“全局冻结”",
     "successNftSet": "NFTokenMinter 设置成功。",
     "successNftClear": "NFTokenMinter 清除成功。",
@@ -555,15 +555,15 @@
       },
       "requireAuth": {
         "name": "授权",
-        "description": "如果启用，此账户的信任线需要授权才能持有代币。仅当账户没有信任线、优惠、托管、支付渠道、支票或签名者列表时才能启用。"
+        "description": "如果启用，此账户的信任线需要授权才能持有代币。仅当账户没有信任线、优惠、Escrow、支付渠道、支票或签名者列表时才能启用。"
       },
       "allowTrustLineClawback": {
-        "name": "Trustline 追回",
-        "description": "允许账户收回其已发行的代币。仅当账户拥有空所有者目录（无信任线、优惠、托管、支付渠道、支票或签名者列表）时才能设置。设置此标志后，将无法恢复。该账户永久获得在信托线上收回已发行资产的能力。"
+        "name": "Trustline Clawback",
+        "description": "允许账户收回其已发行的代币。仅当账户拥有空所有者目录（无信任线、优惠、Escrow、支付渠道、支票或签名者列表）时才能设置。设置此标志后，将无法恢复。该账户永久获得在信托线上收回已发行资产的能力。"
       },
       "allowTrustLineLocking": {
         "name": "信任线锁定",
-        "description": "允许托管此账户发行的 Trustline 代币。如果未启用，则该账户发行的代币无法托管。启用此标志后，无法将其禁用。"
+        "description": "允许此账户发行的 Trustline 代币保存在 Escrow 中。如果未启用，则该账户发行的代币无法放入 Escrow。启用此标志后，无法将其禁用。"
       },
       "defaultRipple": {
         "name": "默认Rippling",
@@ -592,7 +592,7 @@
     "trustline": "信任热线",
     "send": "发送",
     "check": "检查",
-    "escrow": "托管",
+    "escrow": "Escrow",
     "nft-mint": "铸造 NFT",
     "account-settings": "设置",
     "account-control": "控制",
@@ -700,36 +700,36 @@
     }
   },
   "token-issuer-settings-page": {
-    "title": "代币发行者设置",
-    "description": "管理所需的授权、Rippling、冻结和其他代币发行者设置。",
-    "introSignedIn": "在 {{explorerName}} 上配置您的代币颁发设置。",
-    "introSignedOut": "登录您的账户以管理代币发行者设置。",
-    "proNotice": "代币发行者设置可供登录的 Bithomp Pro 订阅者使用。",
-    "flagsTitle": "代币发行者标志",
-    "fieldsTitle": "代币发行者字段",
+    "title": "Token Issuer Settings",
+    "description": "管理所需的授权、Rippling、Freeze 和其他 Token Issuer 设置。",
+    "introSignedIn": "在 {{explorerName}} 上配置您的 Token Issuer Settings。",
+    "introSignedOut": "登录您的账户以管理 Token Issuer Settings。",
+    "proNotice": "Token Issuer Settings 可供登录的 Bithomp Pro 订阅者使用。",
+    "flagsTitle": "Token Issuer Flags",
+    "fieldsTitle": "Token Issuer Fields",
     "proOnly": "仅限专业版",
     "readMore": "了解更多",
     "readLess": "少读",
     "permanent": "永久",
-    "availablePro": "Available only to logged-in Bithomp Pro subscribers.",
-    "signInManage": "Sign in to manage settings",
-    "percentagePlaceholder": "Percentage 0-100",
-    "transferRateHelp": "Percentage fee issuer charges on transfers of issued tokens.",
-    "domainHelp": "Enter your domain. It will be stored on-ledger.",
+    "availablePro": "仅适用于登录的 Bithomp Pro 订阅者。",
+    "signInManage": "登录以管理设置",
+    "percentagePlaceholder": "百分比 0-100",
+    "transferRateHelp": "发行人对已发行代币的转让收取的百分比费用。",
+    "domainHelp": "输入您的域名。它将存储在分类账上。",
     "errors": {
-      "fetch": "Error fetching account data",
-      "signIn": "Please sign in to your account.",
-      "proOnly": "Token Issuer Settings are available only to logged-in Bithomp Pro subscribers.",
-      "unknownFlag": "Unknown flag: {{flag}}",
-      "transferRate": "Please enter a valid TransferRate percentage between 0 and 100."
+      "fetch": "获取帐户数据时出错",
+      "signIn": "请登录您的帐户。",
+      "proOnly": "Token Issuer Settings 仅适用于登录的 Bithomp Pro 订阅者。",
+      "unknownFlag": "未知标志：{{flag}}",
+      "transferRate": "请输入 0 到 100 之间的有效 TransferRate 百分比。"
     },
     "success": {
-      "regularKey": "Regular key set successfully.",
+      "regularKey": "常规按键设置成功。",
       "domainSet": "Domain set successfully.",
       "domainClear": "Domain cleared successfully.",
-      "transferRateSet": "TransferRate set successfully.",
-      "transferRateClear": "TransferRate cleared successfully.",
-      "settings": "Settings updated successfully."
+      "transferRateSet": "TransferRate 设置成功。",
+      "transferRateClear": "TransferRate 已成功清除。",
+      "settings": "设置已成功更新。"
     }
   }
 }

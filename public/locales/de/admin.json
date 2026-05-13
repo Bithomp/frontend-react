@@ -1,3 +1,800 @@
 {
-  "header": "Admin"
+  "header": "Verwaltung",
+  "tabs": {
+    "profile": "Profil",
+    "watchlist": "Beobachtungsliste",
+    "my-addresses": "Meine Adressen",
+    "subscriptions": "Abonnements",
+    "referrals": "Empfehlungen",
+    "alerts": "Benachrichtigungen",
+    "alerts-bot": "Benachrichtigungs-Bot",
+    "api": {
+      "information": "Informationen",
+      "statistics": "Statistiken",
+      "requests": "Anfragen",
+      "charts": "Diagramme"
+    },
+    "pro": {
+      "addresses": "Adressen",
+      "balance-changes": "Saldoänderungen"
+    }
+  },
+  "button": {
+    "activate": "Aktivieren",
+    "contact-support": "Support kontaktieren",
+    "logout": "Abmelden",
+    "register-sign-in": "Registrieren oder anmelden",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "search": "Suchen",
+    "remove": "Entfernen",
+    "add": "Hinzufügen",
+    "view-history": "Verlauf anzeigen",
+    "view": "Anzeigen",
+    "enable": "Aktivieren",
+    "view-guide": "Anleitung öffnen",
+    "set-avatar": "Avatar setzen",
+    "verify": "Bestätigen",
+    "load-more-data": "Mehr Daten laden",
+    "purchase": "Kaufen",
+    "pay": "Bezahlen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen"
+  },
+  "status": {
+    "active": "aktiv",
+    "expired": "Abgelaufen",
+    "locked": "Gesperrt",
+    "enabled": "Aktiviert",
+    "paused": "Pausiert"
+  },
+  "common": {
+    "loading": "Laden...",
+    "loading-data": "Daten werden geladen...",
+    "no-data": "Keine Daten",
+    "no-data-to-show": "Keine Daten zum Anzeigen",
+    "not-found": "Nicht gefunden",
+    "never": "Nie",
+    "any": "Beliebig",
+    "yes": "Ja",
+    "no": "Nein",
+    "none": "Keine",
+    "unknown": "Unbekannt",
+    "on": "ein",
+    "off": "aus",
+    "saving": "Speichern...",
+    "deleting": "Löschen...",
+    "try-again-later": "Bitte später erneut versuchen."
+  },
+  "general": {
+    "loading": "Laden..."
+  },
+  "table": {
+    "status": "Status",
+    "domain": "Domäne",
+    "description": "Beschreibung",
+    "timestamp": "Zeitstempel",
+    "response": "Antwort",
+    "country": "Land",
+    "count": "Anzahl",
+    "address": "Adresse",
+    "addresses": "Adressen",
+    "balance": "Saldo",
+    "price": "Preis",
+    "name": "Name",
+    "created": "Erstellt",
+    "updated": "Aktualisiert",
+    "start": "Beginn",
+    "expire": "Ablauf",
+    "type": "Typ",
+    "date-time": "Datum / Uhrzeit",
+    "service": "Dienst",
+    "total": "Gesamt",
+    "amount": "Betrag",
+    "from": "Von",
+    "destination-tag": "Destination-Tag",
+    "fiat-equivalent": "Fiat-Gegenwert",
+    "fiat-equivalent-currency": "Fiat-Gegenwert ({{currency}})",
+    "transaction": "Transaktion",
+    "memo": "Notiz",
+    "transfer-fee": "Transfergebühr",
+    "network-fee": "Netzwerkgebühr",
+    "balance-change": "Saldoänderung",
+    "ledger-amount": "Ledger-Betrag",
+    "check": "Prüfung"
+  },
+  "period": {
+    "m1": "1 Monat",
+    "m3": "3 Monate",
+    "m6": "6 Monate",
+    "y1": "1 Jahr"
+  },
+  "plans": {
+    "trial": "Test",
+    "free": "Kostenlos",
+    "basic": "Grundlegend",
+    "standard": "Standard",
+    "premium": "Prämie",
+    "enterprise": "Unternehmen",
+    "enterprise2": "Unternehmen 2",
+    "enterprise3": "Unternehmen 3",
+    "custom": "Individuell"
+  },
+  "profile": {
+    "email": "E-Mail",
+    "until": "bis",
+    "priority-support-before": "Für vorrangigen Support verwenden Sie bitte den Betreff",
+    "priority-support-after": "wenn Sie uns eine E-Mail an senden",
+    "guest": {
+      "profile": "Verwalten Sie Ihr Profil und Ihre Abonnements.",
+      "security": "Melden Sie sich an, um auf Konto-Tools und private Einstellungen zuzugreifen.",
+      "pro": "Pro-Abonnement und Vorteile verwalten.",
+      "history": "Saldoverlauf und Steuerexporte aktivieren.",
+      "api": "API-Schlüssel erstellen und Nutzung ansehen.",
+      "watchlist": "Private Adress- und NFT-Beobachtungslisten führen.",
+      "avatars": "Avatare für bestätigte Adressen setzen."
+    }
+  },
+  "form": {
+    "error": {
+      "domain-empty": "Geben Sie eine Domäne ein.",
+      "domain-invalid": "Geben Sie eine gültige Domäne ein.",
+      "description-empty": "Geben Sie eine Beschreibung ein.",
+      "description-short": "Beschreibung ist zu kurz."
+    }
+  },
+  "api": {
+    "token": "Token",
+    "tier": "Stufe",
+    "data-title": "API-Daten",
+    "documentation": "Dokumentation",
+    "copy-token": "Token kopieren",
+    "show-copy-token": "Token anzeigen und kopieren",
+    "edit-domain": "Domäne bearbeiten",
+    "save-domain": "Domain speichern",
+    "edit-description": "Beschreibung bearbeiten",
+    "save-description": "Beschreibung speichern",
+    "manage-subscription": "Abonnement verwalten",
+    "registration": "Registrierung des API-Zugriffs",
+    "domain-placeholder": "example.com",
+    "description-placeholder": "Kurze Projektbeschreibung",
+    "request-key": "API-Schlüssel anfordern",
+    "guest": {
+      "keys": "Erstellen und verwalten Sie API-Schlüssel.",
+      "stats": "Sehen Sie sich API-Nutzungsstatistiken und Anforderungsprotokolle an."
+    },
+    "requests": {
+      "seo": "API-Anfragen",
+      "title": "API-Anfragen",
+      "guest": {
+        "logs": "Durchsuchen Sie aktuelle API-Anfrageprotokolle.",
+        "performance": "Überprüfen Sie den Antwortstatus und den Zeitpunkt."
+      }
+    },
+    "statistics": {
+      "seo": "API-Statistiken",
+      "urls-title": "URL-Statistiken",
+      "ips-title": "IP-Statistiken",
+      "guest": {
+        "analytics": "Überprüfen Sie die Analyse der Endpunktnutzung.",
+        "patterns": "Finden Sie Anforderungsmuster nach URL und IP."
+      }
+    },
+    "charts": {
+      "seo": "API-Diagramme",
+      "requests-count": "Anfragen zählen",
+      "guest": {
+        "charts": "Verfolgen Sie die API-Aktivität in Diagrammen.",
+        "metrics": "Überwachen Sie Nutzungsmetriken im Laufe der Zeit."
+      }
+    }
+  },
+  "watchlist": {
+    "limit": "Sie können bis zu {{count}} Einträge zu Ihrer Merkliste hinzufügen.",
+    "limit-subscribe-before": "Abonnieren",
+    "last-signed": "Letzte unterzeichnete Transaktion",
+    "last-affecting": "Letzte betroffene Transaktion",
+    "last-signed-tx": "Letzte unterzeichnete Transaktion",
+    "address-title": "Adressen-Beobachtungsliste",
+    "nft-title": "NFT-Beobachtungsliste",
+    "entity-title": "Adresse oder NFT-ID",
+    "entity-placeholder": "Geben Sie eine Adresse oder NFT-ID ein",
+    "private-name": "Privatname",
+    "guest": {
+      "manage": "Verwalten Sie private Adressen und NFT-Watchlists.",
+      "track": "Verfolgen Sie Guthaben, Aktivitäten und NFT-Angebote an einem Ort."
+    },
+    "errors": {
+      "entity-required": "Geben Sie eine Adresse oder NFT-ID ein.",
+      "name-required": "Geben Sie einen privaten Namen ein.",
+      "entity-invalid": "Geben Sie eine gültige Adresse oder NFT-ID ein.",
+      "already-exists": "Dieser {{type}} ist bereits in Ihrer Merkliste."
+    }
+  },
+  "pro": {
+    "verified-addresses": "Verifizierte Adressen",
+    "features-intro": "Verifizierte Adressen schalten diese Pro-Funktionen frei:",
+    "features": {
+      "history": "Saldenhistorie und Steuerexport.",
+      "escrows": "Escrow automatisch fertigstellen.",
+      "escrows-note": "wenn die Adresse über genügend Reserven verfügt und die Escrow abgeschlossen werden kann",
+      "nft-offers": "NFT-Angebote automatisch stornieren.",
+      "nft-offers-note": "wenn das Angebot ungültig wird oder abgelaufen ist"
+    },
+    "balance-history": "Bilanzverlauf",
+    "bot-settings": "Bot-Einstellungen",
+    "no-verified-addresses": "Noch keine verifizierten Adressen.",
+    "activate-analysis-before": "Aktivieren Sie den Saldoverlauf mit",
+    "purchase-pro-link": "Bithomp Pro",
+    "add-limit": "Sie haben das Adresslimit für Ihren Plan erreicht.",
+    "verify-first": "Überprüfen Sie eine Adresse, um Pro Tools zu aktivieren.",
+    "address-placeholder": "Adresse eingeben",
+    "address-name-placeholder": "Privater Adressname",
+    "guest": {
+      "verify": "Überprüfen Sie den Besitz Ihrer Adressen.",
+      "history": "Aktivieren Sie den Kontostandverlauf, Exporte und Bot-Einstellungen."
+    },
+    "errors": {
+      "no-email": "Fügen Sie vor der Bestätigung eine E-Mail zu Ihrem Profil hinzu."
+    },
+    "settings": {
+      "auto-escrow": "Automatisches Escrow",
+      "execute-escrows": "Escrow automatisch ausführen",
+      "auto-cancel-nft": "NFT-Angebote automatisch stornieren",
+      "cancel-nft": "NFT-Angebote automatisch stornieren"
+    },
+    "history": {
+      "seo": "Bilanzverlauf",
+      "title": "Bilanzverlauf",
+      "sample-title": "Beispieldaten",
+      "sample-text": "Dies ist ein Beispielexport. Melden Sie sich an und fügen Sie eine Pro-Adresse hinzu, um Ihren eigenen Verlauf zu laden.",
+      "sign-in-pro": "Öffnen Sie Meine Adressen",
+      "sample-unavailable": "Beispieldaten sind derzeit nicht verfügbar.",
+      "order": {
+        "latest": "Das Neueste zuerst",
+        "earliest": "Früheste zuerst",
+        "native-low": "{{currency}} Betrag aufsteigend",
+        "native-high": "{{currency}} Betrag absteigend",
+        "fiat-low": "Fiat-Menge niedrig bis hoch",
+        "fiat-high": "Fiat-Betrag hoch bis niedrig"
+      },
+      "add-wallet": "Wallet hinzufügen",
+      "period": "Zeitraum",
+      "remove-dust": "Staub entfernen",
+      "tax-platform": "Steuerexportplattform",
+      "csv-for": "CSV für {{platform}}",
+      "koinly-note": "Koinly importiert diese Datei als generische Wallet-CSV."
+    }
+  },
+  "billing": {
+    "choose-country": "Wählen Sie das Rechnungsland",
+    "country-is": "Rechnungsland ist"
+  },
+  "subscriptions": {
+    "subscription": "Abonnement",
+    "seo": "Abonnements",
+    "active-title": "Ihre aktiven Abonnements",
+    "expired-title": "Abgelaufene Abonnements",
+    "payment-details": "Zahlungsdetails",
+    "activation-note": "Der Dienst wird aktiviert, nachdem die Zahlung bestätigt wurde.",
+    "payment-received": "Zahlung erhalten",
+    "service-activating": "{{service}} wird aktiviert.",
+    "activating": "Dienst wird aktiviert...",
+    "next-step": "Nächster Schritt",
+    "alerts-next-step": "Öffnen Sie Alerts, um Kanäle und Regeln zu erstellen.",
+    "transactions": "Transaktionen",
+    "last-payments": "Letzte Zahlungen",
+    "pro": {
+      "why-title": "Warum Bithomp Pro?",
+      "intro": "Bithomp Pro schaltet zusätzliche Kontotools frei und hebt mehrere Beschränkungen auf.",
+      "benefits": {
+        "reports-title": "Berichte",
+        "reports-link": "Bilanzverlauf",
+        "reports-text": "Steuerexport- und Kontoaktivitätstools.",
+        "services-title": "Dienstleistungen",
+        "services": {
+          "send": "Zahlung senden",
+          "check": "Emittentenprüfung",
+          "escrow": "Escrow erstellen"
+        },
+        "scroll-title": "Weitere Daten",
+        "scroll-text": "Mehr Zeilen und tieferes Scrollen",
+        "limits-title": "Höhere Grenzwerte",
+        "limits-text": "Weitere Artikel in",
+        "avatars-title": "Avatare",
+        "avatars-text": "Legen Sie Avatare für verifizierte Adressen fest",
+        "ads-title": "Keine Werbung",
+        "ads-text": "Nutzen Sie den Explorer ohne Werbung.",
+        "support-title": "Vorrangiger Support",
+        "support-text": "Erhalten Sie schneller Hilfe vom Support.",
+        "project-title": "Unterstützen Sie das Projekt",
+        "project-text": "Ihr Abonnement hilft uns, weiterzuentwickeln."
+      },
+      "more-coming": "Weitere Pro-Funktionen folgen.",
+      "subscribe": "Wählen Sie einen Abonnementzeitraum."
+    },
+    "api": {
+      "check-docs": "Informationen zu API-Limits und Preisen finden Sie in der Dokumentation:",
+      "why-title": "API-Zugriff",
+      "intro": "Verwenden Sie die API, um Explorer-Daten in Ihre App oder Ihren Workflow zu integrieren.",
+      "benefits": {
+        "limits-title": "Klare Grenzen",
+        "limits-text": "Wählen Sie eine Stufe, die Ihrem Anfragevolumen entspricht.",
+        "features-title": "Explorer-Daten",
+        "features-text": "Greifen Sie auf Konto-, Transaktions-, Token-, NFT- und Netzwerkdaten zu."
+      },
+      "subscribe": "Wählen Sie eine Stufe und einen Abonnementzeitraum."
+    },
+    "alerts": {
+      "why-title": "Warnungs-Bot",
+      "intro": "{{explorerName}}-Benachrichtigungen benachrichtigen Sie über NFT-Angebote, NFT-Verkäufe und Änderungen des beobachteten Kontostands.",
+      "destinations": "Senden Sie Benachrichtigungen an E-Mail, Slack, Discord oder X.",
+      "rules-before": "Erstellen Sie Kanäle und Regeln für die",
+      "balance-before": "Für Benachrichtigungen zu Kontostandsänderungen werden Adressen von verwendet",
+      "subscribe": "Wählen Sie einen Benachrichtigungsplan und einen Abrechnungszeitraum.",
+      "alerts-day": "Warnungen/Tag",
+      "alerts-week": "Warnungen/Woche",
+      "price-month": "{{price}} EUR / Monat",
+      "price-year-alt": "{{price}} EUR / Jahr",
+      "plan-description": {
+        "trial": "Zum Testen eines Benachrichtigungsziels vor der Auswahl eines kostenpflichtigen Plans.",
+        "basic": "Für die persönliche Überwachung und kleine Alarmierungseinrichtungen.",
+        "standard": "Für aktive Überwachung mit mehr Kanälen, Regeln und Alarmvolumen."
+      }
+    }
+  },
+  "referrals": {
+    "title": "Empfehlungsprogramm",
+    "commission": "20 % Provision",
+    "intro-before": "Benutzer einladen und verdienen",
+    "intro-after": "aus qualifizierten Einkäufen.",
+    "earn-when": "Sie verdienen, wenn ein empfohlener Benutzer Folgendes kauft:",
+    "api-access": "API-Zugriff",
+    "paid-before": "Es werden Prämien ausgezahlt",
+    "instantly": "sofort",
+    "paid-as": "als",
+    "paid-after": "welches Sie an Ihre Auszahlungsadresse einlösen können.",
+    "how-it-works": "So funktioniert es:",
+    "steps": {
+      "link": "Erstellen Sie Ihre Empfehlungslinks.",
+      "share": "Teilen Sie sie mit Benutzern.",
+      "earn": "Erhalten Sie Belohnungen, wenn Einkäufe abgeschlossen sind."
+    },
+    "no-limit-before": "Es gibt",
+    "no-limit": "keine Begrenzung",
+    "no-limit-after": "von der Anzahl der Benutzer, die Sie empfehlen können.",
+    "links-title": "Ihre Empfehlungslinks",
+    "link": "Link",
+    "payout-address": "Auszahlungsadresse",
+    "payout-address-help": "Prämien werden an diese Adresse gesendet.",
+    "save-address": "Auszahlungsadresse speichern",
+    "unredeemed_one": "{{count}} nicht eingelöster Check",
+    "unredeemed_other": "{{count}} nicht eingelöste Checks",
+    "redeem_one": "{{count}} Check einlösen an",
+    "redeem_other": "{{count}} Checks einlösen an",
+    "payments": "Empfehlungszahlungen",
+    "payments-note": "Aktuelle Empfehlungsprämien und deren Einlösungsstatus.",
+    "reward-amount": "Prämienbetrag",
+    "check-expires": "Der Scheck läuft ab",
+    "no-payments": "Noch keine Empfehlungszahlungen.",
+    "status": {
+      "issued": "Ausgegeben",
+      "redeemed": "Eingelöst",
+      "expired": "Abgelaufen",
+      "pending": "Ausstehend",
+      "not-eligible": "Nicht berechtigt",
+      "not-issued": "Nicht ausgestellt",
+      "cashed": "Eingelöst",
+      "canceled": "Storniert",
+      "failed": "Fehlgeschlagen"
+    },
+    "any": "jede",
+    "how-summary": "Kurzfassung",
+    "code-works-before": "Dein Empfehlungscode funktioniert auf",
+    "code-works-on": "Seite auf {{siteName}} mit",
+    "code-works-after": "in der URL.",
+    "browser-save-before": "Der Browser merkt sich die Empfehlung für",
+    "browser-save-bold": "30 Tage",
+    "browser-save-after": "Der Kauf kann später im selben Browser erfolgen.",
+    "your-links-before": "Deine Links für",
+    "example": "Beispiel",
+    "no-code": "Du hast noch keinen Empfehlungscode.",
+    "requirements-title": "Voraussetzungen",
+    "requirements-summary": "vor der Auszahlung",
+    "requirements-text": "Füge eine Auszahlungsadresse hinzu, bevor du Prämien einlöst. Prämien gelten nur für berechtigte bezahlte Käufe.",
+    "edit-address": "Auszahlungsadresse bearbeiten",
+    "address-placeholder": "{{ledgerName}}-Adresse eingeben",
+    "request-code": "Empfehlungscode anfordern",
+    "unredeemed": "{{count}} nicht eingelöste Checks",
+    "redeem": "{{count}} Checks einlösen an",
+    "errors": {
+      "address-required": "Auszahlungsadresse eingeben.",
+      "address-invalid": "Gültige Auszahlungsadresse eingeben."
+    }
+  },
+  "notifications": {
+    "eyebrow": "{{explorerName}}-Warnungen",
+    "hero-text": "Erstellen Sie Kanäle und Regeln für Konto- und NFT-Benachrichtigungen.",
+    "loading-alerts": "Benachrichtigungen werden geladen...",
+    "finish-setup": "Beenden Sie die Einrichtung",
+    "finish-setup-text": "Fügen Sie Profildetails hinzu, bevor Sie Benachrichtigungskanäle erstellen.",
+    "profile-name": "Profilname",
+    "profile-name-placeholder": "Firmen- oder Projektname",
+    "session-expired": "Sitzung abgelaufen",
+    "sign-in-again": "Bitte melden Sie sich erneut an.",
+    "load-failed": "Warnungen konnten nicht geladen werden.",
+    "upgrade-plan": "Upgrade-Plan",
+    "limit-reached": "Limit erreicht",
+    "channel-limit-reached": "Kanallimit erreicht.",
+    "rule-limit-reached": "Regellimit erreicht.",
+    "upgrade-add-channels": "Führen Sie ein Upgrade durch, um weitere Kanäle hinzuzufügen.",
+    "upgrade-add-rules": "Aktualisieren Sie, um weitere Regeln hinzuzufügen.",
+    "upgrade-more": "Upgrade für höhere Limits.",
+    "plan-limit": "Plan {{plan}}: {{channels}} Kanäle und {{rules}} Regeln.",
+    "alerts-plan": "{{plan}}-Warnungsplan",
+    "channel-type": {
+      "email": "E-Mail",
+      "slack_webhook": "Slack",
+      "discord_webhook": "Discord",
+      "twitter_api": "X / Twitter"
+    },
+    "detailed-setup-guide": "Detaillierte Einrichtungsanleitung",
+    "channel-name": "Kanalname",
+    "channel-name-help": "Ein privater Name zur Erkennung dieses Kanals.",
+    "channel-name-placeholder": "Haupt-Slack-Kanal",
+    "channel-number": "Kanal #{{id}}",
+    "rule-number": "Regel #{{id}}",
+    "default-rule-name": "Regel #{{index}}",
+    "rules-connected_one": "{{count}} Regel verbunden",
+    "rules-connected_other": "{{count}} Regeln verbunden",
+    "event": "Ereignis",
+    "channel": "Kanal",
+    "rule": "Regel",
+    "fiat": "Fiat",
+    "fiat-currency": "Fiat-Währung",
+    "choose-currency": "Wählen Sie die Währung",
+    "fiat-help": "Wird in dieser Regel für Fiat-Preisfilter verwendet.",
+    "choose-channel": "Wählen Sie einen Kanal",
+    "balance-email-note": "Benachrichtigungen zu Kontostandsänderungen können nur per E-Mail gesendet werden.",
+    "email-balance-note": "E-Mail-Kanäle sind für Benachrichtigungen über Kontostandänderungen reserviert.",
+    "rule-name": "Regelname",
+    "rule-name-help": "Ein privater Name für diese Regel.",
+    "rule-name-placeholder": "Hochwertiger NFT-Verkauf",
+    "filters-title": "Filter",
+    "filters-help": "Fügen Sie Filter hinzu, um einzugrenzen, wann diese Regel ausgelöst wird.",
+    "toggle-rule-enabled": "Umschaltregel aktiviert",
+    "enabled-help": "Pausieren Sie diese Regel, ohne sie zu löschen.",
+    "toggle-external-links": "Externe Links umschalten",
+    "include-external-links": "Fügen Sie externe Links ein",
+    "external-links-help": "Fügen Sie Marktplatz- oder Explorer-Links hinzu, sofern verfügbar.",
+    "toggle-xrp-cafe": "xrp.cafe-Links umschalten",
+    "include-xrp-cafe": "Fügen Siexrp.cafe-Links hinzu",
+    "xrp-cafe-help": "Fügen Siexrp.cafe-Links für unterstützte NFT-Benachrichtigungen hinzu.",
+    "new-rule": "Neue Regel",
+    "no-rules-title": "Noch keine Regeln",
+    "no-rules-text": "Erstellen Sie eine Regel, um mit dem Senden von Benachrichtigungen zu beginnen.",
+    "delete-channel": "Kanal löschen",
+    "delete-rule": "Regel löschen",
+    "delete-question": "Löschen",
+    "delete-channel-note": "Mit diesem Kanal verbundene Regeln müssen zuerst entfernt werden.",
+    "delete-rule-note": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "open-alerts": "Öffnen Sie Benachrichtigungen",
+    "pro-required-before": "Dieser Filter erfordert",
+    "enable-history-before": "Aktivieren Sie den Saldoverlauf in",
+    "enable-history-after": "bevor Sie diesen Filter verwenden",
+    "loading-addresses": "Adressen werden geladen...",
+    "choose-address": "Adresse wählen",
+    "enter-address-username": "Geben Sie Adresse oder Benutzernamen ein",
+    "required-for-rule": "Für diese Regel erforderlich.",
+    "choose-tx-types": "Wählen Sie Transaktionstypen",
+    "any-tx-type": "Jeder Transaktionstyp",
+    "choose-token": "Wählen Sie {{nativeCurrency}} oder einen ausgegebenen Token.",
+    "enter-destination": "Geben Sie die Zieladresse ein",
+    "destination-address": "Zieladresse",
+    "every-matching-event": "Jedes passende Event",
+    "external-links": "Externe Links",
+    "email-balance-only": "Verwenden Sie Slack, Discord oder X für NFT-Benachrichtigungen.",
+    "balance-email-only": "Verwenden Sie E-Mail für Benachrichtigungen zu Kontostandsänderungen.",
+    "field-required": "{{field}} ist erforderlich.",
+    "limit": {
+      "channels": "{{count}} Kanäle",
+      "channels_one": "{{count}} Kanal",
+      "channels_other": "{{count}} Kanäle",
+      "rules": "{{count}} Regeln",
+      "rules_one": "{{count}} Regel",
+      "rules_other": "{{count}} Regeln"
+    },
+    "channels": {
+      "title": "Kanäle",
+      "subtitle": "Wohin Benachrichtigungen gesendet werden."
+    },
+    "rules": {
+      "title": "Regeln",
+      "subtitle": "Wenn Benachrichtigungen gesendet werden."
+    },
+    "actions": {
+      "add-channel": "Kanal hinzufügen",
+      "save-channel": "Kanal speichern",
+      "edit-channel": "Kanal bearbeiten",
+      "delete-channel": "Kanal löschen",
+      "add-rule": "Regel hinzufügen",
+      "save-rule": "Regel speichern",
+      "edit-rule": "Regel bearbeiten",
+      "delete-rule": "Regel löschen",
+      "show-executions": "Hinrichtungen zeigen"
+    },
+    "fields": {
+      "webhook": "Webhook URL",
+      "username": "Bot-Benutzername",
+      "email": "E-Mail-Adresse",
+      "consumer_key": "API-Schlüssel",
+      "consumer_secret": "API-Schlüssel-Secret",
+      "access_token_key": "Zugriffstoken",
+      "access_token_secret": "Zugriffstoken-Secret",
+      "bot-username": "Bot-Benutzername",
+      "email-address": "E-Mail-Adresse",
+      "api-key": "API-Schlüssel",
+      "access-token": "Zugriffstoken"
+    },
+    "field-help": {
+      "webhook": "Eingehendwebhook URL.",
+      "username": "Vom Bot angezeigter Name.",
+      "email": "Adresse, die Benachrichtigungen erhalten soll.",
+      "consumer_key": "Wird in X als API Key angezeigt.",
+      "consumer_secret": "Wird einmal zusammen mit dem API Key angezeigt.",
+      "access_token_key": "Generieren Sie dies, nachdem die App über Read and write-Berechtigungen verfügt.",
+      "access_token_secret": "Zusammen mit dem Access Token generieren und privat halten."
+    },
+    "field-placeholder": {
+      "webhook": "https://hooks.example.com/...",
+      "username": "Bithomp Bot",
+      "email": "name@example.com",
+      "consumer_key": "API Key aus X",
+      "consumer_secret": "API Key Secret aus X",
+      "access_token_key": "Access Token aus X",
+      "access_token_secret": "Access Token Secret aus X"
+    },
+    "guides": {
+      "email": {
+        "title": "E-Mail",
+        "description": "Verwenden Sie das Postfach, das {{explorerName}} Benachrichtigungen empfangen soll. Es ist keine Webhook-Einrichtung erforderlich.",
+        "steps": [
+
+        ]
+      },
+      "discord_webhook": {
+        "title": "Discord",
+        "description": "Erstellen Sie einen Webhook im Discord-Serverkanal, in dem Benachrichtigungen gepostet werden sollen.",
+        "steps": [
+          "Servereinstellungen",
+          "Integrationen",
+          "Webhooks",
+          "Kopieren Siewebhook URL"
+        ]
+      },
+      "slack_webhook": {
+        "title": "Slack",
+        "description": "Erstellen Sie einen eingehenden Webhook in Slack, wählen Sie einen Kanal aus und fügen Sie dannwebhook URLhier ein.",
+        "steps": [
+          "Slack-App-Verzeichnis",
+          "Eingehende Webhooks",
+          "Zum Arbeitsbereich hinzufügen",
+          "Kopieren Siewebhook URL"
+        ]
+      },
+      "twitter_api": {
+        "title": "X / Twitter",
+        "description": "Verwenden Sie API Key, API Key Secret, Access Token und Access Token Secret aus der X Developer Portal-App.",
+        "steps": [
+          "Entwicklerportal",
+          "Projekt-App",
+          "Read and write-Berechtigungen",
+          "Schlüssel und Token"
+        ]
+      }
+    },
+    "destination": {
+      "any": "Jedes Ziel",
+      "specific": "Spezifische Adresse",
+      "none": "Kein Ziel",
+      "known-broker": "Bekannter Makler",
+      "none-or-known-broker": "Kein Ziel oder bekannter Makler"
+    },
+    "operators": {
+      "is": "ist",
+      "is-not": "ist nicht",
+      "in": "in",
+      "not-in": "nicht drin",
+      "exists": "existiert",
+      "and": "Und",
+      "or": "oder"
+    },
+    "number-operators": {
+      "$gte": "Mindestens",
+      "$lte": "Maximal",
+      "$gt": "Mehr als",
+      "$lt": "Weniger als",
+      "$eq": "genau"
+    },
+    "tx-type-operators": {
+      "$eq": "Ist",
+      "$in": "Enthalten",
+      "$nin": "Ausschließen"
+    },
+    "event-groups": {
+      "NFT": "NFT",
+      "Account": "Konto"
+    },
+    "events": {
+      "nftoken_sale": {
+        "label": "NFT-Verkauf",
+        "description": "Wenn ein NFT-Verkauf erkannt wird."
+      },
+      "nftoken_create_sell_offer": {
+        "label": "NFT-Verkaufsangebot",
+        "description": "Wenn ein neues NFT-Verkaufsangebot erstellt wird."
+      },
+      "uritoken_sell": {
+        "label": "NFT-Verkauf",
+        "description": "Wenn ein NFT-Verkauf erkannt wird."
+      },
+      "uritoken_create_sell_offer": {
+        "label": "NFT-Verkaufsangebot",
+        "description": "Wenn ein neues NFT-Verkaufsangebot erstellt wird."
+      },
+      "balances_change": {
+        "label": "Balance-Änderung",
+        "description": "Wenn sich der Saldo einer angesehenen Pro-Adresse ändert."
+      }
+    },
+    "filters": {
+      "address": "Adresse",
+      "tx_type": "Transaktionstyp",
+      "issuer": "Emittent",
+      "taxon": "Taxon",
+      "price": "Preis in {{nativeCurrency}}",
+      "price_usd": "Preis in USD",
+      "account": "Verkäuferkonto",
+      "destination": "Ziel",
+      "amount": "Menge",
+      "token": "Token",
+      "known_broker": "Bekannter Makler"
+    },
+    "errors": {
+      "channel-name-required": "Geben Sie einen Kanalnamen ein.",
+      "field-required": "{{field}} ist erforderlich.",
+      "invalid-webhook": "Geben Sie einen gültigenwebhook URLein.",
+      "invalid-email": "Geben Sie eine gültige E-Mail-Adresse ein.",
+      "choose-channel": "Wählen Sie einen Kanal.",
+      "email-balance-only": "E-Mail-Kanäle können nur für Benachrichtigungen über Kontostandänderungen verwendet werden.",
+      "balance-email-only": "Benachrichtigungen zu Kontostandsänderungen können nur per E-Mail gesendet werden.",
+      "rule-name-required": "Geben Sie einen Regelnamen ein.",
+      "event-invalid-short": "Wählen Sie eine unterstützte Veranstaltung.",
+      "choose-field": "Wählen Sie {{field}}.",
+      "pro-required": "Für diesen Filter ist Bithomp Pro erforderlich.",
+      "enable-history-first": "Aktivieren Sie zunächst den Saldoverlauf für mindestens eine Adresse.",
+      "choose-history-address": "Wählen Sie eine Adresse für den Saldoverlauf.",
+      "valid-address": "Geben Sie eine gültige Adresse ein.",
+      "valid-number": "Geben Sie eine gültige Nummer ein.",
+      "tx-type-supported": "Wählen Sie einen unterstützten Transaktionstyp.",
+      "tx-types-supported": "Wählen Sie nur unterstützte Transaktionstypen aus.",
+      "valid-destination": "Geben Sie eine gültige Zieladresse ein.",
+      "profile-name-required": "Geben Sie einen Profilnamen ein.",
+      "country-required": "Wählen Sie ein Land.",
+      "setup-failed": "Die Einrichtung konnte nicht abgeschlossen werden.",
+      "save-channel-failed": "Der Kanal konnte nicht gespeichert werden.",
+      "save-rule-failed": "Die Regel konnte nicht gespeichert werden.",
+      "delete-channel-failed": "Der Kanal konnte nicht gelöscht werden.",
+      "connection-has-listeners": "Löschen Sie verbundene Regeln, bevor Sie diesen Kanal löschen.",
+      "connection-settings-required-short": "Kanaleinstellungen sind erforderlich.",
+      "connection-settings-required": "Bevor Warnungen gesendet werden können, sind Kanaleinstellungen erforderlich.",
+      "action-required": "Regelmaßnahmen sind erforderlich.",
+      "event-invalid": "Dieses Ereignis wird nicht unterstützt.",
+      "event-required": "Veranstaltung ist erforderlich.",
+      "connection-not-found": "Kanal wurde nicht gefunden.",
+      "listener-disabled": "Regel ist deaktiviert.",
+      "package-tier-required": "Es ist ein kostenpflichtiger Benachrichtigungsplan erforderlich.",
+      "package-limit-reached": "Planlimit erreicht."
+    },
+    "executions": {
+      "title": "Ausführungen für {{name}}",
+      "none-title": "Keine Hinrichtungen",
+      "loading-text": "Letzte Hinrichtungen werden geladen...",
+      "none-text": "Es wurden noch keine Hinrichtungen registriert.",
+      "loaded": "Geladen",
+      "number": "Ausführung #{{id}}"
+    },
+    "guest": {
+      "rules": "Erstellen Sie nach der Anmeldung {{explorerName}} Benachrichtigungsregeln.",
+      "channels": "Senden Sie Benachrichtigungen an E-Mail, Slack, Discord oder X."
+    },
+    "x-guide": {
+      "seo-title": "Anleitung zur Einrichtung der X-Benachrichtigung",
+      "seo-description": "So erstellen Sie X-API-Schlüssel für Warnungen.",
+      "eyebrow": "X / Twitter-Setup",
+      "title": "Richten Sie X-Benachrichtigungen ein",
+      "intro": "Erstellen Sie eine X-Entwickler-App, aktivieren Sie Schreibberechtigungen und kopieren Sie die vier erforderlichen Schlüssel in Alerts.",
+      "before-title": "Bevor Sie beginnen",
+      "before": {
+        "account": "Verwenden Sie ein X-Konto, das speziell für die Veröffentlichung von Warnungen vorgesehen ist.",
+        "private": "Halten Sie alle generierten Schlüssel privat.",
+        "write": "Die App muss über Read and write-Berechtigungen verfügen.",
+        "regenerate": "Access Token nach dem Ändern der Berechtigungen neu generieren."
+      },
+      "back": "Zurück zu Benachrichtigungen",
+      "open-portal": "X Developer Portal öffnen",
+      "steps": [
+        {
+          "title": "Erstellen oder eröffnen Sie Ihr X-Konto",
+          "text": "Verwenden Sie das X-Konto, das Warnungen veröffentlichen soll. Die Screenshots zeigen den vollständigen Ablauf für neue Konten, einschließlich E-Mail-Bestätigung und Profileinrichtung.",
+          "images": [
+            "Öffnen Sie X und wählen Sie Konto erstellen oder melden Sie sich an, wenn das Bot-Konto bereits vorhanden ist.",
+            "Geben Sie den Kontonamen, die E-Mail-Adresse und das Geburtsdatum ein.",
+            "Wählen Sie die X-Anpassungsoptionen und fahren Sie fort.",
+            "Überprüfen Sie die Kontodetails und klicken Sie auf Registrieren.",
+            "Führen Sie die Authentifizierungsprüfung des X-Kontos durch.",
+            "Kopieren Sie den Bestätigungscode aus der von X gesendeten E-Mail.",
+            "Fügen Sie das Profilbild für das Konto hinzu oder fahren Sie mit der von Ihnen gewählten Einrichtung fort.",
+            "Bestätigen Sie, dass das Konto auf der X-Homepage geöffnet wird."
+          ]
+        },
+        {
+          "title": "Beantragen Sie den X-Entwicklerzugriff",
+          "text": "Öffnen Sie das X Developer Portal, wählen Sie die verfügbare Option für ein kostenloses Entwicklerkonto aus und füllen Sie das Vereinbarungsformular mit einer einfachen Beschreibung des Alert-Bots aus.",
+          "images": [
+            "Öffnen Sie die Seite „X Developer Platform“.",
+            "Wählen Sie auf der Entwicklerplanseite die Option „Kostenloses Konto“.",
+            "Öffnen Sie das Formular zur Entwicklervereinbarung und geben Sie den Verwendungszweck ein.",
+            "Akzeptieren Sie die erforderlichen Kontrollkästchen für die Richtlinien und senden Sie das Formular ab."
+          ]
+        },
+        {
+          "title": "Öffnen Sie die Projekt-App und generieren Sie Schlüssel",
+          "text": "Das Developer Portal erstellt ein Projekt und eine App. Öffnen Sie diese App und generieren Sie dann unter Keys and tokens das API Key-Paar und das Access Token-Paar, die für den Alerts-Kanal benötigt werden.",
+          "images": [
+            "Öffnen Sie das Standardprojekt und die Standard-App über das Developer Portal-Dashboard.",
+            "Schauen Sie sich die Projektübersicht an und wählen Sie die App aus dem linken Menü aus.",
+            "Öffnen Sie die App-Einstellungen und klicken Sie unter Benutzerauthentifizierungseinstellungen auf Einrichten.",
+            "Öffnen Sie Keys and tokens, um API Key, API Key Secret, Access Token und Access Token Secret zu generieren.",
+            "Speichern Sie API Key und API Key Secret. Diese entsprechen den ersten beiden Feldern in Bithomp Alerts.",
+            "Speichern Sie Access Token und Access Token Secret. Wenn sie mit Read Only-Berechtigungen erstellt wurden, aktualisieren Sie als Nächstes die Berechtigungen."
+          ]
+        },
+        {
+          "title": "Schreibrechte aktivieren",
+          "text": "Die App muss über Read and write-Berechtigungen verfügen, bevor sie Alerts veröffentlichen kann. Generieren Sie nach dem Ändern der Berechtigungen Access Token und Access Token Secret neu, damit das neue Token schreiben kann.",
+          "images": [
+            "Wählen Sie in den Benutzerauthentifizierungseinstellungen die Option Read and write-Berechtigungen aus.",
+            "Wählen Sie als App-Typ „Web-App“, „Automatisierte App“ oder „Bot“.",
+            "Füllen Sie die erforderlichen Felder „Callback URI/Redirect URL“ und „Website URL“ aus.",
+            "Verwenden Sie Ihre öffentlichen Rückruf- und Website-URLs und speichern Sie dann die Einstellungen.",
+            "Bestätigen Sie die Berechtigungsänderung, wenn X Sie dazu auffordert.",
+            "X zeigt nach dem Speichern die OAuth 2.0-Client-ID und das Client-Geheimnis an. Dies sind nicht die vier Alarmkanalfelder."
+          ]
+        },
+        {
+          "title": "Schlüssel nach Bithomp Alerts kopieren",
+          "text": "Kehren Sie zu Keys and tokens zurück, nachdem Read and write gespeichert wurde. Fügen Sie API Key, API Key Secret, Access Token und Access Token Secret in die entsprechenden Felder auf der Alerts-Seite ein. Wenn Access Token vor dem Ändern der Berechtigungen generiert wurde, generieren Sie ihn zuerst neu.",
+          "images": [
+
+          ]
+        }
+      ]
+    },
+    "rules-connected": "{{count}} Regeln verbunden",
+    "channel-type-label": "Kanaltyp"
+  },
+  "errors": {
+    "token": {
+      "required": "Bitte melden Sie sich erneut an."
+    },
+    "partner": {
+      "not_found": "Profil wurde nicht gefunden."
+    }
+  },
+  "error": {
+    "Network Error": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+    "payment": "Zahlungsfehler.",
+    "payment-partly": "{{received}} {{currency}} erhalten, {{required}} {{currency}} erforderlich."
+  }
 }

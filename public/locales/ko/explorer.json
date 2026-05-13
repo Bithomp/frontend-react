@@ -2,7 +2,7 @@
   "seo": {
     "mainnet": {
       "title": "{{explorerSearchName}} 검색 — 계정, 트랜잭션, 토큰, NFT",
-      "description": "{{explorerSearchAttribution}}로 {{ledgerName}}의 {{nativeCurrency}} 주소, 트랜잭션 해시, 사용자명, CTID, NFT, 토큰, AMM, Ledger 객체를 검색하세요.",
+      "description": "{{explorerSearchAttribution}}로 {{ledgerName}}의 주소, 트랜잭션 해시, 사용자명, CTID, NFT, 토큰, AMM, Ledger 객체를 검색하세요.",
       "heading": "{{explorerSearchName}} 검색"
     },
     "testnet": {
@@ -17,7 +17,7 @@
     }
   },
   "intro": {
-    "subtitle": "{{nativeCurrency}} 거래, 계정, 토큰, NFT를 빠르고 신뢰할 수 있게 검색하세요.",
+    "subtitle": "{{nativeCurrency}} 거래, 계정, 토큰, NFT를 검색하고 {{nativeCurrency}}를 빠르고 신뢰할 수 있게 탐색하세요.",
     "home-link-prefix": "실시간 통계, 가격 도구, 대형 전송, 검증자, amendments를 찾고 계신가요? 방문해 보세요:",
     "home-link-label": "{{explorerName}} 홈페이지"
   },
