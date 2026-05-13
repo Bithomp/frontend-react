@@ -226,10 +226,12 @@ export default function Subscriptions({
 
   useEffect(() => {
     if (sessionToken) {
-      getTransactions()
+      getTransactions(selectedPackageType)
+    } else {
+      setTransactions([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
+  }, [sessionToken, selectedPackageType])
 
   useEffect(() => {
     if (sessionToken) {
@@ -253,8 +255,10 @@ export default function Subscriptions({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionsTab])
 
-  const getTransactions = async () => {
-    const response = await axiosAdmin.get('partner/transactions?limit=5').catch((error) => {
+  const getTransactions = async (packageType = selectedPackageType) => {
+    setTransactions([])
+
+    const response = await axiosAdmin.get(`partner/transactions?limit=5&packageType=${encodeURIComponent(packageType)}`).catch((error) => {
       if (error && error.message !== 'canceled') {
         console.log("ERROR: can't get partner's transactions")
         if (error.response?.data?.error === 'errors.token.required') {
@@ -263,7 +267,7 @@ export default function Subscriptions({
       }
     })
     if (response?.data) {
-      setTransactions(response.data?.transactions)
+      setTransactions(Array.isArray(response.data?.transactions) ? response.data.transactions : [])
       return response.data
     }
   }
@@ -480,11 +484,11 @@ export default function Subscriptions({
       stopPaymentTracking()
       setErrorMessage('')
       getApiData()
-      getTransactions()
+      getTransactions(data.bid.type)
       return
     }
     if (data.bid.status === 'Partly paid') {
-      getTransactions()
+      getTransactions(data.bid.type)
       setPaymentErrorMessage(
         t('error.payment-partly', {
           received: data.bid.totalReceivedAmount,
@@ -553,6 +557,7 @@ export default function Subscriptions({
     setBidData(null)
     setNewAndActivePackages([])
     setExpiredPackages([])
+    setTransactions([])
     if (sessionToken) {
       setLoading(true)
     }
