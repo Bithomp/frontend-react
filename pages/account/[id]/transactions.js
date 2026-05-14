@@ -288,6 +288,8 @@ export default function AccountTransactions({
       return
     }
 
+    setLoading(true)
+
     try {
       const response = await axios.get(
         apiUrl({
@@ -306,7 +308,6 @@ export default function AccountTransactions({
       )
       if (response?.data?.status === 'error' || response?.data?.error) {
         setErrorMessage(response?.data?.error)
-        setLoading(false)
         if (response?.data?.marker) {
           setMarker(response?.data?.marker)
           setNoRelevantTransactions(true)
@@ -315,22 +316,17 @@ export default function AccountTransactions({
       }
       const newData = response?.data?.transactions || []
       const newMarker = response?.data?.marker || null
+      const searchPaused = newData.length === 0 && !!newMarker
 
-      if (newData?.length === 0 && newMarker) {
-        setNoRelevantTransactions(true)
-      }
-
-      if (markerToUse && transactions.length > 0) {
-        // adding data to existing list
+      if (markerToUse) {
         if (newData.length > 0) {
-          const combined = [...transactions, ...newData]
-          setTransactions(combined)
+          setTransactions((prev) => [...prev, ...newData])
         }
       } else {
         if (newData.length === 0 && !newMarker) {
           setErrorMessage('Account has no transactions with the specified filters.')
           setMarker(null)
-          setLoading(false)
+          setNoRelevantTransactions(false)
           return
         } else {
           setTransactions(newData)
@@ -338,11 +334,13 @@ export default function AccountTransactions({
       }
 
       setMarker(newMarker)
+      setNoRelevantTransactions(searchPaused)
       setErrorMessage('')
     } catch (e) {
       setErrorMessage(t('error.' + e?.message) || 'Failed to load transactions')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const csvHeaders = [
@@ -363,8 +361,7 @@ export default function AccountTransactions({
   const applyFilters = () => {
     setTransactions([])
     setNoRelevantTransactions(false)
-    setMarker('first')
-    setLoading(true)
+    setMarker(null)
     fetchTransactions({ restart: true })
   }
 
@@ -550,13 +547,12 @@ export default function AccountTransactions({
               noRelevantTransactions ? (
                 <>
                   It takes too long to find relevant transactions. Searched up to ledger{' '}
-                  <span className="bold">{marker?.ledger}</span>.
+                  <span className="bold">{marker?.ledger || t('detail.states.unknown', { ns: 'account' })}</span>.
                   <br />
                   <br />
                   <button
                     className="button-action"
                     onClick={() => {
-                      setLoading(true)
                       fetchTransactions({ marker })
                     }}
                     disabled={loading}
