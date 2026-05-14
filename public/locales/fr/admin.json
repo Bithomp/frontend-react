@@ -105,6 +105,7 @@
     "check": "Chèque"
   },
   "period": {
+    "w1": "1 semaine",
     "m1": "1 mois",
     "m3": "3 mois",
     "m6": "6 mois",
@@ -340,6 +341,7 @@
       "subscribe": "Choisissez un forfait d’alertes et une période de facturation.",
       "alerts-day": "Alertes / jour",
       "alerts-week": "Alertes / semaine",
+      "price-week-free": "Gratuit / semaine",
       "price-month": "{{price}} EUR / mois",
       "price-year-alt": "{{price}} EUR / an",
       "plan-description": {

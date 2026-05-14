@@ -105,6 +105,7 @@
     "check": "Prüfung"
   },
   "period": {
+    "w1": "1 Woche",
     "m1": "1 Monat",
     "m3": "3 Monate",
     "m6": "6 Monate",
@@ -340,6 +341,7 @@
       "subscribe": "Wählen Sie einen Benachrichtigungsplan und einen Abrechnungszeitraum.",
       "alerts-day": "Warnungen/Tag",
       "alerts-week": "Warnungen/Woche",
+      "price-week-free": "Kostenlos / Woche",
       "price-month": "{{price}} EUR / Monat",
       "price-year-alt": "{{price}} EUR / Jahr",
       "plan-description": {

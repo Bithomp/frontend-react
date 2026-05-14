@@ -105,6 +105,7 @@
     "check": "Чек"
   },
   "period": {
+    "w1": "1 неделя",
     "m1": "1 месяц",
     "m3": "3 месяца",
     "m6": "6 месяцев",
@@ -340,6 +341,7 @@
       "subscribe": "Выберите тариф алертов и период оплаты.",
       "alerts-day": "Алертов / день",
       "alerts-week": "Алертов / неделю",
+      "price-week-free": "Бесплатно / неделя",
       "price-month": "{{price}} EUR / месяц",
       "price-year-alt": "{{price}} EUR / год",
       "plan-description": {

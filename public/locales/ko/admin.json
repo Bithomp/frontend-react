@@ -105,6 +105,7 @@
     "check": "체크"
   },
   "period": {
+    "w1": "1주",
     "m1": "1개월",
     "m3": "3개월",
     "m6": "6개월",
@@ -340,6 +341,7 @@
       "subscribe": "알림 계획과 청구 기간을 선택하세요.",
       "alerts-day": "알림/일",
       "alerts-week": "알림/주",
+      "price-week-free": "무료 / 주",
       "price-month": "{{price}}EUR/월",
       "price-year-alt": "{{price}}EUR/년",
       "plan-description": {

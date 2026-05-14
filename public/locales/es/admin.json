@@ -105,6 +105,7 @@
     "check": "Cheque"
   },
   "period": {
+    "w1": "1 semana",
     "m1": "1 mes",
     "m3": "3 meses",
     "m6": "6 meses",
@@ -340,6 +341,7 @@
       "subscribe": "Elija un plan de alertas y un período de facturación.",
       "alerts-day": "Alertas / día",
       "alerts-week": "Alertas / semana",
+      "price-week-free": "Gratis / semana",
       "price-month": "{{price}} EUR / mes",
       "price-year-alt": "{{price}} EUR / año",
       "plan-description": {

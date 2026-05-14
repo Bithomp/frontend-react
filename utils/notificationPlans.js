@@ -3,19 +3,21 @@ export const ALERT_PLAN_TIERS = {
     label: 'Trial',
     description: 'For testing one alert destination before choosing a paid plan.',
     price: 'Free',
+    period: 'w1',
     connections: 1,
-    listeners: 5,
-    executionsDay: 10,
-    executionsWeek: 100
+    listeners: 1,
+    executionsDay: 5,
+    executionsWeek: 10
   },
   basic: {
     label: 'Basic',
     description: 'For personal monitoring and small alert setups.',
     price: '30 EUR / month or 300 EUR / year',
-    connections: 3,
-    listeners: 10,
+    period: 'm1',
+    connections: 1,
+    listeners: 3,
     executionsDay: 30,
-    executionsWeek: 300,
+    executionsWeek: 100,
     prices: {
       month: {
         eur: 30
@@ -29,9 +31,10 @@ export const ALERT_PLAN_TIERS = {
     label: 'Standard',
     description: 'For active monitoring with more channels, rules, and alert volume.',
     price: '100 EUR / month or 1000 EUR / year',
+    period: 'm1',
     connections: 5,
     listeners: 20,
-    executionsDay: 50,
+    executionsDay: 100,
     executionsWeek: 500,
     prices: {
       month: {
@@ -82,11 +85,16 @@ export const getAlertPlanForPackage = (packageItem) => {
 }
 
 export const alertTierOptions = Object.keys(ALERT_PLAN_TIERS)
-  .filter((tier) => ALERT_PLAN_TIERS[tier].prices)
   .map((tier) => ({ value: tier, label: ALERT_PLAN_TIERS[tier].label }))
 
 export const alertPlanOptionList = (tier) => {
-  const plan = ALERT_PLAN_TIERS[getPaidAlertPlanTier(tier)]
+  const planKey = getAlertPlanTier(tier)
+  const plan = ALERT_PLAN_TIERS[planKey]
+
+  if (!plan.prices) {
+    return [{ value: 'w1', label: '1 week', price: plan.price }]
+  }
+
   const monthPrice = plan.prices.month.eur
   const yearPrice = plan.prices.year.eur
   return [

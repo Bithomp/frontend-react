@@ -105,6 +105,7 @@
     "check": "Cek"
   },
   "period": {
+    "w1": "1 minggu",
     "m1": "1 bulan",
     "m3": "3 bulan",
     "m6": "6 bulan",
@@ -340,6 +341,7 @@
       "subscribe": "Pilih paket peringatan dan periode penagihan.",
       "alerts-day": "Peringatan / hari",
       "alerts-week": "Peringatan / minggu",
+      "price-week-free": "Gratis / minggu",
       "price-month": "{{price}} EUR / bulan",
       "price-year-alt": "{{price}} EUR / tahun",
       "plan-description": {

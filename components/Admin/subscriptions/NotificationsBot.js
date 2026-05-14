@@ -7,11 +7,13 @@ import {
   ALERT_PLAN_TIERS,
   alertPlanOptionList,
   alertTierOptions,
-  getPaidAlertPlanTier
+  getAlertPlanTier
 } from '../../../utils/notificationPlans'
 
 const optionIndex = (val) => {
   switch (val) {
+    case 'w1':
+      return 0
     case 'm1':
       return 0
     case 'm3':
@@ -28,6 +30,9 @@ const optionIndex = (val) => {
 const planLabel = (t, key, fallback) => t(`plans.${key}`, { defaultValue: fallback })
 const planDescription = (t, key, options) => t(`subscriptions.alerts.plan-description.${key}`, options)
 const periodLabel = (t, value) => t(`period.${value}`, value)
+const priceLabel = (t, value) => value === 'Free' ? t('plans.free') : value
+const planPriceLabel = (t, value, plan) =>
+  value === 'Free' ? t('subscriptions.alerts.price-week-free', { defaultValue: `${t('plans.free')} / ${periodLabel(t, plan.period)}` }) : value
 
 const PlanTable = ({ t }) => (
   <div className="alerts-plan-table-wrap">
@@ -58,7 +63,7 @@ const PlanTable = ({ t }) => (
                     <span>{t('subscriptions.alerts.price-year-alt', { price: plan.prices.year.eur })}</span>
                   </>
                 ) : (
-                  plan.price
+                  planPriceLabel(t, plan.price, plan)
                 )}
               </td>
               <td className="right">{plan.connections}</td>
@@ -80,7 +85,7 @@ const PlanTable = ({ t }) => (
           <div className="alerts-plan-card" key={key}>
             <div className="alerts-plan-card-header">
               <strong>{planLabel(t, key, plan.label)}</strong>
-              <span>{plan.prices ? t('subscriptions.alerts.price-month', { price: plan.prices.month.eur }) : plan.price}</span>
+              <span>{plan.prices ? t('subscriptions.alerts.price-month', { price: plan.prices.month.eur }) : planPriceLabel(t, plan.price, plan)}</span>
             </div>
             {plan.prices && (
               <div className="alerts-plan-card-price">
@@ -195,20 +200,25 @@ const PlanTable = ({ t }) => (
 
 export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
   const { t } = useTranslation('admin')
-  const normalizedTier = getPaidAlertPlanTier(tier)
+  const normalizedTier = tier ? getAlertPlanTier(tier) : 'basic'
   const translatedPlanOptions = (tier) =>
-    alertPlanOptionList(tier).map((option) => ({ ...option, label: periodLabel(t, option.value) }))
+    alertPlanOptionList(tier).map((option) => ({
+      ...option,
+      label: periodLabel(t, option.value),
+      price: priceLabel(t, option.price)
+    }))
   const [innerTier, setInnerTier] = useState(normalizedTier)
   const [optionValue, setOptionValue] = useState(translatedPlanOptions(normalizedTier)[1])
   const width = useWidth()
 
   const optionsList = translatedPlanOptions(innerTier)
   const translatedTierOptions = alertTierOptions.map((option) => ({ ...option, label: planLabel(t, option.value, option.label) }))
-  const selectedTierOption = translatedTierOptions.find((option) => option.value === innerTier) || translatedTierOptions[1]
+  const selectedTierOption = translatedTierOptions.find((option) => option.value === innerTier) || translatedTierOptions[0]
 
   useEffect(() => {
-    const index = optionIndex(optionValue.value)
-    const selectedOption = translatedPlanOptions(innerTier)[index]
+    const nextOptions = translatedPlanOptions(innerTier)
+    const index = Math.min(optionIndex(optionValue?.value), nextOptions.length - 1)
+    const selectedOption = nextOptions[index]
     setTier(innerTier)
     setOptionValue(selectedOption)
     setPayPeriod(selectedOption.value)

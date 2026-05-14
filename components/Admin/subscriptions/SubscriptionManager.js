@@ -142,7 +142,7 @@ export default function SubscriptionManager({
   const [checkoutOpen, setCheckoutOpen] = useState(initiallyExpanded)
   const [checkoutTouched, setCheckoutTouched] = useState(false)
   const [payPeriod, setPayPeriod] = useState('m3')
-  const [tier, setTier] = useState('standard')
+  const [tier, setTier] = useState(packageType === 'bot' ? 'basic' : 'standard')
   const [billingCountry, setBillingCountry] = useState('')
   const [choosingCountry, setChoosingCountry] = useState(false)
   const [payData, setPayData] = useState(null)
@@ -273,6 +273,27 @@ export default function SubscriptionManager({
 
   const onPurchaseClick = async () => {
     resetPaymentFlow({ clearReceipt: true })
+
+    if (packageType === 'bot' && tier === 'trial') {
+      const trialPackage = await axiosAdmin.post('partner/packages', { trial: true, type: 'bot' }).catch((error) => {
+        if (error && error.message !== 'canceled') {
+          setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
+          if (error.response?.data?.error === 'errors.token.required') {
+            openEmailLogin()
+          }
+        }
+      })
+
+      if (trialPackage?.data) {
+        setErrorMessage('')
+        setCheckoutTouched(true)
+        setCheckoutOpen(false)
+        getPackages('bot')
+        getTransactions('bot')
+      }
+      return
+    }
+
     const period = payPeriod.substring(0, 1) === 'm' ? 'month' : 'year'
     const periodCount = payPeriod.substring(1)
 
@@ -459,7 +480,9 @@ export default function SubscriptionManager({
                   {PlanComponent && <PlanComponent setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />}
 
                   <button className="button-action narrow subscription-purchase-button" onClick={onPurchaseClick}>
-                    {t('button.purchase', { ns: 'admin' })}
+                    {packageType === 'bot' && tier === 'trial'
+                      ? t('button.activate', { ns: 'admin' })
+                      : t('button.purchase', { ns: 'admin' })}
                   </button>
                 </section>
               )}

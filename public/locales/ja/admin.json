@@ -105,6 +105,7 @@
     "check": "チェック"
   },
   "period": {
+    "w1": "1週間",
     "m1": "1か月",
     "m3": "3か月",
     "m6": "6か月",
@@ -340,6 +341,7 @@
       "subscribe": "アラート プランと請求期間を選択します。",
       "alerts-day": "アラート/日",
       "alerts-week": "アラート/週",
+      "price-week-free": "無料 / 週",
       "price-month": "{{price}}ユーロ / 月",
       "price-year-alt": "{{price}}ユーロ / 年",
       "plan-description": {

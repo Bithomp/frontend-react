@@ -105,6 +105,7 @@
     "check": "Check"
   },
   "period": {
+    "w1": "1 week",
     "m1": "1 month",
     "m3": "3 months",
     "m6": "6 months",
@@ -340,6 +341,7 @@
       "subscribe": "Choose an alerts plan and billing period.",
       "alerts-day": "Alerts / day",
       "alerts-week": "Alerts / week",
+      "price-week-free": "Free / week",
       "price-month": "{{price}} EUR / month",
       "price-year-alt": "{{price}} EUR / year",
       "plan-description": {
