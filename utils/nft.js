@@ -320,7 +320,10 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     }
     url = stripText(cid + url.split(cid).pop())
     url = url.replace('#', '%23')
-    if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
+    if (
+      (gateway === 'our' || gateway === 'cdn') &&
+      (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')
+    ) {
       return 'https://cdn.' + webSiteName + '/' + type + '/' + url + filename
     } else if (
       gateway === 'cl' &&
@@ -364,6 +367,17 @@ export const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => 
     return null
   }
 
+  if (gateway === 'our' && flags?.mutable && type === 'image') {
+    //mutable NFTs can have changing images, so we do not cache them
+    if (uri.slice(0, 8) === 'https://') {
+      return stripText(uri)
+    }
+    const directIpfs = ipfsUrl(uri, type, 'cl')
+    if (directIpfs) {
+      return directIpfs
+    }
+  }
+
   const ipfs = ipfsUrl(uri, type, gateway)
   if (ipfs) {
     return ipfs
@@ -374,10 +388,6 @@ export const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => 
     const cdnVariant = cdnMediaVariant(uri, type)
     if (cdnVariant) {
       return cdnVariant
-    }
-    if (flags?.mutable && type === 'image') {
-      //mutable NFTs can have changing images, so we do not cache them
-      return stripText(uri)
     }
     return `https://cdn.${webSiteName}/${type}?url=${encodeURIComponent(stripText(uri))}`
   } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
@@ -425,7 +435,7 @@ export const metadataFilesUrls = (nft, type = 'image', gateway = 'our') => {
 const metaUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft.metadata) return null
   let meta = nft.metadata
-  let flags = nft.flags
+  const flags = nft.flags
   if (type === 'image' || type === 'thumbnail' || type === 'preview') {
     //Evernode
     if ((meta.evernodeRegistration || meta.evernodeLease) && gateway === 'our') {

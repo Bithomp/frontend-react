@@ -44,6 +44,7 @@ export default function NftPreview({ nft }) {
   const [isSwitchingImage, setIsSwitchingImage] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [errored, setErrored] = useState(false)
+  const [useImageFallback, setUseImageFallback] = useState(false)
   const [isPanoramic, setIsPanoramic] = useState(false)
   const [showAgeCheck, setShowAgeCheck] = useState(false)
 
@@ -88,18 +89,20 @@ export default function NftPreview({ nft }) {
   const modelUrl = nftUrl(nft, 'model')
   const viewerUrl = nftUrl(nft, 'viewer')
   const metadataImageUrls = metadataFilesUrls(nft, 'image')
+  const metadataImageUrlsCdn = metadataFilesUrls(nft, 'image', 'cdn')
   const metadataImageUrlsCl = metadataFilesUrls(nft, 'image', 'cl')
-  const mainImageFallbackUrl = nftUrl(nft, 'image', 'cl') || imageUrl
+  const mainImageFallbackUrl = nftUrl(nft, 'image', 'cdn') || nftUrl(nft, 'image', 'cl') || imageUrl
   const imageGalleryItems = [
     ...(imageUrl ? [{ url: imageUrl, fallbackUrl: mainImageFallbackUrl }] : []),
     ...metadataImageUrls.map((url, index) => ({
       url,
-      fallbackUrl: metadataImageUrlsCl[index] || url
+      fallbackUrl: metadataImageUrlsCdn[index] || metadataImageUrlsCl[index] || url
     }))
   ].filter((item, index, items) => item?.url && items.findIndex((entry) => entry.url === item.url) === index)
   const currentImage = imageGalleryItems[displayedImageIndex] || imageGalleryItems[0] || null
   const currentImageUrl = currentImage?.url || imageUrl
   const currentImageFallbackUrl = currentImage?.fallbackUrl || currentImageUrl
+  const displayImageUrl = useImageFallback ? currentImageFallbackUrl : currentImageUrl
   const nftId = nft?.nftokenID || nft?.uritokenID
 
   const markImageLoaded = () => {
@@ -204,7 +207,8 @@ export default function NftPreview({ nft }) {
     setIsSwitchingImage(false)
     setLoaded(false)
     setErrored(false)
-  }, [nftId, imageUrl])
+    setUseImageFallback(false)
+  }, [nftId, imageUrl, currentImageUrl])
 
   useEffect(() => {
     if (imageUrl || videoUrl) {
@@ -223,13 +227,27 @@ export default function NftPreview({ nft }) {
 
   useEffect(() => {
     const image = imageRef.current
-    if (!image || !currentImageUrl) return
+    if (!image || !displayImageUrl) return
 
     if (image.complete && image.naturalWidth > 0) {
       markImageLoaded()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentImageUrl])
+  }, [displayImageUrl])
+
+  useEffect(() => {
+    if (!displayImageUrl || loaded || errored || contentTab !== 'image' || isPanoramic) return
+
+    const timeout = setTimeout(() => {
+      if (!useImageFallback && currentImageFallbackUrl !== currentImageUrl) {
+        setUseImageFallback(true)
+      } else {
+        setErrored(true)
+      }
+    }, 12000)
+
+    return () => clearTimeout(timeout)
+  }, [contentTab, currentImageFallbackUrl, currentImageUrl, displayImageUrl, errored, isPanoramic, loaded, useImageFallback])
 
   useEffect(() => {
     if (selectedImageIndex === displayedImageIndex) return
@@ -314,14 +332,14 @@ export default function NftPreview({ nft }) {
                 <>
                   <div style={mediaFrameStyle}>
                     <img
-                      key={currentImageUrl}
+                      key={displayImageUrl}
                       ref={imageRef}
                       style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
-                      src={currentImageUrl}
+                      src={displayImageUrl}
                       onLoad={markImageLoaded}
-                      onError={({ currentTarget }) => {
-                        if (currentTarget.src === currentImageUrl && currentImageUrl !== clUrl.image) {
-                          currentTarget.src = clUrl.image
+                      onError={() => {
+                        if (!useImageFallback && currentImageFallbackUrl !== currentImageUrl) {
+                          setUseImageFallback(true)
                         } else {
                           setErrored(true)
                         }
