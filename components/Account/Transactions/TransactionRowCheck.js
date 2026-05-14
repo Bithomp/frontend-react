@@ -6,6 +6,7 @@ export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) 
   const { outcome, specification, tx, fiatRates } = data
 
   const fiatRate = fiatRates?.[selectedCurrency]
+  const sendMax = tx?.TransactionType === 'CheckCreate' ? specification?.sendMax : null
 
   const checkTypeLabels = {
     CheckCreate: 'Check creation',
@@ -36,6 +37,23 @@ export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) 
       txTypeSpecial={txTypeSpecial}
       icon={<FaMoneyCheckAlt style={{ color: '#27ae60', fontSize: 20 }} title="Check" />}
     >
+      {sendMax && (
+        <div>
+          Max amount:{' '}
+          {amountFormat(sendMax, {
+            icon: true,
+            withIssuer: true,
+            bold: true,
+            color: 'orange',
+            precise: 'nice'
+          })}
+          {tokenToFiat({
+            amount: sendMax,
+            selectedCurrency,
+            fiatRate
+          })}
+        </div>
+      )}
       {outcome?.deliveredAmount && (
         <div>
           {tx?.Account === address ? 'Received' : 'Amount'}:{' '}
