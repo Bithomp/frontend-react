@@ -1,4 +1,4 @@
-export const getTransactionNftPreview = (data) => {
+export const getTransactionNftPreview = (data, options = {}) => {
   const txType = data?.tx?.TransactionType || ''
   const isUriToken = txType.includes('URIToken')
   const isNfToken = txType.includes('NFToken')
@@ -11,6 +11,16 @@ export const getTransactionNftPreview = (data) => {
   const affectedNftList = Object.values(affectedNfts)
   const nftChangeEntries = data?.outcome?.[changeKey] || []
   const nftChanges = nftChangeEntries.flatMap((entry) => entry?.[changeKey] || [])
+  const accountNftOfferChanges =
+    txType === 'NFTokenCancelOffer' && options?.address && data?.tx?.Account !== options.address
+      ? data?.outcome?.nftokenOfferChanges
+          ?.flatMap((entry) => entry?.nftokenOfferChanges || [])
+          .filter((offerChange) => offerChange?.owner === options.address) || []
+      : []
+
+  if (accountNftOfferChanges.length > 1) return null
+
+  const accountNftOfferChange = accountNftOfferChanges[0] || null
 
   const nftId = isUriToken
     ? data?.tx?.URITokenID ||
@@ -22,6 +32,7 @@ export const getTransactionNftPreview = (data) => {
     : data?.tx?.NFTokenID ||
       data?.meta?.nftoken_id ||
       data?.meta?.nftokenID ||
+      accountNftOfferChange?.nftokenID ||
       data?.specification?.nftokenID ||
       data?.specification?.nftokenOffer?.nftokenID ||
       nftChanges.find((entry) => entry?.nftokenID)?.nftokenID ||

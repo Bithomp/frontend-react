@@ -542,6 +542,7 @@
       "regular-key-removed": "Regular key削除済み",
       "swap": "スワップ",
       "payment-from-deleted-account": "削除済みアカウントからの支払い",
+      "deleted-account": "削除済みアカウント",
       "transferred-nft-to-lower": "NFT転送先",
       "sold-nft-to-lower": "NFT販売先",
       "received-nft-from-lower": "NFT受取元",

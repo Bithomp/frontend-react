@@ -183,7 +183,16 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
   const { specification, tx, outcome } = data
 
   const txType = tx?.TransactionType
-  const nftPreview = getTransactionNftPreview(data)
+  const cancelOfferCount =
+    txType === 'NFTokenCancelOffer'
+      ? Array.isArray(tx?.NFTokenOffers)
+        ? tx.NFTokenOffers.length
+        : outcome?.nftokenOfferChanges?.reduce(
+            (count, change) => count + (change?.nftokenOfferChanges?.length || 0),
+            0
+          ) || 0
+      : 0
+  const nftPreview = txType === 'NFTokenCancelOffer' && cancelOfferCount !== 1 ? null : getTransactionNftPreview(data)
   const acceptedPriceAmount = txType === 'NFTokenAcceptOffer' ? acceptedNftPriceAmount(specification, outcome) : null
 
   const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null

@@ -77,13 +77,25 @@ const showAllOfferLinks = (changes) => {
   return <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 0, verticalAlign: 'baseline' }}>{links}</span>
 }
 
+const accountOfferChanges = (changes, address, tx) => {
+  if (tx?.TransactionType !== 'NFTokenCancelOffer' || tx?.Account === address) return changes || []
+
+  return (changes || [])
+    .map((change) => ({
+      ...change,
+      nftokenOfferChanges: (change.nftokenOfferChanges || []).filter((offerChange) => offerChange?.owner === address)
+    }))
+    .filter((change) => change.nftokenOfferChanges.length > 0)
+}
+
 export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }) => {
   const { specification, outcome, tx, fiatRates } = data
   const fiatRate = fiatRates?.[selectedCurrency]
   const txType = tx?.TransactionType
   let txTypeSpecial = txType
   const isMobile = useIsMobile(600)
-  const nftPreview = getTransactionNftPreview(data)
+  const nftPreview = getTransactionNftPreview(data, { address })
+  const relevantOfferChanges = accountOfferChanges(outcome?.nftokenOfferChanges, address, tx)
 
   const amountChange = addressBalanceChanges(data, address)?.[0]
 
@@ -143,8 +155,8 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
   } else if (txType === 'NFTokenCancelOffer') {
     // Pluralize if more than one offer is canceled
     const numOffers =
-      outcome?.nftokenOfferChanges?.reduce((acc, change) => acc + (change.nftokenOfferChanges?.length || 0), 0) || 0
-    txTypeSpecial = numOffers > 1 ? 'Cancel NFT offers' : 'Cancel NFT offer'
+      relevantOfferChanges.reduce((acc, change) => acc + (change.nftokenOfferChanges?.length || 0), 0) || 0
+    txTypeSpecial = numOffers > 1 ? 'Canceled NFT offers' : 'Canceled NFT offer'
   } else if (txType === 'NFTokenMint') {
     txTypeSpecial = 'Mint NFT'
   } else if (txType === 'NFTokenBurn') {
@@ -217,10 +229,10 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           )}
         </>
       )}
-      {outcome?.nftokenOfferChanges?.length > 0 && txType !== 'NFTokenAcceptOffer' && (
+      {relevantOfferChanges.length > 0 && txType !== 'NFTokenAcceptOffer' && (
         <div>
           <span>Offer: </span>
-          <span>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</span>
+          <span>{showAllOfferLinks(relevantOfferChanges)}</span>
         </div>
       )}
       {txType === 'NFTokenCreateOffer' && (

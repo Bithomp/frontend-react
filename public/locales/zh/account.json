@@ -542,6 +542,7 @@
       "regular-key-removed": "已移除 Regular key",
       "swap": "兑换",
       "payment-from-deleted-account": "来自已删除账户的付款",
+      "deleted-account": "已删除账户",
       "transferred-nft-to-lower": "将 NFT 转给",
       "sold-nft-to-lower": "将 NFT 卖给",
       "received-nft-from-lower": "收到 NFT，来自",

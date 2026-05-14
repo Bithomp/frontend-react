@@ -542,6 +542,7 @@
       "regular-key-removed": "Regular key 제거됨",
       "swap": "스왑",
       "payment-from-deleted-account": "삭제된 계정에서 온 결제",
+      "deleted-account": "삭제된 계정",
       "transferred-nft-to-lower": "NFT 전송 대상",
       "sold-nft-to-lower": "NFT 판매 대상",
       "received-nft-from-lower": "NFT 수신 출처",

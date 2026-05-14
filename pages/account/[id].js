@@ -6013,7 +6013,7 @@ export default function Account({
                         nftAddressChanges.length === 2
                           ? nftAddressChanges.find((change) => change?.[nftChangeKey]?.[0]?.status === 'added')
                           : null
-                      const nftPreview = getTransactionNftPreview(txdata)
+                      const nftPreview = getTransactionNftPreview(txdata, { address: data?.address })
                       const nftPreviewData = nftPreview?.nft || null
                       const nftPreviewId = nftPreview?.id || null
                       const nftPreviewTitle = nftPreviewData
@@ -6186,20 +6186,28 @@ export default function Account({
                       const outcomeOfferIds = xahauNetwork
                         ? []
                         : (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
-                            (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
+                            (entry?.nftokenOfferChanges || [])
+                              .filter((offerChange) => !isCancelNftOfferTx || isSource || offerChange?.owner === data?.address)
+                              .map((offerChange) => offerChange?.index)
                           )
+                      const transactionOfferIds =
+                        isCancelNftOfferTx && !isSource
+                          ? []
+                          : [
+                              ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
+                              tx?.NFTokenSellOffer,
+                              tx?.NFTokenBuyOffer,
+                              tx?.OfferID,
+                              txdata?.specification?.nftokenOffer?.offerIndex,
+                              txdata?.specification?.nftokenOffer?.offerID
+                            ]
                       const nftOfferIds = xahauNetwork
                         ? []
                         : Array.from(
                             new Set(
                               [
                                 ...outcomeOfferIds,
-                                ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
-                                tx?.NFTokenSellOffer,
-                                tx?.NFTokenBuyOffer,
-                                tx?.OfferID,
-                                txdata?.specification?.nftokenOffer?.offerIndex,
-                                txdata?.specification?.nftokenOffer?.offerID
+                                ...transactionOfferIds
                               ].filter(Boolean)
                             )
                           )
@@ -6698,12 +6706,17 @@ export default function Account({
                             ? ta('transactions.payment-to')
                             : ta('transactions.payment-from')
                           : null
+                      const accountDeleteCollapsedLabel = isAccountDeleteTx
+                        ? isSource
+                          ? ta('transactions.deleted-account')
+                          : ta('transactions.payment-from-deleted-account')
+                        : null
                       const txTypeShortLabel =
                         dexOfferShortLabel ||
                         ammCreateShortLabel ||
                         (isRipplingTransaction ? ta('labels.rippling') : null) ||
                         (isSelfPayment ? ta('transactions.swap') : null) ||
-                        (isAccountDeleteTx ? ta('transactions.payment-from-deleted-account') : null) ||
+                        accountDeleteCollapsedLabel ||
                         (isDidTx ? didTxLabel : null) ||
                         setRegularKeyLabel ||
                         escrowCreateCollapsedLabel ||
