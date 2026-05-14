@@ -146,7 +146,7 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
   const settings = rule.settings || {}
   const conditionText = parseConditions(settings.rules, t)
   const enabled = isRuleEnabled(rule.enabled)
-  const rawDisableReason = settings.disableReason || settings.disable_reason || rule.disableReason || rule.disable_reason
+  const rawDisableReason = settings.disableReason
   const disableReason = enabled ? '' : formatDisableReason(rawDisableReason, t)
 
   return (
