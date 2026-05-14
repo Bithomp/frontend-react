@@ -16,6 +16,7 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
   const { outcome, tx, specification } = data
 
   const checkChanges = outcome?.checkChanges
+  const sendMax = tx?.TransactionType === 'CheckCreate' ? specification?.sendMax : checkChanges?.sendMax
 
   //here we need to check destination balance changes, as executor can be source/destination or anyone when expired
   const destinationBalanceChangesList = addressBalanceChanges(data, checkChanges?.destination?.address)
@@ -98,13 +99,13 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
             </tr>
           )}
 
-          {checkChanges.sendMax && (
+          {sendMax && (
             <tr>
               <TData>Max amount</TData>
               <TData>
-                {amountFormat(checkChanges.sendMax, { withIssuer: true, color: 'orange', bold: true })}
+                {amountFormat(sendMax, { withIssuer: true, color: 'orange', bold: true })}
                 {tokenToFiat({
-                  amount: checkChanges.sendMax,
+                  amount: sendMax,
                   selectedCurrency,
                   fiatRate: pageFiatRate
                 })}
