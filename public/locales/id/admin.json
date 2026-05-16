@@ -713,7 +713,9 @@
       "none-title": "Tidak ada eksekusi",
       "loading-text": "Memuat eksekusi terkini...",
       "none-text": "Belum ada eksekusi yang tercatat.",
-      "loaded": "Sarat",
+      "loaded": "Dimuat",
+      "pushed": "Dikirim",
+      "shown-count": "Menampilkan {{count}} dari {{total}}",
       "number": "Eksekusi #{{id}}"
     },
     "guest": {

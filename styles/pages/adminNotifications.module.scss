@@ -1112,7 +1112,7 @@
     border-radius: 12px;
     background: color-mix(in srgb, var(--background-main) 62%, transparent);
 
-    > span {
+    > span:first-child {
       color: var(--text-secondary);
       font-size: 11px;
       font-weight: 800;
@@ -1314,6 +1314,7 @@
     .notification-rule-separator {
       align-self: center;
     }
+
   }
 
   @media only screen and (min-width: 701px) and (max-width: 1050px) {

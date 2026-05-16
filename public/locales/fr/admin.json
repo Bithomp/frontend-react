@@ -714,6 +714,8 @@
       "loading-text": "Chargement des exécutions récentes...",
       "none-text": "Aucune exécution enregistrée pour le moment.",
       "loaded": "Chargé",
+      "pushed": "Envoyé",
+      "shown-count": "{{count}} sur {{total}} affichées",
       "number": "Exécution #{{id}}"
     },
     "guest": {

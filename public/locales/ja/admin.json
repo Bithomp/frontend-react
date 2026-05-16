@@ -710,10 +710,12 @@
     },
     "executions": {
       "title": "{{name}}の実行",
-      "none-title": "処刑なし",
+      "none-title": "実行なし",
       "loading-text": "最近の実行をロードしています...",
-      "none-text": "まだ処刑は記録されていない。",
+      "none-text": "実行はまだ記録されていません。",
       "loaded": "ロード済み",
+      "pushed": "送信済み",
+      "shown-count": "{{total}}件中{{count}}件を表示",
       "number": "実行番号{{id}}"
     },
     "guest": {

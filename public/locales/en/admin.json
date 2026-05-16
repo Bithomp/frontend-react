@@ -714,6 +714,8 @@
       "loading-text": "Loading recent executions...",
       "none-text": "No executions recorded yet.",
       "loaded": "Loaded",
+      "pushed": "Pushed",
+      "shown-count": "Showing {{count}} of {{total}}",
       "number": "Execution #{{id}}"
     },
     "guest": {

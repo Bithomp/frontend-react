@@ -714,6 +714,8 @@
       "loading-text": "正在加载最近执行记录...",
       "none-text": "还没有执行记录。",
       "loaded": "已加载",
+      "pushed": "已发送",
+      "shown-count": "显示 {{count}} / {{total}}",
       "number": "执行 #{{id}}"
     },
     "guest": {

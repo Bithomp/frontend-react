@@ -710,10 +710,12 @@
     },
     "executions": {
       "title": "{{name}}에 대한 실행",
-      "none-title": "처형 없음",
+      "none-title": "실행 없음",
       "loading-text": "최근 실행 로드 중...",
-      "none-text": "아직 기록된 처형이 없습니다.",
-      "loaded": "짐을 실은",
+      "none-text": "아직 기록된 실행이 없습니다.",
+      "loaded": "로드됨",
+      "pushed": "전송됨",
+      "shown-count": "{{total}}개 중 {{count}}개 표시",
       "number": "실행 #{{id}}"
     },
     "guest": {

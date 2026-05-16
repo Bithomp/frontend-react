@@ -714,6 +714,8 @@
       "loading-text": "Cargando ejecuciones recientes...",
       "none-text": "Aún no se han registrado ejecuciones.",
       "loaded": "Cargado",
+      "pushed": "Enviado",
+      "shown-count": "Mostrando {{count}} de {{total}}",
       "number": "Ejecución #{{id}}"
     },
     "guest": {

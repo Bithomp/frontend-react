@@ -710,10 +710,12 @@
     },
     "executions": {
       "title": "Ausführungen für {{name}}",
-      "none-title": "Keine Hinrichtungen",
-      "loading-text": "Letzte Hinrichtungen werden geladen...",
-      "none-text": "Es wurden noch keine Hinrichtungen registriert.",
+      "none-title": "Keine Ausführungen",
+      "loading-text": "Letzte Ausführungen werden geladen...",
+      "none-text": "Es wurden noch keine Ausführungen registriert.",
       "loaded": "Geladen",
+      "pushed": "Gesendet",
+      "shown-count": "{{count}} von {{total}} angezeigt",
       "number": "Ausführung #{{id}}"
     },
     "guest": {

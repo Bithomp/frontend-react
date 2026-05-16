@@ -47,6 +47,195 @@ import {
   notificationEventSupports
 } from '@/utils/notificationRules'
 import { DEFAULT_ALERT_PLAN_TIER, getAlertPlanForPackage } from '@/utils/notificationPlans'
+import { fullDateAndTime, shortHash } from '@/utils/format'
+
+const notificationExecutionsDialogCss = `
+  .notification-executions-dialog {
+    width: min(100%, 980px);
+  }
+
+  .notification-executions,
+  .notification-executions-empty {
+    display: grid;
+    gap: 12px;
+  }
+
+  .notification-executions-count {
+    margin: -4px 0 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .notification-executions-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .notification-execution-item {
+    display: grid;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, var(--accent-link) 18%, var(--button-additional));
+    border-left: 3px solid color-mix(in srgb, var(--accent-link) 62%, var(--button-additional));
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent-link) 5%, var(--card-bg));
+  }
+
+  .notification-execution-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .notification-execution-item-header strong {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: var(--text-main);
+    background: color-mix(in srgb, var(--text-secondary) 14%, transparent);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .notification-execution-item-header strong.success {
+    color: var(--green);
+    background: color-mix(in srgb, var(--green) 13%, transparent);
+  }
+
+  .notification-execution-item-header strong.error {
+    color: var(--red);
+    background: color-mix(in srgb, var(--red) 13%, transparent);
+  }
+
+  .notification-execution-item-header span {
+    color: var(--text-secondary);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .notification-execution-fields {
+    display: grid;
+    grid-template-columns: minmax(72px, 0.45fr) minmax(150px, 0.85fr) minmax(260px, 1.4fr);
+    gap: 6px;
+    margin: 0;
+  }
+
+  .notification-execution-field {
+    display: grid;
+    align-content: start;
+    gap: 3px;
+    min-width: 0;
+    padding: 7px 8px;
+    border: 1px solid color-mix(in srgb, var(--button-additional) 56%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--background-main) 82%, var(--accent-link) 4%);
+  }
+
+  .notification-execution-field > span:first-child {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .notification-execution-field > span:first-child:empty {
+    display: none;
+  }
+
+  .notification-execution-field > .notification-execution-field-value {
+    min-width: 0;
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.22;
+    letter-spacing: 0;
+    text-transform: none;
+    overflow-wrap: anywhere;
+  }
+
+  .notification-execution-link {
+    color: var(--accent-link);
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.2;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    letter-spacing: 0;
+    text-transform: none !important;
+  }
+
+  .notification-execution-link.muted {
+    color: color-mix(in srgb, var(--accent-link) 72%, var(--text-secondary));
+  }
+
+  .notification-execution-link-pair {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    gap: 4px 8px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .notification-execution-mini-label {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .notification-execution-nested {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .notification-execution-nested > div,
+  .notification-execution-nested-row {
+    display: grid;
+    grid-template-columns: minmax(74px, 0.34fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .notification-execution-nested-row > span {
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .notification-execution-nested-value {
+    min-width: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  @media only screen and (max-width: 700px) {
+    .notification-execution-fields,
+    .notification-execution-field,
+    .notification-execution-nested > div {
+      grid-template-columns: 1fr;
+    }
+
+    .notification-execution-item-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .notification-executions-count {
+      text-align: left;
+    }
+  }
+`
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -1408,6 +1597,120 @@ export default function Notifications({
     )
   }
 
+  const executionFieldLabel = (key) => {
+    const labels = {
+      id: 'ID',
+      createdAt: t('table.created', { ns: 'admin' }),
+      created_at: t('table.created', { ns: 'admin' }),
+      updatedAt: t('notifications.executions.pushed'),
+      updated_at: t('notifications.executions.pushed'),
+      status: t('table.status', { ns: 'admin' }),
+      txHash: '',
+      tx_hash: ''
+    }
+
+    if (key in labels) return labels[key]
+    return key.replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2')
+  }
+
+  const executionStatusClass = (status) => {
+    const normalizedStatus = String(status || '').toLowerCase()
+    if (normalizedStatus === 'success' || normalizedStatus === 'ok') return 'success'
+    if (normalizedStatus === 'failed' || normalizedStatus === 'error') return 'error'
+    return ''
+  }
+
+  const renderExecutionValue = (key, value) => {
+    if (value === null || typeof value === 'undefined') return t('common.none', { ns: 'admin' })
+
+    if (key === 'createdAt' || key === 'created_at' || key === 'updatedAt' || key === 'updated_at') {
+      return fullDateAndTime(value)
+    }
+
+    if (key === 'txHash' || key === 'tx_hash') {
+      if (!value) return t('common.none', { ns: 'admin' })
+
+      const [txHash, address] = String(value).split(':')
+      if (address) {
+        return (
+          <span className="notification-execution-link-pair">
+            <span className="notification-execution-mini-label">{t('table.transaction', { ns: 'admin' })}</span>
+            <Link className="notification-execution-link" href={`/tx/${txHash}`} title={txHash}>
+              {shortHash(txHash, 6)}
+            </Link>
+            <span className="notification-execution-mini-label">{t('table.address', { ns: 'admin' })}</span>
+            <Link className="notification-execution-link muted" href={`/account/${address}`} title={address}>
+              {shortHash(address, 6)}
+            </Link>
+          </span>
+        )
+      }
+
+      return (
+        <Link className="notification-execution-link" href={`/tx/${txHash}`} title={txHash}>
+          {shortHash(txHash, 10)}
+        </Link>
+      )
+    }
+
+    if (typeof value === 'boolean') return value ? t('common.yes', { ns: 'admin' }) : t('common.no', { ns: 'admin' })
+    if (Array.isArray(value)) {
+      if (value.length === 0) return t('common.none', { ns: 'admin' })
+      return (
+        <div className="notification-execution-nested">
+          {value.map((item, index) => (
+            <div key={index}>{typeof item === 'object' ? renderExecutionValue(`${key}-${index}`, item) : String(item)}</div>
+          ))}
+        </div>
+      )
+    }
+    if (typeof value === 'object') {
+      const entries = Object.entries(value).filter(([, itemValue]) => itemValue !== undefined && itemValue !== null)
+      if (entries.length === 0) return t('common.none', { ns: 'admin' })
+      return (
+        <div className="notification-execution-nested">
+          {entries.map(([itemKey, itemValue]) => (
+            <div className="notification-execution-nested-row" key={itemKey}>
+              <span>{executionFieldLabel(itemKey)}</span>
+              <span className="notification-execution-nested-value">{renderExecutionValue(itemKey, itemValue)}</span>
+            </div>
+          ))}
+        </div>
+      )
+    }
+
+    return String(value)
+  }
+
+  const renderExecutionFields = (execution) => {
+    const entries = Object.entries(execution || {}).filter(
+      ([key, value]) =>
+        key !== 'result' &&
+        key !== 'status' &&
+        key !== 'createdAt' &&
+        key !== 'created_at' &&
+        value !== undefined &&
+        value !== null
+    )
+
+    return (
+      <div className="notification-execution-fields">
+        {entries.map(([key, value]) => (
+          <div className="notification-execution-field" key={key}>
+            <span>{executionFieldLabel(key)}</span>
+            <span className="notification-execution-field-value">{renderExecutionValue(key, value)}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  const renderExecutionsCount = (count, total) => (
+    <p className="notification-executions-count">
+      {t('notifications.executions.shown-count', { count, total })}
+    </p>
+  )
+
   const renderExecutionsDialogContent = () => {
     if (ruleExecutions.isLoading) {
       return (
@@ -1417,16 +1720,7 @@ export default function Notifications({
           </div>
           <h3>{t('notifications.executions.none-title')}</h3>
           <p>{t('notifications.executions.loading-text')}</p>
-          <div className="notification-executions-stats">
-            <span>
-              <small>{t('table.total')}</small>
-              <strong>0</strong>
-            </span>
-            <span>
-              <small>{t('notifications.executions.loaded')}</small>
-              <strong>0</strong>
-            </span>
-          </div>
+          {renderExecutionsCount(0, 0)}
         </div>
       )
     }
@@ -1448,42 +1742,26 @@ export default function Notifications({
           </div>
           <h3>{t('notifications.executions.none-title')}</h3>
           <p>{t('notifications.executions.none-text')}</p>
-          <div className="notification-executions-stats">
-            <span>
-              <small>{t('table.total')}</small>
-              <strong>{total}</strong>
-            </span>
-            <span>
-              <small>{t('notifications.executions.loaded')}</small>
-              <strong>{count}</strong>
-            </span>
-          </div>
+          {renderExecutionsCount(count, total)}
         </div>
       )
     }
 
     return (
       <div className="notification-executions">
-        <div className="notification-executions-stats">
-          <span>
-            <small>{t('table.total')}</small>
-            <strong>{total}</strong>
-          </span>
-          <span>
-            <small>{t('notifications.executions.loaded')}</small>
-            <strong>{count}</strong>
-          </span>
-        </div>
+        {renderExecutionsCount(count, total)}
         <div className="notification-executions-list">
           {executions.map((execution, index) => (
             <article className="notification-execution-item" key={execution.id || execution.createdAt || index}>
               <div className="notification-execution-item-header">
-                <strong>
-                  {execution.status || execution.result || t('notifications.executions.number', { id: execution.id || index + 1 })}
+                <strong className={executionStatusClass(execution.status)}>
+                  {execution.status || t('notifications.executions.number', { id: execution.id || index + 1 })}
                 </strong>
-                {(execution.createdAt || execution.created_at) && <span>{execution.createdAt || execution.created_at}</span>}
+                {(execution.createdAt || execution.created_at) && (
+                  <span>{fullDateAndTime(execution.createdAt || execution.created_at)}</span>
+                )}
               </div>
-              <pre className="notification-executions-json">{JSON.stringify(execution, null, 2)}</pre>
+              {renderExecutionFields(execution)}
             </article>
           ))}
         </div>
@@ -1779,7 +2057,10 @@ export default function Notifications({
             size="large"
             title={t('notifications.executions.title', { name: executionsRule?.name || executionsRule?.event || '' })}
           >
-            <div className="notification-executions-dialog">{renderExecutionsDialogContent()}</div>
+            <div className="notification-executions-dialog">
+              {renderExecutionsDialogContent()}
+              <style>{notificationExecutionsDialogCss}</style>
+            </div>
           </Dialog>
         </>
       ) : (
