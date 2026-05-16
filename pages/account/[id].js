@@ -6185,6 +6185,10 @@ export default function Account({
                         ? txType === 'URITokenCancelSellOffer'
                         : txType === 'NFTokenCancelOffer'
                       const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
+                      const showRelatedObjectInitiator =
+                        !!tx?.Account &&
+                        tx.Account !== data?.address &&
+                        tx?.Destination !== data?.address
                       const outcomeOfferIds = xahauNetwork
                         ? []
                         : (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
@@ -6996,6 +7000,23 @@ export default function Account({
                                 <span>{ta('labels.type')}:</span>
                                 <span>{tx?.TransactionType}</span>
                               </div>
+
+                              {showRelatedObjectInitiator && (
+                                <div className="detail-row">
+                                  <span>{ta('labels.initiator')}:</span>
+                                  <span className="copy-inline">
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <AddressWithIconInline
+                                        data={txdata?.specification?.source}
+                                        options={{ short: 6, showAddress: true }}
+                                      />
+                                    </span>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={tx.Account} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
 
                               {showDexSpecifiedOrderDetails && !!dexTakerGets && (
                                 <div className="detail-row">

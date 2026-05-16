@@ -158,6 +158,7 @@
       "from": "Von",
       "to": "An",
       "from-removed-account": "Von entferntem Konto",
+      "initiator": "Initiator",
       "by-broker": "Durch Broker",
       "default-ripple": "Default Ripple",
       "no-freeze": "Kein Einfrieren",

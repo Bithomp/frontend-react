@@ -153,6 +153,7 @@
       "from": "From",
       "to": "To",
       "from-removed-account": "From removed account",
+      "initiator": "Initiator",
       "by-broker": "By broker",
       "default-ripple": "Default ripple",
       "no-freeze": "No freeze",

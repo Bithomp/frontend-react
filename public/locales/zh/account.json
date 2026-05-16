@@ -158,6 +158,7 @@
       "from": "来自",
       "to": "至",
       "from-removed-account": "来自已删除账户",
+      "initiator": "发起方",
       "by-broker": "通过经纪人",
       "default-ripple": "默认 Ripple",
       "no-freeze": "不冻结",

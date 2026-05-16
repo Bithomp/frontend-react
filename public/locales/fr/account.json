@@ -158,6 +158,7 @@
       "from": "De",
       "to": "À",
       "from-removed-account": "Depuis un compte supprimé",
+      "initiator": "Initiateur",
       "by-broker": "Par courtier",
       "default-ripple": "Ripple par défaut",
       "no-freeze": "Sans gel",

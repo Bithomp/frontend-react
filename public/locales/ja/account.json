@@ -158,6 +158,7 @@
       "from": "送信元",
       "to": "送信先",
       "from-removed-account": "削除済みアカウントから",
+      "initiator": "開始者",
       "by-broker": "ブローカー経由",
       "default-ripple": "デフォルトRipple",
       "no-freeze": "凍結なし",

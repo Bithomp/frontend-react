@@ -158,6 +158,7 @@
       "from": "От",
       "to": "Кому",
       "from-removed-account": "Из удалённого аккаунта",
+      "initiator": "Инициатор",
       "by-broker": "Через брокера",
       "default-ripple": "Default Ripple",
       "no-freeze": "Без заморозки",

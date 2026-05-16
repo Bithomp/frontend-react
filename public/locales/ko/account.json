@@ -158,6 +158,7 @@
       "from": "보낸 계정",
       "to": "받는 계정",
       "from-removed-account": "삭제된 계정에서",
+      "initiator": "실행자",
       "by-broker": "브로커를 통해",
       "default-ripple": "기본 Ripple",
       "no-freeze": "동결 없음",
