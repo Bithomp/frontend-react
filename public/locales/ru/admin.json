@@ -860,7 +860,8 @@
     "rules_few": "{{count}} правила",
     "rules_many": "{{count}} правил",
     "rules_other": "{{count}} правил",
-    "channel-type-label": "Тип канала"
+    "channel-type-label": "Тип канала",
+    "available-channel-types": "Доступные типы каналов"
   },
   "errors": {
     "token": {

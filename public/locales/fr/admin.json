@@ -438,7 +438,7 @@
     "upgrade-add-channels": "Améliorez le forfait pour ajouter plus de canaux.",
     "upgrade-add-rules": "Améliorez le forfait pour ajouter plus de règles.",
     "upgrade-more": "Améliorez le forfait pour des limites plus élevées.",
-    "plan-limit": "Forfait {{plan}} : {{channels}} canaux et {{rules}} règles.",
+    "plan-limit": "Forfait {{plan}} : {{channels}} et {{rules}}.",
     "alerts-plan": "Forfait d’alertes {{plan}}",
     "channel-type": {
       "email": "Email",
@@ -842,7 +842,8 @@
       ]
     },
     "rules-connected": "{{count}} règles connectées",
-    "channel-type-label": "Type de canal"
+    "channel-type-label": "Type de canal",
+    "available-channel-types": "Types de canaux disponibles"
   },
   "errors": {
     "token": {

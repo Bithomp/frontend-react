@@ -88,7 +88,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px 10px;
-    align-items: center;
+    align-items: stretch;
     margin: 0 0 14px;
     padding: 10px 12px;
     border: 1px solid color-mix(in srgb, var(--orange) 42%, var(--button-additional));
@@ -107,6 +107,22 @@
     a {
       color: var(--accent-link);
       font-weight: 700;
+    }
+
+    .notification-limit-summary,
+    .notification-channel-picker {
+      flex: 1 0 100%;
+    }
+
+    .notification-limit-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      align-items: center;
+    }
+
+    .notification-channel-picker {
+      margin-top: 6px;
     }
   }
 

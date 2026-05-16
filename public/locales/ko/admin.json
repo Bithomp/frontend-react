@@ -438,7 +438,7 @@
     "upgrade-add-channels": "더 많은 채널을 추가하려면 업그레이드하세요.",
     "upgrade-add-rules": "더 많은 규칙을 추가하려면 업그레이드하세요.",
     "upgrade-more": "한도를 높이려면 업그레이드하세요.",
-    "plan-limit": "{{plan}}계획:{{channels}}채널 및{{rules}}규칙.",
+    "plan-limit": "{{plan}}계획:{{channels}} 및 {{rules}}.",
     "alerts-plan": "{{plan}}경고 계획",
     "channel-type": {
       "email": "이메일",
@@ -842,7 +842,8 @@
       ]
     },
     "rules-connected": "{{count}}개 규칙 연결됨",
-    "channel-type-label": "채널 유형"
+    "channel-type-label": "채널 유형",
+    "available-channel-types": "사용 가능한 채널 유형"
   },
   "errors": {
     "token": {

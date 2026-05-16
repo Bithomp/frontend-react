@@ -438,7 +438,7 @@
     "upgrade-add-channels": "Actualice para agregar más canales.",
     "upgrade-add-rules": "Actualice para agregar más reglas.",
     "upgrade-more": "Actualice para límites más altos.",
-    "plan-limit": "Plan {{plan}}: {{channels}} canales y {{rules}} reglas.",
+    "plan-limit": "Plan {{plan}}: {{channels}} y {{rules}}.",
     "alerts-plan": "Plan de alertas {{plan}}",
     "channel-type": {
       "email": "Correo electrónico",
@@ -842,7 +842,8 @@
       ]
     },
     "rules-connected": "{{count}} reglas conectadas",
-    "channel-type-label": "Tipo de canal"
+    "channel-type-label": "Tipo de canal",
+    "available-channel-types": "Tipos de canal disponibles"
   },
   "errors": {
     "token": {

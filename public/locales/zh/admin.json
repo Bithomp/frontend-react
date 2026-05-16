@@ -438,7 +438,7 @@
     "upgrade-add-channels": "升级以添加更多频道。",
     "upgrade-add-rules": "升级以添加更多规则。",
     "upgrade-more": "升级以获得更高限制。",
-    "plan-limit": "{{plan}} 套餐：{{channels}} 个频道和 {{rules}} 条规则。",
+    "plan-limit": "{{plan}} 套餐：{{channels}} 和 {{rules}}。",
     "alerts-plan": "{{plan}} 提醒套餐",
     "channel-type": {
       "email": "e-mail",
@@ -842,7 +842,8 @@
       ]
     },
     "rules-connected": "已连接 {{count}} 条规则",
-    "channel-type-label": "频道类型"
+    "channel-type-label": "频道类型",
+    "available-channel-types": "可用频道类型"
   },
   "errors": {
     "token": {

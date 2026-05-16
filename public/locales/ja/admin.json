@@ -438,7 +438,7 @@
     "upgrade-add-channels": "アップグレードしてチャンネルを追加します。",
     "upgrade-add-rules": "さらにルールを追加するにはアップグレードしてください。",
     "upgrade-more": "アップグレードして上限を高めます。",
-    "plan-limit": "{{plan}}プラン:{{channels}}チャネルと{{rules}}ルール。",
+    "plan-limit": "{{plan}}プラン:{{channels}}と{{rules}}。",
     "alerts-plan": "{{plan}}アラート プラン",
     "channel-type": {
       "email": "電子メール",
@@ -842,7 +842,8 @@
       ]
     },
     "rules-connected": "{{count}}件のルールが接続済み",
-    "channel-type-label": "チャンネル種別"
+    "channel-type-label": "チャンネル種別",
+    "available-channel-types": "利用可能なチャンネル種別"
   },
   "errors": {
     "token": {

@@ -347,8 +347,8 @@ const activePackage = (packages, type) =>
 const alertPlanLimitText = (plan, t) =>
   t('notifications.plan-limit', {
     plan: t(`plans.${plan.tier}`, { defaultValue: plan.label }),
-    channels: plan.connections,
-    rules: plan.listeners
+    channels: t('notifications.limit.channels', { count: plan.connections }),
+    rules: t('notifications.limit.rules', { count: plan.listeners })
   })
 
 const notificationChannelLabel = (type, t) =>
@@ -1023,80 +1023,14 @@ export default function Notifications({
     if (!showChannelForm && !showInitialChannelForm) return null
 
     if (!editingChannel && notificationLimitsReady && channelLimitReached) {
-      return (
-        <div className="notification-limit-notice">
-          <strong>{t('notifications.channel-limit-reached')}</strong>
-          <span>
-            {alertPlanLimitText(alertPlan, t)}{' '}
-            {canShowAlertPlanUpgrade && (
-              <Link href={notificationsSubscriptionHref}>{t('notifications.upgrade-add-channels')}</Link>
-            )}
-          </span>
-        </div>
-      )
+      return renderChannelLimitNotice()
     }
 
     return (
       <form className="notification-form" onSubmit={handleSaveChannel}>
         <div className="notification-form-grid">
-          <div className="notification-channel-picker">
-            <span>{t('notifications.channel-type-label')}</span>
-            <div className="notification-channel-type-grid">
-              {setupGuides.map((guide) => {
-                const Icon = guide.icon
-                const active = guide.type === channelType
-                return (
-                  <button
-                    aria-pressed={active}
-                    className={`notification-channel-type-button${active ? ' active' : ''}`}
-                    disabled={!!editingChannel}
-                    key={guide.type}
-                    onClick={() => handleTypeChange(guide.type)}
-                    type="button"
-                  >
-                    <Icon />
-                    <strong>{t(`notifications.guides.${guide.type}.title`, { defaultValue: guide.title })}</strong>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-          {selectedGuide && selectedGuide.steps.length > 0 && (
-            <div className="notification-selected-guide">
-              <div>
-                <strong>{t(`notifications.guides.${selectedGuide.type}.title`, { defaultValue: selectedGuide.title })}</strong>
-                <p>{t(`notifications.guides.${selectedGuide.type}.description`, { defaultValue: selectedGuide.description })}</p>
-              </div>
-              {selectedGuide.steps.length > 0 && (
-                <div>
-                  <ol>
-                    {selectedGuide.steps.map((step, index) => (
-                      <li key={step}>
-                        {t(`notifications.guides.${selectedGuide.type}.steps.${index}`, { defaultValue: step })}
-                      </li>
-                    ))}
-                  </ol>
-                  {selectedGuide.portalHref && (
-                    <a
-                      href={selectedGuide.portalHref}
-                      className="notification-guide-link"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {t(`notifications.guides.${selectedGuide.type}.portal-link`, {
-                        defaultValue: selectedGuide.portalLabel
-                      })}
-                    </a>
-                  )}
-                  {selectedGuide.guideHref && (
-                    <Link href={selectedGuide.guideHref} className="notification-guide-link">
-                      {t('notifications.detailed-setup-guide')}
-                    </Link>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+          {renderChannelTypePicker({ disabled: !!editingChannel, labelKey: 'notifications.channel-type-label' })}
+          {renderSelectedChannelGuide()}
           <InputField
             className={channelType === NOTIFICATION_CHANNEL_TYPES.TWITTER ? 'notification-field-wide' : ''}
             error={formErrors.name}
@@ -1141,6 +1075,87 @@ export default function Notifications({
       </form>
     )
   }
+
+  const renderChannelTypePicker = ({ disabled = false, labelKey = 'notifications.available-channel-types' } = {}) => (
+    <div className="notification-channel-picker">
+      <span>{t(labelKey)}</span>
+      <div className="notification-channel-type-grid">
+        {setupGuides.map((guide) => {
+          const Icon = guide.icon
+          const active = !disabled && guide.type === channelType
+          return (
+            <button
+              aria-pressed={active}
+              className={`notification-channel-type-button${active ? ' active' : ''}`}
+              disabled={disabled}
+              key={guide.type}
+              onClick={() => handleTypeChange(guide.type)}
+              type="button"
+            >
+              <Icon />
+              <strong>{t(`notifications.guides.${guide.type}.title`, { defaultValue: guide.title })}</strong>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+
+  const renderSelectedChannelGuide = ({ showWithoutSteps = false } = {}) => {
+    if (!selectedGuide || (!showWithoutSteps && selectedGuide.steps.length === 0)) return null
+
+    return (
+      <div className="notification-selected-guide">
+        <div>
+          <strong>{t(`notifications.guides.${selectedGuide.type}.title`, { defaultValue: selectedGuide.title })}</strong>
+          <p>{t(`notifications.guides.${selectedGuide.type}.description`, { defaultValue: selectedGuide.description })}</p>
+        </div>
+        {selectedGuide.steps.length > 0 && (
+          <div>
+            <ol>
+              {selectedGuide.steps.map((step, index) => (
+                <li key={step}>
+                  {t(`notifications.guides.${selectedGuide.type}.steps.${index}`, { defaultValue: step })}
+                </li>
+              ))}
+            </ol>
+            {selectedGuide.portalHref && (
+              <a
+                href={selectedGuide.portalHref}
+                className="notification-guide-link"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t(`notifications.guides.${selectedGuide.type}.portal-link`, {
+                  defaultValue: selectedGuide.portalLabel
+                })}
+              </a>
+            )}
+            {selectedGuide.guideHref && (
+              <Link href={selectedGuide.guideHref} className="notification-guide-link">
+                {t('notifications.detailed-setup-guide')}
+              </Link>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  const renderChannelLimitNotice = () => (
+    <div className="notification-limit-notice">
+      <div className="notification-limit-summary">
+        <strong>{t('notifications.channel-limit-reached')}</strong>
+        <span>
+          {alertPlanLimitText(alertPlan, t)}{' '}
+          {canShowAlertPlanUpgrade && (
+            <Link href={notificationsSubscriptionHref}>{t('notifications.upgrade-add-channels')}</Link>
+          )}
+        </span>
+      </div>
+      {renderChannelTypePicker({ disabled: true })}
+    </div>
+  )
 
   const renderRuleFilterField = (field) => {
     const filter = filterValue(ruleFormData.filters, field.key)
@@ -1865,26 +1880,14 @@ export default function Notifications({
                         <Link href={notificationsSubscriptionHref} className="button-action thin">
                           {t('notifications.upgrade-plan')}
                         </Link>
-                      ) : (
-                        <button className="button-action thin" disabled type="button">
-                          {t('notifications.limit-reached')}
-                        </button>
-                      )
+                      ) : null
                     ) : (
                       <AddChannelButton onClick={() => openAddChannel()} />
                     ))}
                 </div>
 
                 {channels.length > 0 && notificationLimitsReady && channelLimitReached && !showChannelForm && (
-                  <div className="notification-limit-notice">
-                    <strong>{t('notifications.channel-limit-reached')}</strong>
-                    <span>
-                      {alertPlanLimitText(alertPlan, t)}{' '}
-                      {canShowAlertPlanUpgrade && (
-                        <Link href={notificationsSubscriptionHref}>{t('notifications.upgrade-add-channels')}</Link>
-                      )}
-                    </span>
-                  </div>
+                  renderChannelLimitNotice()
                 )}
 
                 {renderChannelForm()}

@@ -438,7 +438,7 @@
     "upgrade-add-channels": "Tingkatkan versi untuk menambahkan lebih banyak saluran.",
     "upgrade-add-rules": "Tingkatkan versi untuk menambahkan lebih banyak aturan.",
     "upgrade-more": "Tingkatkan untuk batas yang lebih tinggi.",
-    "plan-limit": "Paket {{plan}}: {{channels}} channel dan {{rules}} aturan.",
+    "plan-limit": "Paket {{plan}}: {{channels}} dan {{rules}}.",
     "alerts-plan": "Paket peringatan {{plan}}",
     "channel-type": {
       "email": "E-mail",
@@ -842,7 +842,8 @@
       ]
     },
     "rules-connected": "{{count}} aturan terhubung",
-    "channel-type-label": "Jenis channel"
+    "channel-type-label": "Jenis channel",
+    "available-channel-types": "Jenis channel yang tersedia"
   },
   "errors": {
     "token": {
