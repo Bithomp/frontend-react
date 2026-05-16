@@ -33,6 +33,11 @@
     "more-results": "Ditemukan lebih dari {{count}} hasil. Tentukan penerbit untuk mempersempit pencarian.",
     "no-destination-trustlines": "Tidak ada trustline untuk alamat tujuan ini."
   },
+  "token-activity": {
+    "last-dex-swaps": "Swap DEX terbaru",
+    "last-transfers": "Transfer terbaru",
+    "rate": "Kurs"
+  },
   "menu": {
     "tokens": "Token",
     "badges": {
@@ -295,7 +300,8 @@
       "topAmms": "Top Pool AMM",
       "topValidators": "Validator",
       "topAmendments": "Amandemen Terbaru",
-      "refresh": "Perbarui data"
+      "refresh": "Perbarui data",
+      "refresh-in": "Perbarui dalam {{count}}d"
     }
   },
   "last-ledger-information": {

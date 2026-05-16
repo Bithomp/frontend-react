@@ -33,6 +33,11 @@
     "more-results": "Mehr als {{count}} Ergebnisse gefunden. Bitte geben Sie einen Issuer an, um die Suche einzugrenzen.",
     "no-destination-trustlines": "Keine Trustlines für diese Zieladresse gefunden."
   },
+  "token-activity": {
+    "last-dex-swaps": "Letzte DEX Swaps",
+    "last-transfers": "Letzte Transfers",
+    "rate": "Kurs"
+  },
   "menu": {
     "tokens": "Token",
     "badges": {
@@ -295,7 +300,8 @@
       "topAmms": "Top AMM-Pools",
       "topValidators": "Validatoren",
       "topAmendments": "Letzte Änderungen",
-      "refresh": "Daten aktualisieren"
+      "refresh": "Daten aktualisieren",
+      "refresh-in": "Aktualisieren in {{count}}s"
     }
   },
   "last-ledger-information": {

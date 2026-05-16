@@ -1,3 +1,267 @@
+.tokenActivityCard {
+  --home-teaser-min-height: 0;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.tokenChangeList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tokenChangeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+
+.tokenPriceLine {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+  align-items: baseline;
+}
+
+.tokenPriceSecondary {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 0;
+  align-items: baseline;
+}
+
+.tokenPriceDesktopOnly {
+  display: inline;
+}
+
+.tokenActivityAmountLine {
+  display: inline-flex;
+  justify-content: flex-end;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tokenActivityAmountValue {
+  flex: 0 0 auto;
+}
+
+.tokenActivityAmountCurrency {
+  margin-left: 4px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tokenTransferRow {
+  grid-template-columns: 44px minmax(120px, 1fr) 18px minmax(120px, 1fr) minmax(130px, auto) !important;
+}
+
+.tokenTransferMetric {
+  width: auto !important;
+  min-width: 130px !important;
+  line-height: 1.25;
+}
+
+.tokenSwapRow {
+  display: grid;
+  grid-template-columns: 44px minmax(250px, 1.8fr) minmax(126px, 0.9fr) minmax(96px, auto) auto !important;
+  gap: 12px !important;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--card-border);
+  color: inherit;
+  text-decoration: none;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: var(--background-secondary);
+    text-decoration: none;
+  }
+}
+
+.tokenSwapFlow {
+  display: grid;
+  grid-template-columns: minmax(98px, 1fr) 18px minmax(98px, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tokenSwapFlowAddress {
+  flex: 0 0 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: clip;
+
+  :global(.no-brake) {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    min-width: 0;
+    vertical-align: middle;
+  }
+
+  :global(.no-brake > span:first-child) {
+    flex: 0 0 auto;
+    margin-right: 4px !important;
+  }
+}
+
+.tokenSwapAmount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.tokenSwapPrice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.tokenSwapPriceLabel {
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.tokenSwapPriceValue {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: 3px;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--text-main);
+  font-size: 12px;
+  line-height: 1.15;
+  white-space: nowrap;
+
+  :global(.tooltip) {
+    display: inline-flex;
+    min-width: 0;
+    max-width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+.tokenSwapPriceAsset {
+  margin-left: 4px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-secondary);
+}
+
+.tokenSwapSource {
+  justify-self: end;
+}
+
+.tokenSwapSourcePill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 3px 8px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  color: var(--link-color);
+  background: var(--background-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media only screen and (max-width: 640px) {
+  .tokenActivityCard {
+    padding: 12px !important;
+  }
+
+  .tokenPriceLine,
+  .tokenPriceSecondary {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tokenPriceDesktopOnly {
+    display: none;
+  }
+
+  .tokenChangeList {
+    justify-content: flex-start;
+    gap: 4px 8px;
+  }
+
+  .tokenChangeItem {
+    font-size: 12px;
+  }
+
+  .tokenTransferRow {
+    grid-template-columns: 34px minmax(0, 1fr) 12px minmax(0, 1fr) minmax(76px, auto) !important;
+    gap: 4px !important;
+  }
+
+  .tokenTransferMetric {
+    min-width: 76px !important;
+    font-size: 11px;
+  }
+
+  .tokenSwapRow {
+    grid-template-columns: 34px minmax(0, 1fr) minmax(74px, auto) !important;
+    gap: 4px !important;
+  }
+
+  .tokenSwapFlow {
+    grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr);
+    gap: 3px;
+  }
+
+  .tokenSwapAmount {
+    font-size: 10.5px;
+    line-height: 1.2;
+  }
+
+  .tokenActivityAmountCurrency {
+    margin-left: 3px;
+  }
+
+  .tokenSwapFlowAddress {
+    flex: 1 1 auto;
+
+    :global(.no-brake > span:first-child) {
+      margin-right: 2px !important;
+    }
+  }
+
+  .tokenSwapPrice,
+  .tokenSwapSource {
+    display: none;
+  }
+}
+
 .tokenClass :global {
   .column-left {
     display: inline-block;
@@ -12,10 +276,16 @@
     }
   }
   .column-right {
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 15px;
     width: calc(70% - 15px);
     padding: 0 0 0 15px;
     vertical-align: top;
+
+    > table.table-details {
+      margin-bottom: 0;
+    }
   }
 
   @media only screen and (max-width: 600px) {

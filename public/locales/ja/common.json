@@ -33,6 +33,11 @@
     "more-results": "{{count}}件を超える結果が見つかりました。検索を絞り込むには発行者を指定してください。",
     "no-destination-trustlines": "この宛先アドレスのトラストラインが見つかりません。"
   },
+  "token-activity": {
+    "last-dex-swaps": "最新のDEXスワップ",
+    "last-transfers": "最新の送金",
+    "rate": "レート"
+  },
   "menu": {
     "tokens": "トークン",
     "badges": {
@@ -295,7 +300,8 @@
       "topAmms": "トップAMMプール",
       "topValidators": "バリデーター",
       "topAmendments": "最新の修正案",
-      "refresh": "データを更新"
+      "refresh": "データを更新",
+      "refresh-in": "{{count}}秒後に更新可能"
     }
   },
   "last-ledger-information": {

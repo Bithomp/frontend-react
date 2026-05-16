@@ -31,12 +31,16 @@ export default function HomeTeaser({
   isLoading = false,
   isRefreshing = false,
   onRefresh = null,
+  isRefreshHidden = false,
+  refreshCooldownSeconds = 0,
   isEmpty = false,
   children,
   className = ''
 }) {
   const { t } = useTranslation()
-  const refreshTitle = t('home.teaser.refresh')
+  const refreshTitle = isRefreshHidden
+    ? t('home.teaser.refresh-in', { count: refreshCooldownSeconds })
+    : t('home.teaser.refresh')
 
   return (
     <div className={`${styles.teaser} ${className}`.trim()}>
@@ -50,22 +54,31 @@ export default function HomeTeaser({
         </div>
         <div className={styles.cardHeaderControls}>
           {onRefresh ? (
-            <button
-              type="button"
-              className={styles.cardRefreshButton}
-              onClick={onRefresh}
-              aria-label={refreshTitle}
-              title={refreshTitle}
-              disabled={isRefreshing}
+            <span
+              className={`${styles.cardRefreshControl} ${isRefreshHidden ? 'tooltip' : ''}`.trim()}
+              tabIndex={isRefreshHidden ? 0 : undefined}
             >
-              <FaArrowsRotate
-                className={`${styles.cardRefreshIcon} ${isRefreshing ? styles.cardRefreshIconSpinning : ''}`.trim()}
-              />
-            </button>
+              <button
+                type="button"
+                className={`${styles.cardRefreshButton} ${isRefreshHidden ? styles.cardRefreshButtonHidden : ''}`.trim()}
+                onClick={isRefreshHidden ? undefined : onRefresh}
+                aria-label={refreshTitle}
+                aria-disabled={isRefreshing || isRefreshHidden}
+                title={isRefreshHidden ? undefined : refreshTitle}
+                disabled={isRefreshing && !isRefreshHidden}
+              >
+                <FaArrowsRotate
+                  className={`${styles.cardRefreshIcon} ${isRefreshing ? styles.cardRefreshIconSpinning : ''}`.trim()}
+                />
+              </button>
+              {isRefreshHidden ? <span className="tooltiptext left no-brake">{refreshTitle}</span> : null}
+            </span>
           ) : null}
-          <Link href={href} className={styles.cardHeaderLink} prefetch={false}>
-            {t('common.viewAll')}
-          </Link>
+          {href ? (
+            <Link href={href} className={styles.cardHeaderLink} prefetch={false}>
+              {t('common.viewAll')}
+            </Link>
+          ) : null}
         </div>
       </div>
 

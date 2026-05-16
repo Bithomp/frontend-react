@@ -1,21 +1,48 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'next-i18next'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaHandshake } from 'react-icons/fa'
+import axios from 'axios'
 
 import SEO from '../../components/SEO'
 import TokenSelector from '../../components/UI/TokenSelector'
-import { tokenClass } from '../../styles/pages/token.module.scss'
+import {
+  tokenActivityCard,
+  tokenActivityAmountCurrency,
+  tokenActivityAmountLine,
+  tokenActivityAmountValue,
+  tokenChangeItem,
+  tokenChangeList,
+  tokenClass,
+  tokenPriceDesktopOnly,
+  tokenPriceLine,
+  tokenPriceSecondary,
+  tokenSwapAmount,
+  tokenSwapPrice,
+  tokenSwapPriceLabel,
+  tokenSwapPriceValue,
+  tokenSwapRow,
+  tokenSwapSource,
+  tokenSwapSourcePill,
+  tokenSwapFlow,
+  tokenSwapFlowAddress,
+  tokenSwapPriceAsset,
+  tokenTransferMetric,
+  tokenTransferRow
+} from '../../styles/pages/token.module.scss'
 import {
   niceNumber,
   shortNiceNumber,
   fullNiceNumber,
   AddressWithIconFilled,
+  AddressWithIconInline,
   addressUsernameOrServiceLink,
   CurrencyWithIconInline,
   dateFormat,
-  timeFormat
+  timeFormat,
+  amountParced
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -28,6 +55,22 @@ import {
 } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenTabs from '../../components/Tabs/TokenTabs'
+import HomeTeaser, { HomeTeaseRow } from '../../components/Home/HomeTeaser'
+import homeTeaserStyles from '@/styles/components/home-teaser.module.scss'
+
+const tokenSwapsUrl = (token, type) => {
+  if (!token) return ''
+  const mptId = token?.mptokenIssuanceID
+  const tokenPath = mptId
+    ? encodeURIComponent(mptId)
+    : token?.issuer
+      ? `${encodeURIComponent(token.issuer)}/${encodeURIComponent(token.currency)}`
+      : encodeURIComponent(nativeCurrency)
+
+  return `v2/token/${tokenPath}/swaps?limit=5&type=${type}`
+}
+
+const REFRESH_COOLDOWN_MS = 30000
 
 // Server side initial data fetch
 export async function getServerSideProps(context) {
@@ -173,11 +216,26 @@ export default function TokenPage({
   isSsrMobile
 }) {
   const router = useRouter()
+  const { t } = useTranslation()
   const [token, setToken] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const [selectedToken, setSelectedToken] = useState(initialData)
+  const [dexSwaps, setDexSwaps] = useState([])
+  const [transfers, setTransfers] = useState([])
+  const [dexSwapsLoading, setDexSwapsLoading] = useState(!!initialData)
+  const [transfersLoading, setTransfersLoading] = useState(!!initialData)
+  const [dexSwapsRefreshHidden, setDexSwapsRefreshHidden] = useState(false)
+  const [transfersRefreshHidden, setTransfersRefreshHidden] = useState(false)
+  const [dexSwapsRefreshSeconds, setDexSwapsRefreshSeconds] = useState(0)
+  const [transfersRefreshSeconds, setTransfersRefreshSeconds] = useState(0)
   const errorMessage = initialErrorMessage || ''
   const firstRenderRef = useRef(true)
+  const dexSwapsRequestRef = useRef(0)
+  const transfersRequestRef = useRef(0)
+  const dexSwapsRefreshTimeoutRef = useRef(null)
+  const transfersRefreshTimeoutRef = useRef(null)
+  const dexSwapsRefreshIntervalRef = useRef(null)
+  const transfersRefreshIntervalRef = useRef(null)
 
   let selectedCurrency = selectedCurrencyServer
   let fiatRate = fiatRateServer
@@ -224,6 +282,139 @@ export default function TokenPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, selectedToken])
 
+  const fetchDexSwaps = useCallback(async ({ clear = false } = {}) => {
+    if (!token) {
+      setDexSwapsLoading(false)
+      return
+    }
+    const requestId = dexSwapsRequestRef.current + 1
+    dexSwapsRequestRef.current = requestId
+    if (clear) {
+      setDexSwaps([])
+    }
+    setDexSwapsLoading(true)
+
+    const response = await axios(tokenSwapsUrl(token, 'dex')).catch(() => null)
+
+    if (dexSwapsRequestRef.current !== requestId) return
+
+    setDexSwaps(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
+    setDexSwapsLoading(false)
+  }, [token])
+
+  const fetchTransfers = useCallback(async ({ clear = false } = {}) => {
+    if (!token) {
+      setTransfersLoading(false)
+      return
+    }
+    const requestId = transfersRequestRef.current + 1
+    transfersRequestRef.current = requestId
+    if (clear) {
+      setTransfers([])
+    }
+    setTransfersLoading(true)
+
+    const response = await axios(tokenSwapsUrl(token, 'transfer')).catch(() => null)
+
+    if (transfersRequestRef.current !== requestId) return
+
+    setTransfers(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
+    setTransfersLoading(false)
+  }, [token])
+
+  const clearRefreshCooldown = useCallback((timeoutRef, intervalRef, setHidden, setSeconds) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+    setHidden(false)
+    setSeconds(0)
+  }, [])
+
+  const startRefreshCooldown = useCallback((timeoutRef, intervalRef, setHidden, setSeconds) => {
+    setHidden(true)
+    setSeconds(Math.ceil(REFRESH_COOLDOWN_MS / 1000))
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+    }
+    intervalRef.current = setInterval(() => {
+      setSeconds((seconds) => Math.max(seconds - 1, 0))
+    }, 1000)
+    timeoutRef.current = setTimeout(() => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      setHidden(false)
+      setSeconds(0)
+      timeoutRef.current = null
+    }, REFRESH_COOLDOWN_MS)
+  }, [])
+
+  const refreshDexSwaps = useCallback(() => {
+    startRefreshCooldown(
+      dexSwapsRefreshTimeoutRef,
+      dexSwapsRefreshIntervalRef,
+      setDexSwapsRefreshHidden,
+      setDexSwapsRefreshSeconds
+    )
+    fetchDexSwaps()
+  }, [fetchDexSwaps, startRefreshCooldown])
+
+  const refreshTransfers = useCallback(() => {
+    startRefreshCooldown(
+      transfersRefreshTimeoutRef,
+      transfersRefreshIntervalRef,
+      setTransfersRefreshHidden,
+      setTransfersRefreshSeconds
+    )
+    fetchTransfers()
+  }, [fetchTransfers, startRefreshCooldown])
+
+  useEffect(() => {
+    clearRefreshCooldown(
+      dexSwapsRefreshTimeoutRef,
+      dexSwapsRefreshIntervalRef,
+      setDexSwapsRefreshHidden,
+      setDexSwapsRefreshSeconds
+    )
+    clearRefreshCooldown(
+      transfersRefreshTimeoutRef,
+      transfersRefreshIntervalRef,
+      setTransfersRefreshHidden,
+      setTransfersRefreshSeconds
+    )
+    setDexSwaps([])
+    setTransfers([])
+    fetchDexSwaps()
+    fetchTransfers()
+  }, [clearRefreshCooldown, fetchDexSwaps, fetchTransfers])
+
+  useEffect(
+    () => () => {
+      clearRefreshCooldown(
+        dexSwapsRefreshTimeoutRef,
+        dexSwapsRefreshIntervalRef,
+        setDexSwapsRefreshHidden,
+        setDexSwapsRefreshSeconds
+      )
+      clearRefreshCooldown(
+        transfersRefreshTimeoutRef,
+        transfersRefreshIntervalRef,
+        setTransfersRefreshHidden,
+        setTransfersRefreshSeconds
+      )
+    },
+    [clearRefreshCooldown]
+  )
+
   useEffect(() => {
     if (!selectedToken?.currency) return
     const { pathname, query } = router
@@ -242,32 +433,32 @@ export default function TokenPage({
     const price = priceNative
     const currencyText = token?.currencyDetails?.currency || token?.currency || nativeCurrency
     const isNativeFromToken = !token?.issuer && token?.currency === nativeCurrency
+    const nativePrice =
+      price < 0.0001 ? (
+        <span className="no-brake">
+          1M {currencyText} = {niceNumber(price * 1000000, 6)} {nativeCurrency}
+        </span>
+      ) : (
+        <span className="no-brake">
+          {niceNumber(price, 6)} {nativeCurrency}
+        </span>
+      )
+
     return (
-      <span suppressHydrationWarning>
-        {niceNumber(priceFiat || 0, 4, selectedCurrency)}
+      <span className={tokenPriceLine}>
+        <span className="no-brake" suppressHydrationWarning>
+          {niceNumber(priceFiat || 0, 4, selectedCurrency)}
+        </span>
         {!isNativeFromToken && (
-          <>
-            {isSsrMobile ? <br /> : ' '}
-            <span className="grey">
-              {!isSsrMobile && '('}
-              {price < 0.0001 ? (
-                <>
-                  <span className="no-brake">
-                    1M {currencyText} = {niceNumber(price * 1000000, 6)}{' '}
-                  </span>
-                  <span className="no-brake">{nativeCurrency}</span>,{' '}
-                </>
-              ) : (
-                <span className="no-brake">
-                  {niceNumber(price, 6)} {nativeCurrency},{' '}
-                </span>
-              )}
-              <span className="no-brake">
-                1 {nativeCurrency} = {niceNumber(1 / price, 6)} {currencyText}
-              </span>
-              {!isSsrMobile && ')'}
+          <span className={`grey ${tokenPriceSecondary}`.trim()}>
+            <span className={tokenPriceDesktopOnly}>(</span>
+            {nativePrice}
+            <span className={tokenPriceDesktopOnly}>, </span>
+            <span className="no-brake">
+              1 {nativeCurrency} = {niceNumber(1 / price, 6)} {currencyText}
             </span>
-          </>
+            <span className={tokenPriceDesktopOnly}>)</span>
+          </span>
         )}
       </span>
     )
@@ -277,13 +468,16 @@ export default function TokenPage({
     if (!fiatRate || !marketcap) return null
     const marketcapFiat = marketcap * fiatRate
     return (
-      <span suppressHydrationWarning>
-        {niceNumber(marketcapFiat, 2, selectedCurrency)}
-        {isSsrMobile ? <br /> : ' '}
-        <span className="grey">
-          {!isSsrMobile && '('}
-          {niceNumber(marketcap, 2)} {nativeCurrency}
-          {!isSsrMobile && ')'}
+      <span className={tokenPriceLine}>
+        <span className="no-brake" suppressHydrationWarning>
+          {niceNumber(marketcapFiat, 2, selectedCurrency)}
+        </span>
+        <span className={`grey ${tokenPriceSecondary}`.trim()}>
+          <span className={tokenPriceDesktopOnly}>(</span>
+          <span className="no-brake">
+            {niceNumber(marketcap, 2)} {nativeCurrency}
+          </span>
+          <span className={tokenPriceDesktopOnly}>)</span>
         </span>
       </span>
     )
@@ -464,6 +658,173 @@ export default function TokenPage({
       return <span className="bold">{nativeCurrency}</span>
     }
     return <CurrencyWithIconInline token={asset} link={true} showIssuer={true} />
+  }
+  const getActivityAmountParts = (amount) => {
+    const parsed = amountParced(amount)
+    if (!parsed) return null
+
+    return {
+      value: [shortNiceNumber(parsed.value, 2, 1), parsed.valuePrefix].filter(Boolean).join(' '),
+      currency: parsed.currency
+    }
+  }
+
+  const renderActivityAmount = (amount) => {
+    const parts = getActivityAmountParts(amount)
+    if (!parts) return ''
+    const title = [parts.value, parts.currency].filter(Boolean).join(' ')
+
+    return (
+      <span className={tokenActivityAmountLine} title={title}>
+        <span className={tokenActivityAmountValue}>{parts.value}</span>
+        {parts.currency ? <span className={tokenActivityAmountCurrency}>{parts.currency}</span> : null}
+      </span>
+    )
+  }
+  const hasActivityValue = (value) => value !== undefined && value !== null && value !== ''
+  const activityAddressShort = isSsrMobile ? 3 : 4
+
+  const isPageTokenAmount = (amount) => {
+    const parsed = amountParced(amount)
+    if (!parsed) return false
+
+    if (mptId) {
+      return parsed.originalCurrency === mptId || amount?.mpt_issuance_id === mptId
+    }
+
+    if (isNativeToken) {
+      return parsed.originalCurrency === nativeCurrency && !amount?.issuer
+    }
+
+    return parsed.originalCurrency === token?.currency && amount?.issuer === token?.issuer
+  }
+
+  const getSwapPrice = (row) => {
+    const parsedAmount1 = amountParced(row.amount1)
+    const parsedAmount2 = amountParced(row.amount2)
+    if (!parsedAmount1 || !parsedAmount2) return null
+
+    const amount1IsPageToken = isPageTokenAmount(row.amount1)
+    const amount2IsPageToken = isPageTokenAmount(row.amount2)
+    const base = amount1IsPageToken ? parsedAmount1 : amount2IsPageToken ? parsedAmount2 : parsedAmount1
+    const quote = amount1IsPageToken ? parsedAmount2 : amount2IsPageToken ? parsedAmount1 : parsedAmount2
+    const baseValue = Number(base.value)
+    const quoteValue = Number(quote.value)
+
+    if (!Number.isFinite(baseValue) || !Number.isFinite(quoteValue) || baseValue === 0) return null
+
+    return {
+      value: quoteValue / baseValue,
+      currency: quote.currency
+    }
+  }
+
+  const renderSwapSource = (row) => {
+    if (row.amm_id) return 'AMM'
+    return 'DEX'
+  }
+
+  const renderDexSwapRow = (row, index) => {
+    const swapPrice = getSwapPrice(row)
+
+    return (
+      <HomeTeaseRow
+        key={`dex-${row.tx_hash || row.timestamp}-${row.amm_id || row.offer_id || 'swap'}-${index}`}
+        href={`/tx/${row.tx_hash}`}
+        className={tokenSwapRow}
+      >
+        <div className={homeTeaserStyles.timeAgo}>{timeFormat(row.timestamp)}</div>
+        <div className={tokenSwapFlow}>
+          <span className={tokenSwapFlowAddress}>
+            <AddressWithIconInline
+              data={row}
+              name="address1"
+              options={{ short: activityAddressShort, noLink: true, showAddress: true }}
+            />
+          </span>
+          <span className={homeTeaserStyles.whaleArrow}>→</span>
+          <span className={tokenSwapFlowAddress}>
+            <AddressWithIconInline
+              data={row}
+              name="address2"
+              options={{ short: activityAddressShort, noLink: true, showAddress: true }}
+            />
+          </span>
+        </div>
+        <div className={tokenSwapAmount}>
+          {renderActivityAmount(row.amount1)}
+          {hasActivityValue(row.amount2) ? <span className="grey">{renderActivityAmount(row.amount2)}</span> : null}
+        </div>
+        <div className={tokenSwapPrice}>
+          <span className={tokenSwapPriceLabel}>{t('token-activity.rate')}</span>
+          <span className={tokenSwapPriceValue}>
+            {swapPrice ? (
+              <span className="tooltip">
+                {shortNiceNumber(swapPrice.value, 6, 1)}
+                <span className={tokenSwapPriceAsset} title={swapPrice.currency}>
+                  {swapPrice.currency}
+                </span>
+                <span className="tooltiptext no-brake">
+                  {fullNiceNumber(swapPrice.value)} {swapPrice.currency}
+                </span>
+              </span>
+            ) : (
+              '-'
+            )}
+          </span>
+        </div>
+        <div className={tokenSwapSource}>
+          <span className={tokenSwapSourcePill}>{renderSwapSource(row)}</span>
+        </div>
+      </HomeTeaseRow>
+    )
+  }
+
+  const renderTransferRow = (row, index) => (
+    <HomeTeaseRow
+      key={`transfer-${row.tx_hash || row.timestamp}-${row.address1 || ''}-${row.address2 || ''}-${index}`}
+      href={`/tx/${row.tx_hash}`}
+      className={`${homeTeaserStyles.whaleRow} ${tokenTransferRow}`}
+    >
+      <div className={homeTeaserStyles.timeAgo}>{timeFormat(row.timestamp)}</div>
+      <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
+        <AddressWithIconInline data={row} name="address1" options={{ short: activityAddressShort, noLink: true }} />
+      </div>
+      <div className={homeTeaserStyles.whaleArrow}>→</div>
+      <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
+        <AddressWithIconInline data={row} name="address2" options={{ short: activityAddressShort, noLink: true }} />
+      </div>
+      <div className={`${homeTeaserStyles.metric} ${homeTeaserStyles.metricWithDelta} ${homeTeaserStyles.whaleFiat} ${tokenTransferMetric}`}>
+        {renderActivityAmount(row.amount1)}
+      </div>
+    </HomeTeaseRow>
+  )
+
+  const renderTokenActivityWidget = ({
+    title,
+    rows,
+    rowRenderer,
+    loading,
+    onRefresh,
+    isRefreshHidden = false,
+    refreshCooldownSeconds = 0
+  }) => {
+    const visibleRows = Array.isArray(rows) ? rows.slice(0, 5) : []
+
+    return (
+      <HomeTeaser
+        title={title}
+        isLoading={loading && !visibleRows.length}
+        isRefreshing={loading}
+        onRefresh={onRefresh}
+        isRefreshHidden={isRefreshHidden}
+        refreshCooldownSeconds={refreshCooldownSeconds}
+        isEmpty={!visibleRows.length}
+        className={`${homeTeaserStyles.whaleCard} ${tokenActivityCard}`}
+      >
+        {visibleRows.map(rowRenderer)}
+      </HomeTeaser>
+    )
   }
 
   return (
@@ -806,17 +1167,18 @@ export default function TokenPage({
                       {changeItems.length > 0 && (
                         <tr>
                           <td>Change</td>
-                          <td className="brake">
-                            {changeItems.map((item, index) => (
-                              <span key={item.key} className="no-brake">
-                                {index > 0 && <span className="grey"> | </span>}
-                                {item.label}:{' '}
-                                {renderPercentCell({
-                                  currentPrice: statistics?.priceFiats[selectedCurrency],
-                                  pastPrice: item.pastPrice
-                                })}
-                              </span>
-                            ))}
+                          <td>
+                            <div className={tokenChangeList}>
+                              {changeItems.map((item) => (
+                                <span key={item.key} className={tokenChangeItem}>
+                                  {item.label}:{' '}
+                                  {renderPercentCell({
+                                    currentPrice: statistics?.priceFiats[selectedCurrency],
+                                    pastPrice: item.pastPrice
+                                  })}
+                                </span>
+                              ))}
+                            </div>
                           </td>
                         </tr>
                       )}
@@ -964,6 +1326,26 @@ export default function TokenPage({
                 </tbody>
               </table>
             )}
+
+            {renderTokenActivityWidget({
+              title: 'token-activity.last-dex-swaps',
+              rows: dexSwaps,
+              rowRenderer: renderDexSwapRow,
+              loading: dexSwapsLoading,
+              onRefresh: refreshDexSwaps,
+              isRefreshHidden: dexSwapsRefreshHidden,
+              refreshCooldownSeconds: dexSwapsRefreshSeconds
+            })}
+
+            {renderTokenActivityWidget({
+              title: 'token-activity.last-transfers',
+              rows: transfers,
+              rowRenderer: renderTransferRow,
+              loading: transfersLoading,
+              onRefresh: refreshTransfers,
+              isRefreshHidden: transfersRefreshHidden,
+              refreshCooldownSeconds: transfersRefreshSeconds
+            })}
           </div>
         </div>
       </div>

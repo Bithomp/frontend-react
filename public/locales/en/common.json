@@ -33,6 +33,11 @@
     "more-results": "More than {{count}} results found. Please specify an issuer to narrow down the search.",
     "no-destination-trustlines": "No trustlines found for this destination address."
   },
+  "token-activity": {
+    "last-dex-swaps": "Last DEX swaps",
+    "last-transfers": "Last transfers",
+    "rate": "Rate"
+  },
   "menu": {
     "tokens": "Tokens",
     "badges": {
@@ -295,7 +300,8 @@
       "topAmms": "Top AMM Pools by TVL",
       "topValidators": "Validators",
       "topAmendments": "Latest Amendments",
-      "refresh": "Refresh data"
+      "refresh": "Refresh data",
+      "refresh-in": "Refresh in {{count}}s"
     }
   },
   "last-ledger-information": {
