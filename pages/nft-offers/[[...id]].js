@@ -34,11 +34,22 @@ export const getServerSideProps = async (context) => {
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import Tabs from '../../components/Tabs'
+import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 
 import LinkIcon from '../../public/images/link.svg'
 import { LinkTx } from '../../utils/links'
 
-export default function NftOffers({ setSignRequest, refreshPage, account, offerList, id }) {
+export default function NftOffers({
+  setSignRequest,
+  refreshPage,
+  account,
+  offerList,
+  id,
+  subscriptionExpired,
+  sessionToken,
+  signOutPro,
+  openEmailLogin
+}) {
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
@@ -58,6 +69,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
   const [offersCount, setOffersCount] = useState({})
   const [invalidOffers, setInvalidOffers] = useState([])
   const [expiredOffers, setExpiredOffers] = useState([])
+  const [hasMore, setHasMore] = useState('first')
 
   let offerListTabList = [
     { value: 'owned', label: t('tabs.owned-offers') },
@@ -73,26 +85,83 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
     ]
   }
 
+  const offersCountLabel = (count) => (count ? ` (${count}${hasMore ? '+' : ''})` : '')
+
   const offerTypeTabList = [
-    { value: 'all', label: t('tabs.all') + (offersCount?.all ? ' (' + offersCount.all + ')' : '') },
-    { value: 'buy', label: t('tabs.buy') + (offersCount?.buy ? ' (' + offersCount.buy + ')' : '') },
-    { value: 'sell', label: t('tabs.sell') + (offersCount?.sell ? ' (' + offersCount.sell + ')' : '') }
+    { value: 'all', label: t('tabs.all') + offersCountLabel(offersCount?.all) },
+    { value: 'buy', label: t('tabs.buy') + offersCountLabel(offersCount?.buy) },
+    { value: 'sell', label: t('tabs.sell') + offersCountLabel(offersCount?.sell) }
   ]
 
-  const checkApi = async () => {
+  const updateOfferStats = (offerListData) => {
+    let sell = 0
+    let buy = 0
+    let invalid = 0
+    let expired = 0
+    let invalidList = []
+    let expiredList = []
+
+    for (let i = 0; i < offerListData.length; i++) {
+      if (!offerListData[i].valid) {
+        invalid++
+        invalidList.push(offerListData[i].offerIndex)
+        if (offerListData[i].validationErrors?.includes('Offer is expired')) {
+          expired++
+          expiredList.push(offerListData[i].offerIndex)
+        }
+      }
+      if (offerListData[i].flags?.sellToken === true) {
+        sell++
+      } else {
+        buy++
+      }
+    }
+
+    setInvalidOffers(invalidList)
+    setExpiredOffers(expiredList)
+    setOffersCount({
+      all: offerListData.length,
+      buy,
+      sell,
+      invalid,
+      expired
+    })
+  }
+
+  const checkApi = async ({ reset = false } = {}) => {
     if (!id) {
       return
     }
 
-    let offerListUrlPart = '?nftoken=true&offersValidate=true'
+    const loadMoreRequest = !reset && hasMore !== 'first'
+
+    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
+      return
+    }
+
+    let markerPart = ''
+    if (loadMoreRequest) {
+      if (!hasMore) return
+      markerPart = '&marker=' + encodeURIComponent(hasMore)
+    }
+
+    let offerListUrlPart = '?nftoken=true&offersValidate=true&limit=100'
     if (offerListTab === 'for-owned-nfts') {
       offerListUrlPart += '&list=counterOffers'
     } else if (offerListTab === 'privately-offered-to-address') {
       offerListUrlPart += '&list=privatelyOfferedToAddress'
     }
+    offerListUrlPart += markerPart
 
-    setLoading(true)
-    setOffersCount({})
+    if (!loadMoreRequest) {
+      setLoading(true)
+      setOffers([])
+      setFilteredOffers([])
+      setOffersCount({})
+      setInvalidOffers([])
+      setExpiredOffers([])
+      setHasMore('first')
+    }
     const response = await axios(
       'v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-offers/' + id + offerListUrlPart
     ).catch((error) => {
@@ -107,47 +176,30 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
           service: newdata.ownerDetails?.service,
           address: newdata.owner
         })
+        let nftOffers = Array.isArray(newdata.nftOffers) ? newdata.nftOffers : []
         if (offerListTab === 'for-owned-nfts') {
-          newdata.nftOffers = newdata.nftOffers.filter(function (offer) {
+          nftOffers = nftOffers.filter(function (offer) {
             return offer.valid
           })
-        } else {
-          //count offers
-          let sell = 0
-          let buy = 0
-          let invalid = 0
-          let expired = 0
-          let invalidList = []
-          let expiredList = []
-          for (let i = 0; i < newdata.nftOffers.length; i++) {
-            if (!newdata.nftOffers[i].valid) {
-              invalid++
-              invalidList.push(newdata.nftOffers[i].offerIndex)
-              if (newdata.nftOffers[i].validationErrors.includes('Offer is expired')) {
-                expired++
-                expiredList.push(newdata.nftOffers[i].offerIndex)
-              }
-            }
-            if (newdata.nftOffers[i].flags?.sellToken === true) {
-              sell++
-            } else {
-              buy++
-            }
-          }
-          setInvalidOffers(invalidList)
-          setExpiredOffers(expiredList)
-          setOffersCount({
-            all: newdata.nftOffers.length,
-            buy,
-            sell,
-            invalid,
-            expired
-          })
         }
-        setOffers(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)))
+        const sortedOffers = nftOffers.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+        setHasMore(newdata.marker || false)
+        setOffers((prevOffers) => {
+          const nextOffers = loadMoreRequest
+            ? [...prevOffers, ...sortedOffers].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+            : sortedOffers
+          if (offerListTab !== 'for-owned-nfts') {
+            updateOfferStats(nextOffers)
+          }
+          return nextOffers
+        })
       } else {
         if (newdata.error) {
-          setErrorMessage(newdata.error)
+          if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
+            signOutPro?.()
+          } else {
+            setErrorMessage(newdata.error)
+          }
         } else {
           setErrorMessage('Error')
           console.log(newdata)
@@ -244,7 +296,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
   */
 
   useEffect(() => {
-    checkApi()
+    checkApi({ reset: true })
     setTabParams(router, [
       {
         tabList: offerListTabList,
@@ -305,172 +357,182 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                 </button>
               )}
             </div>
-            {windowWidth > 960 ? (
-              <table className="table-large">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    {!xahauNetwork && <th className="center">{t('table.offer')}</th>}
-                    <th>NFT</th>
-                    {showTypeColumn && <th>{t('table.type')}</th>}
-                    <th>{t('table.amount')}</th>
-                    <th>{t('table.placed')}</th>
-                    {showExpirationColumn && <th>{t('table.expiration')}</th>}
-                    {showDestinationColumn && offerListTab !== 'privately-offered-to-address' && (
-                      <th>{t('table.destination')}</th>
-                    )}
-                    {showValidationColumn && <th className="center">{t('table.status')}</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                      </td>
+            <InfiniteScrolling
+              dataLength={offers.length}
+              loadMore={checkApi}
+              hasMore={hasMore}
+              errorMessage={errorMessage}
+              subscriptionExpired={subscriptionExpired}
+              sessionToken={sessionToken}
+              openEmailLogin={openEmailLogin}
+            >
+              {windowWidth > 960 ? (
+                <table className="table-large">
+                  <thead>
+                    <tr>
+                      <th className="center">{t('table.index')}</th>
+                      {!xahauNetwork && <th className="center">{t('table.offer')}</th>}
+                      <th>NFT</th>
+                      {showTypeColumn && <th>{t('table.type')}</th>}
+                      <th>{t('table.amount')}</th>
+                      <th>{t('table.placed')}</th>
+                      {showExpirationColumn && <th>{t('table.expiration')}</th>}
+                      {showDestinationColumn && offerListTab !== 'privately-offered-to-address' && (
+                        <th>{t('table.destination')}</th>
+                      )}
+                      {showValidationColumn && <th className="center">{t('table.status')}</th>}
                     </tr>
-                  ) : (
-                    <>
-                      {!errorMessage ? (
-                        filteredOffers.map((offer, i) => (
-                          <tr key={i}>
-                            <td className="center">{i + 1}</td>
-                            {!xahauNetwork && (
-                              <td className="center">
-                                <Link href={'/nft-offer/' + offer.offerIndex}>
-                                  <LinkIcon />
-                                </Link>
-                              </td>
-                            )}
-                            <td>
-                              {nftThumbnail(offer.nftoken)} {nftNameLink(offer.nftoken)}
-                            </td>
-                            {showTypeColumn && (
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr className="center">
+                        <td colSpan="100">
+                          <span className="waiting"></span>
+                          <br />
+                          {t('general.loading')}
+                          <br />
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {!errorMessage ? (
+                          filteredOffers.map((offer, i) => (
+                            <tr key={i}>
+                              <td className="center">{i + 1}</td>
+                              {!xahauNetwork && (
+                                <td className="center">
+                                  <Link href={'/nft-offer/' + offer.offerIndex}>
+                                    <LinkIcon />
+                                  </Link>
+                                </td>
+                              )}
                               <td>
-                                {offer.flags?.sellToken === true || xahauNetwork
-                                  ? t('table.text.sell')
-                                  : t('table.text.buy')}
+                                {nftThumbnail(offer.nftoken)} {nftNameLink(offer.nftoken)}
                               </td>
-                            )}
-                            <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
-                            <td>
-                              {fullDateAndTime(offer.createdAt)} <LinkTx tx={offer.createdTxHash} icon={true} />
-                            </td>
-                            {showExpirationColumn && (
+                              {showTypeColumn && (
+                                <td>
+                                  {offer.flags?.sellToken === true || xahauNetwork
+                                    ? t('table.text.sell')
+                                    : t('table.text.buy')}
+                                </td>
+                              )}
+                              <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                               <td>
-                                {offer.expiration
-                                  ? fullDateAndTime(offer.expiration, 'expiration')
-                                  : t('table.text.no-expiration')}
+                                {fullDateAndTime(offer.createdAt)} <LinkTx tx={offer.createdTxHash} icon={true} />
                               </td>
-                            )}
-                            {showDestinationColumn && offerListTab !== 'privately-offered-to-address' && (
-                              <td>{nftLink(offer, 'destination')}</td>
-                            )}
-                            {showValidationColumn && (
-                              <td className="center">
-                                {offer.valid ? (
-                                  t('table.text.valid')
-                                ) : (
-                                  <span className="orange">{t('table.text.invalid')}</span>
+                              {showExpirationColumn && (
+                                <td>
+                                  {offer.expiration
+                                    ? fullDateAndTime(offer.expiration, 'expiration')
+                                    : t('table.text.no-expiration')}
+                                </td>
+                              )}
+                              {showDestinationColumn && offerListTab !== 'privately-offered-to-address' && (
+                                <td>{nftLink(offer, 'destination')}</td>
+                              )}
+                              {showValidationColumn && (
+                                <td className="center">
+                                  {offer.valid ? (
+                                    t('table.text.valid')
+                                  ) : (
+                                    <span className="orange">{t('table.text.invalid')}</span>
+                                  )}
+                                </td>
+                              )}
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="9" className="center orange bold">
+                              {errorMessage}
+                            </td>
+                          </tr>
+                        )}
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                <table className="table-mobile">
+                  <thead></thead>
+                  <tbody>
+                    {loading ? (
+                      <tr className="center">
+                        <td colSpan="100">
+                          <br />
+                          <span className="waiting"></span>
+                          <br />
+                          {t('general.loading')}
+                          <br />
+                          <br />
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {!errorMessage ? (
+                          filteredOffers?.map((offer, i) => (
+                            <tr key={i}>
+                              <td style={{ padding: '5px' }} className="center">
+                                <p>{i + 1}</p>
+                                <p>{nftThumbnail(offer.nftoken)}</p>
+                              </td>
+                              <td>
+                                {!xahauNetwork && (
+                                  <p>
+                                    {t('table.offer')}: {nftOfferLink(offer.offerIndex)}
+                                  </p>
+                                )}
+                                <p>
+                                  NFT:{' '}
+                                  {nftName(offer.nftoken) ? nftNameLink(offer.nftoken) : nftOfferLink(offer.offerIndex)}
+                                </p>
+                                <p>
+                                  {t('table.type')}:{' '}
+                                  {offer.flags?.sellToken === true || xahauNetwork
+                                    ? t('table.text.sell')
+                                    : t('table.text.buy')}
+                                </p>
+                                <p>
+                                  {t('table.amount')}: {amountFormat(offer.amount)}
+                                </p>
+                                <p>
+                                  {t('table.placed')}: {fullDateAndTime(offer.createdAt)}{' '}
+                                  <LinkTx tx={offer.createdTxHash} icon={true} />
+                                </p>
+                                {offer.expiration && (
+                                  <p>
+                                    {expirationExpired(t, offer.expiration)}:{' '}
+                                    {fullDateAndTime(offer.expiration, 'expiration')}
+                                  </p>
+                                )}
+                                {offer.destination && (
+                                  <p>
+                                    {t('table.destination')}:
+                                    <br />
+                                    {addressUsernameOrServiceLink(offer, 'destination')}
+                                  </p>
+                                )}
+                                {!offer.valid && (
+                                  <p>
+                                    {t('table.status')}: <span className="orange">{t('table.text.invalid')}</span>
+                                  </p>
                                 )}
                               </td>
-                            )}
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="9" className="center orange bold">
-                            {errorMessage}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            ) : (
-              <table className="table-mobile">
-                <thead></thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <br />
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                        <br />
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {!errorMessage ? (
-                        filteredOffers?.map((offer, i) => (
-                          <tr key={i}>
-                            <td style={{ padding: '5px' }} className="center">
-                              <p>{i + 1}</p>
-                              <p>{nftThumbnail(offer.nftoken)}</p>
-                            </td>
-                            <td>
-                              {!xahauNetwork && (
-                                <p>
-                                  {t('table.offer')}: {nftOfferLink(offer.offerIndex)}
-                                </p>
-                              )}
-                              <p>
-                                NFT:{' '}
-                                {nftName(offer.nftoken) ? nftNameLink(offer.nftoken) : nftOfferLink(offer.offerIndex)}
-                              </p>
-                              <p>
-                                {t('table.type')}:{' '}
-                                {offer.flags?.sellToken === true || xahauNetwork
-                                  ? t('table.text.sell')
-                                  : t('table.text.buy')}
-                              </p>
-                              <p>
-                                {t('table.amount')}: {amountFormat(offer.amount)}
-                              </p>
-                              <p>
-                                {t('table.placed')}: {fullDateAndTime(offer.createdAt)}{' '}
-                                <LinkTx tx={offer.createdTxHash} icon={true} />
-                              </p>
-                              {offer.expiration && (
-                                <p>
-                                  {expirationExpired(t, offer.expiration)}:{' '}
-                                  {fullDateAndTime(offer.expiration, 'expiration')}
-                                </p>
-                              )}
-                              {offer.destination && (
-                                <p>
-                                  {t('table.destination')}:
-                                  <br />
-                                  {addressUsernameOrServiceLink(offer, 'destination')}
-                                </p>
-                              )}
-                              {!offer.valid && (
-                                <p>
-                                  {t('table.status')}: <span className="orange">{t('table.text.invalid')}</span>
-                                </p>
-                              )}
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="100" className="center orange bold">
+                              {errorMessage}
                             </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center orange bold">
-                            {errorMessage}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            )}
+                        )}
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </InfiniteScrolling>
           </>
         ) : (
           <>
