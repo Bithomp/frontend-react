@@ -2,7 +2,7 @@
   "shared": {
     "destination-address": "Zieladresse",
     "enter-amount": "Betrag eingeben",
-    "enter-memo-optional": "Memo eingeben (optional)",
+    "enter-memo-optional": "Kommentar eingeben (optional)",
     "it-will-be-public": "Es wird öffentlich sein",
     "required": "erforderlich",
     "currency": "Währung",
@@ -201,7 +201,7 @@
     "learnFlagged": "Mehr über markierte Konten erfahren",
     "nonActiveWarning": "Sie können keine Gelder an ein nicht aktiviertes Konto senden.",
     "publicMemo": "Es wird öffentlich sein",
-    "memoPlaceholder": "Memo eingeben (optional)",
+    "memoPlaceholder": "Kommentar eingeben (optional)",
     "advancedOptions": "Erweiterte Optionen",
     "advancedPro": "verfügbar für eingeloggte Bithomp Pro-Abonnenten",
     "destinationTagWarning": "Ich bestätige, dass das Zielkonto KEINE Börse und kein verwahrtes Wallet sein darf, da dies zum Verlust von Geldern führen kann.",

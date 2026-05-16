@@ -97,7 +97,7 @@
     "fiat": "Fiat",
     "fiat-equivalent-currency": "법정화폐 환산 ({{currency}})",
     "transaction": "트랜잭션",
-    "memo": "메모",
+    "memo": "메시지",
     "transfer-fee": "전송 수수료",
     "network-fee": "네트워크 수수료",
     "balance-change": "잔액 변경",

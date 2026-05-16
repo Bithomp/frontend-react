@@ -534,7 +534,7 @@
     "name": "사용자명",
     "sender": "수신자",
     "balance": "잔액",
-    "memo": "메모",
+    "memo": "메시지",
     "transaction": "거래",
     "owner": "소유자",
     "owners-now": "현재 소유자",

@@ -534,7 +534,7 @@
     "name": "姓名",
     "sender": "发件人",
     "balance": "余额",
-    "memo": "备忘录",
+    "memo": "备注",
     "transaction": "交易",
     "owner": "所有者",
     "owners-now": "所有者（现在）",

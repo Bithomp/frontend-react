@@ -534,7 +534,7 @@
     "name": "Name",
     "sender": "Sender",
     "balance": "Balance",
-    "memo": "Memo",
+    "memo": "Comment",
     "transaction": "Transaction",
     "owner": "Owner",
     "owners-now": "Owners (now)",

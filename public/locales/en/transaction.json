@@ -40,7 +40,7 @@
     "notValidatedAfterLedger": "It won't be validated if Ledger already passed the Ledger #{{ledger}}.",
     "specifiedFee": "It was specified to spend {{fee}} as transaction fee.",
     "memosThirdParty": {
-      "prefix": "Memos were added by the third party",
+      "prefix": "Comments were added by the third party",
       "suffix": "that finished the Escrow."
     },
     "affectedAccounts": {
@@ -200,7 +200,7 @@
     "Master key": "Master key",
     "Max Amount": "Max amount",
     "Max amount": "Max amount",
-    "Memos note": "Memos note",
+    "Memos note": "Comment",
     "Message key": "Message key",
     "Min amount": "Min amount",
     "NFT": "NFT",
@@ -291,7 +291,7 @@
     "Account": "Account",
     "Validated": "Validated",
     "Rejected": "Rejected",
-    "Memo": "Memo",
+    "Memo": "Comment",
     "JWT Header": "JWT Header",
     "JWT Payload": "JWT Payload",
     "JWT Signature": "JWT Signature",

@@ -2,7 +2,7 @@
   "shared": {
     "destination-address": "目的地地址",
     "enter-amount": "输入金额",
-    "enter-memo-optional": "输入备忘录（可选）",
+    "enter-memo-optional": "输入备注（可选）",
     "it-will-be-public": "将会公开",
     "required": "需要",
     "currency": "货币",
@@ -201,7 +201,7 @@
     "learnFlagged": "了解有关标记账户的更多信息",
     "nonActiveWarning": "您无法将资金发送至未激活的账户。",
     "publicMemo": "将会公开",
-    "memoPlaceholder": "输入备忘录（可选）",
+    "memoPlaceholder": "输入备注（可选）",
     "advancedOptions": "高级选项",
     "advancedPro": "可供登录的 Bithomp Pro 订阅者使用",
     "destinationTagWarning": "我承认目标账户不得是交易所或托管钱包，因为这可能会导致资金损失。",

@@ -97,7 +97,7 @@
     "fiat": "Fiat",
     "fiat-equivalent-currency": "Setara fiat ({{currency}})",
     "transaction": "Transaksi",
-    "memo": "Catatan",
+    "memo": "Komentar",
     "transfer-fee": "Biaya transfer",
     "network-fee": "Biaya jaringan",
     "balance-change": "Perubahan saldo",

@@ -2,7 +2,7 @@
   "shared": {
     "destination-address": "Адрес получателя",
     "enter-amount": "Введите сумму",
-    "enter-memo-optional": "Введите memo (необязательно)",
+    "enter-memo-optional": "Введите комментарий (необязательно)",
     "it-will-be-public": "Будет публичным",
     "required": "обязательно",
     "currency": "Валюта",
@@ -201,7 +201,7 @@
     "learnFlagged": "Подробнее о помеченных аккаунтах",
     "nonActiveWarning": "Нельзя отправлять средства на неактивированный аккаунт.",
     "publicMemo": "Будет публичным",
-    "memoPlaceholder": "Введите memo (необязательно)",
+    "memoPlaceholder": "Введите комментарий (необязательно)",
     "advancedOptions": "Расширенные настройки",
     "advancedPro": "доступно авторизованным подписчикам Bithomp Pro",
     "destinationTagWarning": "Я подтверждаю, что адрес назначения НЕ должен быть биржей или custodial-кошельком, иначе это может привести к потере средств.",

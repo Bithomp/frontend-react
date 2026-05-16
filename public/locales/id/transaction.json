@@ -40,7 +40,7 @@
     "notValidatedAfterLedger": "Transaksi tidak akan divalidasi jika ledger sudah melewati Ledger #{{ledger}}.",
     "specifiedFee": "{{fee}} ditentukan sebagai biaya transaksi.",
     "memosThirdParty": {
-      "prefix": "Memo ditambahkan oleh pihak ketiga",
+      "prefix": "Komentar ditambahkan oleh pihak ketiga",
       "suffix": "yang menyelesaikan escrow."
     },
     "affectedAccounts": {
@@ -200,7 +200,7 @@
     "Master key": "Kunci utama",
     "Max Amount": "Jumlah maks.",
     "Max amount": "Jumlah maks.",
-    "Memos note": "Catatan memo",
+    "Memos note": "Komentar",
     "Message key": "Kunci pesan",
     "Min amount": "Jumlah min.",
     "NFT": "NFT",
@@ -291,7 +291,7 @@
     "Account": "Akun",
     "Validated": "Tervalidasi",
     "Rejected": "Ditolak",
-    "Memo": "Memo",
+    "Memo": "Komentar",
     "JWT Header": "Header JWT",
     "JWT Payload": "Payload JWT",
     "JWT Signature": "Tanda tangan JWT",

@@ -2,7 +2,7 @@
   "shared": {
     "destination-address": "수신 주소",
     "enter-amount": "금액 입력",
-    "enter-memo-optional": "메모 입력(선택 사항)",
+    "enter-memo-optional": "메시지 입력(선택 사항)",
     "it-will-be-public": "공개됩니다",
     "required": "필수",
     "currency": "통화",
@@ -201,7 +201,7 @@
     "learnFlagged": "표시된 계정에 대해 자세히 알아보기",
     "nonActiveWarning": "활성화되지 않은 계정으로는 자금을 보낼 수 없습니다.",
     "publicMemo": "공개됩니다",
-    "memoPlaceholder": "메모 입력 (선택 사항)",
+    "memoPlaceholder": "메시지 입력 (선택 사항)",
     "advancedOptions": "고급 옵션",
     "advancedPro": "로그인한 Bithomp Pro 구독자에게 제공됩니다",
     "destinationTagWarning": "대상 계정은 거래소나 수탁형 지갑이어서는 안 되며, 그렇지 않으면 자금을 잃을 수 있음을 이해합니다.",

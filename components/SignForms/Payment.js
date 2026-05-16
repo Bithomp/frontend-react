@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
 
 import AddressInput from '../UI/AddressInput'
 import { encode, isAddressValid, isNativeCurrency, isTagValid, nativeCurrency } from '../../utils'
@@ -22,6 +23,8 @@ const toInitialAmount = (amountValue) => {
 }
 
 export default function Payment({ setSignRequest, signRequest, setStatus, setFormError }) {
+  const { t } = useTranslation()
+  const { t: ts } = useTranslation('services')
   const initialRequest = signRequest?.request || {}
   const currencyCode = useMemo(() => {
     if (signRequest?.data?.currencyCode) return signRequest.data.currencyCode
@@ -301,10 +304,10 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       <br />
       <span className="halv">
         <span className="input-title">
-          Memo (<span className="orange">It will be public</span>)
+          {t('table.memo')} (<span className="orange">{ts('shared.it-will-be-public')}</span>)
         </span>
         <input
-          placeholder="Memo"
+          placeholder={ts('shared.enter-memo-optional')}
           onChange={(event) => setMemo(event.target.value)}
           className="input-text"
           spellCheck="false"

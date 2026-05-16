@@ -6117,7 +6117,7 @@ export default function Account({
                         if (!Number.isFinite(numericValue)) return null
                         return sign < 0 ? -numericValue : numericValue
                       }
-                      const buildTxAmountDisplay = ({ amount, sign, tone = 'grey', withIssuer = false }) => {
+                      const buildTxAmountDisplay = ({ amount, sign, tone = 'grey', withIssuer = false, showPlus = true }) => {
                         if (amount === null || typeof amount === 'undefined') return null
 
                         const displayAmount = typeof sign === 'number' ? toSignedDexAmount(amount, sign) : amount
@@ -6138,7 +6138,7 @@ export default function Account({
                                   icon: true,
                                   short: true,
                                   maxFractionDigits: 2,
-                                  showPlus: true
+                                  showPlus
                                 })}
                               </span>
                               {!!displayAmountFiat && <span className="tx-change-fiat">{displayAmountFiat}</span>}
@@ -6148,7 +6148,7 @@ export default function Account({
                             icon: true,
                             withIssuer,
                             precise: 'nice',
-                            showPlus: true
+                            showPlus
                           }),
                           expandedFiat: displayAmountFiat
                         }
@@ -6159,10 +6159,18 @@ export default function Account({
                           : txType === 'CheckCreate'
                             ? txdata?.specification?.sendMax
                             : null
+                      const failedPaymentAmountRaw =
+                        !isSuccessful && txType === 'Payment' && tx?.Amount ? tx.Amount : null
                       const txSpecialAmountDisplay = buildTxAmountDisplay({
                         amount: specialAmountRaw,
                         sign: isSource ? -1 : 1,
                         tone: 'grey'
+                      })
+                      const failedPaymentAmountDisplay = buildTxAmountDisplay({
+                        amount: failedPaymentAmountRaw,
+                        tone: 'grey',
+                        withIssuer: true,
+                        showPlus: false
                       })
                       const dexSpecifiedChanges = isDexNotFullfilled
                         ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
@@ -7063,6 +7071,17 @@ export default function Account({
                                     <span>{ta('labels.error-code')}:</span>
                                     <span className="orange">{failedStatusText}</span>
                                   </div>
+                                  {failedPaymentAmountDisplay && (
+                                    <div className="detail-row">
+                                      <span>{ta('labels.amount')}:</span>
+                                      <span className="tx-detail-stacked-amount">
+                                        <span className="grey">{failedPaymentAmountDisplay.expandedText}</span>
+                                        {!!failedPaymentAmountDisplay.expandedFiat && (
+                                          <span className="tx-change-fiat">{failedPaymentAmountDisplay.expandedFiat}</span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
                                   <div className="detail-row tx-fail-description-row">
                                     <span>{ta('labels.error')}:</span>
                                     <span className="orange tx-fail-description-text">
@@ -7513,7 +7532,8 @@ export default function Account({
                                 </div>
                               )}
 
-                              {txdata?.specification?.memos && memoNode(txdata.specification.memos, 'detail')}
+                              {txdata?.specification?.memos &&
+                                memoNode(txdata.specification.memos, 'detail', { memoLabel: t('table.memo') })}
 
                               {changes.length > 0 && (
                                 <div className="detail-row tx-detail-change-row">

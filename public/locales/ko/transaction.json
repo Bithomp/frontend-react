@@ -40,7 +40,7 @@
     "notValidatedAfterLedger": "레저가 이미 Ledger #{{ledger}} 를 지났다면 검증되지 않습니다.",
     "specifiedFee": "트랜잭션 수수료로 {{fee}} 사용이 지정되었습니다.",
     "memosThirdParty": {
-      "prefix": "메모는 Escrow를 완료한 제3자",
+      "prefix": "메시지는 Escrow를 완료한 제3자",
       "suffix": "Escrow를 완료했습니다."
     },
     "affectedAccounts": {
@@ -200,7 +200,7 @@
     "Master key": "마스터 키",
     "Max Amount": "최대 금액",
     "Max amount": "최대 금액",
-    "Memos note": "메모 참고",
+    "Memos note": "메시지",
     "Message key": "메시지 키",
     "Min amount": "최소 금액",
     "NFT": "NFT",
@@ -291,7 +291,7 @@
     "Account": "계정",
     "Validated": "검증됨",
     "Rejected": "거부됨",
-    "Memo": "메모",
+    "Memo": "메시지",
     "JWT Header": "JWT 헤더",
     "JWT Payload": "JWT 페이로드",
     "JWT Signature": "JWT 서명",

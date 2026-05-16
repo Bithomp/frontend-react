@@ -2,7 +2,7 @@
   "shared": {
     "destination-address": "送信先アドレス",
     "enter-amount": "金額を入力",
-    "enter-memo-optional": "メモを入力（任意）",
+    "enter-memo-optional": "コメントを入力（任意）",
     "it-will-be-public": "公開されます",
     "required": "必須",
     "currency": "通貨",
@@ -201,7 +201,7 @@
     "learnFlagged": "マークされたアカウントについて詳しく見る",
     "nonActiveWarning": "未アクティベートのアカウントへは資金を送信できません。",
     "publicMemo": "公開されます",
-    "memoPlaceholder": "メモを入力 (任意)",
+    "memoPlaceholder": "コメントを入力（任意）",
     "advancedOptions": "詳細オプション",
     "advancedPro": "ログイン済みのBithomp Pro登録者が利用できます",
     "destinationTagWarning": "宛先アカウントは取引所またはカストディアルウォレットであってはならないことを理解しています。そうでない場合、資金を失う可能性があります。",

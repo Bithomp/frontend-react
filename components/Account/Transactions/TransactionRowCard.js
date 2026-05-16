@@ -206,7 +206,7 @@ export const TransactionRowCard = ({
             <br />
           </>
         )}
-        {memoNode(specification?.memos, 'div')}
+        {memoNode(specification?.memos, 'div', { memoLabel: txT('labels.Memo') })}
         Tx hash:{' '}
         <LinkTx tx={tx.hash} copy={true}>
           {width > 800 ? tx.hash : shortHash(tx.hash, 12)}

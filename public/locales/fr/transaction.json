@@ -40,7 +40,7 @@
     "notValidatedAfterLedger": "Elle ne sera pas validée si le ledger a déjà dépassé le Ledger #{{ledger}}.",
     "specifiedFee": "{{fee}} a été indiqué comme frais de transaction.",
     "memosThirdParty": {
-      "prefix": "Les memos ont été ajoutés par le tiers",
+      "prefix": "Les commentaires ont été ajoutés par le tiers",
       "suffix": "qui a terminé l’escrow."
     },
     "affectedAccounts": {
@@ -200,7 +200,7 @@
     "Master key": "Clé maître",
     "Max Amount": "Montant max",
     "Max amount": "Montant max",
-    "Memos note": "Note memos",
+    "Memos note": "Commentaire",
     "Message key": "Clé de message",
     "Min amount": "Montant min",
     "NFT": "NFT",
@@ -291,7 +291,7 @@
     "Account": "Compte",
     "Validated": "Validée",
     "Rejected": "Rejetée",
-    "Memo": "Mémo",
+    "Memo": "Commentaire",
     "JWT Header": "En-tête JWT",
     "JWT Payload": "Charge utile JWT",
     "JWT Signature": "Signature JWT",

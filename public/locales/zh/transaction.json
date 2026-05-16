@@ -40,7 +40,7 @@
     "notValidatedAfterLedger": "如果 Ledger 已经通过了 Ledger #{{ledger}}，则不会进行验证。",
     "specifiedFee": "指定花费{{fee}}作为交易费用。",
     "memosThirdParty": {
-      "prefix": "备忘录由第三方添加",
+      "prefix": "备注由第三方添加",
       "suffix": "完成了Escrow。"
     },
     "affectedAccounts": {
@@ -200,7 +200,7 @@
     "Master key": "万能钥匙",
     "Max Amount": "最大数量",
     "Max amount": "最大数量",
-    "Memos note": "备忘录",
+    "Memos note": "备注",
     "Message key": "留言键",
     "Min amount": "最低数量",
     "NFT": "NFT",
@@ -291,7 +291,7 @@
     "Account": "账户",
     "Validated": "已验证",
     "Rejected": "已拒绝",
-    "Memo": "备忘录",
+    "Memo": "备注",
     "JWT Header": "JWT 标头",
     "JWT Payload": "JWT 有效负载",
     "JWT Signature": "智威汤逊签名",

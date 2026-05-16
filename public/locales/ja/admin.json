@@ -97,7 +97,7 @@
     "fiat": "Fiat",
     "fiat-equivalent-currency": "法定通貨換算（{{currency}}）",
     "transaction": "トランザクション",
-    "memo": "メモ",
+    "memo": "コメント",
     "transfer-fee": "送金手数料",
     "network-fee": "ネットワーク手数料",
     "balance-change": "残高変更",

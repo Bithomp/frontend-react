@@ -534,7 +534,7 @@
     "name": "Nama",
     "sender": "Pengirim",
     "balance": "Saldo",
-    "memo": "Memo",
+    "memo": "Komentar",
     "transaction": "Transaksi",
     "owner": "Pemilik",
     "owners-now": "Pemilik (saat ini)",

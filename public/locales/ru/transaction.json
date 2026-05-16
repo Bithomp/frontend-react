@@ -40,7 +40,7 @@
     "notValidatedAfterLedger": "Она не будет подтверждена, если леджер уже прошел Ledger #{{ledger}}.",
     "specifiedFee": "В транзакции было указано потратить {{fee}} как комиссию.",
     "memosThirdParty": {
-      "prefix": "Memos добавлены третьей стороной",
+      "prefix": "Комментарии добавлены третьей стороной",
       "suffix": "которая завершила escrow."
     },
     "affectedAccounts": {
@@ -200,7 +200,7 @@
     "Master key": "Мастер-ключ",
     "Max Amount": "Макс. сумма",
     "Max amount": "Макс. сумма",
-    "Memos note": "Заметка memos",
+    "Memos note": "Комментарий",
     "Message key": "Ключ сообщений",
     "Min amount": "Мин. сумма",
     "NFT": "NFT",
@@ -291,7 +291,7 @@
     "Account": "Аккаунт",
     "Validated": "Подтверждена",
     "Rejected": "Отклонена",
-    "Memo": "Мемо",
+    "Memo": "Комментарий",
     "JWT Header": "Заголовок JWT",
     "JWT Payload": "Данные JWT",
     "JWT Signature": "Подпись JWT",

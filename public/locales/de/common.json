@@ -534,7 +534,7 @@
     "name": "Name",
     "sender": "Absender",
     "balance": "Kontostand",
-    "memo": "Memo",
+    "memo": "Kommentar",
     "transaction": "Transaktion",
     "owner": "Besitzer",
     "owners-now": "Besitzer (jetzt)",

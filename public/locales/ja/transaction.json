@@ -40,7 +40,7 @@
     "notValidatedAfterLedger": "Ledger #{{ledger}} をすでに過ぎている場合、このトランザクションは検証されません。",
     "specifiedFee": "トランザクション手数料として {{fee}} を支払う指定でした。",
     "memosThirdParty": {
-      "prefix": "Memos は第三者",
+      "prefix": "コメントは第三者",
       "suffix": "によって追加され、Escrow が完了されました。"
     },
     "affectedAccounts": {
@@ -200,7 +200,7 @@
     "Master key": "マスターキー",
     "Max Amount": "最大金額",
     "Max amount": "最大金額",
-    "Memos note": "メモ注記",
+    "Memos note": "コメント",
     "Message key": "メッセージキー",
     "Min amount": "最小金額",
     "NFT": "NFT",
@@ -291,7 +291,7 @@
     "Account": "アカウント",
     "Validated": "検証済み",
     "Rejected": "拒否",
-    "Memo": "メモ",
+    "Memo": "コメント",
     "JWT Header": "JWTヘッダー",
     "JWT Payload": "JWTペイロード",
     "JWT Signature": "JWT署名",

@@ -2,7 +2,7 @@
   "shared": {
     "destination-address": "Adresse de destination",
     "enter-amount": "Saisissez le montant",
-    "enter-memo-optional": "Saisissez un mémo (facultatif)",
+    "enter-memo-optional": "Saisissez un commentaire (facultatif)",
     "it-will-be-public": "Il sera public",
     "required": "obligatoire",
     "currency": "Devise",
@@ -201,7 +201,7 @@
     "learnFlagged": "En savoir plus sur les comptes signalés",
     "nonActiveWarning": "Vous ne pouvez pas envoyer de fonds vers un compte non activé.",
     "publicMemo": "Ce sera public",
-    "memoPlaceholder": "Saisir un mémo (facultatif)",
+    "memoPlaceholder": "Saisir un commentaire (facultatif)",
     "advancedOptions": "Options avancées",
     "advancedPro": "disponible pour les abonnés Bithomp Pro connectés",
     "destinationTagWarning": "Je reconnais que le compte de destination NE DOIT PAS être une plateforme d’échange ni un wallet custodial, car cela peut entraîner une perte de fonds.",

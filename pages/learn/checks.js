@@ -214,7 +214,7 @@ export default function Checks() {
             <li>The amount that can be claimed</li>
             <li>An optional expiration period</li>
             <li>Destination tag (if required)</li>
-            <li>Memo (will be public)</li>
+            <li>Comment (will be public)</li>
           </ul>
 
           <p>This removes the need to manually construct and submit {ledgerName} transactions.</p>

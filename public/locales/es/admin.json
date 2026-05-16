@@ -97,7 +97,7 @@
     "fiat": "Fiat",
     "fiat-equivalent-currency": "Equivalente en fiat ({{currency}})",
     "transaction": "Transacción",
-    "memo": "Nota",
+    "memo": "Comentario",
     "transfer-fee": "Comisión de transferencia",
     "network-fee": "Comisión de red",
     "balance-change": "Cambio de saldo",

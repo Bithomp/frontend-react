@@ -534,7 +534,7 @@
     "name": "Nom",
     "sender": "Expéditeur",
     "balance": "Solde",
-    "memo": "Mémo",
+    "memo": "Commentaire",
     "transaction": "Transaction",
     "owner": "Propriétaire",
     "owners-now": "Propriétaires (maintenant)",

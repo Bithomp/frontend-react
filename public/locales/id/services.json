@@ -2,7 +2,7 @@
   "shared": {
     "destination-address": "Alamat tujuan",
     "enter-amount": "Masukkan jumlah",
-    "enter-memo-optional": "Masukkan memo (opsional)",
+    "enter-memo-optional": "Masukkan komentar (opsional)",
     "it-will-be-public": "Ini akan bersifat publik",
     "required": "wajib",
     "currency": "Mata uang",
@@ -201,7 +201,7 @@
     "learnFlagged": "Pelajari akun yang ditandai",
     "nonActiveWarning": "Anda tidak dapat mengirim dana ke akun yang belum diaktifkan.",
     "publicMemo": "Ini akan bersifat publik",
-    "memoPlaceholder": "Masukkan memo (opsional)",
+    "memoPlaceholder": "Masukkan komentar (opsional)",
     "advancedOptions": "Opsi lanjutan",
     "advancedPro": "tersedia untuk pelanggan Bithomp Pro yang sudah login",
     "destinationTagWarning": "Saya memahami bahwa akun tujuan TIDAK BOLEH berupa exchange atau wallet kustodial, karena dapat menyebabkan kehilangan dana.",

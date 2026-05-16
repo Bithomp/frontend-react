@@ -139,7 +139,7 @@ export default function CreateEscrow() {
               <strong>Step 2. Enter the Amount</strong>
             </p>
             <p>Specify how much {nativeCurrency} you want to lock in escrow.</p>
-            <strong>Step 3. Add a Memo (Optional)</strong>
+            <strong>Step 3. Add a Comment (Optional)</strong>
             <p>You can include a memo. Keep in mind that it will be public on the blockchain.</p>
             <p>
               <strong>Step 4. Set the Escrow Conditions</strong>

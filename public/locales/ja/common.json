@@ -534,7 +534,7 @@
     "name": "名前",
     "sender": "送信者",
     "balance": "残高",
-    "memo": "メモ",
+    "memo": "コメント",
     "transaction": "トランザクション",
     "owner": "保有者",
     "owners-now": "保有者数 (現在)",

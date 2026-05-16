@@ -533,7 +533,7 @@
     "amount": "Cantidad",
     "name": "Nombre",
     "sender": "Remitente",
-    "memo": "Memo",
+    "memo": "Comentario",
     "balance": "Saldo",
     "transaction": "Transacción",
     "owner": "Dueño",
