@@ -46,13 +46,7 @@ import {
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
-import {
-  isAddressOrUsername,
-  nativeCurrency,
-  tokenImageSrc,
-  validateCurrencyCode,
-  xahauNetwork
-} from '../../utils'
+import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenTabs from '../../components/Tabs/TokenTabs'
 import HomeTeaser, { HomeTeaseRow } from '../../components/Home/HomeTeaser'
@@ -291,45 +285,51 @@ export default function TokenPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, selectedToken])
 
-  const fetchDexSwaps = useCallback(async ({ clear = false } = {}) => {
-    if (!token) {
+  const fetchDexSwaps = useCallback(
+    async ({ clear = false } = {}) => {
+      if (!token) {
+        setDexSwapsLoading(false)
+        return
+      }
+      const requestId = dexSwapsRequestRef.current + 1
+      dexSwapsRequestRef.current = requestId
+      if (clear) {
+        setDexSwaps([])
+      }
+      setDexSwapsLoading(true)
+
+      const response = await axios(tokenSwapsUrl(token, 'dex')).catch(() => null)
+
+      if (dexSwapsRequestRef.current !== requestId) return
+
+      setDexSwaps(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
       setDexSwapsLoading(false)
-      return
-    }
-    const requestId = dexSwapsRequestRef.current + 1
-    dexSwapsRequestRef.current = requestId
-    if (clear) {
-      setDexSwaps([])
-    }
-    setDexSwapsLoading(true)
+    },
+    [token]
+  )
 
-    const response = await axios(tokenSwapsUrl(token, 'dex')).catch(() => null)
+  const fetchTransfers = useCallback(
+    async ({ clear = false } = {}) => {
+      if (!token) {
+        setTransfersLoading(false)
+        return
+      }
+      const requestId = transfersRequestRef.current + 1
+      transfersRequestRef.current = requestId
+      if (clear) {
+        setTransfers([])
+      }
+      setTransfersLoading(true)
 
-    if (dexSwapsRequestRef.current !== requestId) return
+      const response = await axios(tokenSwapsUrl(token, 'transfer')).catch(() => null)
 
-    setDexSwaps(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
-    setDexSwapsLoading(false)
-  }, [token])
+      if (transfersRequestRef.current !== requestId) return
 
-  const fetchTransfers = useCallback(async ({ clear = false } = {}) => {
-    if (!token) {
+      setTransfers(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
       setTransfersLoading(false)
-      return
-    }
-    const requestId = transfersRequestRef.current + 1
-    transfersRequestRef.current = requestId
-    if (clear) {
-      setTransfers([])
-    }
-    setTransfersLoading(true)
-
-    const response = await axios(tokenSwapsUrl(token, 'transfer')).catch(() => null)
-
-    if (transfersRequestRef.current !== requestId) return
-
-    setTransfers(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
-    setTransfersLoading(false)
-  }, [token])
+    },
+    [token]
+  )
 
   const clearRefreshCooldown = useCallback((timeoutRef, intervalRef, setHidden, setSeconds) => {
     if (timeoutRef.current) {
@@ -805,7 +805,9 @@ export default function TokenPage({
       <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
         <AddressWithIconInline data={row} name="address2" options={{ short: activityAddressShort, noLink: true }} />
       </div>
-      <div className={`${homeTeaserStyles.metric} ${homeTeaserStyles.metricWithDelta} ${homeTeaserStyles.whaleFiat} ${tokenTransferMetric}`}>
+      <div
+        className={`${homeTeaserStyles.metric} ${homeTeaserStyles.metricWithDelta} ${homeTeaserStyles.whaleFiat} ${tokenTransferMetric}`}
+      >
         {renderActivityAmount(row.amount1)}
       </div>
     </HomeTeaseRow>
@@ -869,7 +871,12 @@ export default function TokenPage({
             }}
           >
             <div style={{ width: '100%', marginBottom: '20px' }}>
-              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={false} />
+              <TokenSelector
+                value={selectedToken}
+                onChange={setSelectedToken}
+                excludeNative={false}
+                excludeLPtokens={true}
+              />
             </div>
           </div>
           <div className="column-left">
