@@ -569,6 +569,51 @@
   }
 }
 
+@media (max-width: 640px) {
+  .cardHeaderWithActions {
+    flex-wrap: wrap;
+
+    .cardHeaderTitleWrap {
+      flex: 1 1 calc(100% - 40px);
+      max-width: calc(100% - 40px);
+      order: 1;
+    }
+
+    .cardHeaderTitle {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cardHeaderControls {
+      display: contents;
+    }
+
+    .cardHeaderActions {
+      order: 3;
+      flex: 1 1 100%;
+      justify-content: flex-start;
+      gap: 5px;
+    }
+
+    .cardHeaderActionButton {
+      font-size: 10px;
+      padding: 3px 7px;
+      letter-spacing: 0.02em;
+    }
+
+    .cardRefreshControl {
+      order: 2;
+      margin-left: auto;
+    }
+
+    .cardHeaderLink {
+      order: 2;
+      margin-left: auto;
+    }
+  }
+}
+
 .chartCard {
   @media (max-width: 919px) {
     .cardHeader {

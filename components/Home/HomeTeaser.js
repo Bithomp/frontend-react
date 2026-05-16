@@ -34,6 +34,7 @@ export default function HomeTeaser({
   onRefresh = null,
   isRefreshHidden = false,
   refreshCooldownSeconds = 0,
+  headerActions = null,
   isEmpty = false,
   emptyText = '',
   children,
@@ -46,7 +47,7 @@ export default function HomeTeaser({
 
   return (
     <div className={`${styles.teaser} ${className}`.trim()}>
-      <div className={styles.cardHeader}>
+      <div className={`${styles.cardHeader} ${headerActions ? styles.cardHeaderWithActions : ''}`.trim()}>
         <div className={styles.cardHeaderTitleWrap}>
           <h2 className={styles.cardHeaderTitle}>
             {titleText || t(title)}
@@ -55,6 +56,7 @@ export default function HomeTeaser({
           {titleNote ? <span className={styles.cardHeaderNote}>{titleNote}</span> : null}
         </div>
         <div className={styles.cardHeaderControls}>
+          {headerActions ? <div className={styles.cardHeaderActions}>{headerActions}</div> : null}
           {onRefresh ? (
             <span
               className={`${styles.cardRefreshControl} ${isRefreshHidden ? 'tooltip' : ''}`.trim()}

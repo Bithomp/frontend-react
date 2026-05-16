@@ -52,7 +52,7 @@ import TokenTabs from '../../components/Tabs/TokenTabs'
 import HomeTeaser, { HomeTeaseRow } from '../../components/Home/HomeTeaser'
 import homeTeaserStyles from '@/styles/components/home-teaser.module.scss'
 
-const tokenSwapsUrl = (token, type) => {
+const tokenSwapsUrl = (token, type, limit = 5) => {
   if (!token) return ''
   const mptId = token?.mptokenIssuanceID
   const tokenPath = mptId
@@ -61,9 +61,11 @@ const tokenSwapsUrl = (token, type) => {
       ? `${encodeURIComponent(token.issuer)}/${encodeURIComponent(token.currency)}`
       : encodeURIComponent(nativeCurrency)
 
-  return `v2/token/${tokenPath}/swaps?limit=5&type=${type}`
+  return `v2/token/${tokenPath}/swaps?limit=${limit}&type=${type}`
 }
 
+const TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH = 'amountHigh'
+const TOKEN_ACTIVITY_ORDER_LATEST = 'latest'
 const REFRESH_COOLDOWN_MS = 30000
 
 // Server side initial data fetch
@@ -222,6 +224,8 @@ export default function TokenPage({
   const [transfersRefreshHidden, setTransfersRefreshHidden] = useState(false)
   const [dexSwapsRefreshSeconds, setDexSwapsRefreshSeconds] = useState(0)
   const [transfersRefreshSeconds, setTransfersRefreshSeconds] = useState(0)
+  const [dexSwapsOrder, setDexSwapsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
+  const [transfersOrder, setTransfersOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const errorMessage = initialErrorMessage || ''
   const tokenErrorTranslations = {
     'Token not found': tt('errors.notFound'),
@@ -298,14 +302,15 @@ export default function TokenPage({
       }
       setDexSwapsLoading(true)
 
-      const response = await axios(tokenSwapsUrl(token, 'dex')).catch(() => null)
+      const orderQuery = dexSwapsOrder === TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH ? '&order=amountHigh' : ''
+      const response = await axios(tokenSwapsUrl(token, 'dex') + orderQuery).catch(() => null)
 
       if (dexSwapsRequestRef.current !== requestId) return
 
       setDexSwaps(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
       setDexSwapsLoading(false)
     },
-    [token]
+    [dexSwapsOrder, token]
   )
 
   const fetchTransfers = useCallback(
@@ -321,14 +326,15 @@ export default function TokenPage({
       }
       setTransfersLoading(true)
 
-      const response = await axios(tokenSwapsUrl(token, 'transfer')).catch(() => null)
+      const orderQuery = transfersOrder === TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH ? '&order=amountHigh' : ''
+      const response = await axios(tokenSwapsUrl(token, 'transfer', 10) + orderQuery).catch(() => null)
 
       if (transfersRequestRef.current !== requestId) return
 
-      setTransfers(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
+      setTransfers(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 10) : [])
       setTransfersLoading(false)
     },
-    [token]
+    [token, transfersOrder]
   )
 
   const clearRefreshCooldown = useCallback((timeoutRef, intervalRef, setHidden, setSeconds) => {
@@ -394,17 +400,18 @@ export default function TokenPage({
       setDexSwapsRefreshHidden,
       setDexSwapsRefreshSeconds
     )
+    fetchDexSwaps()
+  }, [clearRefreshCooldown, fetchDexSwaps])
+
+  useEffect(() => {
     clearRefreshCooldown(
       transfersRefreshTimeoutRef,
       transfersRefreshIntervalRef,
       setTransfersRefreshHidden,
       setTransfersRefreshSeconds
     )
-    setDexSwaps([])
-    setTransfers([])
-    fetchDexSwaps()
     fetchTransfers()
-  }, [clearRefreshCooldown, fetchDexSwaps, fetchTransfers])
+  }, [clearRefreshCooldown, fetchTransfers])
 
   useEffect(
     () => () => {
@@ -731,7 +738,7 @@ export default function TokenPage({
   }
 
   const renderSwapSource = (row) => {
-    if (row.amm_id) return 'AMM'
+    if (row.ammID) return 'AMM'
     return 'DEX'
   }
 
@@ -740,8 +747,8 @@ export default function TokenPage({
 
     return (
       <HomeTeaseRow
-        key={`dex-${row.tx_hash || row.timestamp}-${row.amm_id || row.offer_id || 'swap'}-${index}`}
-        href={`/tx/${row.tx_hash}`}
+        key={`dex-${row.txHash || row.timestamp}-${row.ammID || row.offerID || 'swap'}-${index}`}
+        href={`/tx/${row.txHash}`}
         className={tokenSwapRow}
       >
         <div className={homeTeaserStyles.timeAgo}>{timeFormat(row.timestamp)}</div>
@@ -793,8 +800,8 @@ export default function TokenPage({
 
   const renderTransferRow = (row, index) => (
     <HomeTeaseRow
-      key={`transfer-${row.tx_hash || row.timestamp}-${row.address1 || ''}-${row.address2 || ''}-${index}`}
-      href={`/tx/${row.tx_hash}`}
+      key={`transfer-${row.txHash || row.timestamp}-${row.address1 || ''}-${row.address2 || ''}-${index}`}
+      href={`/tx/${row.txHash}`}
       className={`${homeTeaserStyles.whaleRow} ${tokenTransferRow}`}
     >
       <div className={homeTeaserStyles.timeAgo}>{timeFormat(row.timestamp)}</div>
@@ -813,6 +820,29 @@ export default function TokenPage({
     </HomeTeaseRow>
   )
 
+  const renderActivityOrderToggle = (value, setValue) => (
+    <>
+      <button
+        type="button"
+        className={`${homeTeaserStyles.cardHeaderActionButton} ${
+          value === TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH ? homeTeaserStyles.cardHeaderActionButtonActive : ''
+        }`.trim()}
+        onClick={() => setValue(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)}
+      >
+        {tt('activity.largest24h')}
+      </button>
+      <button
+        type="button"
+        className={`${homeTeaserStyles.cardHeaderActionButton} ${
+          value === TOKEN_ACTIVITY_ORDER_LATEST ? homeTeaserStyles.cardHeaderActionButtonActive : ''
+        }`.trim()}
+        onClick={() => setValue(TOKEN_ACTIVITY_ORDER_LATEST)}
+      >
+        {tt('activity.latest')}
+      </button>
+    </>
+  )
+
   const renderTokenActivityWidget = ({
     title,
     titleText,
@@ -822,9 +852,11 @@ export default function TokenPage({
     onRefresh,
     isRefreshHidden = false,
     refreshCooldownSeconds = 0,
-    emptyText
+    headerActions = null,
+    emptyText,
+    limit = 5
   }) => {
-    const visibleRows = Array.isArray(rows) ? rows.slice(0, 5) : []
+    const visibleRows = Array.isArray(rows) ? rows.slice(0, limit) : []
 
     return (
       <HomeTeaser
@@ -835,6 +867,7 @@ export default function TokenPage({
         onRefresh={onRefresh}
         isRefreshHidden={isRefreshHidden}
         refreshCooldownSeconds={refreshCooldownSeconds}
+        headerActions={headerActions}
         isEmpty={!visibleRows.length}
         emptyText={emptyText}
         className={`${homeTeaserStyles.whaleCard} ${tokenActivityCard}`}
@@ -1352,25 +1385,28 @@ export default function TokenPage({
             )}
 
             {renderTokenActivityWidget({
-              titleText: tt('activity.lastDexSwaps'),
+              titleText: tt('activity.dexSwaps'),
               rows: dexSwaps,
               rowRenderer: renderDexSwapRow,
               loading: dexSwapsLoading,
               onRefresh: refreshDexSwaps,
               isRefreshHidden: dexSwapsRefreshHidden,
               refreshCooldownSeconds: dexSwapsRefreshSeconds,
+              headerActions: renderActivityOrderToggle(dexSwapsOrder, setDexSwapsOrder),
               emptyText: tt('activity.noData24h')
             })}
 
             {renderTokenActivityWidget({
-              titleText: tt('activity.lastTransfers'),
+              titleText: tt('activity.transfers'),
               rows: transfers,
               rowRenderer: renderTransferRow,
               loading: transfersLoading,
               onRefresh: refreshTransfers,
               isRefreshHidden: transfersRefreshHidden,
               refreshCooldownSeconds: transfersRefreshSeconds,
-              emptyText: tt('activity.noData24h')
+              headerActions: renderActivityOrderToggle(transfersOrder, setTransfersOrder),
+              emptyText: tt('activity.noData24h'),
+              limit: 10
             })}
           </div>
         </div>
