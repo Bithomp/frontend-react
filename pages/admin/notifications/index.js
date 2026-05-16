@@ -296,10 +296,10 @@ const setupGuides = [
     icon: FaXTwitter,
     title: 'X / Twitter',
     description:
-      'Use the API Key, API Key Secret, Access Token, and Access Token Secret from the X Developer Portal app.',
-    steps: ['Developer Portal', 'Project app', 'Read and write permissions', 'Keys and tokens'],
-    portalHref: 'https://developer.twitter.com/en/portal/dashboard',
-    portalLabel: 'Open X Developer Portal',
+      'Use the Consumer Key, Consumer Key Secret, Access Token, and Access Token Secret from the X Dev Console app.',
+    steps: ['X Dev Console', 'App permissions', 'Keys and tokens', 'X credits'],
+    portalHref: 'https://console.x.com/onboarding',
+    portalLabel: 'Open X Dev Console',
     guideHref: '/admin/notifications/x-guide'
   }
 ]

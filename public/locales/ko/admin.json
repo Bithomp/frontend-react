@@ -536,8 +536,8 @@
       "webhook": "Webhook URL",
       "username": "봇 사용자 이름",
       "email": "이메일 주소",
-      "consumer_key": "API 키",
-      "consumer_secret": "API 키 시크릿",
+      "consumer_key": "API Key (Consumer Key)",
+      "consumer_secret": "API Key Secret (Consumer Key Secret)",
       "access_token_key": "액세스 토큰",
       "access_token_secret": "액세스 토큰 시크릿",
       "bot-username": "봇 사용자 이름",
@@ -549,8 +549,8 @@
       "webhook": "수신 Webhook URL.",
       "username": "봇이 표시하는 이름입니다.",
       "email": "알림을 받아야 하는 주소입니다.",
-      "consumer_key": "X에서는 API Key로 표시됩니다.",
-      "consumer_secret": "API Key와 함께 한 번만 표시됩니다.",
+      "consumer_key": "X에서는 Consumer Key로 표시됩니다.",
+      "consumer_secret": "X에서는 Consumer Key Secret으로 표시되며 Consumer Key와 함께 한 번만 표시됩니다.",
       "access_token_key": "앱에 Read and write 권한을 부여한 후 생성합니다.",
       "access_token_secret": "Access Token과 함께 생성하고 비공개로 보관하세요."
     },
@@ -558,8 +558,8 @@
       "webhook": "https://hooks.example.com/...",
       "username": "빗썸 봇",
       "email": "이름@example.com",
-      "consumer_key": "X의 API Key",
-      "consumer_secret": "X의 API Key Secret",
+      "consumer_key": "X의 Consumer Key",
+      "consumer_secret": "X의 Consumer Key Secret",
       "access_token_key": "X의 Access Token",
       "access_token_secret": "X의 Access Token Secret"
     },
@@ -594,14 +594,14 @@
       },
       "twitter_api": {
         "title": "X / Twitter",
-        "description": "X Developer Portal 앱의 API Key, API Key Secret, Access Token, Access Token Secret을 사용하세요.",
+        "description": "X Dev Console 앱의 Consumer Key, Consumer Key Secret, Access Token, Access Token Secret을 사용하세요.",
         "steps": [
-          "개발자 포털",
-          "프로젝트 앱",
-          "Read and write 권한",
-          "키와 토큰"
+          "X Dev Console",
+          "앱 권한",
+          "Keys and tokens",
+          "X 크레딧"
         ],
-        "portal-link": "X Developer Portal 열기"
+        "portal-link": "X Dev Console 열기"
       }
     },
     "destination": {
@@ -777,16 +777,16 @@
       "seo-description": "경고용 X API 키를 생성하는 방법.",
       "eyebrow": "X / 트위터 설정",
       "title": "X 알림 설정",
-      "intro": "X 개발자 앱을 만들고, 쓰기 권한을 활성화하고, 4개의 필수 키를 경고에 복사하세요.",
+      "intro": "X Dev Console에서 앱을 만들고, 쓰기 권한을 활성화하고, 4개의 필수 키를 Alerts에 복사하세요.",
       "before-title": "시작하기 전에",
       "before": {
         "account": "알림 게시 전용 X 계정을 사용하세요.",
         "private": "생성된 모든 키를 비공개로 유지하세요.",
         "write": "앱에Read and write권한이 있어야 합니다.",
-        "regenerate": "권한을 변경한 후 Access Token을 다시 생성합니다."
+        "balance": "X Dev Console 계정에 크레딧을 추가하세요. 잔액이 없으면 봇이 게시하지 못합니다."
       },
       "back": "알림으로 돌아가기",
-      "open-portal": "X Developer Portal 열기",
+      "open-portal": "X Dev Console 열기",
       "steps": [
         {
           "title": "X 계정 생성 또는 개설",
@@ -804,43 +804,39 @@
         },
         {
           "title": "X 개발자 액세스 신청",
-          "text": "X Developer Portal을 열고 사용 가능한 무료 개발자 계정 옵션을 선택한 다음 알림 봇에 대한 간단한 설명으로 동의 양식을 작성하세요.",
+          "text": "console.x.com/onboarding에서 X Dev Console을 열고 알림 봇에 대한 간단한 설명으로 개발자 계약을 완료하세요.",
           "images": [
-            "X 개발자 플랫폼 페이지를 엽니다.",
-            "개발자 플랜 페이지에서 무료 계정 옵션을 선택하세요.",
-            "개발자 계약 양식을 열고 사용 목적을 입력하세요.",
-            "필수 정책 확인란을 수락하고 양식을 제출하세요."
+            "계정 이름과 사용 사례를 입력하고 개발자 계약에 동의한 다음 양식을 제출하세요."
           ]
         },
         {
-          "title": "프로젝트 앱 열기 및 키 생성",
-          "text": "Developer Portal은 프로젝트와 앱을 생성합니다. 해당 앱을 연 다음 Keys and tokens에서 Alerts 채널에 필요한 API Key 쌍과 Access Token 쌍을 생성합니다.",
+          "title": "앱을 열고 Consumer Key 쌍 저장",
+          "text": "개발자 액세스가 활성화되면 X Dev Console에서 Apps를 열고 앱을 선택하세요. Keys and Tokens에서 OAuth 1.0 Consumer Key 쌍을 생성하고 API Key 및 API Key Secret으로 Alerts에 복사하세요.",
           "images": [
-            "Developer Portal 대시보드에서 기본 프로젝트와 앱을 엽니다.",
-            "프로젝트 개요를 확인하고 왼쪽 메뉴에서 앱을 선택하세요.",
-            "앱 설정을 열고 사용자 인증 설정에서 설정을 클릭하세요.",
-            "Keys and tokens를 열어 API Key, API Key Secret, Access Token, Access Token Secret을 생성합니다.",
-            "API Key와 API Key Secret을 저장합니다. 이는 Bithomp Alerts의 처음 두 필드와 일치합니다.",
-            "Access Token과 Access Token Secret을 저장합니다. Read Only 권한으로 생성된 경우 다음 단계에서 권한을 업데이트합니다."
+            "X Dev Console 대시보드에서 Apps를 여세요. 봇을 사용하기 전에 X Dev Console 잔액에 크레딧을 추가하세요.",
+            "Bithomp Alerts를 게시할 앱을 선택하세요.",
+            "Keys and Tokens에서 OAuth 1.0 Consumer Key의 Regenerate를 클릭하세요.",
+            "Consumer Key와 Consumer Key Secret을 복사한 다음 Bithomp Alerts의 API Key와 API Key Secret에 붙여넣으세요."
           ]
         },
         {
           "title": "쓰기 권한 활성화",
-          "text": "앱이 알림을 게시하려면 먼저 Read and write 권한이 있어야 합니다. 권한을 변경한 후 새 토큰이 쓸 수 있도록 Access Token과 Access Token Secret을 다시 생성합니다.",
+          "text": "앱이 알림을 게시하려면 먼저 Read and write 권한이 있어야 합니다. Access Token을 생성하기 전에 권한을 설정하면 토큰이 쓰기 액세스로 생성됩니다.",
           "images": [
-            "사용자 인증 설정에서 Read and write 권한을 선택합니다.",
+            "User authentication settings를 열고 Set up을 클릭하세요.",
+            "Read and write 권한을 선택하세요.",
             "앱 유형으로 웹 앱, 자동화된 앱 또는 봇을 선택합니다.",
-            "필수 콜백 URI/리디렉션 URL 및 웹사이트 URL 필드를 입력합니다.",
-            "공개 콜백과 웹사이트 URL을 사용한 다음 설정을 저장하세요.",
-            "X가 요청할 때 권한 변경을 확인하십시오.",
+            "Callback URI / Redirect URL과 Website URL을 입력한 다음 변경 사항을 저장하세요.",
             "X는 저장 후 OAuth 2.0 클라이언트 ID와 클라이언트 비밀번호를 표시합니다. 이는 4개의 경고 채널 필드가 아닙니다."
           ]
         },
         {
           "title": "키를 Bithomp Alerts에 복사합니다",
-          "text": "Read and write를 저장한 후 Keys and tokens로 돌아갑니다. API Key, API Key Secret, Access Token, Access Token Secret을 Alerts 페이지의 해당 필드에 붙여넣습니다. 권한을 변경하기 전에 Access Token이 생성된 경우 먼저 다시 생성하세요.",
+          "text": "Read and write를 저장한 후 Keys and Tokens로 돌아갑니다. Access Token 쌍을 생성하고 네 값을 Bithomp Alerts의 해당 필드에 붙여넣은 다음 X Dev Console 계정에 크레딧이 있는지 확인하세요.",
           "images": [
-
+            "Access Token 행에 Read and write가 표시되는지 확인한 다음 Access Token 쌍을 생성하세요.",
+            "Access Token과 Access Token Secret을 복사한 다음 Bithomp Alerts의 해당 필드에 붙여넣으세요.",
+            "API Key (Consumer Key), API Key Secret (Consumer Key Secret), Access Token, Access Token Secret으로 Bithomp 채널을 저장하세요. 봇이 작동하려면 X Dev Console 크레딧도 필요합니다."
           ]
         }
       ]

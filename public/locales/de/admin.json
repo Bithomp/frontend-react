@@ -536,8 +536,8 @@
       "webhook": "Webhook URL",
       "username": "Bot-Benutzername",
       "email": "E-Mail-Adresse",
-      "consumer_key": "API-Schlüssel",
-      "consumer_secret": "API-Schlüssel-Secret",
+      "consumer_key": "API Key (Consumer Key)",
+      "consumer_secret": "API Key Secret (Consumer Key Secret)",
       "access_token_key": "Zugriffstoken",
       "access_token_secret": "Zugriffstoken-Secret",
       "bot-username": "Bot-Benutzername",
@@ -549,8 +549,8 @@
       "webhook": "Eingehendwebhook URL.",
       "username": "Vom Bot angezeigter Name.",
       "email": "Adresse, die Benachrichtigungen erhalten soll.",
-      "consumer_key": "Wird in X als API Key angezeigt.",
-      "consumer_secret": "Wird einmal zusammen mit dem API Key angezeigt.",
+      "consumer_key": "Wird in X als Consumer Key angezeigt.",
+      "consumer_secret": "Wird in X als Consumer Key Secret angezeigt und einmal zusammen mit dem Consumer Key eingeblendet.",
       "access_token_key": "Generieren Sie dies, nachdem die App über Read and write-Berechtigungen verfügt.",
       "access_token_secret": "Zusammen mit dem Access Token generieren und privat halten."
     },
@@ -558,8 +558,8 @@
       "webhook": "https://hooks.example.com/...",
       "username": "Bithomp Bot",
       "email": "name@example.com",
-      "consumer_key": "API Key aus X",
-      "consumer_secret": "API Key Secret aus X",
+      "consumer_key": "Consumer Key aus X",
+      "consumer_secret": "Consumer Key Secret aus X",
       "access_token_key": "Access Token aus X",
       "access_token_secret": "Access Token Secret aus X"
     },
@@ -594,14 +594,14 @@
       },
       "twitter_api": {
         "title": "X / Twitter",
-        "description": "Verwenden Sie API Key, API Key Secret, Access Token und Access Token Secret aus der X Developer Portal-App.",
+        "description": "Verwenden Sie Consumer Key, Consumer Key Secret, Access Token und Access Token Secret aus der X Dev Console-App.",
         "steps": [
-          "Entwicklerportal",
-          "Projekt-App",
-          "Read and write-Berechtigungen",
-          "Schlüssel und Token"
+          "X Dev Console",
+          "App-Berechtigungen",
+          "Keys and tokens",
+          "X-Guthaben"
         ],
-        "portal-link": "X Developer Portal öffnen"
+        "portal-link": "X Dev Console öffnen"
       }
     },
     "destination": {
@@ -777,16 +777,16 @@
       "seo-description": "So erstellen Sie X-API-Schlüssel für Warnungen.",
       "eyebrow": "X / Twitter-Setup",
       "title": "Richten Sie X-Benachrichtigungen ein",
-      "intro": "Erstellen Sie eine X-Entwickler-App, aktivieren Sie Schreibberechtigungen und kopieren Sie die vier erforderlichen Schlüssel in Alerts.",
+      "intro": "Erstellen Sie eine App in X Dev Console, aktivieren Sie Schreibberechtigungen und kopieren Sie die vier erforderlichen Schlüssel in Alerts.",
       "before-title": "Bevor Sie beginnen",
       "before": {
         "account": "Verwenden Sie ein X-Konto, das speziell für die Veröffentlichung von Warnungen vorgesehen ist.",
         "private": "Halten Sie alle generierten Schlüssel privat.",
         "write": "Die App muss über Read and write-Berechtigungen verfügen.",
-        "regenerate": "Access Token nach dem Ändern der Berechtigungen neu generieren."
+        "balance": "Laden Sie das X Dev Console-Konto mit Guthaben auf; ohne Guthaben kann der Bot nicht veröffentlichen."
       },
       "back": "Zurück zu Benachrichtigungen",
-      "open-portal": "X Developer Portal öffnen",
+      "open-portal": "X Dev Console öffnen",
       "steps": [
         {
           "title": "Erstellen oder eröffnen Sie Ihr X-Konto",
@@ -804,43 +804,39 @@
         },
         {
           "title": "Beantragen Sie den X-Entwicklerzugriff",
-          "text": "Öffnen Sie das X Developer Portal, wählen Sie die verfügbare Option für ein kostenloses Entwicklerkonto aus und füllen Sie das Vereinbarungsformular mit einer einfachen Beschreibung des Alert-Bots aus.",
+          "text": "Öffnen Sie X Dev Console unter console.x.com/onboarding und füllen Sie die Entwicklervereinbarung mit einer einfachen Beschreibung des Alert-Bots aus.",
           "images": [
-            "Öffnen Sie die Seite „X Developer Platform“.",
-            "Wählen Sie auf der Entwicklerplanseite die Option „Kostenloses Konto“.",
-            "Öffnen Sie das Formular zur Entwicklervereinbarung und geben Sie den Verwendungszweck ein.",
-            "Akzeptieren Sie die erforderlichen Kontrollkästchen für die Richtlinien und senden Sie das Formular ab."
+            "Geben Sie Kontoname und Verwendungszweck ein, akzeptieren Sie die Entwicklervereinbarung und senden Sie das Formular ab."
           ]
         },
         {
-          "title": "Öffnen Sie die Projekt-App und generieren Sie Schlüssel",
-          "text": "Das Developer Portal erstellt ein Projekt und eine App. Öffnen Sie diese App und generieren Sie dann unter Keys and tokens das API Key-Paar und das Access Token-Paar, die für den Alerts-Kanal benötigt werden.",
+          "title": "App öffnen und Consumer Key-Paar speichern",
+          "text": "Nachdem der Entwicklerzugang aktiv ist, öffnen Sie Apps in X Dev Console und wählen Sie Ihre App aus. Erzeugen Sie unter Keys and Tokens das OAuth 1.0 Consumer Key-Paar und kopieren Sie es als API Key und API Key Secret in Alerts.",
           "images": [
-            "Öffnen Sie das Standardprojekt und die Standard-App über das Developer Portal-Dashboard.",
-            "Schauen Sie sich die Projektübersicht an und wählen Sie die App aus dem linken Menü aus.",
-            "Öffnen Sie die App-Einstellungen und klicken Sie unter Benutzerauthentifizierungseinstellungen auf Einrichten.",
-            "Öffnen Sie Keys and tokens, um API Key, API Key Secret, Access Token und Access Token Secret zu generieren.",
-            "Speichern Sie API Key und API Key Secret. Diese entsprechen den ersten beiden Feldern in Bithomp Alerts.",
-            "Speichern Sie Access Token und Access Token Secret. Wenn sie mit Read Only-Berechtigungen erstellt wurden, aktualisieren Sie als Nächstes die Berechtigungen."
+            "Öffnen Sie auf dem X Dev Console-Dashboard Apps. Laden Sie Guthaben auf, bevor Sie den Bot verwenden.",
+            "Wählen Sie die App aus, die Bithomp Alerts veröffentlichen soll.",
+            "Klicken Sie unter Keys and Tokens bei OAuth 1.0 Consumer Key auf Regenerate.",
+            "Kopieren Sie Consumer Key und Consumer Key Secret und fügen Sie sie in Bithomp Alerts als API Key und API Key Secret ein."
           ]
         },
         {
           "title": "Schreibrechte aktivieren",
-          "text": "Die App muss über Read and write-Berechtigungen verfügen, bevor sie Alerts veröffentlichen kann. Generieren Sie nach dem Ändern der Berechtigungen Access Token und Access Token Secret neu, damit das neue Token schreiben kann.",
+          "text": "Die App muss über Read and write-Berechtigungen verfügen, bevor sie Alerts veröffentlichen kann. Legen Sie die Berechtigungen fest, bevor Sie den Access Token generieren, damit der Token Schreibzugriff erhält.",
           "images": [
-            "Wählen Sie in den Benutzerauthentifizierungseinstellungen die Option Read and write-Berechtigungen aus.",
+            "Öffnen Sie User authentication settings und klicken Sie auf Set up.",
+            "Wählen Sie Read and write-Berechtigungen aus.",
             "Wählen Sie als App-Typ „Web-App“, „Automatisierte App“ oder „Bot“.",
-            "Füllen Sie die erforderlichen Felder „Callback URI/Redirect URL“ und „Website URL“ aus.",
-            "Verwenden Sie Ihre öffentlichen Rückruf- und Website-URLs und speichern Sie dann die Einstellungen.",
-            "Bestätigen Sie die Berechtigungsänderung, wenn X Sie dazu auffordert.",
+            "Füllen Sie Callback URI / Redirect URL und Website URL aus und speichern Sie die Änderungen.",
             "X zeigt nach dem Speichern die OAuth 2.0-Client-ID und das Client-Geheimnis an. Dies sind nicht die vier Alarmkanalfelder."
           ]
         },
         {
           "title": "Schlüssel nach Bithomp Alerts kopieren",
-          "text": "Kehren Sie zu Keys and tokens zurück, nachdem Read and write gespeichert wurde. Fügen Sie API Key, API Key Secret, Access Token und Access Token Secret in die entsprechenden Felder auf der Alerts-Seite ein. Wenn Access Token vor dem Ändern der Berechtigungen generiert wurde, generieren Sie ihn zuerst neu.",
+          "text": "Kehren Sie nach dem Speichern von Read and write zu Keys and Tokens zurück. Generieren Sie das Access Token-Paar, fügen Sie alle vier Werte in die passenden Felder von Bithomp Alerts ein und stellen Sie sicher, dass das X Dev Console-Konto Guthaben hat.",
           "images": [
-
+            "Prüfen Sie, dass in der Access Token-Zeile Read and write steht, und erstellen Sie dann das Access Token-Paar.",
+            "Kopieren Sie Access Token und Access Token Secret und fügen Sie sie in die passenden Bithomp Alerts-Felder ein.",
+            "Speichern Sie den Bithomp-Kanal mit API Key (Consumer Key), API Key Secret (Consumer Key Secret), Access Token und Access Token Secret. X Dev Console benötigt außerdem Guthaben, damit der Bot funktioniert."
           ]
         }
       ]

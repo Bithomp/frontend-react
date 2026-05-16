@@ -35,42 +35,40 @@ const guideSteps = [
   },
   {
     title: 'Apply for X developer access',
-    text: 'Open the X Developer Portal, choose the available free developer account option, and complete the agreement form with a plain description of the alerts bot.',
+    text: 'Open X Dev Console at console.x.com/onboarding and complete the developer agreement with a plain description of the alerts bot.',
     images: [
-      { file: 'step-09.png', caption: 'Open the X Developer Platform page.' },
-      { file: 'step-10.png', caption: 'Choose the Free account option on the developer plan page.' },
-      { file: 'step-11.png', caption: 'Open the developer agreement form and fill in the intended use.' },
-      { file: 'step-12.png', caption: 'Accept the required policy checkboxes and submit the form.' }
+      { file: 'step-09.png', caption: 'Fill in the account name and use case, accept the developer agreement, and submit the form.' }
     ]
   },
   {
-    title: 'Open the project app and generate keys',
-    text: 'The Developer Portal creates a project and app. Open that app, then use Keys and tokens to generate the API Key pair and Access Token pair needed by the Alerts channel.',
+    title: 'Open the app and save the Consumer Key pair',
+    text: 'After developer access is active, open Apps in X Dev Console and select your app. In Keys and Tokens, generate the OAuth 1.0 Consumer Key pair and copy it into Alerts as API Key and API Key Secret.',
     images: [
-      { file: 'step-13.png', caption: 'Open the default project and app from the Developer Portal dashboard.' },
-      { file: 'step-14.png', caption: 'Check the project overview and select the app from the left menu.' },
-      { file: 'step-15.png', caption: 'Open app Settings and click Set up under User authentication settings.' },
-      { file: 'step-16.png', caption: 'Open Keys and tokens to generate API Key, API Key Secret, Access Token, and Access Token Secret.' },
-      { file: 'step-17.png', caption: 'Save API Key and API Key Secret. These match the first two fields in Bithomp Alerts.' },
-      { file: 'step-18.png', caption: 'Save Access Token and Access Token Secret. If they were created with Read Only permissions, update permissions next.' }
+      { file: 'step-10.png', caption: 'On the X Dev Console dashboard, open Apps. Add credits to the X Dev Console balance before using the bot.' },
+      { file: 'step-11.png', caption: 'Select the app that will publish Bithomp alerts.' },
+      { file: 'step-12.png', caption: 'In Keys and Tokens, click Regenerate for the OAuth 1.0 Consumer Key.' },
+      { file: 'step-13.png', caption: 'Copy Consumer Key and Consumer Key Secret, then paste them into API Key and API Key Secret in Bithomp Alerts.' }
     ]
   },
   {
     title: 'Enable write permissions',
-    text: 'The app must have Read and write permissions before it can publish alerts. After changing permissions, regenerate Access Token and Access Token Secret so the new token can write.',
+    text: 'The app must have Read and write permissions before it can publish alerts. Set permissions before generating the Access Token so the token is created with write access.',
     images: [
-      { file: 'step-19.png', caption: 'In User authentication settings, select Read and write permissions.' },
-      { file: 'step-20.png', caption: 'Choose Web App, Automated App or Bot as the app type.' },
-      { file: 'step-21.png', caption: 'Fill in the required Callback URI / Redirect URL and Website URL fields.' },
-      { file: 'step-22.png', caption: 'Use your public callback and website URLs, then save the settings.' },
-      { file: 'step-23.png', caption: 'Confirm the permission change when X asks.' },
-      { file: 'step-24.png', caption: 'X shows OAuth 2.0 Client ID and Client Secret after saving. These are not the four Alerts channel fields.' }
+      { file: 'step-14.png', caption: 'Open User authentication settings and click Set up.' },
+      { file: 'step-15.png', caption: 'Select Read and write permissions.' },
+      { file: 'step-16.png', caption: 'Choose Web App, Automated App or Bot as the app type.' },
+      { file: 'step-17.png', caption: 'Fill in Callback URI / Redirect URL and Website URL, then save the changes.' },
+      { file: 'step-18.png', caption: 'X shows OAuth 2.0 Client ID and Client Secret after saving. These are not the four Alerts channel fields.' }
     ]
   },
   {
     title: 'Copy the keys into Bithomp Alerts',
-    text: 'Return to Keys and tokens after Read and write is saved. Paste API Key, API Key Secret, Access Token, and Access Token Secret into the matching fields on the Alerts page. If Access Token was generated before changing permissions, regenerate it first.',
-    images: []
+    text: 'Return to Keys and Tokens after Read and write is saved. Generate the Access Token pair, paste all four values into the matching Bithomp Alerts fields, and make sure the X Dev Console account has credits.',
+    images: [
+      { file: 'step-19.png', caption: 'Confirm the Access Token row shows Read and write, then create the Access Token pair.' },
+      { file: 'step-20.png', caption: 'Copy Access Token and Access Token Secret, then paste them into the matching Bithomp Alerts fields.' },
+      { file: 'step-21.png', caption: 'Save the Bithomp channel with API Key (Consumer Key), API Key Secret (Consumer Key Secret), Access Token, and Access Token Secret. X Dev Console also needs credits for the bot to work.' }
+    ]
   }
 ]
 
@@ -106,7 +104,7 @@ export default function XNotificationGuide() {
               <li>{t('notifications.x-guide.before.account')}</li>
               <li>{t('notifications.x-guide.before.private')}</li>
               <li>{t('notifications.x-guide.before.write')}</li>
-              <li>{t('notifications.x-guide.before.regenerate')}</li>
+              <li>{t('notifications.x-guide.before.balance')}</li>
             </ul>
           </section>
 
@@ -143,7 +141,7 @@ export default function XNotificationGuide() {
             <Link href="/admin/notifications" className="button-action">
               {t('notifications.x-guide.back')}
             </Link>
-            <a href="https://developer.twitter.com/en/portal/dashboard" className="button-action" target="_blank" rel="noreferrer">
+            <a href="https://console.x.com/onboarding" className="button-action" target="_blank" rel="noreferrer">
               {t('notifications.x-guide.open-portal')}
             </a>
           </div>

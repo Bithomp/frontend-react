@@ -536,8 +536,8 @@
       "webhook": "Webhook 地址",
       "username": "机器人用户名",
       "email": "Email 地址",
-      "consumer_key": "API 密钥",
-      "consumer_secret": "API 密钥密文",
+      "consumer_key": "API Key (Consumer Key)",
+      "consumer_secret": "API Key Secret (Consumer Key Secret)",
       "access_token_key": "访问令牌",
       "access_token_secret": "访问令牌密文",
       "bot-username": "机器人用户名",
@@ -549,8 +549,8 @@
       "webhook": "传入 Webhook 地址。",
       "username": "机器人显示的名称。",
       "email": "接收提醒的地址。",
-      "consumer_key": "在 X 中显示为 API Key。",
-      "consumer_secret": "与 API Key 一起仅显示一次。",
+      "consumer_key": "在 X 中显示为 Consumer Key。",
+      "consumer_secret": "在 X 中显示为 Consumer Key Secret，并且只会与 Consumer Key 一起显示一次。",
       "access_token_key": "在应用获得读写权限后生成。",
       "access_token_secret": "与访问令牌一起生成，并妥善保密。"
     },
@@ -558,8 +558,8 @@
       "webhook": "https://hooks.example.com/...",
       "username": "Bithomp Bot",
       "email": "name@example.com",
-      "consumer_key": "来自 X 的 API 密钥",
-      "consumer_secret": "来自 X 的 API 密钥密文",
+      "consumer_key": "来自 X 的 Consumer Key",
+      "consumer_secret": "来自 X 的 Consumer Key Secret",
       "access_token_key": "来自 X 的访问令牌",
       "access_token_secret": "来自 X 的访问令牌密文"
     },
@@ -594,14 +594,14 @@
       },
       "twitter_api": {
         "title": "X / Twitter",
-        "description": "使用 X Developer Portal 应用中的 API Key、API Key Secret、Access Token 和 Access Token Secret。",
+        "description": "使用 X Dev Console 应用中的 Consumer Key、Consumer Key Secret、Access Token 和 Access Token Secret。",
         "steps": [
-          "开发者门户",
-          "项目应用",
-          "读写权限",
-          "密钥和令牌"
+          "X Dev Console",
+          "应用权限",
+          "Keys and tokens",
+          "X 余额"
         ],
-        "portal-link": "打开 X Developer Portal"
+        "portal-link": "打开 X Dev Console"
       }
     },
     "destination": {
@@ -777,16 +777,16 @@
       "seo-description": "如何为提醒创建 X API 密钥。",
       "eyebrow": "X / Twitter 设置",
       "title": "设置 X 提醒",
-      "intro": "创建 X 开发者应用，启用写入权限，并将四个必需密钥复制到 Alerts。",
+      "intro": "在 X Dev Console 创建应用，启用写入权限，并将四个必需密钥复制到 Alerts。",
       "before-title": "开始之前",
       "before": {
         "account": "使用专门发布提醒的 X 账户。",
         "private": "请妥善保管所有生成的密钥。",
         "write": "应用必须具有读写权限。",
-        "regenerate": "更改权限后重新生成访问令牌。"
+        "balance": "请为 X Dev Console 账户充值；没有余额时机器人无法发布。"
       },
       "back": "返回提醒",
-      "open-portal": "打开 X 开发者门户",
+      "open-portal": "打开 X Dev Console",
       "steps": [
         {
           "title": "创建或打开你的 X 账户",
@@ -804,43 +804,39 @@
         },
         {
           "title": "申请 X 开发者访问权限",
-          "text": "打开 X 开发者门户，选择可用的免费开发者账户选项，并用简明说明填写提醒机器人用途协议表单。",
+          "text": "在 console.x.com/onboarding 打开 X Dev Console，并用简明说明填写提醒机器人的开发者协议。",
           "images": [
-            "打开 X Developer Platform 页面。",
-            "在开发者计划页面选择免费账户选项。",
-            "打开开发者协议表单并填写预期用途。",
-            "勾选必需的政策复选框并提交表单。"
+            "填写账户名称和使用场景，接受开发者协议，然后提交表单。"
           ]
         },
         {
-          "title": "打开项目应用并生成密钥",
-          "text": "开发者门户会创建项目和应用。打开该应用，然后使用 Keys and tokens 生成 Alerts 频道所需的 API 密钥对和访问令牌对。",
+          "title": "打开应用并保存 Consumer Key 对",
+          "text": "开发者访问权限启用后，在 X Dev Console 中打开 Apps 并选择你的应用。在 Keys and Tokens 中生成 OAuth 1.0 Consumer Key 对，并作为 API Key 和 API Key Secret 复制到 Alerts。",
           "images": [
-            "从开发者门户控制台打开默认项目和应用。",
-            "查看项目概览并从左侧菜单选择应用。",
-            "打开应用设置，并在 User authentication settings 下点击 Set up。",
-            "打开 Keys and tokens，生成 API Key、API Key Secret、Access Token 和 Access Token Secret。",
-            "保存 API Key 和 API Key Secret。它们对应 Bithomp Alerts 中的前两个字段。",
-            "保存 Access Token 和 Access Token Secret。如果它们是在 Read Only 权限下创建的，请接着更新权限。"
+            "在 X Dev Console 控制台打开 Apps。使用机器人前请先为 X Dev Console 余额充值。",
+            "选择将发布 Bithomp 提醒的应用。",
+            "在 Keys and Tokens 中，点击 OAuth 1.0 Consumer Key 的 Regenerate。",
+            "复制 Consumer Key 和 Consumer Key Secret，然后粘贴到 Bithomp Alerts 的 API Key 和 API Key Secret。"
           ]
         },
         {
           "title": "启用写入权限",
-          "text": "应用必须具有读写权限，才能发布提醒。更改权限后，重新生成 Access Token 和 Access Token Secret，使新令牌可以写入。",
+          "text": "应用必须具有读写权限，才能发布提醒。请在生成 Access Token 前设置权限，这样令牌会直接带有写入权限。",
           "images": [
-            "在用户身份验证设置中选择读写权限。",
+            "打开 User authentication settings 并点击 Set up。",
+            "选择 Read and write 权限。",
             "选择 Web App、Automated App 或 Bot 作为应用类型。",
-            "填写必需的 Callback URI / Redirect URL 和 Website URL 字段。",
-            "使用你的公开 callback 和网站 URL，然后保存设置。",
-            "当 X 提示时确认权限更改。",
+            "填写 Callback URI / Redirect URL 和 Website URL，然后保存更改。",
             "保存后，X 会显示 OAuth 2.0 Client ID 和 Client Secret。它们不是 Alerts 频道的四个字段。"
           ]
         },
         {
           "title": "将密钥复制到 Bithomp Alerts",
-          "text": "保存 Read and write 后返回 Keys and tokens。将 API Key、API Key Secret、Access Token 和 Access Token Secret 粘贴到 Alerts 页面对应字段中。如果 Access Token 是在更改权限前生成的，请先重新生成。",
+          "text": "保存 Read and write 后返回 Keys and Tokens。生成 Access Token 对，将四个值粘贴到 Bithomp Alerts 的对应字段，并确认 X Dev Console 账户有余额。",
           "images": [
-
+            "确认 Access Token 行显示 Read and write，然后创建 Access Token 对。",
+            "复制 Access Token 和 Access Token Secret，然后粘贴到 Bithomp Alerts 的对应字段。",
+            "使用 API Key (Consumer Key)、API Key Secret (Consumer Key Secret)、Access Token 和 Access Token Secret 保存 Bithomp 频道。X Dev Console 也需要有余额，机器人才能工作。"
           ]
         }
       ]

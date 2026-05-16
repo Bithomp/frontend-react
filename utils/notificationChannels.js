@@ -55,20 +55,20 @@ export const NOTIFICATION_CHANNELS = {
   },
   [NOTIFICATION_CHANNEL_TYPES.TWITTER]: {
     label: 'X / Twitter',
-    helpText: 'Use the API key pair and access token pair from your X Developer Portal app.',
+    helpText: 'Use the Consumer Key pair and Access Token pair from your X Dev Console app.',
     fields: [
       {
         id: 'consumer_key',
-        label: 'API Key',
-        placeholder: 'API Key from X',
-        helpText: 'Shown in X as API Key. This is the Consumer key used by the API.',
+        label: 'API Key (Consumer Key)',
+        placeholder: 'Consumer Key from X',
+        helpText: 'Shown in X as Consumer Key.',
         required: true
       },
       {
         id: 'consumer_secret',
-        label: 'API Key Secret',
-        placeholder: 'API Key Secret from X',
-        helpText: 'Shown once together with the API Key. This is the Consumer secret.',
+        label: 'API Key Secret (Consumer Key Secret)',
+        placeholder: 'Consumer Key Secret from X',
+        helpText: 'Shown in X as Consumer Key Secret and displayed once together with Consumer Key.',
         type: 'password',
         required: true
       },

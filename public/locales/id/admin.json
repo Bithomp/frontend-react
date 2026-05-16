@@ -536,8 +536,8 @@
       "webhook": "Webhook URL",
       "username": "Nama pengguna bot",
       "email": "Alamat email",
-      "consumer_key": "Kunci API",
-      "consumer_secret": "Rahasia kunci API",
+      "consumer_key": "API Key (Consumer Key)",
+      "consumer_secret": "API Key Secret (Consumer Key Secret)",
       "access_token_key": "Token akses",
       "access_token_secret": "Rahasia token akses",
       "bot-username": "Nama pengguna bot",
@@ -549,8 +549,8 @@
       "webhook": "webhook URLmasuk.",
       "username": "Nama yang ditampilkan oleh bot.",
       "email": "Alamat yang seharusnya menerima peringatan.",
-      "consumer_key": "Ditampilkan di X sebagai API Key.",
-      "consumer_secret": "Ditampilkan sekali bersama API Key.",
+      "consumer_key": "Ditampilkan di X sebagai Consumer Key.",
+      "consumer_secret": "Ditampilkan di X sebagai Consumer Key Secret dan hanya muncul sekali bersama Consumer Key.",
       "access_token_key": "Buat setelah app memiliki izin Read and write.",
       "access_token_secret": "Buat bersama Access Token dan simpan secara pribadi."
     },
@@ -558,8 +558,8 @@
       "webhook": "https://hooks.example.com/...",
       "username": "Bot Bithom",
       "email": "nama@contoh.com",
-      "consumer_key": "API Key dari X",
-      "consumer_secret": "API Key Secret dari X",
+      "consumer_key": "Consumer Key dari X",
+      "consumer_secret": "Consumer Key Secret dari X",
       "access_token_key": "Access Token dari X",
       "access_token_secret": "Access Token Secret dari X"
     },
@@ -594,14 +594,14 @@
       },
       "twitter_api": {
         "title": "X / Twitter",
-        "description": "Gunakan API Key, API Key Secret, Access Token, dan Access Token Secret dari app X Developer Portal.",
+        "description": "Gunakan Consumer Key, Consumer Key Secret, Access Token, dan Access Token Secret dari app X Dev Console.",
         "steps": [
-          "Portal pengembang",
-          "Aplikasi proyek",
-          "Izin Read and write",
-          "Kunci dan token"
+          "X Dev Console",
+          "Izin app",
+          "Keys and tokens",
+          "Kredit X"
         ],
-        "portal-link": "Buka X Developer Portal"
+        "portal-link": "Buka X Dev Console"
       }
     },
     "destination": {
@@ -777,16 +777,16 @@
       "seo-description": "Cara membuat kunci X API untuk peringatan.",
       "eyebrow": "X / pengaturan Twitter",
       "title": "Siapkan peringatan X",
-      "intro": "Buat aplikasi pengembang X, aktifkan izin menulis, dan salin empat kunci yang diperlukan ke dalam Peringatan.",
+      "intro": "Buat app di X Dev Console, aktifkan izin menulis, dan salin empat kunci yang diperlukan ke Alerts.",
       "before-title": "Sebelum Anda mulai",
       "before": {
         "account": "Gunakan akun X yang didedikasikan untuk menerbitkan peringatan.",
         "private": "Jaga kerahasiaan semua kunci yang dihasilkan.",
         "write": "App harus memiliki izin Read and write.",
-        "regenerate": "Buat ulang Access Token setelah mengubah izin."
+        "balance": "Tambahkan kredit ke akun X Dev Console; bot tidak akan memposting tanpa dana."
       },
       "back": "Kembali ke Peringatan",
-      "open-portal": "Buka X Developer Portal",
+      "open-portal": "Buka X Dev Console",
       "steps": [
         {
           "title": "Buat atau buka akun X Anda",
@@ -804,43 +804,39 @@
         },
         {
           "title": "Ajukan permohonan akses pengembang X",
-          "text": "Buka X Developer Portal, pilih opsi akun developer gratis yang tersedia, dan lengkapi formulir perjanjian dengan deskripsi sederhana tentang bot peringatan.",
+          "text": "Buka X Dev Console di console.x.com/onboarding dan lengkapi perjanjian developer dengan deskripsi sederhana tentang bot peringatan.",
           "images": [
-            "Buka halaman Platform Pengembang X.",
-            "Pilih opsi Akun gratis di halaman paket pengembang.",
-            "Buka formulir perjanjian pengembang dan isi tujuan penggunaan.",
-            "Terima kotak centang kebijakan yang diperlukan dan kirimkan formulir."
+            "Isi nama akun dan kasus penggunaan, terima perjanjian developer, lalu kirim formulir."
           ]
         },
         {
-          "title": "Buka aplikasi proyek dan buat kunci",
-          "text": "Developer Portal membuat proyek dan app. Buka app tersebut, lalu gunakan Keys and tokens untuk membuat pasangan API Key dan pasangan Access Token yang dibutuhkan oleh kanal Alerts.",
+          "title": "Buka app dan simpan pasangan Consumer Key",
+          "text": "Setelah akses developer aktif, buka Apps di X Dev Console dan pilih app Anda. Di Keys and Tokens, buat pasangan OAuth 1.0 Consumer Key dan salin ke Alerts sebagai API Key dan API Key Secret.",
           "images": [
-            "Buka proyek dan app default dari dasbor Developer Portal.",
-            "Periksa ikhtisar proyek dan pilih aplikasi dari menu sebelah kiri.",
-            "Buka Pengaturan aplikasi dan klik Siapkan di bawah Pengaturan otentikasi pengguna.",
-            "Buka Keys and tokens untuk membuat API Key, API Key Secret, Access Token, dan Access Token Secret.",
-            "Simpan API Key dan API Key Secret. Keduanya cocok dengan dua bidang pertama di Bithomp Alerts.",
-            "Simpan Access Token dan Access Token Secret. Jika dibuat dengan izin Read Only, perbarui izin pada langkah berikutnya."
+            "Di dasbor X Dev Console, buka Apps. Tambahkan kredit ke saldo X Dev Console sebelum memakai bot.",
+            "Pilih app yang akan memposting alert Bithomp.",
+            "Di Keys and Tokens, klik Regenerate untuk OAuth 1.0 Consumer Key.",
+            "Salin Consumer Key dan Consumer Key Secret, lalu tempel ke API Key dan API Key Secret di Bithomp Alerts."
           ]
         },
         {
           "title": "Aktifkan izin menulis",
-          "text": "App harus memiliki izin Read and write sebelum dapat menerbitkan peringatan. Setelah mengubah izin, buat ulang Access Token dan Access Token Secret agar token baru dapat menulis.",
+          "text": "App harus memiliki izin Read and write sebelum dapat memposting alert. Atur izin sebelum membuat Access Token agar token dibuat dengan akses tulis.",
           "images": [
-            "Di pengaturan autentikasi pengguna, pilih izin Read and write.",
+            "Buka User authentication settings dan klik Set up.",
+            "Pilih izin Read and write.",
             "Pilih Aplikasi Web, Aplikasi Otomatis, atau Bot sebagai jenis aplikasi.",
-            "Isi bidang URI Panggilan Balik / URL Pengalihan dan URL Situs Web yang diperlukan.",
-            "Gunakan panggilan balik publik dan URL situs web Anda, lalu simpan pengaturannya.",
-            "Konfirmasikan perubahan izin ketika X bertanya.",
+            "Isi Callback URI / Redirect URL dan Website URL, lalu simpan perubahan.",
             "X menunjukkan ID Klien OAuth 2.0 dan Rahasia Klien setelah disimpan. Ini bukan empat bidang saluran Peringatan."
           ]
         },
         {
           "title": "Salin kunci ke Bithomp Alerts",
-          "text": "Kembali ke Keys and tokens setelah Read and write disimpan. Tempel API Key, API Key Secret, Access Token, dan Access Token Secret ke bidang yang sesuai di halaman Alerts. Jika Access Token dibuat sebelum izin diubah, buat ulang terlebih dahulu.",
+          "text": "Kembali ke Keys and Tokens setelah Read and write disimpan. Buat pasangan Access Token, tempel keempat nilai ke bidang Bithomp Alerts yang sesuai, dan pastikan akun X Dev Console memiliki kredit.",
           "images": [
-
+            "Pastikan baris Access Token menampilkan Read and write, lalu buat pasangan Access Token.",
+            "Salin Access Token dan Access Token Secret, lalu tempel ke bidang Bithomp Alerts yang sesuai.",
+            "Simpan channel Bithomp dengan API Key (Consumer Key), API Key Secret (Consumer Key Secret), Access Token, dan Access Token Secret. X Dev Console juga membutuhkan kredit agar bot berfungsi."
           ]
         }
       ]

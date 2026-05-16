@@ -544,8 +544,8 @@
       "webhook": "Webhook URL",
       "username": "Имя бота",
       "email": "Email-адрес",
-      "consumer_key": "API-ключ",
-      "consumer_secret": "Секретный ключ API",
+      "consumer_key": "API Key (Consumer Key)",
+      "consumer_secret": "API Key Secret (Consumer Key Secret)",
       "access_token_key": "Токен доступа",
       "access_token_secret": "Секрет токена доступа",
       "bot-username": "Имя бота",
@@ -557,8 +557,8 @@
       "webhook": "URL входящего webhook.",
       "username": "Имя, которое будет показывать бот.",
       "email": "Адрес, который будет получать алерты.",
-      "consumer_key": "В X это поле называется API Key.",
-      "consumer_secret": "Показывается один раз вместе с API Key.",
+      "consumer_key": "В X это поле называется Consumer Key.",
+      "consumer_secret": "В X это поле называется Consumer Key Secret и показывается один раз вместе с Consumer Key.",
       "access_token_key": "Сгенерируйте после включения прав чтения и записи.",
       "access_token_secret": "Сгенерируйте вместе с Access Token и храните в секрете."
     },
@@ -566,8 +566,8 @@
       "webhook": "https://hooks.example.com/...",
       "username": "Bithomp Bot",
       "email": "name@example.com",
-      "consumer_key": "API Key из X",
-      "consumer_secret": "API Key Secret из X",
+      "consumer_key": "Consumer Key из X",
+      "consumer_secret": "Consumer Key Secret из X",
       "access_token_key": "Access Token из X",
       "access_token_secret": "Access Token Secret из X"
     },
@@ -602,14 +602,14 @@
       },
       "twitter_api": {
         "title": "X / Twitter",
-        "description": "Используйте API Key, API Key Secret, Access Token и Access Token Secret из приложения в портале разработчика X.",
+        "description": "Используйте Consumer Key, Consumer Key Secret, Access Token и Access Token Secret из приложения в X Dev Console.",
         "steps": [
-          "Портал разработчика",
-          "Приложение проекта",
-          "Права чтения и записи",
-          "Ключи и токены"
+          "X Dev Console",
+          "Права приложения",
+          "Ключи и токены",
+          "Средства в X"
         ],
-        "portal-link": "Открыть X Developer Portal"
+        "portal-link": "Открыть X Dev Console"
       }
     },
     "destination": {
@@ -785,16 +785,16 @@
       "seo-description": "Как создать X API-ключи для алертов.",
       "eyebrow": "Настройка X / Twitter",
       "title": "Настройка алертов X",
-      "intro": "Создайте приложение разработчика X, включите права на запись и скопируйте четыре нужных ключа в алерты.",
+      "intro": "Создайте приложение в X Dev Console, включите права на запись и скопируйте четыре нужных ключа в алерты.",
       "before-title": "Перед началом",
       "before": {
         "account": "Используйте отдельный аккаунт X для публикации алертов.",
         "private": "Храните все сгенерированные ключи приватно.",
         "write": "У приложения должны быть права чтения и записи.",
-        "regenerate": "Пересоздайте токен доступа после изменения прав."
+        "balance": "Пополните аккаунт в X Dev Console: без средств бот не сможет публиковать сообщения."
       },
       "back": "Назад к Алертам",
-      "open-portal": "Открыть портал разработчика X",
+      "open-portal": "Открыть X Dev Console",
       "steps": [
         {
           "title": "Создайте или откройте аккаунт X",
@@ -812,43 +812,39 @@
         },
         {
           "title": "Запросите доступ разработчика X",
-          "text": "Откройте портал разработчика X, выберите доступный бесплатный вариант аккаунта разработчика и заполните форму соглашения с простым описанием бота уведомлений.",
+          "text": "Откройте X Dev Console по адресу console.x.com/onboarding и заполните соглашение разработчика с простым описанием бота для алертов.",
           "images": [
-            "Откройте страницу платформы разработчиков X.",
-            "Выберите бесплатный вариант аккаунта на странице тарифов разработчика.",
-            "Откройте форму соглашения разработчика и заполните описание использования.",
-            "Отметьте обязательные пункты политики и отправьте форму."
+            "Укажите имя аккаунта и сценарий использования, примите соглашение разработчика и отправьте форму."
           ]
         },
         {
-          "title": "Откройте приложение проекта и создайте ключи",
-          "text": "Портал разработчика создает проект и приложение. Откройте это приложение, затем в разделе ключей и токенов создайте пару API-ключей и пару токенов доступа, необходимые для канала алертов.",
+          "title": "Откройте приложение и сохраните пару Consumer Key",
+          "text": "Когда доступ разработчика активен, откройте Apps в X Dev Console и выберите приложение. В Keys and Tokens создайте пару OAuth 1.0 Consumer Key и скопируйте ее в алерты как API Key и API Key Secret.",
           "images": [
-            "Откройте проект и приложение по умолчанию из панели портала разработчика.",
-            "Проверьте обзор проекта и выберите приложение в левом меню.",
-            "Откройте настройки приложения и нажмите кнопку настройки в разделе аутентификации пользователя.",
-            "Откройте раздел ключей и токенов, чтобы создать API Key, API Key Secret, Access Token и Access Token Secret.",
-            "Сохраните API Key и API Key Secret. Они соответствуют первым двум полям в Bithomp Alerts.",
-            "Сохраните Access Token и Access Token Secret. Если они были созданы только с правом чтения, дальше измените права."
+            "На панели X Dev Console откройте Apps. Пополните баланс X Dev Console перед использованием бота.",
+            "Выберите приложение, которое будет публиковать алерты Bithomp.",
+            "В Keys and Tokens нажмите Regenerate для OAuth 1.0 Consumer Key.",
+            "Скопируйте Consumer Key и Consumer Key Secret, затем вставьте их в поля API Key и API Key Secret в Bithomp Alerts."
           ]
         },
         {
           "title": "Включите права на запись",
-          "text": "У приложения должны быть права чтения и записи, прежде чем оно сможет публиковать алерты. После изменения прав создайте Access Token и Access Token Secret заново, чтобы новый токен мог отправлять публикации.",
+          "text": "У приложения должны быть права чтения и записи, прежде чем оно сможет публиковать алерты. Настройте права до создания Access Token, чтобы токен сразу получил доступ на запись.",
           "images": [
-            "В настройках аутентификации пользователя выберите права чтения и записи.",
+            "Откройте User authentication settings и нажмите Set up.",
+            "Выберите права Read and write.",
             "Выберите тип приложения: Web App, Automated App или Bot.",
-            "Заполните обязательные поля Callback URI / Redirect URL и Website URL.",
-            "Укажите публичные URL для callback и сайта, затем сохраните настройки.",
-            "Подтвердите изменение прав, когда X попросит это сделать.",
+            "Заполните Callback URI / Redirect URL и Website URL, затем сохраните изменения.",
             "После сохранения X покажет OAuth 2.0 Client ID и Client Secret. Это не те четыре поля, которые нужны для канала алертов."
           ]
         },
         {
           "title": "Скопируйте ключи в Bithomp Alerts",
-          "text": "Вернитесь в раздел ключей и токенов после сохранения прав чтения и записи. Вставьте API Key, API Key Secret, Access Token и Access Token Secret в соответствующие поля на странице алертов. Если Access Token был создан до изменения прав, сначала создайте его заново.",
+          "text": "Вернитесь в Keys and Tokens после сохранения прав Read and write. Создайте пару Access Token, вставьте все четыре значения в соответствующие поля Bithomp Alerts и убедитесь, что на аккаунте X Dev Console есть средства.",
           "images": [
-
+            "Убедитесь, что в строке Access Token указано Read and write, затем создайте пару Access Token.",
+            "Скопируйте Access Token и Access Token Secret, затем вставьте их в соответствующие поля Bithomp Alerts.",
+            "Сохраните канал Bithomp с API Key (Consumer Key), API Key Secret (Consumer Key Secret), Access Token и Access Token Secret. Для работы бота в X Dev Console также нужны средства."
           ]
         }
       ]

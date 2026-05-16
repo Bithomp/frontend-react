@@ -536,8 +536,8 @@
       "webhook": "Webhook URL",
       "username": "ボットのユーザー名",
       "email": "電子メールアドレス",
-      "consumer_key": "APIキー",
-      "consumer_secret": "APIキーシークレット",
+      "consumer_key": "API Key (Consumer Key)",
+      "consumer_secret": "API Key Secret (Consumer Key Secret)",
       "access_token_key": "アクセストークン",
       "access_token_secret": "アクセストークンシークレット",
       "bot-username": "ボットのユーザー名",
@@ -549,8 +549,8 @@
       "webhook": "受信用 Webhook URL。",
       "username": "ボットによって表示される名前。",
       "email": "アラートを受信するアドレス。",
-      "consumer_key": "X では API Key として表示されます。",
-      "consumer_secret": "API Key と一緒に1回だけ表示されます。",
+      "consumer_key": "X では Consumer Key として表示されます。",
+      "consumer_secret": "X では Consumer Key Secret として表示され、Consumer Key と一緒に1回だけ表示されます。",
       "access_token_key": "アプリに Read and write 権限を付与した後で生成します。",
       "access_token_secret": "Access Token と一緒に生成し、非公開で保管してください。"
     },
@@ -558,8 +558,8 @@
       "webhook": "https://hooks.example.com/...",
       "username": "ビトンプボット",
       "email": "名前@example.com",
-      "consumer_key": "X の API Key",
-      "consumer_secret": "X の API Key Secret",
+      "consumer_key": "X の Consumer Key",
+      "consumer_secret": "X の Consumer Key Secret",
       "access_token_key": "X の Access Token",
       "access_token_secret": "X の Access Token Secret"
     },
@@ -594,14 +594,14 @@
       },
       "twitter_api": {
         "title": "X / Twitter",
-        "description": "X Developer Portal アプリの API Key、API Key Secret、Access Token、Access Token Secret を使用します。",
+        "description": "X Dev Console アプリの Consumer Key、Consumer Key Secret、Access Token、Access Token Secret を使用します。",
         "steps": [
-          "開発者ポータル",
-          "プロジェクトアプリ",
-          "Read and write 権限",
-          "キーとトークン"
+          "X Dev Console",
+          "アプリ権限",
+          "Keys and tokens",
+          "X クレジット"
         ],
-        "portal-link": "X Developer Portal を開く"
+        "portal-link": "X Dev Console を開く"
       }
     },
     "destination": {
@@ -777,16 +777,16 @@
       "seo-description": "アラート用の X API キーを作成する方法。",
       "eyebrow": "X / ツイッターの設定",
       "title": "X アラートを設定する",
-      "intro": "X 開発者アプリを作成し、書き込み権限を有効にして、4 つの必要なキーをアラートにコピーします。",
+      "intro": "X Dev Console でアプリを作成し、書き込み権限を有効にして、4つの必要なキーを Alerts にコピーします。",
       "before-title": "始める前に",
       "before": {
         "account": "アラートの発行専用の X アカウントを使用します。",
         "private": "生成されたすべてのキーを秘密にしておきます。",
         "write": "アプリにはRead and write権限が必要です。",
-        "regenerate": "権限を変更した後、Access Tokenを再生成します。"
+        "balance": "X Dev Console アカウントにクレジットを追加してください。残高がないとボットは投稿できません。"
       },
       "back": "アラートに戻る",
-      "open-portal": "X Developer Portal を開く",
+      "open-portal": "X Dev Console を開く",
       "steps": [
         {
           "title": "X アカウントを作成または開く",
@@ -804,43 +804,39 @@
         },
         {
           "title": "X 開発者アクセスを申請する",
-          "text": "X Developer Portal を開き、利用可能な無料の開発者アカウントを選択し、アラートボットの簡単な説明を含む同意フォームに入力します。",
+          "text": "console.x.com/onboarding で X Dev Console を開き、アラートボットの簡単な説明を添えて開発者契約を完了します。",
           "images": [
-            "X 開発者プラットフォームのページを開きます。",
-            "開発者プラン ページで [無料アカウント] オプションを選択します。",
-            "開発者契約フォームを開いて、使用目的を記入します。",
-            "必要なポリシーのチェックボックスに同意し、フォームを送信します。"
+            "アカウント名と利用目的を入力し、開発者契約に同意してフォームを送信します。"
           ]
         },
         {
-          "title": "プロジェクト アプリを開いてキーを生成する",
-          "text": "Developer Portal はプロジェクトとアプリを作成します。そのアプリを開き、Keys and tokens で Alerts チャンネルに必要な API Key ペアと Access Token ペアを生成します。",
+          "title": "アプリを開き Consumer Key ペアを保存する",
+          "text": "開発者アクセスが有効になったら、X Dev Console の Apps を開いてアプリを選択します。Keys and Tokens で OAuth 1.0 Consumer Key ペアを生成し、API Key と API Key Secret として Alerts にコピーします。",
           "images": [
-            "Developer Portal のダッシュボードからデフォルトのプロジェクトとアプリを開きます。",
-            "プロジェクト概要を確認し、左側のメニューからアプリを選択します。",
-            "アプリの設定を開き、ユーザー認証設定の下にある [セットアップ] をクリックします。",
-            "Keys and tokens を開いて、API Key、API Key Secret、Access Token、Access Token Secret を生成します。",
-            "API Key と API Key Secret を保存します。これらは Bithomp Alerts の最初の2つのフィールドに対応します。",
-            "Access Token と Access Token Secret を保存します。Read Only 権限で作成されている場合は、次に権限を更新します。"
+            "X Dev Console ダッシュボードで Apps を開きます。ボットを使う前に X Dev Console の残高にクレジットを追加してください。",
+            "Bithomp Alerts を投稿するアプリを選択します。",
+            "Keys and Tokens で OAuth 1.0 Consumer Key の Regenerate をクリックします。",
+            "Consumer Key と Consumer Key Secret をコピーし、Bithomp Alerts の API Key と API Key Secret に貼り付けます。"
           ]
         },
         {
           "title": "書き込み権限を有効にする",
-          "text": "アプリはアラートを公開する前に Read and write 権限を持っている必要があります。権限を変更した後、新しいトークンが書き込めるように Access Token と Access Token Secret を再生成します。",
+          "text": "アプリはアラートを投稿する前に Read and write 権限を持っている必要があります。Access Token を生成する前に権限を設定すると、トークンが書き込み権限付きで作成されます。",
           "images": [
-            "ユーザー認証設定で Read and write 権限を選択します。",
+            "User authentication settings を開き、Set up をクリックします。",
+            "Read and write 権限を選択します。",
             "アプリの種類として [Web アプリ]、[自動化されたアプリ]、または [ボット] を選択します。",
-            "必要なコールバック URI / リダイレクト URL および Web サイト URL フィールドに入力します。",
-            "パブリック コールバックと Web サイトの URL を使用し、設定を保存します。",
-            "X が尋ねたら、権限の変更を確認します。",
+            "Callback URI / Redirect URL と Website URL を入力し、変更を保存します。",
             "保存後、X には OAuth 2.0 Client ID と Client Secret が表示されます。これらは Alerts チャンネルの4つのフィールドではありません。"
           ]
         },
         {
           "title": "キーを Bithomp Alerts にコピーします",
-          "text": "Read and write を保存した後、Keys and tokens に戻ります。API Key、API Key Secret、Access Token、Access Token Secret を Alerts ページの対応するフィールドに貼り付けます。権限を変更する前に Access Token が生成されていた場合は、先に再生成してください。",
+          "text": "Read and write を保存した後、Keys and Tokens に戻ります。Access Token ペアを生成し、4つの値を Bithomp Alerts の対応するフィールドに貼り付け、X Dev Console アカウントにクレジットがあることを確認してください。",
           "images": [
-
+            "Access Token 行に Read and write と表示されていることを確認し、Access Token ペアを作成します。",
+            "Access Token と Access Token Secret をコピーし、Bithomp Alerts の対応するフィールドに貼り付けます。",
+            "API Key (Consumer Key)、API Key Secret (Consumer Key Secret)、Access Token、Access Token Secret を入力して Bithomp チャンネルを保存します。ボットを動作させるには X Dev Console のクレジットも必要です。"
           ]
         }
       ]
