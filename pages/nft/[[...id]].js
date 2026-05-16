@@ -175,7 +175,14 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           newdata.buyOffers = newdata.buyOffers.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
         }
 
+        const sellOffersCount = countOffersByFilters(newdata.sellOffers)
+        const buyOffersCount = countOffersByFilters(newdata.buyOffers)
+
         setData(newdata)
+        setCountSellOffers(sellOffersCount)
+        setCountBuyOffers(buyOffersCount)
+        setSellOffersFilter(defaultOffersFilter(sellOffersCount))
+        setBuyOffersFilter(defaultOffersFilter(buyOffersCount))
         if (newdata.warnings?.length > 0) {
           updateWarningMessages(newdata.warnings)
         }
@@ -186,8 +193,6 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         if (!newdata.owner && !newdata.deletedAt && !newdata.url && !newdata.metadata) {
           setNotFoundInTheNetwork(true)
         }
-        countOffersByFilters(newdata.sellOffers, setCountSellOffers)
-        countOffersByFilters(newdata.buyOffers, setCountBuyOffers)
       } else {
         if (newdata.error) {
           setErrorMessage(t('error-api.' + newdata.error))
@@ -199,7 +204,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     }
   }
 
-  const countOffersByFilters = (offers, setCount) => {
+  const isHistoricalOffer = (offer) => !!offer?.canceledAt || !!offer?.acceptedAt
+
+  const countOffersByFilters = (offers) => {
     let count = {
       all: 0,
       active: 0,
@@ -210,19 +217,28 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     if (offers && offers.length > 0) {
       for (let i = 0; i < offers.length; i++) {
         count.all++
-        if (offers[i].valid || offers[i].valid === false) {
+        if (isHistoricalOffer(offers[i])) {
+          count.historical++
+        } else if (offers[i].valid || offers[i].valid === false) {
           count.active++
           if (offers[i].valid) {
             count['active-valid']++
           } else {
             count['active-invalid']++
           }
-        } else {
-          count.historical++
         }
       }
     }
-    setCount(count)
+    return count
+  }
+
+  const defaultOffersFilter = (count) => {
+    if (count?.['active-valid'] > 0) return 'active-valid'
+    if (count?.['active-invalid'] > 0) return 'active-invalid'
+    if (count?.active > 0) return 'active'
+    if (count?.historical > 0) return 'historical'
+    if (count?.all > 0) return 'all'
+    return 'active-valid'
   }
 
   /*
@@ -628,25 +644,25 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     } else if (filter === 'historical') {
       setFilteredOffers(
         unfilteredOffers.filter(function (offer) {
-          return offer.canceledAt || offer.acceptedAt
+          return isHistoricalOffer(offer)
         })
       )
     } else if (filter === 'active') {
       setFilteredOffers(
         unfilteredOffers.filter(function (offer) {
-          return offer.valid || offer.valid === false
+          return !isHistoricalOffer(offer) && (offer.valid || offer.valid === false)
         })
       )
     } else if (filter === 'active-valid') {
       setFilteredOffers(
         unfilteredOffers.filter(function (offer) {
-          return offer.valid
+          return !isHistoricalOffer(offer) && offer.valid
         })
       )
     } else if (filter === 'active-invalid') {
       setFilteredOffers(
         unfilteredOffers.filter(function (offer) {
-          return offer.valid === false
+          return !isHistoricalOffer(offer) && offer.valid === false
         })
       )
     }
@@ -667,18 +683,21 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   const offersFilter = (type) => {
     let offersCount = countSellOffers
     let setFilter = setSellOffersFilter
+    let filter = sellOffersFilter
     if (type === 'buy') {
       setFilter = setBuyOffersFilter
       offersCount = countBuyOffers
+      filter = buyOffersFilter
     }
     //dont show if there is no offers, or when all offers are valid
     if (offersCount.all === 0 || offersCount['active-valid'] === offersCount.all) {
       return <></>
     }
+    const options = offerHistoryFilters(type)
     return (
       <Select
-        options={offerHistoryFilters(type)}
-        defaultValue={offerHistoryFilters(type, true)}
+        options={options}
+        value={options.find((option) => option.value === filter) || null}
         onChange={(value) => setFilter(value.value)}
         isSearchable={false}
         className="offer-history-filter-select"
