@@ -1,24 +1,26 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { AddressWithIconInline, amountFormat, tokenToFiat } from '../../../utils/format'
 import { FaMoneyCheckAlt } from 'react-icons/fa'
+import { useTranslation } from 'next-i18next'
 
 export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification, tx, fiatRates } = data
+  const { t } = useTranslation('account')
 
   const fiatRate = fiatRates?.[selectedCurrency]
   const sendMax = tx?.TransactionType === 'CheckCreate' ? specification?.sendMax : null
 
   const checkTypeLabels = {
-    CheckCreate: 'Check creation',
-    CheckCash: 'Check cashing',
-    CheckCancel: 'Check cancelation'
+    CheckCreate: t('detail.transactions.check-created'),
+    CheckCash: t('detail.transactions.check-redeemed'),
+    CheckCancel: t('detail.transactions.check-canceled')
   }
 
   const txTypeSpecial = (
     <span className="bold">
-      {tx?.Destination === address ? (
+      {tx?.TransactionType === 'CheckCreate' && tx?.Destination === address ? (
         <>
-          Incoming check from
+          {t('detail.transactions.check-received-from')}
           <br />
           <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
         </>

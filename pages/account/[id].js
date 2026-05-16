@@ -6077,7 +6077,9 @@ export default function Account({
                           ? isRipplingDexOffer
                             ? ta('transactions.rippling-through-offer')
                             : ta('transactions.dex-order', {
-                                direction: ta(`tabs.${dexOfferDirectionKey}`),
+                                direction: ta(`transactions.dex-order-direction-${dexOfferDirectionKey}`, {
+                                  defaultValue: ta(`tabs.${dexOfferDirectionKey}`)
+                                }),
                                 status: ta(`transactions.dex-order-status-${dexOrderStatusKey}`)
                               })
                           : null
@@ -6692,6 +6694,12 @@ export default function Account({
                             ? ta('transactions.check-sent-to')
                             : ta('transactions.check-received-from')
                           : null
+                      const checkActionCollapsedLabel =
+                        txType === 'CheckCash'
+                          ? ta('transactions.check-redeemed')
+                          : txType === 'CheckCancel'
+                            ? ta('transactions.check-canceled')
+                            : null
                       const setRegularKey = txType === 'SetRegularKey'
                       const setRegularKeyValue = txdata?.specification?.regularKey || null
                       const setRegularKeyDetails = txdata?.specification?.regularKeyDetails || null
@@ -6721,6 +6729,7 @@ export default function Account({
                         setRegularKeyLabel ||
                         escrowCreateCollapsedLabel ||
                         checkCreateCollapsedLabel ||
+                        checkActionCollapsedLabel ||
                         nftOfferLegacyLabel ||
                         nftMintSpecialLabel ||
                         fallbackTxTypeLabel
@@ -6735,7 +6744,9 @@ export default function Account({
                           isNftOfferTx ||
                           isDexOfferTx ||
                           txType === 'EscrowCreate' ||
-                          txType === 'CheckCreate'
+                          txType === 'CheckCreate' ||
+                          txType === 'CheckCash' ||
+                          txType === 'CheckCancel'
                         ) {
                           return txTypeShortLabel
                         }
@@ -6834,7 +6845,12 @@ export default function Account({
                                   )}
                                   {showDexCollapsedSequence && (
                                     <span className="tx-accountset-inline">
-                                      {dexCollapsedSequences.length > 1 ? 'Offer sequences: ' : 'Offer sequence: '}
+                                      {ta(
+                                        dexCollapsedSequences.length > 1
+                                          ? 'transactions.dex-order-numbers'
+                                          : 'transactions.dex-order-number'
+                                      )}
+                                      {': '}
                                       {dexCollapsedSequences.join(', ')}
                                     </span>
                                   )}
