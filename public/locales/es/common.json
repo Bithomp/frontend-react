@@ -33,11 +33,6 @@
     "more-results": "Se encontraron más de {{count}} resultados. Especifica un emisor para acotar la búsqueda.",
     "no-destination-trustlines": "No se encontraron trustlines para esta dirección de destino."
   },
-  "token-activity": {
-    "last-dex-swaps": "Últimos swaps DEX",
-    "last-transfers": "Últimas transferencias",
-    "rate": "Tasa"
-  },
   "menu": {
     "tokens": "Tokens",
     "badges": {

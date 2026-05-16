@@ -33,11 +33,6 @@
     "more-results": "{{count}}개 이상의 결과를 찾았습니다. 검색 범위를 좁히려면 발행자를 지정하세요.",
     "no-destination-trustlines": "이 수신 주소에 대한 트러스트라인을 찾을 수 없습니다."
   },
-  "token-activity": {
-    "last-dex-swaps": "최근 DEX 스왑",
-    "last-transfers": "최근 전송",
-    "rate": "환율"
-  },
   "menu": {
     "tokens": "토큰",
     "badges": {

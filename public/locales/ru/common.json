@@ -33,11 +33,6 @@
     "more-results": "Найдено более {{count}} результатов. Укажите эмитента, чтобы сузить поиск.",
     "no-destination-trustlines": "Для этого адреса назначения trustline не найдены."
   },
-  "token-activity": {
-    "last-dex-swaps": "Последние DEX swaps",
-    "last-transfers": "Последние переводы",
-    "rate": "Курс"
-  },
   "menu": {
     "tokens": "Токены",
     "badges": {

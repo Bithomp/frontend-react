@@ -200,7 +200,7 @@ export async function getServerSideProps(context) {
       issuer,
       currency,
       tokenId,
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'token']))
     }
   }
 }
@@ -216,7 +216,7 @@ export default function TokenPage({
   isSsrMobile
 }) {
   const router = useRouter()
-  const { t } = useTranslation()
+  const { t: tt } = useTranslation('token')
   const [token, setToken] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const [selectedToken, setSelectedToken] = useState(initialData)
@@ -229,6 +229,15 @@ export default function TokenPage({
   const [dexSwapsRefreshSeconds, setDexSwapsRefreshSeconds] = useState(0)
   const [transfersRefreshSeconds, setTransfersRefreshSeconds] = useState(0)
   const errorMessage = initialErrorMessage || ''
+  const tokenErrorTranslations = {
+    'Token not found': tt('errors.notFound'),
+    'Failed to fetch token data': tt('errors.failedFetch'),
+    'Invalid issuer address or username': tt('errors.invalidIssuer'),
+    'Invalid currency code': tt('errors.invalidCurrency')
+  }
+  const tokenErrorText = errorMessage?.startsWith('Invalid token URL.')
+    ? tt('errors.invalidUrl', { nativeCurrency })
+    : tokenErrorTranslations[errorMessage] || errorMessage
   const firstRenderRef = useRef(true)
   const dexSwapsRequestRef = useRef(0)
   const transfersRequestRef = useRef(0)
@@ -520,9 +529,9 @@ export default function TokenPage({
         {change >= 0 ? '+' : '-'}
         {percentText}
         <span className="tooltiptext right no-brake" suppressHydrationWarning>
-          Now: {fullNiceNumber(currentPrice, selectedCurrency)}
+          {tt('tooltips.now')}: {fullNiceNumber(currentPrice, selectedCurrency)}
           <br />
-          Before: {fullNiceNumber(pastPrice, selectedCurrency)}
+          {tt('tooltips.before')}: {fullNiceNumber(pastPrice, selectedCurrency)}
         </span>
       </span>
     )
@@ -531,12 +540,12 @@ export default function TokenPage({
   if (errorMessage) {
     return (
       <>
-        <SEO title="Token not found" />
+        <SEO title={tt('errors.notFound')} />
         <div className="center">
-          <h1>Token not found</h1>
-          <p>{errorMessage}</p>
+          <h1>{tt('errors.notFound')}</h1>
+          <p>{tokenErrorText}</p>
           <Link href="/tokens" className="button-action">
-            View all tokens
+            {tt('errors.viewAllTokens')}
           </Link>
           <br />
           <br />
@@ -548,9 +557,9 @@ export default function TokenPage({
   if (!token) {
     return (
       <>
-        <SEO title="Loading Token..." />
+        <SEO title={tt('errors.loadingTitle')} />
         <div className="center">
-          <h1>Loading...</h1>
+          <h1>{tt('errors.loading')}</h1>
         </div>
       </>
     )
@@ -567,11 +576,11 @@ export default function TokenPage({
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
   const escrowStatus =
     token?.canLock === true ? (
-      <span className="bold">Can be escrowed</span>
+      <span className="bold">{tt('escrow.can')}</span>
     ) : token?.canLock === false ? (
-      'Can not be escrowed'
+      tt('escrow.cannot')
     ) : (
-      'Unknown'
+      tt('escrow.unknown')
     )
   const changeItems = [
     {
@@ -642,10 +651,12 @@ export default function TokenPage({
   }
 
   const title = isNativeToken ? (
-    <>{tokenDisplayCurrency} (native currency)</>
+    <>
+      {tokenDisplayCurrency} ({tt('title.nativeCurrency')})
+    </>
   ) : (
     <>
-      {tokenDisplayCurrency} issued by {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
+      {tokenDisplayCurrency} {tt('title.issuedBy')} {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
     </>
   )
   const isLpToken = token?.currencyDetails?.type === 'lp_token'
@@ -756,7 +767,7 @@ export default function TokenPage({
           {hasActivityValue(row.amount2) ? <span className="grey">{renderActivityAmount(row.amount2)}</span> : null}
         </div>
         <div className={tokenSwapPrice}>
-          <span className={tokenSwapPriceLabel}>{t('token-activity.rate')}</span>
+          <span className={tokenSwapPriceLabel}>{tt('activity.rate')}</span>
           <span className={tokenSwapPriceValue}>
             {swapPrice ? (
               <span className="tooltip">
@@ -802,6 +813,7 @@ export default function TokenPage({
 
   const renderTokenActivityWidget = ({
     title,
+    titleText,
     rows,
     rowRenderer,
     loading,
@@ -814,6 +826,7 @@ export default function TokenPage({
     return (
       <HomeTeaser
         title={title}
+        titleText={titleText}
         isLoading={loading && !visibleRows.length}
         isRefreshing={loading}
         onRefresh={onRefresh}
@@ -832,9 +845,11 @@ export default function TokenPage({
       <SEO
         title={
           isNativeToken
-            ? tokenDisplayCurrency + ' (native currency)'
+            ? tokenDisplayCurrency + ' (' + tt('title.nativeCurrency') + ')'
             : tokenDisplayCurrency +
-              ' issued by ' +
+              ' ' +
+              tt('title.issuedBy') +
+              ' ' +
               (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
         }
       />
@@ -874,12 +889,12 @@ export default function TokenPage({
             {/* Action Buttons */}
             {!isNativeToken && !isMptToken && (
               <button className="button-action wide center" onClick={handleSetTrustline}>
-                Set Trustline
+                {tt('actions.setTrustline')}
               </button>
             )}
             {isMptToken && (
               <button className="button-action wide center" onClick={handleAuthorizeMpt}>
-                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Authorize
+                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> {tt('actions.authorize')}
               </button>
             )}
           </div>
@@ -889,17 +904,17 @@ export default function TokenPage({
             <table className="table-details">
               <thead>
                 <tr>
-                  <th colSpan="100">Token Information</th>
+                  <th colSpan="100">{tt('tables.tokenInformation')}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Currency</td>
+                  <td>{tt('fields.currency')}</td>
                   <td>{tokenDisplayCurrency}</td>
                 </tr>
                 {isMptToken && (
                   <tr>
-                    <td>MPT ID</td>
+                    <td>{tt('fields.mptId')}</td>
                     <td>
                       {mptId} <CopyButton text={mptId} />
                     </td>
@@ -907,37 +922,37 @@ export default function TokenPage({
                 )}
                 {isLpToken && (
                   <tr>
-                    <td>AMM pool</td>
-                    <td>{lpAmmId ? <Link href={`/amm/${lpAmmId}`}>View pool</Link> : '-'}</td>
+                    <td>{tt('fields.ammPool')}</td>
+                    <td>{lpAmmId ? <Link href={`/amm/${lpAmmId}`}>{tt('actions.viewPool')}</Link> : '-'}</td>
                   </tr>
                 )}
                 {isLpToken && (
                   <tr>
-                    <td>Asset 1</td>
+                    <td>{tt('fields.asset1')}</td>
                     <td>{renderLpAsset(lpAsset)}</td>
                   </tr>
                 )}
                 {isLpToken && (
                   <tr>
-                    <td>Asset 2</td>
+                    <td>{tt('fields.asset2')}</td>
                     <td>{renderLpAsset(lpAsset2)}</td>
                   </tr>
                 )}
                 {token?.name && (
                   <tr>
-                    <td>Name</td>
+                    <td>{tt('fields.name')}</td>
                     <td>{token.name}</td>
                   </tr>
                 )}
                 {token?.description && (
                   <tr>
-                    <td>Description</td>
+                    <td>{tt('fields.description')}</td>
                     <td>{token.description}</td>
                   </tr>
                 )}
                 {!isNativeToken && (
                   <tr>
-                    <td>Issuer</td>
+                    <td>{tt('fields.issuer')}</td>
                     <td>
                       <AddressWithIconFilled
                         data={token}
@@ -950,7 +965,7 @@ export default function TokenPage({
                 )}
                 {!isMptToken && (
                   <tr>
-                    <td>Currency code</td>
+                    <td>{tt('fields.currencyCode')}</td>
                     <td className="brake">
                       {token.currencyDetails?.currencyCode || token.currency}{' '}
                       <CopyButton text={token.currencyDetails?.currencyCode || token.currency} />
@@ -960,13 +975,13 @@ export default function TokenPage({
                 {!isMptToken ? (
                   <>
                     <tr>
-                      <td>Supply</td>
+                      <td>{tt('fields.supply')}</td>
                       <td>
                         {fullNiceNumber(token.supply)} {tokenDisplayCurrency}
                       </td>
                     </tr>
                     <tr>
-                      <td>Holders</td>
+                      <td>{tt('fields.holders')}</td>
                       <td>
                         {isNativeToken ? (
                           <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
@@ -986,51 +1001,51 @@ export default function TokenPage({
                     </tr>
                     {!isNativeToken && (
                       <tr>
-                        <td>Trustlines</td>
+                        <td>{tt('fields.trustlines')}</td>
                         <td>{fullNiceNumber(token.trustlines)}</td>
                       </tr>
                     )}
                     <tr>
-                      <td>Escrow</td>
+                      <td>{tt('fields.escrow')}</td>
                       <td>{escrowStatus}</td>
                     </tr>
                   </>
                 ) : (
                   <>
                     <tr>
-                      <td>Outstanding</td>
+                      <td>{tt('fields.outstanding')}</td>
                       <td>{fullNiceNumber(Number(token.outstandingAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
                     </tr>
                     <tr>
-                      <td>Max supply</td>
+                      <td>{tt('fields.maxSupply')}</td>
                       <td>{fullNiceNumber(Number(token.maximumAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
                     </tr>
                     <tr>
-                      <td>Locked amount</td>
+                      <td>{tt('fields.lockedAmount')}</td>
                       <td>{fullNiceNumber(Number(token.lockedAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
                     </tr>
                     <tr>
-                      <td>Holders</td>
+                      <td>{tt('fields.holders')}</td>
                       <td>{fullNiceNumber(token.holders || 0)}</td>
                     </tr>
                     <tr>
-                      <td>Authorized addresses</td>
+                      <td>{tt('fields.authorizedAddresses')}</td>
                       <td>{fullNiceNumber(token.mptokens || 0)}</td>
                     </tr>
                     <tr>
-                      <td>Transfer fee</td>
-                      <td>{token.transferFee ? token.transferFee / 1000 + '%' : 'none'}</td>
+                      <td>{tt('fields.transferFee')}</td>
+                      <td>{token.transferFee ? token.transferFee / 1000 + '%' : tt('values.none')}</td>
                     </tr>
                     <tr>
-                      <td>Decimal places</td>
+                      <td>{tt('fields.decimalPlaces')}</td>
                       <td>{token.scale || 0}</td>
                     </tr>
                     <tr>
-                      <td>Token sequence</td>
+                      <td>{tt('fields.tokenSequence')}</td>
                       <td>{fullNiceNumber(token.sequence || 0)}</td>
                     </tr>
                     <tr>
-                      <td>Created</td>
+                      <td>{tt('fields.created')}</td>
                       <td>
                         {token.createdAt ? (
                           <>
@@ -1042,7 +1057,7 @@ export default function TokenPage({
                       </td>
                     </tr>
                     <tr>
-                      <td>Last updated</td>
+                      <td>{tt('fields.lastUpdated')}</td>
                       <td>
                         {token.updatedAt ? (
                           <>
@@ -1054,7 +1069,7 @@ export default function TokenPage({
                       </td>
                     </tr>
                     <tr>
-                      <td>Last used</td>
+                      <td>{tt('fields.lastUsed')}</td>
                       <td>
                         {token.lastUsedAt ? (
                           <>
@@ -1066,13 +1081,13 @@ export default function TokenPage({
                       </td>
                     </tr>
                     <tr>
-                      <td>Flags</td>
+                      <td>{tt('fields.flags')}</td>
                       <td>
                         {token.flags
                           ? Object.keys(token.flags)
                               .filter((flag) => token.flags[flag])
-                              .join(', ') || 'none set'
-                          : 'none'}
+                              .join(', ') || tt('values.noneSet')
+                          : tt('values.none')}
                       </td>
                     </tr>
                   </>
@@ -1108,24 +1123,24 @@ export default function TokenPage({
               <table className="table-details">
                 <thead>
                   <tr>
-                    <th colSpan="100">MPT metadata</th>
+                    <th colSpan="100">{tt('tables.mptMetadata')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {token.metadata?.name && (
                     <tr>
-                      <td>Name</td>
+                      <td>{tt('fields.name')}</td>
                       <td>{token.metadata.name}</td>
                     </tr>
                   )}
                   {(token.metadata?.description || token.description) && (
                     <tr>
-                      <td>Description</td>
+                      <td>{tt('fields.description')}</td>
                       <td>{token.metadata?.description || token.description}</td>
                     </tr>
                   )}
                   <tr>
-                    <td>Raw metadata</td>
+                    <td>{tt('fields.rawMetadata')}</td>
                     <td>
                       <pre style={{ maxHeight: 260, overflow: 'auto', margin: 0 }}>
                         <code>{JSON.stringify(token.metadata, null, 2)}</code>
@@ -1141,7 +1156,7 @@ export default function TokenPage({
               <table className="table-details">
                 <thead>
                   <tr>
-                    <th colSpan="100">Price information</th>
+                    <th colSpan="100">{tt('tables.priceInformation')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1155,7 +1170,7 @@ export default function TokenPage({
                     <>
                       {effectiveNativePrice && (
                         <tr>
-                          <td>Last price</td>
+                          <td>{tt('fields.lastPrice')}</td>
                           <td>
                             {priceLine({
                               priceNative: effectiveNativePrice,
@@ -1166,7 +1181,7 @@ export default function TokenPage({
                       )}
                       {changeItems.length > 0 && (
                         <tr>
-                          <td>Change</td>
+                          <td>{tt('fields.change')}</td>
                           <td>
                             <div className={tokenChangeList}>
                               {changeItems.map((item) => (
@@ -1184,7 +1199,7 @@ export default function TokenPage({
                       )}
                       {statistics?.priceNativeCurrencySpot && (
                         <tr>
-                          <td>Spot price</td>
+                          <td>{tt('fields.spotPrice')}</td>
                           <td>
                             {priceLine({
                               priceNative: statistics?.priceNativeCurrencySpot,
@@ -1194,7 +1209,7 @@ export default function TokenPage({
                         </tr>
                       )}
                       <tr>
-                        <td>Market cap</td>
+                        <td>{tt('fields.marketCap')}</td>
                         <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
                       </tr>
                     </>
@@ -1208,77 +1223,77 @@ export default function TokenPage({
               <table className="table-details">
                 <thead>
                   <tr>
-                    <th colSpan="100">Stats for the last 24h</th>
+                    <th colSpan="100">{tt('tables.stats24h')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Volume (total)</td>
+                    <td>{tt('fields.volumeTotal')}</td>
                     <td>{volumeLine({ token, type: 'total' })}</td>
                   </tr>
                   <tr>
-                    <td>Volume (buy)</td>
+                    <td>{tt('fields.volumeBuy')}</td>
                     <td>{volumeLine({ token, type: 'buy' })}</td>
                   </tr>
                   <tr>
-                    <td>Volume (sell)</td>
+                    <td>{tt('fields.volumeSell')}</td>
                     <td>{volumeLine({ token, type: 'sell' })}</td>
                   </tr>
                   <tr>
-                    <td>Trades</td>
+                    <td>{tt('fields.trades')}</td>
                     <td>{fullNiceNumber(statistics?.dexes || 0)}</td>
                   </tr>
                   <tr>
-                    <td>DEX txs</td>
+                    <td>{tt('fields.dexTxs')}</td>
                     <td>{fullNiceNumber(statistics?.dexTxs || 0)}</td>
                   </tr>
                   <tr>
-                    <td>Buyers</td>
+                    <td>{tt('fields.buyers')}</td>
                     <td>{fullNiceNumber(statistics?.uniqueBuyers || 0)}</td>
                   </tr>
                   <tr>
-                    <td>Sellers</td>
+                    <td>{tt('fields.sellers')}</td>
                     <td>{fullNiceNumber(statistics?.uniqueSellers || 0)}</td>
                   </tr>
                   <tr>
-                    <td>Traders</td>
+                    <td>{tt('fields.traders')}</td>
                     <td>{fullNiceNumber(statistics?.uniqueDexAccounts || 0)}</td>
                   </tr>
                   <tr>
-                    <td>Transfer volume</td>
+                    <td>{tt('fields.transferVolume')}</td>
                     <td>{volumeLine({ token, type: 'transfer' })}</td>
                   </tr>
                   <tr>
-                    <td>Transfer transactions</td>
+                    <td>{tt('fields.transferTransactions')}</td>
                     <td>{niceNumber(statistics?.transferTxs || 0)}</td>
                   </tr>
                   <tr>
-                    <td>Rippling txs</td>
+                    <td>{tt('fields.ripplingTxs')}</td>
                     <td>{fullNiceNumber(statistics?.ripplingTxs || 0)}</td>
                   </tr>
                   <tr>
-                    <td>Mint volume</td>
+                    <td>{tt('fields.mintVolume')}</td>
                     <td>{volumeLine({ token, type: 'mint' })}</td>
                   </tr>
                   <tr>
-                    <td>Mint transactions</td>
+                    <td>{tt('fields.mintTransactions')}</td>
                     <td>{shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}</td>
                   </tr>
                   <tr>
-                    <td>Burn volume</td>
+                    <td>{tt('fields.burnVolume')}</td>
                     <td>{volumeLine({ token, type: 'burn' })}</td>
                   </tr>
                   <tr>
-                    <td>Burn transactions</td>
+                    <td>{tt('fields.burnTransactions')}</td>
                     <td>{shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}</td>
                   </tr>
                   <tr>
-                    <td>Unique accounts</td>
+                    <td>{tt('fields.uniqueAccounts')}</td>
                     <td>{fullNiceNumber(statistics?.uniqueAccounts || 0)}</td>
                   </tr>
                   {!xahauNetwork && !isMptToken && (
                     <tr>
-                      <td>AMM pools</td>
+                      <td>{tt('fields.ammPools')}</td>
                       <td>
                         <Link
                           href={
@@ -1301,25 +1316,25 @@ export default function TokenPage({
               <table className="table-details">
                 <thead>
                   <tr>
-                    <th colSpan="100">Stats for the last closed day</th>
+                    <th colSpan="100">{tt('tables.statsClosedDay')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Trading pairs</td>
+                    <td>{tt('fields.tradingPairs')}</td>
                     <td>{fullNiceNumber(statistics?.activeCounters || 0)}</td>
                   </tr>
                   <tr>
-                    <td>Active holders</td>
+                    <td>{tt('fields.activeHolders')}</td>
                     <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
                   </tr>
                   <tr>
-                    <td>Active offers</td>
+                    <td>{tt('fields.activeOffers')}</td>
                     <td>{fullNiceNumber(statistics?.activeOffers || 0)}</td>
                   </tr>
                   {!xahauNetwork && !isMptToken && (
                     <tr>
-                      <td>Active AMM pools</td>
+                      <td>{tt('fields.activeAmmPools')}</td>
                       <td>{niceNumber(statistics?.activeAmmPools || 0)}</td>
                     </tr>
                   )}
@@ -1328,7 +1343,7 @@ export default function TokenPage({
             )}
 
             {renderTokenActivityWidget({
-              title: 'token-activity.last-dex-swaps',
+              titleText: tt('activity.lastDexSwaps'),
               rows: dexSwaps,
               rowRenderer: renderDexSwapRow,
               loading: dexSwapsLoading,
@@ -1338,7 +1353,7 @@ export default function TokenPage({
             })}
 
             {renderTokenActivityWidget({
-              title: 'token-activity.last-transfers',
+              titleText: tt('activity.lastTransfers'),
               rows: transfers,
               rowRenderer: renderTransferRow,
               loading: transfersLoading,

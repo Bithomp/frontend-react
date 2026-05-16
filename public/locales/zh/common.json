@@ -33,11 +33,6 @@
     "more-results": "找到超过 {{count}} 个结果。请指定发行人以缩小搜索范围。",
     "no-destination-trustlines": "找不到此目标地址的信任线。"
   },
-  "token-activity": {
-    "last-dex-swaps": "最新 DEX 兑换",
-    "last-transfers": "最新转账",
-    "rate": "汇率"
-  },
   "menu": {
     "tokens": "代币",
     "badges": {

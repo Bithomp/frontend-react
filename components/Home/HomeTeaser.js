@@ -25,6 +25,7 @@ import styles from '@/styles/components/home-teaser.module.scss'
 
 export default function HomeTeaser({
   title,
+  titleText = '',
   href,
   titleNote = '',
   titleSuffix = '',
@@ -47,7 +48,7 @@ export default function HomeTeaser({
       <div className={styles.cardHeader}>
         <div className={styles.cardHeaderTitleWrap}>
           <h2 className={styles.cardHeaderTitle}>
-            {t(title)}
+            {titleText || t(title)}
             {titleSuffix ? <span className={styles.cardHeaderTitleSuffix}> {titleSuffix}</span> : null}
           </h2>
           {titleNote ? <span className={styles.cardHeaderNote}>{titleNote}</span> : null}

@@ -33,11 +33,6 @@
     "more-results": "Plus de {{count}} résultats trouvés. Veuillez préciser un émetteur pour affiner la recherche.",
     "no-destination-trustlines": "Aucune trustline trouvée pour cette adresse de destination."
   },
-  "token-activity": {
-    "last-dex-swaps": "Derniers swaps DEX",
-    "last-transfers": "Derniers transferts",
-    "rate": "Taux"
-  },
   "menu": {
     "tokens": "Tokens",
     "badges": {
