@@ -141,7 +141,7 @@ const orderList = [
 // Helper component to render token with icon
 const TokenCell = ({ token }) => {
   if (!token) return 'N/A'
-  return <CurrencyWithIcon token={token} />
+  return <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
 }
 
 export default function Mpts({
@@ -446,7 +446,7 @@ export default function Mpts({
           sessionToken={sessionToken}
           openEmailLogin={openEmailLogin}
         >
-          <table className="table-large expand hide-on-small-w800">
+          <table className="table-large clickable expand hide-on-small-w800">
             <thead>
               <tr>
                 <th className="center">
@@ -512,7 +512,7 @@ export default function Mpts({
                               style={{ cursor: 'pointer' }}
                             >
                               <td className="center">{i + 1}</td>
-                              <td onClick={stopRowClick}>
+                              <td>
                                 <TokenCell token={token} />
                               </td>
                             <td className="right">

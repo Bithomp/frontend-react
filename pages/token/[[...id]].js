@@ -819,7 +819,8 @@ export default function TokenPage({
     loading,
     onRefresh,
     isRefreshHidden = false,
-    refreshCooldownSeconds = 0
+    refreshCooldownSeconds = 0,
+    emptyText
   }) => {
     const visibleRows = Array.isArray(rows) ? rows.slice(0, 5) : []
 
@@ -833,6 +834,7 @@ export default function TokenPage({
         isRefreshHidden={isRefreshHidden}
         refreshCooldownSeconds={refreshCooldownSeconds}
         isEmpty={!visibleRows.length}
+        emptyText={emptyText}
         className={`${homeTeaserStyles.whaleCard} ${tokenActivityCard}`}
       >
         {visibleRows.map(rowRenderer)}
@@ -1349,7 +1351,8 @@ export default function TokenPage({
               loading: dexSwapsLoading,
               onRefresh: refreshDexSwaps,
               isRefreshHidden: dexSwapsRefreshHidden,
-              refreshCooldownSeconds: dexSwapsRefreshSeconds
+              refreshCooldownSeconds: dexSwapsRefreshSeconds,
+              emptyText: tt('activity.noData24h')
             })}
 
             {renderTokenActivityWidget({
@@ -1359,7 +1362,8 @@ export default function TokenPage({
               loading: transfersLoading,
               onRefresh: refreshTransfers,
               isRefreshHidden: transfersRefreshHidden,
-              refreshCooldownSeconds: transfersRefreshSeconds
+              refreshCooldownSeconds: transfersRefreshSeconds,
+              emptyText: tt('activity.noData24h')
             })}
           </div>
         </div>

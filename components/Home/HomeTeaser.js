@@ -35,6 +35,7 @@ export default function HomeTeaser({
   isRefreshHidden = false,
   refreshCooldownSeconds = 0,
   isEmpty = false,
+  emptyText = '',
   children,
   className = ''
 }) {
@@ -92,7 +93,7 @@ export default function HomeTeaser({
           <div className={styles.skeleton} />
         </div>
       ) : isEmpty ? (
-        <div className={styles.emptyState}>{t('common.noData')}</div>
+        <div className={styles.emptyState}>{emptyText || t('common.noData')}</div>
       ) : (
         <div className={styles.content}>{children}</div>
       )}

@@ -197,7 +197,7 @@ export async function getServerSideProps(context) {
 
 // Helper component to render token with icon
 const TokenCell = ({ token }) => {
-  return <CurrencyWithIcon token={token} />
+  return <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
 }
 
 export default function Tokens({
