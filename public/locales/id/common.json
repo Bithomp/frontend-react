@@ -6,6 +6,10 @@
     "holders": "pemegang",
     "sales": "penjualan"
   },
+  "shared": {
+    "enter-memo-optional": "Masukkan komentar (opsional)",
+    "it-will-be-public": "Ini akan bersifat publik"
+  },
   "token-tabs": {
     "tokens": "Token",
     "amms": "LP Token",

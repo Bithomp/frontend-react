@@ -6,6 +6,10 @@
     "holders": "보유자",
     "sales": "총기보 식"
   },
+  "shared": {
+    "enter-memo-optional": "메시지 입력(선택 사항)",
+    "it-will-be-public": "공개됩니다"
+  },
   "token-tabs": {
     "tokens": "토큰",
     "amms": "LP 토큰",

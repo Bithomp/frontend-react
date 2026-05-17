@@ -6,6 +6,10 @@
     "holders": "poseedores",
     "sales": "ventas"
   },
+  "shared": {
+    "enter-memo-optional": "Introduce un comentario (opcional)",
+    "it-will-be-public": "Será público"
+  },
   "token-tabs": {
     "tokens": "Tokens",
     "amms": "LP Tokens",

@@ -6,6 +6,10 @@
     "holders": "持有者",
     "sales": "销售"
   },
+  "shared": {
+    "enter-memo-optional": "输入备注（可选）",
+    "it-will-be-public": "将会公开"
+  },
   "token-tabs": {
     "tokens": "代币",
     "amms": "LP代币",

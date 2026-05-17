@@ -6,6 +6,10 @@
     "holders": "владельцы",
     "sales": "продажи"
   },
+  "shared": {
+    "enter-memo-optional": "Введите комментарий (необязательно)",
+    "it-will-be-public": "Будет публичным"
+  },
   "token-tabs": {
     "tokens": "Токены",
     "amms": "LP токены",

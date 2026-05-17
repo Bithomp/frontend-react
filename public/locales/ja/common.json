@@ -6,6 +6,10 @@
     "holders": "保有者",
     "sales": "販売"
   },
+  "shared": {
+    "enter-memo-optional": "コメントを入力（任意）",
+    "it-will-be-public": "公開されます"
+  },
   "token-tabs": {
     "tokens": "トークン",
     "amms": "LPトークン",

@@ -642,10 +642,10 @@ export default function Send({
           <FormInput
             title={
               <>
-                {t('table.memo')} (<span className="orange">{ts('shared.it-will-be-public')}</span>)
+                {t('table.memo')} (<span className="orange">{t('shared.it-will-be-public')}</span>)
               </>
             }
-            placeholder={ts('shared.enter-memo-optional')}
+            placeholder={t('shared.enter-memo-optional')}
             setInnerValue={setMemo}
             hideButton={true}
             defaultValue={memo}

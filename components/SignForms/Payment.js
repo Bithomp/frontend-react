@@ -24,7 +24,6 @@ const toInitialAmount = (amountValue) => {
 
 export default function Payment({ setSignRequest, signRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
-  const { t: ts } = useTranslation('services')
   const initialRequest = signRequest?.request || {}
   const currencyCode = useMemo(() => {
     if (signRequest?.data?.currencyCode) return signRequest.data.currencyCode
@@ -304,10 +303,10 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       <br />
       <span className="halv">
         <span className="input-title">
-          {t('table.memo')} (<span className="orange">{ts('shared.it-will-be-public')}</span>)
+          {t('table.memo')} (<span className="orange">{t('shared.it-will-be-public')}</span>)
         </span>
         <input
-          placeholder={ts('shared.enter-memo-optional')}
+          placeholder={t('shared.enter-memo-optional')}
           onChange={(event) => setMemo(event.target.value)}
           className="input-text"
           spellCheck="false"

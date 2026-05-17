@@ -6,6 +6,10 @@
     "holders": "holders",
     "sales": "sales"
   },
+  "shared": {
+    "enter-memo-optional": "Enter a comment (optional)",
+    "it-will-be-public": "It will be public"
+  },
   "token-tabs": {
     "tokens": "Tokens",
     "amms": "LP Tokens",
