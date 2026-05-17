@@ -218,14 +218,24 @@ export default function TokenPage({
   const [selectedToken, setSelectedToken] = useState(initialData)
   const [dexSwaps, setDexSwaps] = useState([])
   const [transfers, setTransfers] = useState([])
+  const [mints, setMints] = useState([])
+  const [burns, setBurns] = useState([])
   const [dexSwapsLoading, setDexSwapsLoading] = useState(!!initialData)
   const [transfersLoading, setTransfersLoading] = useState(!!initialData)
+  const [mintsLoading, setMintsLoading] = useState(!!initialData)
+  const [burnsLoading, setBurnsLoading] = useState(!!initialData)
   const [dexSwapsRefreshHidden, setDexSwapsRefreshHidden] = useState(false)
   const [transfersRefreshHidden, setTransfersRefreshHidden] = useState(false)
+  const [mintsRefreshHidden, setMintsRefreshHidden] = useState(false)
+  const [burnsRefreshHidden, setBurnsRefreshHidden] = useState(false)
   const [dexSwapsRefreshSeconds, setDexSwapsRefreshSeconds] = useState(0)
   const [transfersRefreshSeconds, setTransfersRefreshSeconds] = useState(0)
+  const [mintsRefreshSeconds, setMintsRefreshSeconds] = useState(0)
+  const [burnsRefreshSeconds, setBurnsRefreshSeconds] = useState(0)
   const [dexSwapsOrder, setDexSwapsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const [transfersOrder, setTransfersOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
+  const [mintsOrder, setMintsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
+  const [burnsOrder, setBurnsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const errorMessage = initialErrorMessage || ''
   const tokenErrorTranslations = {
     'Token not found': tt('errors.notFound'),
@@ -239,10 +249,16 @@ export default function TokenPage({
   const firstRenderRef = useRef(true)
   const dexSwapsRequestRef = useRef(0)
   const transfersRequestRef = useRef(0)
+  const mintsRequestRef = useRef(0)
+  const burnsRequestRef = useRef(0)
   const dexSwapsRefreshTimeoutRef = useRef(null)
   const transfersRefreshTimeoutRef = useRef(null)
+  const mintsRefreshTimeoutRef = useRef(null)
+  const burnsRefreshTimeoutRef = useRef(null)
   const dexSwapsRefreshIntervalRef = useRef(null)
   const transfersRefreshIntervalRef = useRef(null)
+  const mintsRefreshIntervalRef = useRef(null)
+  const burnsRefreshIntervalRef = useRef(null)
 
   let selectedCurrency = selectedCurrencyServer
   let fiatRate = fiatRateServer
@@ -337,6 +353,54 @@ export default function TokenPage({
     [token, transfersOrder]
   )
 
+  const fetchMints = useCallback(
+    async ({ clear = false } = {}) => {
+      if (!token) {
+        setMintsLoading(false)
+        return
+      }
+      const requestId = mintsRequestRef.current + 1
+      mintsRequestRef.current = requestId
+      if (clear) {
+        setMints([])
+      }
+      setMintsLoading(true)
+
+      const orderQuery = mintsOrder === TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH ? '&order=amountHigh' : ''
+      const response = await axios(tokenSwapsUrl(token, 'mint', 10) + orderQuery).catch(() => null)
+
+      if (mintsRequestRef.current !== requestId) return
+
+      setMints(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 10) : [])
+      setMintsLoading(false)
+    },
+    [mintsOrder, token]
+  )
+
+  const fetchBurns = useCallback(
+    async ({ clear = false } = {}) => {
+      if (!token) {
+        setBurnsLoading(false)
+        return
+      }
+      const requestId = burnsRequestRef.current + 1
+      burnsRequestRef.current = requestId
+      if (clear) {
+        setBurns([])
+      }
+      setBurnsLoading(true)
+
+      const orderQuery = burnsOrder === TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH ? '&order=amountHigh' : ''
+      const response = await axios(tokenSwapsUrl(token, 'burn', 10) + orderQuery).catch(() => null)
+
+      if (burnsRequestRef.current !== requestId) return
+
+      setBurns(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 10) : [])
+      setBurnsLoading(false)
+    },
+    [burnsOrder, token]
+  )
+
   const clearRefreshCooldown = useCallback((timeoutRef, intervalRef, setHidden, setSeconds) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -393,6 +457,26 @@ export default function TokenPage({
     fetchTransfers()
   }, [fetchTransfers, startRefreshCooldown])
 
+  const refreshMints = useCallback(() => {
+    startRefreshCooldown(
+      mintsRefreshTimeoutRef,
+      mintsRefreshIntervalRef,
+      setMintsRefreshHidden,
+      setMintsRefreshSeconds
+    )
+    fetchMints()
+  }, [fetchMints, startRefreshCooldown])
+
+  const refreshBurns = useCallback(() => {
+    startRefreshCooldown(
+      burnsRefreshTimeoutRef,
+      burnsRefreshIntervalRef,
+      setBurnsRefreshHidden,
+      setBurnsRefreshSeconds
+    )
+    fetchBurns()
+  }, [fetchBurns, startRefreshCooldown])
+
   useEffect(() => {
     clearRefreshCooldown(
       dexSwapsRefreshTimeoutRef,
@@ -413,6 +497,26 @@ export default function TokenPage({
     fetchTransfers()
   }, [clearRefreshCooldown, fetchTransfers])
 
+  useEffect(() => {
+    clearRefreshCooldown(
+      mintsRefreshTimeoutRef,
+      mintsRefreshIntervalRef,
+      setMintsRefreshHidden,
+      setMintsRefreshSeconds
+    )
+    fetchMints()
+  }, [clearRefreshCooldown, fetchMints])
+
+  useEffect(() => {
+    clearRefreshCooldown(
+      burnsRefreshTimeoutRef,
+      burnsRefreshIntervalRef,
+      setBurnsRefreshHidden,
+      setBurnsRefreshSeconds
+    )
+    fetchBurns()
+  }, [clearRefreshCooldown, fetchBurns])
+
   useEffect(
     () => () => {
       clearRefreshCooldown(
@@ -426,6 +530,18 @@ export default function TokenPage({
         transfersRefreshIntervalRef,
         setTransfersRefreshHidden,
         setTransfersRefreshSeconds
+      )
+      clearRefreshCooldown(
+        mintsRefreshTimeoutRef,
+        mintsRefreshIntervalRef,
+        setMintsRefreshHidden,
+        setMintsRefreshSeconds
+      )
+      clearRefreshCooldown(
+        burnsRefreshTimeoutRef,
+        burnsRefreshIntervalRef,
+        setBurnsRefreshHidden,
+        setBurnsRefreshSeconds
       )
     },
     [clearRefreshCooldown]
@@ -798,27 +914,45 @@ export default function TokenPage({
     )
   }
 
-  const renderTransferRow = (row, index) => (
-    <HomeTeaseRow
-      key={`transfer-${row.txHash || row.timestamp}-${row.address1 || ''}-${row.address2 || ''}-${index}`}
-      href={`/tx/${row.txHash}`}
-      className={`${homeTeaserStyles.whaleRow} ${tokenTransferRow}`}
-    >
-      <div className={homeTeaserStyles.timeAgo}>{timeFormat(row.timestamp)}</div>
-      <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
-        <AddressWithIconInline data={row} name="address1" options={{ short: activityAddressShort, noLink: true }} />
-      </div>
-      <div className={homeTeaserStyles.whaleArrow}>→</div>
-      <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
-        <AddressWithIconInline data={row} name="address2" options={{ short: activityAddressShort, noLink: true }} />
-      </div>
-      <div
-        className={`${homeTeaserStyles.metric} ${homeTeaserStyles.metricWithDelta} ${homeTeaserStyles.whaleFiat} ${tokenTransferMetric}`}
+  const renderTokenMovementRow = (row, index, type) => {
+    const hasAddress1 = !!row.address1
+    const hasAddress2 = !!row.address2
+    const fallbackLabel = type === 'mint' ? tt('activity.mint') : type === 'burn' ? tt('activity.burn') : '-'
+
+    return (
+      <HomeTeaseRow
+        key={`${type}-${row.txHash || row.timestamp}-${row.address1 || ''}-${row.address2 || ''}-${index}`}
+        href={`/tx/${row.txHash}`}
+        className={`${homeTeaserStyles.whaleRow} ${tokenTransferRow}`}
       >
-        {renderActivityAmount(row.amount1)}
-      </div>
-    </HomeTeaseRow>
-  )
+        <div className={homeTeaserStyles.timeAgo}>{timeFormat(row.timestamp)}</div>
+        <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
+          {hasAddress1 ? (
+            <AddressWithIconInline data={row} name="address1" options={{ short: activityAddressShort, noLink: true }} />
+          ) : (
+            <span className="grey">{fallbackLabel}</span>
+          )}
+        </div>
+        <div className={homeTeaserStyles.whaleArrow}>→</div>
+        <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
+          {hasAddress2 ? (
+            <AddressWithIconInline data={row} name="address2" options={{ short: activityAddressShort, noLink: true }} />
+          ) : (
+            <span className="grey">{fallbackLabel}</span>
+          )}
+        </div>
+        <div
+          className={`${homeTeaserStyles.metric} ${homeTeaserStyles.metricWithDelta} ${homeTeaserStyles.whaleFiat} ${tokenTransferMetric}`}
+        >
+          {renderActivityAmount(row.amount1)}
+        </div>
+      </HomeTeaseRow>
+    )
+  }
+
+  const renderTransferRow = (row, index) => renderTokenMovementRow(row, index, 'transfer')
+  const renderMintRow = (row, index) => renderTokenMovementRow(row, index, 'mint')
+  const renderBurnRow = (row, index) => renderTokenMovementRow(row, index, 'burn')
 
   const renderActivityOrderToggle = (value, setValue) => (
     <>
@@ -1405,6 +1539,32 @@ export default function TokenPage({
               isRefreshHidden: transfersRefreshHidden,
               refreshCooldownSeconds: transfersRefreshSeconds,
               headerActions: renderActivityOrderToggle(transfersOrder, setTransfersOrder),
+              emptyText: tt('activity.noData24h'),
+              limit: 10
+            })}
+
+            {renderTokenActivityWidget({
+              titleText: tt('activity.mints'),
+              rows: mints,
+              rowRenderer: renderMintRow,
+              loading: mintsLoading,
+              onRefresh: refreshMints,
+              isRefreshHidden: mintsRefreshHidden,
+              refreshCooldownSeconds: mintsRefreshSeconds,
+              headerActions: renderActivityOrderToggle(mintsOrder, setMintsOrder),
+              emptyText: tt('activity.noData24h'),
+              limit: 10
+            })}
+
+            {renderTokenActivityWidget({
+              titleText: tt('activity.burns'),
+              rows: burns,
+              rowRenderer: renderBurnRow,
+              loading: burnsLoading,
+              onRefresh: refreshBurns,
+              isRefreshHidden: burnsRefreshHidden,
+              refreshCooldownSeconds: burnsRefreshSeconds,
+              headerActions: renderActivityOrderToggle(burnsOrder, setBurnsOrder),
               emptyText: tt('activity.noData24h'),
               limit: 10
             })}
