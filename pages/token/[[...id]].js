@@ -1037,7 +1037,7 @@ export default function TokenPage({
           <span key={item.key} className="tokenChangeItem">
             <span className="tokenChangePeriod">{item.label}</span>
             <span className="tokenChangeValue">
-              {renderPercentCell({ currentPrice: statistics?.priceFiats[selectedCurrency], pastPrice: item.pastPrice })}
+              {renderPercentCell({ currentPrice: statistics?.priceFiats?.[selectedCurrency], pastPrice: item.pastPrice })}
             </span>
           </span>
         ))}
@@ -1233,7 +1233,7 @@ export default function TokenPage({
       label: tt('fields.spotPrice'),
       value: priceLine({
         priceNative: statistics?.priceNativeCurrencySpot,
-        priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
+        priceFiat: statistics?.priceFiatsSpot?.[selectedCurrency]
       }),
       show: !!statistics?.priceNativeCurrencySpot
     },
@@ -1443,7 +1443,7 @@ export default function TokenPage({
                           <strong>
                             {priceLine({
                               priceNative: effectiveNativePrice,
-                              priceFiat: statistics?.priceFiats[selectedCurrency]
+                              priceFiat: statistics?.priceFiats?.[selectedCurrency]
                             })}
                           </strong>
                           {changeItems.length > 0 ? renderChangeStrip() : null}
