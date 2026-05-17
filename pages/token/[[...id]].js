@@ -888,6 +888,7 @@ export default function TokenPage({
     const hasAddress1 = !!row.address1
     const hasAddress2 = !!row.address2
     const fallbackLabel = type === 'mint' ? tt('activity.mint') : type === 'burn' ? tt('activity.burn') : '-'
+    const displayAmount = type === 'mint' && hasActivityValue(row.amount2) ? row.amount2 : row.amount1
 
     return (
       <HomeTeaseRow
@@ -914,7 +915,7 @@ export default function TokenPage({
         <div
           className={`${homeTeaserStyles.metric} ${homeTeaserStyles.metricWithDelta} ${homeTeaserStyles.whaleFiat} tokenTransferMetric`}
         >
-          {renderActivityAmount(row.amount1)}
+          {renderActivityAmount(displayAmount)}
         </div>
       </HomeTeaseRow>
     )
