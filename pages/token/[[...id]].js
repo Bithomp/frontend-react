@@ -8,38 +8,16 @@ import axios from 'axios'
 
 import SEO from '../../components/SEO'
 import TokenSelector from '../../components/UI/TokenSelector'
-import {
-  tokenActivityCard,
-  tokenActivityAmountCurrency,
-  tokenActivityAmountLine,
-  tokenActivityAmountValue,
-  tokenChangeItem,
-  tokenChangeList,
-  tokenClass,
-  tokenPriceDesktopOnly,
-  tokenPriceLine,
-  tokenPriceSecondary,
-  tokenSwapAmount,
-  tokenSwapPrice,
-  tokenSwapPriceLabel,
-  tokenSwapPriceValue,
-  tokenSwapRow,
-  tokenSwapSource,
-  tokenSwapSourcePill,
-  tokenSwapFlow,
-  tokenSwapFlowAddress,
-  tokenSwapPriceAsset,
-  tokenTransferMetric,
-  tokenTransferRow
-} from '../../styles/pages/token.module.scss'
+import { tokenPage } from '../../styles/pages/token.module.scss'
 import {
   niceNumber,
   shortNiceNumber,
   fullNiceNumber,
-  AddressWithIconFilled,
   AddressWithIconInline,
   addressUsernameOrServiceLink,
   CurrencyWithIconInline,
+  shortHash,
+  niceCurrency,
   dateFormat,
   timeFormat,
   amountParced
@@ -66,7 +44,13 @@ const tokenSwapsUrl = (token, type, limit = 5) => {
 
 const TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH = 'amountHigh'
 const TOKEN_ACTIVITY_ORDER_LATEST = 'latest'
+const DEX_SWAPS_LIMIT = 7
 const REFRESH_COOLDOWN_MS = 30000
+const displayCurrencyCode = (currencyCode) => {
+  if (!currencyCode) return ''
+  const code = String(currencyCode)
+  return code.replace(/0+$/, '') || code
+}
 
 // Server side initial data fetch
 export async function getServerSideProps(context) {
@@ -319,11 +303,11 @@ export default function TokenPage({
       setDexSwapsLoading(true)
 
       const orderQuery = dexSwapsOrder === TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH ? '&order=amountHigh' : ''
-      const response = await axios(tokenSwapsUrl(token, 'dex') + orderQuery).catch(() => null)
+      const response = await axios(tokenSwapsUrl(token, 'dex', DEX_SWAPS_LIMIT) + orderQuery).catch(() => null)
 
       if (dexSwapsRequestRef.current !== requestId) return
 
-      setDexSwaps(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 5) : [])
+      setDexSwaps(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, DEX_SWAPS_LIMIT) : [])
       setDexSwapsLoading(false)
     },
     [dexSwapsOrder, token]
@@ -560,59 +544,59 @@ export default function TokenPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedToken])
 
-  // Helper: price line as "fiat (XRP)" using historical rate when available
+  const renderValueStack = ({ primary, secondaryLines = [] }) => (
+    <span className="tokenValueStack">
+      <span className="tokenValuePrimary" suppressHydrationWarning>
+        {primary}
+      </span>
+      {secondaryLines.filter(Boolean).map((line, index) => (
+        <span key={index} className="tokenValueSecondary" suppressHydrationWarning>
+          {line}
+        </span>
+      ))}
+    </span>
+  )
+
+  // Helper: price value with fiat primary and ledger rates as secondary lines.
   const priceLine = ({ priceNative, priceFiat }) => {
     const price = priceNative
-    const currencyText = token?.currencyDetails?.currency || token?.currency || nativeCurrency
+    const currencyText = token?.currencyDetails?.currency || displayCurrencyCode(token?.currency) || nativeCurrency
     const isNativeFromToken = !token?.issuer && token?.currency === nativeCurrency
     const nativePrice =
       price < 0.0001 ? (
-        <span className="no-brake">
+        <>
           1M {currencyText} = {niceNumber(price * 1000000, 6)} {nativeCurrency}
-        </span>
+        </>
       ) : (
-        <span className="no-brake">
+        <>
           {niceNumber(price, 6)} {nativeCurrency}
-        </span>
+        </>
       )
 
-    return (
-      <span className={tokenPriceLine}>
-        <span className="no-brake" suppressHydrationWarning>
-          {niceNumber(priceFiat || 0, 4, selectedCurrency)}
-        </span>
-        {!isNativeFromToken && (
-          <span className={`grey ${tokenPriceSecondary}`.trim()}>
-            <span className={tokenPriceDesktopOnly}>(</span>
-            {nativePrice}
-            <span className={tokenPriceDesktopOnly}>, </span>
-            <span className="no-brake">
+    return renderValueStack({
+      primary: niceNumber(priceFiat || 0, 4, selectedCurrency),
+      secondaryLines: isNativeFromToken
+        ? []
+        : [
+            nativePrice,
+            <span key="rate">
               1 {nativeCurrency} = {niceNumber(1 / price, 6)} {currencyText}
             </span>
-            <span className={tokenPriceDesktopOnly}>)</span>
-          </span>
-        )}
-      </span>
-    )
+          ]
+    })
   }
 
   const marketcapLine = ({ marketcap }) => {
     if (!fiatRate || !marketcap) return null
     const marketcapFiat = marketcap * fiatRate
-    return (
-      <span className={tokenPriceLine}>
-        <span className="no-brake" suppressHydrationWarning>
-          {niceNumber(marketcapFiat, 2, selectedCurrency)}
+    return renderValueStack({
+      primary: niceNumber(marketcapFiat, 2, selectedCurrency),
+      secondaryLines: [
+        <span key="native">
+          {niceNumber(marketcap, 2)} {nativeCurrency}
         </span>
-        <span className={`grey ${tokenPriceSecondary}`.trim()}>
-          <span className={tokenPriceDesktopOnly}>(</span>
-          <span className="no-brake">
-            {niceNumber(marketcap, 2)} {nativeCurrency}
-          </span>
-          <span className={tokenPriceDesktopOnly}>)</span>
-        </span>
-      </span>
-    )
+      ]
+    })
   }
 
   const volumeLine = ({ token, type }) => {
@@ -626,17 +610,14 @@ export default function TokenPage({
     }
     const priceInNative = statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1)
     const volumeFiat = volume * priceInNative * fiatRate || 0
-    return (
-      <span suppressHydrationWarning>
-        {niceNumber(volumeFiat, 2, selectedCurrency)}
-        {isSsrMobile ? <br /> : ' '}
-        <span className="grey">
-          {!isSsrMobile && '('}
-          {niceNumber(volume, 2)} {currencyDetails?.currency || token?.currency || nativeCurrency}
-          {!isSsrMobile && ')'}
+    return renderValueStack({
+      primary: niceNumber(volumeFiat, 2, selectedCurrency),
+      secondaryLines: [
+        <span key="token">
+          {niceNumber(volume, 2)} {currencyDetails?.currency || displayCurrencyCode(token?.currency) || nativeCurrency}
         </span>
-      </span>
-    )
+      ]
+    })
   }
 
   const renderPercentCell = ({ currentPrice, pastPrice }) => {
@@ -696,6 +677,11 @@ export default function TokenPage({
   const tokenDisplayCurrency = isMptToken
     ? token?.metadata?.name || token?.currency || 'MPT'
     : token?.currencyDetails?.currency || token?.currency || nativeCurrency
+  const tokenSupplyTitle = isMptToken
+    ? tokenDisplayCurrency
+    : token?.currencyDetails?.currency || niceCurrency(token?.currency) || tokenDisplayCurrency
+  const currencyCodeText = token.currencyDetails?.currencyCode || token.currency
+  const currencyCodeDisplay = displayCurrencyCode(currencyCodeText)
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
   const escrowStatus =
     token?.canLock === true ? (
@@ -773,15 +759,6 @@ export default function TokenPage({
     })
   }
 
-  const title = isNativeToken ? (
-    <>
-      {tokenDisplayCurrency} ({tt('title.nativeCurrency')})
-    </>
-  ) : (
-    <>
-      {tokenDisplayCurrency} {tt('title.issuedBy')} {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
-    </>
-  )
   const isLpToken = token?.currencyDetails?.type === 'lp_token'
   const lpAmmId = token?.currencyDetails?.ammID
   const lpAsset = token?.currencyDetails?.asset
@@ -809,14 +786,15 @@ export default function TokenPage({
     const title = [parts.value, parts.currency].filter(Boolean).join(' ')
 
     return (
-      <span className={tokenActivityAmountLine} title={title}>
-        <span className={tokenActivityAmountValue}>{parts.value}</span>
-        {parts.currency ? <span className={tokenActivityAmountCurrency}>{parts.currency}</span> : null}
+      <span className="tokenActivityAmountLine" title={title}>
+        <span className="tokenActivityAmountValue">{parts.value}</span>
+        {parts.currency ? <span className="tokenActivityAmountCurrency">{parts.currency}</span> : null}
       </span>
     )
   }
   const hasActivityValue = (value) => value !== undefined && value !== null && value !== ''
-  const activityAddressShort = isSsrMobile ? 3 : 4
+  const activityAddressShort = isSsrMobile ? 3 : 8
+  const activityAddressOptions = { short: activityAddressShort, noLink: true }
 
   const isPageTokenAmount = (amount) => {
     const parsed = amountParced(amount)
@@ -865,37 +843,29 @@ export default function TokenPage({
       <HomeTeaseRow
         key={`dex-${row.txHash || row.timestamp}-${row.ammID || row.offerID || 'swap'}-${index}`}
         href={`/tx/${row.txHash}`}
-        className={tokenSwapRow}
+        className="tokenSwapRow"
       >
         <div className={homeTeaserStyles.timeAgo}>{timeFormat(row.timestamp)}</div>
-        <div className={tokenSwapFlow}>
-          <span className={tokenSwapFlowAddress}>
-            <AddressWithIconInline
-              data={row}
-              name="address1"
-              options={{ short: activityAddressShort, noLink: true, showAddress: true }}
-            />
+        <div className="tokenSwapFlow">
+          <span className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell} tokenSwapFlowAddress`}>
+            <AddressWithIconInline data={row} name="address1" options={activityAddressOptions} />
           </span>
           <span className={homeTeaserStyles.whaleArrow}>→</span>
-          <span className={tokenSwapFlowAddress}>
-            <AddressWithIconInline
-              data={row}
-              name="address2"
-              options={{ short: activityAddressShort, noLink: true, showAddress: true }}
-            />
+          <span className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell} tokenSwapFlowAddress`}>
+            <AddressWithIconInline data={row} name="address2" options={activityAddressOptions} />
           </span>
         </div>
-        <div className={tokenSwapAmount}>
+        <div className="tokenSwapAmount">
           {renderActivityAmount(row.amount1)}
           {hasActivityValue(row.amount2) ? <span className="grey">{renderActivityAmount(row.amount2)}</span> : null}
         </div>
-        <div className={tokenSwapPrice}>
-          <span className={tokenSwapPriceLabel}>{tt('activity.rate')}</span>
-          <span className={tokenSwapPriceValue}>
+        <div className="tokenSwapPrice">
+          <span className="tokenSwapPriceLabel">{tt('activity.rate')}</span>
+          <span className="tokenSwapPriceValue">
             {swapPrice ? (
               <span className="tooltip">
                 {shortNiceNumber(swapPrice.value, 6, 1)}
-                <span className={tokenSwapPriceAsset} title={swapPrice.currency}>
+                <span className="tokenSwapPriceAsset" title={swapPrice.currency}>
                   {swapPrice.currency}
                 </span>
                 <span className="tooltiptext no-brake">
@@ -907,8 +877,8 @@ export default function TokenPage({
             )}
           </span>
         </div>
-        <div className={tokenSwapSource}>
-          <span className={tokenSwapSourcePill}>{renderSwapSource(row)}</span>
+        <div className="tokenSwapSource">
+          <span className="tokenSwapSourcePill">{renderSwapSource(row)}</span>
         </div>
       </HomeTeaseRow>
     )
@@ -923,12 +893,12 @@ export default function TokenPage({
       <HomeTeaseRow
         key={`${type}-${row.txHash || row.timestamp}-${row.address1 || ''}-${row.address2 || ''}-${index}`}
         href={`/tx/${row.txHash}`}
-        className={`${homeTeaserStyles.whaleRow} ${tokenTransferRow}`}
+        className={`${homeTeaserStyles.whaleRow} tokenTransferRow`}
       >
         <div className={homeTeaserStyles.timeAgo}>{timeFormat(row.timestamp)}</div>
         <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
           {hasAddress1 ? (
-            <AddressWithIconInline data={row} name="address1" options={{ short: activityAddressShort, noLink: true }} />
+            <AddressWithIconInline data={row} name="address1" options={activityAddressOptions} />
           ) : (
             <span className="grey">{fallbackLabel}</span>
           )}
@@ -936,13 +906,13 @@ export default function TokenPage({
         <div className={homeTeaserStyles.whaleArrow}>→</div>
         <div className={`${homeTeaserStyles.itemName} ${homeTeaserStyles.whaleAddressCell}`}>
           {hasAddress2 ? (
-            <AddressWithIconInline data={row} name="address2" options={{ short: activityAddressShort, noLink: true }} />
+            <AddressWithIconInline data={row} name="address2" options={activityAddressOptions} />
           ) : (
             <span className="grey">{fallbackLabel}</span>
           )}
         </div>
         <div
-          className={`${homeTeaserStyles.metric} ${homeTeaserStyles.metricWithDelta} ${homeTeaserStyles.whaleFiat} ${tokenTransferMetric}`}
+          className={`${homeTeaserStyles.metric} ${homeTeaserStyles.metricWithDelta} ${homeTeaserStyles.whaleFiat} tokenTransferMetric`}
         >
           {renderActivityAmount(row.amount1)}
         </div>
@@ -1004,12 +974,382 @@ export default function TokenPage({
         headerActions={headerActions}
         isEmpty={!visibleRows.length}
         emptyText={emptyText}
-        className={`${homeTeaserStyles.whaleCard} ${tokenActivityCard}`}
+        className={`${homeTeaserStyles.whaleCard} tokenActivityCard`}
       >
         {visibleRows.map(rowRenderer)}
       </HomeTeaser>
     )
   }
+
+  const renderMetricTiles = (items) =>
+    items
+      .filter((item) => item.show !== false)
+      .map(({ key, label, value, details = [], wide = false }) => {
+        const valueNode = value === undefined || value === null || value === '' ? '-' : value
+        const visibleDetails = details.filter((detail) => detail.show !== false)
+
+        return (
+          <div key={key} className={wide ? 'tokenMetricWide' : undefined}>
+            <span>{label}</span>
+            <span>
+              {valueNode}
+              {visibleDetails.length ? (
+                <span className="tokenMetricDetails">
+                  {visibleDetails.map((detail) => (
+                    <span key={detail.key} className="tokenMetricDetail">
+                      <span>{detail.label}</span>
+                      <span>{detail.value}</span>
+                    </span>
+                  ))}
+                </span>
+              ) : null}
+            </span>
+          </div>
+        )
+      })
+
+  const renderProfileRows = (items) =>
+    items
+      .filter((item) => item.show !== false)
+      .map(({ key, label, value }) => {
+        const valueNode = value === undefined || value === null || value === '' ? '-' : value
+
+        return (
+          <div key={key} className="tokenProfileInfoRow">
+            <span>{label}</span>
+            <span>{valueNode}</span>
+          </div>
+        )
+      })
+
+  const renderPanel = ({ title, className = '', children }) => (
+    <section className={`tokenPanel ${className}`.trim()}>
+      <h2>{title}</h2>
+      {children}
+    </section>
+  )
+
+  const renderChangeStrip = () => (
+    <div className="tokenChangeBlock" aria-label={tt('fields.change')}>
+      <div className="tokenChangeList">
+        {changeItems.map((item) => (
+          <span key={item.key} className="tokenChangeItem">
+            <span className="tokenChangePeriod">{item.label}</span>
+            <span className="tokenChangeValue">
+              {renderPercentCell({ currentPrice: statistics?.priceFiats[selectedCurrency], pastPrice: item.pastPrice })}
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+
+  const holdersLink = isNativeToken ? (
+    <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
+  ) : isMptToken ? (
+    fullNiceNumber(token.holders || 0)
+  ) : (
+    <Link
+      href={
+        '/distribution?currencyIssuer=' + token.issuer + '&currency=' + token.currencyDetails?.currencyCode
+      }
+    >
+      {fullNiceNumber(token.holders)}
+    </Link>
+  )
+
+  const tokenInfoItems = [
+    {
+      key: 'mptId',
+      label: tt('fields.mptId'),
+      value: (
+        <>
+          {mptId} <CopyButton text={mptId} />
+        </>
+      ),
+      show: isMptToken,
+      wide: true
+    },
+    {
+      key: 'ammPool',
+      label: tt('fields.ammPool'),
+      value: lpAmmId ? <Link href={`/amm/${lpAmmId}`}>{tt('actions.viewPool')}</Link> : '-',
+      show: isLpToken
+    },
+    { key: 'asset1', label: tt('fields.asset1'), value: renderLpAsset(lpAsset), show: isLpToken },
+    { key: 'asset2', label: tt('fields.asset2'), value: renderLpAsset(lpAsset2), show: isLpToken },
+    { key: 'name', label: tt('fields.name'), value: token.name, show: !!token?.name, wide: true },
+    {
+      key: 'description',
+      label: tt('fields.description'),
+      value: token.description,
+      show: !!token?.description,
+      wide: true
+    },
+    {
+      key: 'issuer',
+      label: tt('fields.issuer'),
+      value: (
+        <span className="tokenProfileInlineValue">
+          <Link href={`/account/${token.issuer}`}>{shortHash(token.issuer)}</Link>
+          <CopyButton text={token.issuer} size={16} />
+        </span>
+      ),
+      show: !isNativeToken,
+      wide: true
+    },
+    {
+      key: 'currencyCode',
+      label: tt('fields.currencyCode'),
+      value: (
+        <>
+          {currencyCodeDisplay} <CopyButton text={currencyCodeText} copyText={tt('tooltips.copyCurrencyCode')} size={16} />
+        </>
+      ),
+      show: !isMptToken,
+      wide: true
+    },
+    {
+      key: 'tokenSequence',
+      label: tt('fields.tokenSequence'),
+      value: fullNiceNumber(token.sequence || 0),
+      show: isMptToken
+    },
+    {
+      key: 'created',
+      label: tt('fields.created'),
+      value: token.createdAt ? (
+        <>
+          {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
+        </>
+      ) : (
+        '-'
+      ),
+      show: isMptToken
+    },
+    {
+      key: 'lastUpdated',
+      label: tt('fields.lastUpdated'),
+      value: token.updatedAt ? (
+        <>
+          {dateFormat(token.updatedAt)} {timeFormat(token.updatedAt)}
+        </>
+      ) : (
+        '-'
+      ),
+      show: isMptToken
+    },
+    {
+      key: 'lastUsed',
+      label: tt('fields.lastUsed'),
+      value: token.lastUsedAt ? (
+        <>
+          {dateFormat(token.lastUsedAt)} {timeFormat(token.lastUsedAt)}
+        </>
+      ) : (
+        '-'
+      ),
+      show: isMptToken
+    },
+    {
+      key: 'flags',
+      label: tt('fields.flags'),
+      value: token.flags
+        ? Object.keys(token.flags)
+            .filter((flag) => token.flags[flag])
+            .join(', ') || tt('values.noneSet')
+        : tt('values.none'),
+      show: isMptToken,
+      wide: true
+    }
+  ]
+
+  const tokenSupplyItems = isMptToken
+    ? [
+        {
+          key: 'outstanding',
+          label: tt('fields.outstanding'),
+          value: fullNiceNumber(Number(token.outstandingAmount || 0) / 10 ** (token.scale || 0) || 0)
+        },
+        {
+          key: 'maxSupply',
+          label: tt('fields.maxSupply'),
+          value: fullNiceNumber(Number(token.maximumAmount || 0) / 10 ** (token.scale || 0) || 0)
+        },
+        {
+          key: 'lockedAmount',
+          label: tt('fields.lockedAmount'),
+          value: fullNiceNumber(Number(token.lockedAmount || 0) / 10 ** (token.scale || 0) || 0)
+        },
+        { key: 'holders', label: tt('fields.holders'), value: fullNiceNumber(token.holders || 0) },
+        {
+          key: 'authorizedAddresses',
+          label: tt('fields.authorizedAddresses'),
+          value: fullNiceNumber(token.mptokens || 0)
+        },
+        {
+          key: 'transferFee',
+          label: tt('fields.transferFee'),
+          value: token.transferFee ? token.transferFee / 1000 + '%' : tt('values.none')
+        },
+        { key: 'decimalPlaces', label: tt('fields.decimalPlaces'), value: token.scale || 0 }
+      ]
+    : [
+        {
+          key: 'supply',
+          label: tt('fields.supply'),
+          value: (
+            <>
+              {fullNiceNumber(token.supply)} {tokenDisplayCurrency}
+            </>
+          ),
+          wide: true
+        },
+        { key: 'holders', label: tt('fields.holders'), value: holdersLink },
+        { key: 'trustlines', label: tt('fields.trustlines'), value: fullNiceNumber(token.trustlines), show: !isNativeToken },
+        {
+          key: 'ammPools',
+          label: tt('fields.ammPools'),
+          value: (
+            <Link
+              href={
+                token?.issuer
+                  ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
+                  : `/amms?currency=${token.currency}`
+              }
+            >
+              {statistics?.ammPools || 0}
+            </Link>
+          ),
+          show: statistics && !xahauNetwork && !isMptToken
+        },
+        { key: 'escrow', label: tt('fields.escrow'), value: escrowStatus }
+      ]
+
+  const priceMetricItems = [
+    {
+      key: 'spotPrice',
+      label: tt('fields.spotPrice'),
+      value: priceLine({
+        priceNative: statistics?.priceNativeCurrencySpot,
+        priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
+      }),
+      show: !!statistics?.priceNativeCurrencySpot
+    },
+    {
+      key: 'marketCap',
+      label: tt('fields.marketCap'),
+      value: marketcapLine({ marketcap: statistics?.marketcap }),
+      show: !!statistics?.marketcap
+    }
+  ]
+
+  const stats24hItems = statistics
+    ? [
+        {
+          key: 'activityCounts',
+          label: tt('fields.trades'),
+          value: fullNiceNumber(statistics?.dexes || 0),
+          details: [
+            { key: 'uniqueAccounts', label: tt('fields.uniqueAccounts'), value: fullNiceNumber(statistics?.uniqueAccounts || 0) },
+            { key: 'dexTxs', label: tt('fields.dexTxs'), value: fullNiceNumber(statistics?.dexTxs || 0) },
+            { key: 'ripplingTxs', label: tt('fields.ripplingTxs'), value: fullNiceNumber(statistics?.ripplingTxs || 0) }
+          ]
+        },
+        {
+          key: 'volumeTotal',
+          label: tt('fields.volumeTotal'),
+          value: volumeLine({ token, type: 'total' }),
+          details: [
+            { key: 'traders', label: tt('fields.traders'), value: fullNiceNumber(statistics?.uniqueDexAccounts || 0) }
+          ]
+        },
+        {
+          key: 'volumeBuy',
+          label: tt('fields.volumeBuy'),
+          value: volumeLine({ token, type: 'buy' }),
+          details: [{ key: 'buyers', label: tt('fields.buyers'), value: fullNiceNumber(statistics?.uniqueBuyers || 0) }]
+        },
+        {
+          key: 'volumeSell',
+          label: tt('fields.volumeSell'),
+          value: volumeLine({ token, type: 'sell' }),
+          details: [{ key: 'sellers', label: tt('fields.sellers'), value: fullNiceNumber(statistics?.uniqueSellers || 0) }]
+        },
+        {
+          key: 'transferVolume',
+          label: tt('fields.transferVolume'),
+          value: volumeLine({ token, type: 'transfer' }),
+          details: [
+            {
+              key: 'transferTransactions',
+              label: tt('fields.transferTransactions'),
+              value: niceNumber(statistics?.transferTxs || 0)
+            }
+          ]
+        },
+        {
+          key: 'mintVolume',
+          label: tt('fields.mintVolume'),
+          value: volumeLine({ token, type: 'mint' }),
+          details: [
+            {
+              key: 'mintTransactions',
+              label: tt('fields.mintTransactions'),
+              value: shortNiceNumber(statistics?.mintTxs || 0, 0, 1)
+            }
+          ]
+        },
+        {
+          key: 'burnVolume',
+          label: tt('fields.burnVolume'),
+          value: volumeLine({ token, type: 'burn' }),
+          details: [
+            {
+              key: 'burnTransactions',
+              label: tt('fields.burnTransactions'),
+              value: shortNiceNumber(statistics?.burnTxs || 0, 0, 1)
+            }
+          ]
+        }
+      ]
+    : []
+
+  const closedDayItems = statistics
+    ? [
+        { key: 'tradingPairs', label: tt('fields.tradingPairs'), value: fullNiceNumber(statistics?.activeCounters || 0) },
+        { key: 'activeHolders', label: tt('fields.activeHolders'), value: fullNiceNumber(statistics?.activeHolders || 0) },
+        { key: 'activeOffers', label: tt('fields.activeOffers'), value: fullNiceNumber(statistics?.activeOffers || 0) },
+        {
+          key: 'activeAmmPools',
+          label: tt('fields.activeAmmPools'),
+          value: niceNumber(statistics?.activeAmmPools || 0),
+          show: !xahauNetwork && !isMptToken
+        }
+      ]
+    : []
+
+  const metadataItems = [
+    { key: 'name', label: tt('fields.name'), value: token.metadata?.name, show: !!token.metadata?.name },
+    {
+      key: 'description',
+      label: tt('fields.description'),
+      value: token.metadata?.description || token.description,
+      show: !!(token.metadata?.description || token.description),
+      wide: true
+    },
+    {
+      key: 'rawMetadata',
+      label: tt('fields.rawMetadata'),
+      value: (
+        <pre>
+          <code>{JSON.stringify(token.metadata, null, 2)}</code>
+        </pre>
+      ),
+      show: !!token.metadata,
+      wide: true
+    }
+  ]
 
   return (
     <>
@@ -1024,551 +1364,188 @@ export default function TokenPage({
               (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
         }
       />
-      <div className={tokenClass}>
-        <h1 className="center">{title}</h1>
-
+      <div className={tokenPage}>
         {!xahauNetwork && <TokenTabs />}
 
-        <div className="content-profile">
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}
-          >
-            <div style={{ width: '100%', marginBottom: '20px' }}>
-              <TokenSelector
-                value={selectedToken}
-                onChange={setSelectedToken}
-                excludeNative={false}
-                excludeLPtokens={true}
-              />
-            </div>
-          </div>
-          <div className="column-left">
-            {/* Big Token Icon */}
-            <img
-              alt="token"
-              src={tokenImageSrc(token)}
-              className="token-image"
-              style={{
-                width: 'calc(100% - 2px)',
-                height: 'auto',
-                borderRadius: isRoundTokenImage ? '50%' : undefined,
-                aspectRatio: isRoundTokenImage ? '1 / 1' : undefined,
-                objectFit: isRoundTokenImage ? 'cover' : undefined
-              }}
+        <div className="tokenLayout">
+          <div className="tokenSelectorSection">
+            <TokenSelector
+              value={selectedToken}
+              onChange={setSelectedToken}
+              excludeNative={false}
+              excludeLPtokens={true}
             />
-            <h1>{tokenDisplayCurrency}</h1>
-
-            {/* Action Buttons */}
-            {!isNativeToken && !isMptToken && (
-              <button className="button-action wide center" onClick={handleSetTrustline}>
-                {tt('actions.setTrustline')}
-              </button>
-            )}
-            {isMptToken && (
-              <button className="button-action wide center" onClick={handleAuthorizeMpt}>
-                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> {tt('actions.authorize')}
-              </button>
-            )}
           </div>
 
-          <div className="column-right">
-            {/* Token Information */}
-            <table className="table-details">
-              <thead>
-                <tr>
-                  <th colSpan="100">{tt('tables.tokenInformation')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{tt('fields.currency')}</td>
-                  <td>{tokenDisplayCurrency}</td>
-                </tr>
-                {isMptToken && (
-                  <tr>
-                    <td>{tt('fields.mptId')}</td>
-                    <td>
-                      {mptId} <CopyButton text={mptId} />
-                    </td>
-                  </tr>
-                )}
-                {isLpToken && (
-                  <tr>
-                    <td>{tt('fields.ammPool')}</td>
-                    <td>{lpAmmId ? <Link href={`/amm/${lpAmmId}`}>{tt('actions.viewPool')}</Link> : '-'}</td>
-                  </tr>
-                )}
-                {isLpToken && (
-                  <tr>
-                    <td>{tt('fields.asset1')}</td>
-                    <td>{renderLpAsset(lpAsset)}</td>
-                  </tr>
-                )}
-                {isLpToken && (
-                  <tr>
-                    <td>{tt('fields.asset2')}</td>
-                    <td>{renderLpAsset(lpAsset2)}</td>
-                  </tr>
-                )}
-                {token?.name && (
-                  <tr>
-                    <td>{tt('fields.name')}</td>
-                    <td>{token.name}</td>
-                  </tr>
-                )}
-                {token?.description && (
-                  <tr>
-                    <td>{tt('fields.description')}</td>
-                    <td>{token.description}</td>
-                  </tr>
-                )}
-                {!isNativeToken && (
-                  <tr>
-                    <td>{tt('fields.issuer')}</td>
-                    <td>
-                      <AddressWithIconFilled
-                        data={token}
-                        name="issuer"
-                        copyButton={true}
-                        options={isSsrMobile ? { short: 10 } : null}
-                      />
-                    </td>
-                  </tr>
-                )}
-                {!isMptToken && (
-                  <tr>
-                    <td>{tt('fields.currencyCode')}</td>
-                    <td className="brake">
-                      {token.currencyDetails?.currencyCode || token.currency}{' '}
-                      <CopyButton text={token.currencyDetails?.currencyCode || token.currency} />
-                    </td>
-                  </tr>
-                )}
-                {!isMptToken ? (
-                  <>
-                    <tr>
-                      <td>{tt('fields.supply')}</td>
-                      <td>
-                        {fullNiceNumber(token.supply)} {tokenDisplayCurrency}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.holders')}</td>
-                      <td>
-                        {isNativeToken ? (
-                          <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
-                        ) : (
-                          <Link
-                            href={
-                              '/distribution?currencyIssuer=' +
-                              token.issuer +
-                              '&currency=' +
-                              token.currencyDetails?.currencyCode
-                            }
-                          >
-                            {fullNiceNumber(token.holders)}
-                          </Link>
-                        )}
-                      </td>
-                    </tr>
-                    {!isNativeToken && (
-                      <tr>
-                        <td>{tt('fields.trustlines')}</td>
-                        <td>{fullNiceNumber(token.trustlines)}</td>
-                      </tr>
-                    )}
-                    <tr>
-                      <td>{tt('fields.escrow')}</td>
-                      <td>{escrowStatus}</td>
-                    </tr>
-                  </>
-                ) : (
-                  <>
-                    <tr>
-                      <td>{tt('fields.outstanding')}</td>
-                      <td>{fullNiceNumber(Number(token.outstandingAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.maxSupply')}</td>
-                      <td>{fullNiceNumber(Number(token.maximumAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.lockedAmount')}</td>
-                      <td>{fullNiceNumber(Number(token.lockedAmount || 0) / 10 ** (token.scale || 0) || 0)}</td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.holders')}</td>
-                      <td>{fullNiceNumber(token.holders || 0)}</td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.authorizedAddresses')}</td>
-                      <td>{fullNiceNumber(token.mptokens || 0)}</td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.transferFee')}</td>
-                      <td>{token.transferFee ? token.transferFee / 1000 + '%' : tt('values.none')}</td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.decimalPlaces')}</td>
-                      <td>{token.scale || 0}</td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.tokenSequence')}</td>
-                      <td>{fullNiceNumber(token.sequence || 0)}</td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.created')}</td>
-                      <td>
-                        {token.createdAt ? (
-                          <>
-                            {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
-                          </>
-                        ) : (
-                          '-'
-                        )}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.lastUpdated')}</td>
-                      <td>
-                        {token.updatedAt ? (
-                          <>
-                            {dateFormat(token.updatedAt)} {timeFormat(token.updatedAt)}
-                          </>
-                        ) : (
-                          '-'
-                        )}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.lastUsed')}</td>
-                      <td>
-                        {token.lastUsedAt ? (
-                          <>
-                            {dateFormat(token.lastUsedAt)} {timeFormat(token.lastUsedAt)}
-                          </>
-                        ) : (
-                          '-'
-                        )}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>{tt('fields.flags')}</td>
-                      <td>
-                        {token.flags
-                          ? Object.keys(token.flags)
-                              .filter((flag) => token.flags[flag])
-                              .join(', ') || tt('values.noneSet')
-                          : tt('values.none')}
-                      </td>
-                    </tr>
-                  </>
-                )}
-                {/*
-                <tr>
-                  <td>KYC Status</td>
-                  <td>{token.kyc ? 'Verified' : 'Not Verified'}</td>
-                </tr>
-                */}
-                {/*
-                <tr>
-                  <td>Token Type</td>
-                  <td>
-                    {token.lp_token ? 'LP Token' : 'Standard Token'}
-                    {token.stablecoin && ' (Stablecoin)'}
-                    {token.fiat && ` (${token.fiat})`}
-                  </td>
-                </tr>
-                */}
-                {/*
-                {token.statistics?.timeAt && (
-                  <tr>
-                    <td>Last Updated</td>
-                    <td>{fullDateAndTime(token.statistics?.timeAt)}</td>
-                  </tr>
-                )}
-                */}
-              </tbody>
-            </table>
-
-            {isMptToken && token.metadata && (
-              <table className="table-details">
-                <thead>
-                  <tr>
-                    <th colSpan="100">{tt('tables.mptMetadata')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {token.metadata?.name && (
-                    <tr>
-                      <td>{tt('fields.name')}</td>
-                      <td>{token.metadata.name}</td>
-                    </tr>
-                  )}
-                  {(token.metadata?.description || token.description) && (
-                    <tr>
-                      <td>{tt('fields.description')}</td>
-                      <td>{token.metadata?.description || token.description}</td>
-                    </tr>
-                  )}
-                  <tr>
-                    <td>{tt('fields.rawMetadata')}</td>
-                    <td>
-                      <pre style={{ maxHeight: 260, overflow: 'auto', margin: 0 }}>
-                        <code>{JSON.stringify(token.metadata, null, 2)}</code>
-                      </pre>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            )}
-
-            {/* Price Information */}
-            {showPriceInformation && (
-              <table className="table-details">
-                <thead>
-                  <tr>
-                    <th colSpan="100">{tt('tables.priceInformation')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <span className="waiting"></span>
-                      </td>
-                    </tr>
+          <div className="tokenOverview">
+            <aside className="tokenProfileCard">
+              <div className="tokenProfileImageWrap">
+                <img
+                  alt="token"
+                  src={tokenImageSrc(token)}
+                  className="token-image"
+                  style={{
+                    width: 'calc(100% - 2px)',
+                    height: 'auto',
+                    borderRadius: isRoundTokenImage ? '50%' : undefined,
+                    aspectRatio: isRoundTokenImage ? '1 / 1' : undefined,
+                    objectFit: isRoundTokenImage ? 'cover' : undefined
+                  }}
+                />
+              </div>
+              <h1 className="tokenProfileTitle">{tokenDisplayCurrency}</h1>
+              <div className="tokenProfileMeta">
+                {token?.name && token.name !== tokenDisplayCurrency ? <span>{token.name}</span> : null}
+                <span>
+                  {isNativeToken ? (
+                    tt('title.nativeCurrency')
                   ) : (
                     <>
-                      {effectiveNativePrice && (
-                        <tr>
-                          <td>{tt('fields.lastPrice')}</td>
-                          <td>
+                      {tt('title.issuedBy')} {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
+                    </>
+                  )}
+                </span>
+              </div>
+
+              {(!isNativeToken || isMptToken) && (
+                <div className="tokenProfileActions">
+                  {!isNativeToken && !isMptToken && (
+                    <button className="button-action wide center" onClick={handleSetTrustline}>
+                      {tt('actions.setTrustline')}
+                    </button>
+                  )}
+                  {isMptToken && (
+                    <button className="button-action wide center" onClick={handleAuthorizeMpt}>
+                      <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> {tt('actions.authorize')}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              <div className="tokenProfileInfo">{renderProfileRows(tokenInfoItems)}</div>
+            </aside>
+
+            <div className="tokenDashboardGrid">
+              {showPriceInformation &&
+                renderPanel({
+                  title: tt('tables.priceInformation'),
+                  className: 'tokenPricePanel',
+                  children: loading ? (
+                    <div className="center">
+                      <span className="waiting"></span>
+                    </div>
+                  ) : (
+                    <>
+                      {effectiveNativePrice ? (
+                        <div className="tokenPriceHero">
+                          <span>{tt('fields.lastPrice')}</span>
+                          <strong>
                             {priceLine({
                               priceNative: effectiveNativePrice,
                               priceFiat: statistics?.priceFiats[selectedCurrency]
                             })}
-                          </td>
-                        </tr>
-                      )}
-                      {changeItems.length > 0 && (
-                        <tr>
-                          <td>{tt('fields.change')}</td>
-                          <td>
-                            <div className={tokenChangeList}>
-                              {changeItems.map((item) => (
-                                <span key={item.key} className={tokenChangeItem}>
-                                  {item.label}:{' '}
-                                  {renderPercentCell({
-                                    currentPrice: statistics?.priceFiats[selectedCurrency],
-                                    pastPrice: item.pastPrice
-                                  })}
-                                </span>
-                              ))}
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                      {statistics?.priceNativeCurrencySpot && (
-                        <tr>
-                          <td>{tt('fields.spotPrice')}</td>
-                          <td>
-                            {priceLine({
-                              priceNative: statistics?.priceNativeCurrencySpot,
-                              priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
-                            })}
-                          </td>
-                        </tr>
-                      )}
-                      <tr>
-                        <td>{tt('fields.marketCap')}</td>
-                        <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
-                      </tr>
+                          </strong>
+                          {changeItems.length > 0 ? renderChangeStrip() : null}
+                        </div>
+                      ) : changeItems.length > 0 ? (
+                        renderChangeStrip()
+                      ) : null}
+                      {priceMetricItems.some((item) => item.show !== false) ? (
+                        <div className="tokenMetricGrid">{renderMetricTiles(priceMetricItems)}</div>
+                      ) : null}
                     </>
-                  )}
-                </tbody>
-              </table>
-            )}
+                  )
+                })}
 
-            {/* Stats for the last 24h */}
-            {statistics && (
-              <table className="table-details">
-                <thead>
-                  <tr>
-                    <th colSpan="100">{tt('tables.stats24h')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{tt('fields.volumeTotal')}</td>
-                    <td>{volumeLine({ token, type: 'total' })}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.volumeBuy')}</td>
-                    <td>{volumeLine({ token, type: 'buy' })}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.volumeSell')}</td>
-                    <td>{volumeLine({ token, type: 'sell' })}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.trades')}</td>
-                    <td>{fullNiceNumber(statistics?.dexes || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.dexTxs')}</td>
-                    <td>{fullNiceNumber(statistics?.dexTxs || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.buyers')}</td>
-                    <td>{fullNiceNumber(statistics?.uniqueBuyers || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.sellers')}</td>
-                    <td>{fullNiceNumber(statistics?.uniqueSellers || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.traders')}</td>
-                    <td>{fullNiceNumber(statistics?.uniqueDexAccounts || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.transferVolume')}</td>
-                    <td>{volumeLine({ token, type: 'transfer' })}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.transferTransactions')}</td>
-                    <td>{niceNumber(statistics?.transferTxs || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.ripplingTxs')}</td>
-                    <td>{fullNiceNumber(statistics?.ripplingTxs || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.mintVolume')}</td>
-                    <td>{volumeLine({ token, type: 'mint' })}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.mintTransactions')}</td>
-                    <td>{shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.burnVolume')}</td>
-                    <td>{volumeLine({ token, type: 'burn' })}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.burnTransactions')}</td>
-                    <td>{shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.uniqueAccounts')}</td>
-                    <td>{fullNiceNumber(statistics?.uniqueAccounts || 0)}</td>
-                  </tr>
-                  {!xahauNetwork && !isMptToken && (
-                    <tr>
-                      <td>{tt('fields.ammPools')}</td>
-                      <td>
-                        <Link
-                          href={
-                            token?.issuer
-                              ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
-                              : `/amms?currency=${token.currency}`
-                          }
-                        >
-                          {statistics?.ammPools || 0}
-                        </Link>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
+              {renderPanel({
+                title: tokenSupplyTitle,
+                className: 'tokenSupplyPanel',
+                children: <div className="tokenMetricGrid">{renderMetricTiles(tokenSupplyItems)}</div>
+              })}
 
-            {/* Stats for the last closed day */}
-            {statistics && (
-              <table className="table-details">
-                <thead>
-                  <tr>
-                    <th colSpan="100">{tt('tables.statsClosedDay')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{tt('fields.tradingPairs')}</td>
-                    <td>{fullNiceNumber(statistics?.activeCounters || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.activeHolders')}</td>
-                    <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
-                  </tr>
-                  <tr>
-                    <td>{tt('fields.activeOffers')}</td>
-                    <td>{fullNiceNumber(statistics?.activeOffers || 0)}</td>
-                  </tr>
-                  {!xahauNetwork && !isMptToken && (
-                    <tr>
-                      <td>{tt('fields.activeAmmPools')}</td>
-                      <td>{niceNumber(statistics?.activeAmmPools || 0)}</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
+              {statistics &&
+                renderPanel({
+                  title: tt('tables.statsClosedDay'),
+                  className: 'tokenClosedPanel',
+                  children: <div className="tokenMetricGrid">{renderMetricTiles(closedDayItems)}</div>
+                })}
 
-            {renderTokenActivityWidget({
-              titleText: tt('activity.dexSwaps'),
-              rows: dexSwaps,
-              rowRenderer: renderDexSwapRow,
-              loading: dexSwapsLoading,
-              onRefresh: refreshDexSwaps,
-              isRefreshHidden: dexSwapsRefreshHidden,
-              refreshCooldownSeconds: dexSwapsRefreshSeconds,
-              headerActions: renderActivityOrderToggle(dexSwapsOrder, setDexSwapsOrder),
-              emptyText: tt('activity.noData24h')
-            })}
+              {statistics &&
+                renderPanel({
+                  title: tt('tables.stats24h'),
+                  className: 'tokenStatsPanel',
+                  children: (
+                    <div className="tokenMetricGrid tokenMetricGridDense">
+                      {renderMetricTiles(stats24hItems)}
+                    </div>
+                  )
+                })}
 
-            {renderTokenActivityWidget({
-              titleText: tt('activity.transfers'),
-              rows: transfers,
-              rowRenderer: renderTransferRow,
-              loading: transfersLoading,
-              onRefresh: refreshTransfers,
-              isRefreshHidden: transfersRefreshHidden,
-              refreshCooldownSeconds: transfersRefreshSeconds,
-              headerActions: renderActivityOrderToggle(transfersOrder, setTransfersOrder),
-              emptyText: tt('activity.noData24h'),
-              limit: 10
-            })}
-
-            {renderTokenActivityWidget({
-              titleText: tt('activity.mints'),
-              rows: mints,
-              rowRenderer: renderMintRow,
-              loading: mintsLoading,
-              onRefresh: refreshMints,
-              isRefreshHidden: mintsRefreshHidden,
-              refreshCooldownSeconds: mintsRefreshSeconds,
-              headerActions: renderActivityOrderToggle(mintsOrder, setMintsOrder),
-              emptyText: tt('activity.noData24h'),
-              limit: 10
-            })}
-
-            {renderTokenActivityWidget({
-              titleText: tt('activity.burns'),
-              rows: burns,
-              rowRenderer: renderBurnRow,
-              loading: burnsLoading,
-              onRefresh: refreshBurns,
-              isRefreshHidden: burnsRefreshHidden,
-              refreshCooldownSeconds: burnsRefreshSeconds,
-              headerActions: renderActivityOrderToggle(burnsOrder, setBurnsOrder),
-              emptyText: tt('activity.noData24h'),
-              limit: 10
-            })}
+              {isMptToken &&
+                token.metadata &&
+                renderPanel({
+                  title: tt('tables.mptMetadata'),
+                  className: 'tokenMetadataPanel',
+                  children: <div className="tokenMetricGrid">{renderMetricTiles(metadataItems)}</div>
+                })}
+            </div>
           </div>
+
+          <section className="tokenActivitySection">
+            <div className="tokenActivityGrid">
+              {renderTokenActivityWidget({
+                titleText: tt('activity.dexSwaps'),
+                rows: dexSwaps,
+                rowRenderer: renderDexSwapRow,
+                loading: dexSwapsLoading,
+                onRefresh: refreshDexSwaps,
+                isRefreshHidden: dexSwapsRefreshHidden,
+                refreshCooldownSeconds: dexSwapsRefreshSeconds,
+                headerActions: renderActivityOrderToggle(dexSwapsOrder, setDexSwapsOrder),
+                emptyText: tt('activity.noData24h'),
+                limit: DEX_SWAPS_LIMIT
+              })}
+
+              {renderTokenActivityWidget({
+                titleText: tt('activity.transfers'),
+                rows: transfers,
+                rowRenderer: renderTransferRow,
+                loading: transfersLoading,
+                onRefresh: refreshTransfers,
+                isRefreshHidden: transfersRefreshHidden,
+                refreshCooldownSeconds: transfersRefreshSeconds,
+                headerActions: renderActivityOrderToggle(transfersOrder, setTransfersOrder),
+                emptyText: tt('activity.noData24h'),
+                limit: 10
+              })}
+
+              {renderTokenActivityWidget({
+                titleText: tt('activity.mints'),
+                rows: mints,
+                rowRenderer: renderMintRow,
+                loading: mintsLoading,
+                onRefresh: refreshMints,
+                isRefreshHidden: mintsRefreshHidden,
+                refreshCooldownSeconds: mintsRefreshSeconds,
+                headerActions: renderActivityOrderToggle(mintsOrder, setMintsOrder),
+                emptyText: tt('activity.noData24h'),
+                limit: 10
+              })}
+
+              {renderTokenActivityWidget({
+                titleText: tt('activity.burns'),
+                rows: burns,
+                rowRenderer: renderBurnRow,
+                loading: burnsLoading,
+                onRefresh: refreshBurns,
+                isRefreshHidden: burnsRefreshHidden,
+                refreshCooldownSeconds: burnsRefreshSeconds,
+                headerActions: renderActivityOrderToggle(burnsOrder, setBurnsOrder),
+                emptyText: tt('activity.noData24h'),
+                limit: 10
+              })}
+            </div>
+          </section>
         </div>
       </div>
     </>
