@@ -343,8 +343,12 @@ header {
   }
 
   .header-menu-left {
-    flex-shrink: 1;
+    flex-shrink: 0;
     margin-top: 19.5px;
+
+    .menu-dropdown-content {
+      z-index: 30;
+    }
   }
 
   .header-menu-right {
