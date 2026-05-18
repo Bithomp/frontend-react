@@ -216,14 +216,6 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {txType === 'NFTokenMint' && tx.Issuer && (
-        <tr>
-          <TData>Issuer</TData>
-          <TData>
-            <AddressWithIconFilled data={specification.issuer} name="address" />
-          </TData>
-        </tr>
-      )}
       {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') && (
         <>
           {tx.Owner && (
