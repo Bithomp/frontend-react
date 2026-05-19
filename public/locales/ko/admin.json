@@ -328,6 +328,7 @@
       "nft-content-plan": "NFT 콘텐츠 플랜",
       "price-month": "가격 / 월",
       "per-request": "요청당",
+      "on-demand-payment-guide": "결제 방법",
       "show-advanced-plans": "고급 플랜 보기",
       "hide-advanced-plans": "고급 플랜 숨기기",
       "advanced-plan-note": "이 플랜에서는 NFT, NFTs, NFT offers 엔드포인트가 캐시 및 크기 조정된 이미지와 동영상의 직접 URL이 포함된 assets를 반환합니다. 한 번의 요청으로 tokens, transactions, whales에 대해 100개 이상의 결과를 받을 수 있고, 과거 활성화 내역, ID별 AMMs 목록 등을 가져올 수 있습니다.",

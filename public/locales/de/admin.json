@@ -328,6 +328,7 @@
       "nft-content-plan": "NFT Content Plan",
       "price-month": "Preis / Monat",
       "per-request": "pro Anfrage",
+      "on-demand-payment-guide": "Zahlungsanleitung",
       "show-advanced-plans": "Erweiterte Pläne anzeigen",
       "hide-advanced-plans": "Erweiterte Pläne ausblenden",
       "advanced-plan-note": "Bei diesen Plänen geben die NFT-, NFTs- und NFT offers-Endpunkte assets mit direkten URLs zu gecachten und skalierten Bildern und Videos zurück. Sie können mehr als 100 Ergebnisse für Tokens, Transaktionen und whales in einer Anfrage erhalten, historische Aktivierungen abrufen, AMMs nach ihren IDs auflisten und mehr.",

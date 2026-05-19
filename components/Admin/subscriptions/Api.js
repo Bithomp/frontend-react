@@ -81,6 +81,7 @@ const apiPlans = [
     requestsDay: 'N/A',
     nftContentPlan: 'Start',
     price: '0.0001 XRP / 0.003 XAH',
+    paymentGuideHref: 'https://docs.bithomp.com/#on-demand-basic',
     perRequest: true
   },
   {
@@ -90,6 +91,7 @@ const apiPlans = [
     requestsDay: 'N/A',
     nftContentPlan: 'Start',
     price: '0.001 XRP / 0.03 XAH',
+    paymentGuideHref: 'https://docs.bithomp.com/#on-demand-premium',
     perRequest: true,
     highlighted: true
   }
@@ -116,6 +118,7 @@ const planPrice = (t, plan) => plan.perRequest ? `${plan.price} ${t('subscriptio
 const PlanTable = ({ t }) => {
   const [showAdvancedPlans, setShowAdvancedPlans] = useState(false)
   const visiblePlans = showAdvancedPlans ? apiPlans : apiPlans.slice(0, 5)
+  const showAdvancedPlanNote = visiblePlans.some((plan) => plan.highlighted)
 
   return (
     <div className="api-plan-table-wrap">
@@ -144,7 +147,14 @@ const PlanTable = ({ t }) => {
               <td className="right">{plan.requestsMinute}</td>
               <td className="right">{plan.requestsDay}</td>
               <td>{plan.nftContentPlan}</td>
-              <td>{planPrice(t, plan)}</td>
+              <td>
+                <span>{planPrice(t, plan)}</span>
+                {plan.paymentGuideHref && (
+                  <a className="api-plan-payment-guide" href={plan.paymentGuideHref} rel="noopener noreferrer" target="_blank">
+                    {t('subscriptions.api.on-demand-payment-guide')}
+                  </a>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -158,7 +168,14 @@ const PlanTable = ({ t }) => {
                 {planLabel(t, plan.tier)}
                 {plan.highlighted && <sup>**</sup>}
               </strong>
-              <span>{planPrice(t, plan)}</span>
+              <span>
+                {planPrice(t, plan)}
+                {plan.paymentGuideHref && (
+                  <a className="api-plan-payment-guide" href={plan.paymentGuideHref} rel="noopener noreferrer" target="_blank">
+                    {t('subscriptions.api.on-demand-payment-guide')}
+                  </a>
+                )}
+              </span>
             </div>
             <div className="api-plan-card-grid">
               <span>{t('subscriptions.api.max-requests-minute')}</span>
@@ -172,11 +189,11 @@ const PlanTable = ({ t }) => {
         ))}
       </div>
 
-      <button className="api-plan-toggle" onClick={() => setShowAdvancedPlans((visible) => !visible)} type="button">
+      {showAdvancedPlanNote && <p className="api-plan-note">** {t('subscriptions.api.advanced-plan-note')}</p>}
+
+      <button className="button-action secondary api-plan-toggle" onClick={() => setShowAdvancedPlans((visible) => !visible)} type="button">
         {showAdvancedPlans ? t('subscriptions.api.hide-advanced-plans') : t('subscriptions.api.show-advanced-plans')}
       </button>
-
-      {showAdvancedPlans && <p className="api-plan-note">** {t('subscriptions.api.advanced-plan-note')}</p>}
 
       <style jsx>{`
       .api-plan-table-wrap {
@@ -209,6 +226,14 @@ const PlanTable = ({ t }) => {
         color: var(--accent-link);
       }
 
+      .api-plan-payment-guide {
+        display: block;
+        width: fit-content;
+        margin-top: 4px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
       .api-plan-cards {
         display: none;
       }
@@ -219,20 +244,10 @@ const PlanTable = ({ t }) => {
 
       .api-plan-toggle {
         display: block;
-        margin: 12px auto 0;
-        padding: 8px 14px;
-        border: 1px solid var(--button-secondary-border);
-        border-radius: 10px;
-        background: var(--button-secondary-bg);
-        color: var(--button-secondary-text);
-        cursor: pointer;
-        font: inherit;
-        font-weight: 700;
-      }
-
-      .api-plan-toggle:hover {
-        border-color: var(--accent-link);
-        color: var(--accent-link);
+        width: fit-content;
+        min-width: 210px;
+        margin: 16px auto 0;
+        font-size: 14px;
       }
 
       @media only screen and (max-width: 760px) {
@@ -269,6 +284,10 @@ const PlanTable = ({ t }) => {
           color: var(--text-main);
           font-weight: 700;
           text-align: right;
+        }
+
+        .api-plan-card-header .api-plan-payment-guide {
+          margin-left: auto;
         }
 
         .api-plan-card-grid {

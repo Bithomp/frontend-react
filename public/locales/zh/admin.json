@@ -328,6 +328,7 @@
       "nft-content-plan": "NFT 内容套餐",
       "price-month": "价格 / 月",
       "per-request": "每次请求",
+      "on-demand-payment-guide": "如何付款",
       "show-advanced-plans": "显示高级套餐",
       "hide-advanced-plans": "隐藏高级套餐",
       "advanced-plan-note": "在这些套餐中，NFT、NFTs 和 NFT offers 端点会返回 assets，其中包含指向缓存和调整尺寸后的图片、视频的直接 URL。你可以在一次请求中获取超过 100 条 tokens、transactions 和 whales 结果，获取历史激活记录，按 ID 列出 AMMs 等。",

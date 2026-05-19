@@ -328,6 +328,7 @@
       "nft-content-plan": "Paket konten NFT",
       "price-month": "Harga / bulan",
       "per-request": "per permintaan",
+      "on-demand-payment-guide": "Cara membayar",
       "show-advanced-plans": "Tampilkan paket lanjutan",
       "hide-advanced-plans": "Sembunyikan paket lanjutan",
       "advanced-plan-note": "Pada paket ini, endpoint NFT, NFTs, dan NFT offers mengembalikan assets dengan URL langsung ke gambar dan video yang di-cache dan diubah ukurannya. Anda bisa mendapatkan lebih dari 100 hasil untuk token, transaksi, dan whales dalam satu permintaan, mendapatkan aktivasi historis, daftar AMMs berdasarkan ID, dan lainnya.",

@@ -328,6 +328,7 @@
       "nft-content-plan": "NFT コンテンツプラン",
       "price-month": "価格 / 月",
       "per-request": "リクエストごと",
+      "on-demand-payment-guide": "支払い方法",
       "show-advanced-plans": "高度なプランを表示",
       "hide-advanced-plans": "高度なプランを非表示",
       "advanced-plan-note": "これらのプランでは、NFT、NFTs、NFT offers エンドポイントが、キャッシュおよびリサイズ済みの画像・動画への直接 URL を含む assets を返します。1 回のリクエストで tokens、transactions、whales の 100 件超の結果、履歴上のアクティベーション、ID ごとの AMMs リストなどを取得できます。",
