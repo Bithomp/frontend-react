@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import { amountFormat, AddressWithIconInline } from '../../../utils/format'
+import { isXls14NftAmount } from '../../../utils'
 import { LinkAmm, LinkObject } from '../../../utils/links'
 
 const rates = (a, b) => {
@@ -34,6 +35,7 @@ export default function ExchangesTable({ exchanges = [], ledgerIndex = null }) {
       {exchanges?.map((e, i) => {
         const sent = amountFormat(e.asset1, { withIssuer: true, icon: true }) ?? '—'
         const received = amountFormat(e.asset2, { withIssuer: true, icon: true }) ?? '—'
+        const showRates = !isXls14NftAmount(e.asset1) && !isXls14NftAmount(e.asset2)
 
         let by = null
         if (e.type === 'amm' && e.amm_id) {
@@ -62,8 +64,13 @@ export default function ExchangesTable({ exchanges = [], ledgerIndex = null }) {
             <b className="tabular-nums">{sent}</b> {t('exchange.for')}{' '}
             <b className="tabular-nums">{received}</b> {t('exchange.with')}{' '}
             <AddressWithIconInline data={e} name="address2" options={{ short: true }} />
-            {by}.<br />
-            {t('exchange.rates')}: {rates(e.asset1, e.asset2)}, {rates(e.asset2, e.asset1)}.
+            {by}.
+            {showRates && (
+              <>
+                <br />
+                {t('exchange.rates')}: {rates(e.asset1, e.asset2)}, {rates(e.asset2, e.asset1)}.
+              </>
+            )}
           </div>
         )
       })}

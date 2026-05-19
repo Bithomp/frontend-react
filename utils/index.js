@@ -1075,6 +1075,16 @@ export const xls14NftValue = (value) => {
   return false
 }
 
+export const isXls14NftAmount = (amount) => {
+  if (!amount || typeof amount !== 'object') return false
+  if (amount.currencyDetails?.nft?.type === 'xls14') return true
+
+  const currency = amount.currency || amount.currencyCode
+  if (typeof currency !== 'string' || !currency.startsWith('02')) return false
+
+  return Boolean(xls14NftValue(amount.value))
+}
+
 export const md5 = (text) => SparkMD5.hash(text)
 
 export const objectsCountText = (objects) => {

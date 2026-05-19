@@ -11,6 +11,7 @@ import {
 } from '../../utils/format'
 import { addressBalanceChanges } from '../../utils/transaction'
 import { i18n, useTranslation } from 'next-i18next'
+import { isXls14NftAmount } from '../../utils'
 
 const PASSIVE_DESCRIPTION =
   'This Offer does not consume Offers that exactly match it, and instead becomes an Offer object in the ledger. It still consumes Offers that cross it.'
@@ -43,6 +44,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
 
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
+  const showRate = !sourceBalanceChangesList?.some(isXls14NftAmount)
 
   return (
     <TransactionCard
@@ -147,31 +149,33 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
               ))}
             </TData>
           </tr>
-          <tr>
-            <TData>Rate</TData>
-            <TData>
-              1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
-              <span className="bold">
-                {amountFormat(
-                  {
-                    ...sourceBalanceChangesList[1],
-                    value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                  },
-                  { precise: 'nice' }
-                )}
-              </span>
-              <br />1 {niceCurrency(sourceBalanceChangesList[1].currency)} ={' '}
-              <span className="bold">
-                {amountFormat(
-                  {
-                    ...sourceBalanceChangesList[0],
-                    value: Math.abs(sourceBalanceChangesList[0].value / sourceBalanceChangesList[1].value)
-                  },
-                  { precise: 'nice' }
-                )}
-              </span>
-            </TData>
-          </tr>
+          {showRate && (
+            <tr>
+              <TData>Rate</TData>
+              <TData>
+                1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
+                <span className="bold">
+                  {amountFormat(
+                    {
+                      ...sourceBalanceChangesList[1],
+                      value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                    },
+                    { precise: 'nice' }
+                  )}
+                </span>
+                <br />1 {niceCurrency(sourceBalanceChangesList[1].currency)} ={' '}
+                <span className="bold">
+                  {amountFormat(
+                    {
+                      ...sourceBalanceChangesList[0],
+                      value: Math.abs(sourceBalanceChangesList[0].value / sourceBalanceChangesList[1].value)
+                    },
+                    { precise: 'nice' }
+                  )}
+                </span>
+              </TData>
+            </tr>
+          )}
         </>
       )}
 

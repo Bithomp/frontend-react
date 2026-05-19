@@ -9,7 +9,7 @@ import {
 } from '../../../utils/format'
 
 import { TransactionCard } from '../TransactionCard'
-import { isNativeCurrency } from '../../../utils'
+import { isNativeCurrency, isXls14NftAmount } from '../../../utils'
 import CopyButton from '../../UI/CopyButton'
 import { addressBalanceChanges, dappBySourceTag, isConvertionTx } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
@@ -29,6 +29,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const iouPayment = isIOUpayment(data)
   const isInsufFee = outcome?.result === 'tecINSUFF_FEE'
+  const showExchangeRate = !sourceBalanceChangesList?.some(isXls14NftAmount)
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(specification.source.tag)
 
@@ -181,7 +182,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
               ))}
             </TData>
           </tr>
-          {sourceBalanceChangesList?.length === 2 && (
+          {sourceBalanceChangesList?.length === 2 && showExchangeRate && (
             <tr>
               <TData>Exchange rate</TData>
               <TData>

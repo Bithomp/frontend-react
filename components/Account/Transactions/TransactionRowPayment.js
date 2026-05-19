@@ -10,6 +10,7 @@ import {
 import { useIsMobile } from '../../../utils/mobile'
 import { RipplingChanges } from './Elements/RipplingChanges'
 import { MdCompareArrows, MdArrowDownward, MdArrowUpward, MdSwapVert } from 'react-icons/md'
+import { isXls14NftAmount } from '../../../utils'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification, tx, fiatRates } = data
@@ -20,6 +21,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
   const sourceBalanceChangesList = addressBalanceChanges(data, address)
   const iouPayment = isIOUpayment(data)
   const isInsufFee = outcome?.result === 'tecINSUFF_FEE'
+  const showExchangeRate = !sourceBalanceChangesList?.some(isXls14NftAmount)
 
   const isMobile = useIsMobile(600)
 
@@ -119,7 +121,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                   )
                 })}
               </div>
-              {sourceBalanceChangesList.length === 2 && (
+              {sourceBalanceChangesList.length === 2 && showExchangeRate && (
                 <div>
                   <span>Exchange rate: </span>
                   <span>

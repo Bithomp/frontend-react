@@ -5,6 +5,7 @@ import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
 import { RipplingChanges } from './Elements/RipplingChanges'
 import { FaRegHandPaper } from 'react-icons/fa'
 import { MdCompareArrows } from 'react-icons/md'
+import { isXls14NftAmount } from '../../../utils'
 
 export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) => {
   const { specification, outcome, tx, fiatRates } = data
@@ -47,6 +48,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
+  const showRates = myBalanceChangesList?.length === 2 && !myBalanceChangesList.some(isXls14NftAmount)
 
   const icon = rippling ? (
     <MdCompareArrows style={{ color: '#9b59b6', transform: 'rotate(90deg)', fontSize: 20 }} title="Rippling" />
@@ -110,52 +112,54 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
                   })}
                 </span>
               </div>
-              <div>
-                <br />
-                <span>Rates: </span>
-                <br />
-                <span>
-                  {amountFormat(
-                    {
-                      currency: myBalanceChangesList[0].currency,
-                      issuer: myBalanceChangesList[0].issuer,
-                      value: 1
-                    },
-                    { icon: true }
-                  )}{' '}
-                  ={' '}
-                  <span className="bold">
-                    {amountFormat(
-                      {
-                        ...myBalanceChangesList[1],
-                        value: Math.abs(myBalanceChangesList[1].value / myBalanceChangesList[0].value)
-                      },
-                      { icon: true, precise: 'nice' }
-                    )}
-                  </span>
+              {showRates && (
+                <div>
                   <br />
-                  {amountFormat(
-                    {
-                      currency: myBalanceChangesList[1].currency,
-                      issuer: myBalanceChangesList[1].issuer,
-                      value: 1
-                    },
-                    { icon: true }
-                  )}{' '}
-                  ={' '}
-                  <span className="bold">
+                  <span>Rates: </span>
+                  <br />
+                  <span>
                     {amountFormat(
                       {
-                        ...myBalanceChangesList[0],
-                        value: Math.abs(myBalanceChangesList[0].value / myBalanceChangesList[1].value)
+                        currency: myBalanceChangesList[0].currency,
+                        issuer: myBalanceChangesList[0].issuer,
+                        value: 1
                       },
                       { icon: true }
-                    )}
+                    )}{' '}
+                    ={' '}
+                    <span className="bold">
+                      {amountFormat(
+                        {
+                          ...myBalanceChangesList[1],
+                          value: Math.abs(myBalanceChangesList[1].value / myBalanceChangesList[0].value)
+                        },
+                        { icon: true, precise: 'nice' }
+                      )}
+                    </span>
+                    <br />
+                    {amountFormat(
+                      {
+                        currency: myBalanceChangesList[1].currency,
+                        issuer: myBalanceChangesList[1].issuer,
+                        value: 1
+                      },
+                      { icon: true }
+                    )}{' '}
+                    ={' '}
+                    <span className="bold">
+                      {amountFormat(
+                        {
+                          ...myBalanceChangesList[0],
+                          value: Math.abs(myBalanceChangesList[0].value / myBalanceChangesList[1].value)
+                        },
+                        { icon: true }
+                      )}
+                    </span>
                   </span>
-                </span>
-                <br />
-                <br />
-              </div>
+                  <br />
+                  <br />
+                </div>
+              )}
             </>
           )}
           {flags && <div>Flags: {flags}</div>}
