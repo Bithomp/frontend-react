@@ -306,6 +306,7 @@ const setupGuides = [
 
 const apiErrorMessages = {
   'errors.connection.has_listeners': 'notifications.errors.connection-has-listeners',
+  'errors.connection.no_package': 'notifications.errors.connection-no-package',
   'errors.connection.settings_required': 'notifications.errors.connection-settings-required-short',
   'errors.listener.action_required': 'notifications.errors.action-required',
   'errors.listener.event_invalid': 'notifications.errors.event-invalid',

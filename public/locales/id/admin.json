@@ -706,6 +706,7 @@
       "save-rule-failed": "Tidak dapat menyimpan aturan.",
       "delete-channel-failed": "Tidak dapat menghapus saluran.",
       "connection-has-listeners": "Hapus aturan yang terhubung sebelum menghapus saluran ini.",
+      "connection-no-package": "Pilih paket Alerts bot terlebih dahulu sebelum menambahkan channel.",
       "connection-settings-required-short": "Pengaturan saluran diperlukan.",
       "connection-settings-required": "Pengaturan saluran diperlukan sebelum peringatan dapat dikirim.",
       "action-required": "Diperlukan tindakan peraturan.",

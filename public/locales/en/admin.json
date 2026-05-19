@@ -706,6 +706,7 @@
       "save-rule-failed": "Could not save rule.",
       "delete-channel-failed": "Could not delete channel.",
       "connection-has-listeners": "Delete connected rules before deleting this channel.",
+      "connection-no-package": "Choose an Alerts bot plan before adding a channel.",
       "connection-settings-required-short": "Channel settings are required.",
       "connection-settings-required": "Channel settings are required before alerts can be sent.",
       "action-required": "Rule action is required.",

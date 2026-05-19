@@ -706,6 +706,7 @@
       "save-rule-failed": "No se pudo guardar la regla.",
       "delete-channel-failed": "No se pudo eliminar el canal.",
       "connection-has-listeners": "Elimine las reglas conectadas antes de eliminar este canal.",
+      "connection-no-package": "Elige primero un plan de Alerts bot antes de añadir un canal.",
       "connection-settings-required-short": "Se requieren configuraciones de canal.",
       "connection-settings-required": "Se requiere la configuración del canal antes de poder enviar alertas.",
       "action-required": "Se requiere acción reglamentaria.",

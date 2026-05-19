@@ -706,6 +706,7 @@
       "save-rule-failed": "Impossible d’enregistrer la règle.",
       "delete-channel-failed": "Impossible de supprimer le canal.",
       "connection-has-listeners": "Supprimez les règles connectées avant de supprimer ce canal.",
+      "connection-no-package": "Choisissez d’abord un forfait Alerts bot avant d’ajouter un canal.",
       "connection-settings-required-short": "Les paramètres du canal sont requis.",
       "connection-settings-required": "Les paramètres du canal sont requis avant l’envoi des alertes.",
       "action-required": "L’action de règle est requise.",

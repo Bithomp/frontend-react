@@ -714,6 +714,7 @@
       "save-rule-failed": "Не удалось сохранить правило.",
       "delete-channel-failed": "Не удалось удалить канал.",
       "connection-has-listeners": "Удалите подключенные правила перед удалением канала.",
+      "connection-no-package": "Сначала выберите тариф Alerts bot, затем добавьте канал.",
       "connection-settings-required-short": "Требуются настройки канала.",
       "connection-settings-required": "Перед отправкой алертов нужны настройки канала.",
       "action-required": "Требуется действие правила.",

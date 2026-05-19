@@ -706,6 +706,7 @@
       "save-rule-failed": "无法保存规则。",
       "delete-channel-failed": "无法删除频道。",
       "connection-has-listeners": "删除此频道前请先删除已连接的规则。",
+      "connection-no-package": "添加频道前，请先选择 Alerts bot 套餐。",
       "connection-settings-required-short": "需要频道设置。",
       "connection-settings-required": "发送提醒前必须完成频道设置。",
       "action-required": "需要规则操作。",

@@ -706,6 +706,7 @@
       "save-rule-failed": "규칙을 저장할 수 없습니다.",
       "delete-channel-failed": "채널을 삭제할 수 없습니다.",
       "connection-has-listeners": "이 채널을 삭제하기 전에 연결된 규칙을 삭제하세요.",
+      "connection-no-package": "채널을 추가하기 전에 먼저 Alerts bot 요금제를 선택하세요.",
       "connection-settings-required-short": "채널 설정이 필요합니다.",
       "connection-settings-required": "알림을 보내려면 채널 설정이 필요합니다.",
       "action-required": "규칙 작업이 필요합니다.",
