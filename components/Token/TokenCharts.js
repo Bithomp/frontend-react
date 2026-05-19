@@ -71,6 +71,14 @@ const toTimestamp = (time) => {
   return number < 10000000000 ? number * 1000 : number
 }
 
+const toReportTimestamp = (time) => {
+  const timestamp = toTimestamp(time)
+  if (!timestamp) return null
+
+  const date = new Date(timestamp)
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12)
+}
+
 const chartDataUrl = (token, selectedCurrency) => {
   if (!token || !selectedCurrency) return ''
 
@@ -163,11 +171,17 @@ const seriesRange = (series, options = {}) => {
   }
 }
 
-const chartDate = (value) =>
-  new Date(value).toLocaleDateString(undefined, {
+const chartDate = (value) => {
+  const timestamp = Number(value)
+  const date = Number.isFinite(timestamp) ? new Date(timestamp) : new Date(value)
+  if (!Number.isFinite(date.getTime())) return ''
+
+  return date.toLocaleDateString(undefined, {
+    timeZone: 'UTC',
     month: 'short',
     day: 'numeric'
   })
+}
 
 const firstSentence = (value) => {
   if (!value) return ''
@@ -328,7 +342,8 @@ function TokenChart({ group, expanded = false }) {
           labels: {
             datetimeUTC: true,
             style: { colors: labelColor },
-            datetimeFormatter: { day: 'd MMM' }
+            datetimeFormatter: { day: 'd MMM' },
+            formatter: (value, timestamp) => chartDate(timestamp ?? value)
           },
           axisBorder: { color: gridColor },
           axisTicks: { color: gridColor },
@@ -385,7 +400,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
         const rows = Array.isArray(response?.data?.chart) ? response.data.chart : []
         setChartRows(
           rows
-            .map((row) => ({ ...row, timestamp: toTimestamp(row.time) }))
+            .map((row) => ({ ...row, timestamp: toReportTimestamp(row.time) }))
             .filter((row) => row.timestamp)
             .sort((a, b) => a.timestamp - b.timestamp)
         )
