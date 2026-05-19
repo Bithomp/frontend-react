@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
@@ -113,6 +113,19 @@ const derivedSeries = ({ rows, name, getValue, type = 'line', color, group }) =>
   data: rows.map((row) => [row.timestamp, getValue(row)])
 })
 
+const stableFieldData = ({ rows, field, relativeThreshold = 1e-6 }) => {
+  const values = rows.map((row) => toNumber(row[field])).filter((value) => value !== null)
+  if (!values.length) return rows.map((row) => [row.timestamp, null])
+
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const magnitude = Math.max(Math.abs(min), Math.abs(max), 1)
+  const isStable = (max - min) / magnitude < relativeThreshold
+  const displayValue = isStable ? values[values.length - 1] : null
+
+  return rows.map((row) => [row.timestamp, isStable ? displayValue : toNumber(row[field])])
+}
+
 const compactNumber = (value, currency) => {
   if (value === null || value === undefined) return '-'
   const abs = Math.abs(Number(value))
@@ -127,7 +140,7 @@ const fullNumber = (value, currency) => {
   return niceNumber(value, decimals, currency)
 }
 
-const seriesRange = (series) => {
+const seriesRange = (series, options = {}) => {
   const values = series
     .flatMap((item) => item.data?.map((point) => point[1]) || [])
     .filter((value) => value !== null && value !== undefined)
@@ -136,12 +149,17 @@ const seriesRange = (series) => {
 
   const min = Math.min(...values)
   const max = Math.max(...values)
-  const spread = max - min
-  const padding = spread ? spread * 0.14 : Math.max(Math.abs(max) * 0.05, 1)
+  const magnitude = Math.max(Math.abs(min), Math.abs(max), 1)
+  const minSpread = magnitude * (options.minRelativeSpread || 0)
+  const spread = Math.max(max - min, minSpread)
+  const center = (min + max) / 2
+  const rangeMin = max - min < spread ? center - spread / 2 : min
+  const rangeMax = max - min < spread ? center + spread / 2 : max
+  const padding = spread ? spread * 0.14 : Math.max(Math.abs(rangeMax) * 0.05, 1)
 
   return {
-    min: Math.max(0, min - padding),
-    max: max + padding
+    min: Math.max(0, rangeMin - padding),
+    max: rangeMax + padding
   }
 }
 
@@ -185,136 +203,141 @@ function TokenChart({ group, expanded = false }) {
     theme === 'light' ? 'rgba(52, 59, 66, 0.16)' : 'rgba(255, 255, 255, 0.16)'
   const labelColor = theme === 'light' ? '#5f6670' : '#a7a7a7'
   const height = expanded ? 420 : 150
-  const yAxisLabelOptions = {
-    minWidth: expanded ? 56 : 32,
-    style: { colors: labelColor }
-  }
-  const yaxis = group.secondaryAxisFormatter
-    ? [
-        {
-          ...(group.yRange ? group.yRange : {}),
-          seriesName: group.primarySeriesName,
-          tickAmount: expanded ? 5 : 3,
-          labels: {
-            ...yAxisLabelOptions,
-            formatter: group.axisFormatter
-          }
-        },
-        {
-          seriesName: group.secondarySeriesName,
-          opposite: true,
-          tickAmount: expanded ? 5 : 3,
-          labels: {
-            minWidth: expanded ? 42 : 28,
-            style: { colors: labelColor },
-            formatter: group.secondaryAxisFormatter
-          }
-        }
-      ]
-    : {
-        ...(group.yRange ? group.yRange : {}),
-        tickAmount: expanded ? 5 : 3,
-        labels: {
-          ...yAxisLabelOptions,
-          formatter: group.axisFormatter
-        }
-      }
 
   const options = useMemo(
-    () => ({
-      chart: {
-        id: `token-${group.key}-${expanded ? 'expanded' : 'compact'}`,
-        animations: { enabled: false },
-        foreColor: textColor,
-        stacked: group.stacked,
-        stackOnlyBar: group.stackOnlyBar,
-        toolbar: {
-          show: expanded,
-          tools: {
-            download: false,
-            selection: false,
-            zoom: false,
-            zoomin: toolbarIcon(zoomInIcon, 'zoom in'),
-            zoomout: toolbarIcon(zoomOutIcon, 'zoom out'),
-            pan: false,
-            reset: toolbarIcon(resetIcon, 'reset zoom')
+    () => {
+      const yAxisLabelOptions = {
+        minWidth: expanded ? 56 : 32,
+        style: { colors: labelColor }
+      }
+      const yaxis = group.secondaryAxisFormatter
+        ? [
+            {
+              ...(group.yRange ? group.yRange : {}),
+              seriesName: group.primarySeriesName,
+              tickAmount: expanded ? 5 : 3,
+              labels: {
+                ...yAxisLabelOptions,
+                formatter: group.axisFormatter
+              }
+            },
+            {
+              seriesName: group.secondarySeriesName,
+              opposite: true,
+              tickAmount: expanded ? 5 : 3,
+              labels: {
+                minWidth: expanded ? 42 : 28,
+                style: { colors: labelColor },
+                formatter: group.secondaryAxisFormatter
+              }
+            }
+          ]
+        : {
+            ...(group.yRange ? group.yRange : {}),
+            tickAmount: expanded ? 5 : 3,
+            labels: {
+              ...yAxisLabelOptions,
+              formatter: group.axisFormatter
+            }
+          }
+
+      return {
+        chart: {
+          id: `token-${group.key}-${expanded ? 'expanded' : 'compact'}`,
+          animations: { enabled: false },
+          foreColor: textColor,
+          redrawOnParentResize: expanded,
+          redrawOnWindowResize: expanded,
+          stacked: group.stacked,
+          stackOnlyBar: group.stackOnlyBar,
+          toolbar: {
+            show: expanded,
+            tools: {
+              download: false,
+              selection: false,
+              zoom: false,
+              zoomin: toolbarIcon(zoomInIcon, 'zoom in'),
+              zoomout: toolbarIcon(zoomOutIcon, 'zoom out'),
+              pan: false,
+              reset: toolbarIcon(resetIcon, 'reset zoom')
+            }
+          },
+          zoom: {
+            enabled: expanded,
+            autoScaleYaxis: true
           }
         },
-        zoom: {
-          enabled: expanded,
-          autoScaleYaxis: true
-        }
-      },
-      colors: group.colors,
-      dataLabels: { enabled: false },
-      fill: {
-        opacity: group.series.map((series) => (series.type === 'column' ? 0.86 : series.type === 'area' ? 0.18 : 1))
-      },
-      grid: {
-        borderColor: gridColor,
-        strokeDashArray: 3,
-        padding: expanded ? { left: 12, right: 16, top: 0, bottom: 0 } : { left: 0, right: 4, top: 0, bottom: 0 }
-      },
-      legend: {
-        show: expanded || group.series.length <= 3,
-        position: 'top',
-        horizontalAlign: 'left',
-        fontSize: expanded ? '12px' : '11px',
-        labels: { colors: labelColor },
-        markers: { size: 5 }
-      },
-      markers: {
-        size: expanded ? 3 : 0,
-        strokeWidth: 0,
-        hover: { size: 5 }
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 3,
-          columnWidth: expanded ? '56%' : '68%'
-        }
-      },
-      stroke: {
-        curve: 'smooth',
-        width: group.series.map((series) => (series.type === 'column' ? 0 : expanded ? 3 : 2.5))
-      },
-      tooltip: {
-        shared: true,
-        intersect: false,
-        theme,
-        fixed: group.tooltipFixed && !expanded
-          ? {
-            enabled: true,
-            position: 'bottomLeft',
-            offsetX: 0,
-            offsetY: 18
+        colors: group.colors,
+        dataLabels: { enabled: false },
+        fill: {
+          opacity: group.series.map((series) => (series.type === 'column' ? 0.86 : series.type === 'area' ? 0.18 : 1))
+        },
+        grid: {
+          borderColor: gridColor,
+          strokeDashArray: 3,
+          padding: expanded ? { left: 12, right: 16, top: 0, bottom: 0 } : { left: 0, right: 4, top: 0, bottom: 0 }
+        },
+        legend: {
+          show: expanded || group.series.length <= 3,
+          position: 'top',
+          horizontalAlign: 'left',
+          fontSize: expanded ? '12px' : '11px',
+          labels: { colors: labelColor },
+          markers: { size: 5 }
+        },
+        markers: {
+          size: expanded ? 3 : 0,
+          strokeWidth: 0,
+          hover: { size: 5 }
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 3,
+            columnWidth: expanded ? '56%' : '68%'
           }
-          : { enabled: false },
-        ...(group.tooltipCustom ? { custom: group.tooltipCustom } : {}),
-        x: {
-          formatter: chartDate
         },
-        y: {
-          formatter: group.tooltipFormatter
-        }
-      },
-      xaxis: {
-        type: 'datetime',
-        crosshairs: {
-          show: group.crosshairs !== false
+        stroke: {
+          curve: 'smooth',
+          width: group.series.map((series) => (series.type === 'column' ? 0 : expanded ? 3 : 2.5))
         },
-        labels: {
-          datetimeUTC: true,
-          style: { colors: labelColor },
-          datetimeFormatter: { day: 'd MMM' }
+        tooltip: {
+          shared: true,
+          intersect: false,
+          theme,
+          fixed: group.tooltipFixed && !expanded
+            ? {
+                enabled: true,
+                position: 'bottomLeft',
+                offsetX: 0,
+                offsetY: 18
+              }
+            : { enabled: false },
+          ...(group.tooltipCustom ? { custom: group.tooltipCustom } : {}),
+          x: {
+            formatter: chartDate
+          },
+          y: {
+            formatter: group.tooltipFormatter
+          }
         },
-        axisBorder: { color: gridColor },
-        axisTicks: { color: gridColor },
-        tooltip: { enabled: false }
-      },
-      yaxis
-    }),
-    [expanded, gridColor, group, labelColor, textColor, theme, yaxis]
+        xaxis: {
+          type: 'datetime',
+          crosshairs: {
+            show: group.crosshairs !== false
+          },
+          labels: {
+            datetimeUTC: true,
+            style: { colors: labelColor },
+            datetimeFormatter: { day: 'd MMM' }
+          },
+          axisBorder: { color: gridColor },
+          axisTicks: { color: gridColor },
+          tooltip: { enabled: false }
+        },
+        yaxis
+      }
+    },
+    [expanded, gridColor, group, labelColor, textColor, theme]
   )
 
   return (
@@ -326,6 +349,10 @@ function TokenChart({ group, expanded = false }) {
     />
   )
 }
+
+const MemoizedTokenChart = memo(TokenChart, (previous, next) =>
+  previous.group === next.group && previous.expanded === next.expanded
+)
 
 export default function TokenCharts({ token, selectedCurrency }) {
   const { t } = useTranslation('token')
@@ -546,13 +573,12 @@ export default function TokenCharts({ token, selectedCurrency }) {
     ].filter((series) => hasUsableData([series]))
 
     const supplySeries = [
-      fieldSeries({
-        rows: chartRows,
+      {
         name: t('charts.series.supply'),
-        field: 'supply',
-        type: 'area',
-        color: CHART_COLORS.supply
-      })
+        type: 'line',
+        color: CHART_COLORS.supply,
+        data: stableFieldData({ rows: chartRows, field: 'supply' })
+      }
     ].filter((series) => hasUsableData([series]))
 
     const hasSupplyData = chartRows.some((row) => toNumber(row.supply) !== null)
@@ -1023,6 +1049,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
         chartType: 'line',
         colors: supplySeries.map((series) => series.color),
         series: supplySeries,
+        yRange: seriesRange(supplySeries, { minRelativeSpread: 0.08 }),
         axisFormatter: (value) => compactNumber(value),
         tooltipFormatter: (value) => `${fullNumber(value)} ${tokenUnit}`
       },
@@ -1115,7 +1142,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
                   }
                 }}
               >
-                <TokenChart group={group} />
+                <MemoizedTokenChart group={group} />
               </div>
             </article>
           ))}
@@ -1133,7 +1160,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
         {expandedGroup ? (
           <div className={tokenChartDialog}>
             <p className={tokenChartDialogDescription}>{expandedGroup.description}</p>
-            <TokenChart group={expandedGroup} expanded />
+            <MemoizedTokenChart group={expandedGroup} expanded />
           </div>
         ) : null}
       </Dialog>
