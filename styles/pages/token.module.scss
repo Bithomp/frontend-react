@@ -385,11 +385,15 @@
   }
 
   .tokenChartCardHeader {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: start;
-    justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
+
+    > div:first-child {
+      min-width: 0;
+    }
 
     h3 {
       margin: 0 0 5px;
@@ -398,6 +402,7 @@
       font-weight: 700;
       line-height: 1.15;
       text-transform: uppercase;
+      overflow-wrap: anywhere;
     }
 
     span {
@@ -427,9 +432,19 @@
   .tokenChartSummaryItem {
     display: inline-flex;
     align-items: baseline;
+    flex-wrap: wrap;
     gap: 4px;
     min-width: 0;
-    white-space: nowrap;
+    white-space: normal;
+
+    strong {
+      flex: 0 0 auto;
+    }
+
+    > span:not(.tokenChartSummaryDot):not(.tokenChartSummaryPeriod) {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
   }
 
   .tokenChartSummaryDot {
@@ -443,11 +458,13 @@
   .tokenChartSummaryPeriod {
     color: var(--text-secondary);
     font-size: 11px;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .tokenChartCardActions {
     display: inline-flex;
+    justify-self: end;
     flex: 0 0 auto;
     gap: 6px;
     align-items: center;
