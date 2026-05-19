@@ -326,6 +326,194 @@
     min-width: 0;
   }
 
+  .tokenChartsSection {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .tokenChartsHeader {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 14px;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      color: var(--text-main);
+      font-size: 20px;
+      line-height: 1.15;
+    }
+
+    span {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.25;
+    }
+  }
+
+  .tokenChartsMeta {
+    flex: 0 0 auto;
+    text-align: right;
+  }
+
+  .tokenChartsGrid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .tokenChartCard {
+    display: grid;
+    grid-template-rows: auto minmax(150px, 1fr);
+    gap: 6px;
+    min-width: 0;
+    min-height: 238px;
+    padding: 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+    box-shadow: var(--card-shadow);
+  }
+
+  .tokenChartCardLoading {
+    grid-template-rows: 1fr;
+    place-items: center;
+  }
+
+  .tokenChartCardHeader {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 5px;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    span {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    strong {
+      color: var(--text-main);
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+
+  .tokenChartCardActions {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .tokenChartInfo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 70%, transparent);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+    cursor: help;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .tooltiptext {
+      width: min(260px, 72vw);
+      white-space: normal;
+      text-align: left;
+    }
+  }
+
+  .tokenChartExpandButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--card-border) 70%, transparent);
+    border-radius: 999px;
+    color: var(--text-main);
+    background: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--link-color);
+      color: var(--link-color);
+      outline: none;
+    }
+
+    svg {
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  .tokenChartPreviewButton {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    margin: 0 -6px -8px;
+    overflow: visible;
+    cursor: pointer;
+
+    .apexcharts-canvas {
+      overflow: visible !important;
+    }
+
+    .apexcharts-tooltip {
+      top: calc(100% + 6px) !important;
+      left: 0 !important;
+      right: auto !important;
+      z-index: 10;
+      max-width: min(360px, calc(100vw - 24px));
+      pointer-events: none;
+    }
+
+    &:focus-visible {
+      border-radius: 6px;
+      outline: 2px solid var(--link-color);
+      outline-offset: 2px;
+    }
+  }
+
+  .tokenChartEmpty {
+    padding: 18px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+    text-align: center;
+  }
+
+  .tokenChartsSection .apexcharts-tooltip,
+  .tokenChartsSection .apexcharts-tooltip-title {
+    border-color: var(--card-border) !important;
+    background: var(--card-bg) !important;
+    color: var(--text-main) !important;
+  }
+
   .tokenActivityGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 620px), 1fr));
@@ -337,7 +525,7 @@
   .tokenChangeList {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 10px;
+    gap: 6px 8px;
     align-items: center;
     min-width: 0;
   }
@@ -345,7 +533,7 @@
   .tokenChangeItem {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     min-width: 0;
     max-width: 100%;
     white-space: nowrap;
@@ -355,22 +543,23 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 28px;
-    padding: 2px 5px;
+    min-width: 22px;
+    padding: 2px 4px;
     border: 1px solid color-mix(in srgb, var(--card-border) 64%, transparent);
     border-radius: 999px;
     background: color-mix(in srgb, var(--background-secondary) 34%, transparent);
     color: var(--text-secondary);
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 600;
-    line-height: 1;
+    line-height: 1.05;
   }
 
   .tokenChangeValue {
     flex: 0 0 auto;
     min-width: max-content;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
     line-height: 1;
 
     .tooltip {
@@ -670,6 +859,12 @@
       padding: 6px 0;
     }
 
+    .tokenPricePanel .tokenChangeList {
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      gap: 5px;
+    }
+
     .tokenPricePanel .tokenMetricGrid {
       gap: 8px;
     }
@@ -760,6 +955,10 @@
     .tokenMetadataPanel {
       grid-column: 1 / -1;
     }
+
+    .tokenChartsGrid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   @media only screen and (max-width: 900px) {
@@ -812,6 +1011,10 @@
 
     .tokenActivityGrid {
       grid-template-columns: 1fr;
+    }
+
+    .tokenChartsGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .tokenActivityCard {
@@ -869,5 +1072,39 @@
     .tokenPanel {
       padding: 12px;
     }
+
+    .tokenChartsHeader {
+      align-items: start;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tokenChartsMeta {
+      text-align: left;
+    }
+
+    .tokenChartCard {
+      min-height: 238px;
+      padding: 12px;
+    }
   }
+
+  @media only screen and (max-width: 520px) {
+    .tokenChartsGrid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.tokenChartDialog {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.tokenChartDialogDescription {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
 }

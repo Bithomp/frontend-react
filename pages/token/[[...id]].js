@@ -29,6 +29,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import TokenTabs from '../../components/Tabs/TokenTabs'
 import HomeTeaser, { HomeTeaseRow } from '../../components/Home/HomeTeaser'
 import homeTeaserStyles from '@/styles/components/home-teaser.module.scss'
+import TokenCharts from '../../components/Token/TokenCharts'
 
 const tokenSwapsUrl = (token, type, limit = 5) => {
   if (!token) return ''
@@ -251,6 +252,8 @@ export default function TokenPage({
     fiatRate = fiatRateApp
     selectedCurrency = selectedCurrencyApp
   }
+  const isNativeToken = !!token && !token.issuer && token.currency === nativeCurrency
+  const showMintActivity = !isNativeToken || xahauNetwork
 
   // Redirect if no token data
   useEffect(() => {
@@ -339,7 +342,8 @@ export default function TokenPage({
 
   const fetchMints = useCallback(
     async ({ clear = false } = {}) => {
-      if (!token) {
+      if (!token || !showMintActivity) {
+        setMints([])
         setMintsLoading(false)
         return
       }
@@ -358,7 +362,7 @@ export default function TokenPage({
       setMints(Array.isArray(response?.data?.swaps) ? response.data.swaps.slice(0, 10) : [])
       setMintsLoading(false)
     },
-    [mintsOrder, token]
+    [mintsOrder, showMintActivity, token]
   )
 
   const fetchBurns = useCallback(
@@ -672,7 +676,6 @@ export default function TokenPage({
   const { statistics } = token
   const mptId = token?.mptokenIssuanceID
   const isMptToken = !!mptId
-  const isNativeToken = !token?.issuer && token?.currency === nativeCurrency
   const isRoundTokenImage = !!token?.issuer || isMptToken || isNativeToken
   const tokenDisplayCurrency = isMptToken
     ? token?.metadata?.name || token?.currency || 'MPT'
@@ -1293,6 +1296,7 @@ export default function TokenPage({
           key: 'mintVolume',
           label: tt('fields.mintVolume'),
           value: volumeLine({ token, type: 'mint' }),
+          show: showMintActivity,
           details: [
             {
               key: 'mintTransactions',
@@ -1492,6 +1496,8 @@ export default function TokenPage({
             </div>
           </div>
 
+          <TokenCharts token={token} selectedCurrency={selectedCurrency} />
+
           <section className="tokenActivitySection">
             <div className="tokenActivityGrid">
               {renderTokenActivityWidget({
@@ -1520,18 +1526,19 @@ export default function TokenPage({
                 limit: 10
               })}
 
-              {renderTokenActivityWidget({
-                titleText: tt('activity.mints'),
-                rows: mints,
-                rowRenderer: renderMintRow,
-                loading: mintsLoading,
-                onRefresh: refreshMints,
-                isRefreshHidden: mintsRefreshHidden,
-                refreshCooldownSeconds: mintsRefreshSeconds,
-                headerActions: renderActivityOrderToggle(mintsOrder, setMintsOrder),
-                emptyText: tt('activity.noData24h'),
-                limit: 10
-              })}
+              {showMintActivity &&
+                renderTokenActivityWidget({
+                  titleText: tt('activity.mints'),
+                  rows: mints,
+                  rowRenderer: renderMintRow,
+                  loading: mintsLoading,
+                  onRefresh: refreshMints,
+                  isRefreshHidden: mintsRefreshHidden,
+                  refreshCooldownSeconds: mintsRefreshSeconds,
+                  headerActions: renderActivityOrderToggle(mintsOrder, setMintsOrder),
+                  emptyText: tt('activity.noData24h'),
+                  limit: 10
+                })}
 
               {renderTokenActivityWidget({
                 titleText: tt('activity.burns'),
