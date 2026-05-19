@@ -7,6 +7,7 @@ export default function InputField({
   onChange,
   placeholder,
   required = false,
+  inputProps = {},
   type = 'text',
   value
 }) {
@@ -17,6 +18,7 @@ export default function InputField({
         {required ? ' *' : ''}
       </span>
       <input
+        {...inputProps}
         className={'input-text' + (error ? ' error' : '')}
         id={id}
         name={id}

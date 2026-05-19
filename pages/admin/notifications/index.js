@@ -1026,6 +1026,8 @@ export default function Notifications({
       return renderChannelLimitNotice()
     }
 
+    const channelNamePlaceholder = t(`notifications.channel-name-placeholder-by-type.${channelType}`)
+
     return (
       <form className="notification-form" onSubmit={handleSaveChannel}>
         <div className="notification-form-grid">
@@ -1038,7 +1040,7 @@ export default function Notifications({
             id="name"
             label={t('notifications.channel-name')}
             onChange={handleInputChange}
-            placeholder={t('notifications.channel-name-placeholder')}
+            placeholder={channelNamePlaceholder}
             required
             value={formData.name || ''}
           />
@@ -1047,6 +1049,7 @@ export default function Notifications({
               error={formErrors[field.id]}
               helpText={t(`notifications.field-help.${field.id}`, { defaultValue: field.helpText })}
               id={field.id}
+              inputProps={field.inputProps}
               key={field.id}
               label={t(`notifications.fields.${field.id}`, { defaultValue: field.label })}
               onChange={handleInputChange}

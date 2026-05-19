@@ -449,7 +449,12 @@
     "detailed-setup-guide": "详细设置指南",
     "channel-name": "频道名称",
     "channel-name-help": "用于识别此频道的私密名称。",
-    "channel-name-placeholder": "主 Slack 频道",
+    "channel-name-placeholder-by-type": {
+      "email": "提醒邮箱",
+      "slack_webhook": "主 Slack 频道",
+      "discord_webhook": "Discord 提醒频道",
+      "twitter_api": "X 提醒账号"
+    },
     "channel-number": "频道 #{{id}}",
     "rule-number": "规则 #{{id}}",
     "default-rule-name": "规则 #{{index}}",

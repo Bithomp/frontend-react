@@ -449,7 +449,12 @@
     "detailed-setup-guide": "자세한 설정 가이드",
     "channel-name": "채널 이름",
     "channel-name-help": "이 채널을 인식하기 위한 비공개 이름입니다.",
-    "channel-name-placeholder": "메인 Slack 채널",
+    "channel-name-placeholder-by-type": {
+      "email": "알림 이메일",
+      "slack_webhook": "메인 Slack 채널",
+      "discord_webhook": "Discord 알림 채널",
+      "twitter_api": "X 알림 계정"
+    },
     "channel-number": "채널 번호{{id}}",
     "rule-number": "규칙 #{{id}}",
     "default-rule-name": "규칙 #{{index}}",

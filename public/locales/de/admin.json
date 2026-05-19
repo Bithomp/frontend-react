@@ -449,7 +449,12 @@
     "detailed-setup-guide": "Detaillierte Einrichtungsanleitung",
     "channel-name": "Kanalname",
     "channel-name-help": "Ein privater Name zur Erkennung dieses Kanals.",
-    "channel-name-placeholder": "Haupt-Slack-Kanal",
+    "channel-name-placeholder-by-type": {
+      "email": "E-Mail für Alerts",
+      "slack_webhook": "Haupt-Slack-Kanal",
+      "discord_webhook": "Discord-Alert-Kanal",
+      "twitter_api": "X-Alert-Konto"
+    },
     "channel-number": "Kanal #{{id}}",
     "rule-number": "Regel #{{id}}",
     "default-rule-name": "Regel #{{index}}",

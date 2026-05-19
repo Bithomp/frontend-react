@@ -449,7 +449,12 @@
     "detailed-setup-guide": "詳細なセットアップガイド",
     "channel-name": "チャンネル名",
     "channel-name-help": "このチャネルを認識するためのプライベート名。",
-    "channel-name-placeholder": "メインの Slack チャンネル",
+    "channel-name-placeholder-by-type": {
+      "email": "アラート用メール",
+      "slack_webhook": "メインの Slack チャンネル",
+      "discord_webhook": "Discord アラートチャンネル",
+      "twitter_api": "X アラートアカウント"
+    },
     "channel-number": "チャンネル番号{{id}}",
     "rule-number": "ルール #{{id}}",
     "default-rule-name": "ルール #{{index}}",

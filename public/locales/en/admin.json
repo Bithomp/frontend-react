@@ -449,7 +449,12 @@
     "detailed-setup-guide": "Detailed setup guide",
     "channel-name": "Channel name",
     "channel-name-help": "A private name to recognize this channel.",
-    "channel-name-placeholder": "Main Slack channel",
+    "channel-name-placeholder-by-type": {
+      "email": "Alerts email",
+      "slack_webhook": "Main Slack channel",
+      "discord_webhook": "Discord alerts channel",
+      "twitter_api": "X alerts account"
+    },
     "channel-number": "Channel #{{id}}",
     "rule-number": "Rule #{{id}}",
     "default-rule-name": "Rule #{{index}}",

@@ -453,7 +453,12 @@
     "detailed-setup-guide": "Подробное руководство",
     "channel-name": "Название канала",
     "channel-name-help": "Приватное название, по которому вы узнаете этот канал.",
-    "channel-name-placeholder": "Основной канал Slack",
+    "channel-name-placeholder-by-type": {
+      "email": "Email для алертов",
+      "slack_webhook": "Основной канал Slack",
+      "discord_webhook": "Канал Discord для алертов",
+      "twitter_api": "Аккаунт X для алертов"
+    },
     "channel-number": "Канал #{{id}}",
     "rule-number": "Правило #{{id}}",
     "default-rule-name": "Правило #{{index}}",

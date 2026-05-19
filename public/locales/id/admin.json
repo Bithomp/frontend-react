@@ -449,7 +449,12 @@
     "detailed-setup-guide": "Panduan pengaturan terperinci",
     "channel-name": "Nama saluran",
     "channel-name-help": "Nama pribadi untuk mengenali saluran ini.",
-    "channel-name-placeholder": "Saluran Slack utama",
+    "channel-name-placeholder-by-type": {
+      "email": "Email peringatan",
+      "slack_webhook": "Saluran Slack utama",
+      "discord_webhook": "Kanal peringatan Discord",
+      "twitter_api": "Akun X peringatan"
+    },
     "channel-number": "Saluran #{{id}}",
     "rule-number": "Aturan #{{id}}",
     "default-rule-name": "Aturan #{{index}}",

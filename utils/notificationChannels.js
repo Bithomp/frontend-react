@@ -5,6 +5,16 @@ export const NOTIFICATION_CHANNEL_TYPES = Object.freeze({
   TWITTER: 'twitter_api'
 })
 
+const credentialInputProps = {
+  autoCapitalize: 'none',
+  autoComplete: 'new-password',
+  autoCorrect: 'off',
+  'data-1p-ignore': 'true',
+  'data-bwignore': 'true',
+  'data-lpignore': 'true',
+  spellCheck: false
+}
+
 export const NOTIFICATION_CHANNELS = {
   [NOTIFICATION_CHANNEL_TYPES.SLACK]: {
     label: 'Slack',
@@ -62,6 +72,7 @@ export const NOTIFICATION_CHANNELS = {
         label: 'API Key (Consumer Key)',
         placeholder: 'Consumer Key from X',
         helpText: 'Shown in X as Consumer Key.',
+        inputProps: credentialInputProps,
         required: true
       },
       {
@@ -69,6 +80,7 @@ export const NOTIFICATION_CHANNELS = {
         label: 'API Key Secret (Consumer Key Secret)',
         placeholder: 'Consumer Key Secret from X',
         helpText: 'Shown in X as Consumer Key Secret and displayed once together with Consumer Key.',
+        inputProps: credentialInputProps,
         type: 'password',
         required: true
       },
@@ -77,6 +89,7 @@ export const NOTIFICATION_CHANNELS = {
         label: 'Access Token',
         placeholder: 'Access Token from X',
         helpText: 'Generate this in Keys and tokens after the app has Read and write permissions.',
+        inputProps: credentialInputProps,
         required: true
       },
       {
@@ -84,6 +97,7 @@ export const NOTIFICATION_CHANNELS = {
         label: 'Access Token Secret',
         placeholder: 'Access Token Secret from X',
         helpText: 'Generate this together with Access Token and keep it private.',
+        inputProps: credentialInputProps,
         type: 'password',
         required: true
       }

@@ -449,7 +449,12 @@
     "detailed-setup-guide": "Guía de configuración detallada",
     "channel-name": "Nombre del canal",
     "channel-name-help": "Un nombre privado para reconocer este canal.",
-    "channel-name-placeholder": "Canal principal de holgura",
+    "channel-name-placeholder-by-type": {
+      "email": "Correo de alertas",
+      "slack_webhook": "Canal principal de Slack",
+      "discord_webhook": "Canal de alertas de Discord",
+      "twitter_api": "Cuenta X de alertas"
+    },
     "channel-number": "Canal #{{id}}",
     "rule-number": "Regla #{{id}}",
     "default-rule-name": "Regla #{{index}}",
