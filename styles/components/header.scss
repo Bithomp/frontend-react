@@ -622,6 +622,13 @@ header {
       min-width: 215px;
       right: 0;
       left: auto !important;
+      max-height: calc(100vh - 78px);
+      max-height: calc(100dvh - 78px);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
     }
   }
 

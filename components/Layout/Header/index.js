@@ -127,7 +127,8 @@ const MenuDropDown = ({
   type,
   style,
   direction,
-  containerStyle
+  containerStyle,
+  className
 }) => {
   if (!direction) direction = 'stick-left'
   const handleMouseEnter = (id) => {
@@ -154,7 +155,7 @@ const MenuDropDown = ({
 
   const body = (
     <div
-      className="menu-dropdown"
+      className={'menu-dropdown' + (className ? ' ' + className : '')}
       onMouseEnter={() => handleMouseEnter(id)}
       onMouseLeave={() => handleMouseLeave(id)}
       style={containerStyle || {}}
@@ -802,6 +803,7 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
             direction="stick-right"
+            className="account-dropdown"
             style={{ width: '100%', justifyContent: 'flex-end' }}
             containerStyle={{ minWidth: 215, textAlign: 'right' }}
           >
