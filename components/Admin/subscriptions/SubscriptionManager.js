@@ -128,6 +128,8 @@ export default function SubscriptionManager({
   id,
   title,
   initiallyExpanded = false,
+  externalBillingCountry,
+  externalChoosingCountry,
   showExpired = true
 }) {
   const { t, i18n } = useTranslation(['common', 'admin'])
@@ -151,6 +153,9 @@ export default function SubscriptionManager({
   const [step, setStep] = useState(0)
   const [update, setUpdate] = useState(false)
   const [receiptVisible, setReceiptVisible] = useState(false)
+  const billingCountryManagedExternally = externalBillingCountry !== undefined || externalChoosingCountry !== undefined
+  const activeBillingCountry = billingCountryManagedExternally ? externalBillingCountry : billingCountry
+  const activeChoosingCountry = billingCountryManagedExternally ? externalChoosingCountry : choosingCountry
 
   useEffect(() => {
     setCheckoutOpen(initiallyExpanded)
@@ -465,15 +470,17 @@ export default function SubscriptionManager({
 
       {showPlan && (
         <div className="subscription-checkout">
-          <BillingCountry
-            billingCountry={billingCountry}
-            setBillingCountry={setBillingCountry}
-            choosingCountry={choosingCountry}
-            setChoosingCountry={setChoosingCountry}
-            showSelected={false}
-          />
+          {!billingCountryManagedExternally && (
+            <BillingCountry
+              billingCountry={billingCountry}
+              setBillingCountry={setBillingCountry}
+              choosingCountry={choosingCountry}
+              setChoosingCountry={setChoosingCountry}
+              showSelected={false}
+            />
+          )}
 
-          {!choosingCountry && billingCountry && (
+          {!activeChoosingCountry && activeBillingCountry && (
             <>
               {step < 2 && (
                 <section className="subscription-offer-section">

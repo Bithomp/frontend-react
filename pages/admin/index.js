@@ -266,6 +266,8 @@ export default function Admin({
                 setSignRequest={setSignRequest}
                 setSubscriptionExpired={setSubscriptionExpired}
                 title="Bithomp Pro"
+                externalBillingCountry={billingCountry}
+                externalChoosingCountry={choosingBillingCountry}
               />
               <br />
               <br />
