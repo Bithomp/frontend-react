@@ -595,12 +595,12 @@
     "escrow": "Escrow",
     "nft-mint": "铸造 NFT",
     "account-settings": "设置",
-    "account-control": "控制",
+    "account-control": "账户管理",
     "token-issuer-settings": "代币发行者",
     "account-delete": "删除账户"
   },
   "account-control": {
-    "title": "账户控制",
+    "title": "账户管理",
     "description": "管理账本上的常规密钥、主密钥和账户访问权限。",
     "loadingDescription": "管理账户控制设置",
     "introSignedIn": "管理您在 {{explorerName}} 上的账户的签名权限。",

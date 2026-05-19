@@ -50,7 +50,7 @@ export const getServerSideProps = async (context) => {
     props: {
       isSsrMobile: getIsSsrMobile(context),
       redirectToken: query.redirectToken || null,
-      ...(await serverSideTranslations(locale, ['common', 'admin']))
+      ...(await serverSideTranslations(locale, ['common', 'admin', 'services']))
     }
   }
 }

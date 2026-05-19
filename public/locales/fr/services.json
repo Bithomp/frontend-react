@@ -595,12 +595,12 @@
     "escrow": "Escrow",
     "nft-mint": "Minter NFT",
     "account-settings": "Paramètres",
-    "account-control": "Contrôle",
+    "account-control": "Gestion du compte",
     "token-issuer-settings": "Émetteur de tokens",
     "account-delete": "Supprimer le compte"
   },
   "account-control": {
-    "title": "Contrôle du compte",
+    "title": "Gestion du compte",
     "description": "Gérez la Regular Key, la Master Key et l’accès au compte sur le ledger.",
     "loadingDescription": "Gestion des paramètres de contrôle du compte",
     "introSignedIn": "Gérez les autorisations de signature de votre compte sur {{explorerName}}.",

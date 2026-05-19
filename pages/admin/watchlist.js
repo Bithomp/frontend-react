@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosAdmin } from '../../utils/axios'
 
@@ -255,13 +255,19 @@ export default function Watchlist({
           <>
             {rendered ? (
               <p>
-                {t('watchlist.limit', { ns: 'admin', count: subscriptionExpired ? 20 : 100 })}
-                {subscriptionExpired && (
+                {subscriptionExpired ? (
                   <>
+                    {t('watchlist.limit-free', { ns: 'admin', count: 20 })}
                     {' '}
-                    {t('watchlist.limit-subscribe-before', { ns: 'admin' })}{' '}
-                    <Link href="/admin#bithomp-pro-subscription">Bithomp Pro</Link>.
+                    <Trans
+                      i18nKey="watchlist.limit-upgrade"
+                      ns="admin"
+                      values={{ count: 100 }}
+                      components={[<Link key="pro" href="/admin#bithomp-pro-subscription" />]}
+                    />
                   </>
+                ) : (
+                  t('watchlist.limit-pro', { ns: 'admin', count: 100 })
                 )}
               </p>
             ) : (

@@ -595,12 +595,12 @@
     "escrow": "Escrow",
     "nft-mint": "Mint NFT",
     "account-settings": "Pengaturan",
-    "account-control": "Kontrol",
+    "account-control": "Manajemen Akun",
     "token-issuer-settings": "Issuer token",
     "account-delete": "Hapus akun"
   },
   "account-control": {
-    "title": "Kontrol akun",
+    "title": "Manajemen Akun",
     "description": "Kelola Regular Key, Master Key, dan akses akun di ledger.",
     "loadingDescription": "Mengelola pengaturan kontrol akun",
     "introSignedIn": "Kelola otoritas tanda tangan akun Anda di {{explorerName}}.",

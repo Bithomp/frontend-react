@@ -595,12 +595,12 @@
     "escrow": "Escrow",
     "nft-mint": "Создать NFT",
     "account-settings": "Настройки",
-    "account-control": "Контроль",
+    "account-control": "Управление аккаунтом",
     "token-issuer-settings": "Эмитент токенов",
     "account-delete": "Удалить аккаунт"
   },
   "account-control": {
-    "title": "Контроль аккаунта",
+    "title": "Управление аккаунтом",
     "description": "Управление Regular Key, Master Key и доступом к аккаунту в леджере.",
     "loadingDescription": "Управление настройками контроля аккаунта",
     "introSignedIn": "Управляйте правами подписи для вашего аккаунта в {{explorerName}}.",

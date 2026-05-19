@@ -595,12 +595,12 @@
     "escrow": "Escrow",
     "nft-mint": "NFT 민팅",
     "account-settings": "설정",
-    "account-control": "제어",
+    "account-control": "계정 관리",
     "token-issuer-settings": "토큰 발행자",
     "account-delete": "계정 삭제"
   },
   "account-control": {
-    "title": "계정 제어",
+    "title": "계정 관리",
     "description": "Ledger에서 Regular Key, Master Key 및 계정 접근을 관리합니다.",
     "loadingDescription": "계정 제어 설정 관리",
     "introSignedIn": "{{explorerName}}에서 계정의 서명 권한을 관리합니다.",

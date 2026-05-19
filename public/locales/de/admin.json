@@ -195,8 +195,9 @@
     }
   },
   "watchlist": {
-    "limit": "Sie können bis zu {{count}} Einträge zu Ihrer Merkliste hinzufügen.",
-    "limit-subscribe-before": "Abonnieren",
+    "limit-free": "Kostenlose Konten können bis zu {{count}} Einträge zur Merkliste hinzufügen.",
+    "limit-pro": "Bithomp Pro-Konten können bis zu {{count}} Einträge zur Merkliste hinzufügen.",
+    "limit-upgrade": "Abonnieren Sie <0>Bithomp Pro</0>, um bis zu {{count}} hinzuzufügen.",
     "last-signed": "Letzte unterzeichnete Transaktion",
     "last-affecting": "Letzte betroffene Transaktion",
     "last-signed-tx": "Letzte unterzeichnete Transaktion",
@@ -300,16 +301,16 @@
         "reports-text": "Steuerexport- und Kontoaktivitätstools.",
         "services-title": "Dienstleistungen",
         "services": {
-          "send": "Zahlung senden",
-          "check": "Emittentenprüfung",
-          "escrow": "Escrow erstellen"
+          "advanced-prefix": "Erweiterte Optionen in",
+          "access-prefix": "Zugriff auf",
+          "and": "und"
         },
         "scroll-title": "Weitere Daten",
         "scroll-text": "Mehr Zeilen und tieferes Scrollen",
         "limits-title": "Höhere Grenzwerte",
         "limits-text": "Weitere Artikel in",
         "avatars-title": "Avatare",
-        "avatars-text": "Legen Sie Avatare für verifizierte Adressen fest",
+        "avatars-text": "Legen Sie animierte Avatare für verifizierte Adressen fest in",
         "ads-title": "Keine Werbung",
         "ads-text": "Nutzen Sie den Explorer ohne Werbung.",
         "support-title": "Vorrangiger Support",

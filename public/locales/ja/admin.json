@@ -195,8 +195,9 @@
     }
   },
   "watchlist": {
-    "limit": "最大{{count}}アイテムをウォッチリストに追加できます。",
-    "limit-subscribe-before": "購読する",
+    "limit-free": "無料アカウントではウォッチリストに最大{{count}}件追加できます。",
+    "limit-pro": "Bithomp Proアカウントではウォッチリストに最大{{count}}件追加できます。",
+    "limit-upgrade": "最大{{count}}件追加するには<0>Bithomp Pro</0>に登録してください。",
     "last-signed": "最後に署名されたトランザクション",
     "last-affecting": "最後に影響を及ぼしたトランザクション",
     "last-signed-tx": "最後に署名されたトランザクション",
@@ -300,16 +301,16 @@
         "reports-text": "税輸出および口座活動ツール。",
         "services-title": "サービス",
         "services": {
-          "send": "支払いを送信する",
-          "check": "発行者チェック",
-          "escrow": "Escrowの作成"
+          "advanced-prefix": "高度なオプション:",
+          "access-prefix": "アクセス:",
+          "and": "および"
         },
         "scroll-title": "さらなるデータ",
         "scroll-text": "より多くの行とより深いスクロール",
         "limits-title": "上限値",
         "limits-text": "その他のアイテム",
         "avatars-title": "アバター",
-        "avatars-text": "確認済みのアドレスのアバターを設定します",
+        "avatars-text": "確認済みアドレスのアニメーションアバターを設定:",
         "ads-title": "広告なし",
         "ads-text": "広告なしでエクスプローラーを使用してください。",
         "support-title": "優先サポート",

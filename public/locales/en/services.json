@@ -595,12 +595,12 @@
     "escrow": "Escrow",
     "nft-mint": "Mint NFT",
     "account-settings": "Settings",
-    "account-control": "Control",
+    "account-control": "Account Management",
     "token-issuer-settings": "Token issuer",
     "account-delete": "Delete account"
   },
   "account-control": {
-    "title": "Account Control",
+    "title": "Account Management",
     "description": "Manage regular key, master key, and account access on the ledger.",
     "loadingDescription": "Manage account control settings",
     "introSignedIn": "Manage signing authority for your account on {{explorerName}}.",

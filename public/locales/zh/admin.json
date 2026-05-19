@@ -195,8 +195,9 @@
     }
   },
   "watchlist": {
-    "limit": "你最多可以向关注列表添加 {{count}} 个项目。",
-    "limit-subscribe-before": "订阅",
+    "limit-free": "免费账户最多可以向关注列表添加 {{count}} 个项目。",
+    "limit-pro": "Bithomp Pro 账户最多可以向关注列表添加 {{count}} 个项目。",
+    "limit-upgrade": "订阅 <0>Bithomp Pro</0> 即可添加最多 {{count}} 个项目。",
     "last-signed": "最后签名的交易",
     "last-affecting": "最后影响的交易",
     "last-signed-tx": "最后签名的交易",
@@ -300,16 +301,16 @@
         "reports-text": "税务导出和账户活动工具。",
         "services-title": "服务",
         "services": {
-          "send": "发送付款",
-          "check": "发行方检查",
-          "escrow": "创建Escrow"
+          "advanced-prefix": "高级选项：",
+          "access-prefix": "访问：",
+          "and": "和"
         },
         "scroll-title": "更多数据",
         "scroll-text": "更多行和更深滚动：",
         "limits-title": "更高限制",
         "limits-text": "更多项目：",
         "avatars-title": "头像",
-        "avatars-text": "为已验证地址设置头像：",
+        "avatars-text": "为已验证地址设置动态头像：",
         "ads-title": "无广告",
         "ads-text": "使用无广告的浏览器。",
         "support-title": "优先支持",

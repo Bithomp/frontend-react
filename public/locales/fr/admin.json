@@ -195,8 +195,9 @@
     }
   },
   "watchlist": {
-    "limit": "Vous pouvez ajouter jusqu’à {{count}} éléments à votre liste de suivi.",
-    "limit-subscribe-before": "S’abonner à",
+    "limit-free": "Les comptes gratuits peuvent ajouter jusqu’à {{count}} éléments à la liste de suivi.",
+    "limit-pro": "Les comptes Bithomp Pro peuvent ajouter jusqu’à {{count}} éléments à la liste de suivi.",
+    "limit-upgrade": "Abonnez-vous à <0>Bithomp Pro</0> pour en ajouter jusqu’à {{count}}.",
     "last-signed": "Dernière transaction signée",
     "last-affecting": "Dernière transaction affectante",
     "last-signed-tx": "Dernière transaction signée",
@@ -300,16 +301,16 @@
         "reports-text": "export fiscal et outils d’activité du compte.",
         "services-title": "Prestations",
         "services": {
-          "send": "Envoyer un paiement",
-          "check": "Vérification de l’émetteur",
-          "escrow": "Créer un escrow"
+          "advanced-prefix": "Options avancées dans",
+          "access-prefix": "Accès à",
+          "and": "et"
         },
         "scroll-title": "Plus de données",
         "scroll-text": "Plus de lignes et un défilement plus profond sur",
         "limits-title": "Limites plus élevées",
         "limits-text": "Plus d’éléments dans",
         "avatars-title": "Avatars",
-        "avatars-text": "Définissez des avatars pour les adresses vérifiées dans",
+        "avatars-text": "Définissez des avatars animés pour les adresses vérifiées dans",
         "ads-title": "Sans publicité",
         "ads-text": "Utilisez l’explorateur sans publicité.",
         "support-title": "Support prioritaire",

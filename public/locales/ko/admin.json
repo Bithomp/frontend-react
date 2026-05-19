@@ -195,8 +195,9 @@
     }
   },
   "watchlist": {
-    "limit": "관심 목록에 최대{{count}}항목을 추가할 수 있습니다.",
-    "limit-subscribe-before": "구독하기",
+    "limit-free": "무료 계정은 관심 목록에 최대 {{count}}개 항목을 추가할 수 있습니다.",
+    "limit-pro": "Bithomp Pro 계정은 관심 목록에 최대 {{count}}개 항목을 추가할 수 있습니다.",
+    "limit-upgrade": "최대 {{count}}개까지 추가하려면 <0>Bithomp Pro</0>를 구독하세요.",
     "last-signed": "마지막으로 서명된 거래",
     "last-affecting": "마지막으로 영향을 미치는 거래",
     "last-signed-tx": "마지막으로 서명된 거래",
@@ -300,16 +301,16 @@
         "reports-text": "세금 수출 및 계정 활동 도구.",
         "services-title": "서비스",
         "services": {
-          "send": "지불금 보내기",
-          "check": "발급자 확인",
-          "escrow": "Escrow 생성"
+          "advanced-prefix": "고급 옵션:",
+          "access-prefix": "접근 권한:",
+          "and": "및"
         },
         "scroll-title": "더 많은 데이터",
         "scroll-text": "더 많은 행과 더 깊은 스크롤",
         "limits-title": "더 높은 한도",
         "limits-text": "더 많은 항목",
         "avatars-title": "아바타",
-        "avatars-text": "확인된 주소에 대한 아바타 설정",
+        "avatars-text": "인증된 주소에 애니메이션 아바타 설정:",
         "ads-title": "광고 없음",
         "ads-text": "광고 없이 탐색기를 사용해보세요.",
         "support-title": "우선 지원",

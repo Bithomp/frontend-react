@@ -195,8 +195,9 @@
     }
   },
   "watchlist": {
-    "limit": "You can add up to {{count}} items to your watchlist.",
-    "limit-subscribe-before": "Subscribe to",
+    "limit-free": "Free accounts can add up to {{count}} items to the watchlist.",
+    "limit-pro": "Bithomp Pro accounts can add up to {{count}} items to the watchlist.",
+    "limit-upgrade": "Subscribe to <0>Bithomp Pro</0> to add up to {{count}}.",
     "last-signed": "Last signed transaction",
     "last-affecting": "Last affecting transaction",
     "last-signed-tx": "Last signed transaction",
@@ -300,16 +301,16 @@
         "reports-text": "tax export and account activity tools.",
         "services-title": "Services",
         "services": {
-          "send": "Send payment",
-          "check": "Issuer check",
-          "escrow": "Create escrow"
+          "advanced-prefix": "Advanced options in",
+          "access-prefix": "Access to",
+          "and": "and"
         },
         "scroll-title": "More data",
         "scroll-text": "More rows and deeper scrolling on",
         "limits-title": "Higher limits",
         "limits-text": "More items in",
         "avatars-title": "Avatars",
-        "avatars-text": "Set avatars for verified addresses in",
+        "avatars-text": "Set animated avatars for verified addresses in",
         "ads-title": "No ads",
         "ads-text": "Use the explorer without advertisements.",
         "support-title": "Priority support",

@@ -4,13 +4,23 @@ import { useTranslation } from 'next-i18next'
 import { xahauNetwork } from '../../../utils'
 
 export default function Pro({ setPayPeriod }) {
-  const { t } = useTranslation('admin')
+  const { t } = useTranslation(['admin', 'services'])
   const options = [
     { value: 'm1', label: t('period.m1'), price: '9.99 EUR' },
     { value: 'm3', label: t('period.m3'), price: '29.97 EUR' },
     { value: 'm6', label: t('period.m6'), price: '59.94 EUR' },
     { value: 'y1', label: t('period.y1'), price: '99.99 EUR' }
   ]
+  const periodSelectStyles = {
+    container: (base) => ({ ...base, minWidth: 340, maxWidth: 'min(100%, 420px)' }),
+    menu: (base) => ({ ...base, minWidth: 340 })
+  }
+  const periodOptionLabel = (option) => (
+    <span style={{ display: 'flex', gap: 28, justifyContent: 'space-between', whiteSpace: 'nowrap', width: 260 }}>
+      <span>{option.label}</span>
+      <span>{option.price}</span>
+    </span>
+  )
 
   return (
     <div className="pro-subscription-panel">
@@ -30,9 +40,15 @@ export default function Pro({ setPayPeriod }) {
         <article>
           <h5>{t('subscriptions.pro.benefits.services-title')}</h5>
           <p>
-            <Link href="/services/send">{t('subscriptions.pro.benefits.services.send')}</Link>,{' '}
-            <Link href="/services/check">{t('subscriptions.pro.benefits.services.check')}</Link>,{' '}
-            <Link href="/services/escrow">{t('subscriptions.pro.benefits.services.escrow')}</Link>.
+            {t('subscriptions.pro.benefits.services.advanced-prefix')}{' '}
+            <Link href="/services/send">{t('services-nav.send', { ns: 'services' })}</Link>,{' '}
+            <Link href="/services/trustline">{t('services-nav.trustline', { ns: 'services' })}</Link>,{' '}
+            <Link href="/services/check">{t('services-nav.check', { ns: 'services' })}</Link>,{' '}
+            <Link href="/services/escrow">{t('services-nav.escrow', { ns: 'services' })}</Link>.{' '}
+            {t('subscriptions.pro.benefits.services.access-prefix')}{' '}
+            <Link href="/services/account-control">{t('services-nav.account-control', { ns: 'services' })}</Link>{' '}
+            {t('subscriptions.pro.benefits.services.and')}{' '}
+            <Link href="/services/token-issuer-settings">{t('services-nav.token-issuer-settings', { ns: 'services' })}</Link>.
           </p>
         </article>
         <article>
@@ -87,11 +103,7 @@ export default function Pro({ setPayPeriod }) {
         </div>
         <Select
           options={options}
-          getOptionLabel={(option) => (
-            <div style={{ width: '150px' }}>
-              {option.label} <span style={{ float: 'right' }}>{option.price}</span>
-            </div>
-          )}
+          formatOptionLabel={periodOptionLabel}
           onChange={(selected) => {
             setPayPeriod(selected.value)
           }}
@@ -100,6 +112,7 @@ export default function Pro({ setPayPeriod }) {
           className="simple-select"
           classNamePrefix="react-select"
           instanceId="period-select"
+          styles={periodSelectStyles}
         />
       </div>
       <style jsx>{`

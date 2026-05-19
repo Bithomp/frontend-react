@@ -595,12 +595,12 @@
     "escrow": "Escrow",
     "nft-mint": "Acuñar NFT",
     "account-settings": "Configuración",
-    "account-control": "Control",
+    "account-control": "Gestión de cuenta",
     "token-issuer-settings": "Emisor de tokens",
     "account-delete": "Eliminar cuenta"
   },
   "account-control": {
-    "title": "Control de cuenta",
+    "title": "Gestión de cuenta",
     "description": "Gestiona Regular Key, Master Key y el acceso de la cuenta en el ledger.",
     "loadingDescription": "Gestionar ajustes de control de cuenta",
     "introSignedIn": "Gestiona la autoridad de firma de tu cuenta en {{explorerName}}.",

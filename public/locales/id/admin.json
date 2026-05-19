@@ -195,8 +195,9 @@
     }
   },
   "watchlist": {
-    "limit": "Anda dapat menambahkan hingga {{count}} item ke daftar pantauan Anda.",
-    "limit-subscribe-before": "Berlangganan",
+    "limit-free": "Akun gratis dapat menambahkan hingga {{count}} item ke daftar pantauan.",
+    "limit-pro": "Akun Bithomp Pro dapat menambahkan hingga {{count}} item ke daftar pantauan.",
+    "limit-upgrade": "Berlangganan <0>Bithomp Pro</0> untuk menambahkan hingga {{count}}.",
     "last-signed": "Transaksi terakhir yang ditandatangani",
     "last-affecting": "Terakhir mempengaruhi transaksi",
     "last-signed-tx": "Transaksi terakhir yang ditandatangani",
@@ -300,16 +301,16 @@
         "reports-text": "ekspor pajak dan alat aktivitas akun.",
         "services-title": "Layanan",
         "services": {
-          "send": "Kirim pembayaran",
-          "check": "Cek penerbit",
-          "escrow": "Buat Escrow"
+          "advanced-prefix": "Opsi lanjutan di",
+          "access-prefix": "Akses ke",
+          "and": "dan"
         },
         "scroll-title": "Lebih banyak data",
         "scroll-text": "Lebih banyak baris dan pengguliran lebih dalam",
         "limits-title": "Batas yang lebih tinggi",
         "limits-text": "Lebih banyak item masuk",
         "avatars-title": "Avatar",
-        "avatars-text": "Tetapkan avatar untuk alamat terverifikasi di",
+        "avatars-text": "Tetapkan avatar animasi untuk alamat terverifikasi di",
         "ads-title": "Tidak ada iklan",
         "ads-text": "Gunakan penjelajah tanpa iklan.",
         "support-title": "Dukungan prioritas",
