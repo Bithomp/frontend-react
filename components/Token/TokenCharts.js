@@ -18,6 +18,7 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 const zoomInIcon = '/images/chart/zoom-in.svg'
 const zoomOutIcon = '/images/chart/zoom-out.svg'
 const resetIcon = '/images/chart/reset.svg'
+const MIN_VISIBLE_VOLUME_SUMMARY = 0.001
 
 const toolbarIcon = (src, alt) =>
   `<img src="${src}" width="20" height="20" alt="${alt}" style="display:block;width:20px;height:20px;">`
@@ -642,6 +643,33 @@ export default function TokenCharts({ token, selectedCurrency }) {
         color: CHART_COLORS.burnVolume
       })
     ].filter((series) => hasUsableData([series]))
+    const mintBurnSummaryItem = ({ key, label, value, color }) => {
+      const amount = toNumber(value)
+      if (amount === null || Math.abs(amount) < MIN_VISIBLE_VOLUME_SUMMARY) return null
+
+      return {
+        key,
+        label,
+        value: compactNumber(amount),
+        color
+      }
+    }
+    const mintBurnSummaryItems = [
+      showMintData
+        ? mintBurnSummaryItem({
+            key: 'mints',
+            label: t('activity.mints'),
+            value: latest?.mintVolume,
+            color: CHART_COLORS.mintVolume
+          })
+        : null,
+      mintBurnSummaryItem({
+        key: 'burns',
+        label: t('activity.burns'),
+        value: latest?.burnVolume,
+        color: CHART_COLORS.burnVolume
+      })
+    ].filter(Boolean)
 
     const splitAccountOverlap = (row, { totalField, ammField, offerField }) => {
       const amm = toNumber(row[ammField]) || 0
@@ -978,9 +1006,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
         title: showMintData ? t('charts.mintBurn.title') : t('charts.burn.title'),
         description: showMintData ? t('charts.mintBurn.description') : t('charts.burn.description'),
         summaryLabel: t('charts.mintBurn.summary'),
-        summaryValue: compactNumber(
-          (showMintData ? toNumber(latest?.mintVolume) || 0 : 0) + (toNumber(latest?.burnVolume) || 0)
-        ),
+        summaryItems: mintBurnSummaryItems,
         chartType: 'bar',
         crosshairs: false,
         colors: mintBurnSeries.map((series) => series.color),
@@ -1045,9 +1071,22 @@ export default function TokenCharts({ token, selectedCurrency }) {
               <div className="tokenChartCardHeader">
                 <div>
                   <h3>{group.title}</h3>
-                  <span>
-                    <strong>{group.summaryValue}</strong> {group.summaryLabel}
-                  </span>
+                  {group.summaryItems?.length ? (
+                    <div className="tokenChartSummaryItems" aria-label={group.summaryLabel}>
+                      {group.summaryItems.map((item) => (
+                        <span key={item.key} className="tokenChartSummaryItem">
+                          <span className="tokenChartSummaryDot" style={{ backgroundColor: item.color }}></span>
+                          <strong>{item.value}</strong>
+                          <span>{item.label}</span>
+                          <span className="tokenChartSummaryPeriod">{group.summaryLabel}</span>
+                        </span>
+                      ))}
+                    </div>
+                  ) : group.summaryItems ? null : (
+                    <span>
+                      <strong>{group.summaryValue}</strong> {group.summaryLabel}
+                    </span>
+                  )}
                 </div>
                 <div className="tokenChartCardActions">
                   <span className="tooltip tokenChartInfo" tabIndex={0}>

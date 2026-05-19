@@ -413,6 +413,39 @@
     }
   }
 
+  .tokenChartSummaryItems {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    align-items: center;
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .tokenChartSummaryItem {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .tokenChartSummaryDot {
+    align-self: center;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    flex: 0 0 auto;
+  }
+
+  .tokenChartSummaryPeriod {
+    color: var(--text-secondary);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
   .tokenChartCardActions {
     display: inline-flex;
     flex: 0 0 auto;
@@ -509,9 +542,17 @@
 
   .tokenChartsSection .apexcharts-tooltip,
   .tokenChartsSection .apexcharts-tooltip-title {
-    border-color: var(--card-border) !important;
     background: var(--card-bg) !important;
     color: var(--text-main) !important;
+  }
+
+  .tokenChartsSection .apexcharts-tooltip {
+    border: 1px solid color-mix(in srgb, var(--card-border) 72%, var(--text-secondary)) !important;
+    box-shadow: 0 8px 22px color-mix(in srgb, #000 20%, transparent) !important;
+  }
+
+  .tokenChartsSection .apexcharts-tooltip-title {
+    border-bottom: 1px solid color-mix(in srgb, var(--card-border) 64%, var(--text-secondary)) !important;
   }
 
   .tokenActivityGrid {
