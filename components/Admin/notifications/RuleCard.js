@@ -4,7 +4,7 @@ import { MdDelete, MdEdit, MdHistory } from 'react-icons/md'
 
 import Card from '@/components/UI/Card'
 import { LinkAccount } from '@/utils/links'
-import { isAddressValid } from '@/utils'
+import { isAddressValid, nativeCurrency } from '@/utils'
 import {
   getNotificationEventLabel,
   getNotificationFiatCurrencyLabel,
@@ -53,7 +53,7 @@ const disableReasonMap = {
 
 const fieldLabel = (field, t) => {
   const mapped = fieldLabelMap[field]
-  return mapped ? t(mapped) : field.replace(/[._]/g, ' ')
+  return mapped ? t(mapped, { nativeCurrency }) : field.replace(/[._]/g, ' ')
 }
 
 const isRuleEnabled = (enabled) => enabled !== false && enabled !== 0 && enabled !== '0' && enabled !== 'false'

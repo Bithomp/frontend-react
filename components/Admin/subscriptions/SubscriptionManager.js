@@ -292,6 +292,13 @@ export default function SubscriptionManager({
     setCheckoutOpen(false)
   }
 
+  const onBackToPlans = () => {
+    resetPaymentFlow({ clearReceipt: true })
+    setBidData(null)
+    setCheckoutTouched(true)
+    setCheckoutOpen(true)
+  }
+
   const onPurchaseClick = async () => {
     resetPaymentFlow({ clearReceipt: true })
 
@@ -600,6 +607,11 @@ export default function SubscriptionManager({
                       {completedServiceName
                         ? t('subscriptions.service-activating', { ns: 'admin', service: completedServiceName })
                         : t('subscriptions.activating', { ns: 'admin' })}
+                    </p>
+                    <p className="center">
+                      <button className="button-action narrow" onClick={onBackToPlans} type="button">
+                        {t('subscriptions.back-to-plans', { ns: 'admin' })}
+                      </button>
                     </p>
 
                     {completedIsNotifications && (
