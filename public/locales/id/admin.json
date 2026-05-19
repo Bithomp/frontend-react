@@ -137,7 +137,7 @@
       "history": "Aktifkan riwayat saldo dan ekspor pajak.",
       "api": "Buat kunci API dan lihat penggunaan.",
       "watchlist": "Simpan daftar pantau alamat dan NFT pribadi.",
-      "avatars": "Atur avatar untuk alamat terverifikasi."
+      "alerts": "Atur alert untuk akun dan NFT."
     }
   },
   "form": {
@@ -292,6 +292,7 @@
     "alerts-next-step": "Buka Peringatan untuk membuat saluran dan aturan.",
     "transactions": "Transaksi",
     "last-payments": "Pembayaran terakhir",
+    "period": "Periode langganan",
     "pro": {
       "why-title": "Mengapa Bithomp Pro?",
       "intro": "Bithomp Pro membuka alat akun tambahan dan menghapus beberapa batasan.",

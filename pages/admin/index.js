@@ -306,7 +306,7 @@ export default function Admin({
                 <p>- {t('profile.guest.history', { ns: 'admin' })}</p>
                 <p>- {t('profile.guest.api', { ns: 'admin' })}</p>
                 <p>- {t('profile.guest.watchlist', { ns: 'admin' })}</p>
-                <p>- {t('profile.guest.avatars', { ns: 'admin' })}</p>
+                <p>- {t('profile.guest.alerts', { ns: 'admin' })}</p>
               </div>
               <br />
               <center>

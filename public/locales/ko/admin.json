@@ -137,7 +137,7 @@
       "history": "잔액 기록과 세금 내보내기를 활성화합니다.",
       "api": "API 키를 만들고 사용량을 확인합니다.",
       "watchlist": "비공개 주소 및 NFT 관심 목록을 관리합니다.",
-      "avatars": "확인된 주소의 아바타를 설정합니다."
+      "alerts": "계정과 NFT 알림을 설정합니다."
     }
   },
   "form": {
@@ -292,6 +292,7 @@
     "alerts-next-step": "채널과 규칙을 생성하려면 알림을 엽니다.",
     "transactions": "업무",
     "last-payments": "마지막 지불",
+    "period": "구독 기간",
     "pro": {
       "why-title": "왜 Bithomp Pro인가요?",
       "intro": "Bithomp Pro는 추가 계정 도구를 제공하고 여러 제한을 해제합니다.",

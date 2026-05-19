@@ -32,6 +32,26 @@ const packageExpireDate = (row, t) => {
   return t('common.unknown')
 }
 
+const packagePeriodLabel = (row, t) => {
+  if (row?.metadata?.forever) return t('common.never')
+  if (!row?.expiredAt || !row?.startedAt) return t('common.unknown')
+  if (row.expiredAt <= row.startedAt) return t('common.unknown')
+
+  const durationDays = Math.max(1, Math.round((row.expiredAt - row.startedAt) / 86400))
+  const periods = [
+    { key: 'w1', days: 7 },
+    { key: 'm1', days: 30 },
+    { key: 'm3', days: 91 },
+    { key: 'm6', days: 182 },
+    { key: 'y1', days: 365 }
+  ]
+  const closestPeriod = periods.reduce((closest, period) => (
+    Math.abs(period.days - durationDays) < Math.abs(closest.days - durationDays) ? period : closest
+  ), periods[0])
+
+  return t(`period.${closestPeriod.key}`, { ns: 'admin' })
+}
+
 const SubscriptionPackageSummary = ({ packages, status = 'active', t, i18n }) => {
   const [expandedPackages, setExpandedPackages] = useState({})
 
@@ -50,11 +70,7 @@ const SubscriptionPackageSummary = ({ packages, status = 'active', t, i18n }) =>
         const isUpcoming = !isExpired && row.startedAt && row.startedAt > Math.floor(Date.now() / 1000)
         const isExpanded = !!expandedPackages[key]
         const expires = packageExpireDate(row, t)
-        const durationText = row.expiredAt && row.startedAt
-          ? timeFromNow(row.expiredAt + 1, i18n, null, row.startedAt)
-          : row.metadata?.forever
-            ? t('common.never')
-            : t('common.unknown')
+        const durationText = packagePeriodLabel(row, t)
 
         return (
           <article
@@ -81,7 +97,7 @@ const SubscriptionPackageSummary = ({ packages, status = 'active', t, i18n }) =>
                       <dd>{timeFromNow(row.startedAt, i18n)}</dd>
                     </div>
                     <div>
-                      <dt>{t('subscriptions.period')}</dt>
+                      <dt>{t('subscriptions.period', { ns: 'admin' })}</dt>
                       <dd>{durationText}</dd>
                     </div>
                   </>

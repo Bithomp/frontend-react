@@ -137,7 +137,7 @@
       "history": "Enable balance history and tax exports.",
       "api": "Create API keys and view usage.",
       "watchlist": "Keep private address and NFT watchlists.",
-      "avatars": "Set avatars for verified addresses."
+      "alerts": "Configure alerts for accounts and NFTs."
     }
   },
   "form": {
@@ -292,6 +292,7 @@
     "alerts-next-step": "Open Alerts to create channels and rules.",
     "transactions": "Transactions",
     "last-payments": "Last payments",
+    "period": "Subscription period",
     "pro": {
       "why-title": "Why Bithomp Pro?",
       "intro": "Bithomp Pro unlocks extra account tools and removes several limits.",

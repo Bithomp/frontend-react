@@ -137,7 +137,7 @@
       "history": "Saldoverlauf und Steuerexporte aktivieren.",
       "api": "API-Schlüssel erstellen und Nutzung ansehen.",
       "watchlist": "Private Adress- und NFT-Beobachtungslisten führen.",
-      "avatars": "Avatare für bestätigte Adressen setzen."
+      "alerts": "Alerts für Konten und NFTs konfigurieren."
     }
   },
   "form": {
@@ -292,6 +292,7 @@
     "alerts-next-step": "Öffnen Sie Alerts, um Kanäle und Regeln zu erstellen.",
     "transactions": "Transaktionen",
     "last-payments": "Letzte Zahlungen",
+    "period": "Abonnementdauer",
     "pro": {
       "why-title": "Warum Bithomp Pro?",
       "intro": "Bithomp Pro schaltet zusätzliche Kontotools frei und hebt mehrere Beschränkungen auf.",

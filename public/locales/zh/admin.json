@@ -137,7 +137,7 @@
       "history": "启用余额历史和税务导出。",
       "api": "创建 API 密钥并查看使用情况。",
       "watchlist": "维护私密地址和 NFT 关注列表。",
-      "avatars": "为已验证地址设置头像。"
+      "alerts": "配置账户和 NFT 提醒。"
     }
   },
   "form": {
@@ -292,6 +292,7 @@
     "alerts-next-step": "打开提醒以创建频道和规则。",
     "transactions": "交易",
     "last-payments": "最近付款",
+    "period": "订阅周期",
     "pro": {
       "why-title": "为什么选择 Bithomp Pro？",
       "intro": "Bithomp Pro 可解锁更多账户工具并取消多项限制。",

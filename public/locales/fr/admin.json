@@ -137,7 +137,7 @@
       "history": "Activer l’historique des soldes et les exports fiscaux.",
       "api": "Créer des clés API et consulter l’utilisation.",
       "watchlist": "Garder des listes privées d’adresses et de NFT.",
-      "avatars": "Définir des avatars pour les adresses vérifiées."
+      "alerts": "Configurer des alertes pour les comptes et les NFT."
     }
   },
   "form": {
@@ -292,6 +292,7 @@
     "alerts-next-step": "Ouvrez Alertes pour créer des canaux et des règles.",
     "transactions": "Opérations",
     "last-payments": "Derniers paiements",
+    "period": "Durée de l’abonnement",
     "pro": {
       "why-title": "Pourquoi Bithomp Pro ?",
       "intro": "Bithomp Pro débloque des outils de compte supplémentaires et supprime plusieurs limites.",
