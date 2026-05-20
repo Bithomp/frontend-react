@@ -15,5 +15,6 @@
     }
   },
   "domain-legacy": "Domain (alte Verifizierung)",
+  "run-validator-guide": "Validator betreiben",
   "text0": "Die Liste der Validatoren <1>{{url}}</1> hat die Sequenz {{sequence}} und läuft am {{expiration}} ab.<br/>Sie beinhaltet {{validatorCount}} nachfolgend aufgelistete Validatoren."
 }

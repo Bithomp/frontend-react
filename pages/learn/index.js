@@ -52,7 +52,8 @@ const buildLearnContent = (t) => {
     const itemsBefore = [{ title: t('items.xrpl-article'), slug: 'xrpl-article' }]
     const itemsAfter = [
       { title: t('items.ripple-usd'), slug: 'ripple-usd' },
-      { title: t('items.amm'), slug: 'amm' }
+      { title: t('items.amm'), slug: 'amm' },
+      { title: t('items.run-a-validator'), slug: 'run-a-validator' }
     ]
     content[0].items = [...itemsBefore, ...content[0].items, ...itemsAfter]
   }

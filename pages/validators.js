@@ -657,8 +657,8 @@ export default function Validators({ amendment, initialData, initialProcessed, i
       <div className="content-text">
         <h1 className="center">{t('menu.network.validators')}</h1>
         <NetworkPagesTab tab="validators" />
-        <div className="flex-container center">
-          <div className="grey-box">
+        <section className="validators-intro-card">
+          <div className="validators-intro-text">
             {validators && (
               <span suppressHydrationWarning>
                 <Trans i18nKey="text0" ns="validators">
@@ -669,7 +669,6 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                 </Trans>
               </span>
             )}
-            <br />
             {validators?.error && (
               <b>
                 <br />
@@ -677,7 +676,12 @@ export default function Validators({ amendment, initialData, initialProcessed, i
               </b>
             )}
           </div>
-        </div>
+          {!xahauNetwork && (
+            <Link href="/learn/run-a-validator" className="validators-guide-link">
+              {t('run-validator-guide', { ns: 'validators' })}
+            </Link>
+          )}
+        </section>
 
         <div className="flex-container flex-center">
           {developerMode && (
@@ -1242,6 +1246,68 @@ export default function Validators({ amendment, initialData, initialProcessed, i
           </table>
         )}
       </div>
+      <style jsx>{`
+        .validators-intro-card {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 18px;
+          max-width: 1120px;
+          margin: 18px auto 18px;
+          padding: 14px 16px;
+          border: 1px solid var(--button-additional);
+          border-radius: 8px;
+          background: color-mix(in srgb, var(--background-main) 94%, var(--accent-link) 6%);
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .validators-intro-text {
+          min-width: 0;
+          flex: 1;
+          text-align: left;
+          font-size: 16px;
+          line-height: 1.45;
+        }
+
+        .validators-guide-link {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 38px;
+          padding: 8px 14px;
+          border: 1px solid var(--accent-link);
+          border-radius: 7px;
+          background: color-mix(in srgb, var(--accent-link) 9%, transparent);
+          color: var(--accent-link);
+          font-size: 14px;
+          font-weight: 700;
+          line-height: 1.2;
+          text-decoration: none;
+          white-space: nowrap;
+          transition:
+            background 0.16s ease,
+            color 0.16s ease,
+            border-color 0.16s ease;
+        }
+
+        .validators-guide-link:hover {
+          background: color-mix(in srgb, var(--accent-link) 16%, transparent);
+          color: var(--accent-link);
+          text-decoration: none;
+        }
+
+        @media (max-width: 760px) {
+          .validators-intro-card {
+            align-items: stretch;
+            flex-direction: column;
+            margin-inline: 0;
+          }
+
+          .validators-guide-link {
+            width: 100%;
+          }
+        }
+      `}</style>
     </>
   )
 }

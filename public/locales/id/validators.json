@@ -15,5 +15,6 @@
     }
   },
   "domain-legacy": "Domain (verifikasi lampau)",
+  "run-validator-guide": "Cara menjalankan validator",
   "text0": "Daftar validator <1>{{url}}</1> memiliki urutan {{sequence}} dan berakhir pada {{expiration}}.<br/>Daftar ini mencakup {{validatorCount}} validator yang tercantum di bawah ini."
 }

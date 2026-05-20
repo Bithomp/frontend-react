@@ -15,5 +15,6 @@
     }
   },
   "domain-legacy": "域名（旧验证）",
+  "run-validator-guide": "如何运行验证者",
   "text0": "验证器列表 <1>{{url}}</1> 的序列为 {{sequence}}，过期时间为 {{expiration}}。<br/>它包括下面列出的 {{validatorCount}} 验证器。"
 }

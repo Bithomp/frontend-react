@@ -15,5 +15,6 @@
     }
   },
   "domain-legacy": "Domaine (ancienne vérification)",
+  "run-validator-guide": "Lancer un validateur",
   "text0": "La liste des validateurs <1>{{url}}</1> a une séquence {{sequence}} et une expiration le {{expiration}}.<br/>Elle comprend {{validatorCount}} validateurs qui sont listés ci-dessous."
 }
