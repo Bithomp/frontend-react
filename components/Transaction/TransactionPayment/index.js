@@ -17,6 +17,22 @@ import PaymentInstructions from './PaymentInstructions'
 import { LinkTx } from '../../../utils/links'
 import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
 
+const DESTINATION_TAG_PROBLEM_AMOUNT_LIMIT = 100000
+const RLUSD_CURRENCY_CODE = '524C555344000000000000000000000000000000'
+
+const isRlusdAmount = (amount) =>
+  amount?.issuer && amount.currency === RLUSD_CURRENCY_CODE
+
+const shouldShowDestinationTagProblem = (deliveredAmount) => {
+  if (!deliveredAmount) return true
+
+  if (isNativeCurrency(deliveredAmount) || isRlusdAmount(deliveredAmount)) {
+    return Number(deliveredAmount.value) < DESTINATION_TAG_PROBLEM_AMOUNT_LIMIT
+  }
+
+  return !!deliveredAmount.issuer
+}
+
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
 
@@ -106,9 +122,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
       )}
       {isSuccessful &&
         !isConvertion &&
-        (!outcome?.deliveredAmount ||
-          outcome?.deliveredAmount.issuer ||
-          (isNativeCurrency(outcome?.deliveredAmount) && Number(outcome?.deliveredAmount.value) < 100000)) && (
+        shouldShowDestinationTagProblem(outcome?.deliveredAmount) && (
           <DestinationTagProblemSolving specification={specification} pageFiatRate={pageFiatRate} />
         )}
       <tr>
