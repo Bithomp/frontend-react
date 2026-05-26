@@ -1,5 +1,68 @@
 {
   "seo-header": "关于我们",
-  "seo-description": "我们的故事、我们的使命、我们提供的服务和我们的计划。",
-  "header": "欢迎来到 Bithomp"
+  "seo-description": "我们的故事、使命、服务、计划，以及支持 Bithomp 的方式。",
+  "header": "欢迎来到 Bithomp",
+  "intro": {
+    "description": "Bithomp 帮助用户探索 XRPL 和 XAHAU 账户，包括余额、交易、持有的可替代代币和 NFT、挂单、托管以及以下网络中的其他账本功能：",
+    "search-engine": "你可以把它看作大型去中心化数据库的搜索引擎，同时也是实时网络统计数据来源。"
+  },
+  "sections": {
+    "story": "我们的故事",
+    "mission": "我们的使命",
+    "offer": "我们提供的服务",
+    "plans": "我们的计划",
+    "press": "媒体报道",
+    "social": "在社交媒体关注我们"
+  },
+  "story": {
+    "text": "Bithomp 创建于 2015 年。当时创始人发现缺少易用的 XRPL 浏览器，并希望通过构建这样的工具为生态做出贡献。社区从一开始就给予积极反馈，帮助 Bithomp 快速成长。从一个兴趣项目到全职投入，Bithomp 一直由社区支持和对易用工具的坚持推动。"
+  },
+  "mission": {
+    "text": "我们的使命是让更广泛的用户能够轻松访问 XRPL 生态系统。"
+  },
+  "offerings": {
+    "explorers": {
+      "title": "XRPL 和 XAHAU 浏览器",
+      "text": "通往庞大去中心化数据库的入口。"
+    },
+    "api": {
+      "title": "API 服务",
+      "text": "快速可靠地访问 XRPL 账户、NFT 等相关信息、历史数据和统计数据。"
+    },
+    "nft": {
+      "title": "NFT 浏览器",
+      "text": "用于搜索 XRPL 和 XAHAU 网络上 NFT 与 NFT 报价的强大搜索引擎。",
+      "why": "它为什么有用？",
+      "bullets": [
+        "我们显示所有类型的 NFT。",
+        "我们展示 NFT 销售历史。",
+        "我们验证买卖报价并显示历史报价。",
+        "我们高效缓存视频文件和图片，以便近乎即时查看。",
+        "我们提供 NFT 铸造或销售所在 marketplace 的信息。",
+        "用户可以直接在我们的网站上出售、购买、销毁或转移 NFT。",
+        "无论 NFT 由哪个 marketplace 发行，包括用户自己发行的 NFT，我们都会显示。",
+        "我们在 CSV 导出中包含 NFT 元数据和属性。"
+      ]
+    },
+    "statistics": {
+      "title": "NFT 统计",
+      "text": "XRPL 和 XAHAU NFT 的最新数据，包括地板价、销售量、分布、铸造者、成交量图表、铸造图表等。"
+    },
+    "faucets": {
+      "title": "测试网络浏览器和 Faucet",
+      "text": "供开发者在不使用真实资金的情况下探索、测试和排查应用问题的工具。"
+    }
+  },
+  "plans": {
+    "text": "Bithomp 持续发展，不断添加新功能并改进现有工具，让用户使用起来更加方便。我们的计划和目标具有长期性和雄心。我们致力于让所有用户都能访问 Bithomp。我们感谢与 XRPL 社区建立的信任和合作，也期待与客户一起继续改进平台。",
+    "closing": "请继续关注我们，未来还有更多计划。"
+  },
+  "press": {
+    "page": "第 {{page}} 页"
+  },
+  "product-hunt": {
+    "header": "在 Product Hunt 上支持我们",
+    "text": "Bithomp Explorer 已在 Product Hunt 上展示。如果 Bithomp 帮助你探索 XRPL 和 XAHAU，欢迎在那里支持我们。",
+    "badge-alt": "Bithomp Explorer - XRP 浏览器 | Product Hunt"
+  }
 }

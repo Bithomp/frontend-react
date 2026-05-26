@@ -1,5 +1,68 @@
 {
   "seo-header": "About us",
-  "seo-description": "Our story, our mission, what we offer and our plans.",
-  "header": "Welcome to Bithomp"
+  "seo-description": "Our story, our mission, what we offer, our plans, and where to support Bithomp.",
+  "header": "Welcome to Bithomp",
+  "intro": {
+    "description": "Bithomp helps users explore XRPL and XAHAU accounts, including balances, transactions, owned assets such as fungible tokens and NFTs, orders, escrows, and other ledger features across the following networks:",
+    "search-engine": "Think of it as a search engine for large decentralized databases, plus a source of live network statistics."
+  },
+  "sections": {
+    "story": "Our story",
+    "mission": "Our mission",
+    "offer": "What we offer",
+    "plans": "Our plans",
+    "press": "Bithomp in press",
+    "social": "Follow us on social media"
+  },
+  "story": {
+    "text": "Bithomp was created in 2015 when its founder noticed a lack of user-friendly XRPL explorers and wanted to contribute to the ecosystem by building one. The community response was positive from the start, helping Bithomp grow quickly. From a hobby project to a full-time endeavor, Bithomp has been driven by community support and a commitment to user-friendly tools."
+  },
+  "mission": {
+    "text": "Our mission is to make the XRPL ecosystem accessible to a broader audience."
+  },
+  "offerings": {
+    "explorers": {
+      "title": "XRPL and XAHAU Explorers",
+      "text": "your gateway to extensive decentralized databases."
+    },
+    "api": {
+      "title": "API Service",
+      "text": "fast and reliable access to information, historical data, and statistics on XRPL accounts, NFTs, and more."
+    },
+    "nft": {
+      "title": "NFT Explorer",
+      "text": "a powerful search engine for NFTs and NFT offers on XRPL and XAHAU networks.",
+      "why": "Why is it useful?",
+      "bullets": [
+        "We display all types of NFTs.",
+        "We present the history of NFT sales.",
+        "We validate buy and sell offers and display historical offers.",
+        "We cache video files and images efficiently for near-instant viewing.",
+        "We provide information about marketplaces where NFTs were minted or sold.",
+        "We let users sell, buy, burn, or transfer NFTs directly from our website.",
+        "We show NFTs regardless of the marketplace where they were issued, including NFTs issued by users themselves.",
+        "We include NFT metadata and attributes in CSV exports."
+      ]
+    },
+    "statistics": {
+      "title": "NFT Statistics",
+      "text": "up-to-date data on XRPL and XAHAU NFTs, including floor prices, sales volumes, distribution, minters, volume charts, mint charts, and more."
+    },
+    "faucets": {
+      "title": "Explorers and faucets for test networks",
+      "text": "developer tools for exploring, testing, and troubleshooting applications without using real money."
+    }
+  },
+  "plans": {
+    "text": "Bithomp keeps evolving by adding new features and improving existing tools to make them more convenient for users. Our plans and goals are ambitious and long-term. We are committed to keeping Bithomp accessible to everyone. We are grateful for the trust and partnership we have built with the XRPL community, and we look forward to improving the platform further with our customers.",
+    "closing": "Stay with us; we have many more initiatives ahead."
+  },
+  "press": {
+    "page": "page {{page}}"
+  },
+  "product-hunt": {
+    "header": "Support us on Product Hunt",
+    "text": "Bithomp Explorer is featured on Product Hunt. If Bithomp helps you explore XRPL and XAHAU, we would appreciate your support there.",
+    "badge-alt": "Bithomp Explorer - XRP explorer | Product Hunt"
+  }
 }

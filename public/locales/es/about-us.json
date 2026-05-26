@@ -1,5 +1,68 @@
 {
   "seo-header": "Sobre nosotros",
-  "seo-description": "Nuestra historia, nuestra misión, lo que ofrecemos y nuestros planes.",
-  "header": "Bienvenido a Bithomp"
+  "seo-description": "Nuestra historia, nuestra misión, lo que ofrecemos, nuestros planes y dónde apoyar a Bithomp.",
+  "header": "Bienvenido a Bithomp",
+  "intro": {
+    "description": "Bithomp ayuda a los usuarios a explorar cuentas de XRPL y XAHAU, incluidos saldos, transacciones, activos propios como tokens fungibles y NFT, órdenes, escrows y otras funciones del ledger en las siguientes redes:",
+    "search-engine": "Piensa en Bithomp como un motor de búsqueda para grandes bases de datos descentralizadas, además de una fuente de estadísticas de red en vivo."
+  },
+  "sections": {
+    "story": "Nuestra historia",
+    "mission": "Nuestra misión",
+    "offer": "Lo que ofrecemos",
+    "plans": "Nuestros planes",
+    "press": "Bithomp en la prensa",
+    "social": "Síguenos en redes sociales"
+  },
+  "story": {
+    "text": "Bithomp se creó en 2015, cuando su fundador notó la falta de exploradores XRPL fáciles de usar y quiso contribuir al ecosistema creando uno. La respuesta de la comunidad fue positiva desde el principio, lo que ayudó a Bithomp a crecer rápidamente. Desde un proyecto personal hasta una dedicación a tiempo completo, Bithomp se ha mantenido impulsado por el apoyo de la comunidad y el compromiso con herramientas fáciles de usar."
+  },
+  "mission": {
+    "text": "Nuestra misión es hacer que el ecosistema XRPL sea accesible para un público más amplio."
+  },
+  "offerings": {
+    "explorers": {
+      "title": "Exploradores XRPL y XAHAU",
+      "text": "tu puerta de entrada a extensas bases de datos descentralizadas."
+    },
+    "api": {
+      "title": "Servicio API",
+      "text": "acceso rápido y fiable a información, datos históricos y estadísticas de cuentas XRPL, NFT y más."
+    },
+    "nft": {
+      "title": "Explorador NFT",
+      "text": "un potente motor de búsqueda para NFT y ofertas NFT en las redes XRPL y XAHAU.",
+      "why": "¿Por qué es útil?",
+      "bullets": [
+        "Mostramos todos los tipos de NFT.",
+        "Presentamos el historial de ventas de NFT.",
+        "Validamos ofertas de compra y venta y mostramos ofertas históricas.",
+        "Almacenamos en caché videos e imágenes de forma eficiente para una visualización casi instantánea.",
+        "Proporcionamos información sobre los marketplaces donde se acuñaron o vendieron los NFT.",
+        "Permitimos vender, comprar, quemar o transferir NFT directamente desde nuestro sitio web.",
+        "Mostramos NFT sin importar el marketplace donde se emitieron, incluidos los emitidos por los propios usuarios.",
+        "Incluimos metadatos y atributos de NFT en las exportaciones CSV."
+      ]
+    },
+    "statistics": {
+      "title": "Estadísticas NFT",
+      "text": "datos actualizados sobre NFT de XRPL y XAHAU, incluidos precios mínimos, volúmenes de venta, distribución, minters, gráficos de volumen, gráficos de minting y más."
+    },
+    "faucets": {
+      "title": "Exploradores y faucets para redes de prueba",
+      "text": "herramientas para desarrolladores que permiten explorar, probar y solucionar problemas en aplicaciones sin usar dinero real."
+    }
+  },
+  "plans": {
+    "text": "Bithomp sigue evolucionando con nuevas funciones y mejoras en las herramientas existentes para que sean más cómodas para los usuarios. Nuestros planes y objetivos son ambiciosos y de largo plazo. Estamos comprometidos con mantener Bithomp accesible para todos. Agradecemos la confianza y la colaboración que hemos construido con la comunidad XRPL, y esperamos seguir mejorando la plataforma junto con nuestros clientes.",
+    "closing": "Quédate con nosotros; tenemos muchas más iniciativas por delante."
+  },
+  "press": {
+    "page": "página {{page}}"
+  },
+  "product-hunt": {
+    "header": "Apóyanos en Product Hunt",
+    "text": "Bithomp Explorer aparece en Product Hunt. Si Bithomp te ayuda a explorar XRPL y XAHAU, agradeceríamos tu apoyo allí.",
+    "badge-alt": "Bithomp Explorer - explorador de XRP | Product Hunt"
+  }
 }

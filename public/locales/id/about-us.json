@@ -1,5 +1,68 @@
 {
   "seo-header": "Tentang kami",
-  "seo-description": "Kisah kami, misi kami, yang kami tawarkan, dan rencana kami.",
-  "header": "Selamat datang di Bithomp"
+  "seo-description": "Kisah kami, misi kami, yang kami tawarkan, rencana kami, dan tempat mendukung Bithomp.",
+  "header": "Selamat datang di Bithomp",
+  "intro": {
+    "description": "Bithomp membantu pengguna menjelajahi akun XRPL dan XAHAU, termasuk saldo, transaksi, aset yang dimiliki seperti token fungible dan NFT, order, escrow, serta fitur ledger lainnya di jaringan berikut:",
+    "search-engine": "Anggap saja sebagai mesin pencari untuk basis data terdesentralisasi yang besar, sekaligus sumber statistik jaringan secara langsung."
+  },
+  "sections": {
+    "story": "Kisah kami",
+    "mission": "Misi kami",
+    "offer": "Yang kami tawarkan",
+    "plans": "Rencana kami",
+    "press": "Bithomp di media",
+    "social": "Ikuti kami di media sosial"
+  },
+  "story": {
+    "text": "Bithomp dibuat pada tahun 2015 ketika pendirinya melihat kurangnya explorer XRPL yang ramah pengguna dan ingin berkontribusi pada ekosistem dengan membangunnya. Respons komunitas positif sejak awal, membantu Bithomp tumbuh dengan cepat. Dari proyek hobi hingga menjadi pekerjaan penuh waktu, Bithomp terus didorong oleh dukungan komunitas dan komitmen pada alat yang mudah digunakan."
+  },
+  "mission": {
+    "text": "Misi kami adalah membuat ekosistem XRPL dapat diakses oleh audiens yang lebih luas."
+  },
+  "offerings": {
+    "explorers": {
+      "title": "Explorer XRPL dan XAHAU",
+      "text": "gerbang Anda menuju basis data terdesentralisasi yang luas."
+    },
+    "api": {
+      "title": "Layanan API",
+      "text": "akses cepat dan andal ke informasi, data historis, dan statistik tentang akun XRPL, NFT, dan lainnya."
+    },
+    "nft": {
+      "title": "Explorer NFT",
+      "text": "mesin pencari yang kuat untuk NFT dan penawaran NFT di jaringan XRPL dan XAHAU.",
+      "why": "Mengapa ini berguna?",
+      "bullets": [
+        "Kami menampilkan semua jenis NFT.",
+        "Kami menyajikan riwayat penjualan NFT.",
+        "Kami memvalidasi penawaran beli dan jual serta menampilkan penawaran historis.",
+        "Kami menyimpan cache file video dan gambar secara efisien agar dapat dilihat hampir seketika.",
+        "Kami menyediakan informasi tentang marketplace tempat NFT dicetak atau dijual.",
+        "Kami memungkinkan pengguna menjual, membeli, membakar, atau mentransfer NFT langsung dari situs kami.",
+        "Kami menampilkan NFT terlepas dari marketplace tempat NFT diterbitkan, termasuk NFT yang diterbitkan oleh pengguna sendiri.",
+        "Kami menyertakan metadata dan atribut NFT dalam ekspor CSV."
+      ]
+    },
+    "statistics": {
+      "title": "Statistik NFT",
+      "text": "data terbaru tentang NFT XRPL dan XAHAU, termasuk harga floor, volume penjualan, distribusi, minter, grafik volume, grafik mint, dan lainnya."
+    },
+    "faucets": {
+      "title": "Explorer dan faucet untuk jaringan uji",
+      "text": "alat pengembang untuk menjelajah, menguji, dan memecahkan masalah aplikasi tanpa menggunakan uang sungguhan."
+    }
+  },
+  "plans": {
+    "text": "Bithomp terus berkembang dengan menambahkan fitur baru dan meningkatkan alat yang sudah ada agar lebih nyaman bagi pengguna. Rencana dan tujuan kami ambisius dan berjangka panjang. Kami berkomitmen menjaga Bithomp tetap dapat diakses oleh semua orang. Kami berterima kasih atas kepercayaan dan kerja sama yang telah kami bangun dengan komunitas XRPL, dan kami berharap dapat terus meningkatkan platform bersama pelanggan kami.",
+    "closing": "Tetap bersama kami; masih banyak inisiatif lain di depan."
+  },
+  "press": {
+    "page": "halaman {{page}}"
+  },
+  "product-hunt": {
+    "header": "Dukung kami di Product Hunt",
+    "text": "Bithomp Explorer tampil di Product Hunt. Jika Bithomp membantu Anda menjelajahi XRPL dan XAHAU, kami sangat menghargai dukungan Anda di sana.",
+    "badge-alt": "Bithomp Explorer - penjelajah XRP | Product Hunt"
+  }
 }

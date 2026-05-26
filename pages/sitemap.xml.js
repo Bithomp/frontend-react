@@ -146,7 +146,6 @@ function generateSiteMap(posts) {
     'disclaimer',
     'xrp-xah-taxes',
     'object',
-    'about-us',
     'whales',
     'whales/receivers',
     'whales/senders',

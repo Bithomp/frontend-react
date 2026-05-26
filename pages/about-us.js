@@ -18,17 +18,15 @@ export async function getServerSideProps(context) {
 
 export default function AboutUs() {
   const { t, i18n } = useTranslation()
+  const tt = (key, options = {}) => t(key, { ns: 'about-us', ...options })
+  const nftBullets = tt('offerings.nft.bullets', { returnObjects: true })
 
   return (
     <>
-      <SEO title={t('seo-header', { ns: 'about-us' })} description={t('seo-description', { ns: 'about-us' })} />
+      <SEO title={tt('seo-header')} description={tt('seo-description')} />
       <div className="content-text content-center">
-        <h1 className="center">{t('header', { ns: 'about-us' })}</h1>
-        <p>
-          Bithomp serves as a tool for users to delve into XRPL and XAHAU accounts, examining balances, transactions,
-          owned assets including fungible tokens and NFTs, as well as orders, escrows, and other features across the
-          following networks:
-        </p>
+        <h1 className="center">{tt('header')}</h1>
+        <p>{tt('intro.description')}</p>
         <ul>
           <li>
             <a href={'https://bithomp.com' + localePath('/', i18n.language)} target="_blank" rel="noreferrer">
@@ -67,88 +65,82 @@ export default function AboutUs() {
             .
           </li>
         </ul>
-        <p>
-          Imagine it as a search engine for the extensive decentralised databases, as well as a source of live
-          statistics.
-        </p>
-        <h2>Our story</h2>
-        <p>
-          Bithomp was created in 2015 when its founder noticed a lack of user-friendly XRPL explorers and wanted to
-          contribute to the ecosystem by creating such a tool. The community’s response was positive from the start,
-          allowing Bithomp to grow quickly. From its origins as a hobby project to its transition into a full-time
-          endeavour, Bithomp has been driven by community support and a commitment to user-friendly tools.
-        </p>
-        <h2>Our mission</h2>
-        <p>Our mission is to make XRPL ecosystem accessible to a broader audience.</p>
-        <h2>What we offer</h2>
+        <p>{tt('intro.search-engine')}</p>
+        <h2>{tt('sections.story')}</h2>
+        <p>{tt('story.text')}</p>
+        <h2>{tt('sections.mission')}</h2>
+        <p>{tt('mission.text')}</p>
+        <h2>{tt('sections.offer')}</h2>
         <ul>
           <li>
-            <b>XRPL and XAHAU Explorers</b> - your gateway to the extensive decentralised databases.
+            <b>{tt('offerings.explorers.title')}</b> - {tt('offerings.explorers.text')}
           </li>
           <br />
           <li>
-            <b>API Service</b> - your access to fast and reliable information, historical data and statistics on XRPL
-            accounts, NFTs, and more.
+            <b>{tt('offerings.api.title')}</b> - {tt('offerings.api.text')}
           </li>
           <br />
           <li>
-            <b>NFT Explorer</b> - the best search engine for NFTs and NFT offers on XRPL and XAHAU networks.
-            <p>Why is it the best?</p>
+            <b>{tt('offerings.nft.title')}</b> - {tt('offerings.nft.text')}
+            <p>{tt('offerings.nft.why')}</p>
             <ul>
-              <li>We display all types of NFTs.</li>
-              <li>We present the history of all NFT sales.</li>
-              <li>We validate buy and sell offers and display historical offers.</li>
-              <li>We efficiently cache video files and images for nearly instantaneous viewing.</li>
-              <li>We provide information on the marketplaces where NFTs were minted or sold.</li>
-              <li>
-                We provide the opportunity of selling, buying, burning, or transferring NFTs directly from our website.
-              </li>
-              <li>
-                We showcase all NFTs, regardless of the marketplace where they were issued, including those issued by
-                the users themselves.
-              </li>
-              <li>We show NFT metadata including all NFT attributes in our CSV exports.</li>
+              {Array.isArray(nftBullets) && nftBullets.map((item) => <li key={item}>{item}</li>)}
             </ul>
           </li>
           <br />
           <li>
-            <b>NFT Statistics</b> - your access to up-to-date data on all XRPL and XAHAU NFTs. Explore floor prices,
-            sales volumes, NFT distribution info, minters, create volume sales charts, mint charts, and much more.
+            <b>{tt('offerings.statistics.title')}</b> - {tt('offerings.statistics.text')}
           </li>
           <br />
           <li>
-            <b>
-              Explorers and Faucets for{' '}
-              <a href={'https://test.bithomp.com' + localePath('/faucet', i18n.language)} target="_blank" rel="noreferrer">
-                XRPL Testnet
-              </a>
-              ,{' '}
-              <a href={'https://dev.bithomp.com' + localePath('/faucet', i18n.language)} target="_blank" rel="noreferrer">
-                XRPL Devnet
-              </a>
-              ,{' '}
-              <a href={'https://alphanet.bithomp.com' + localePath('/faucet', i18n.language)} target="_blank" rel="noreferrer">
-                XRPL AlphaNet
-              </a>
-              , and{' '}
-              <a href={'https://test.xahauexplorer.com' + localePath('/faucet', i18n.language)} target="_blank" rel="noreferrer">
-                XAHAU Testnet
-              </a>
-            </b>{' '}
-            - convenient tool for developers to efficiently explore, test, and troubleshoot their applications without
-            using real money.
+            <b>{tt('offerings.faucets.title')}</b> - {tt('offerings.faucets.text')}
+            <ul>
+              <li>
+                <a
+                  href={'https://test.bithomp.com' + localePath('/faucet', i18n.language)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  XRPL Testnet
+                </a>
+              </li>
+              <li>
+                <a
+                  href={'https://dev.bithomp.com' + localePath('/faucet', i18n.language)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  XRPL Devnet
+                </a>
+              </li>
+              <li>
+                <a
+                  href={'https://alphanet.bithomp.com' + localePath('/faucet', i18n.language)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  XRPL AlphaNet
+                </a>
+              </li>
+              <li>
+                <a
+                  href={'https://test.xahauexplorer.com' + localePath('/faucet', i18n.language)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  XAHAU Testnet
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
-        <h2>Our plans</h2>
+        <h2>{tt('sections.plans')}</h2>
         <p>
-          Bithomp is constantly evolving, adding new features and improving existing options to make them increasingly
-          convenient for our users. Our plans and goals are ambitious and far-reaching. We are committed to ensuring
-          that Bithomp remains accessible to all users. We're grateful for the trust and partnership we've built with
-          the XRPL community, and we look forward to enhancing our platform further in collaboration with our customers.
+          {tt('plans.text')}
           <br />
-          Stay with us, as we have many more initiatives in store.
+          {tt('plans.closing')}
         </p>
-        <h2>Bithomp in press</h2>
+        <h2>{tt('sections.press')}</h2>
         <p>
           <b>Write.as</b> - March 23, 2020
           <br />
@@ -173,9 +165,25 @@ export default function AboutUs() {
           >
             Humans of XRPL
           </a>{' '}
-          (page 28)
+          ({tt('press.page', { page: 28 })})
         </p>
-        <h2>Follow us on Social Media</h2>
+        <h2>{tt('product-hunt.header')}</h2>
+        <p>{tt('product-hunt.text')}</p>
+        <p>
+          <a
+            href="https://www.producthunt.com/products/bithomp-explorer?utm_source=badge-follow&utm_medium=badge&utm_source=badge-bithomp-explorer"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              alt={tt('product-hunt.badge-alt')}
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=445031&theme=light"
+            />
+          </a>
+        </p>
+        <h2>{tt('sections.social')}</h2>
         <SocialIcons />
       </div>
     </>
