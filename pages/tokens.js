@@ -32,6 +32,8 @@ const mergeNativeTokenOnTop = (tokens, nativeToken) => {
   return nativeToken ? [nativeToken, ...filtered] : filtered
 }
 
+const SHORT_NUMBER_TOOLTIP_THRESHOLD = 9999
+
 const getOrderList = (t) => [
   { value: 'rating', label: t('order.ratingHighToLow') },
   { value: 'trustlinesHigh', label: t('order.trustlinesHighToLow') },
@@ -556,6 +558,20 @@ export default function Tokens({
     )
   }
 
+  const renderShortNumberWithTooltip = (value, className = '') => {
+    const numericValue = Number(value || 0)
+    const displayValue = shortNiceNumber(numericValue, 0, 1) || 0
+    const shouldShowTooltip = Math.abs(numericValue) > SHORT_NUMBER_TOOLTIP_THRESHOLD
+    const classNames = [shouldShowTooltip ? 'tooltip' : '', className].filter(Boolean).join(' ')
+
+    return (
+      <span className={classNames || undefined}>
+        {displayValue}
+        {shouldShowTooltip && <span className="tooltiptext no-brake">{fullNiceNumber(numericValue) || 0}</span>}
+      </span>
+    )
+  }
+
   const volumeToFiat = ({ token, mobile, type }) => {
     const { statistics, currency } = token
     if (!fiatRate) return null
@@ -799,9 +815,15 @@ export default function Tokens({
                     <>
                       {data.map((token, i) => {
                         const hasIssuer = !!token?.issuer
+                        const isNativeToken = !hasIssuer && token?.currency === nativeCurrency
                         const tokenPageUrl = hasIssuer
                           ? `/token/${token.issuer}/${token.currency}`
                           : `/token/${token.currency}`
+                        const ammsUrl = isNativeToken
+                          ? '/amms'
+                          : hasIssuer
+                            ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
+                            : `/amms?currency=${token.currency}`
                         return (
                           <tr key={i} onClick={() => router.push(tokenPageUrl)}>
                             <td className="center">{i + 1}</td>
@@ -822,60 +844,29 @@ export default function Tokens({
                             </td>
                             <td className="right">{volumeToFiat({ token })}</td>
                             <td className="right">
-                              <span className="tooltip">
-                                <span className="green">
-                                  {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
-                                </span>{' '}
-                                /{' '}
-                                <span className="red">
-                                  {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
-                                </span>
+                              <span>
+                                {renderShortNumberWithTooltip(token.statistics?.uniqueBuyers, 'green')} /{' '}
+                                {renderShortNumberWithTooltip(token.statistics?.uniqueSellers, 'red')}
                                 <br />
-                                {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
-                                <span className="tooltiptext no-brake">
-                                  {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                </span>
+                                {renderShortNumberWithTooltip(token.statistics?.uniqueDexAccounts)}
                               </span>
                             </td>
                             <td className="right">
-                              <span className="tooltip">
-                                {shortNiceNumber(token.holders, 0, 1)}
-                                <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
-                              </span>
+                              {renderShortNumberWithTooltip(token.holders)}
                               <br />
-                              <span className="tooltip green">
-                                {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
-                                <span className="tooltiptext no-brake">
-                                  {fullNiceNumber(token.statistics?.activeHolders) || 0}
-                                </span>
-                              </span>
+                              {renderShortNumberWithTooltip(token.statistics?.activeHolders, 'green')}
                             </td>
                             {!xahauNetwork && (
                               <td className="center">
-                                {hasIssuer ? (
-                                  <a
-                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                    className="tooltip"
-                                  >
-                                    {token.statistics?.ammPools || 0}
-                                    <span className="tooltiptext no-brake">{tt('actions.viewAmms')}</span>
-                                  </a>
-                                ) : (
-                                  token.statistics?.ammPools || 0
-                                )}
+                                <Link href={ammsUrl} onClick={(event) => event.stopPropagation()}>
+                                  {renderShortNumberWithTooltip(token.statistics?.ammPools)}
+                                </Link>
                                 <br />
-                                <span className="tooltip green">
-                                  {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
-                                </span>
+                                {renderShortNumberWithTooltip(token.statistics?.activeAmmPools, 'green')}
                               </td>
                             )}
                             <td className="right">
-                              <span className="tooltip">
-                                {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
-                                <span className="tooltiptext no-brake">
-                                  {fullNiceNumber(token.statistics?.dexes) || 0}
-                                </span>
-                              </span>
+                              {renderShortNumberWithTooltip(token.statistics?.dexes)}
                             </td>
                             <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
                             <td className="center">

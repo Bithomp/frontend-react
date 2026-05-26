@@ -1061,6 +1061,19 @@ export default function TokenPage({
       {fullNiceNumber(token.holders)}
     </Link>
   )
+  const ammPoolsLink = (
+    <Link
+      href={
+        isNativeToken
+          ? '/amms'
+          : token?.issuer
+            ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
+            : `/amms?currency=${token.currency}`
+      }
+    >
+      {fullNiceNumber(statistics?.ammPools || 0)}
+    </Link>
+  )
 
   const tokenInfoItems = [
     {
@@ -1214,17 +1227,7 @@ export default function TokenPage({
         {
           key: 'ammPools',
           label: tt('fields.ammPools'),
-          value: (
-            <Link
-              href={
-                token?.issuer
-                  ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
-                  : `/amms?currency=${token.currency}`
-              }
-            >
-              {statistics?.ammPools || 0}
-            </Link>
-          ),
+          value: ammPoolsLink,
           show: statistics && !xahauNetwork && !isMptToken
         },
         { key: 'escrow', label: tt('fields.escrow'), value: escrowStatus }
