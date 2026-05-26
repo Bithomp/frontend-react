@@ -139,7 +139,7 @@ export async function getServerSideProps({ query, res }) {
   }
 
   res.setHeader('Content-Type', 'image/png')
-  res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800')
+  res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400')
   res.end(png)
 
   return { props: {} }
