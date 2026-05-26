@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer'
+import { ledgerName } from '../../utils'
 
 const escapeSvg = (value) =>
   String(value || '')
@@ -72,6 +73,7 @@ export async function getServerSideProps({ query, res }) {
   const style = txStyle(type)
   const statusText = status === 'failed' ? 'Failed transaction' : status === 'pending' ? 'Pending transaction' : 'Validated transaction'
   const statusColor = status === 'failed' ? '#ff9f43' : status === 'pending' ? '#b0bec5' : '#66e3bb'
+  const previewLabel = escapeSvg(`${ledgerName} transaction preview`)
 
   const svg = square
     ? `
@@ -91,7 +93,7 @@ export async function getServerSideProps({ query, res }) {
       <text x="65" y="280" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="6" fill="${style.accent}">BITHOMP</text>
       <text x="65" y="360" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#ffffff">${label}</text>
       <text x="65" y="414" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
-      <text x="65" y="535" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#b7cacc">XRP Ledger transaction preview</text>
+      <text x="65" y="535" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#b7cacc">${previewLabel}</text>
       <rect x="65" y="568" width="500" height="2" fill="${style.accent}" opacity="0.42"/>
     </svg>
   `
@@ -112,7 +114,7 @@ export async function getServerSideProps({ query, res }) {
       <text x="338" y="140" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="7" fill="${style.accent}">BITHOMP</text>
       <text x="338" y="236" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" fill="#ffffff">${label}</text>
       <text x="338" y="302" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
-      <text x="86" y="520" font-family="Arial, Helvetica, sans-serif" font-size="32" fill="#b7cacc">XRP Ledger transaction preview</text>
+      <text x="86" y="520" font-family="Arial, Helvetica, sans-serif" font-size="32" fill="#b7cacc">${previewLabel}</text>
       <rect x="86" y="556" width="1028" height="2" fill="${style.accent}" opacity="0.42"/>
     </svg>
   `
