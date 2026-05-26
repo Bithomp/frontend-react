@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { ledgerName } from '../../utils'
+import { ledgerName, siteName, xahauNetwork } from '../../utils'
 
 const escapeSvg = (value) =>
   String(value || '')
@@ -72,50 +72,92 @@ export async function getServerSideProps({ query, res }) {
   const label = escapeSvg(getTransactionTypeLabel(type))
   const style = txStyle(type)
   const statusText = status === 'failed' ? 'Failed transaction' : status === 'pending' ? 'Pending transaction' : 'Validated transaction'
-  const statusColor = status === 'failed' ? '#ff9f43' : status === 'pending' ? '#b0bec5' : '#66e3bb'
+  const statusColor = xahauNetwork
+    ? status === 'failed'
+      ? '#ff9f43'
+      : status === 'pending'
+        ? '#b0bec5'
+        : '#ffcc53'
+    : status === 'failed'
+      ? '#ff9f43'
+      : status === 'pending'
+        ? '#b0bec5'
+        : '#66e3bb'
+  const theme = xahauNetwork
+    ? { accent: '#ffcc53', dark: '#0E233F', background: '#061322', iconBackground: '#0E233F' }
+    : { accent: style.accent, dark: style.dark, background: '#071416', iconBackground: '#0d2226' }
+  const previewBrand = escapeSvg(siteName)
   const previewLabel = escapeSvg(`${ledgerName} transaction preview`)
+  const squareBackground = xahauNetwork
+    ? `
+      <rect width="630" height="630" fill="${theme.background}"/>
+      <path d="M0 0H630V630H0V0Z" fill="${theme.dark}" opacity="0.52"/>
+      <path d="M0 126L182 0H630V172L432 304L630 438V630H0V0Z" fill="#0b1b31" opacity="0.9"/>
+      <path d="M0 434L156 328L316 438L472 334L630 438V630H0V434Z" fill="#0b2138" opacity="0.92"/>
+      <path d="M0 434L156 328L316 438L472 334L630 438" stroke="${theme.accent}" stroke-width="3" opacity="0.36"/>
+      <path d="M376 92H568" stroke="${theme.accent}" stroke-width="3" opacity="0.42"/>
+      <path d="M438 132H592" stroke="${theme.accent}" stroke-width="2" opacity="0.24"/>
+      <circle cx="546" cy="118" r="74" fill="${theme.accent}" opacity="0.08"/>
+    `
+    : `
+      <rect width="630" height="630" fill="${theme.background}"/>
+      <path d="M0 116L158 0H630V630H0V116Z" fill="${theme.dark}" opacity="0.78"/>
+      <path d="M0 438L158 334L315 438L472 334L630 438V630H0V438Z" fill="${theme.accent}" opacity="0.16"/>
+      <circle cx="504" cy="118" r="136" fill="${theme.accent}" opacity="0.16"/>
+      <circle cx="504" cy="118" r="82" fill="${theme.accent}" opacity="0.13"/>
+    `
+  const wideBackground = xahauNetwork
+    ? `
+      <rect width="1200" height="630" fill="${theme.background}"/>
+      <path d="M0 0H1200V630H0V0Z" fill="${theme.dark}" opacity="0.5"/>
+      <path d="M0 126L252 0H1200V220L930 394L1200 566V630H0V126Z" fill="#0b1b31" opacity="0.92"/>
+      <path d="M0 444L330 252L660 444L990 252L1200 374V630H0V444Z" fill="#0b2138" opacity="0.9"/>
+      <path d="M0 444L330 252L660 444L990 252L1200 374" stroke="${theme.accent}" stroke-width="4" opacity="0.32"/>
+      <path d="M736 100H1088" stroke="${theme.accent}" stroke-width="4" opacity="0.4"/>
+      <path d="M820 154H1132" stroke="${theme.accent}" stroke-width="3" opacity="0.23"/>
+      <circle cx="1014" cy="126" r="116" fill="${theme.accent}" opacity="0.07"/>
+    `
+    : `
+      <rect width="1200" height="630" fill="${theme.background}"/>
+      <path d="M0 126L240 0H1200V630H0V126Z" fill="${theme.dark}" opacity="0.78"/>
+      <path d="M0 444L330 252L660 444L990 252L1200 374V630H0V444Z" fill="${theme.accent}" opacity="0.14"/>
+      <circle cx="960" cy="126" r="210" fill="${theme.accent}" opacity="0.15"/>
+      <circle cx="960" cy="126" r="130" fill="${theme.accent}" opacity="0.13"/>
+    `
 
   const svg = square
     ? `
     <svg width="630" height="630" viewBox="0 0 630 630" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="630" height="630" fill="#071416"/>
-      <path d="M0 116L158 0H630V630H0V116Z" fill="${style.dark}" opacity="0.56"/>
-      <path d="M0 438L158 334L315 438L472 334L630 438V630H0V438Z" fill="${style.accent}" opacity="0.14"/>
-      <circle cx="504" cy="118" r="136" fill="${style.accent}" opacity="0.15"/>
-      <circle cx="504" cy="118" r="82" fill="${style.accent}" opacity="0.12"/>
+      ${squareBackground}
 
       <g transform="translate(65 62)">
-        <rect x="0" y="0" width="154" height="154" rx="36" fill="#0d2226" stroke="${style.accent}" stroke-width="5"/>
-        <circle cx="77" cy="77" r="45" fill="${style.accent}" opacity="0.22"/>
-        <text x="77" y="90" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="${style.accent}">${escapeSvg(style.mark)}</text>
+        <rect x="0" y="0" width="154" height="154" rx="36" fill="${theme.iconBackground}" stroke="${theme.accent}" stroke-width="5"/>
+        <circle cx="77" cy="77" r="45" fill="${theme.accent}" opacity="0.22"/>
+        <text x="77" y="90" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="${theme.accent}">${escapeSvg(style.mark)}</text>
       </g>
 
-      <text x="65" y="280" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="6" fill="${style.accent}">BITHOMP</text>
+      <text x="65" y="280" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="6" fill="${theme.accent}">${previewBrand}</text>
       <text x="65" y="360" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#ffffff">${label}</text>
       <text x="65" y="414" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
       <text x="65" y="535" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#b7cacc">${previewLabel}</text>
-      <rect x="65" y="568" width="500" height="2" fill="${style.accent}" opacity="0.42"/>
+      <rect x="65" y="568" width="500" height="2" fill="${theme.accent}" opacity="0.42"/>
     </svg>
   `
     : `
     <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="1200" height="630" fill="#071416"/>
-      <path d="M0 126L240 0H1200V630H0V126Z" fill="${style.dark}" opacity="0.52"/>
-      <path d="M0 444L330 252L660 444L990 252L1200 374V630H0V444Z" fill="${style.accent}" opacity="0.12"/>
-      <circle cx="960" cy="126" r="210" fill="${style.accent}" opacity="0.14"/>
-      <circle cx="960" cy="126" r="130" fill="${style.accent}" opacity="0.13"/>
+      ${wideBackground}
 
       <g transform="translate(86 78)">
-        <rect x="0" y="0" width="210" height="210" rx="46" fill="#0d2226" stroke="${style.accent}" stroke-width="6"/>
-        <circle cx="105" cy="105" r="62" fill="${style.accent}" opacity="0.22"/>
-        <text x="105" y="121" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="800" fill="${style.accent}">${escapeSvg(style.mark)}</text>
+        <rect x="0" y="0" width="210" height="210" rx="46" fill="${theme.iconBackground}" stroke="${theme.accent}" stroke-width="6"/>
+        <circle cx="105" cy="105" r="62" fill="${theme.accent}" opacity="0.22"/>
+        <text x="105" y="121" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="800" fill="${theme.accent}">${escapeSvg(style.mark)}</text>
       </g>
 
-      <text x="338" y="140" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="7" fill="${style.accent}">BITHOMP</text>
+      <text x="338" y="140" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="7" fill="${theme.accent}">${previewBrand}</text>
       <text x="338" y="236" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" fill="#ffffff">${label}</text>
       <text x="338" y="302" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
       <text x="86" y="520" font-family="Arial, Helvetica, sans-serif" font-size="32" fill="#b7cacc">${previewLabel}</text>
-      <rect x="86" y="556" width="1028" height="2" fill="${style.accent}" opacity="0.42"/>
+      <rect x="86" y="556" width="1028" height="2" fill="${theme.accent}" opacity="0.42"/>
     </svg>
   `
 

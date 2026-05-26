@@ -155,7 +155,7 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
   const transactionPreviewParams = {
     type: transactionSeo.type,
     status: transactionSeo.status,
-    v: '2'
+    v: '5'
   }
   if (transactionSeo.image) {
     transactionPreviewParams.image = transactionSeo.image
