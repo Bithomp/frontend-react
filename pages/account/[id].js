@@ -44,6 +44,8 @@ const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
 const SIGNER_ACCOUNTS_FETCH_LIMIT = 10
 const NFT_MINTER_ACCOUNTS_FETCH_LIMIT = 200
 const NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT = 10
+const ACCOUNT_OBJECTS_FETCH_LIMIT = 1000
+const ACCOUNT_OBJECTS_MAX_PAGES = 5
 const OBJECT_PREVIEW_LIMIT = 5
 const OBJECT_LOAD_MORE_STEP = 5
 const DOMAIN_FAVICON_SIZE = 16
@@ -2006,14 +2008,37 @@ export default function Account({
       setBurnedNftsLoading(false)
 
       try {
-        const objectsUrl =
-          `v2/objects/${data.address}?limit=1000&priceNativeCurrencySpot=true&currencyDetails=true` +
-          (effectiveLedgerTimestamp
-            ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
-            : '')
+        const accountObjects = []
+        const seenMarkers = new Set()
+        let objectsMarker = null
 
-        const response = await axios.get(objectsUrl)
-        const accountObjects = response?.data?.objects || []
+        for (let page = 0; page < ACCOUNT_OBJECTS_MAX_PAGES; page++) {
+          const markerQuery = objectsMarker ? `&marker=${encodeURIComponent(objectsMarker)}` : ''
+          const objectsUrl =
+            `v2/objects/${data.address}?limit=${ACCOUNT_OBJECTS_FETCH_LIMIT}&priceNativeCurrencySpot=true&currencyDetails=true` +
+            (effectiveLedgerTimestamp
+              ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
+              : '') +
+            markerQuery
+
+          const response = await axios.get(objectsUrl)
+          const pageObjects = Array.isArray(response?.data?.objects) ? response.data.objects : []
+          accountObjects.push(...pageObjects)
+
+          const nextMarker = response?.data?.marker || null
+          if (!nextMarker) break
+
+          if (seenMarkers.has(nextMarker)) {
+            throw new Error('Account objects pagination marker repeated')
+          }
+
+          seenMarkers.add(nextMarker)
+          objectsMarker = nextMarker
+
+          if (page === ACCOUNT_OBJECTS_MAX_PAGES - 1) {
+            throw new Error('Account objects pagination limit reached')
+          }
+        }
 
         let accountObjectWithChecks = accountObjects.filter((node) => node.LedgerEntryType === 'Check') || []
         accountObjectWithChecks = accountObjectWithChecks.sort((a, b) => {
