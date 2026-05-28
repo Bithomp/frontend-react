@@ -188,6 +188,7 @@
       "sequence": "Urutan",
       "fee": "Biaya",
       "amount": "Jumlah",
+      "search-tokens": "Cari token atau penerbit",
       "app-dapp": "App/Dapp",
       "balance-changes": "Perubahan saldo",
       "rates": "Kurs",
@@ -288,6 +289,7 @@
       "show-fewer-items": "Tampilkan lebih sedikit {{type}}",
       "view-all": "Lihat semua",
       "search": "Cari",
+      "clear-search": "Hapus pencarian",
       "load-more-transactions": "Muat transaksi lainnya",
       "view-token-distribution": "Lihat distribusi token",
       "cancel": "Batal",
@@ -450,6 +452,7 @@
       "addresses_one": "alamat",
       "addresses_other": "alamat",
       "more": "+{{count}} lagi",
+      "tokens-found": "{{count}} ditemukan",
       "for-addresses_one": "untuk satu alamat",
       "for-addresses_other": "untuk {{formattedCount}} alamat"
     },
@@ -505,6 +508,7 @@
       "no-buying-nft-offers": "Tidak ada penawaran NFT untuk dibeli.",
       "no-owned-nft-offers": "Tidak ada penawaran untuk NFT yang dimiliki.",
       "no-transactions": "Tidak ada transaksi ditemukan.",
+      "no-token-search-results": "Tidak ada token yang cocok dengan pencarian Anda.",
       "no-account-objects": "Tidak ada order DEX, check, escrow, penawaran NFT, paychannel, token yang diterbitkan, MPT yang diterbitkan, atau akun yang diaktifkan."
     },
     "errors": {

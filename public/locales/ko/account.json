@@ -188,6 +188,7 @@
       "sequence": "시퀀스",
       "fee": "수수료",
       "amount": "금액",
+      "search-tokens": "토큰 또는 발행자 검색",
       "app-dapp": "App/Dapp",
       "balance-changes": "잔액 변동",
       "rates": "환율",
@@ -288,6 +289,7 @@
       "show-fewer-items": "{{type}} 적게 보기",
       "view-all": "전체 보기",
       "search": "검색",
+      "clear-search": "검색 지우기",
       "load-more-transactions": "거래 더 불러오기",
       "view-token-distribution": "토큰 분포 보기",
       "cancel": "취소",
@@ -450,6 +452,7 @@
       "addresses_one": "주소",
       "addresses_other": "주소",
       "more": "+{{count}}개 더",
+      "tokens-found": "{{count}}개 찾음",
       "for-addresses_one": "주소 1개에 대해",
       "for-addresses_other": "주소 {{formattedCount}}개에 대해"
     },
@@ -505,6 +508,7 @@
       "no-buying-nft-offers": "구매 중인 NFT 오퍼를 찾을 수 없습니다.",
       "no-owned-nft-offers": "소유한 NFT에 대한 오퍼를 찾을 수 없습니다.",
       "no-transactions": "트랜잭션을 찾을 수 없습니다.",
+      "no-token-search-results": "검색과 일치하는 토큰이 없습니다.",
       "no-account-objects": "DEX 주문, Check, Escrow, NFT 오퍼, Paychannel, 발행된 토큰, 발행된 MPT 또는 활성화된 계정이 없습니다."
     },
     "errors": {

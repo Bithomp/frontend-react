@@ -183,6 +183,7 @@
       "sequence": "Sequence",
       "fee": "Fee",
       "amount": "Amount",
+      "search-tokens": "Search token or issuer",
       "app-dapp": "App/Dapp",
       "balance-changes": "Balance changes",
       "rates": "Rates",
@@ -283,6 +284,7 @@
       "show-fewer-items": "Show fewer {{type}}",
       "view-all": "View all",
       "search": "Search",
+      "clear-search": "Clear search",
       "load-more-transactions": "Load more transactions",
       "view-token-distribution": "View token distribution",
       "cancel": "Cancel",
@@ -445,6 +447,7 @@
       "addresses_one": "address",
       "addresses_other": "addresses",
       "more": "+{{count}} more",
+      "tokens-found": "{{count}} found",
       "for-addresses_one": "for one address",
       "for-addresses_other": "for {{formattedCount}} addresses"
     },
@@ -500,6 +503,7 @@
       "no-buying-nft-offers": "No buying NFT offers found.",
       "no-owned-nft-offers": "No offers for owned NFTs found.",
       "no-transactions": "No transactions found.",
+      "no-token-search-results": "No tokens match your search.",
       "no-account-objects": "No DEX orders, checks, escrows, NFT offers, paychannels, issued tokens, issued MPTs, or activated accounts."
     },
     "errors": {

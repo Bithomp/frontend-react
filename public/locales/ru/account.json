@@ -188,6 +188,7 @@
       "sequence": "Последовательность",
       "fee": "Комиссия",
       "amount": "Сумма",
+      "search-tokens": "Поиск токена или эмитента",
       "app-dapp": "App/Dapp",
       "balance-changes": "Изменения баланса",
       "rates": "Курсы",
@@ -288,6 +289,7 @@
       "show-fewer-items": "Показать меньше {{type}}",
       "view-all": "Все",
       "search": "Поиск",
+      "clear-search": "Очистить поиск",
       "load-more-transactions": "Загрузить ещё транзакции",
       "view-token-distribution": "Показать распределение токена",
       "cancel": "Отменить",
@@ -450,6 +452,7 @@
       "addresses_one": "адрес",
       "addresses_other": "адресов",
       "more": "+{{count}} ещё",
+      "tokens-found": "Найдено: {{count}}",
       "for-addresses_one": "для одного адреса",
       "for-addresses_few": "для {{formattedCount}} адресов",
       "for-addresses_many": "для {{formattedCount}} адресов",
@@ -507,6 +510,7 @@
       "no-buying-nft-offers": "NFT-оферы на покупку не найдены.",
       "no-owned-nft-offers": "Оферы для принадлежащих NFT не найдены.",
       "no-transactions": "Транзакции не найдены.",
+      "no-token-search-results": "Токены по запросу не найдены.",
       "no-account-objects": "Нет DEX-ордеров, Check, Escrow, NFT-предложений, paychannel, выпущенных токенов, выпущенных MPT или активированных аккаунтов."
     },
     "errors": {

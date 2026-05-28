@@ -537,7 +537,7 @@ import {
   FaXTwitter
 } from 'react-icons/fa6'
 import { LuFileCheck2 } from 'react-icons/lu'
-import { MdDeleteForever, MdMoneyOff, MdNorth, MdQrCode2, MdSouth, MdVerified } from 'react-icons/md'
+import { MdClose, MdDeleteForever, MdMoneyOff, MdNorth, MdQrCode2, MdSearch, MdSouth, MdVerified } from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
 import domainStyles from '../../styles/pages/domains.module.scss'
@@ -609,6 +609,40 @@ const reserveObjectCountsFromObjects = (accountObjects) => {
   return counts
 }
 
+const searchValue = (value) => (value === undefined || value === null ? '' : String(value))
+
+const tokenSearchText = (token, accountAddress) => {
+  const issuer = token?.HighLimit?.issuer === accountAddress ? token?.LowLimit : token?.HighLimit
+  const currencyDetails = token?.Balance?.currencyDetails || {}
+  const issuerDetails = issuer?.issuerDetails || {}
+  const asset = currencyDetails?.asset || {}
+  const asset2 = currencyDetails?.asset2 || {}
+  const fields = [
+    token?.Balance?.currency,
+    niceCurrency(token?.Balance?.currency),
+    currencyDetails?.currency,
+    currencyDetails?.name,
+    currencyDetails?.ticker,
+    currencyDetails?.asset?.currency,
+    currencyDetails?.asset2?.currency,
+    niceCurrency(asset?.currency),
+    niceCurrency(asset2?.currency),
+    asset?.issuer,
+    asset2?.issuer,
+    token?.LowLimit?.issuer,
+    token?.HighLimit?.issuer,
+    issuer?.issuer,
+    serviceUsernameOrAddressText({ issuer: issuer?.issuer, issuerDetails }, 'issuer', { fullAddress: true }),
+    issuerDetails?.username,
+    issuerDetails?.domain,
+    issuerDetails?.name,
+    issuerDetails?.service,
+    issuerDetails?.service?.name
+  ]
+
+  return fields.map(searchValue).join(' ').toLowerCase()
+}
+
 export default function Account({
   initialData,
   initialErrorMessage,
@@ -642,6 +676,7 @@ export default function Account({
   const [showTimeMachine, setShowTimeMachine] = useState(false)
   const [showAirdropsDetails, setShowAirdropsDetails] = useState(false)
   const [showAllTokens, setShowAllTokens] = useState(false)
+  const [tokenSearch, setTokenSearch] = useState('')
   const [tokenTab, setTokenTab] = useState('all')
   const [tokenDisplayLimit, setTokenDisplayLimit] = useState(TOKEN_PREVIEW_LIMIT)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(
@@ -1248,10 +1283,15 @@ export default function Account({
   ].sort((a, b) => b.value - a.value)
   const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
   const activeTokenList = tokenTab === 'lp' ? lpTokenList : tokenTab === 'tokens' ? standardTokenList : tokens
+  const tokenSearchQuery = tokenSearch.trim().toLowerCase()
+  const filteredTokenList = tokenSearchQuery
+    ? activeTokenList.filter((token) => tokenSearchText(token, data?.address).includes(tokenSearchQuery))
+    : activeTokenList
+  const shouldShowTokenSearch = hasNonNativeTokenAssets && (totalTokenCount > TOKEN_PREVIEW_LIMIT || !!tokenSearchQuery)
   const visibleTokens = showAllTokens
-    ? activeTokenList
-    : activeTokenList.slice(0, Math.max(tokenDisplayLimit, TOKEN_PREVIEW_LIMIT))
-  const hiddenTokensCount = Math.max(activeTokenList.length - visibleTokens.length, 0)
+    ? filteredTokenList
+    : filteredTokenList.slice(0, Math.max(tokenDisplayLimit, TOKEN_PREVIEW_LIMIT))
+  const hiddenTokensCount = Math.max(filteredTokenList.length - visibleTokens.length, 0)
   const tokenTabDisplayNameMap = {
     all: ta('tabs.tokens-lower'),
     tokens: ta('tabs.tokens-lower'),
@@ -1973,6 +2013,7 @@ export default function Account({
 
   useEffect(() => {
     setShowAllTokens(false)
+    setTokenSearch('')
     setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
     setExpandedToken(null)
     setExpandedTransactionKey(null)
@@ -2002,6 +2043,12 @@ export default function Account({
     setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
     setExpandedToken(null)
   }, [tokenTab])
+
+  useEffect(() => {
+    setShowAllTokens(false)
+    setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
+    setExpandedToken(null)
+  }, [tokenSearch])
 
   useEffect(() => {
     if (tokenTab === 'lp' && lpTokensCount === 0) {
@@ -4874,6 +4921,43 @@ export default function Account({
               </div>
             )}
 
+            {shouldShowTokenSearch && (
+              <div className="token-search-row" onClick={(event) => event.stopPropagation()}>
+                <div className="token-search-box">
+                  <MdSearch className="token-search-icon" aria-hidden="true" />
+                  <input
+                    type="text"
+                    value={tokenSearch}
+                    onChange={(event) => setTokenSearch(event.target.value)}
+                    placeholder={ta('labels.search-tokens')}
+                    aria-label={ta('labels.search-tokens')}
+                    className="token-search-input"
+                  />
+                  {tokenSearch && (
+                    <button
+                      type="button"
+                      className="token-search-clear"
+                      onClick={() => setTokenSearch('')}
+                      aria-label={ta('actions.clear-search')}
+                    >
+                      <MdClose aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+                {tokenSearchQuery && (
+                  <div className="token-search-count">
+                    {ta('counts.tokens-found', { count: filteredTokenList.length })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {tokenSearchQuery && filteredTokenList.length === 0 && (
+              <div className="asset-item object-load-status token-search-empty">
+                <span className="object-load-status-text">{ta('empty.no-token-search-results')}</span>
+              </div>
+            )}
+
             {/* Tokens */}
             {visibleTokens.map((token, index) => {
               const issuer = token.HighLimit?.issuer === data?.address ? token.LowLimit : token.HighLimit
@@ -5377,8 +5461,8 @@ export default function Account({
                       type="button"
                       className="asset-compact-toggle"
                       onClick={() => {
-                        const nextLimit = Math.min(activeTokenList.length, visibleTokens.length + 10)
-                        if (nextLimit >= activeTokenList.length) {
+                        const nextLimit = Math.min(filteredTokenList.length, visibleTokens.length + 10)
+                        if (nextLimit >= filteredTokenList.length) {
                           setShowAllTokens(true)
                         }
                         setTokenDisplayLimit(nextLimit)
@@ -5396,7 +5480,7 @@ export default function Account({
                       className="asset-compact-toggle"
                       onClick={() => {
                         setShowAllTokens(true)
-                        setTokenDisplayLimit(activeTokenList.length)
+                        setTokenDisplayLimit(filteredTokenList.length)
                       }}
                     >
                       {ta('actions.show-all-items', { type: activeTokenTabLabel, count: hiddenTokensCount })}
@@ -11853,6 +11937,91 @@ export default function Account({
         .token-tab-btn:hover:not(.active) {
           color: var(--text);
           border-bottom-color: color-mix(in srgb, var(--text) 35%, transparent);
+        }
+
+        .token-search-row {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          margin: 8px 0 10px;
+          width: 100%;
+        }
+
+        .token-search-box {
+          display: grid;
+          grid-template-columns: 18px minmax(0, 1fr) 24px;
+          align-items: center;
+          gap: 6px;
+          min-width: 0;
+          width: 100%;
+          height: 38px;
+          padding: 0 8px 0 10px;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          background: var(--background-input);
+          color: var(--text-secondary);
+          box-sizing: border-box;
+          transition:
+            border-color 0.16s ease,
+            background 0.16s ease;
+        }
+
+        .token-search-box:focus-within {
+          border-color: var(--accent-link);
+          background: color-mix(in srgb, var(--background-input) 76%, var(--accent-link) 6%);
+        }
+
+        .token-search-icon {
+          width: 18px;
+          height: 18px;
+          color: var(--text-secondary);
+        }
+
+        .token-search-input {
+          min-width: 0;
+          width: 100%;
+          border: 0;
+          outline: 0;
+          background: transparent;
+          color: var(--text);
+          font-size: 14px;
+          line-height: 1.2;
+        }
+
+        .token-search-input::placeholder {
+          color: var(--text-secondary);
+          opacity: 0.9;
+        }
+
+        .token-search-clear {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          padding: 0;
+          border: 0;
+          border-radius: 50%;
+          background: transparent;
+          color: var(--text-secondary);
+          cursor: pointer;
+        }
+
+        .token-search-clear:hover {
+          background: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+          color: var(--text);
+        }
+
+        .token-search-count {
+          color: var(--text-secondary);
+          font-size: 12px;
+          padding: 0 2px;
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        .token-search-empty {
+          justify-content: center;
         }
 
         .asset-compact-toggle {
