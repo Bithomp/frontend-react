@@ -229,6 +229,33 @@
       "best-buy-offer": "最良の買いオファー",
       "broker": "ブローカー"
     },
+    "reserve": {
+      "breakdown": "リザーブ内訳",
+      "show-details": "詳細を表示",
+      "hide-details": "詳細を非表示",
+      "type": "種類",
+      "objects": "オブジェクト",
+      "object-reserve": "1オブジェクトあたり{{amount}}",
+      "base": "基本リザーブ",
+      "trustlines": "トラストライン",
+      "nft-pages": "NFTページ",
+      "nft-offers": "NFTオファー",
+      "uri-tokens": "URIトークン",
+      "uri-token-offers": "URIトークンオファー",
+      "offers": "オファー",
+      "checks": "チェック",
+      "escrows": "エスクロー",
+      "payment-channels": "支払いチャネル",
+      "deposit-preauth": "入金事前承認",
+      "signer-lists": "署名者リスト",
+      "tickets": "チケット",
+      "hooks": "Hooks",
+      "hook-states": "Hook状態",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "MPToken発行",
+      "amms": "AMM",
+      "other-objects": "その他のオブジェクト"
+    },
     "actions": {
       "edit": "編集",
       "remove": "削除",
@@ -461,6 +488,7 @@
     },
     "worth": {
       "nfts-count": "NFT（{{count}}）",
+      "account-reserve": "回収可能なリザーブ",
       "lp-tokens-count": "LPトークン（{{count}}）",
       "tokens-count": "トークン（{{count}}）",
       "received-checks-count": "受信Check（{{count}}）"

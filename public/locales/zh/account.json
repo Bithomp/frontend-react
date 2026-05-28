@@ -229,6 +229,33 @@
       "best-buy-offer": "最佳购买报价",
       "broker": "经纪人"
     },
+    "reserve": {
+      "breakdown": "储备明细",
+      "show-details": "显示详情",
+      "hide-details": "隐藏详情",
+      "type": "类型",
+      "objects": "对象",
+      "object-reserve": "每个对象 {{amount}}",
+      "base": "基础储备",
+      "trustlines": "信任线",
+      "nft-pages": "NFT 页面",
+      "nft-offers": "NFT 报价",
+      "uri-tokens": "URI 代币",
+      "uri-token-offers": "URI 代币报价",
+      "offers": "报价",
+      "checks": "支票",
+      "escrows": "托管",
+      "payment-channels": "支付通道",
+      "deposit-preauth": "存款预授权",
+      "signer-lists": "签名者列表",
+      "tickets": "票据",
+      "hooks": "Hooks",
+      "hook-states": "Hook 状态",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "MPToken 发行",
+      "amms": "AMM",
+      "other-objects": "其他对象"
+    },
     "actions": {
       "edit": "编辑",
       "remove": "移除",
@@ -461,6 +488,7 @@
     },
     "worth": {
       "nfts-count": "NFT（{{count}}）",
+      "account-reserve": "可回收储备",
       "lp-tokens-count": "LP 代币（{{count}}）",
       "tokens-count": "代币（{{count}}）",
       "received-checks-count": "收到的 Check（{{count}}）"

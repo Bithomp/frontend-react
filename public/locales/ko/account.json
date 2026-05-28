@@ -229,6 +229,33 @@
       "best-buy-offer": "최고 구매 오퍼",
       "broker": "브로커"
     },
+    "reserve": {
+      "breakdown": "준비금 내역",
+      "show-details": "자세히 보기",
+      "hide-details": "자세히 숨기기",
+      "type": "유형",
+      "objects": "객체",
+      "object-reserve": "객체당 {{amount}}",
+      "base": "기본 준비금",
+      "trustlines": "트러스트라인",
+      "nft-pages": "NFT 페이지",
+      "nft-offers": "NFT 오퍼",
+      "uri-tokens": "URI 토큰",
+      "uri-token-offers": "URI 토큰 오퍼",
+      "offers": "오퍼",
+      "checks": "체크",
+      "escrows": "에스크로",
+      "payment-channels": "결제 채널",
+      "deposit-preauth": "입금 사전 승인",
+      "signer-lists": "서명자 목록",
+      "tickets": "티켓",
+      "hooks": "Hooks",
+      "hook-states": "Hook 상태",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "MPToken 발행",
+      "amms": "AMM",
+      "other-objects": "기타 객체"
+    },
     "actions": {
       "edit": "편집",
       "remove": "삭제",
@@ -461,6 +488,7 @@
     },
     "worth": {
       "nfts-count": "NFT ({{count}})",
+      "account-reserve": "회수 가능한 준비금",
       "lp-tokens-count": "LP 토큰 ({{count}})",
       "tokens-count": "토큰 ({{count}})",
       "received-checks-count": "받은 Check ({{count}})"

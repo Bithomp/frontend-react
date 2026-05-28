@@ -556,6 +556,59 @@ const mptId = (node) => node?.MPTokenIssuanceID || node?.mpt_issuance_id || null
 const issuedTokenSpotPrice = (token) => Number(token?.priceNativeCurrencySpot || 0)
 const issuedTokenValueNative = (token) => Number(token?.supply || 0) * issuedTokenSpotPrice(token)
 
+const RESERVE_OBJECT_LABEL_KEYS = {
+  RippleState: 'reserve.trustlines',
+  NFTokenPage: 'reserve.nft-pages',
+  NFTokenOffer: 'reserve.nft-offers',
+  URIToken: 'reserve.uri-tokens',
+  URITokenOffer: 'reserve.uri-token-offers',
+  Offer: 'reserve.offers',
+  Check: 'reserve.checks',
+  Escrow: 'reserve.escrows',
+  PayChannel: 'reserve.payment-channels',
+  DepositPreauth: 'reserve.deposit-preauth',
+  SignerList: 'reserve.signer-lists',
+  Ticket: 'reserve.tickets',
+  Hook: 'reserve.hooks',
+  HookState: 'reserve.hook-states',
+  MPToken: 'reserve.mptokens',
+  MPTokenIssuance: 'reserve.mptoken-issuances',
+  AMM: 'reserve.amms'
+}
+
+const RESERVE_OBJECT_TYPE_ORDER = [
+  'RippleState',
+  'NFTokenPage',
+  'NFTokenOffer',
+  'URIToken',
+  'URITokenOffer',
+  'Offer',
+  'Check',
+  'Escrow',
+  'PayChannel',
+  'DepositPreauth',
+  'SignerList',
+  'Ticket',
+  'Hook',
+  'HookState',
+  'MPToken',
+  'MPTokenIssuance',
+  'AMM'
+]
+
+const reserveObjectCountsFromObjects = (accountObjects) => {
+  const counts = {}
+
+  accountObjects.forEach((node) => {
+    const type = node?.LedgerEntryType
+    if (!type) return
+
+    counts[type] = (counts[type] || 0) + 1
+  })
+
+  return counts
+}
+
 export default function Account({
   initialData,
   initialErrorMessage,
@@ -566,6 +619,7 @@ export default function Account({
   selectedCurrencyServer,
   fiatRate: fiatRateApp,
   fiatRateServer,
+  networkInfo,
   balanceListServer,
   setSignRequest,
   isHistoricalLedger,
@@ -581,6 +635,8 @@ export default function Account({
   const router = useRouter()
   const { Canvas } = useQRCode()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
+  const [showReserveDetails, setShowReserveDetails] = useState(false)
+  const [showRecoverableReserveDetails, setShowRecoverableReserveDetails] = useState(false)
   const [showTotalWorthDetails, setShowTotalWorthDetails] = useState(false)
   const [showAddressQr, setShowAddressQr] = useState(false)
   const [showTimeMachine, setShowTimeMachine] = useState(false)
@@ -597,6 +653,7 @@ export default function Account({
   const [issuedTokensError, setIssuedTokensError] = useState(null)
   const [objectsLoading, setObjectsLoading] = useState(false)
   const [objectsError, setObjectsError] = useState(null)
+  const [reserveObjectCounts, setReserveObjectCounts] = useState(null)
   const [ownedNfts, setOwnedNfts] = useState([])
   const [soldNfts, setSoldNfts] = useState([])
   const [soldNftsTotalCount, setSoldNftsTotalCount] = useState(null)
@@ -722,6 +779,7 @@ export default function Account({
     setTokens([])
     setNftsNativeValue(0)
     setNftsWorthCount(0)
+    setReserveObjectCounts(null)
     setOwnedNfts([])
     setSoldNfts([])
     setSoldNftsTotalCount(null)
@@ -1072,6 +1130,71 @@ export default function Account({
   const shouldShowSignInIdentityButton = !account?.address && !data?.service && !data?.ledgerInfo?.blackholed
 
   const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (pageFiatRate || 0)
+  const ownerReserveCount = Math.max(0, Number(data?.ledgerInfo?.ownerCount || 0))
+  const reserveBaseDrops = Math.max(0, Number(networkInfo?.reserveBase || 0))
+  const reserveIncrementDrops = Math.max(0, Number(networkInfo?.reserveIncrement || 0))
+  const reserveBreakdownRows = []
+
+  if (reserveBaseDrops > 0) {
+    reserveBreakdownRows.push({
+      key: 'base',
+      label: ta('reserve.base'),
+      drops: reserveBaseDrops
+    })
+  }
+
+  if (reserveObjectCounts && reserveIncrementDrops > 0) {
+    const countedReserveObjects = Object.values(reserveObjectCounts).reduce((sum, count) => sum + Number(count || 0), 0)
+    const knownReserveObjectRows = Object.entries(reserveObjectCounts)
+      .filter(([, count]) => Number(count || 0) > 0)
+      .map(([type, count]) => ({
+        key: type,
+        label: RESERVE_OBJECT_LABEL_KEYS[type] ? ta(RESERVE_OBJECT_LABEL_KEYS[type]) : type,
+        count: Number(count || 0),
+        order: RESERVE_OBJECT_TYPE_ORDER.indexOf(type)
+      }))
+      .sort((a, b) => {
+        const orderA = a.order === -1 ? RESERVE_OBJECT_TYPE_ORDER.length : a.order
+        const orderB = b.order === -1 ? RESERVE_OBJECT_TYPE_ORDER.length : b.order
+        if (orderA !== orderB) return orderA - orderB
+        return a.label.localeCompare(b.label)
+      })
+
+    reserveBreakdownRows.push(
+      ...knownReserveObjectRows.map((row) => ({
+        key: row.key,
+        label: row.label,
+        count: row.count,
+        drops: row.count * reserveIncrementDrops
+      }))
+    )
+
+    const unclassifiedReserveObjects = Math.max(0, ownerReserveCount - countedReserveObjects)
+    if (unclassifiedReserveObjects > 0) {
+      reserveBreakdownRows.push({
+        key: 'other',
+        label: ta('reserve.other-objects'),
+        count: unclassifiedReserveObjects,
+        drops: unclassifiedReserveObjects * reserveIncrementDrops
+      })
+    }
+  }
+
+  const recoverableReserveBreakdownRows =
+    reserveIncrementDrops > 0
+      ? reserveBreakdownRows
+          .map((row) =>
+            row.key === 'base'
+              ? {
+                  ...row,
+                  label: ta('reserve.base'),
+                  drops: Math.max(0, row.drops - reserveIncrementDrops)
+                }
+              : row
+          )
+          .filter((row) => row.drops > 0)
+      : []
+
   const isLpTrustlineToken = (token) => token?.Balance?.currency?.substring(0, 2) === '03'
   const lpTokenList = tokens.filter((token) => isLpTrustlineToken(token))
   const standardTokenList = tokens.filter((token) => !isLpTrustlineToken(token))
@@ -1091,18 +1214,37 @@ export default function Account({
   const nftsFiatValue = nftsNativeValue * (tokenFiatRate || pageFiatRate || 0)
   const receivedChecksNativeValue = receivedChecks.reduce((sum, check) => sum + checkNativeValue(check), 0)
   const receivedChecksFiatValue = receivedChecksNativeValue * (tokenFiatRate || pageFiatRate || 0)
+  const accountReserveWorthDrops = reserveIncrementDrops > 0 ? Math.max(0, nativeReservedDrops - reserveIncrementDrops) : 0
+  const accountReserveWorthFiatValue = (accountReserveWorthDrops / 1000000) * (pageFiatRate || 0)
   const hasNftWorthLine = !xahauNetwork && nftsNativeValue > 0
   const nftsWorthLabel = nftsWorthCount > 0 ? ta('worth.nfts-count', { count: nftsWorthCount }) : ta('tabs.nfts')
   const hasReceivedChecksWorthLine = receivedChecks.length > 0
-  const hasAdditionalWorthAssets = hasNonNativeTokenAssets || hasNftWorthLine || hasReceivedChecksWorthLine
+  const hasAccountReserveWorthLine = accountReserveWorthDrops > 0
+  const hasAdditionalWorthAssets = hasNonNativeTokenAssets || hasNftWorthLine || hasReceivedChecksWorthLine || hasAccountReserveWorthLine
   const totalWorthFiatValue =
-    nativeAvailableFiatValue + lpTokensFiatValue + issuedTokensFiatValue + nftsFiatValue + receivedChecksFiatValue
+    nativeAvailableFiatValue +
+    accountReserveWorthFiatValue +
+    lpTokensFiatValue +
+    issuedTokensFiatValue +
+    nftsFiatValue +
+    receivedChecksFiatValue
   const totalWorthBreakdown = [
-    { label: nativeCurrency, value: nativeAvailableFiatValue },
-    ...(lpTokensCount > 0 ? [{ label: ta('worth.lp-tokens-count', { count: lpTokensCount }), value: lpTokensFiatValue }] : []),
-    ...(issuedTokensCount > 0 ? [{ label: ta('worth.tokens-count', { count: issuedTokensCount }), value: issuedTokensFiatValue }] : []),
-    ...(hasNftWorthLine ? [{ label: nftsWorthLabel, value: nftsFiatValue }] : []),
-    ...(hasReceivedChecksWorthLine ? [{ label: ta('worth.received-checks-count', { count: receivedChecks.length }), value: receivedChecksFiatValue }] : [])
+    { key: 'native', label: nativeCurrency, value: nativeAvailableFiatValue },
+    ...(hasAccountReserveWorthLine
+      ? [
+          {
+            key: 'recoverable-reserve',
+            label: ta('worth.account-reserve'),
+            value: accountReserveWorthFiatValue
+          }
+        ]
+      : []),
+    ...(lpTokensCount > 0 ? [{ key: 'lp-tokens', label: ta('worth.lp-tokens-count', { count: lpTokensCount }), value: lpTokensFiatValue }] : []),
+    ...(issuedTokensCount > 0 ? [{ key: 'tokens', label: ta('worth.tokens-count', { count: issuedTokensCount }), value: issuedTokensFiatValue }] : []),
+    ...(hasNftWorthLine ? [{ key: 'nfts', label: nftsWorthLabel, value: nftsFiatValue }] : []),
+    ...(hasReceivedChecksWorthLine
+      ? [{ key: 'received-checks', label: ta('worth.received-checks-count', { count: receivedChecks.length }), value: receivedChecksFiatValue }]
+      : [])
   ].sort((a, b) => b.value - a.value)
   const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
   const activeTokenList = tokenTab === 'lp' ? lpTokenList : tokenTab === 'tokens' ? standardTokenList : tokens
@@ -2039,6 +2181,8 @@ export default function Account({
             throw new Error('Account objects pagination limit reached')
           }
         }
+
+        setReserveObjectCounts(reserveObjectCountsFromObjects(accountObjects))
 
         let accountObjectWithChecks = accountObjects.filter((node) => node.LedgerEntryType === 'Check') || []
         accountObjectWithChecks = accountObjectWithChecks.sort((a, b) => {
@@ -4435,9 +4579,63 @@ export default function Account({
                 {showTotalWorthDetails && (
                   <div className="asset-details">
                     {totalWorthBreakdown.map((item) => (
-                      <div className="detail-row" key={`worth-${item.label}`}>
-                        <span>{item.label}:</span>
-                        <span suppressHydrationWarning>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
+                      <div className="worth-breakdown-item" key={`worth-${item.key}`}>
+                        <div className="detail-row">
+                          <span>{item.label}:</span>
+                          <span className="worth-detail-value" suppressHydrationWarning>
+                            <span>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
+                            {item.key === 'recoverable-reserve' &&
+                              reserveObjectCounts &&
+                              recoverableReserveBreakdownRows.length > 0 && (
+                                <button
+                                  type="button"
+                                  className={`reserve-details-toggle ${showRecoverableReserveDetails ? 'active' : ''}`}
+                                  onClick={(event) => {
+                                    event.stopPropagation()
+                                    setShowRecoverableReserveDetails((prev) => !prev)
+                                  }}
+                                >
+                                  {ta(showRecoverableReserveDetails ? 'reserve.hide-details' : 'reserve.show-details')}
+                                </button>
+                              )}
+                          </span>
+                        </div>
+                        {item.key === 'recoverable-reserve' &&
+                          showRecoverableReserveDetails &&
+                          reserveObjectCounts &&
+                          recoverableReserveBreakdownRows.length > 0 && (
+                            <div
+                              className="reserve-breakdown worth-reserve-breakdown"
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <div className="reserve-breakdown-head">
+                                <span>{ta('reserve.type')}</span>
+                                <span>{ta('reserve.objects')}</span>
+                                <span>{ta('labels.amount')}</span>
+                              </div>
+                              <div className="reserve-breakdown-list">
+                                {recoverableReserveBreakdownRows.map((row) => (
+                                  <div className="reserve-breakdown-row" key={`worth-reserve-${row.key}`}>
+                                    <span className="reserve-breakdown-label">{row.label}</span>
+                                    <span className="reserve-breakdown-count">
+                                      {typeof row.count === 'number' ? formatCountText(row.count) : ''}
+                                    </span>
+                                    <span className="reserve-breakdown-value">
+                                      <span>{amountFormat(row.drops, { precise: 'nice' })}</span>
+                                      <span className="fiat-line" suppressHydrationWarning>
+                                        {tokenToFiat({
+                                          amount: row.drops,
+                                          selectedCurrency,
+                                          fiatRate: pageFiatRate,
+                                          asText: true
+                                        })}
+                                      </span>
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                       </div>
                     ))}
                   </div>
@@ -4519,8 +4717,55 @@ export default function Account({
                               asText: true
                             })}
                           </span>
+                          {reserveObjectCounts && reserveBreakdownRows.length > 0 && (
+                            <button
+                              type="button"
+                              className={`reserve-details-toggle ${showReserveDetails ? 'active' : ''}`}
+                              onClick={(event) => {
+                                event.stopPropagation()
+                                setShowReserveDetails((prev) => !prev)
+                              }}
+                            >
+                              {ta(showReserveDetails ? 'reserve.hide-details' : 'reserve.show-details')}
+                            </button>
+                          )}
                         </span>
                       </div>
+                      {showReserveDetails && reserveObjectCounts && reserveBreakdownRows.length > 0 && (
+                        <div className="reserve-breakdown" onClick={(event) => event.stopPropagation()}>
+                          <div className="reserve-breakdown-head">
+                            <span>{ta('reserve.type')}</span>
+                            <span>{ta('reserve.objects')}</span>
+                            <span>{ta('labels.reserved')}</span>
+                          </div>
+                          <div className="reserve-breakdown-list">
+                            {reserveBreakdownRows.map((row) => (
+                              <div className="reserve-breakdown-row" key={`reserve-${row.key}`}>
+                                <span className="reserve-breakdown-label">{row.label}</span>
+                                <span className="reserve-breakdown-count">
+                                  {typeof row.count === 'number' ? formatCountText(row.count) : ''}
+                                </span>
+                                <span className="reserve-breakdown-value">
+                                  <span>{amountFormat(row.drops, { precise: 'nice' })}</span>
+                                  <span className="fiat-line" suppressHydrationWarning>
+                                    {tokenToFiat({
+                                      amount: row.drops,
+                                      selectedCurrency,
+                                      fiatRate: pageFiatRate,
+                                      asText: true
+                                    })}
+                                  </span>
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                          {reserveIncrementDrops > 0 && (
+                            <div className="reserve-breakdown-note">
+                              {ta('reserve.object-reserve', { amount: amountFormat(reserveIncrementDrops) })}
+                            </div>
+                          )}
+                        </div>
+                      )}
                       {isHistoricalLedger && selectedCurrency && pageFiatRate ? (
                         <div className="detail-row">
                           <span>{ta('labels.rate')}:</span>
@@ -12300,6 +12545,181 @@ export default function Account({
         .amount-with-fiat .fiat-line {
           white-space: nowrap;
           word-break: normal;
+        }
+
+        .reserve-details-toggle {
+          margin-top: 4px;
+          padding: 0;
+          border: 0;
+          background: transparent;
+          color: var(--accent-link);
+          font: inherit;
+          font-size: 12px;
+          line-height: 1.2;
+          cursor: pointer;
+          text-align: right;
+        }
+
+        .reserve-details-toggle:hover {
+          text-decoration: underline;
+        }
+
+        .reserve-details-toggle::after {
+          content: '›';
+          display: inline-block;
+          margin-left: 4px;
+          opacity: 0.65;
+          transform: translateY(-1px);
+          transition: transform 0.16s ease;
+        }
+
+        .reserve-details-toggle.active::after {
+          transform: translateY(-1px) rotate(90deg);
+        }
+
+        .worth-breakdown-item + .worth-breakdown-item {
+          margin-top: 2px;
+        }
+
+        .worth-detail-value {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
+        }
+
+        .reserve-breakdown {
+          margin: 8px 0 2px;
+          padding: 10px 12px;
+          border: 1px solid color-mix(in srgb, var(--border-color) 78%, transparent);
+          border-radius: 8px;
+          background: color-mix(in srgb, var(--background-input) 52%, transparent);
+          cursor: default;
+          font-variant-numeric: tabular-nums;
+          font-feature-settings: 'tnum' 1;
+        }
+
+        .reserve-breakdown-head {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(58px, 72px) minmax(96px, auto);
+          align-items: center;
+          column-gap: 12px;
+          padding-bottom: 7px;
+          color: var(--text-secondary);
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: 0;
+        }
+
+        .reserve-breakdown-head > span:first-child {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .reserve-breakdown-head > span:last-child {
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        .reserve-breakdown-head > span:nth-child(2) {
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        .reserve-breakdown-list {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .reserve-breakdown-row {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(58px, 72px) minmax(96px, auto);
+          align-items: center;
+          gap: 12px;
+          width: 100%;
+          min-height: 38px;
+          padding: 6px 0;
+          border-top: 1px solid color-mix(in srgb, var(--border-color) 64%, transparent);
+          font-size: 13px;
+          line-height: 1.25;
+          word-break: normal;
+        }
+
+        .reserve-breakdown-row:first-child {
+          border-top: 0;
+        }
+
+        .reserve-breakdown-label {
+          min-width: 0;
+          color: var(--text);
+          text-align: left;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .reserve-breakdown-count {
+          color: var(--text-secondary);
+          font-size: 13px;
+          line-height: 1.25;
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        .reserve-breakdown-value {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
+          color: var(--text);
+          font-size: 13px;
+          line-height: 1.25;
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        .reserve-breakdown-value .fiat-line {
+          color: var(--text-secondary);
+          font-size: 11px;
+          line-height: 1.1;
+        }
+
+        .reserve-breakdown-note {
+          margin-top: 6px;
+          padding-top: 7px;
+          border-top: 1px solid color-mix(in srgb, var(--border-color) 64%, transparent);
+          color: var(--text-secondary);
+          font-size: 11px;
+          line-height: 1.25;
+          text-align: right;
+        }
+
+        .worth-reserve-breakdown {
+          margin-top: 6px;
+        }
+
+        @media (max-width: 420px) {
+          .reserve-breakdown {
+            padding: 9px 10px;
+          }
+
+          .reserve-breakdown-head,
+          .reserve-breakdown-row {
+            grid-template-columns: minmax(0, 1fr) minmax(44px, 52px) minmax(82px, auto);
+            column-gap: 8px;
+          }
+
+          .reserve-breakdown-head {
+            font-size: 11px;
+          }
+
+          .reserve-breakdown-row,
+          .reserve-breakdown-count,
+          .reserve-breakdown-value {
+            font-size: 12px;
+          }
         }
 
         .copy-inline {

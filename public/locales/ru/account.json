@@ -229,6 +229,33 @@
       "best-buy-offer": "Лучшее предложение покупки",
       "broker": "Брокер"
     },
+    "reserve": {
+      "breakdown": "Из чего состоит резерв",
+      "show-details": "Показать детали",
+      "hide-details": "Скрыть детали",
+      "type": "Тип",
+      "objects": "Объекты",
+      "object-reserve": "{{amount}} за объект",
+      "base": "Базовый резерв",
+      "trustlines": "Трастлайны",
+      "nft-pages": "NFT-страницы",
+      "nft-offers": "NFT-офферы",
+      "uri-tokens": "URI-токены",
+      "uri-token-offers": "Офферы URI-токенов",
+      "offers": "Ордера",
+      "checks": "Чеки",
+      "escrows": "Эскроу",
+      "payment-channels": "Платежные каналы",
+      "deposit-preauth": "Предавторизация депозита",
+      "signer-lists": "Списки подписантов",
+      "tickets": "Билеты",
+      "hooks": "Хуки",
+      "hook-states": "Состояния хуков",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "Выпуски MPToken",
+      "amms": "AMM",
+      "other-objects": "Другие объекты"
+    },
     "actions": {
       "edit": "Редактировать",
       "remove": "Удалить",
@@ -463,6 +490,7 @@
     },
     "worth": {
       "nfts-count": "NFT ({{count}})",
+      "account-reserve": "Возвращаемый резерв",
       "lp-tokens-count": "LP-токены ({{count}})",
       "tokens-count": "Токены ({{count}})",
       "received-checks-count": "Полученные чеки ({{count}})"

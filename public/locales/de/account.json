@@ -229,6 +229,33 @@
       "best-buy-offer": "Bestes Kaufangebot",
       "broker": "Broker"
     },
+    "reserve": {
+      "breakdown": "Reserve-Aufteilung",
+      "show-details": "Details anzeigen",
+      "hide-details": "Details ausblenden",
+      "type": "Typ",
+      "objects": "Objekte",
+      "object-reserve": "{{amount}} pro Objekt",
+      "base": "Basisreserve",
+      "trustlines": "Trustlines",
+      "nft-pages": "NFT-Seiten",
+      "nft-offers": "NFT-Angebote",
+      "uri-tokens": "URI-Token",
+      "uri-token-offers": "URI-Token-Angebote",
+      "offers": "Angebote",
+      "checks": "Checks",
+      "escrows": "Escrows",
+      "payment-channels": "Zahlungskanäle",
+      "deposit-preauth": "Deposit-Preauth",
+      "signer-lists": "Signer-Listen",
+      "tickets": "Tickets",
+      "hooks": "Hooks",
+      "hook-states": "Hook-States",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "MPToken-Ausgaben",
+      "amms": "AMMs",
+      "other-objects": "Andere Objekte"
+    },
     "actions": {
       "edit": "Bearbeiten",
       "remove": "Entfernen",
@@ -461,6 +488,7 @@
     },
     "worth": {
       "nfts-count": "NFTs ({{count}})",
+      "account-reserve": "Rückholbare Reserve",
       "lp-tokens-count": "LP-Tokens ({{count}})",
       "tokens-count": "Tokens ({{count}})",
       "received-checks-count": "Empfangene Checks ({{count}})"

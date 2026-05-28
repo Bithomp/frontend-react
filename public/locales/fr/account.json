@@ -229,6 +229,33 @@
       "best-buy-offer": "Meilleure offre d’achat",
       "broker": "Courtier"
     },
+    "reserve": {
+      "breakdown": "Détail de la réserve",
+      "show-details": "Afficher les détails",
+      "hide-details": "Masquer les détails",
+      "type": "Type",
+      "objects": "Objets",
+      "object-reserve": "{{amount}} par objet",
+      "base": "Réserve de base",
+      "trustlines": "Lignes de confiance",
+      "nft-pages": "Pages NFT",
+      "nft-offers": "Offres NFT",
+      "uri-tokens": "Tokens URI",
+      "uri-token-offers": "Offres de tokens URI",
+      "offers": "Offres",
+      "checks": "Chèques",
+      "escrows": "Escrows",
+      "payment-channels": "Canaux de paiement",
+      "deposit-preauth": "Préautorisation de dépôt",
+      "signer-lists": "Listes de signataires",
+      "tickets": "Tickets",
+      "hooks": "Hooks",
+      "hook-states": "États de hook",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "Émissions de MPToken",
+      "amms": "AMMs",
+      "other-objects": "Autres objets"
+    },
     "actions": {
       "edit": "Modifier",
       "remove": "Supprimer",
@@ -461,6 +488,7 @@
     },
     "worth": {
       "nfts-count": "NFT ({{count}})",
+      "account-reserve": "Réserve récupérable",
       "lp-tokens-count": "Tokens LP ({{count}})",
       "tokens-count": "Tokens ({{count}})",
       "received-checks-count": "Checks reçus ({{count}})"

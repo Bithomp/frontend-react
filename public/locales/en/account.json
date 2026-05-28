@@ -224,6 +224,33 @@
       "best-buy-offer": "Best buy offer",
       "broker": "Broker"
     },
+    "reserve": {
+      "breakdown": "Reserve breakdown",
+      "show-details": "Show details",
+      "hide-details": "Hide details",
+      "type": "Type",
+      "objects": "Objects",
+      "object-reserve": "{{amount}} per object",
+      "base": "Base reserve",
+      "trustlines": "Trust lines",
+      "nft-pages": "NFT pages",
+      "nft-offers": "NFT offers",
+      "uri-tokens": "URI tokens",
+      "uri-token-offers": "URI token offers",
+      "offers": "Offers",
+      "checks": "Checks",
+      "escrows": "Escrows",
+      "payment-channels": "Payment channels",
+      "deposit-preauth": "Deposit preauth",
+      "signer-lists": "Signer lists",
+      "tickets": "Tickets",
+      "hooks": "Hooks",
+      "hook-states": "Hook states",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "MPToken issuances",
+      "amms": "AMMs",
+      "other-objects": "Other objects"
+    },
     "actions": {
       "edit": "Edit",
       "remove": "Remove",
@@ -456,6 +483,7 @@
     },
     "worth": {
       "nfts-count": "NFTs ({{count}})",
+      "account-reserve": "Recoverable reserve",
       "lp-tokens-count": "LP tokens ({{count}})",
       "tokens-count": "Tokens ({{count}})",
       "received-checks-count": "Received checks ({{count}})"

@@ -229,6 +229,33 @@
       "best-buy-offer": "Mejor oferta de compra",
       "broker": "Bróker"
     },
+    "reserve": {
+      "breakdown": "Desglose de reserva",
+      "show-details": "Mostrar detalles",
+      "hide-details": "Ocultar detalles",
+      "type": "Tipo",
+      "objects": "Objetos",
+      "object-reserve": "{{amount}} por objeto",
+      "base": "Reserva base",
+      "trustlines": "Líneas de confianza",
+      "nft-pages": "Páginas NFT",
+      "nft-offers": "Ofertas NFT",
+      "uri-tokens": "Tokens URI",
+      "uri-token-offers": "Ofertas de tokens URI",
+      "offers": "Ofertas",
+      "checks": "Cheques",
+      "escrows": "Escrows",
+      "payment-channels": "Canales de pago",
+      "deposit-preauth": "Preautorización de depósito",
+      "signer-lists": "Listas de firmantes",
+      "tickets": "Tickets",
+      "hooks": "Hooks",
+      "hook-states": "Estados de hook",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "Emisiones de MPToken",
+      "amms": "AMMs",
+      "other-objects": "Otros objetos"
+    },
     "actions": {
       "edit": "Editar",
       "remove": "Eliminar",
@@ -461,6 +488,7 @@
     },
     "worth": {
       "nfts-count": "NFT ({{count}})",
+      "account-reserve": "Reserva recuperable",
       "lp-tokens-count": "Tokens LP ({{count}})",
       "tokens-count": "Tokens ({{count}})",
       "received-checks-count": "Cheques recibidos ({{count}})"

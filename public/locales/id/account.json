@@ -229,6 +229,33 @@
       "best-buy-offer": "Penawaran beli terbaik",
       "broker": "Broker"
     },
+    "reserve": {
+      "breakdown": "Rincian cadangan",
+      "show-details": "Tampilkan detail",
+      "hide-details": "Sembunyikan detail",
+      "type": "Tipe",
+      "objects": "Objek",
+      "object-reserve": "{{amount}} per objek",
+      "base": "Cadangan dasar",
+      "trustlines": "Trustline",
+      "nft-pages": "Halaman NFT",
+      "nft-offers": "Penawaran NFT",
+      "uri-tokens": "Token URI",
+      "uri-token-offers": "Penawaran token URI",
+      "offers": "Penawaran",
+      "checks": "Check",
+      "escrows": "Escrow",
+      "payment-channels": "Kanal pembayaran",
+      "deposit-preauth": "Praotorisasi deposit",
+      "signer-lists": "Daftar penanda tangan",
+      "tickets": "Tiket",
+      "hooks": "Hooks",
+      "hook-states": "Status hook",
+      "mptokens": "MPTokens",
+      "mptoken-issuances": "Penerbitan MPToken",
+      "amms": "AMM",
+      "other-objects": "Objek lain"
+    },
     "actions": {
       "edit": "Ubah",
       "remove": "Hapus",
@@ -461,6 +488,7 @@
     },
     "worth": {
       "nfts-count": "NFT ({{count}})",
+      "account-reserve": "Cadangan yang dapat dipulihkan",
       "lp-tokens-count": "Token LP ({{count}})",
       "tokens-count": "Token ({{count}})",
       "received-checks-count": "Check diterima ({{count}})"
