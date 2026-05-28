@@ -8,6 +8,9 @@ module.exports = withBundleAnalyzer({
   compiler: {
     styledComponents: true
   },
+  experimental: {
+    strictNextHead: true
+  },
   productionBrowserSourceMaps: false,
   i18n,
   webpack(config) {

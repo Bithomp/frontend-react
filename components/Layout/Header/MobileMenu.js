@@ -161,7 +161,7 @@ export default function MobileMenu({
               </span>
             </>
           ) : (
-            <span onClick={setSignRequest} className="link mobile-menu-item">
+            <span onClick={() => setSignRequest?.({})} className="link mobile-menu-item">
               <FiLink style={{ marginRight: 4, height: 18, width: 18, marginLeft: -1 }} /> {t('signin.connect')}
             </span>
           )}

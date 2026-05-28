@@ -104,6 +104,7 @@ function DescriptionWithShowMore({ text, maxLength = 400 }) {
 export default function Nft({ setSignRequest, account, pageMeta, id, selectedCurrency, refreshPage, fiatRate }) {
   const { t, i18n } = useTranslation()
   const isFirstRender = useRef(true)
+  const accountAddress = account?.address
 
   const [data, setData] = useState(pageMeta)
   const [decodedUri, setDecodedUri] = useState(null)
@@ -558,12 +559,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           )}
           {!offer.canceledAt &&
             !offer.acceptedAt &&
-            ((account?.address && offer.owner && account.address === offer.owner) ||
+            ((accountAddress && offer.owner && accountAddress === offer.owner) ||
               offer.validationErrors?.includes('Offer is expired') ||
-              (account?.address && offer.destination === account.address)) && (
+              (accountAddress && offer.destination === accountAddress)) && (
               <tr>
                 <td colSpan="2">
-                  {cancelNftOfferButton(t, setSignRequest, account.address, offer, type, data.type, id)}
+                  {cancelNftOfferButton(t, setSignRequest, accountAddress, offer, type, data.type, id)}
                 </td>
               </tr>
             )}
@@ -726,13 +727,13 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       })
       //best xrp offer available or an IOU offer
       //we should get the best IOU offer too... and show both XRP and IOU
-      best = bestNftOffer(sellOffers, account?.address, 'sell')
+      best = bestNftOffer(sellOffers, accountAddress, 'sell')
     }
 
     if (!best) return ''
 
     //do not show buy button, if's my own offer (Cancel button will be shown)
-    if (best.owner && account?.address && account.address === best.owner) {
+    if (best.owner && accountAddress && accountAddress === best.owner) {
       return ''
     }
 
@@ -810,7 +811,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     //1. check if owner is above - will show Cancel,
     //2. if known destination, we have checked it above mpURL (xls20 brokers)
     //3. check there is no destination, or destination is me (xls20 private offers, xls35)
-    if (!best.destination || (best.destination && account?.address && account.address === best.destination)) {
+    if (!best.destination || (best.destination && accountAddress && accountAddress === best.destination)) {
       return (
         <>
           {acceptNftSellOfferButton(t, setSignRequest, best, data.type)}
@@ -838,18 +839,18 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       })
       //best xrp offer available or an IOU offer
       //we should get the best IOU offer too... and show both XRP and IOU
-      best = bestNftOffer(buyOffers, account?.address, 'buy')
+      best = bestNftOffer(buyOffers, accountAddress, 'buy')
     }
 
     if (!best) return ''
 
     //don't show sell button, if's my own offer (Cancel button will be shown)
-    if (best.owner && account?.address && account.address === best.owner) {
+    if (best.owner && accountAddress && accountAddress === best.owner) {
       return ''
     }
 
     //show sell button only for the NFT owner
-    if (data.owner && account?.address && account.address === data.owner) {
+    if (data.owner && accountAddress && accountAddress === data.owner) {
       return (
         <>
           {acceptNftBuyOfferButton(t, setSignRequest, best, data.type)}
@@ -865,10 +866,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   const makeOfferButton = (sellOffers) => {
     // if removed do not offer to add an offer
     // if not transferable, do not show button to create offers unless the issuer is logged in.
-    if (!id || data.deletedAt || (!data.flags.transferable && (!account?.address || account.address !== data.issuer)))
+    if (!id || data.deletedAt || (!data.flags.transferable && (!accountAddress || accountAddress !== data.issuer)))
       return ''
     //if signed in and user is the nft's owner -> make a sell offer or a transfer, otherwise make a buy offer (no flag)
-    const sell = data?.owner && account?.address && account.address === data.owner
+    const sell = data?.owner && accountAddress && accountAddress === data.owner
 
     let request = {
       TransactionType: 'NFTokenCreateOffer',
@@ -933,7 +934,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
   const xls35SellOfferButton = () => {
     //signed in and user is the nft's owner, and it is xls35
-    if (!id || !data?.owner || !account?.address || account.address !== data.owner || data.type !== 'xls35') return ''
+    if (!id || !data?.owner || !accountAddress || accountAddress !== data.owner || data.type !== 'xls35') return ''
 
     //"Destination" - optional
     let request = {
@@ -980,8 +981,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     // if not signed, or signed but not an owner - do not show burn button
     // may be we should show it for burnable nfts (with a flag) for the minters also?
     if (
-      !(data?.owner && account?.address && account.address === data.owner) &&
-      !(data?.issuer && account?.address && account.address === data.issuer)
+      !(data?.owner && accountAddress && accountAddress === data.owner) &&
+      !(data?.issuer && accountAddress && accountAddress === data.issuer)
     )
       return ''
 
@@ -994,14 +995,14 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         URITokenID: id
       }
     } else {
-      if (account.address === data.owner) {
+      if (accountAddress === data.owner) {
         request = {
           TransactionType: 'NFTokenBurn',
           Account: data.owner,
           NFTokenID: id
         }
       }
-      if (account.address === data.issuer) {
+      if (accountAddress === data.issuer) {
         request = {
           TransactionType: 'NFTokenBurn',
           Account: data.issuer,
@@ -1033,15 +1034,15 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     if (!id || !data.flags?.mutable || data.type === 'xls35' || data.deletedAt) return '' //if it is not mutable or deleted
 
     // if not signed, or signed but not an issuer - do not show the button
-    if (!(data?.issuer && account?.address && account.address === data.issuer)) return ''
+    if (!(data?.issuer && accountAddress && accountAddress === data.issuer)) return ''
 
     let request = {
       TransactionType: 'NFTokenModify',
-      Account: account.address,
+      Account: accountAddress,
       NFTokenID: id
     }
 
-    if (data.owner !== account.address) {
+    if (data.owner !== accountAddress) {
       request.Owner = data.owner
     }
 
@@ -1071,7 +1072,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     if (!imageUrl) return '' //if there is no image, do not offer to set as avatar
 
     //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
-    if (devNet || (account?.address && account.address !== data.owner && account.address !== data.issuer)) return ''
+    if (devNet || !accountAddress || (accountAddress !== data.owner && accountAddress !== data.issuer)) return ''
 
     const command = {
       action: 'setAvatar',
@@ -1106,11 +1107,11 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               }
             })
           }
-          disabled={data.owner !== account?.address}
+          disabled={data.owner !== accountAddress}
         >
           Set as Avatar 😎
         </button>
-        {data.owner !== account?.address && (
+        {data.owner !== accountAddress && (
           <>
             <br />
             <span className="grey">{t('set-avatar-description', { ns: 'nft' })}</span>
@@ -1196,7 +1197,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               {setAsAvatarButton(data)}
                               {sellButton(data.buyOffers)}
                               {buyButton(data.sellOffers)}
-                              {cancelNftOfferButtons(t, setSignRequest, account?.address, data)}
+                              {cancelNftOfferButtons(t, setSignRequest, accountAddress, data)}
                               {data.type === 'xls20' && makeOfferButton(data.sellOffers)}
                               {data.type === 'xls35' && xls35SellOfferButton()}
                               {updateUriButton()}

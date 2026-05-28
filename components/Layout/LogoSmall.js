@@ -8,21 +8,6 @@ export default function LogoSmall({ width, height, color, dependOnTheme }) {
   if (server.includes('bithomp')) {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" id="A" viewBox="0 0 52 52" fill="#63a6b9" width={width} height={height}>
-        <style jsx>
-          {`
-            #A #E {
-              animation: shine-move 1.5s 1.5s ease-in-out both;
-            }
-            @keyframes shine-move {
-              from {
-                transform: translateX(-50px);
-              }
-              to {
-                transform: translateX(50px);
-              }
-            }
-          `}
-        </style>
         <defs>
           <filter id="B" x="-20%" y="-20%" width="140%" height="140%" primitiveUnits="userSpaceOnUse">
             <feGaussianBlur stdDeviation="3 3" x="0%" y="0%" width="100%" height="100%" in="SourceGraphic" />
