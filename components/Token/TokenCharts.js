@@ -121,19 +121,6 @@ const derivedSeries = ({ rows, name, getValue, type = 'line', color, group }) =>
   data: rows.map((row) => [row.timestamp, getValue(row)])
 })
 
-const stableFieldData = ({ rows, field, relativeThreshold = 1e-6 }) => {
-  const values = rows.map((row) => toNumber(row[field])).filter((value) => value !== null)
-  if (!values.length) return rows.map((row) => [row.timestamp, null])
-
-  const min = Math.min(...values)
-  const max = Math.max(...values)
-  const magnitude = Math.max(Math.abs(min), Math.abs(max), 1)
-  const isStable = (max - min) / magnitude < relativeThreshold
-  const displayValue = isStable ? values[values.length - 1] : null
-
-  return rows.map((row) => [row.timestamp, isStable ? displayValue : toNumber(row[field])])
-}
-
 const compactNumber = (value, currency) => {
   if (value === null || value === undefined) return '-'
   const abs = Math.abs(Number(value))
@@ -592,7 +579,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
         name: t('charts.series.supply'),
         type: 'line',
         color: CHART_COLORS.supply,
-        data: stableFieldData({ rows: chartRows, field: 'supply' })
+        data: chartRows.map((row) => [row.timestamp, toNumber(row.supply)])
       }
     ].filter((series) => hasUsableData([series]))
 
@@ -1064,7 +1051,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
         chartType: 'line',
         colors: supplySeries.map((series) => series.color),
         series: supplySeries,
-        yRange: seriesRange(supplySeries, { minRelativeSpread: 0.08 }),
+        yRange: seriesRange(supplySeries),
         axisFormatter: (value) => compactNumber(value),
         tooltipFormatter: (value) => `${fullNumber(value)} ${tokenUnit}`
       },
