@@ -128,6 +128,13 @@ const compactNumber = (value, currency) => {
   return shortNiceNumber(value, decimals, 1, currency)
 }
 
+const compactInteger = (value) => {
+  if (value === null || value === undefined) return '-'
+  const number = Number(value)
+  if (!Number.isFinite(number)) return '-'
+  return compactNumber(Math.round(number))
+}
+
 const fullNumber = (value, currency) => {
   if (value === null || value === undefined) return '-'
   const abs = Math.abs(Number(value))
@@ -156,6 +163,26 @@ const seriesRange = (series, options = {}) => {
     min: Math.max(0, rangeMin - padding),
     max: rangeMax + padding
   }
+}
+
+const integerSeriesRange = (series, options = {}) => {
+  const range = seriesRange(series, options)
+  if (!range) return null
+
+  const min = options.startAtZero ? 0 : Math.max(0, Math.floor(range.min))
+  const max = Math.max(min + 1, Math.ceil(range.max))
+
+  return { min, max }
+}
+
+const integerTickAmount = (range, fallback) => {
+  if (!range) return fallback
+
+  const min = Number(range.min)
+  const max = Number(range.max)
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return fallback
+
+  return Math.max(1, Math.min(fallback, Math.ceil(max - min)))
 }
 
 const chartDate = (value) => {
@@ -207,6 +234,10 @@ function TokenChart({ group, expanded = false }) {
 
   const options = useMemo(
     () => {
+      const baseTickAmount = expanded ? 5 : 3
+      const yAxisTickAmount = group.integerYAxis
+        ? integerTickAmount(group.yRange, baseTickAmount)
+        : baseTickAmount
       const yAxisLabelOptions = {
         minWidth: expanded ? 56 : 32,
         style: { colors: labelColor }
@@ -216,7 +247,8 @@ function TokenChart({ group, expanded = false }) {
             {
               ...(group.yRange ? group.yRange : {}),
               seriesName: group.primarySeriesName,
-              tickAmount: expanded ? 5 : 3,
+              tickAmount: yAxisTickAmount,
+              ...(group.integerYAxis ? { decimalsInFloat: 0, forceNiceScale: false } : {}),
               labels: {
                 ...yAxisLabelOptions,
                 formatter: group.axisFormatter
@@ -235,7 +267,8 @@ function TokenChart({ group, expanded = false }) {
           ]
         : {
             ...(group.yRange ? group.yRange : {}),
-            tickAmount: expanded ? 5 : 3,
+            tickAmount: yAxisTickAmount,
+            ...(group.integerYAxis ? { decimalsInFloat: 0, forceNiceScale: false } : {}),
             labels: {
               ...yAxisLabelOptions,
               formatter: group.axisFormatter
@@ -977,7 +1010,9 @@ export default function TokenCharts({ token, selectedCurrency }) {
         crosshairs: false,
         colors: dexAccountsSeries.map((series) => series.color),
         series: dexAccountsSeries,
-        axisFormatter: (value) => compactNumber(value),
+        yRange: integerSeriesRange(dexAccountsSeries, { startAtZero: true }),
+        integerYAxis: true,
+        axisFormatter: compactInteger,
         tooltipFormatter: (value) => niceNumber(value, 0),
         tooltipCustom: accountTooltip,
         tooltipFixed: true
@@ -991,8 +1026,9 @@ export default function TokenCharts({ token, selectedCurrency }) {
         chartType: 'line',
         colors: uniqueAccountsSeries.map((series) => series.color),
         series: uniqueAccountsSeries,
-        yRange: seriesRange(uniqueAccountsSeries),
-        axisFormatter: (value) => compactNumber(value),
+        yRange: integerSeriesRange(uniqueAccountsSeries),
+        integerYAxis: true,
+        axisFormatter: compactInteger,
         tooltipFormatter: (value) => niceNumber(value, 0)
       },
       {
