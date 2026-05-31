@@ -132,7 +132,7 @@ const compactInteger = (value) => {
   if (value === null || value === undefined) return '-'
   const number = Number(value)
   if (!Number.isFinite(number)) return '-'
-  return compactNumber(Math.round(number))
+  return shortNiceNumber(Math.round(number), 0, 0)
 }
 
 const fullNumber = (value, currency) => {
