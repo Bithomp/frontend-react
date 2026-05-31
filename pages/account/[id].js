@@ -38,6 +38,8 @@ const NFT_INITIAL_LIMIT = 5
 const NFT_LOAD_MORE_STEP = 10
 const NFT_FETCH_LIMIT = 45
 const NFT_BIDS_FETCH_LIMIT = 100
+const NFT_SEARCH_MIN_LENGTH = 3
+const NFT_SEARCH_LOCATIONS = 'metadata.name,metadata.description'
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
 const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
@@ -64,8 +66,7 @@ const uniqueNftsById = (nfts) => {
   })
 }
 
-const hasValidBuyOffer = (nft) =>
-  Array.isArray(nft?.buyOffers) && nft.buyOffers.some((offer) => offer?.valid !== false)
+const hasValidBuyOffer = (nft) => Array.isArray(nft?.buyOffers) && nft.buyOffers.some((offer) => offer?.valid !== false)
 
 const tokenForAmount = (amount, tokenList) => {
   if (!amount?.currency || !amount?.issuer || !Array.isArray(tokenList)) return null
@@ -643,6 +644,24 @@ const tokenSearchText = (token, accountAddress) => {
   return fields.map(searchValue).join(' ').toLowerCase()
 }
 
+const ownedNftSearchUrl = ({ address, search, marker }) => {
+  const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
+  const params = new URLSearchParams({
+    owner: address,
+    order: 'mintedNew',
+    includeWithoutMediaData: 'true',
+    limit: String(NFT_FETCH_LIMIT),
+    search,
+    searchLocations: NFT_SEARCH_LOCATIONS
+  })
+
+  if (marker) {
+    params.set('marker', marker)
+  }
+
+  return `v2/${nftResource}?${params.toString()}`
+}
+
 export default function Account({
   initialData,
   initialErrorMessage,
@@ -701,6 +720,11 @@ export default function Account({
   const [nftMarkers, setNftMarkers] = useState({ owned: null, minted: null, burned: null, sold: null })
   const [nftLoadingMore, setNftLoadingMore] = useState(false)
   const [nftDisplayLimit, setNftDisplayLimit] = useState(NFT_INITIAL_LIMIT)
+  const [ownedNftSearch, setOwnedNftSearch] = useState('')
+  const [ownedNftSearchResults, setOwnedNftSearchResults] = useState([])
+  const [ownedNftSearchMarker, setOwnedNftSearchMarker] = useState(null)
+  const [ownedNftSearchLoading, setOwnedNftSearchLoading] = useState(false)
+  const [ownedNftSearchError, setOwnedNftSearchError] = useState('')
   const [nftOffersDisplayLimit, setNftOffersDisplayLimit] = useState(NFT_OFFERS_PREVIEW_LIMIT)
   const [expandedNftCardKey, setExpandedNftCardKey] = useState(null)
   const [expandedNftOfferKey, setExpandedNftOfferKey] = useState(null)
@@ -802,6 +826,7 @@ export default function Account({
   const activatedAccountsRequestTokenRef = useRef(0)
   const signerAccountsRequestTokenRef = useRef(0)
   const nftMinterAccountsRequestTokenRef = useRef(0)
+  const ownedNftSearchRequestTokenRef = useRef(0)
   const nftOffersTabTouchedRef = useRef(false)
   const activatedAccountsOrderHydratedRef = useRef(false)
   const refreshPageRef = useRef(refreshPage)
@@ -1249,13 +1274,15 @@ export default function Account({
   const nftsFiatValue = nftsNativeValue * (tokenFiatRate || pageFiatRate || 0)
   const receivedChecksNativeValue = receivedChecks.reduce((sum, check) => sum + checkNativeValue(check), 0)
   const receivedChecksFiatValue = receivedChecksNativeValue * (tokenFiatRate || pageFiatRate || 0)
-  const accountReserveWorthDrops = reserveIncrementDrops > 0 ? Math.max(0, nativeReservedDrops - reserveIncrementDrops) : 0
+  const accountReserveWorthDrops =
+    reserveIncrementDrops > 0 ? Math.max(0, nativeReservedDrops - reserveIncrementDrops) : 0
   const accountReserveWorthFiatValue = (accountReserveWorthDrops / 1000000) * (pageFiatRate || 0)
   const hasNftWorthLine = !xahauNetwork && nftsNativeValue > 0
   const nftsWorthLabel = nftsWorthCount > 0 ? ta('worth.nfts-count', { count: nftsWorthCount }) : ta('tabs.nfts')
   const hasReceivedChecksWorthLine = receivedChecks.length > 0
   const hasAccountReserveWorthLine = accountReserveWorthDrops > 0
-  const hasAdditionalWorthAssets = hasNonNativeTokenAssets || hasNftWorthLine || hasReceivedChecksWorthLine || hasAccountReserveWorthLine
+  const hasAdditionalWorthAssets =
+    hasNonNativeTokenAssets || hasNftWorthLine || hasReceivedChecksWorthLine || hasAccountReserveWorthLine
   const totalWorthFiatValue =
     nativeAvailableFiatValue +
     accountReserveWorthFiatValue +
@@ -1274,11 +1301,21 @@ export default function Account({
           }
         ]
       : []),
-    ...(lpTokensCount > 0 ? [{ key: 'lp-tokens', label: ta('worth.lp-tokens-count', { count: lpTokensCount }), value: lpTokensFiatValue }] : []),
-    ...(issuedTokensCount > 0 ? [{ key: 'tokens', label: ta('worth.tokens-count', { count: issuedTokensCount }), value: issuedTokensFiatValue }] : []),
+    ...(lpTokensCount > 0
+      ? [{ key: 'lp-tokens', label: ta('worth.lp-tokens-count', { count: lpTokensCount }), value: lpTokensFiatValue }]
+      : []),
+    ...(issuedTokensCount > 0
+      ? [{ key: 'tokens', label: ta('worth.tokens-count', { count: issuedTokensCount }), value: issuedTokensFiatValue }]
+      : []),
     ...(hasNftWorthLine ? [{ key: 'nfts', label: nftsWorthLabel, value: nftsFiatValue }] : []),
     ...(hasReceivedChecksWorthLine
-      ? [{ key: 'received-checks', label: ta('worth.received-checks-count', { count: receivedChecks.length }), value: receivedChecksFiatValue }]
+      ? [
+          {
+            key: 'received-checks',
+            label: ta('worth.received-checks-count', { count: receivedChecks.length }),
+            value: receivedChecksFiatValue
+          }
+        ]
       : [])
   ].sort((a, b) => b.value - a.value)
   const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
@@ -1309,8 +1346,25 @@ export default function Account({
   const hasMintedNfts = mintedNfts.length > 0
   const hasBurnedNfts = burnedNfts.length > 0
   const hasAnyNftSectionData = hasOwnedNfts || hasSoldNfts || hasMintedNfts || hasBurnedNfts
+  const ownedNftSearchQuery = ownedNftSearch.trim()
+  const ownedNftSearchActive = nftTab === 'owned' && ownedNftSearchQuery.length > 0
+  const ownedNftSearchReady = ownedNftSearchQuery.length >= NFT_SEARCH_MIN_LENGTH
+  const shouldShowOwnedNftSearch =
+    hasOwnedNfts &&
+    nftTab === 'owned' &&
+    (ownedNftCount > NFT_INITIAL_LIMIT || !!nftMarkers.owned || !!ownedNftSearchQuery)
   const activeNftList =
-    nftTab === 'owned' ? ownedNfts : nftTab === 'sold' ? soldNfts : nftTab === 'minted' ? mintedNfts : burnedNfts
+    nftTab === 'owned'
+      ? ownedNftSearchActive && ownedNftSearchReady
+        ? ownedNftSearchResults
+        : ownedNftSearchActive
+          ? []
+          : ownedNfts
+      : nftTab === 'sold'
+        ? soldNfts
+        : nftTab === 'minted'
+          ? mintedNfts
+          : burnedNfts
   const activeNftLimit = nftDisplayLimit
   const activeNftCountMap = {
     owned: ownedNftCount,
@@ -1336,11 +1390,13 @@ export default function Account({
     minted: getNftTabCountLabel('minted'),
     burned: getNftTabCountLabel('burned')
   }
-  const activeNftCount = activeNftCountMap[nftTab] || 0
+  const activeNftBaseCount = activeNftCountMap[nftTab] || 0
+  const activeNftCount = ownedNftSearchActive ? activeNftList.length : activeNftBaseCount
   const activeNftPreview = activeNftList.slice(0, activeNftLimit)
-  const activeNftMarker = nftMarkers[nftTab] || null
+  const activeNftMarker = ownedNftSearchActive ? ownedNftSearchMarker : nftMarkers[nftTab] || null
   const activeNftAllShown = activeNftPreview.length >= activeNftList.length
-  const activeNftShowMoreAvailable = !activeNftAllShown || !!activeNftMarker
+  const activeNftShowMoreAvailable =
+    ownedNftSearchActive && !ownedNftSearchReady ? false : !activeNftAllShown || !!activeNftMarker
   const activeNftRemainingCount = !activeNftAllShown
     ? Math.min(NFT_LOAD_MORE_STEP, Math.max(activeNftList.length - activeNftPreview.length, 0))
     : activeNftMarker
@@ -1362,7 +1418,9 @@ export default function Account({
         ? mintedNftsLoading
         : nftTab === 'burned'
           ? burnedNftsLoading
-          : false
+          : ownedNftSearchActive
+            ? ownedNftSearchLoading
+            : false
   const activeNftViewAllHref =
     nftTab === 'owned'
       ? `/nfts/${data?.address}?includeWithoutMediaData=true`
@@ -1371,8 +1429,11 @@ export default function Account({
         : nftTab === 'minted'
           ? `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true${effectiveLedgerTimestamp && data?.inception ? `&mintedPeriod=${new Date(data.inception * 1000).toISOString()}..${new Date(effectiveLedgerTimestamp).toISOString()}` : ''}`
           : `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true&burnedPeriod=${effectiveLedgerTimestamp && data?.inception ? `${new Date(data.inception * 1000).toISOString()}..${new Date(effectiveLedgerTimestamp).toISOString()}` : 'all'}`
-  const activeNftEmptyLabel =
-    nftTab === 'owned'
+  const activeNftEmptyLabel = ownedNftSearchActive
+    ? !ownedNftSearchReady
+      ? ta('empty.nft-search-too-short')
+      : ownedNftSearchError || ta('empty.no-nft-search-results')
+    : nftTab === 'owned'
       ? ta('empty.no-owned-nfts')
       : nftTab === 'sold'
         ? ta('empty.no-sold-nfts')
@@ -1909,7 +1970,7 @@ export default function Account({
     }
 
     // All loaded items are shown — fetch the next batch using marker
-    const marker = nftMarkers[nftTab]
+    const marker = ownedNftSearchActive ? ownedNftSearchMarker : nftMarkers[nftTab]
     if (!marker || !data?.address) return
 
     const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
@@ -1918,7 +1979,10 @@ export default function Account({
     try {
       setNftLoadingMore(true)
       if (nftTab === 'owned') {
-        url = `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
+        url =
+          ownedNftSearchActive && ownedNftSearchReady
+            ? ownedNftSearchUrl({ address: data.address, search: ownedNftSearchQuery, marker })
+            : `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
       } else if (nftTab === 'sold') {
         const currencyQuery = selectedCurrency
           ? `&convertCurrencies=${selectedCurrency.toLowerCase()}&sortCurrency=${selectedCurrency.toLowerCase()}`
@@ -1947,12 +2011,20 @@ export default function Account({
       } else {
         moreItems = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
         if (nftTab === 'owned') {
-          setOwnedNfts((prev) => uniqueNftsById([...prev, ...moreItems]))
+          if (ownedNftSearchActive && ownedNftSearchReady) {
+            setOwnedNftSearchResults((prev) => uniqueNftsById([...prev, ...moreItems]))
+          } else {
+            setOwnedNfts((prev) => uniqueNftsById([...prev, ...moreItems]))
+          }
         } else if (nftTab === 'minted') setMintedNfts((prev) => [...prev, ...moreItems])
         else setBurnedNfts((prev) => [...prev, ...moreItems])
       }
 
-      setNftMarkers((prev) => ({ ...prev, [nftTab]: newMarker }))
+      if (ownedNftSearchActive && ownedNftSearchReady) {
+        setOwnedNftSearchMarker(newMarker)
+      } else {
+        setNftMarkers((prev) => ({ ...prev, [nftTab]: newMarker }))
+      }
       setNftDisplayLimit((prev) => prev + Math.min(NFT_LOAD_MORE_STEP, moreItems.length))
     } catch {
       // fetch failed — leave state unchanged so the button stays
@@ -2018,6 +2090,11 @@ export default function Account({
     setExpandedToken(null)
     setExpandedTransactionKey(null)
     setShowNftDataDetails(false)
+    setOwnedNftSearch('')
+    setOwnedNftSearchResults([])
+    setOwnedNftSearchMarker(null)
+    setOwnedNftSearchLoading(false)
+    setOwnedNftSearchError('')
     setNftTab('owned')
     nftOffersTabTouchedRef.current = false
     setNftOffersTab('owned')
@@ -2049,6 +2126,67 @@ export default function Account({
     setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
     setExpandedToken(null)
   }, [tokenSearch])
+
+  useEffect(() => {
+    const requestToken = ownedNftSearchRequestTokenRef.current + 1
+    ownedNftSearchRequestTokenRef.current = requestToken
+
+    setExpandedNftCardKey(null)
+    setNftDisplayLimit(NFT_INITIAL_LIMIT)
+
+    if (!ownedNftSearchQuery) {
+      setOwnedNftSearchResults([])
+      setOwnedNftSearchMarker(null)
+      setOwnedNftSearchLoading(false)
+      setOwnedNftSearchError('')
+      return
+    }
+
+    if (nftTab !== 'owned' || effectiveLedgerTimestamp || !data?.address) return
+
+    if (!ownedNftSearchReady) {
+      setOwnedNftSearchResults([])
+      setOwnedNftSearchMarker(null)
+      setOwnedNftSearchLoading(false)
+      setOwnedNftSearchError('')
+      return
+    }
+
+    const controller = new AbortController()
+    setOwnedNftSearchLoading(true)
+    const searchTimer = setTimeout(async () => {
+      try {
+        setOwnedNftSearchError('')
+
+        const response = await axios.get(ownedNftSearchUrl({ address: data.address, search: ownedNftSearchQuery }), {
+          signal: controller.signal
+        })
+
+        if (ownedNftSearchRequestTokenRef.current !== requestToken) return
+
+        const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
+        const nftList = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
+        setOwnedNftSearchResults(uniqueNftsById(nftList))
+        setOwnedNftSearchMarker(response?.data?.marker || null)
+      } catch (error) {
+        if (axios.isCancel(error) || error?.message === 'canceled') return
+        if (ownedNftSearchRequestTokenRef.current !== requestToken) return
+        setOwnedNftSearchResults([])
+        setOwnedNftSearchMarker(null)
+        setOwnedNftSearchError(ta('empty.no-nft-search-results'))
+      } finally {
+        if (ownedNftSearchRequestTokenRef.current === requestToken) {
+          setOwnedNftSearchLoading(false)
+        }
+      }
+    }, 350)
+
+    return () => {
+      clearTimeout(searchTimer)
+      controller.abort()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.address, effectiveLedgerTimestamp, nftTab, ownedNftSearchQuery, ownedNftSearchReady])
 
   useEffect(() => {
     if (tokenTab === 'lp' && lpTokensCount === 0) {
@@ -2113,7 +2251,10 @@ export default function Account({
     if (availableOfferTabs.length === 0) return
 
     const preferredOfferTab = availableOfferTabs[0]
-    if (!availableOfferTabs.includes(nftOffersTab) || (!nftOffersTabTouchedRef.current && nftOffersTab !== preferredOfferTab)) {
+    if (
+      !availableOfferTabs.includes(nftOffersTab) ||
+      (!nftOffersTabTouchedRef.current && nftOffersTab !== preferredOfferTab)
+    ) {
       setNftOffersTab(preferredOfferTab)
     }
   }, [nftOffersTab, hasReceivedPrivateNftOffers, hasCreatedSellNftOffers, hasCreatedBuyNftOffers, hasOwnedNftOffers])
@@ -2445,7 +2586,6 @@ export default function Account({
           setBurnedNfts([])
           setBurnedNftsLoading(false)
         }
-
       } catch (error) {
         setObjectsError(error?.message || 'Failed to load account objects')
         resetAccountObjectCollections()
@@ -2479,7 +2619,9 @@ export default function Account({
         const response = await axios.get(issuedTokensUrl)
         const fetchedIssuedTokens = Array.isArray(response?.data?.tokens) ? response.data.tokens : []
 
-        const sortedIssuedTokens = fetchedIssuedTokens.sort((a, b) => issuedTokenValueNative(b) - issuedTokenValueNative(a))
+        const sortedIssuedTokens = fetchedIssuedTokens.sort(
+          (a, b) => issuedTokenValueNative(b) - issuedTokenValueNative(a)
+        )
 
         setIssuedTokens(sortedIssuedTokens)
       } catch (error) {
@@ -2900,7 +3042,13 @@ export default function Account({
   const publicDataRows = []
   const pushPublicRow = (label, value, action = null, options = {}) => {
     if (!value) return
-    publicDataRows.push({ label, value, action, fullWidth: !!options.fullWidth, key: `${label}-${publicDataRows.length}` })
+    publicDataRows.push({
+      label,
+      value,
+      action,
+      fullWidth: !!options.fullWidth,
+      key: `${label}-${publicDataRows.length}`
+    })
   }
 
   const xamanThirdPartyProfile = data?.xamanMeta?.thirdPartyProfiles?.[0]
@@ -2958,7 +3106,11 @@ export default function Account({
   }
 
   if (data?.xamanMeta?.kycApproved) {
-    xamanRows.push({ key: 'kyc', label: ta('labels.kyc') + ':', value: <span className="green">{ta('states.verified')}</span> })
+    xamanRows.push({
+      key: 'kyc',
+      label: ta('labels.kyc') + ':',
+      value: <span className="green">{ta('states.verified')}</span>
+    })
   }
 
   if (showPaystring) {
@@ -3048,7 +3200,11 @@ export default function Account({
               {domainText}
             </a>
             {data.verifiedDomain && (
-              <span className="blue tooltip verified-domain-status-icon" role="img" aria-label={ta('labels.toml-verified-domain')}>
+              <span
+                className="blue tooltip verified-domain-status-icon"
+                role="img"
+                aria-label={ta('labels.toml-verified-domain')}
+              >
                 <MdVerified aria-hidden="true" style={{ position: 'relative', top: 2 }} />
                 <span className="tooltiptext small no-brake">{ta('labels.toml-verified-domain')}</span>
               </span>
@@ -3194,7 +3350,7 @@ export default function Account({
   if (initialErrorMessage) {
     return (
       <>
-      <SEO title={ta('seo.account-error')} />
+        <SEO title={ta('seo.account-error')} />
         <div className="center">
           <br />
           <br />
@@ -3238,11 +3394,9 @@ export default function Account({
             ? ' - ' + shortNiceNumber(data.ledgerInfo.balance / 1000000, 2, 0) + ' ' + nativeCurrency
             : '')
         }
-        description={
-          ta('seo.account-description', {
-            name: `${data.service?.name || data.username || ''} ${data.address}`.trim()
-          })
-        }
+        description={ta('seo.account-description', {
+          name: `${data.service?.name || data.username || ''} ${data.address}`.trim()
+        })}
         image={{ file: avatarSrc(data.address, refreshPage) }}
       />
 
@@ -3433,7 +3587,7 @@ export default function Account({
                   {expandedDidCard && (
                     <div className="asset-details">
                       <div className="detail-row">
-                          <span>{ta('labels.did-id')}:</span>
+                        <span>{ta('labels.did-id')}:</span>
                         <span className="copy-inline">
                           <span>{didData?.didID ? shortHash(didData.didID) : '-'}</span>
                           {!!didData?.didID && (
@@ -3747,7 +3901,9 @@ export default function Account({
                             </div>
                           )}
 
-                          {(hasMoreNftMinterAccountsLoaded || nftMinterAccountsMarker || nftMinterAccountsLoadingMore) && (
+                          {(hasMoreNftMinterAccountsLoaded ||
+                            nftMinterAccountsMarker ||
+                            nftMinterAccountsLoadingMore) && (
                             <div className="center" style={{ marginTop: '12px' }}>
                               <button
                                 type="button"
@@ -3792,9 +3948,7 @@ export default function Account({
                       {isBlackholed && (
                         <div className="detail-row issuer-detail-row">
                           <span>{ta('labels.account-status')}:</span>
-                          <span className="orange bold">
-                            {ta('messages.blackholed-description')}
-                          </span>
+                          <span className="orange bold">{ta('messages.blackholed-description')}</span>
                         </div>
                       )}
 
@@ -3838,7 +3992,11 @@ export default function Account({
                               <div key={`signer-group-${signerIndex}`}>
                                 <div className="detail-row issuer-detail-row">
                                   <span>
-                                    {ta('labels.signer-with-weight', { index: signerIndex + 1, weight: signer?.signerWeight || 0 })}:
+                                    {ta('labels.signer-with-weight', {
+                                      index: signerIndex + 1,
+                                      weight: signer?.signerWeight || 0
+                                    })}
+                                    :
                                   </span>
                                   <span className="control-address-wrap">
                                     <span className="copy-inline">
@@ -4001,7 +4159,8 @@ export default function Account({
                                       setSignRequest({})
                                     }}
                                   >
-                                    <TbPigMoney style={{ fontSize: 16, marginBottom: -3 }} /> {ta('actions.sign-in-to-claim')}
+                                    <TbPigMoney style={{ fontSize: 16, marginBottom: -3 }} />{' '}
+                                    {ta('actions.sign-in-to-claim')}
                                   </button>
                                 )}
                               </>
@@ -4603,9 +4762,7 @@ export default function Account({
                     <span className="waiting inline" aria-hidden="true"></span>
                   </span>
                 ) : (
-                  <span className="object-load-status-text">
-                    {ta('errors.failed-load-account-objects-assets')}
-                  </span>
+                  <span className="object-load-status-text">{ta('errors.failed-load-account-objects-assets')}</span>
                 )}
               </div>
             )}
@@ -5062,7 +5219,9 @@ export default function Account({
                       {!isLpToken && token.priceNativeCurrencySpot ? (
                         <>
                           <div className="detail-row">
-                            <span>{ta('labels.rate')} ({nativeCurrency}):</span>
+                            <span>
+                              {ta('labels.rate')} ({nativeCurrency}):
+                            </span>
                             <span>
                               1 {niceCurrency(token.Balance?.currency)} ={' '}
                               {shortNiceNumber(token.priceNativeCurrencySpot, 6, 6)} {nativeCurrency}
@@ -5070,7 +5229,9 @@ export default function Account({
                           </div>
                           {tokenFiatRate && selectedCurrency ? (
                             <div className="detail-row">
-                              <span>{ta('labels.rate')} ({selectedCurrency?.toUpperCase()}):</span>
+                              <span>
+                                {ta('labels.rate')} ({selectedCurrency?.toUpperCase()}):
+                              </span>
                               <span>
                                 1 {niceCurrency(token.Balance?.currency)} ={' '}
                                 <span className="tooltip no-brake" suppressHydrationWarning>
@@ -5409,7 +5570,8 @@ export default function Account({
                               className="card-action-btn redeem"
                               onClick={() => router.push(`/faucet?currency=RLUSD&amount=1&address=${data?.address}`)}
                             >
-                              <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.get-more-token', { amount: 1, token: 'RLUSD' })}
+                              <MdSouth style={{ fontSize: 16, marginBottom: -2 }} />{' '}
+                              {ta('actions.get-more-token', { amount: 1, token: 'RLUSD' })}
                             </button>
                           )}
                           <span className={disabledRemoveTrustlineTooltip ? 'tooltip' : ''}>
@@ -5579,7 +5741,7 @@ export default function Account({
               <>
                 <div className="section-header-row nft-section-header-row">
                   <div className="section-title nft-section-title">NFTs</div>
-                  {activeNftCount > 0 && data?.address && (
+                  {activeNftBaseCount > 0 && data?.address && (
                     <Link className="section-link" href={activeNftViewAllHref}>
                       {ta('actions.view-all')}
                     </Link>
@@ -5594,7 +5756,8 @@ export default function Account({
                         className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
                         onClick={() => setNftTab('owned')}
                       >
-                        {ta('tabs.owned')}{nftTabCountLabels.owned ? ` (${nftTabCountLabels.owned})` : ''}
+                        {ta('tabs.owned')}
+                        {nftTabCountLabels.owned ? ` (${nftTabCountLabels.owned})` : ''}
                       </button>
                     )}
                     {hasSoldNfts && (
@@ -5603,7 +5766,8 @@ export default function Account({
                         className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
                         onClick={() => setNftTab('sold')}
                       >
-                        {ta('tabs.sold')}{nftTabCountLabels.sold ? ` (${nftTabCountLabels.sold})` : ''}
+                        {ta('tabs.sold')}
+                        {nftTabCountLabels.sold ? ` (${nftTabCountLabels.sold})` : ''}
                       </button>
                     )}
                     {hasMintedNfts && (
@@ -5612,7 +5776,8 @@ export default function Account({
                         className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
                         onClick={() => setNftTab('minted')}
                       >
-                        {ta('tabs.minted')}{nftTabCountLabels.minted ? ` (${nftTabCountLabels.minted})` : ''}
+                        {ta('tabs.minted')}
+                        {nftTabCountLabels.minted ? ` (${nftTabCountLabels.minted})` : ''}
                       </button>
                     )}
                     {hasBurnedNfts && (
@@ -5621,13 +5786,49 @@ export default function Account({
                         className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
                         onClick={() => setNftTab('burned')}
                       >
-                        {ta('tabs.burned')}{nftTabCountLabels.burned ? ` (${nftTabCountLabels.burned})` : ''}
+                        {ta('tabs.burned')}
+                        {nftTabCountLabels.burned ? ` (${nftTabCountLabels.burned})` : ''}
                       </button>
                     )}
                   </div>
                 </div>
 
                 <div className="nft-section-content">
+                  {shouldShowOwnedNftSearch && (
+                    <div className="token-search-row nft-search-row" onClick={(event) => event.stopPropagation()}>
+                      <div className="token-search-box">
+                        <MdSearch className="token-search-icon" aria-hidden="true" />
+                        <input
+                          type="text"
+                          value={ownedNftSearch}
+                          onChange={(event) => setOwnedNftSearch(event.target.value)}
+                          placeholder={ta('labels.search-nfts')}
+                          aria-label={ta('labels.search-nfts')}
+                          className="token-search-input"
+                        />
+                        {ownedNftSearch && (
+                          <button
+                            type="button"
+                            className="token-search-clear"
+                            onClick={() => setOwnedNftSearch('')}
+                            aria-label={ta('actions.clear-search')}
+                          >
+                            <MdClose aria-hidden="true" />
+                          </button>
+                        )}
+                      </div>
+                      {ownedNftSearchActive && ownedNftSearchReady && !ownedNftSearchLoading && (
+                        <div className="token-search-count">
+                          {ta('counts.nfts-found', {
+                            count: ownedNftSearchMarker
+                              ? `${ownedNftSearchResults.length}+`
+                              : ownedNftSearchResults.length
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {activeNftLoading ? (
                     <div className="asset-fiat">{ta('messages.loading-nfts', { type: activeNftTabLabel })}</div>
                   ) : activeNftCount > 0 ? (
@@ -6471,7 +6672,13 @@ export default function Account({
                         if (!Number.isFinite(numericValue)) return null
                         return sign < 0 ? -numericValue : numericValue
                       }
-                      const buildTxAmountDisplay = ({ amount, sign, tone = 'grey', withIssuer = false, showPlus = true }) => {
+                      const buildTxAmountDisplay = ({
+                        amount,
+                        sign,
+                        tone = 'grey',
+                        withIssuer = false,
+                        showPlus = true
+                      }) => {
                         if (amount === null || typeof amount === 'undefined') return null
 
                         const displayAmount = typeof sign === 'number' ? toSignedDexAmount(amount, sign) : amount
@@ -6548,14 +6755,14 @@ export default function Account({
                         : txType === 'NFTokenCancelOffer'
                       const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
                       const showRelatedObjectInitiator =
-                        !!tx?.Account &&
-                        tx.Account !== data?.address &&
-                        tx?.Destination !== data?.address
+                        !!tx?.Account && tx.Account !== data?.address && tx?.Destination !== data?.address
                       const outcomeOfferIds = xahauNetwork
                         ? []
                         : (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
                             (entry?.nftokenOfferChanges || [])
-                              .filter((offerChange) => !isCancelNftOfferTx || isSource || offerChange?.owner === data?.address)
+                              .filter(
+                                (offerChange) => !isCancelNftOfferTx || isSource || offerChange?.owner === data?.address
+                              )
                               .map((offerChange) => offerChange?.index)
                           )
                       const transactionOfferIds =
@@ -6571,14 +6778,7 @@ export default function Account({
                             ]
                       const nftOfferIds = xahauNetwork
                         ? []
-                        : Array.from(
-                            new Set(
-                              [
-                                ...outcomeOfferIds,
-                                ...transactionOfferIds
-                              ].filter(Boolean)
-                            )
-                          )
+                        : Array.from(new Set([...outcomeOfferIds, ...transactionOfferIds].filter(Boolean)))
                       const nftOfferAmountRaw =
                         tx?.Amount ??
                         txdata?.specification?.nftokenOffer?.amount ??
@@ -6763,7 +6963,9 @@ export default function Account({
                           )
                         }
                         if (accountSetSpec?.defaultRipple !== undefined) {
-                          changes.push(`${ta('labels.default-ripple')}: ${accountSetSpec.defaultRipple ? ta('states.enabled') : ta('states.disabled')}`)
+                          changes.push(
+                            `${ta('labels.default-ripple')}: ${accountSetSpec.defaultRipple ? ta('states.enabled') : ta('states.disabled')}`
+                          )
                         }
                         if (
                           accountSetSpec?.disallowXRP !== undefined ||
@@ -6771,7 +6973,9 @@ export default function Account({
                         ) {
                           changes.push(
                             `${ta('labels.receiving-native')}: ${
-                              accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP ? ta('states.disallow') : ta('states.allow')
+                              accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP
+                                ? ta('states.disallow')
+                                : ta('states.allow')
                             }`
                           )
                         }
@@ -6788,10 +6992,14 @@ export default function Account({
                           )
                         }
                         if (accountSetSpec?.depositAuth !== undefined) {
-                          changes.push(`${ta('labels.deposit-authorization')}: ${accountSetSpec.depositAuth ? ta('states.enabled') : ta('states.disabled')}`)
+                          changes.push(
+                            `${ta('labels.deposit-authorization')}: ${accountSetSpec.depositAuth ? ta('states.enabled') : ta('states.disabled')}`
+                          )
                         }
                         if (accountSetSpec?.disableMaster !== undefined) {
-                          changes.push(`${ta('labels.master-key')}: ${accountSetSpec.disableMaster ? ta('states.disabled') : ta('states.enabled')}`)
+                          changes.push(
+                            `${ta('labels.master-key')}: ${accountSetSpec.disableMaster ? ta('states.disabled') : ta('states.enabled')}`
+                          )
                         }
                         if (accountSetSpec?.noFreeze) {
                           changes.push(`${ta('labels.no-freeze')}: ${ta('states.enabled')}`)
@@ -6802,12 +7010,16 @@ export default function Account({
                         ) {
                           changes.push(
                             `${ta('labels.require-authorization')}: ${
-                              accountSetSpec?.requireAuth || accountSetSettings?.requireAuth ? ta('states.enabled') : ta('states.disabled')
+                              accountSetSpec?.requireAuth || accountSetSettings?.requireAuth
+                                ? ta('states.enabled')
+                                : ta('states.disabled')
                             }`
                           )
                         }
                         if (accountSetSpec?.disallowIncomingCheck !== undefined) {
-                          changes.push(`${ta('labels.incoming-check')}: ${accountSetSpec.disallowIncomingCheck ? ta('states.disallow') : ta('states.allow')}`)
+                          changes.push(
+                            `${ta('labels.incoming-check')}: ${accountSetSpec.disallowIncomingCheck ? ta('states.disallow') : ta('states.allow')}`
+                          )
                         }
                         if (accountSetSpec?.disallowIncomingPayChan !== undefined) {
                           changes.push(
@@ -6832,10 +7044,14 @@ export default function Account({
                           )
                         }
                         if (accountSetSpec?.globalFreeze !== undefined) {
-                          changes.push(`${ta('labels.global-freeze')}: ${accountSetSpec.globalFreeze ? ta('states.enabled') : ta('states.disabled')}`)
+                          changes.push(
+                            `${ta('labels.global-freeze')}: ${accountSetSpec.globalFreeze ? ta('states.enabled') : ta('states.disabled')}`
+                          )
                         }
                         if (accountSetSpec?.authorizedMinter !== undefined) {
-                          changes.push(`${ta('labels.authorized-minter')}: ${accountSetSpec.authorizedMinter ? ta('states.enabled') : ta('states.disabled')}`)
+                          changes.push(
+                            `${ta('labels.authorized-minter')}: ${accountSetSpec.authorizedMinter ? ta('states.enabled') : ta('states.disabled')}`
+                          )
                         }
                         if (accountSetSpec?.nftokenMinter !== undefined) {
                           if (accountSetSpec.nftokenMinter) {
@@ -6850,7 +7066,9 @@ export default function Account({
                           )
                         }
                         if (accountSetSpec?.disallowIncomingRemit !== undefined) {
-                          changes.push(`${ta('labels.incoming-remit')}: ${accountSetSpec.disallowIncomingRemit ? ta('states.disallow') : ta('states.allow')}`)
+                          changes.push(
+                            `${ta('labels.incoming-remit')}: ${accountSetSpec.disallowIncomingRemit ? ta('states.disallow') : ta('states.allow')}`
+                          )
                         }
 
                         return changes[0] || null
@@ -6899,7 +7117,8 @@ export default function Account({
                               : ta(`transactions.bought-nft-${nonBrokerDirectionSuffix}`)
 
                           if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
-                            if (nftDestination?.address === data?.address) return ta('transactions.received-nft-offer-from')
+                            if (nftDestination?.address === data?.address)
+                              return ta('transactions.received-nft-offer-from')
                             if (nftSource?.address === data?.address) return ta('transactions.nft-transfer-to')
                             return ta('transactions.nft-transfer-by')
                           }
@@ -6954,10 +7173,7 @@ export default function Account({
                         isNftTransferLabel && (isZeroNftOfferAmount || nftOfferAmountRaw === '0')
                       const isFreeNftCreateOffer = isCreateNftOfferTx && isZeroNftOfferAmount
                       const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept || isFreeNftCreateOffer
-                      const showFreeNftBadgeGreen =
-                        showFreeNftBadge &&
-                        nftViewerRole === 'buyer' &&
-                        isFreeNftAccept
+                      const showFreeNftBadgeGreen = showFreeNftBadge && nftViewerRole === 'buyer' && isFreeNftAccept
                       const isNftSellOffer = xahauNetwork
                         ? isCreateNftOfferTx
                         : !!txdata?.specification?.flags?.sellToken
@@ -7122,7 +7338,8 @@ export default function Account({
                         }
 
                         if (paymentCollapsedLabel) return paymentCollapsedLabel
-                        if (counterparty) return `${txTypeShortLabel} ${isSource ? ta('phrases.to') : ta('phrases.from')}`
+                        if (counterparty)
+                          return `${txTypeShortLabel} ${isSource ? ta('phrases.to') : ta('phrases.from')}`
                         return txTypeShortLabel
                       })()
                       const showBrokerInCollapsedTitle =
@@ -7349,7 +7566,9 @@ export default function Account({
                                     </span>
                                   )}
                                   {collapsedMoreCount > 0 && (
-                                    <span className="tx-inline-more">{ta('counts.more', { count: collapsedMoreCount })}</span>
+                                    <span className="tx-inline-more">
+                                      {ta('counts.more', { count: collapsedMoreCount })}
+                                    </span>
                                   )}
                                 </>
                               )}
@@ -7431,7 +7650,9 @@ export default function Account({
                                       <span className="tx-detail-stacked-amount">
                                         <span className="grey">{failedPaymentAmountDisplay.expandedText}</span>
                                         {!!failedPaymentAmountDisplay.expandedFiat && (
-                                          <span className="tx-change-fiat">{failedPaymentAmountDisplay.expandedFiat}</span>
+                                          <span className="tx-change-fiat">
+                                            {failedPaymentAmountDisplay.expandedFiat}
+                                          </span>
                                         )}
                                       </span>
                                     </div>
@@ -7657,7 +7878,9 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>{ta('labels.incoming-check')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingCheck ? ta('states.disallow') : ta('states.allow')}
+                                        {accountSetSpec.disallowIncomingCheck
+                                          ? ta('states.disallow')
+                                          : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
@@ -7666,7 +7889,9 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>{ta('labels.incoming-payment-channel')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingPayChan ? ta('states.disallow') : ta('states.allow')}
+                                        {accountSetSpec.disallowIncomingPayChan
+                                          ? ta('states.disallow')
+                                          : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
@@ -7675,7 +7900,9 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>{ta('labels.incoming-nft-offer')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingNFTokenOffer ? ta('states.disallow') : ta('states.allow')}
+                                        {accountSetSpec.disallowIncomingNFTokenOffer
+                                          ? ta('states.disallow')
+                                          : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
@@ -7684,7 +7911,9 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>{ta('labels.incoming-trustline')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingTrustline ? ta('states.disallow') : ta('states.allow')}
+                                        {accountSetSpec.disallowIncomingTrustline
+                                          ? ta('states.disallow')
+                                          : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
@@ -7693,7 +7922,9 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>{ta('labels.transaction-id-tracking')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.enableTransactionIDTracking ? ta('states.enabled') : ta('states.disabled')}
+                                        {accountSetSpec.enableTransactionIDTracking
+                                          ? ta('states.enabled')
+                                          : ta('states.disabled')}
                                       </span>
                                     </div>
                                   )}
@@ -7741,7 +7972,9 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>{ta('labels.trustline-clawback')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.allowTrustLineClawback ? ta('states.allowed') : ta('states.disallow')}
+                                        {accountSetSpec.allowTrustLineClawback
+                                          ? ta('states.allowed')
+                                          : ta('states.disallow')}
                                       </span>
                                     </div>
                                   )}
@@ -7750,7 +7983,9 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>{ta('labels.incoming-remit')}:</span>
                                       <span className="orange">
-                                        {accountSetSpec.disallowIncomingRemit ? ta('states.disallow') : ta('states.allow')}
+                                        {accountSetSpec.disallowIncomingRemit
+                                          ? ta('states.disallow')
+                                          : ta('states.allow')}
                                       </span>
                                     </div>
                                   )}
@@ -7839,7 +8074,11 @@ export default function Account({
 
                               {isSource && (tx?.Sequence || tx?.TicketSequence) && (
                                 <div className="detail-row">
-                                  <span>{tx?.TicketSequence ? `${ta('labels.ticket-sequence')}:` : `${ta('labels.sequence')}:`}</span>
+                                  <span>
+                                    {tx?.TicketSequence
+                                      ? `${ta('labels.ticket-sequence')}:`
+                                      : `${ta('labels.sequence')}:`}
+                                  </span>
                                   <span>{tx?.Sequence || tx?.TicketSequence}</span>
                                 </div>
                               )}
@@ -8014,7 +8253,9 @@ export default function Account({
 
                               {nftOfferIds.length > 0 && (
                                 <div className="detail-row">
-                                  <span>{nftOfferIds.length > 1 ? `${ta('labels.offers')}:` : `${ta('labels.offer')}:`}</span>
+                                  <span>
+                                    {nftOfferIds.length > 1 ? `${ta('labels.offers')}:` : `${ta('labels.offer')}:`}
+                                  </span>
                                   <span className="tx-offer-id-list">
                                     {nftOfferIds.map((offerId, offerIndex) => (
                                       <span className="copy-inline" key={`${txKey}-offer-${offerIndex}`}>
@@ -8148,9 +8389,7 @@ export default function Account({
                     <span className="waiting inline" aria-hidden="true"></span>
                   </span>
                 ) : (
-                  <span className="object-load-status-text">
-                    {ta('errors.failed-load-account-objects-sections')}
-                  </span>
+                  <span className="object-load-status-text">{ta('errors.failed-load-account-objects-sections')}</span>
                 )}
               </div>
             )}
@@ -8198,7 +8437,9 @@ export default function Account({
                     </div>
                     <div className="detail-row issuer-detail-row">
                       <span>{ta('labels.no-freeze')}:</span>
-                      <span className={isNoFreezeEnabled && 'bold'}>{isNoFreezeEnabled ? ta('states.enabled') : ta('states.not-set')}</span>
+                      <span className={isNoFreezeEnabled && 'bold'}>
+                        {isNoFreezeEnabled ? ta('states.enabled') : ta('states.not-set')}
+                      </span>
                     </div>
                     <div className="card-actions issuer-settings-actions">
                       <button
@@ -8264,7 +8505,9 @@ export default function Account({
                                 ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
                                 : shortNiceNumber(tokenMarketcap, 2, 1)}
                             </div>
-                            <div className="asset-fiat">{ta('labels.supply')}: {shortNiceNumber(tokenSupply)}</div>
+                            <div className="asset-fiat">
+                              {ta('labels.supply')}: {shortNiceNumber(tokenSupply)}
+                            </div>
                           </div>
                         </div>
 
@@ -8494,7 +8737,9 @@ export default function Account({
                               <span className="escrow-time-top">{offerDateText}</span>
                             </div>
                             <div className="tx-collapsed-meta">
-                              <span className="tx-accountset-inline">{ta('phrases.for')} {collapsedSecondary}</span>
+                              <span className="tx-accountset-inline">
+                                {ta('phrases.for')} {collapsedSecondary}
+                              </span>
                             </div>
                           </div>
                           <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
@@ -8515,7 +8760,9 @@ export default function Account({
                               </span>
                             </div>
                             <div className="detail-row">
-                              <span>{isSell ? `${ta('labels.wants-at-least')}:` : `${ta('labels.can-pay-maximum')}:`}</span>
+                              <span>
+                                {isSell ? `${ta('labels.wants-at-least')}:` : `${ta('labels.can-pay-maximum')}:`}
+                              </span>
                               <span>
                                 {amountFormat(isSell ? offer?.TakerPays : offer?.TakerGets, {
                                   icon: true,
@@ -8751,7 +8998,9 @@ export default function Account({
                                 <CurrencyWithIcon token={sendMaxToken} options={{ disableTokenLink: true }} />
                               </div>
                               <div className="asset-value">
-                                <div className={`asset-amount ${isReceivedCheck ? 'grey' : ''}`}>{collapsedSendMaxText}</div>
+                                <div className={`asset-amount ${isReceivedCheck ? 'grey' : ''}`}>
+                                  {collapsedSendMaxText}
+                                </div>
                                 {sendMaxFiatText && (
                                   <div className="asset-fiat" suppressHydrationWarning>
                                     {sendMaxFiatText}
@@ -9041,7 +9290,11 @@ export default function Account({
                               : '-'
                         const isOutgoingEscrow = activeEscrowsTab === 'sent'
                         const isSelfEscrow = activeEscrowsTab === 'self'
-                        const collapsedDirectionLabel = isSelfEscrow ? '' : isOutgoingEscrow ? ta('labels.to') : ta('labels.from')
+                        const collapsedDirectionLabel = isSelfEscrow
+                          ? ''
+                          : isOutgoingEscrow
+                            ? ta('labels.to')
+                            : ta('labels.from')
                         const collapsedAmountClass = isSelfEscrow ? 'grey' : isOutgoingEscrow ? 'red' : 'green'
                         const collapsedAmountSign = isSelfEscrow ? '' : isOutgoingEscrow ? '-' : '+'
                         const escrowAmountDrops = Number(escrow?.Amount || 0)
@@ -9303,7 +9556,8 @@ export default function Account({
                         className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
                         onClick={() => selectNftOffersTab('owned')}
                       >
-                        {ta('tabs.for-owned')}{nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
+                        {ta('tabs.for-owned')}
+                        {nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
                       </button>
                     )}
                     {hasReceivedPrivateNftOffers && (
@@ -9312,7 +9566,8 @@ export default function Account({
                         className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
                         onClick={() => selectNftOffersTab('received')}
                       >
-                        {ta('tabs.private')}{nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
+                        {ta('tabs.private')}
+                        {nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
                       </button>
                     )}
                     {hasCreatedSellNftOffers && (
@@ -9331,7 +9586,8 @@ export default function Account({
                         className={`nft-tab-btn ${nftOffersTab === 'createdBuying' ? 'active' : ''}`}
                         onClick={() => selectNftOffersTab('createdBuying')}
                       >
-                        {ta('tabs.buying')}{nftOffersTabCountLabels.createdBuying ? ` (${nftOffersTabCountLabels.createdBuying})` : ''}
+                        {ta('tabs.buying')}
+                        {nftOffersTabCountLabels.createdBuying ? ` (${nftOffersTabCountLabels.createdBuying})` : ''}
                       </button>
                     )}
                   </div>
@@ -9377,7 +9633,8 @@ export default function Account({
                             : offer?.amount
                               ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
                               : null
-                          const isNativeOfferAmount = !isFreeNftOffer && offer?.amount && typeof offer.amount !== 'object'
+                          const isNativeOfferAmount =
+                            !isFreeNftOffer && offer?.amount && typeof offer.amount !== 'object'
                           const shouldShowOfferFiat =
                             !isFreeNftOffer &&
                             !!offer?.amount &&
@@ -9475,7 +9732,9 @@ export default function Account({
                           })()
                           const secondaryLine = (() => {
                             if (nftOffersTab === 'received') {
-                              return isOwnAccount ? ta('nft-offers.private-to-you') : ta('nft-offers.private-to-account')
+                              return isOwnAccount
+                                ? ta('nft-offers.private-to-you')
+                                : ta('nft-offers.private-to-account')
                             }
                             if (nftOffersTab === 'owned') {
                               return isOwnAccount ? ta('nft-offers.on-your-nft') : ta('nft-offers.on-account-owned-nft')
@@ -9549,7 +9808,9 @@ export default function Account({
                                   )}
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${collapsedAmountClass}`}>
-                                      {isFreeNftOffer ? ta('states.free') : `${collapsedAmountSign}${offerAmountText || '-'}`}
+                                      {isFreeNftOffer
+                                        ? ta('states.free')
+                                        : `${collapsedAmountSign}${offerAmountText || '-'}`}
                                     </span>
                                     {offerAmountFiat && (
                                       <span className="tx-change-fiat">
@@ -9870,7 +10131,8 @@ export default function Account({
                           fiatRate: pageFiatRate,
                           asText: true
                         })
-                        const counterpartLabel = activePaychannelsTab === 'outgoing' ? ta('labels.to') : ta('labels.from')
+                        const counterpartLabel =
+                          activePaychannelsTab === 'outgoing' ? ta('labels.to') : ta('labels.from')
                         const amountDisplay = amountText || '-'
                         const balanceDisplay = balanceText || '-'
                         const balanceFiatText = balanceFiatNode || '—'
@@ -10155,13 +10417,9 @@ export default function Account({
                                 </div>
                                 <div className="asset-value tx-collapsed-change">
                                   {activationAmount > 0 ? (
-                                    <span className="tx-inline-change red">
-                                      -{collapsedActivationAmountText}
-                                    </span>
+                                    <span className="tx-inline-change red">-{collapsedActivationAmountText}</span>
                                   ) : (
-                                    <span className="tx-inline-change grey">
-                                      {collapsedActivationAmountText}
-                                    </span>
+                                    <span className="tx-inline-change grey">{collapsedActivationAmountText}</span>
                                   )}
                                 </div>
                               </div>
@@ -10187,10 +10445,7 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>{ta('labels.activation-tx')}:</span>
                                       <span className="copy-inline">
-                                        <Link
-                                          href={`/tx/${child.txHash}`}
-                                          onClick={(e) => e.stopPropagation()}
-                                        >
+                                        <Link href={`/tx/${child.txHash}`} onClick={(e) => e.stopPropagation()}>
                                           {shortHash(child.txHash)}
                                         </Link>
                                         <CopyButton text={child.txHash} />
@@ -10309,9 +10564,7 @@ export default function Account({
                   <div className="section-title object-section-title">{ta('sections.objects')}</div>
                 </div>
                 <div className="asset-item object-load-status">
-                  <span className="object-load-status-text">
-                    {ta('empty.no-account-objects')}
-                  </span>
+                  <span className="object-load-status-text">{ta('empty.no-account-objects')}</span>
                 </div>
               </>
             )}

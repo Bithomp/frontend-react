@@ -189,6 +189,7 @@
       "fee": "费用",
       "amount": "金额",
       "search-tokens": "搜索代币或发行方",
+      "search-nfts": "按 NFT 名称、描述或合集搜索",
       "app-dapp": "App/Dapp",
       "balance-changes": "余额变动",
       "rates": "汇率",
@@ -453,6 +454,7 @@
       "addresses_other": "地址",
       "more": "+{{count}} 个更多",
       "tokens-found": "找到 {{count}} 个",
+      "nfts-found": "找到 {{count}} 个",
       "for-addresses_one": "用于 1 个地址",
       "for-addresses_other": "用于 {{formattedCount}} 个地址"
     },
@@ -509,6 +511,8 @@
       "no-owned-nft-offers": "未找到已拥有 NFT 的报价。",
       "no-transactions": "未找到交易。",
       "no-token-search-results": "没有代币匹配你的搜索。",
+      "no-nft-search-results": "没有已拥有的 NFT 匹配你的搜索。",
+      "nft-search-too-short": "请输入至少 3 个字符来搜索 NFT。",
       "no-account-objects": "没有 DEX 订单、Check、Escrow、NFT 报价、Paychannel、已发行代币、已发行 MPT 或已激活账户。"
     },
     "errors": {

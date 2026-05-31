@@ -184,6 +184,7 @@
       "fee": "Fee",
       "amount": "Amount",
       "search-tokens": "Search token or issuer",
+      "search-nfts": "Search NFT name, description, or collection",
       "app-dapp": "App/Dapp",
       "balance-changes": "Balance changes",
       "rates": "Rates",
@@ -448,6 +449,7 @@
       "addresses_other": "addresses",
       "more": "+{{count}} more",
       "tokens-found": "{{count}} found",
+      "nfts-found": "{{count}} found",
       "for-addresses_one": "for one address",
       "for-addresses_other": "for {{formattedCount}} addresses"
     },
@@ -504,6 +506,8 @@
       "no-owned-nft-offers": "No offers for owned NFTs found.",
       "no-transactions": "No transactions found.",
       "no-token-search-results": "No tokens match your search.",
+      "no-nft-search-results": "No owned NFTs match your search.",
+      "nft-search-too-short": "Enter at least 3 characters to search NFTs.",
       "no-account-objects": "No DEX orders, checks, escrows, NFT offers, paychannels, issued tokens, issued MPTs, or activated accounts."
     },
     "errors": {

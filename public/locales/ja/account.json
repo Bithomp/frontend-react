@@ -189,6 +189,7 @@
       "fee": "手数料",
       "amount": "金額",
       "search-tokens": "トークンまたは発行者を検索",
+      "search-nfts": "NFT名、説明、コレクションを検索",
       "app-dapp": "App/Dapp",
       "balance-changes": "残高の変化",
       "rates": "レート",
@@ -453,6 +454,7 @@
       "addresses_other": "アドレス",
       "more": "+{{count}}件",
       "tokens-found": "{{count}}件見つかりました",
+      "nfts-found": "{{count}}件見つかりました",
       "for-addresses_one": "1件のアドレスで",
       "for-addresses_other": "{{formattedCount}}件のアドレスで"
     },
@@ -509,6 +511,8 @@
       "no-owned-nft-offers": "所有中NFTへのオファーは見つかりません。",
       "no-transactions": "トランザクションは見つかりません。",
       "no-token-search-results": "検索に一致するトークンはありません。",
+      "no-nft-search-results": "検索に一致する所有NFTはありません。",
+      "nft-search-too-short": "NFTを検索するには3文字以上入力してください。",
       "no-account-objects": "DEX注文、Check、Escrow、NFTオファー、Paychannel、発行済みトークン、発行済みMPT、または有効化済みアカウントはありません。"
     },
     "errors": {

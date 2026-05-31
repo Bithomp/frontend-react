@@ -189,6 +189,7 @@
       "fee": "Comisión",
       "amount": "Importe",
       "search-tokens": "Buscar token o emisor",
+      "search-nfts": "Buscar NFT por nombre, descripción o colección",
       "app-dapp": "App/Dapp",
       "balance-changes": "Cambios de saldo",
       "rates": "Tasas",
@@ -453,6 +454,7 @@
       "addresses_other": "direcciones",
       "more": "+{{count}} más",
       "tokens-found": "{{count}} encontrados",
+      "nfts-found": "{{count}} encontrados",
       "for-addresses_one": "para una dirección",
       "for-addresses_other": "para {{formattedCount}} direcciones"
     },
@@ -509,6 +511,8 @@
       "no-owned-nft-offers": "No se encontraron ofertas para NFT propios.",
       "no-transactions": "No se encontraron transacciones.",
       "no-token-search-results": "Ningún token coincide con tu búsqueda.",
+      "no-nft-search-results": "Ningún NFT propio coincide con tu búsqueda.",
+      "nft-search-too-short": "Ingresa al menos 3 caracteres para buscar NFTs.",
       "no-account-objects": "No hay órdenes DEX, checks, escrows, ofertas NFT, paychannels, tokens emitidos, MPT emitidos ni cuentas activadas."
     },
     "errors": {
