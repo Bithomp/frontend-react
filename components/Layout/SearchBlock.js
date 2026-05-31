@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, isValidElement } from 'react'
 import Select, { components } from 'react-select'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -81,6 +81,15 @@ import { IoSearch } from 'react-icons/io5'
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 let typingTimer
+
+const normalizeSearchErrorMessage = (message) => {
+  if (!message) return ''
+  if (typeof message === 'string' || typeof message === 'number') return message
+  if (isValidElement(message)) return message
+  if (message instanceof Error) return message.message
+  if (typeof message === 'object' && typeof message.message === 'string') return message.message
+  return String(message)
+}
 
 export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMobile, compact = false, type = '' }) {
   const { t, i18n } = useTranslation()
@@ -258,7 +267,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
           return
         }
       } catch (error) {
-        setErrorMessage(error)
+        setErrorMessage(normalizeSearchErrorMessage(error))
         return
       }
     }
@@ -338,6 +347,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
     }
     return ''
   }
+
+  const displayedErrorMessage = normalizeSearchErrorMessage(errorMessage)
 
   return (
     <>
@@ -457,12 +468,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
           <div className="search-button" onClick={onSearch}>
             <IoSearch className="search-icon" />
           </div>
-          {errorMessage && (
+          {displayedErrorMessage && (
             <div
               className={compact ? 'search-error' : 'orange'}
               style={{ position: 'absolute', bottom: '-50px', minHeight: '42px', textAlign: 'left' }}
             >
-              {errorMessage}
+              {displayedErrorMessage}
             </div>
           )}
         </div>
