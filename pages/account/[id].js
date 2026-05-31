@@ -66,6 +66,31 @@ const uniqueNftsById = (nfts) => {
   })
 }
 
+const enrichNftsWithLoadedDetails = (nfts, loadedNfts) => {
+  if (!Array.isArray(nfts) || !Array.isArray(loadedNfts) || loadedNfts.length === 0) return nfts
+
+  const loadedById = new Map(
+    loadedNfts
+      .map((nft) => [nftTokenIdFromData(nft), nft])
+      .filter(([nftId]) => !!nftId)
+  )
+
+  return nfts.map((nft) => {
+    const loadedNft = loadedById.get(nftTokenIdFromData(nft))
+    if (!loadedNft) return nft
+
+    const buyOffers = Array.isArray(nft?.buyOffers) && nft.buyOffers.length > 0 ? nft.buyOffers : loadedNft.buyOffers
+    const sellOffers = Array.isArray(nft?.sellOffers) && nft.sellOffers.length > 0 ? nft.sellOffers : loadedNft.sellOffers
+
+    return {
+      ...loadedNft,
+      ...nft,
+      ...(buyOffers ? { buyOffers } : {}),
+      ...(sellOffers ? { sellOffers } : {})
+    }
+  })
+}
+
 const hasValidBuyOffer = (nft) => Array.isArray(nft?.buyOffers) && nft.buyOffers.some((offer) => offer?.valid !== false)
 
 const tokenForAmount = (amount, tokenList) => {
@@ -1349,6 +1374,18 @@ export default function Account({
   const ownedNftSearchQuery = ownedNftSearch.trim()
   const ownedNftSearchActive = nftTab === 'owned' && ownedNftSearchQuery.length > 0
   const ownedNftSearchReady = ownedNftSearchQuery.length >= NFT_SEARCH_MIN_LENGTH
+  const enrichedOwnedNftSearchResults = useMemo(
+    () =>
+      enrichNftsWithLoadedDetails(ownedNftSearchResults, ownedNfts)
+        .map((nft, index) => ({
+          nft,
+          index,
+          offerValue: bestNftBuyOfferValue(nft, { tokenList: tokens })
+        }))
+        .sort((a, b) => b.offerValue - a.offerValue || a.index - b.index)
+        .map(({ nft }) => nft),
+    [ownedNftSearchResults, ownedNfts, tokens]
+  )
   const shouldShowOwnedNftSearch =
     hasOwnedNfts &&
     nftTab === 'owned' &&
@@ -1356,7 +1393,7 @@ export default function Account({
   const activeNftList =
     nftTab === 'owned'
       ? ownedNftSearchActive && ownedNftSearchReady
-        ? ownedNftSearchResults
+        ? enrichedOwnedNftSearchResults
         : ownedNftSearchActive
           ? []
           : ownedNfts

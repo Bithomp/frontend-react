@@ -189,7 +189,7 @@
       "fee": "Frais",
       "amount": "Montant",
       "search-tokens": "Rechercher token ou émetteur",
-      "search-nfts": "Rechercher un NFT par nom, description ou collection",
+      "search-nfts": "Rechercher un NFT par nom ou description",
       "app-dapp": "App/Dapp",
       "balance-changes": "Variations de solde",
       "rates": "Taux",

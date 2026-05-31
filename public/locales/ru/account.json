@@ -189,7 +189,7 @@
       "fee": "Комиссия",
       "amount": "Сумма",
       "search-tokens": "Поиск токена или эмитента",
-      "search-nfts": "Поиск NFT по имени, описанию или коллекции",
+      "search-nfts": "Поиск NFT по имени или описанию",
       "app-dapp": "App/Dapp",
       "balance-changes": "Изменения баланса",
       "rates": "Курсы",

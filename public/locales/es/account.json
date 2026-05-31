@@ -189,7 +189,7 @@
       "fee": "Comisión",
       "amount": "Importe",
       "search-tokens": "Buscar token o emisor",
-      "search-nfts": "Buscar NFT por nombre, descripción o colección",
+      "search-nfts": "Buscar NFT por nombre o descripción",
       "app-dapp": "App/Dapp",
       "balance-changes": "Cambios de saldo",
       "rates": "Tasas",
