@@ -669,16 +669,32 @@ const tokenSearchText = (token, accountAddress) => {
   return fields.map(searchValue).join(' ').toLowerCase()
 }
 
-const ownedNftSearchUrl = ({ address, search, marker }) => {
-  const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
+const nftResourceForTab = () => (xahauNetwork ? 'uritokens' : 'nfts')
+
+const nftSearchUrl = ({ address, tab, search, marker, ledgerTimestamp }) => {
+  const nftResource = nftResourceForTab()
   const params = new URLSearchParams({
-    owner: address,
     order: 'mintedNew',
     includeWithoutMediaData: 'true',
     limit: String(NFT_FETCH_LIMIT),
     search,
     searchLocations: NFT_SEARCH_LOCATIONS
   })
+
+  if (tab === 'owned') {
+    params.set('owner', address)
+  } else {
+    params.set('issuer', address)
+    params.set('includeDeleted', 'true')
+  }
+
+  if (tab === 'burned') {
+    params.set('deletedAt', 'all')
+  }
+
+  if (ledgerTimestamp) {
+    params.set('ledgerTimestamp', new Date(ledgerTimestamp).toISOString())
+  }
 
   if (marker) {
     params.set('marker', marker)
@@ -745,11 +761,11 @@ export default function Account({
   const [nftMarkers, setNftMarkers] = useState({ owned: null, minted: null, burned: null, sold: null })
   const [nftLoadingMore, setNftLoadingMore] = useState(false)
   const [nftDisplayLimit, setNftDisplayLimit] = useState(NFT_INITIAL_LIMIT)
-  const [ownedNftSearch, setOwnedNftSearch] = useState('')
-  const [ownedNftSearchResults, setOwnedNftSearchResults] = useState([])
-  const [ownedNftSearchMarker, setOwnedNftSearchMarker] = useState(null)
-  const [ownedNftSearchLoading, setOwnedNftSearchLoading] = useState(false)
-  const [ownedNftSearchError, setOwnedNftSearchError] = useState('')
+  const [nftSearch, setNftSearch] = useState('')
+  const [nftSearchResults, setNftSearchResults] = useState([])
+  const [nftSearchMarker, setNftSearchMarker] = useState(null)
+  const [nftSearchLoading, setNftSearchLoading] = useState(false)
+  const [nftSearchError, setNftSearchError] = useState('')
   const [nftOffersDisplayLimit, setNftOffersDisplayLimit] = useState(NFT_OFFERS_PREVIEW_LIMIT)
   const [expandedNftCardKey, setExpandedNftCardKey] = useState(null)
   const [expandedNftOfferKey, setExpandedNftOfferKey] = useState(null)
@@ -851,7 +867,7 @@ export default function Account({
   const activatedAccountsRequestTokenRef = useRef(0)
   const signerAccountsRequestTokenRef = useRef(0)
   const nftMinterAccountsRequestTokenRef = useRef(0)
-  const ownedNftSearchRequestTokenRef = useRef(0)
+  const nftSearchRequestTokenRef = useRef(0)
   const nftOffersTabTouchedRef = useRef(false)
   const activatedAccountsOrderHydratedRef = useRef(false)
   const refreshPageRef = useRef(refreshPage)
@@ -1371,37 +1387,48 @@ export default function Account({
   const hasMintedNfts = mintedNfts.length > 0
   const hasBurnedNfts = burnedNfts.length > 0
   const hasAnyNftSectionData = hasOwnedNfts || hasSoldNfts || hasMintedNfts || hasBurnedNfts
-  const ownedNftSearchQuery = ownedNftSearch.trim()
-  const ownedNftSearchActive = nftTab === 'owned' && ownedNftSearchQuery.length > 0
-  const ownedNftSearchReady = ownedNftSearchQuery.length >= NFT_SEARCH_MIN_LENGTH
-  const enrichedOwnedNftSearchResults = useMemo(
-    () =>
-      enrichNftsWithLoadedDetails(ownedNftSearchResults, ownedNfts)
-        .map((nft, index) => ({
-          nft,
-          index,
-          offerValue: bestNftBuyOfferValue(nft, { tokenList: tokens })
-        }))
-        .sort((a, b) => b.offerValue - a.offerValue || a.index - b.index)
-        .map(({ nft }) => nft),
-    [ownedNftSearchResults, ownedNfts, tokens]
-  )
-  const shouldShowOwnedNftSearch =
-    hasOwnedNfts &&
-    nftTab === 'owned' &&
-    (ownedNftCount > NFT_INITIAL_LIMIT || !!nftMarkers.owned || !!ownedNftSearchQuery)
+  const nftSearchQuery = nftSearch.trim()
+  const nftSearchSupported = ['owned', 'minted', 'burned'].includes(nftTab)
+  const nftSearchActive = nftSearchSupported && nftSearchQuery.length > 0
+  const nftSearchReady = nftSearchQuery.length >= NFT_SEARCH_MIN_LENGTH
+  const enrichedNftSearchResults = useMemo(() => {
+    if (nftTab !== 'owned') return nftSearchResults
+
+    return enrichNftsWithLoadedDetails(nftSearchResults, ownedNfts)
+      .map((nft, index) => ({
+        nft,
+        index,
+        offerValue: bestNftBuyOfferValue(nft, { tokenList: tokens })
+      }))
+      .sort((a, b) => b.offerValue - a.offerValue || a.index - b.index)
+      .map(({ nft }) => nft)
+  }, [nftSearchResults, nftTab, ownedNfts, tokens])
+  const nftSearchBaseCount =
+    nftTab === 'owned' ? ownedNftCount : nftTab === 'minted' ? mintedNftsCount : nftTab === 'burned' ? burnedNftsCount : 0
+  const shouldShowNftSearch =
+    nftSearchSupported &&
+    nftSearchBaseCount > 0 &&
+    (nftSearchBaseCount > NFT_INITIAL_LIMIT || !!nftMarkers[nftTab] || !!nftSearchQuery)
   const activeNftList =
     nftTab === 'owned'
-      ? ownedNftSearchActive && ownedNftSearchReady
-        ? enrichedOwnedNftSearchResults
-        : ownedNftSearchActive
+      ? nftSearchActive && nftSearchReady
+        ? enrichedNftSearchResults
+        : nftSearchActive
           ? []
           : ownedNfts
       : nftTab === 'sold'
         ? soldNfts
         : nftTab === 'minted'
-          ? mintedNfts
-          : burnedNfts
+          ? nftSearchActive && nftSearchReady
+            ? enrichedNftSearchResults
+            : nftSearchActive
+              ? []
+              : mintedNfts
+          : nftSearchActive && nftSearchReady
+            ? enrichedNftSearchResults
+            : nftSearchActive
+              ? []
+              : burnedNfts
   const activeNftLimit = nftDisplayLimit
   const activeNftCountMap = {
     owned: ownedNftCount,
@@ -1428,12 +1455,12 @@ export default function Account({
     burned: getNftTabCountLabel('burned')
   }
   const activeNftBaseCount = activeNftCountMap[nftTab] || 0
-  const activeNftCount = ownedNftSearchActive ? activeNftList.length : activeNftBaseCount
+  const activeNftCount = nftSearchActive ? activeNftList.length : activeNftBaseCount
   const activeNftPreview = activeNftList.slice(0, activeNftLimit)
-  const activeNftMarker = ownedNftSearchActive ? ownedNftSearchMarker : nftMarkers[nftTab] || null
+  const activeNftMarker = nftSearchActive ? nftSearchMarker : nftMarkers[nftTab] || null
   const activeNftAllShown = activeNftPreview.length >= activeNftList.length
   const activeNftShowMoreAvailable =
-    ownedNftSearchActive && !ownedNftSearchReady ? false : !activeNftAllShown || !!activeNftMarker
+    nftSearchActive && !nftSearchReady ? false : !activeNftAllShown || !!activeNftMarker
   const activeNftRemainingCount = !activeNftAllShown
     ? Math.min(NFT_LOAD_MORE_STEP, Math.max(activeNftList.length - activeNftPreview.length, 0))
     : activeNftMarker
@@ -1448,16 +1475,15 @@ export default function Account({
     burned: ta('tabs.burned-lower')
   }
   const activeNftTabLabel = nftTabDisplayNameMap[nftTab] || ta('tabs.owned-lower')
-  const activeNftLoading =
+  const activeNftTabLoading =
     nftTab === 'sold'
       ? soldNftsLoading
       : nftTab === 'minted'
         ? mintedNftsLoading
         : nftTab === 'burned'
           ? burnedNftsLoading
-          : ownedNftSearchActive
-            ? ownedNftSearchLoading
-            : false
+          : false
+  const activeNftLoading = nftSearchActive && nftSearchReady ? nftSearchLoading : activeNftTabLoading
   const activeNftViewAllHref =
     nftTab === 'owned'
       ? `/nfts/${data?.address}?includeWithoutMediaData=true`
@@ -1466,10 +1492,10 @@ export default function Account({
         : nftTab === 'minted'
           ? `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true${effectiveLedgerTimestamp && data?.inception ? `&mintedPeriod=${new Date(data.inception * 1000).toISOString()}..${new Date(effectiveLedgerTimestamp).toISOString()}` : ''}`
           : `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true&burnedPeriod=${effectiveLedgerTimestamp && data?.inception ? `${new Date(data.inception * 1000).toISOString()}..${new Date(effectiveLedgerTimestamp).toISOString()}` : 'all'}`
-  const activeNftEmptyLabel = ownedNftSearchActive
-    ? !ownedNftSearchReady
+  const activeNftEmptyLabel = nftSearchActive
+    ? !nftSearchReady
       ? ta('empty.nft-search-too-short')
-      : ownedNftSearchError || ta('empty.no-nft-search-results')
+      : nftSearchError || ta('empty.no-nft-search-results')
     : nftTab === 'owned'
       ? ta('empty.no-owned-nfts')
       : nftTab === 'sold'
@@ -2007,18 +2033,24 @@ export default function Account({
     }
 
     // All loaded items are shown — fetch the next batch using marker
-    const marker = ownedNftSearchActive ? ownedNftSearchMarker : nftMarkers[nftTab]
+    const marker = nftSearchActive ? nftSearchMarker : nftMarkers[nftTab]
     if (!marker || !data?.address) return
 
-    const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
+    const nftResource = nftResourceForTab()
     let url = ''
 
     try {
       setNftLoadingMore(true)
       if (nftTab === 'owned') {
         url =
-          ownedNftSearchActive && ownedNftSearchReady
-            ? ownedNftSearchUrl({ address: data.address, search: ownedNftSearchQuery, marker })
+          nftSearchActive && nftSearchReady
+            ? nftSearchUrl({
+                address: data.address,
+                tab: nftTab,
+                search: nftSearchQuery,
+                marker,
+                ledgerTimestamp: effectiveLedgerTimestamp
+              })
             : `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
       } else if (nftTab === 'sold') {
         const currencyQuery = selectedCurrency
@@ -2026,10 +2058,27 @@ export default function Account({
           : ''
         url = `v2/nft-sales?seller=${data.address}&list=lastSold&limit=${NFT_FETCH_LIMIT}${currencyQuery}&marker=${encodeURIComponent(marker)}`
       } else if (nftTab === 'minted') {
-        const mintedNftResource = xahauNetwork ? 'uritokens' : 'nfts'
-        url = `v2/${mintedNftResource}?issuer=${data.address}&order=mintedNew&includeDeleted=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
+        url =
+          nftSearchActive && nftSearchReady
+            ? nftSearchUrl({
+                address: data.address,
+                tab: nftTab,
+                search: nftSearchQuery,
+                marker,
+                ledgerTimestamp: effectiveLedgerTimestamp
+              })
+            : `v2/${nftResource}?issuer=${data.address}&order=mintedNew&includeDeleted=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
       } else {
-        url = `v2/nfts?issuer=${data.address}&order=mintedNew&includeDeleted=true&deletedAt=all&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
+        url =
+          nftSearchActive && nftSearchReady
+            ? nftSearchUrl({
+                address: data.address,
+                tab: nftTab,
+                search: nftSearchQuery,
+                marker,
+                ledgerTimestamp: effectiveLedgerTimestamp
+              })
+            : `v2/${nftResource}?issuer=${data.address}&order=mintedNew&includeDeleted=true&deletedAt=all&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
       }
 
       const response = await axios.get(url)
@@ -2048,17 +2097,19 @@ export default function Account({
       } else {
         moreItems = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
         if (nftTab === 'owned') {
-          if (ownedNftSearchActive && ownedNftSearchReady) {
-            setOwnedNftSearchResults((prev) => uniqueNftsById([...prev, ...moreItems]))
+          if (nftSearchActive && nftSearchReady) {
+            setNftSearchResults((prev) => uniqueNftsById([...prev, ...moreItems]))
           } else {
             setOwnedNfts((prev) => uniqueNftsById([...prev, ...moreItems]))
           }
+        } else if (nftSearchActive && nftSearchReady) {
+          setNftSearchResults((prev) => uniqueNftsById([...prev, ...moreItems]))
         } else if (nftTab === 'minted') setMintedNfts((prev) => [...prev, ...moreItems])
         else setBurnedNfts((prev) => [...prev, ...moreItems])
       }
 
-      if (ownedNftSearchActive && ownedNftSearchReady) {
-        setOwnedNftSearchMarker(newMarker)
+      if (nftSearchActive && nftSearchReady) {
+        setNftSearchMarker(newMarker)
       } else {
         setNftMarkers((prev) => ({ ...prev, [nftTab]: newMarker }))
       }
@@ -2127,11 +2178,11 @@ export default function Account({
     setExpandedToken(null)
     setExpandedTransactionKey(null)
     setShowNftDataDetails(false)
-    setOwnedNftSearch('')
-    setOwnedNftSearchResults([])
-    setOwnedNftSearchMarker(null)
-    setOwnedNftSearchLoading(false)
-    setOwnedNftSearchError('')
+    setNftSearch('')
+    setNftSearchResults([])
+    setNftSearchMarker(null)
+    setNftSearchLoading(false)
+    setNftSearchError('')
     setNftTab('owned')
     nftOffersTabTouchedRef.current = false
     setNftOffersTab('owned')
@@ -2165,55 +2216,61 @@ export default function Account({
   }, [tokenSearch])
 
   useEffect(() => {
-    const requestToken = ownedNftSearchRequestTokenRef.current + 1
-    ownedNftSearchRequestTokenRef.current = requestToken
+    const requestToken = nftSearchRequestTokenRef.current + 1
+    nftSearchRequestTokenRef.current = requestToken
 
     setExpandedNftCardKey(null)
     setNftDisplayLimit(NFT_INITIAL_LIMIT)
 
-    if (!ownedNftSearchQuery) {
-      setOwnedNftSearchResults([])
-      setOwnedNftSearchMarker(null)
-      setOwnedNftSearchLoading(false)
-      setOwnedNftSearchError('')
+    if (!nftSearchQuery) {
+      setNftSearchResults([])
+      setNftSearchMarker(null)
+      setNftSearchLoading(false)
+      setNftSearchError('')
       return
     }
 
-    if (nftTab !== 'owned' || effectiveLedgerTimestamp || !data?.address) return
+    if (!nftSearchSupported || (nftTab === 'owned' && effectiveLedgerTimestamp) || !data?.address) return
 
-    if (!ownedNftSearchReady) {
-      setOwnedNftSearchResults([])
-      setOwnedNftSearchMarker(null)
-      setOwnedNftSearchLoading(false)
-      setOwnedNftSearchError('')
+    if (!nftSearchReady) {
+      setNftSearchResults([])
+      setNftSearchMarker(null)
+      setNftSearchLoading(false)
+      setNftSearchError('')
       return
     }
 
     const controller = new AbortController()
-    setOwnedNftSearchLoading(true)
+    setNftSearchLoading(true)
     const searchTimer = setTimeout(async () => {
       try {
-        setOwnedNftSearchError('')
+        setNftSearchError('')
 
-        const response = await axios.get(ownedNftSearchUrl({ address: data.address, search: ownedNftSearchQuery }), {
-          signal: controller.signal
-        })
+        const response = await axios.get(
+          nftSearchUrl({
+            address: data.address,
+            tab: nftTab,
+            search: nftSearchQuery,
+            ledgerTimestamp: effectiveLedgerTimestamp
+          }),
+          { signal: controller.signal }
+        )
 
-        if (ownedNftSearchRequestTokenRef.current !== requestToken) return
+        if (nftSearchRequestTokenRef.current !== requestToken) return
 
-        const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
+        const nftResource = nftResourceForTab()
         const nftList = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
-        setOwnedNftSearchResults(uniqueNftsById(nftList))
-        setOwnedNftSearchMarker(response?.data?.marker || null)
+        setNftSearchResults(uniqueNftsById(nftList))
+        setNftSearchMarker(response?.data?.marker || null)
       } catch (error) {
         if (axios.isCancel(error) || error?.message === 'canceled') return
-        if (ownedNftSearchRequestTokenRef.current !== requestToken) return
-        setOwnedNftSearchResults([])
-        setOwnedNftSearchMarker(null)
-        setOwnedNftSearchError(ta('empty.no-nft-search-results'))
+        if (nftSearchRequestTokenRef.current !== requestToken) return
+        setNftSearchResults([])
+        setNftSearchMarker(null)
+        setNftSearchError(ta('empty.no-nft-search-results'))
       } finally {
-        if (ownedNftSearchRequestTokenRef.current === requestToken) {
-          setOwnedNftSearchLoading(false)
+        if (nftSearchRequestTokenRef.current === requestToken) {
+          setNftSearchLoading(false)
         }
       }
     }, 350)
@@ -2223,7 +2280,7 @@ export default function Account({
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, effectiveLedgerTimestamp, nftTab, ownedNftSearchQuery, ownedNftSearchReady])
+  }, [data?.address, effectiveLedgerTimestamp, nftTab, nftSearchQuery, nftSearchReady, nftSearchSupported])
 
   useEffect(() => {
     if (tokenTab === 'lp' && lpTokensCount === 0) {
@@ -2605,13 +2662,16 @@ export default function Account({
         if (Number(data?.ledgerInfo?.burnedNFTokens || 0) > 0) {
           try {
             setBurnedNftsLoading(true)
+            const burnedNftResource = nftResourceForTab()
             const burnedNftsUrl =
-              `v2/nfts?issuer=${data.address}&order=mintedNew&includeDeleted=true&deletedAt=all&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
+              `v2/${burnedNftResource}?issuer=${data.address}&order=mintedNew&includeDeleted=true&deletedAt=all&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
               (effectiveLedgerTimestamp
                 ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
                 : '')
             const burnedResponse = await axios.get(burnedNftsUrl)
-            const burnedNftsList = Array.isArray(burnedResponse?.data?.nfts) ? burnedResponse.data.nfts : []
+            const burnedNftsList = Array.isArray(burnedResponse?.data?.[burnedNftResource])
+              ? burnedResponse.data[burnedNftResource]
+              : []
             setBurnedNfts(burnedNftsList.slice(0, NFT_FETCH_LIMIT))
             setNftMarkers((prev) => ({ ...prev, burned: burnedResponse?.data?.marker || null }))
           } catch {
@@ -5831,35 +5891,35 @@ export default function Account({
                 </div>
 
                 <div className="nft-section-content">
-                  {shouldShowOwnedNftSearch && (
+                  {shouldShowNftSearch && (
                     <div className="token-search-row nft-search-row" onClick={(event) => event.stopPropagation()}>
                       <div className="token-search-box">
                         <MdSearch className="token-search-icon" aria-hidden="true" />
                         <input
                           type="text"
-                          value={ownedNftSearch}
-                          onChange={(event) => setOwnedNftSearch(event.target.value)}
+                          value={nftSearch}
+                          onChange={(event) => setNftSearch(event.target.value)}
                           placeholder={ta('labels.search-nfts')}
                           aria-label={ta('labels.search-nfts')}
                           className="token-search-input"
                         />
-                        {ownedNftSearch && (
+                        {nftSearch && (
                           <button
                             type="button"
                             className="token-search-clear"
-                            onClick={() => setOwnedNftSearch('')}
+                            onClick={() => setNftSearch('')}
                             aria-label={ta('actions.clear-search')}
                           >
                             <MdClose aria-hidden="true" />
                           </button>
                         )}
                       </div>
-                      {ownedNftSearchActive && ownedNftSearchReady && !ownedNftSearchLoading && (
+                      {nftSearchActive && nftSearchReady && !nftSearchLoading && (
                         <div className="token-search-count">
                           {ta('counts.nfts-found', {
-                            count: ownedNftSearchMarker
-                              ? `${ownedNftSearchResults.length}+`
-                              : ownedNftSearchResults.length
+                            count: nftSearchMarker
+                              ? `${nftSearchResults.length}+`
+                              : nftSearchResults.length
                           })}
                         </div>
                       )}
