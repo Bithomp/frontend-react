@@ -3668,19 +3668,32 @@ export default function Account({
             {/* Avatar */}
             <div className="avatar-container">
               <div className="avatar-wrapper">
-                <div className={`avatar-image-mask ${accountDisplayUsername ? 'has-username' : ''} ${isAmmAccount ? 'is-amm' : ''}`}>
-                  {ammAvatarAssetImage && ammAvatarAsset2Image ? (
+                <div
+                  className={`avatar-image-mask ${accountDisplayUsername ? 'has-username' : ''} ${
+                    isAmmAccount ? 'is-amm' : ''
+                  }`}
+                >
+                  {isAmmAccount ? (
                     <div className="amm-avatar-pair" aria-label={ta('labels.avatar')}>
-                      <img
-                        src={ammAvatarAssetImage}
-                        alt={niceCurrency(ammAvatarAsset?.currency)}
-                        className="amm-avatar-asset amm-avatar-asset-primary"
-                      />
-                      <img
-                        src={ammAvatarAsset2Image}
-                        alt={niceCurrency(ammAvatarAsset2?.currency)}
-                        className="amm-avatar-asset amm-avatar-asset-secondary"
-                      />
+                      {ammAvatarAssetImage && ammAvatarAsset2Image ? (
+                        <>
+                          <img
+                            src={ammAvatarAssetImage}
+                            alt={niceCurrency(ammAvatarAsset?.currency)}
+                            className="amm-avatar-asset amm-avatar-asset-primary"
+                          />
+                          <img
+                            src={ammAvatarAsset2Image}
+                            alt={niceCurrency(ammAvatarAsset2?.currency)}
+                            className="amm-avatar-asset amm-avatar-asset-secondary"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <span className="amm-avatar-asset amm-avatar-asset-placeholder"></span>
+                          <span className="amm-avatar-asset amm-avatar-asset-placeholder"></span>
+                        </>
+                      )}
                     </div>
                   ) : (
                     <img
@@ -11604,6 +11617,7 @@ export default function Account({
         }
 
         .amm-avatar-asset {
+          flex-shrink: 0;
           width: 150px;
           height: 150px;
           border: 2px solid #fff;
@@ -11615,6 +11629,12 @@ export default function Account({
 
         .amm-avatar-asset + .amm-avatar-asset {
           margin-left: -72px;
+        }
+
+        .amm-avatar-asset-placeholder {
+          background: color-mix(in srgb, var(--accent-link) 10%, #fff);
+          border-color: color-mix(in srgb, var(--accent-link) 18%, #fff);
+          box-shadow: none;
         }
 
         .achievements-orbit {
