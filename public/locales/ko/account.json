@@ -59,6 +59,7 @@
       "loading-transactions": "거래 로드 중",
       "end-of-list": "목록의 끝입니다.",
       "loading-account-objects": "계정 객체 로드 중",
+      "loaded-account-objects": "계정 객체 {{count}}개를 불러왔습니다.",
       "loading-issued-tokens": "발행된 토큰 로드 중...",
       "loading-nft-offers": "NFT 오퍼 로드 중...",
       "loading-activated-accounts": "활성화된 계정 로드 중"

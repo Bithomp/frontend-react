@@ -59,6 +59,7 @@
       "loading-transactions": "Lade Transaktionen",
       "end-of-list": "Ende der Liste.",
       "loading-account-objects": "Lade Kontoobjekte",
+      "loaded-account-objects": "{{count}} Kontoobjekte geladen.",
       "loading-issued-tokens": "Lade ausgegebene Tokens...",
       "loading-nft-offers": "Lade NFT-Angebote...",
       "loading-activated-accounts": "Lade aktivierte Konten"

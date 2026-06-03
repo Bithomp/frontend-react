@@ -59,6 +59,7 @@
       "loading-transactions": "Загрузка транзакций",
       "end-of-list": "Конец списка.",
       "loading-account-objects": "Загрузка объектов аккаунта",
+      "loaded-account-objects": "Загружено объектов аккаунта: {{count}}.",
       "loading-issued-tokens": "Загрузка выпущенных токенов...",
       "loading-nft-offers": "Загрузка NFT-предложений...",
       "loading-activated-accounts": "Загрузка активированных аккаунтов"

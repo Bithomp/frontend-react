@@ -54,6 +54,7 @@
       "loading-transactions": "Loading transactions",
       "end-of-list": "End of list.",
       "loading-account-objects": "Loading account objects",
+      "loaded-account-objects": "Loaded {{count}} account objects.",
       "loading-issued-tokens": "Loading issued tokens...",
       "loading-nft-offers": "Loading NFT offers...",
       "loading-activated-accounts": "Loading activated accounts"

@@ -776,6 +776,9 @@ export default function Account({
   const [issuedTokensError, setIssuedTokensError] = useState(null)
   const [objectsLoading, setObjectsLoading] = useState(false)
   const [objectsError, setObjectsError] = useState(null)
+  const [accountObjectsLoaded, setAccountObjectsLoaded] = useState([])
+  const [accountObjectsMarker, setAccountObjectsMarker] = useState(null)
+  const [accountObjectsLoadingMore, setAccountObjectsLoadingMore] = useState(false)
   const [reserveObjectCounts, setReserveObjectCounts] = useState(null)
   const [ownedNfts, setOwnedNfts] = useState([])
   const [soldNfts, setSoldNfts] = useState([])
@@ -905,6 +908,9 @@ export default function Account({
   const [nftsWorthCount, setNftsWorthCount] = useState(0)
 
   const resetAccountObjectCollections = () => {
+    setAccountObjectsLoaded([])
+    setAccountObjectsMarker(null)
+    setAccountObjectsLoadingMore(false)
     setTokens([])
     setNftsNativeValue(0)
     setNftsWorthCount(0)
@@ -1709,7 +1715,8 @@ export default function Account({
     hasIncomingPaychannels ||
     hasOutgoingPaychannels ||
     hasActivatedAccountsSection
-  const showObjectsLoadStatus = !!data?.ledgerInfo?.activated && (objectsLoading || !!objectsError)
+  const showObjectsLoadStatus =
+    !!data?.ledgerInfo?.activated && (objectsLoading || accountObjectsLoadingMore || !!objectsError || !!accountObjectsMarker)
 
   useEffect(() => {
     if (refreshPageRef.current === refreshPage) return
@@ -2470,12 +2477,163 @@ export default function Account({
     setPaychannelsDisplayLimit(OBJECT_PREVIEW_LIMIT)
   }, [paychannelsTab, data?.address, effectiveLedgerTimestamp])
 
+  const accountObjectsUrl = ({ marker } = {}) => {
+    const markerQuery = marker ? `&marker=${encodeURIComponent(marker)}` : ''
+
+    return (
+      `v2/objects/${data.address}?limit=${ACCOUNT_OBJECTS_FETCH_LIMIT}&priceNativeCurrencySpot=true&currencyDetails=true` +
+      (effectiveLedgerTimestamp
+        ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
+        : '') +
+      markerQuery
+    )
+  }
+
+  const applyLoadedAccountObjects = (accountObjects) => {
+    setReserveObjectCounts(reserveObjectCountsFromObjects(accountObjects))
+
+    let accountObjectWithChecks = accountObjects.filter((node) => node.LedgerEntryType === 'Check') || []
+    accountObjectWithChecks = accountObjectWithChecks.sort((a, b) => {
+      const valueCompare = checkNativeValue(b) - checkNativeValue(a)
+      if (valueCompare !== 0) return valueCompare
+
+      const destinationCompare = (a.Destination || '').localeCompare(b.Destination || '')
+      if (destinationCompare !== 0) return destinationCompare
+
+      return (a.index || '').localeCompare(b.index || '')
+    })
+
+    setReceivedChecks(accountObjectWithChecks.filter((node) => node.Destination === data.address))
+    setSentChecks(accountObjectWithChecks.filter((node) => node.Account === data.address))
+
+    const accountObjectWithPaychannels =
+      accountObjects.filter((node) => node.LedgerEntryType === 'PayChannel') || []
+    setOutgoingPaychannels(accountObjectWithPaychannels.filter((node) => node.Account === data.address))
+    setIncomingPaychannels(accountObjectWithPaychannels.filter((node) => node.Destination === data.address))
+
+    const accountObjectWithEscrows = accountObjects.filter((node) => node.LedgerEntryType === 'Escrow') || []
+    setReceivedEscrows(
+      accountObjectWithEscrows.filter((node) => node.Destination === data.address && node.Account !== data.address)
+    )
+    setSentEscrows(
+      accountObjectWithEscrows.filter((node) => node.Account === data.address && node.Destination !== data.address)
+    )
+    setSelfEscrows(
+      accountObjectWithEscrows.filter((node) => node.Account === data.address && node.Destination === data.address)
+    )
+
+    const accountObjectWithDepositPreauth =
+      accountObjects.filter((node) => node.LedgerEntryType === 'DepositPreauth' && node.Authorize) || []
+    setDepositPreauthAccounts(accountObjectWithDepositPreauth)
+
+    const accountObjectWithHooks = accountObjects.find((node) => node.LedgerEntryType === 'Hook')
+    if (accountObjectWithHooks?.Hooks?.length > 0) {
+      const hooks = accountObjectWithHooks.Hooks.map((hookNode) => hookNode?.Hook?.HookHash).filter(Boolean)
+      setHookList(hooks)
+    } else {
+      setHookList([])
+    }
+
+    const accountHeldMpts = accountObjects.filter((node) => node.LedgerEntryType === 'MPToken') || []
+    const accountIssuedMpts = accountObjects.filter((node) => node.LedgerEntryType === 'MPTokenIssuance') || []
+    setHeldMpts(accountHeldMpts)
+    setIssuedMpts(accountIssuedMpts)
+
+    const accountObjectWithDexOrders =
+      accountObjects
+        .filter((node) => node.LedgerEntryType === 'Offer' && node.Account === data.address)
+        .sort((a, b) => Number(b.Sequence || 0) - Number(a.Sequence || 0)) || []
+    setDexOrders(accountObjectWithDexOrders)
+
+    const rippleStateList = isGateway
+      ? []
+      : accountObjects.filter((node) => isRelevantRippleStateForAddress(node, data.address))
+
+    const sortedTokens = rippleStateList.sort((a, b) => {
+      const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value || 0))
+      const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value || 0))
+
+      if (balanceA === 0 && balanceB === 0) return 0
+      if (balanceA === 0) return 1
+      if (balanceB === 0) return -1
+
+      const valueA = a.priceNativeCurrencySpot * balanceA || 0
+      const valueB = b.priceNativeCurrencySpot * balanceB || 0
+
+      return valueB - valueA
+    })
+
+    setTokens(sortedTokens)
+
+    const nftIds = accountObjects
+      .filter((node) => node.LedgerEntryType === 'NFTokenPage' && Array.isArray(node.NFTokens))
+      .flatMap((page) =>
+        page.NFTokens.map((nftNode) => nftNode?.NFToken?.NFTokenID || nftNode?.NFTokenID).filter(Boolean)
+      )
+
+    setOwnedNftIds(nftIds)
+
+    return { nftIds, sortedTokens }
+  }
+
+  const loadMoreAccountObjects = async () => {
+    if (!data?.address || !accountObjectsMarker || accountObjectsLoadingMore) return
+
+    setAccountObjectsLoadingMore(true)
+    setObjectsError(null)
+
+    try {
+      const moreObjects = []
+      const seenMarkers = new Set()
+      let objectsMarker = accountObjectsMarker
+      let nextObjectsMarker = accountObjectsMarker
+
+      for (let page = 0; page < ACCOUNT_OBJECTS_MAX_PAGES && objectsMarker; page++) {
+        const response = await axios.get(accountObjectsUrl({ marker: objectsMarker }))
+        const pageObjects = Array.isArray(response?.data?.objects) ? response.data.objects : []
+        moreObjects.push(...pageObjects)
+
+        const nextMarker = response?.data?.marker || null
+        nextObjectsMarker = nextMarker
+        if (!nextMarker) break
+
+        if (seenMarkers.has(nextMarker)) {
+          throw new Error('Account objects pagination marker repeated')
+        }
+
+        seenMarkers.add(nextMarker)
+        objectsMarker = nextMarker
+      }
+
+      const combinedObjects = [...accountObjectsLoaded, ...moreObjects]
+      setAccountObjectsLoaded(combinedObjects)
+      setAccountObjectsMarker(nextObjectsMarker)
+      applyLoadedAccountObjects(combinedObjects)
+    } catch (error) {
+      setObjectsError(error?.message || 'Failed to load account objects')
+    } finally {
+      setAccountObjectsLoadingMore(false)
+    }
+  }
+
   // Fetch tokens
   useEffect(() => {
     if (!data?.address || !data?.ledgerInfo?.activated) {
       setObjectsLoading(false)
       setObjectsError(null)
       resetAccountObjectCollections()
+      setNftMarkers({ owned: null, minted: null, burned: null, sold: null })
+      setSoldNftsLoading(false)
+      setMintedNftsLoading(false)
+      setBurnedNftsLoading(false)
+      return
+    }
+
+    if (isGateway) {
+      setObjectsLoading(false)
+      setObjectsError(null)
+      resetAccountObjectCollections()
+      setNftMarkers({ owned: null, minted: null, burned: null, sold: null })
       setSoldNftsLoading(false)
       setMintedNftsLoading(false)
       setBurnedNftsLoading(false)
@@ -2486,6 +2644,7 @@ export default function Account({
       setObjectsLoading(true)
       setObjectsError(null)
       resetAccountObjectCollections()
+      setNftMarkers({ owned: null, minted: null, burned: null, sold: null })
       setSoldNftsLoading(false)
       setMintedNftsLoading(false)
       setBurnedNftsLoading(false)
@@ -2494,22 +2653,19 @@ export default function Account({
         const accountObjects = []
         const seenMarkers = new Set()
         let objectsMarker = null
+        let nextObjectsMarker = null
 
         for (let page = 0; page < ACCOUNT_OBJECTS_MAX_PAGES; page++) {
-          const markerQuery = objectsMarker ? `&marker=${encodeURIComponent(objectsMarker)}` : ''
-          const objectsUrl =
-            `v2/objects/${data.address}?limit=${ACCOUNT_OBJECTS_FETCH_LIMIT}&priceNativeCurrencySpot=true&currencyDetails=true` +
-            (effectiveLedgerTimestamp
-              ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
-              : '') +
-            markerQuery
-
-          const response = await axios.get(objectsUrl)
+          const response = await axios.get(accountObjectsUrl({ marker: objectsMarker }))
           const pageObjects = Array.isArray(response?.data?.objects) ? response.data.objects : []
           accountObjects.push(...pageObjects)
 
           const nextMarker = response?.data?.marker || null
-          if (!nextMarker) break
+          nextObjectsMarker = nextMarker
+          if (!nextMarker) {
+            nextObjectsMarker = null
+            break
+          }
 
           if (seenMarkers.has(nextMarker)) {
             throw new Error('Account objects pagination marker repeated')
@@ -2517,96 +2673,11 @@ export default function Account({
 
           seenMarkers.add(nextMarker)
           objectsMarker = nextMarker
-
-          if (page === ACCOUNT_OBJECTS_MAX_PAGES - 1) {
-            throw new Error('Account objects pagination limit reached')
-          }
         }
 
-        setReserveObjectCounts(reserveObjectCountsFromObjects(accountObjects))
-
-        let accountObjectWithChecks = accountObjects.filter((node) => node.LedgerEntryType === 'Check') || []
-        accountObjectWithChecks = accountObjectWithChecks.sort((a, b) => {
-          const valueCompare = checkNativeValue(b) - checkNativeValue(a)
-          if (valueCompare !== 0) return valueCompare
-
-          const destinationCompare = (a.Destination || '').localeCompare(b.Destination || '')
-          if (destinationCompare !== 0) return destinationCompare
-
-          return (a.index || '').localeCompare(b.index || '')
-        })
-
-        setReceivedChecks(accountObjectWithChecks.filter((node) => node.Destination === data.address))
-        setSentChecks(accountObjectWithChecks.filter((node) => node.Account === data.address))
-
-        const accountObjectWithPaychannels =
-          accountObjects.filter((node) => node.LedgerEntryType === 'PayChannel') || []
-        setOutgoingPaychannels(accountObjectWithPaychannels.filter((node) => node.Account === data.address))
-        setIncomingPaychannels(accountObjectWithPaychannels.filter((node) => node.Destination === data.address))
-
-        const accountObjectWithEscrows = accountObjects.filter((node) => node.LedgerEntryType === 'Escrow') || []
-        setReceivedEscrows(
-          accountObjectWithEscrows.filter((node) => node.Destination === data.address && node.Account !== data.address)
-        )
-        setSentEscrows(
-          accountObjectWithEscrows.filter((node) => node.Account === data.address && node.Destination !== data.address)
-        )
-        setSelfEscrows(
-          accountObjectWithEscrows.filter((node) => node.Account === data.address && node.Destination === data.address)
-        )
-
-        const accountObjectWithDepositPreauth =
-          accountObjects.filter((node) => node.LedgerEntryType === 'DepositPreauth' && node.Authorize) || []
-        setDepositPreauthAccounts(accountObjectWithDepositPreauth)
-
-        const accountObjectWithHooks = accountObjects.find((node) => node.LedgerEntryType === 'Hook')
-        if (accountObjectWithHooks?.Hooks?.length > 0) {
-          const hooks = accountObjectWithHooks.Hooks.map((hookNode) => hookNode?.Hook?.HookHash).filter(Boolean)
-          setHookList(hooks)
-        } else {
-          setHookList([])
-        }
-
-        const accountHeldMpts = accountObjects.filter((node) => node.LedgerEntryType === 'MPToken') || []
-        const accountIssuedMpts = accountObjects.filter((node) => node.LedgerEntryType === 'MPTokenIssuance') || []
-        setHeldMpts(accountHeldMpts)
-        setIssuedMpts(accountIssuedMpts)
-
-        const accountObjectWithDexOrders =
-          accountObjects
-            .filter((node) => node.LedgerEntryType === 'Offer' && node.Account === data.address)
-            .sort((a, b) => Number(b.Sequence || 0) - Number(a.Sequence || 0)) || []
-        setDexOrders(accountObjectWithDexOrders)
-
-        // Filter RippleState objects (tokens) using the same legacy predicate as /account ObjectsData.
-        const rippleStateList = isGateway
-          ? []
-          : accountObjects.filter((node) => isRelevantRippleStateForAddress(node, data.address))
-
-        // Sort by token value in native currency (independent from websocket fiat updates)
-        const sortedTokens = rippleStateList.sort((a, b) => {
-          const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value || 0))
-          const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value || 0))
-
-          if (balanceA === 0 && balanceB === 0) return 0
-          if (balanceA === 0) return 1
-          if (balanceB === 0) return -1
-
-          const valueA = a.priceNativeCurrencySpot * balanceA || 0
-          const valueB = b.priceNativeCurrencySpot * balanceB || 0
-
-          return valueB - valueA
-        })
-
-        setTokens(sortedTokens)
-
-        const nftIds = accountObjects
-          .filter((node) => node.LedgerEntryType === 'NFTokenPage' && Array.isArray(node.NFTokens))
-          .flatMap((page) =>
-            page.NFTokens.map((nftNode) => nftNode?.NFToken?.NFTokenID || nftNode?.NFTokenID).filter(Boolean)
-          )
-
-        setOwnedNftIds(nftIds)
+        setAccountObjectsLoaded(accountObjects)
+        setAccountObjectsMarker(nextObjectsMarker)
+        const { nftIds, sortedTokens } = applyLoadedAccountObjects(accountObjects)
 
         const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
 
@@ -2753,7 +2824,14 @@ export default function Account({
 
     fetchTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp, selectedCurrency, refreshPage])
+  }, [
+    data?.address,
+    data?.ledgerInfo?.activated,
+    data?.obligations?.trustlines,
+    effectiveLedgerTimestamp,
+    selectedCurrency,
+    refreshPage
+  ])
 
   useEffect(() => {
     if (!data?.address) return
@@ -4910,13 +4988,22 @@ export default function Account({
           <div className="assets-section">
             {showObjectsLoadStatus && (
               <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
-                {objectsLoading ? (
+                {objectsLoading || accountObjectsLoadingMore ? (
                   <span className="tx-inline-load object-load-status-text">
                     <span>{ta('states.loading-account-objects-assets')}</span>
                     <span className="waiting inline" aria-hidden="true"></span>
                   </span>
-                ) : (
+                ) : objectsError ? (
                   <span className="object-load-status-text">{ta('errors.failed-load-account-objects-assets')}</span>
+                ) : (
+                  <>
+                    <span className="object-load-status-text">
+                      {ta('messages.loaded-account-objects', { count: accountObjectsLoaded.length })}
+                    </span>
+                    <button type="button" className="asset-compact-toggle" onClick={loadMoreAccountObjects}>
+                      {ta('actions.load-more')}
+                    </button>
+                  </>
                 )}
               </div>
             )}
@@ -8537,13 +8624,22 @@ export default function Account({
           <div className="orders-section">
             {showObjectsLoadStatus && (
               <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
-                {objectsLoading ? (
+                {objectsLoading || accountObjectsLoadingMore ? (
                   <span className="tx-inline-load object-load-status-text">
                     <span>{ta('messages.loading-account-objects')}</span>
                     <span className="waiting inline" aria-hidden="true"></span>
                   </span>
-                ) : (
+                ) : objectsError ? (
                   <span className="object-load-status-text">{ta('errors.failed-load-account-objects-sections')}</span>
+                ) : (
+                  <>
+                    <span className="object-load-status-text">
+                      {ta('messages.loaded-account-objects', { count: accountObjectsLoaded.length })}
+                    </span>
+                    <button type="button" className="asset-compact-toggle" onClick={loadMoreAccountObjects}>
+                      {ta('actions.load-more')}
+                    </button>
+                  </>
                 )}
               </div>
             )}

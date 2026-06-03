@@ -59,6 +59,7 @@
       "loading-transactions": "トランザクションを読み込み中",
       "end-of-list": "リストの末尾です。",
       "loading-account-objects": "アカウントオブジェクトを読み込み中",
+      "loaded-account-objects": "{{count}} 件のアカウントオブジェクトを読み込みました。",
       "loading-issued-tokens": "発行済みトークンを読み込み中...",
       "loading-nft-offers": "NFTオファーを読み込み中...",
       "loading-activated-accounts": "有効化済みアカウントを読み込み中"

@@ -59,6 +59,7 @@
       "loading-transactions": "Memuat transaksi",
       "end-of-list": "Akhir daftar.",
       "loading-account-objects": "Memuat objek akun",
+      "loaded-account-objects": "{{count}} objek akun dimuat.",
       "loading-issued-tokens": "Memuat token yang diterbitkan...",
       "loading-nft-offers": "Memuat penawaran NFT...",
       "loading-activated-accounts": "Memuat akun yang diaktifkan"

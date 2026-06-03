@@ -59,6 +59,7 @@
       "loading-transactions": "正在加载交易",
       "end-of-list": "列表已结束。",
       "loading-account-objects": "正在加载账户对象",
+      "loaded-account-objects": "已加载 {{count}} 个账户对象。",
       "loading-issued-tokens": "正在加载已发行代币...",
       "loading-nft-offers": "正在加载 NFT 报价...",
       "loading-activated-accounts": "正在加载已激活账户"
