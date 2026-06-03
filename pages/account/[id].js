@@ -20,12 +20,14 @@ import {
   nativeCurrency,
   network,
   networks,
+  retinaImageSize,
   isValidPayString,
   isValidXAddress,
   isTagValid,
   isDomainValid,
   stripDomain,
   timestampExpired,
+  tokenImageSrc,
   webSiteName,
   xahauNetwork
 } from '../../utils'
@@ -1244,6 +1246,9 @@ export default function Account({
   const hasDisplayIdentity = !!accountDisplayService || !!accountDisplayUsername
   const accountAmmId = data?.ledgerInfo?.ammID
   const isAmmAccount = !!accountAmmId
+  const ammAvatarCurrencyDetails = isAmmAccount
+    ? issuedTokens.find((token) => token?.currencyDetails?.asset && token?.currencyDetails?.asset2)?.currencyDetails
+    : null
   const accountDisplayName = accountAmmId ? (
     <>
       <span>AMM</span>{' '}
@@ -1258,6 +1263,7 @@ export default function Account({
   const hasPositiveNativeAvailableBalance = Number(balanceList?.available?.native || 0) > 0
   const shouldShowUsernameRegisterButton =
     !hasDisplayIdentity &&
+    !isAmmAccount &&
     hasPositiveNativeAvailableBalance &&
     !devNet &&
     !isBlackholed &&
@@ -1343,6 +1349,11 @@ export default function Account({
   const isGateway = Number(data?.obligations?.trustlines || 0) > 200 && !isAmmAccount
   const accountObjectsFetchLimit = isAmmAccount ? AMM_ACCOUNT_OBJECTS_FETCH_LIMIT : ACCOUNT_OBJECTS_FETCH_LIMIT
   const accountObjectsMaxPages = isAmmAccount ? AMM_ACCOUNT_OBJECTS_MAX_PAGES : ACCOUNT_OBJECTS_MAX_PAGES
+  const ammAvatarAssetImageSize = retinaImageSize(150)
+  const ammAvatarAsset = ammAvatarCurrencyDetails?.asset
+  const ammAvatarAsset2 = ammAvatarCurrencyDetails?.asset2
+  const ammAvatarAssetImage = ammAvatarAsset ? tokenImageSrc(ammAvatarAsset, ammAvatarAssetImageSize) : null
+  const ammAvatarAsset2Image = ammAvatarAsset2 ? tokenImageSrc(ammAvatarAsset2, ammAvatarAssetImageSize) : null
   const lpTokensFiatValue = lpTokenList.reduce((sum, token) => {
     const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
     return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
@@ -3657,17 +3668,32 @@ export default function Account({
             {/* Avatar */}
             <div className="avatar-container">
               <div className="avatar-wrapper">
-                <div className={`avatar-image-mask ${accountDisplayUsername ? 'has-username' : ''}`}>
-                  <img
-                    src={avatarSrc(data.address, {
-                      refreshPage,
-                      hashIconZoom: 12
-                    })}
-                    alt={ta('labels.avatar')}
-                    className="account-avatar"
-                  />
+                <div className={`avatar-image-mask ${accountDisplayUsername ? 'has-username' : ''} ${isAmmAccount ? 'is-amm' : ''}`}>
+                  {ammAvatarAssetImage && ammAvatarAsset2Image ? (
+                    <div className="amm-avatar-pair" aria-label={ta('labels.avatar')}>
+                      <img
+                        src={ammAvatarAssetImage}
+                        alt={niceCurrency(ammAvatarAsset?.currency)}
+                        className="amm-avatar-asset amm-avatar-asset-primary"
+                      />
+                      <img
+                        src={ammAvatarAsset2Image}
+                        alt={niceCurrency(ammAvatarAsset2?.currency)}
+                        className="amm-avatar-asset amm-avatar-asset-secondary"
+                      />
+                    </div>
+                  ) : (
+                    <img
+                      src={avatarSrc(data.address, {
+                        refreshPage,
+                        hashIconZoom: 12
+                      })}
+                      alt={ta('labels.avatar')}
+                      className="account-avatar"
+                    />
+                  )}
                 </div>
-                {!data?.blacklist?.blacklisted && achievements.length > 0 && (
+                {!isAmmAccount && !data?.blacklist?.blacklisted && achievements.length > 0 && (
                   <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
                     {achievements.slice(0, 6).map((achievement, index) => {
                       const isLeft = index % 2 === 0
@@ -11535,6 +11561,14 @@ export default function Account({
           animation: avatarRingPulse 2.2s ease-in-out infinite;
         }
 
+        .avatar-image-mask.is-amm {
+          border: 0;
+          border-radius: 0;
+          overflow: visible;
+          box-shadow: none;
+          animation: none;
+        }
+
         @keyframes avatarRingPulse {
           0%,
           100% {
@@ -11558,6 +11592,29 @@ export default function Account({
           height: 100%;
           object-fit: cover;
           object-position: center;
+        }
+
+        .amm-avatar-pair {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background: transparent;
+        }
+
+        .amm-avatar-asset {
+          width: 150px;
+          height: 150px;
+          border: 2px solid #fff;
+          border-radius: 50%;
+          box-sizing: border-box;
+          object-fit: cover;
+          box-shadow: 0 2px 9px rgba(0, 0, 0, 0.18);
+        }
+
+        .amm-avatar-asset + .amm-avatar-asset {
+          margin-left: -72px;
         }
 
         .achievements-orbit {
