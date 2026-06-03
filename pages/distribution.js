@@ -167,6 +167,13 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
     </tr>
   )
 
+  const renderAddressCell = (record) => (
+    <div className="distribution-address-cell">
+      <AddressWithIconFilled data={record} />
+      {record?.amm && <span className="distribution-amm-badge">AMM</span>}
+    </div>
+  )
+
   const checkApi = async () => {
     let apiUrl = 'v2/addresses/richlist'
 
@@ -389,7 +396,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                           <tr key={i}>
                             <td className="center">{i + 1}</td>
                             <td>
-                              <AddressWithIconFilled data={r} />
+                              {renderAddressCell(r)}
                             </td>
                             <td className="right">
                               {token?.issuer ? (
@@ -448,7 +455,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                             </td>
                             <td>
                               <br />
-                              <AddressWithIconFilled data={r} />
+                              {renderAddressCell(r)}
                               <p>
                                 {t('table.balance')}:{' '}
                                 {token?.issuer
@@ -525,6 +532,28 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
           </div>
         </>
       </FiltersFrame>
+      <style jsx global>{`
+        .distribution-address-cell {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          vertical-align: middle;
+        }
+
+        .distribution-amm-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 18px;
+          padding: 2px 6px;
+          border: 1px solid color-mix(in srgb, var(--accent-link) 55%, transparent);
+          border-radius: 4px;
+          color: var(--accent-link);
+          font-size: 11px;
+          font-weight: 700;
+          line-height: 1;
+        }
+      `}</style>
     </>
   )
 }
