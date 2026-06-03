@@ -48,6 +48,8 @@ const NFT_MINTER_ACCOUNTS_FETCH_LIMIT = 200
 const NFT_MINTER_ACCOUNTS_DISPLAY_LIMIT = 10
 const ACCOUNT_OBJECTS_FETCH_LIMIT = 1000
 const ACCOUNT_OBJECTS_MAX_PAGES = 5
+const AMM_ACCOUNT_OBJECTS_FETCH_LIMIT = 2
+const AMM_ACCOUNT_OBJECTS_MAX_PAGES = 1
 const OBJECT_PREVIEW_LIMIT = 5
 const OBJECT_LOAD_MORE_STEP = 5
 const DOMAIN_FAVICON_SIZE = 16
@@ -1241,6 +1243,7 @@ export default function Account({
   const accountDisplayUsername = !accountDisplayService ? data?.username : null
   const hasDisplayIdentity = !!accountDisplayService || !!accountDisplayUsername
   const accountAmmId = data?.ledgerInfo?.ammID
+  const isAmmAccount = !!accountAmmId
   const accountDisplayName = accountAmmId ? (
     <>
       <span>AMM</span>{' '}
@@ -1337,7 +1340,9 @@ export default function Account({
   const lpTokensCount = lpTokenList.length
   const issuedTokensCount = standardTokenList.length
   const hasNonNativeTokenAssets = lpTokensCount > 0 || issuedTokensCount > 0
-  const isGateway = Number(data?.obligations?.trustlines || 0) > 200
+  const isGateway = Number(data?.obligations?.trustlines || 0) > 200 && !isAmmAccount
+  const accountObjectsFetchLimit = isAmmAccount ? AMM_ACCOUNT_OBJECTS_FETCH_LIMIT : ACCOUNT_OBJECTS_FETCH_LIMIT
+  const accountObjectsMaxPages = isAmmAccount ? AMM_ACCOUNT_OBJECTS_MAX_PAGES : ACCOUNT_OBJECTS_MAX_PAGES
   const lpTokensFiatValue = lpTokenList.reduce((sum, token) => {
     const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
     return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
@@ -2481,7 +2486,7 @@ export default function Account({
     const markerQuery = marker ? `&marker=${encodeURIComponent(marker)}` : ''
 
     return (
-      `v2/objects/${data.address}?limit=${ACCOUNT_OBJECTS_FETCH_LIMIT}&priceNativeCurrencySpot=true&currencyDetails=true` +
+      `v2/objects/${data.address}?limit=${accountObjectsFetchLimit}&priceNativeCurrencySpot=true&currencyDetails=true` +
       (effectiveLedgerTimestamp
         ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
         : '') +
@@ -2588,7 +2593,7 @@ export default function Account({
       let objectsMarker = accountObjectsMarker
       let nextObjectsMarker = accountObjectsMarker
 
-      for (let page = 0; page < ACCOUNT_OBJECTS_MAX_PAGES && objectsMarker; page++) {
+      for (let page = 0; page < accountObjectsMaxPages && objectsMarker; page++) {
         const response = await axios.get(accountObjectsUrl({ marker: objectsMarker }))
         const pageObjects = Array.isArray(response?.data?.objects) ? response.data.objects : []
         moreObjects.push(...pageObjects)
@@ -2607,7 +2612,7 @@ export default function Account({
 
       const combinedObjects = [...accountObjectsLoaded, ...moreObjects]
       setAccountObjectsLoaded(combinedObjects)
-      setAccountObjectsMarker(nextObjectsMarker)
+      setAccountObjectsMarker(isAmmAccount ? null : nextObjectsMarker)
       applyLoadedAccountObjects(combinedObjects)
     } catch (error) {
       setObjectsError(error?.message || 'Failed to load account objects')
@@ -2655,7 +2660,7 @@ export default function Account({
         let objectsMarker = null
         let nextObjectsMarker = null
 
-        for (let page = 0; page < ACCOUNT_OBJECTS_MAX_PAGES; page++) {
+        for (let page = 0; page < accountObjectsMaxPages; page++) {
           const response = await axios.get(accountObjectsUrl({ marker: objectsMarker }))
           const pageObjects = Array.isArray(response?.data?.objects) ? response.data.objects : []
           accountObjects.push(...pageObjects)
@@ -2676,7 +2681,7 @@ export default function Account({
         }
 
         setAccountObjectsLoaded(accountObjects)
-        setAccountObjectsMarker(nextObjectsMarker)
+        setAccountObjectsMarker(isAmmAccount ? null : nextObjectsMarker)
         const { nftIds, sortedTokens } = applyLoadedAccountObjects(accountObjects)
 
         const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
@@ -2827,6 +2832,7 @@ export default function Account({
   }, [
     data?.address,
     data?.ledgerInfo?.activated,
+    data?.ledgerInfo?.ammID,
     data?.obligations?.trustlines,
     effectiveLedgerTimestamp,
     selectedCurrency,
