@@ -6833,6 +6833,12 @@ export default function Account({
                       const removedAccountDetails = isAccountDeleteTx
                         ? txdata?.specification?.source?.addressDetails
                         : null
+                      const removedAccountDestinationAddress = isAccountDeleteTx
+                        ? tx?.Destination || null
+                        : null
+                      const removedAccountDestinationDetails = isAccountDeleteTx
+                        ? txdata?.specification?.destination?.addressDetails
+                        : null
                       const isSelfPayment =
                         tx?.TransactionType === 'Payment' &&
                         !!sourceAddress &&
@@ -7122,14 +7128,18 @@ export default function Account({
                             }
                           : null
                       const resolvedCounterpartyAddress = isAccountDeleteTx
-                        ? removedAccountAddress
+                        ? isSource
+                          ? removedAccountDestinationAddress
+                          : removedAccountAddress
                         : isAcceptNftOfferTx && nftViewerRole === 'seller'
                           ? nftBuyerAddress
                           : isAcceptNftOfferTx && nftViewerRole === 'buyer'
                             ? nftSellerAddress
                             : counterparty
                       const resolvedCounterpartyDetails = isAccountDeleteTx
-                        ? removedAccountDetails
+                        ? isSource
+                          ? removedAccountDestinationDetails
+                          : removedAccountDetails
                         : isAcceptNftOfferTx && nftViewerRole === 'seller'
                           ? nftBuyerDetails
                           : isAcceptNftOfferTx && nftViewerRole === 'buyer'
@@ -7219,7 +7229,9 @@ export default function Account({
                         (isZeroNftOfferAmount || (!collapsedPrimaryChange && !collapsedSecondaryChange))
                       const directionLabel = resolvedCounterpartyAddress
                         ? isAccountDeleteTx
-                          ? ta('labels.from-removed-account')
+                          ? isSource
+                            ? ta('labels.to')
+                            : ta('labels.from-removed-account')
                           : isAcceptNftOfferTx && nftViewerRole === 'seller'
                             ? ta('labels.to')
                             : isAcceptNftOfferTx && nftViewerRole === 'buyer'
@@ -7760,6 +7772,9 @@ export default function Account({
                                     !isDexOfferTx &&
                                     resolvedCounterpartyAddress && (
                                       <span className="tx-counterparty-inline">
+                                        {isAccountDeleteTx && isSource && directionLabel && (
+                                          <span className="tx-counterparty-label">{directionLabel}: </span>
+                                        )}
                                         <AddressWithIconInline
                                           data={{
                                             address: resolvedCounterpartyAddress,
@@ -7958,7 +7973,10 @@ export default function Account({
                                   <span className="copy-inline">
                                     <span onClick={(event) => event.stopPropagation()}>
                                       <AddressWithIconInline
-                                        data={{ address: resolvedCounterpartyAddress }}
+                                        data={{
+                                          address: resolvedCounterpartyAddress,
+                                          addressDetails: resolvedCounterpartyDetails || {}
+                                        }}
                                         options={{ short: 6, showAddress: true }}
                                       />
                                     </span>
