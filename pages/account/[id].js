@@ -703,6 +703,34 @@ const nftSearchUrl = ({ address, tab, search, marker, ledgerTimestamp }) => {
   return `v2/${nftResource}?${params.toString()}`
 }
 
+const nftSalesUrl = ({ address, selectedCurrency, marker, ledgerTimestamp, inception, search }) => {
+  const params = new URLSearchParams({
+    seller: address,
+    list: 'lastSold',
+    limit: String(NFT_FETCH_LIMIT)
+  })
+
+  if (selectedCurrency) {
+    params.set('convertCurrencies', selectedCurrency.toLowerCase())
+    params.set('sortCurrency', selectedCurrency.toLowerCase())
+  }
+
+  if (ledgerTimestamp && inception) {
+    params.set('period', `${new Date(inception * 1000).toISOString()}..${new Date(ledgerTimestamp).toISOString()}`)
+  }
+
+  if (search) {
+    params.set('search', search)
+    params.set('searchLocations', NFT_SEARCH_LOCATIONS)
+  }
+
+  if (marker) {
+    params.set('marker', marker)
+  }
+
+  return `v2/nft-sales?${params.toString()}`
+}
+
 export default function Account({
   initialData,
   initialErrorMessage,
@@ -1388,8 +1416,7 @@ export default function Account({
   const hasBurnedNfts = burnedNfts.length > 0
   const hasAnyNftSectionData = hasOwnedNfts || hasSoldNfts || hasMintedNfts || hasBurnedNfts
   const nftSearchQuery = nftSearch.trim()
-  const nftSearchSupported = ['owned', 'minted', 'burned'].includes(nftTab)
-  const nftSearchActive = nftSearchSupported && nftSearchQuery.length > 0
+  const nftSearchActive = nftSearchQuery.length > 0
   const nftSearchReady = nftSearchQuery.length >= NFT_SEARCH_MIN_LENGTH
   const enrichedNftSearchResults = useMemo(() => {
     if (nftTab !== 'owned') return nftSearchResults
@@ -1404,9 +1431,16 @@ export default function Account({
       .map(({ nft }) => nft)
   }, [nftSearchResults, nftTab, ownedNfts, tokens])
   const nftSearchBaseCount =
-    nftTab === 'owned' ? ownedNftCount : nftTab === 'minted' ? mintedNftsCount : nftTab === 'burned' ? burnedNftsCount : 0
+    nftTab === 'owned'
+      ? ownedNftCount
+      : nftTab === 'sold'
+        ? soldNftsCount
+        : nftTab === 'minted'
+          ? mintedNftsCount
+          : nftTab === 'burned'
+            ? burnedNftsCount
+            : 0
   const shouldShowNftSearch =
-    nftSearchSupported &&
     nftSearchBaseCount > 0 &&
     (nftSearchBaseCount > NFT_INITIAL_LIMIT || !!nftMarkers[nftTab] || !!nftSearchQuery)
   const activeNftList =
@@ -1417,7 +1451,11 @@ export default function Account({
           ? []
           : ownedNfts
       : nftTab === 'sold'
-        ? soldNfts
+        ? nftSearchActive && nftSearchReady
+          ? enrichedNftSearchResults
+          : nftSearchActive
+            ? []
+            : soldNfts
         : nftTab === 'minted'
           ? nftSearchActive && nftSearchReady
             ? enrichedNftSearchResults
@@ -2053,10 +2091,14 @@ export default function Account({
               })
             : `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
       } else if (nftTab === 'sold') {
-        const currencyQuery = selectedCurrency
-          ? `&convertCurrencies=${selectedCurrency.toLowerCase()}&sortCurrency=${selectedCurrency.toLowerCase()}`
-          : ''
-        url = `v2/nft-sales?seller=${data.address}&list=lastSold&limit=${NFT_FETCH_LIMIT}${currencyQuery}&marker=${encodeURIComponent(marker)}`
+        url = nftSalesUrl({
+          address: data.address,
+          selectedCurrency,
+          marker,
+          ledgerTimestamp: effectiveLedgerTimestamp,
+          inception: data?.inception,
+          search: nftSearchActive && nftSearchReady ? nftSearchQuery : ''
+        })
       } else if (nftTab === 'minted') {
         url =
           nftSearchActive && nftSearchReady
@@ -2090,8 +2132,12 @@ export default function Account({
         const soldPayload = response?.data || {}
         const { soldList, soldTotalCount } = parseSoldNftsPayload(soldPayload)
         moreItems = soldList
-        setSoldNfts((prev) => [...prev, ...moreItems])
-        if (soldTotalCount !== null) {
+        if (nftSearchActive && nftSearchReady) {
+          setNftSearchResults((prev) => [...prev, ...moreItems])
+        } else {
+          setSoldNfts((prev) => [...prev, ...moreItems])
+        }
+        if (!nftSearchActive && soldTotalCount !== null) {
           setSoldNftsTotalCount(soldTotalCount)
         }
       } else {
@@ -2230,7 +2276,7 @@ export default function Account({
       return
     }
 
-    if (!nftSearchSupported || (nftTab === 'owned' && effectiveLedgerTimestamp) || !data?.address) return
+    if ((nftTab === 'owned' && effectiveLedgerTimestamp) || !data?.address) return
 
     if (!nftSearchReady) {
       setNftSearchResults([])
@@ -2247,20 +2293,33 @@ export default function Account({
         setNftSearchError('')
 
         const response = await axios.get(
-          nftSearchUrl({
-            address: data.address,
-            tab: nftTab,
-            search: nftSearchQuery,
-            ledgerTimestamp: effectiveLedgerTimestamp
-          }),
+          nftTab === 'sold'
+            ? nftSalesUrl({
+                address: data.address,
+                selectedCurrency,
+                ledgerTimestamp: effectiveLedgerTimestamp,
+                inception: data?.inception,
+                search: nftSearchQuery
+              })
+            : nftSearchUrl({
+                address: data.address,
+                tab: nftTab,
+                search: nftSearchQuery,
+                ledgerTimestamp: effectiveLedgerTimestamp
+              }),
           { signal: controller.signal }
         )
 
         if (nftSearchRequestTokenRef.current !== requestToken) return
 
-        const nftResource = nftResourceForTab()
-        const nftList = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
-        setNftSearchResults(uniqueNftsById(nftList))
+        if (nftTab === 'sold') {
+          const { soldList } = parseSoldNftsPayload(response?.data, NFT_FETCH_LIMIT)
+          setNftSearchResults(soldList)
+        } else {
+          const nftResource = nftResourceForTab()
+          const nftList = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
+          setNftSearchResults(uniqueNftsById(nftList))
+        }
         setNftSearchMarker(response?.data?.marker || null)
       } catch (error) {
         if (axios.isCancel(error) || error?.message === 'canceled') return
@@ -2280,7 +2339,7 @@ export default function Account({
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, effectiveLedgerTimestamp, nftTab, nftSearchQuery, nftSearchReady, nftSearchSupported])
+  }, [data?.address, effectiveLedgerTimestamp, nftTab, nftSearchQuery, nftSearchReady, selectedCurrency])
 
   useEffect(() => {
     if (tokenTab === 'lp' && lpTokensCount === 0) {
@@ -2609,14 +2668,12 @@ export default function Account({
 
         try {
           setSoldNftsLoading(true)
-          const soldNftsUrl =
-            `v2/nft-sales?seller=${data.address}&list=lastSold&limit=${NFT_FETCH_LIMIT}` +
-            (selectedCurrency
-              ? `&convertCurrencies=${selectedCurrency.toLowerCase()}&sortCurrency=${selectedCurrency.toLowerCase()}`
-              : '') +
-            (effectiveLedgerTimestamp && data?.inception
-              ? `&period=${encodeURIComponent(new Date(data.inception * 1000).toISOString())}..${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
-              : '')
+          const soldNftsUrl = nftSalesUrl({
+            address: data.address,
+            selectedCurrency,
+            ledgerTimestamp: effectiveLedgerTimestamp,
+            inception: data?.inception
+          })
           const soldResponse = await axios.get(soldNftsUrl)
           const soldPayload = soldResponse?.data || {}
           const { soldList, soldTotalCount } = parseSoldNftsPayload(soldPayload, NFT_FETCH_LIMIT)
