@@ -1169,3 +1169,11 @@
   font-size: 14px;
   line-height: 1.4;
 }
+
+@media only screen and (max-width: 640px) {
+  .tokenChartDialog {
+    :global(.apexcharts-toolbar) {
+      display: none !important;
+    }
+  }
+}
