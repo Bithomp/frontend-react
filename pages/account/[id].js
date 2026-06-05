@@ -567,7 +567,17 @@ import {
   FaXTwitter
 } from 'react-icons/fa6'
 import { LuFileCheck2 } from 'react-icons/lu'
-import { MdClose, MdDeleteForever, MdMoneyOff, MdNorth, MdQrCode2, MdSearch, MdSouth, MdVerified } from 'react-icons/md'
+import {
+  MdClose,
+  MdDeleteForever,
+  MdMoneyOff,
+  MdNorth,
+  MdOpenInNew,
+  MdQrCode2,
+  MdSearch,
+  MdSouth,
+  MdVerified
+} from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
 import domainStyles from '../../styles/pages/domains.module.scss'
@@ -7713,7 +7723,22 @@ export default function Account({
                                     )}
                                   </span>
                                   <span className="tx-time tx-time-top">
-                                    {tx?.date ? timeOrDate(tx.date, 'ripple') : '-'}
+                                    {!!txHash && (
+                                      <Link
+                                        href={`/tx/${txHash}`}
+                                        className="tx-open-link tooltip tooltip-icon"
+                                        aria-label={ta('aria.open-transaction')}
+                                        onClick={(event) => event.stopPropagation()}
+                                      >
+                                        <MdOpenInNew aria-hidden="true" />
+                                        <span className="tooltiptext left below no-brake">
+                                          {ta('aria.open-transaction')}
+                                        </span>
+                                      </Link>
+                                    )}
+                                    {tx?.date
+                                      ? timeOrDate(tx.date, 'ripple', { timeOnlyWithinHours: 24, dateWithTime: true })
+                                      : '-'}
                                   </span>
                                 </div>
 
@@ -8623,6 +8648,18 @@ export default function Account({
                                   )}
                                 </span>
                               </div>
+
+                              {!!txHash && (
+                                <div className="tx-expanded-actions" onClick={(event) => event.stopPropagation()}>
+                                  <Link
+                                    href={`/tx/${txHash}`}
+                                    className="button-action thin narrow tx-view-transaction-button"
+                                  >
+                                    <MdOpenInNew aria-hidden="true" />
+                                    {ta('actions.view-transaction')}
+                                  </Link>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -11435,10 +11472,63 @@ export default function Account({
           right: 0;
           top: 0;
           margin-left: 0;
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
           color: var(--text-secondary);
           font-size: 11px;
           line-height: 1;
           white-space: nowrap;
+        }
+
+        .tx-open-link.tooltip {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 19px;
+          height: 19px;
+          border: 1px solid color-mix(in srgb, var(--accent-link) 36%, var(--border-color));
+          border-radius: 50%;
+          background: color-mix(in srgb, var(--background-input) 82%, var(--accent-link) 18%);
+          color: var(--accent-link);
+          opacity: 0.82;
+          text-decoration: none;
+          transition:
+            background-color 0.18s ease,
+            border-color 0.18s ease,
+            opacity 0.18s ease,
+            transform 0.18s ease;
+        }
+
+        .tx-open-link:hover,
+        .tx-open-link:focus-visible {
+          border-color: var(--accent-link);
+          background: color-mix(in srgb, var(--background-input) 68%, var(--accent-link) 32%);
+          opacity: 1;
+          transform: translateY(-1px);
+        }
+
+        .tx-open-link :global(svg) {
+          width: 12px;
+          height: 12px;
+        }
+
+        .tx-expanded-actions {
+          display: flex;
+          justify-content: center;
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+        }
+
+        .tx-view-transaction-button {
+          min-width: 0;
+        }
+
+        @media (max-width: 768px) {
+          .tx-view-transaction-button {
+            width: 100%;
+          }
         }
 
         .tx-counterparty-inline {

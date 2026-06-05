@@ -475,7 +475,8 @@ const MyApp = ({ Component, pageProps }) => {
 
       const spaceAbove = r.top - HEADER_H
       const spaceBelow = window.innerHeight - r.bottom
-      const flipBelow = isTopLinksTooltip ? true : spaceAbove < TIP_H && spaceBelow > spaceAbove
+      const forceBelow = tip.classList.contains('below')
+      const flipBelow = forceBelow || (isTopLinksTooltip ? true : spaceAbove < TIP_H && spaceBelow > spaceAbove)
 
       const vertPos = flipBelow
         ? 'top:' + (r.bottom + (isTopLinksTooltip ? 6 : GAP)) + 'px!important;bottom:auto!important;'

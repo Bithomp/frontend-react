@@ -898,6 +898,14 @@ body.dark {
 
   &.tooltip-icon {
     vertical-align: bottom;
+
+    .tooltiptext.left {
+      right: -20px;
+    }
+
+    .tooltiptext.right {
+      left: -20px;
+    }
   }
 
   &:hover,
@@ -911,6 +919,9 @@ body.dark {
     --tooltip-arrow-border-color: rgba(255, 255, 255, 0.18);
     --tooltip-shift-x: -50%;
     --tooltip-arrow-offset: 18px;
+    --tooltip-arrow-left: 50%;
+    --tooltip-arrow-right: auto;
+    --tooltip-arrow-transform: translateX(-50%);
     font-size: 12px;
     font-weight: 500;
     display: block;
@@ -951,6 +962,9 @@ body.dark {
 
     @media (max-width: 768px) {
       --tooltip-shift-x: 0%;
+      --tooltip-arrow-left: auto;
+      --tooltip-arrow-right: var(--tooltip-arrow-offset);
+      --tooltip-arrow-transform: none;
       left: auto;
       right: 0;
       text-align: left;
@@ -971,8 +985,9 @@ body.dark {
       width: 0;
       height: 0;
       top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
+      left: var(--tooltip-arrow-left);
+      right: var(--tooltip-arrow-right);
+      transform: var(--tooltip-arrow-transform);
       border-bottom: 0;
     }
 
@@ -1009,56 +1024,39 @@ body.dark {
 
     &.right {
       --tooltip-shift-x: 0%;
+      --tooltip-arrow-left: var(--tooltip-arrow-offset);
+      --tooltip-arrow-right: auto;
+      --tooltip-arrow-transform: none;
       left: 0;
       right: auto;
       text-align: left;
 
       div, p, span { text-align: left; }
 
-      &:before,
-      &:after {
-        left: var(--tooltip-arrow-offset);
-        transform: none;
-      }
-
       @media (max-width: 768px) {
+        --tooltip-arrow-left: var(--tooltip-arrow-offset);
+        --tooltip-arrow-right: auto;
         left: 0;
         right: auto;
-
-        &:before,
-        &:after {
-          left: var(--tooltip-arrow-offset);
-          right: auto;
-          transform: none;
-        }
       }
     }
 
     &.left {
       --tooltip-shift-x: 0%;
+      --tooltip-arrow-left: auto;
+      --tooltip-arrow-right: var(--tooltip-arrow-offset);
+      --tooltip-arrow-transform: none;
       left: auto;
       right: 0;
       text-align: left;
 
       div, p, span { text-align: left; }
 
-      &:before,
-      &:after {
-        left: auto;
-        right: var(--tooltip-arrow-offset);
-        transform: none;
-      }
-
       @media (max-width: 768px) {
+        --tooltip-arrow-left: auto;
+        --tooltip-arrow-right: var(--tooltip-arrow-offset);
         left: auto;
         right: 0;
-
-        &:before,
-        &:after {
-          left: auto;
-          right: var(--tooltip-arrow-offset);
-          transform: none;
-        }
       }
     }
 
@@ -1089,20 +1087,15 @@ body.dark {
       left: auto;
       right: -6px;
       --tooltip-shift-x: 0%;
-
-      &:before,
-      &:after {
-        left: auto;
-        right: 10px;
-        transform: none;
-      }
+      --tooltip-arrow-left: auto;
+      --tooltip-arrow-right: 10px;
+      --tooltip-arrow-transform: none;
     }
 
     &.token-action-tooltip {
-      &:before,
-      &:after {
-        right: 8px;
-      }
+      --tooltip-arrow-left: auto;
+      --tooltip-arrow-right: 8px;
+      --tooltip-arrow-transform: none;
     }
 
     &.table-large {

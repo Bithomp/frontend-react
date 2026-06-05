@@ -20,6 +20,27 @@
     }
   }
 
+  .tx-view-transaction-button.button-action.thin.narrow {
+    background: color-mix(in srgb, var(--background-input) 92%, var(--accent-link) 8%);
+    border-color: var(--accent-link);
+    color: var(--accent-link) !important;
+    min-width: 0;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: currentColor;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: color-mix(in srgb, var(--background-input) 82%, var(--accent-link) 18%);
+      border-color: var(--accent-link);
+      color: var(--accent-link) !important;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 18%, transparent);
+    }
+  }
+
   .detail-row {
     display: flex;
     justify-content: space-between;

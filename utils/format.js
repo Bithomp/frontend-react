@@ -1292,14 +1292,30 @@ export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
   return ''
 }
 
-export const timeOrDate = (timestamp, type) => {
+export const timeOrDate = (timestamp, type, options = {}) => {
   if (type === 'ripple') {
     timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
   }
-  //if today - return time, otherwise date
-  return new Date(timestamp * 1000).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
-    ? timeFormat(timestamp)
-    : dateFormat(timestamp)
+
+  const timestampMs = timestamp * 1000
+  const timeOnlyWithinHours = Number(options?.timeOnlyWithinHours)
+  const isWithinTimeOnlyWindow =
+    Number.isFinite(timeOnlyWithinHours) &&
+    timeOnlyWithinHours > 0 &&
+    Date.now() - timestampMs >= 0 &&
+    Date.now() - timestampMs < timeOnlyWithinHours * 60 * 60 * 1000
+  const isSameDay = new Date(timestampMs).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+  const showTimeOnly = Number.isFinite(timeOnlyWithinHours) ? isWithinTimeOnlyWindow : isSameDay
+
+  if (showTimeOnly) return timeFormat(timestamp)
+  if (options?.dateWithTime) {
+    return (
+      <span suppressHydrationWarning>
+        {dateFormat(timestamp)} {timeFormat(timestamp)}
+      </span>
+    )
+  }
+  return dateFormat(timestamp)
 }
 
 export const expirationExpired = (t, timestamp, type) => {
