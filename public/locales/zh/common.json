@@ -459,7 +459,7 @@
     "payment-partly": "请发送剩余的金额，到目前为止，我们仅在需要 <b>{{required}} {{currency}}</b> 时才收到 {{received}} {{currency}}。",
     "Network Error": "似乎没有互联网连接;(",
     "Request failed with status code 522": "服务器当前无法访问，请稍后再试。",
-    "Request failed with status code 429": "您向我们发送的请求过多，请稍后再试！",
+    "Request failed with status code 429": "您发送的请求过多，请稍后再试。登录可提高限额；Bithomp Pro 可进一步提高限额。",
     "Request failed with status code 404": "该网络不允许此类 API 调用",
     "Request failed with status code 403": "您似乎已退出，请重新登录",
     "Request failed with status code 408": "请求已超时。尝试更改过滤器或稍后重试。",
