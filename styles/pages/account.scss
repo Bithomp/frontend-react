@@ -88,7 +88,7 @@
   .orders-section:has(.tooltiptext.is-visible),
   .asset-item:has(.tooltip:hover),
   .asset-item:has(.tooltiptext.is-visible) {
-    z-index: 50;
+    z-index: 6;
   }
 
   .section-link {
