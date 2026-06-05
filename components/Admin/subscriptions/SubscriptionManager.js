@@ -768,6 +768,10 @@ export default function SubscriptionManager({
           text-align: left;
         }
 
+        .subscription-summary-list + .subscription-summary-list {
+          margin-top: 10px;
+        }
+
         .subscription-summary-card {
           display: block;
           padding: 0;
