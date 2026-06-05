@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
-import { FaHandshake } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaHandshake } from 'react-icons/fa'
 
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
@@ -878,21 +878,37 @@ export default function Tokens({
                             </td>
                             <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
                             <td className="center">
-                              {hasIssuer ? (
-                                <span
-                                  onClick={() => {
-                                    handleSetTrustline(token)
-                                  }}
-                                  className="orange tooltip"
+                              <div className="token-row-actions">
+                                <Link
+                                  href={tokenPageUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="token-action-link tooltip"
+                                  onClick={(event) => event.stopPropagation()}
+                                  aria-label={tt('actions.openTokenNewTab')}
                                 >
-                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                                  <FaExternalLinkAlt />
                                   <span className="tooltiptext left no-brake token-action-tooltip">
-                                    {tt('actions.setTrust')}
+                                    {tt('actions.openTokenNewTab')}
                                   </span>
-                                </span>
-                              ) : (
-                                <span></span>
-                              )}
+                                </Link>
+                                {hasIssuer && (
+                                  <button
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation()
+                                      handleSetTrustline(token)
+                                    }}
+                                    className="token-action-button orange tooltip"
+                                    aria-label={tt('actions.setTrust')}
+                                  >
+                                    <FaHandshake />
+                                    <span className="tooltiptext left no-brake token-action-tooltip">
+                                      {tt('actions.setTrust')}
+                                    </span>
+                                  </button>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         )
@@ -976,14 +992,15 @@ export default function Tokens({
                                   <br />
                                   <br />
                                   <span className="mobile-token-actions">
-                                    <button
+                                    <Link
+                                      href={tokenPageUrl}
+                                      target="_blank"
+                                      rel="noreferrer"
                                       className="button-action narrow thin"
-                                      onClick={() => {
-                                        router.push(tokenPageUrl)
-                                      }}
                                     >
+                                      <FaExternalLinkAlt style={{ fontSize: 14, marginBottom: -1 }} />{' '}
                                       {tt('actions.tokenPage')}
-                                    </button>
+                                    </Link>
                                     {!isNativeToken && (
                                       <button
                                         className="button-action narrow thin"
@@ -1026,6 +1043,39 @@ export default function Tokens({
           gap: 8px;
           flex-wrap: nowrap;
           white-space: nowrap;
+        }
+
+        .token-row-actions {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          min-width: 54px;
+        }
+
+        .token-action-link,
+        .token-action-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          padding: 0;
+          border: 0;
+          background: transparent;
+          color: var(--accent-link);
+          font-size: 16px;
+          line-height: 1;
+          cursor: pointer;
+        }
+
+        .token-action-button.orange {
+          color: var(--orange);
+        }
+
+        .token-action-link:hover,
+        .token-action-button:hover {
+          opacity: 0.82;
         }
 
         @media only screen and (max-width: 480px) {
