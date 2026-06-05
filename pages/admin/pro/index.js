@@ -1,6 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import Mailto from 'react-protected-mailto'
 
 import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
@@ -18,6 +19,8 @@ import { MdDelete } from 'react-icons/md'
 import Link from 'next/link'
 import ProTabs from '../../../components/Tabs/ProTabs'
 import CheckBox from '../../../components/UI/CheckBox'
+
+const PRO_ADDRESS_LIMIT = 5
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -151,8 +154,9 @@ export default function Pro({
         ]
       }
     */
-    setVerifiedAddresses(data?.addresses)
-    suggestAddress(account, data?.addresses)
+    const addresses = Array.isArray(data?.addresses) ? data.addresses : []
+    setVerifiedAddresses(addresses)
+    suggestAddress(account, addresses)
   }
 
   useEffect(() => {
@@ -215,6 +219,10 @@ export default function Pro({
     }
     getVerifiedAddresses()
   }
+
+  const verifiedAddressCount = Array.isArray(verifiedAddresses) ? verifiedAddresses.length : 0
+  const addressLimitReached = verifiedAddressCount >= PRO_ADDRESS_LIMIT
+  const canAddAddress = !subscriptionExpired && !addressLimitReached
 
   const addressButtons = (address, options) => {
     return (
@@ -443,7 +451,7 @@ export default function Pro({
                 <br />
                 <br />
                 <div style={{ textAlign: 'left' }}>
-                  {verifiedAddresses?.length > 0 ? (
+                  {verifiedAddressCount > 0 ? (
                     <>
                       {subscriptionExpired ? (
                         <>
@@ -452,17 +460,21 @@ export default function Pro({
                             {t('pro.purchase-pro-link', { ns: 'admin' })}
                           </Link>.
                         </>
+                      ) : addressLimitReached ? (
+                        <>
+                          {t('pro.add-limit', { ns: 'admin', count: PRO_ADDRESS_LIMIT })}
+                          <br />
+                          {t('pro.add-limit-support', { ns: 'admin' })}{' '}
+                          <Mailto email="pro@bithomp.com" headers={{ subject: 'Bithomp Pro address limit' }} />.
+                        </>
                       ) : (
-                        t('pro.add-limit', { ns: 'admin' })
+                        ''
                       )}
                     </>
                   ) : (
                     <>{t('pro.verify-first', { ns: 'admin' })}</>
                   )}
-                  {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
-                  {((verifiedAddresses?.length < 5 && !subscriptionExpired) ||
-                    !verifiedAddresses ||
-                    verifiedAddresses?.length === 0) && (
+                  {canAddAddress && (
                     <>
                       <br />
                       <br />

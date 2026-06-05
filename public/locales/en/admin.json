@@ -233,6 +233,7 @@
     "activate-analysis-before": "Activate balance history with",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "You reached the address limit for your plan.",
+    "add-limit-support": "If you need more addresses, contact us at",
     "verify-first": "Verify an address to enable Pro tools.",
     "address-placeholder": "Enter address",
     "address-name-placeholder": "Private address name",
