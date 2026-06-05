@@ -75,18 +75,20 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
 
   const currencyQuery = searchParams.get('currency') || ''
   const currencyIssuerQuery = searchParams.get('currencyIssuer') || ''
+  const normalizedCurrencyQuery = currencyQuery || nativeCurrency
+  const normalizedIssuerQuery = currencyIssuerQuery || null
 
   useEffect(() => {
-    if (token?.currency === currencyQuery && token?.issuer === currencyIssuerQuery) {
+    if (token?.currency === normalizedCurrencyQuery && (token?.issuer || null) === normalizedIssuerQuery) {
       return
     }
     setToken({
-      currency: currencyQuery || nativeCurrency,
-      issuer: currencyIssuerQuery || null,
+      currency: normalizedCurrencyQuery,
+      issuer: normalizedIssuerQuery,
       currencyDetails: null
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currencyQuery, currencyIssuerQuery])
+  }, [normalizedCurrencyQuery, normalizedIssuerQuery])
 
   const [data, setData] = useState(initialData || [])
   const [rawData, setRawData] = useState(initialRawData || {})

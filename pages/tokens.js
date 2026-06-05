@@ -202,6 +202,11 @@ const TokenCell = ({ token }) => {
   return <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
 }
 
+const getTokenDistributionUrl = (token) =>
+  token?.issuer
+    ? `/distribution?currencyIssuer=${encodeURIComponent(token.issuer)}&currency=${encodeURIComponent(token.currency)}`
+    : '/distribution'
+
 export default function Tokens({
   initialData,
   initialErrorMessage,
@@ -824,6 +829,7 @@ export default function Tokens({
                           : hasIssuer
                             ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
                             : `/amms?currency=${token.currency}`
+                        const distributionUrl = getTokenDistributionUrl(token)
                         return (
                           <tr key={i} onClick={() => router.push(tokenPageUrl)}>
                             <td className="center">{i + 1}</td>
@@ -852,7 +858,9 @@ export default function Tokens({
                               </span>
                             </td>
                             <td className="right">
-                              {renderShortNumberWithTooltip(token.holders)}
+                              <Link href={distributionUrl} onClick={(event) => event.stopPropagation()}>
+                                {renderShortNumberWithTooltip(token.holders)}
+                              </Link>
                               <br />
                               {renderShortNumberWithTooltip(token.statistics?.activeHolders, 'green')}
                             </td>
@@ -923,9 +931,7 @@ export default function Tokens({
                           const tokenPageUrl = hasIssuer
                             ? `/token/${token.issuer}/${token.currency}`
                             : `/token/${token.currency}`
-                          const distributionUrl = hasIssuer
-                            ? `/distribution?currencyIssuer=${token.issuer}&currency=${token.currency}`
-                            : '/distribution'
+                          const distributionUrl = getTokenDistributionUrl(token)
                           return (
                             <tr key={i}>
                               <td style={{ padding: '5px' }} className="center">
