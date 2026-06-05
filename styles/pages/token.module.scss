@@ -476,10 +476,11 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    border: 1px solid color-mix(in srgb, var(--card-border) 70%, transparent);
+    border: 1px solid var(--chip-border);
     border-radius: 999px;
     color: var(--text-secondary);
-    background: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+    background: var(--chip-bg);
+    box-shadow: var(--chip-shadow);
     cursor: help;
 
     svg {
@@ -501,10 +502,11 @@
     width: 28px;
     height: 28px;
     padding: 0;
-    border: 1px solid color-mix(in srgb, var(--card-border) 70%, transparent);
+    border: 1px solid var(--chip-border);
     border-radius: 999px;
     color: var(--text-main);
-    background: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+    background: var(--chip-bg);
+    box-shadow: var(--chip-shadow);
     cursor: pointer;
 
     &:hover,
@@ -603,9 +605,10 @@
     justify-content: center;
     min-width: 22px;
     padding: 2px 4px;
-    border: 1px solid color-mix(in srgb, var(--card-border) 64%, transparent);
+    border: 1px solid var(--chip-border);
     border-radius: 999px;
-    background: color-mix(in srgb, var(--background-secondary) 34%, transparent);
+    background: var(--chip-bg);
+    box-shadow: var(--chip-shadow);
     color: var(--text-secondary);
     font-size: 10.5px;
     font-weight: 600;

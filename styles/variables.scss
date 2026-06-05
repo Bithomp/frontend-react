@@ -51,6 +51,9 @@ body {
   --surface-loading-bg: color-mix(in srgb, var(--background-main) 72%, white 28%);
   --surface-group-bg: color-mix(in srgb, var(--background-secondary) 36%, transparent);
   --surface-group-border: color-mix(in srgb, var(--accent-link) 18%, transparent);
+  --chip-bg: color-mix(in srgb, var(--background-secondary) 92%, var(--accent-link) 6%);
+  --chip-border: color-mix(in srgb, var(--accent-link) 26%, var(--color-gray-300));
+  --chip-shadow: 0 1px 3px rgba(0, 0, 0, 0.09);
   --code-bg: #eeeeee;
   --code-text: #1f1f1e;
   --code-border: color-mix(in srgb, var(--text-secondary) 12%, transparent);
@@ -112,6 +115,9 @@ body.dark {
   --surface-loading-bg: rgba(24, 27, 28, 0.82);
   --surface-group-bg: rgba(12, 23, 25, 0.62);
   --surface-group-border: rgba(102, 208, 218, 0.18);
+  --chip-bg: color-mix(in srgb, var(--background-secondary) 84%, var(--accent-link) 7%);
+  --chip-border: color-mix(in srgb, var(--accent-link) 24%, var(--button-additional));
+  --chip-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
   --code-bg: rgba(255, 255, 255, 0.08);
   --code-text: #d7e2e5;
   --code-border: rgba(102, 208, 218, 0.18);

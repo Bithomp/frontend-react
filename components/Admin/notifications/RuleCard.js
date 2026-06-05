@@ -5,6 +5,7 @@ import { MdDelete, MdEdit, MdHistory } from 'react-icons/md'
 import Card from '@/components/UI/Card'
 import { LinkAccount } from '@/utils/links'
 import { isAddressValid, nativeCurrency } from '@/utils'
+import { fullDateAndTime } from '@/utils/format'
 import {
   getNotificationEventLabel,
   getNotificationFiatCurrencyLabel,
@@ -20,7 +21,8 @@ const operatorMap = {
   $lte: '<=',
   $in: 'notifications.operators.in',
   $nin: 'notifications.operators.not-in',
-  $exists: 'notifications.operators.exists'
+  $exists: 'notifications.operators.exists',
+  $elemMatch: 'contains'
 }
 
 const addressConditionFields = new Set(['account', 'address', 'currency_issuer', 'destination', 'issuer'])
@@ -37,6 +39,7 @@ const fieldLabelMap = {
   price: 'notifications.filters.price',
   price_usd: 'notifications.filters.price_usd',
   taxon: 'notifications.filters.taxon',
+  timestamp: 'table.date-time',
   token: 'notifications.filters.token',
   tx_type: 'notifications.filters.tx_type'
 }
@@ -74,8 +77,8 @@ function renderConditionValue(field, value, t) {
   if (Array.isArray(value)) {
     return (
       <span className="notification-rule-value-list">
-        {value.map((item) => (
-          <span key={item}>{item}</span>
+        {value.map((item, index) => (
+          <span key={`${field}-${index}`}>{renderConditionValue(field, item, t)}</span>
         ))}
       </span>
     )
@@ -87,6 +90,27 @@ function renderConditionValue(field, value, t) {
 
   if (addressConditionFields.has(field) && typeof value === 'string' && isAddressValid(value)) {
     return <LinkAccount address={value} short={8} />
+  }
+
+  if (field === 'timestamp' && Number.isFinite(Number(value))) {
+    return fullDateAndTime(Number(value))
+  }
+
+  if (typeof value === 'object') {
+    if ('$abs' in value) {
+      return (
+        <span className="notification-rule-expression">
+          <em>abs</em> {renderConditionValue(field, value.$abs, t)}
+        </span>
+      )
+    }
+
+    const nested = parseConditions(value, t)
+    if (nested) {
+      return <span className="notification-rule-nested-condition">{nested}</span>
+    }
+
+    return JSON.stringify(value)
   }
 
   return String(value)
@@ -103,13 +127,36 @@ function joinConditionNodes(nodes, separator) {
 
 function formatCondition(field, opObj, t) {
   if (typeof opObj !== 'object' || opObj === null) return null
-  const nodes = Object.entries(opObj).map(([op, value]) => (
-    <span className="notification-rule-filter-chip" key={`${field}-${op}`}>
-      <span>{fieldLabel(field, t)}</span>
-      <em>{operatorMap[op]?.startsWith?.('notifications.') ? t(operatorMap[op]) : operatorMap[op] || op}</em>
-      <strong>{renderConditionValue(field, value, t)}</strong>
-    </span>
-  ))
+  const nodes = Object.entries(opObj)
+    .filter(([op, value]) => !(field === 'issuer' && op === '$eq' && value === null))
+    .map(([op, value]) => {
+      const operatorLabel = operatorMap[op]?.startsWith?.('notifications.') ? t(operatorMap[op]) : operatorMap[op] || op
+
+      if (op === '$elemMatch' && typeof value === 'object' && value !== null) {
+        const nested = parseConditions(value, t)
+        if (!nested) return null
+        return (
+          <span className="notification-rule-filter-match" key={`${field}-${op}`}>
+            <span className="notification-rule-filter-match-label">
+              <span>{fieldLabel(field, t)}</span>
+              <em>{operatorLabel}</em>
+            </span>
+            <span className="notification-rule-nested-condition">{nested}</span>
+          </span>
+        )
+      }
+
+      return (
+        <span className="notification-rule-filter-chip" key={`${field}-${op}`}>
+          <span>{fieldLabel(field, t)}</span>
+          <em>{operatorLabel}</em>
+          <strong>{renderConditionValue(field, value, t)}</strong>
+        </span>
+      )
+    })
+    .filter(Boolean)
+
+  if (!nodes.length) return null
 
   return joinConditionNodes(nodes, t('notifications.operators.and'))
 }

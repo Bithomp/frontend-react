@@ -891,10 +891,11 @@
     max-width: 100%;
     margin-top: 5px;
     padding: 2px 8px;
-    border: 1px solid color-mix(in srgb, var(--accent-link) 30%, var(--button-additional));
+    border: 1px solid var(--chip-border);
     border-radius: 999px;
     color: var(--accent-link) !important;
-    background: color-mix(in srgb, var(--accent-link) 9%, transparent);
+    background: var(--chip-bg);
+    box-shadow: var(--chip-shadow);
     font-size: 12px !important;
     font-weight: 700;
   }
@@ -1103,17 +1104,18 @@
       min-height: 24px;
       align-items: center;
       padding: 0 8px;
-      border: 1px solid color-mix(in srgb, var(--accent-link) 24%, var(--button-additional));
+      border: 1px solid var(--chip-border);
       border-radius: 999px;
       color: var(--accent-link);
-      background: color-mix(in srgb, var(--accent-link) 7%, transparent);
+      background: var(--chip-bg);
+      box-shadow: var(--chip-shadow);
       font-size: 12px;
       font-weight: 700;
 
       &.muted {
         color: var(--text-secondary);
-        border-color: color-mix(in srgb, var(--button-additional) 78%, transparent);
-        background: color-mix(in srgb, var(--button-additional) 20%, transparent);
+        border-color: var(--chip-border);
+        background: var(--chip-bg);
       }
     }
   }
@@ -1157,12 +1159,13 @@
     max-width: 100%;
     margin: 2px 0;
     padding: 3px 8px;
-    border: 1px solid color-mix(in srgb, var(--button-additional) 70%, transparent);
+    border: 1px solid var(--chip-border);
     border-radius: 999px;
-    background: color-mix(in srgb, var(--background-secondary) 54%, transparent);
+    background: var(--chip-bg);
+    box-shadow: var(--chip-shadow);
     vertical-align: middle;
 
-    span {
+    > span {
       color: var(--text-secondary);
       font-size: 12px;
       font-weight: 700;
@@ -1170,15 +1173,23 @@
       text-transform: none;
     }
 
-    em {
+    > em {
       color: var(--text-secondary);
       font-size: 12px;
       font-style: normal;
     }
 
     strong {
+      color: var(--text-main);
       font-size: 13px;
+      font-weight: 800;
       line-height: 1.25;
+
+      :global(span) {
+        color: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+      }
     }
   }
 
@@ -1193,10 +1204,11 @@
       align-items: center;
       min-height: 22px;
       padding: 1px 7px;
-      border: 1px solid color-mix(in srgb, var(--accent-link) 24%, var(--button-additional));
+      border: 1px solid var(--chip-border);
       border-radius: 999px;
       color: var(--text-main);
-      background: color-mix(in srgb, var(--accent-link) 8%, transparent);
+      background: var(--chip-bg);
+      box-shadow: var(--chip-shadow);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0;
@@ -1210,7 +1222,69 @@
     display: inline;
   }
 
+  .notification-rule-filter-match {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 100%;
+    margin: 2px 0;
+    vertical-align: middle;
+  }
+
+  .notification-rule-filter-match-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 30px;
+    color: var(--text-secondary);
+    font-weight: 700;
+
+    span {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    em {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+    }
+  }
+
+  .notification-rule-nested-condition {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    vertical-align: middle;
+  }
+
+  .notification-rule-expression {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-main);
+    font-weight: 800;
+
+    em {
+      color: var(--text-secondary);
+      font-size: inherit;
+      font-style: normal;
+      font-weight: 800;
+    }
+  }
+
   .notification-rule-separator {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    margin: 0 8px;
+    vertical-align: middle;
     color: var(--text-secondary);
     font-size: 12px;
     font-weight: 800;
