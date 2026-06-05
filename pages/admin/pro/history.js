@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
@@ -470,10 +470,17 @@ const HistoryTransaction = ({ activity }) => {
   )
 }
 
-export default function History({ queryAddress, selectedCurrency, setSelectedCurrency, sessionToken, openEmailLogin }) {
+export default function History({
+  queryAddress,
+  selectedCurrency,
+  setSelectedCurrency,
+  sessionToken,
+  clientReady,
+  openEmailLogin
+}) {
   const router = useRouter()
   const width = useWidth()
-  const sampleMode = !sessionToken
+  const sampleMode = clientReady && !sessionToken
 
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
@@ -481,6 +488,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(false)
   const [loadingVerifiedAddresses, setLoadingVerifiedAddresses] = useState(false)
+  const [verifiedAddressesLoaded, setVerifiedAddressesLoaded] = useState(false)
   const [verifiedAddresses, setVerifiedAddresses] = useState([])
   const [addressesToCheck, setAddressesToCheck] = useState(queryAddress ? [queryAddress] : [])
   const [period, setPeriod] = useState('all')
@@ -491,6 +499,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   const [rendered, setRendered] = useState(false)
   const [removeDust, setRemoveDust] = useState(false)
   const [platformCSVExport, setPlatformCSVExport] = useState('Koinly')
+  const historyRequestTokenRef = useRef(0)
   const selectedAddressesKey = addressesToCheck.join(',')
 
   const platformCSVHeaders = useMemo(
@@ -699,7 +708,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   ]
 
   const getProAddressHistory = async (options) => {
-    if (addressesToCheck.length === 0) return
+    const requestAddressesKey = addressesToCheck.filter(Boolean).join(',')
+    if (!requestAddressesKey) return
+    const requestToken = ++historyRequestTokenRef.current
     setLoading(true)
     setErrorMessage('')
 
@@ -726,7 +737,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         'user/addresses/activities?convertCurrency=' +
           selectedCurrency +
           '&addresses=' +
-          selectedAddressesKey +
+          requestAddressesKey +
           '&period=' +
           period +
           '&order=' +
@@ -736,6 +747,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           (sortCurrency ? '&sortCurrency=' + sortCurrency : '')
       )
       .catch((error) => {
+        if (historyRequestTokenRef.current !== requestToken) return
         setLoading(false)
         if (error.response?.data?.error === 'errors.token.required') {
           if (sampleMode) {
@@ -749,6 +761,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
         }
       })
+    if (historyRequestTokenRef.current !== requestToken) return
     setLoading(false)
     let res = response?.data
     /*
@@ -826,9 +839,11 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   }
 
   const getVerifiedAddresses = async () => {
+    setVerifiedAddressesLoaded(false)
     setLoadingVerifiedAddresses(true)
     const response = await axiosAdmin.get('user/addresses').catch((error) => {
       setLoadingVerifiedAddresses(false)
+      setVerifiedAddressesLoaded(true)
       if (error.response?.data?.error === 'errors.token.required') {
         router.push('/admin')
         return
@@ -862,33 +877,47 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         ]
       }
     */
-    setVerifiedAddresses(data?.addresses)
-    if (addressesToCheck?.length === 0 && data?.addresses?.[0]?.address) {
-      setAddressesToCheck([data.addresses[0].address])
-    }
+    const userAddresses = Array.isArray(data?.addresses) ? data.addresses : []
+    const userAddressSet = new Set(userAddresses.map((item) => item.address))
+    setVerifiedAddresses(userAddresses)
+    setAddressesToCheck((prev) => {
+      const allowedSelected = prev.filter((address) => userAddressSet.has(address))
+      if (allowedSelected.length > 0) return allowedSelected
+      if (queryAddress && userAddressSet.has(queryAddress)) return [queryAddress]
+      if (userAddresses[0]?.address) return [userAddresses[0].address]
+      return []
+    })
+    setVerifiedAddressesLoaded(true)
   }
 
   useEffect(() => {
+    if (!clientReady) return
+    setVerifiedAddressesLoaded(false)
     if (sessionToken) {
       getVerifiedAddresses()
     } else {
       setVerifiedAddresses(sampleVerifiedAddresses)
       setAddressesToCheck(sampleHistoryAddresses)
+      setVerifiedAddressesLoaded(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
+  }, [clientReady, sessionToken])
 
   useEffect(() => {
+    if (!clientReady) return
+    if (sessionToken && !verifiedAddressesLoaded) return
     if (addressesToCheck.length > 0) {
       setPage(0)
       getProAddressHistory()
     } else {
+      historyRequestTokenRef.current += 1
       setPage(0)
+      setLoading(false)
       setData(null)
       setActivities([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedAddressesKey, selectedCurrency, period, order, sessionToken])
+  }, [clientReady, selectedAddressesKey, selectedCurrency, period, order, sessionToken, verifiedAddressesLoaded])
 
   const addressName = (address) => {
     for (let a of verifiedAddresses) {
