@@ -1,7 +1,7 @@
 import { useTheme } from '../Layout/ThemeContext'
 import { brandsBlock } from '../../styles/components/ads.module.scss'
 
-import BtcBit from '../../public/images/sponsored/btcbit.svg'
+//import BtcBit from '../../public/images/sponsored/btcbit.svg'
 import Nexo from '../../public/images/sponsored/nexo.svg'
 //import Stake from '../../public/images/sponsored/stake.svg'
 //import Doppler from '../../public/images/sponsored/doppler.svg'
@@ -57,7 +57,6 @@ export default function Ads({}) {
             <div className="brand-item-text">The simplest method to exchange crypto at the best rates.</div>
           </div>
         </a>
-      */}
       <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer" aria-label="Buy XRP advertiser link">
         <div className="brand-item btcbit">
           <BtcBit className="brand-item-icon" />
@@ -65,6 +64,7 @@ export default function Ads({}) {
           <div className="brand-item-text">Instantly buy and sell cryptocurrency with low commission.</div>
         </div>
       </a>
+            */}
       <a href="https://bithomp.com/go/earn-xrp" target="_blank" rel="noreferrer">
         <div className="brand-item nexo">
           <Nexo className="brand-item-icon" fill={color} />
