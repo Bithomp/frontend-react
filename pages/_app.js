@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+const TX_ADDRESSES_WITHOUT_ADS = new Set(['rJ8hb4jMHgRNhEQ7BTGz6vt14kWn2z6H78'])
 
 const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
 const EmailLoginPopup = dynamic(() => import('../components/EmailLoginPopup'), { ssr: false })
@@ -440,9 +441,15 @@ const MyApp = ({ Component, pageProps }) => {
 
   const router = useRouter()
   const isBot = useIsBot()
+  const pathname = router.pathname
   const queryFiatCurrency = normalizeFiatCurrency(getQueryValue(router.query.fiat))
   const effectiveSelectedCurrency = queryFiatCurrency || selectedCurrency
   const queryLocale = normalizeQueryLocale(getQueryValue(router.query.lang))
+  const transactionAccount = pageProps?.data?.tx?.Account
+  const transactionDestination = pageProps?.data?.tx?.Destination
+  const hideAdsForCurrentPage =
+    pathname === '/transaction/[id]' &&
+    (TX_ADDRESSES_WITHOUT_ADS.has(transactionAccount) || TX_ADDRESSES_WITHOUT_ADS.has(transactionDestination))
 
   useEffect(() => {
     if (!router.isReady || !queryLocale) return
@@ -786,8 +793,8 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     if (typeof document === 'undefined') return
-    document.body.dataset.hideAds = !subscriptionExpired ? 'true' : 'false'
-  }, [subscriptionExpired])
+    document.body.dataset.hideAds = !subscriptionExpired || hideAdsForCurrentPage ? 'true' : 'false'
+  }, [hideAdsForCurrentPage, subscriptionExpired])
 
   useEffect(() => {
     if (sessionToken) {
@@ -974,10 +981,9 @@ const MyApp = ({ Component, pageProps }) => {
 
   configureAxiosDefaults()
 
-  const pathname = router.pathname
   const pagesWithoutWrapper = ['/social-share']
 
-  const showAds = (subscriptionExpired || !account?.pro) && !xahauNetwork
+  const showAds = (subscriptionExpired || !account?.pro) && !xahauNetwork && !hideAdsForCurrentPage
   let showTopAds = showAds // change here when you want to see TOP ADS
   const pagesWithNoTopAdds = [
     '/',
