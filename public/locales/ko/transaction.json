@@ -16,11 +16,14 @@
   },
   "status": {
     "successful": "성공",
-    "failed": "실패"
+    "failed": "실패",
+    "confirmed": "확정됨"
   },
   "actions": {
     "additionalData": "추가 데이터",
     "balanceChanges": "잔액 변경",
+    "copyLink": "TX 링크 복사",
+    "copyLinkMobile": "링크 복사",
     "txMetadata": "TX 메타데이터"
   },
   "messages": {
@@ -38,6 +41,7 @@
     },
     "notValidated": "트랜잭션이 아직 검증되지 않았습니다.",
     "notValidatedAfterLedger": "레저가 이미 Ledger #{{ledger}} 를 지났다면 검증되지 않습니다.",
+    "validatedInLedger": "레저 <ledgerLink></ledgerLink> (인덱스: {{index}})",
     "specifiedFee": "트랜잭션 수수료로 {{fee}} 사용이 지정되었습니다.",
     "memosThirdParty": {
       "prefix": "메시지는 Escrow를 완료한 제3자",
@@ -205,6 +209,7 @@
     "Min amount": "최소 금액",
     "NFT": "NFT",
     "NFT ID": "NFT ID",
+    "NFT transfer (XLS-14)": "NFT 전송 (XLS-14)",
     "NFT minter": "NFT 민터",
     "NFT owner": "NFT 소유자",
     "NFT serial": "NFT 시리얼",
@@ -219,6 +224,7 @@
     "Offer sequence": "오퍼 시퀀스",
     "Offer status": "오퍼 상태",
     "Operation limit": "작업 한도",
+    "Payment": "결제",
     "Owner": "소유자",
     "Parent batch ID": "부모 배치 ID",
     "Passive": "수동",
@@ -240,6 +246,7 @@
     "Sell offer": "매도 오퍼",
     "Sell order": "매도 주문",
     "Sequence": "시퀀스",
+    "Swap": "스왑",
     "Set flag": "플래그 설정",
     "Show more": "더 보기",
     "Signer": "서명자",
@@ -265,7 +272,6 @@
     "Trading fee": "거래 수수료",
     "Transaction ID tracking": "트랜잭션 ID 추적",
     "Transaction hash": "트랜잭션 해시",
-    "Transaction link": "트랜잭션 링크",
     "Transfer fee": "전송 수수료",
     "Transfer from": "전송 출처",
     "Transfer to": "전송 대상",

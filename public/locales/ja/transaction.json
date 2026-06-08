@@ -16,11 +16,14 @@
   },
   "status": {
     "successful": "成功",
-    "failed": "失敗"
+    "failed": "失敗",
+    "confirmed": "確定済み"
   },
   "actions": {
     "additionalData": "追加データ",
     "balanceChanges": "残高変更",
+    "copyLink": "TXリンクをコピー",
+    "copyLinkMobile": "リンクをコピー",
     "txMetadata": "TXメタデータ"
   },
   "messages": {
@@ -38,6 +41,7 @@
     },
     "notValidated": "トランザクションはまだ検証されていません。",
     "notValidatedAfterLedger": "Ledger #{{ledger}} をすでに過ぎている場合、このトランザクションは検証されません。",
+    "validatedInLedger": "レジャー <ledgerLink></ledgerLink>（インデックス: {{index}}）",
     "specifiedFee": "トランザクション手数料として {{fee}} を支払う指定でした。",
     "memosThirdParty": {
       "prefix": "コメントは第三者",
@@ -205,6 +209,7 @@
     "Min amount": "最小金額",
     "NFT": "NFT",
     "NFT ID": "NFT ID",
+    "NFT transfer (XLS-14)": "NFT 転送 (XLS-14)",
     "NFT minter": "NFTミンター",
     "NFT owner": "NFT所有者",
     "NFT serial": "NFTシリアル",
@@ -219,6 +224,7 @@
     "Offer sequence": "オファーシーケンス",
     "Offer status": "オファーステータス",
     "Operation limit": "操作上限",
+    "Payment": "支払い",
     "Owner": "所有者",
     "Parent batch ID": "親バッチID",
     "Passive": "パッシブ",
@@ -240,6 +246,7 @@
     "Sell offer": "売りオファー",
     "Sell order": "売り注文",
     "Sequence": "シーケンス",
+    "Swap": "スワップ",
     "Set flag": "フラグ設定",
     "Show more": "さらに表示",
     "Signer": "署名者",
@@ -265,7 +272,6 @@
     "Trading fee": "取引手数料",
     "Transaction ID tracking": "トランザクションID追跡",
     "Transaction hash": "トランザクションハッシュ",
-    "Transaction link": "トランザクションリンク",
     "Transfer fee": "転送手数料",
     "Transfer from": "転送元",
     "Transfer to": "転送先",

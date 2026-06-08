@@ -157,19 +157,19 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
     status: transactionSeo.status,
     v: '5'
   }
+  if (transactionSeo.amount) {
+    transactionPreviewParams.amount = transactionSeo.amount
+  }
   if (transactionSeo.image) {
     transactionPreviewParams.image = transactionSeo.image
   }
   const transactionPreviewImage = {
-    width: 630,
+    width: 1200,
     height: 630,
     file:
       server +
       '/nextapi/tx-preview?' +
-      new URLSearchParams({
-        ...transactionPreviewParams,
-        shape: 'square'
-      }).toString()
+      new URLSearchParams(transactionPreviewParams).toString()
   }
   const transactionTwitterImage = transactionPreviewImage
 

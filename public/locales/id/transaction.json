@@ -16,11 +16,14 @@
   },
   "status": {
     "successful": "berhasil",
-    "failed": "GAGAL"
+    "failed": "GAGAL",
+    "confirmed": "dikonfirmasi"
   },
   "actions": {
     "additionalData": "Data tambahan",
     "balanceChanges": "Perubahan saldo",
+    "copyLink": "Salin tautan TX",
+    "copyLinkMobile": "Salin tautan",
     "txMetadata": "Metadata TX"
   },
   "messages": {
@@ -38,6 +41,7 @@
     },
     "notValidated": "Transaksi belum divalidasi.",
     "notValidatedAfterLedger": "Transaksi tidak akan divalidasi jika ledger sudah melewati Ledger #{{ledger}}.",
+    "validatedInLedger": "di ledger <ledgerLink></ledgerLink> (indeks: {{index}})",
     "specifiedFee": "{{fee}} ditentukan sebagai biaya transaksi.",
     "memosThirdParty": {
       "prefix": "Komentar ditambahkan oleh pihak ketiga",
@@ -205,6 +209,7 @@
     "Min amount": "Jumlah min.",
     "NFT": "NFT",
     "NFT ID": "ID NFT",
+    "NFT transfer (XLS-14)": "Transfer NFT (XLS-14)",
     "NFT minter": "Minter NFT",
     "NFT owner": "Pemilik NFT",
     "NFT serial": "Serial NFT",
@@ -219,6 +224,7 @@
     "Offer sequence": "Sequence offer",
     "Offer status": "Status offer",
     "Operation limit": "Batas operasi",
+    "Payment": "Pembayaran",
     "Owner": "Pemilik",
     "Parent batch ID": "ID batch induk",
     "Passive": "Pasif",
@@ -240,6 +246,7 @@
     "Sell offer": "Offer jual",
     "Sell order": "Order jual",
     "Sequence": "Urutan",
+    "Swap": "Swap",
     "Set flag": "Atur penanda",
     "Show more": "Tampilkan lagi",
     "Signer": "Penanda tangan",
@@ -265,7 +272,6 @@
     "Trading fee": "Biaya trading",
     "Transaction ID tracking": "Pelacakan ID transaksi",
     "Transaction hash": "Hash transaksi",
-    "Transaction link": "Tautan transaksi",
     "Transfer fee": "Biaya transfer",
     "Transfer from": "Transfer dari",
     "Transfer to": "Transfer ke",

@@ -16,11 +16,14 @@
   },
   "status": {
     "successful": "correcta",
-    "failed": "FALLÓ"
+    "failed": "FALLÓ",
+    "confirmed": "confirmada"
   },
   "actions": {
     "additionalData": "Datos adicionales",
     "balanceChanges": "Cambios de saldo",
+    "copyLink": "Copiar enlace TX",
+    "copyLinkMobile": "Copiar enlace",
     "txMetadata": "Metadatos TX"
   },
   "messages": {
@@ -38,6 +41,7 @@
     },
     "notValidated": "La transacción aún no está validada.",
     "notValidatedAfterLedger": "No se validará si el ledger ya superó el Ledger #{{ledger}}.",
+    "validatedInLedger": "en el ledger <ledgerLink></ledgerLink> (índice: {{index}})",
     "specifiedFee": "Se especificó gastar {{fee}} como comisión de transacción.",
     "memosThirdParty": {
       "prefix": "Los comentarios fueron añadidos por el tercero",
@@ -205,6 +209,7 @@
     "Min amount": "Importe mín.",
     "NFT": "NFT",
     "NFT ID": "ID de NFT",
+    "NFT transfer (XLS-14)": "Transferencia NFT (XLS-14)",
     "NFT minter": "Minteador NFT",
     "NFT owner": "Propietario NFT",
     "NFT serial": "Serial NFT",
@@ -219,6 +224,7 @@
     "Offer sequence": "Secuencia de oferta",
     "Offer status": "Estado de oferta",
     "Operation limit": "Límite de operación",
+    "Payment": "Pago",
     "Owner": "Propietario",
     "Parent batch ID": "ID de lote padre",
     "Passive": "Pasiva",
@@ -240,6 +246,7 @@
     "Sell offer": "Oferta de venta",
     "Sell order": "Orden de venta",
     "Sequence": "Secuencia",
+    "Swap": "Intercambio",
     "Set flag": "Establecer flag",
     "Show more": "Mostrar más",
     "Signer": "Firmante",
@@ -265,7 +272,6 @@
     "Trading fee": "Comisión de trading",
     "Transaction ID tracking": "Seguimiento de ID de transacción",
     "Transaction hash": "Hash de transacción",
-    "Transaction link": "Enlace de transacción",
     "Transfer fee": "Comisión de transferencia",
     "Transfer from": "Transferir desde",
     "Transfer to": "Transferir a",

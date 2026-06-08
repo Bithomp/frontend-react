@@ -9,9 +9,29 @@
   position: relative;
   color: var(--text-contrast);
   padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  column-gap: 6px;
+  row-gap: 0;
+
   .top-link {
     color: var(--text-contrast);
     font-weight: 400;
+  }
+
+  .top-links-emoji {
+    display: inline-block;
+  }
+
+  .top-links-separator {
+    display: inline-block;
+  }
+
+  .top-links-heart {
+    display: inline-block;
+    margin-left: 6px;
   }
 
   .top-links-optional {
@@ -19,10 +39,31 @@
   }
 }
 
+@media only screen and (max-width: 560px) {
+  .top-links {
+    padding: 0 4px;
+    font-size: 15px;
+    line-height: 25px;
+    min-height: 27px;
+    column-gap: 4px;
+
+    .top-links-heart {
+      margin-left: 4px;
+    }
+  }
+}
+
 @media only screen and (max-width: 400px) {
   .top-links {
+    font-size: 14px;
+
     .top-links-optional {
       display: none;
+    }
+    column-gap: 3px;
+
+    .top-links-heart {
+      margin-left: 3px;
     }
   }
 }

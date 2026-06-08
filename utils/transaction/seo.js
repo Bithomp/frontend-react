@@ -1,4 +1,4 @@
-import { nativeCurrency } from '..'
+import { nativeCurrency, tokenImageSrc } from '..'
 import { niceCurrency, shortHash, shortNiceNumber } from '../format'
 import { nftUrl } from '../nft'
 import { addressBalanceChanges, getTransactionTypeLabel, isConvertionTx, shortErrorCode } from './index'
@@ -38,6 +38,20 @@ const plainAmount = (amount, options = {}) => {
   const absValue = options.absolute ? Math.abs(value) : value
   const currency = typeof amount === 'object' ? currencyName(amount) : nativeCurrency
   return compactText(`${shortNiceNumber(absValue, 2, 2)} ${currency}`)
+}
+
+const amountTokenImage = (amount) => {
+  if (!amount) return ''
+  if (typeof amount === 'string' || typeof amount === 'number') {
+    return tokenImageSrc({ currency: nativeCurrency }, 35)
+  }
+  if (typeof amount !== 'object') return ''
+  if (amount.currencyDetails?.type === 'lp_token') return ''
+
+  const image = tokenImageSrc(amount, 35)
+  if (!image) return ''
+
+  return image
 }
 
 const fiatAmount = (amount, selectedCurrency, fiatRate) => {
@@ -92,7 +106,9 @@ const paymentSummary = (data, selectedCurrency) => {
 
   return {
     headline: destination ? `Payment to ${destination}` : 'Payment',
-    description: compactText(`${source} sent ${deliveredText || 'a payment'}${destination ? ` to ${destination}` : ''}.`)
+    description: compactText(`${source} sent ${deliveredText || 'a payment'}${destination ? ` to ${destination}` : ''}.`),
+    amount: deliveredText,
+    image: amountTokenImage(delivered)
   }
 }
 
@@ -216,13 +232,16 @@ export const buildTransactionSeo = (data, selectedCurrency = 'usd') => {
   const failed = result && !successful
   const summary = transactionSummary(data, selectedCurrency)
   const statusLabel = failed ? 'Failed' : successful ? 'Successful' : 'Pending'
-  const title = compactText(`${failed ? 'Failed ' : ''}${summary.headline} | Tx ${shortTxHash}`)
   const ledgerText = data?.outcome?.ledgerIndex ? `Ledger #${data.outcome.ledgerIndex}.` : data?.validated ? 'Validated transaction.' : 'Not yet validated.'
   const resultText = failed ? `Failed: ${shortErrorCode(result)}.` : successful ? 'Successful transaction.' : ''
   const description = compactText(`${summary.description} ${resultText} ${ledgerText} Tx ${shortTxHash}.`)
   const nftPreview = getTransactionNftPreview(data)
-  const previewImage = nftPreview?.nft ? nftUrl(nftPreview.nft, 'preview') : ''
-  const image = /^https:\/\/cdn\.(bithomp|xahauexplorer)\.com\//.test(previewImage) ? previewImage : ''
+  const nftPreviewImage = nftPreview?.nft ? nftUrl(nftPreview.nft, 'preview') : ''
+  const summaryImage = summary.image || ''
+  const imageCandidate = summaryImage || nftPreviewImage
+  const image = /^https:\/\/cdn\.(bithomp|xahauexplorer)\.com\//.test(imageCandidate) ? imageCandidate : ''
+  const titleAmount = summary.amount ? `${summary.amount} ` : ''
+  const title = compactText(`${statusLabel} ${titleAmount}${summary.headline} | Tx ${shortTxHash}`)
 
   return {
     title,
@@ -232,6 +251,7 @@ export const buildTransactionSeo = (data, selectedCurrency = 'usd') => {
     statusLabel,
     type: txType,
     typeLabel: getTransactionTypeLabel(txType),
+    amount: summary.amount || '',
     image
   }
 }

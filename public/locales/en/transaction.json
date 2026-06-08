@@ -16,11 +16,14 @@
   },
   "status": {
     "successful": "successful",
-    "failed": "FAILED"
+    "failed": "FAILED",
+    "confirmed": "confirmed"
   },
   "actions": {
     "additionalData": "Additional data",
     "balanceChanges": "Balance changes",
+    "copyLink": "Copy TX link",
+    "copyLinkMobile": "Copy link",
     "txMetadata": "Tx Metadata"
   },
   "messages": {
@@ -38,6 +41,7 @@
     },
     "notValidated": "The transaction is not yet validated.",
     "notValidatedAfterLedger": "It won't be validated if Ledger already passed the Ledger #{{ledger}}.",
+    "validatedInLedger": "in ledger <ledgerLink></ledgerLink> (index: {{index}})",
     "specifiedFee": "It was specified to spend {{fee}} as transaction fee.",
     "memosThirdParty": {
       "prefix": "Comments were added by the third party",
@@ -205,6 +209,7 @@
     "Min amount": "Min amount",
     "NFT": "NFT",
     "NFT ID": "NFT ID",
+    "NFT transfer (XLS-14)": "NFT transfer (XLS-14)",
     "NFT minter": "NFT minter",
     "NFT owner": "NFT owner",
     "NFT serial": "NFT serial",
@@ -222,6 +227,7 @@
     "Owner": "Owner",
     "Parent batch ID": "Parent batch ID",
     "Passive": "Passive",
+    "Payment": "Payment",
     "Permissioned": "Permissioned",
     "Permissions": "Permissions",
     "Previous URI": "Previous URI",
@@ -240,6 +246,7 @@
     "Sell offer": "Sell offer",
     "Sell order": "Sell order",
     "Sequence": "Sequence",
+    "Swap": "Swap",
     "Set flag": "Set flag",
     "Show more": "Show more",
     "Signer": "Signer",
@@ -265,7 +272,6 @@
     "Trading fee": "Trading fee",
     "Transaction ID tracking": "Transaction ID tracking",
     "Transaction hash": "Transaction hash",
-    "Transaction link": "Transaction link",
     "Transfer fee": "Transfer fee",
     "Transfer from": "Transfer from",
     "Transfer to": "Transfer to",

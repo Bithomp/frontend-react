@@ -278,6 +278,14 @@ export const fiatCurrencyList = [
   { value: 'vnd', label: 'VND' }
 ]
 
+export const normalizeFiatCurrency = (currency) => {
+  const normalized = String(currency || '')
+    .trim()
+    .toLowerCase()
+
+  return fiatCurrencyList.some(({ value }) => value === normalized) ? normalized : null
+}
+
 export const useWidth = () => {
   const [width, setWidth] = useState(0)
   const handleResize = () => setWidth(window.innerWidth)
@@ -555,7 +563,7 @@ export const normalizeLocale = (locale) => (!locale || locale === 'default' ? 'e
 export const localePath = (path = '/', locale) => {
   const normalizedLocale = normalizeLocale(locale)
   const rawPath = path?.startsWith('/') ? path : `/${path || ''}`
-  const normalizedPath = rawPath.replace(/^\/(default|en|ko|ru|de|es|id|ja|fr)(?=\/|$)/, '') || '/'
+  const normalizedPath = rawPath.replace(/^\/(default|en|ko|ru|de|es|id|ja|fr|zh)(?=\/|$)/, '') || '/'
   return normalizedLocale === 'en' ? normalizedPath : `/${normalizedLocale}${normalizedPath}`
 }
 

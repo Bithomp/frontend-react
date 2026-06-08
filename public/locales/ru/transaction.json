@@ -15,12 +15,15 @@
     "title": "Детали транзакции"
   },
   "status": {
-    "successful": "успешной",
-    "failed": "НЕ УДАЛАСЬ"
+    "successful": "успешно",
+    "failed": "не удалось",
+    "confirmed": "подтверждено"
   },
   "actions": {
     "additionalData": "Дополнительные данные",
     "balanceChanges": "Изменения баланса",
+    "copyLink": "Копировать TX-ссылку",
+    "copyLinkMobile": "Копировать ссылку",
     "txMetadata": "Метаданные"
   },
   "messages": {
@@ -38,6 +41,7 @@
     },
     "notValidated": "Транзакция еще не подтверждена.",
     "notValidatedAfterLedger": "Она не будет подтверждена, если леджер уже прошел Ledger #{{ledger}}.",
+    "validatedInLedger": "в леджере <ledgerLink></ledgerLink> (индекс: {{index}})",
     "specifiedFee": "В транзакции было указано потратить {{fee}} как комиссию.",
     "memosThirdParty": {
       "prefix": "Комментарии добавлены третьей стороной",
@@ -205,6 +209,7 @@
     "Min amount": "Мин. сумма",
     "NFT": "NFT",
     "NFT ID": "ID NFT",
+    "NFT transfer (XLS-14)": "Перевод NFT (XLS-14)",
     "NFT minter": "Минтер NFT",
     "NFT owner": "Владелец NFT",
     "NFT serial": "Серийный номер NFT",
@@ -222,6 +227,7 @@
     "Owner": "Владелец",
     "Parent batch ID": "ID родительского пакета",
     "Passive": "Пассивный",
+    "Payment": "Платеж",
     "Permissioned": "С разрешениями",
     "Permissions": "Разрешения",
     "Previous URI": "Предыдущий URI",
@@ -240,6 +246,7 @@
     "Sell offer": "Офер на продажу",
     "Sell order": "Ордер на продажу",
     "Sequence": "Последовательность",
+    "Swap": "Обмен",
     "Set flag": "Установить флаг",
     "Show more": "Показать еще",
     "Signer": "Подписант",
@@ -265,7 +272,6 @@
     "Trading fee": "Торговая комиссия",
     "Transaction ID tracking": "Отслеживание ID транзакций",
     "Transaction hash": "Хэш транзакции",
-    "Transaction link": "Ссылка на транзакцию",
     "Transfer fee": "Комиссия перевода",
     "Transfer from": "Перевод от",
     "Transfer to": "Перевод к",

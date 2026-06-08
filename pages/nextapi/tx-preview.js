@@ -8,6 +8,13 @@ const escapeSvg = (value) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
 
+const clampText = (value, maxLength) => {
+  const text = String(value || '').trim()
+  if (!text || text.length <= maxLength) return text
+
+  return text.slice(0, Math.max(0, maxLength - 1)).trimEnd() + '…'
+}
+
 const txStyle = (type) => {
   if (type === 'Payment') return { accent: '#00bcd4', dark: '#003d47', mark: 'PAY' }
   if (type === 'TrustSet') return { accent: '#8e44ad', dark: '#321243', mark: 'TL' }
@@ -69,6 +76,7 @@ export async function getServerSideProps({ query, res }) {
   const status = String(query.status || 'success')
   const square = query.shape === 'square'
   const imageUrl = allowedPreviewImage(query.image)
+  const amountText = escapeSvg(clampText(query.amount, square ? 42 : 72))
   const label = escapeSvg(getTransactionTypeLabel(type))
   const style = txStyle(type)
   const statusText = status === 'failed' ? 'Failed transaction' : status === 'pending' ? 'Pending transaction' : 'Validated transaction'
@@ -138,7 +146,8 @@ export async function getServerSideProps({ query, res }) {
 
       <text x="65" y="280" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="6" fill="${theme.accent}">${previewBrand}</text>
       <text x="65" y="360" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#ffffff">${label}</text>
-      <text x="65" y="414" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
+      ${amountText ? `<text x="65" y="414" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700" fill="#ffffff">${amountText}</text>` : ''}
+      <text x="65" y="${amountText ? '468' : '414'}" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
       <text x="65" y="535" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#b7cacc">${previewLabel}</text>
       <rect x="65" y="568" width="500" height="2" fill="${theme.accent}" opacity="0.42"/>
     </svg>
@@ -155,7 +164,8 @@ export async function getServerSideProps({ query, res }) {
 
       <text x="338" y="140" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="7" fill="${theme.accent}">${previewBrand}</text>
       <text x="338" y="236" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" fill="#ffffff">${label}</text>
-      <text x="338" y="302" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
+      ${amountText ? `<text x="338" y="302" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="700" fill="#ffffff">${amountText}</text>` : ''}
+      <text x="338" y="${amountText ? '356' : '302'}" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
       <text x="86" y="520" font-family="Arial, Helvetica, sans-serif" font-size="32" fill="#b7cacc">${previewLabel}</text>
       <rect x="86" y="556" width="1028" height="2" fill="${theme.accent}" opacity="0.42"/>
     </svg>

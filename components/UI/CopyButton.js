@@ -77,6 +77,7 @@ export default function CopyButton({
 
   const tooltipText = isCopied ? t('button.copied') : copyText || t('button.copy')
   const shouldRenderTooltip = isTooltipEnabled && (!clickTooltipOnly || isTooltipOpen)
+  const buttonTitle = title === false ? undefined : title || copyText || t('button.copy')
 
   if (children) {
     return (
@@ -92,7 +93,7 @@ export default function CopyButton({
           className={buttonClassName}
           onClick={handleCopyClick}
           style={buttonStyle}
-          title={title || copyText || t('button.copy')}
+          title={buttonTitle}
           type="button"
         >
           {children}

@@ -18,7 +18,7 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
     return (
       <>
         {specification.source?.maxAmount && (
-          <tr>
+          <tr className="tx-instruction-row">
             <TData className="bold">Max amount</TData>
             <TData>
               {txT('labels.It was instructed to spend up to {{amount}}.', {
@@ -28,7 +28,7 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
           </tr>
         )}
         {specification.destination?.minAmount && (
-          <tr>
+          <tr className="tx-instruction-row">
             <TData className="bold">Min amount</TData>
             <TData>
               {txT('labels.It was instructed to deliver at least {{amount}}.', {
@@ -38,7 +38,7 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
           </tr>
         )}
         {specification.allowPartialPayment && (
-          <tr>
+          <tr className="tx-instruction-row">
             <TData className="bold orange">Allow partial payment</TData>
             <TData>
               {txT(
@@ -48,7 +48,7 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
           </tr>
         )}
         {specification.noDirectRipple && (
-          <tr>
+          <tr className="tx-instruction-row">
             <TData className="bold">No direct ripple</TData>
             <TData>
               {txT(
@@ -58,7 +58,7 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
           </tr>
         )}
         {specification.limitQuality && (
-          <tr>
+          <tr className="tx-instruction-row">
             <TData className="bold">Limit quality</TData>
             <TData>
               {txT(

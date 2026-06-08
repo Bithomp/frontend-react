@@ -11,6 +11,15 @@ const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr', 'zh']
 // All known locales
 const allLocales = ['default', ...currentLocales, ...removedLocales]
 
+function normalizeQueryLocale(value) {
+  const locale = String(value || '')
+    .trim()
+    .toLowerCase()
+    .split(/[-_]/)[0]
+
+  return currentLocales.includes(locale) ? locale : null
+}
+
 // Normalize accidental multiple slashes in path
 function normalizeSlashes(path) {
   return path.replace(/\/+/g, '/')
@@ -73,7 +82,8 @@ const isClearlyBadClient = (ua) =>
   )
 
 export async function middleware(req) {
-  const rawPathname = normalizeSlashes(new URL(req.url).pathname)
+  const requestUrl = new URL(req.url)
+  const rawPathname = normalizeSlashes(requestUrl.pathname)
 
   if (
     rawPathname === '/favicon.ico' ||
@@ -106,14 +116,17 @@ export async function middleware(req) {
   }
 
   const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
+  const queryLocale = normalizeQueryLocale(requestUrl.searchParams.get('lang'))
   const reactLocale = req.nextUrl.locale
   const normalizedReactLocale = !reactLocale || reactLocale === 'default' ? 'en' : reactLocale
 
   // Default locale
   let viewLocale = 'en'
 
-  // Cookie locale has the highest priority
-  if (cookieLocale && currentLocales.includes(cookieLocale)) {
+  // URL locale has the highest priority, without rewriting the user's saved cookie.
+  if (queryLocale) {
+    viewLocale = queryLocale
+  } else if (cookieLocale && currentLocales.includes(cookieLocale)) {
     viewLocale = cookieLocale
   } else if (currentLocales.includes(reactLocale)) {
     // Fallback to Next.js detected locale (excluding 'default')

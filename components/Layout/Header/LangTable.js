@@ -17,6 +17,18 @@ import { cookieParams, localePath, normalizeLocale } from '../../../utils'
 
 const cookies = new Cookies()
 
+const replaceLangQuery = (path, lang) => {
+  if (!/[?&]lang=/.test(path)) return path
+
+  const [pathAndSearch, hash] = path.split('#')
+  const [pathname, search = ''] = pathAndSearch.split('?')
+  const params = new URLSearchParams(search)
+  params.set('lang', lang)
+
+  const nextSearch = params.toString()
+  return pathname + (nextSearch ? '?' + nextSearch : '') + (hash ? '#' + hash : '')
+}
+
 export default function LanguageSwitch({ close }) {
   const { i18n } = useTranslation()
   const router = useRouter()
@@ -41,19 +53,20 @@ export default function LanguageSwitch({ close }) {
     const currentLang = normalizeLocale(i18n.language)?.slice(0, 2)
     if (currentLang !== lang) {
       langChange(lang)
+      const nextAsPath = replaceLangQuery(asPath, lang)
+      const nextQuery = query?.lang ? { ...query, lang } : query
+
       if (lang === 'en') {
-        const englishPath = localePath(asPath, 'en')
+        const englishPath = localePath(nextAsPath, 'en')
         router.replace(englishPath, englishPath, { locale: false })
       } else {
-        router.replace({ pathname, query }, asPath, { locale: lang })
+        router.replace({ pathname, query: nextQuery }, nextAsPath, { locale: lang })
       }
       //hard refresh to avoid the issue when in some cases the language is not saved when user returned from a third party site
       //window.location.replace(`/${lang}${asPath}`)
     }
     close()
   }
-
-  langChange(normalizeLocale(i18n.language))
 
   const spanClass = (lang) => {
     return normalizeLocale(i18n.language) === lang?.value ? 'link blue' : 'link'

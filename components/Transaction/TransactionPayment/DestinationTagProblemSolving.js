@@ -46,7 +46,7 @@ export default function DestinationTagProblemSolving({ specification, pageFiatRa
   }
 
   return (
-    <tr>
+    <tr className="tx-problem-row">
       <TData className="bold orange">Problem solving</TData>
       <TData>
         <Trans

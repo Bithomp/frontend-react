@@ -16,11 +16,14 @@
   },
   "status": {
     "successful": "成功",
-    "failed": "失败"
+    "failed": "失败",
+    "confirmed": "已确认"
   },
   "actions": {
     "additionalData": "附加数据",
     "balanceChanges": "余额变化",
+    "copyLink": "复制交易链接",
+    "copyLinkMobile": "复制链接",
     "txMetadata": "交易元数据"
   },
   "messages": {
@@ -38,6 +41,7 @@
     },
     "notValidated": "交易尚未验证。",
     "notValidatedAfterLedger": "如果 Ledger 已经通过了 Ledger #{{ledger}}，则不会进行验证。",
+    "validatedInLedger": "在账本 <ledgerLink></ledgerLink>（索引: {{index}}）",
     "specifiedFee": "指定花费{{fee}}作为交易费用。",
     "memosThirdParty": {
       "prefix": "备注由第三方添加",
@@ -205,6 +209,7 @@
     "Min amount": "最低数量",
     "NFT": "NFT",
     "NFT ID": "NFT ID",
+    "NFT transfer (XLS-14)": "NFT 转账 (XLS-14)",
     "NFT minter": "NFT铸币者",
     "NFT owner": "NFT 所有者",
     "NFT serial": "NFT连载",
@@ -219,6 +224,7 @@
     "Offer sequence": "报价顺序",
     "Offer status": "优惠状态",
     "Operation limit": "操作限制",
+    "Payment": "付款",
     "Owner": "所有者",
     "Parent batch ID": "父批次 ID",
     "Passive": "被动",
@@ -240,6 +246,7 @@
     "Sell offer": "卖出报价",
     "Sell order": "卖单",
     "Sequence": "序列",
+    "Swap": "兑换",
     "Set flag": "设置标志",
     "Show more": "显示更多",
     "Signer": "签名者",
@@ -265,7 +272,6 @@
     "Trading fee": "交易费",
     "Transaction ID tracking": "交易ID追踪",
     "Transaction hash": "交易哈希",
-    "Transaction link": "交易链接",
     "Transfer fee": "转账费",
     "Transfer from": "转自",
     "Transfer to": "转至",

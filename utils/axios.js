@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { devNet, server } from '.'
+import { devNet, normalizeFiatCurrency, server } from '.'
 
 export const axiosServer = axios.create({
   headers: {
@@ -40,9 +40,17 @@ export const passHeaders = (req) => {
 }
 
 export const currencyServer = (req) => {
+  try {
+    const queryFiat = new URL(req?.url || '/', 'http://localhost').searchParams.get('fiat')
+    const normalizedQueryFiat = normalizeFiatCurrency(queryFiat)
+    if (normalizedQueryFiat) return normalizedQueryFiat
+  } catch (_) {
+    // Ignore malformed request URLs and fall back to cookies.
+  }
+
   const reqCookieCurrency = req?.headers?.cookie || ''
   const parsedcookieCurrency = Object.fromEntries(reqCookieCurrency.split('; ').map((c) => c.split('=')))
-  return parsedcookieCurrency['currency'] || 'usd'
+  return normalizeFiatCurrency(parsedcookieCurrency['currency']) || 'usd'
 }
 
 export const getFiatRateServer = async (req) => {

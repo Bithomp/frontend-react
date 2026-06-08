@@ -45,8 +45,9 @@ export default function TopLinks(
           Earn <span className="top-links-optional">12% </span>on XRP
         </a>
         <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
-      </span>{' '}
-      💰 |{' '}
+      </span>
+      <span className="top-links-emoji">💰</span>
+      <span className="top-links-separator">|</span>
       {/*
         <a href="https://bithomp.com/learn/xrp-xah-taxes" className="top-link orange">
           Tax reports
@@ -58,13 +59,13 @@ export default function TopLinks(
       {stakeAd}
       {isMobile ? <br /> : ' | '}
       */}
-      <span className="tooltip">
+      <span className="tooltip no-brake">
         <a href="https://bithomp.com/go/play-slots" target="_blank" rel="noreferrer" className="top-link orange">
           Play Slots and win 70,000 XRP
         </a>
+        <span className="top-links-heart">❤️</span>
         <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
-      </span>{' '}
-      ❤️
+      </span>
       {/* 
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">

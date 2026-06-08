@@ -73,8 +73,7 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
-export const TokenImage = ({ token }) => {
-  const size = 16
+export const TokenImage = ({ token, size = 16 }) => {
   const imageSize = retinaImageSize(size)
   const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
@@ -953,7 +952,12 @@ export const amountFormat = (amount, options = {}) => {
 
   let tokenImage = ''
   if (showIcon) {
-    tokenImage = <TokenImage token={{ issuer, currency: originalCurrency || currency }} />
+    tokenImage = (
+      <TokenImage
+        token={{ issuer, currency: originalCurrency || currency }}
+        size={options?.iconSize}
+      />
+    )
   }
 
   if (options.showPlus && value > 0) {
@@ -1007,7 +1011,8 @@ export const amountFormat = (amount, options = {}) => {
       <span className="no-brake">
         {tokenImage}
         <StyleAmount>
-          {amountText} {textCurrency}
+          {amountText}
+          {options.noCurrency ? '' : ' ' + textCurrency}
         </StyleAmount>
       </span>
     )

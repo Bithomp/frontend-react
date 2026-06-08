@@ -25,7 +25,10 @@ import {
   useCookie,
   xahauNetwork,
   networkId,
-  nativeCurrency
+  nativeCurrency,
+  normalizeFiatCurrency,
+  normalizeLocale,
+  localePath
 } from '@/utils'
 import { useEmailLogin } from '@/hooks/useEmailLogin'
 import LogoAnimated from '../components/Layout/LogoAnimated'
@@ -257,6 +260,19 @@ const getMainPath = (url) => {
   return parts.length > startIndex ? `/${parts[startIndex]}` : '/'
 }
 
+const queryLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr', 'zh']
+
+const getQueryValue = (value) => (Array.isArray(value) ? value[0] : value)
+
+const normalizeQueryLocale = (value) => {
+  const locale = String(value || '')
+    .trim()
+    .toLowerCase()
+    .split(/[-_]/)[0]
+
+  return queryLocales.includes(locale) ? locale : null
+}
+
 function useReferralCookie() {
   const router = useRouter()
   const [, setRef] = useCookie('ref')
@@ -424,6 +440,22 @@ const MyApp = ({ Component, pageProps }) => {
 
   const router = useRouter()
   const isBot = useIsBot()
+  const queryFiatCurrency = normalizeFiatCurrency(getQueryValue(router.query.fiat))
+  const effectiveSelectedCurrency = queryFiatCurrency || selectedCurrency
+  const queryLocale = normalizeQueryLocale(getQueryValue(router.query.lang))
+
+  useEffect(() => {
+    if (!router.isReady || !queryLocale) return
+    if (normalizeLocale(router.locale) === queryLocale) return
+
+    if (queryLocale === 'en') {
+      const englishPath = localePath(router.asPath, 'en')
+      router.replace(englishPath, englishPath, { locale: false, scroll: false })
+      return
+    }
+
+    router.replace(router.asPath, router.asPath, { locale: queryLocale, scroll: false })
+  }, [queryLocale, router])
 
   // Universal tooltip positioning: on hover, switch every .tooltiptext to
   // position:fixed with viewport coordinates so it escapes any overflow:hidden
@@ -629,11 +661,11 @@ const MyApp = ({ Component, pageProps }) => {
   useEffect(() => {
     // Always refresh when currency changes to avoid stale rates.
     setLiveFiatRate(0)
-    fetchCurrentFiatRate(selectedCurrency, (rate) => {
+    fetchCurrentFiatRate(effectiveSelectedCurrency, (rate) => {
       setLiveFiatRate(rate)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
+  }, [effectiveSelectedCurrency])
 
   useEffect(() => {
     // Skip the initial mount because selectedCurrency already triggers the first fetch.
@@ -647,12 +679,12 @@ const MyApp = ({ Component, pageProps }) => {
     // If WebSocket is not working or there is no actual value, update via API
     const shouldUpdateViaApi = !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !liveFiatRate
     if (shouldUpdateViaApi) {
-      fetchCurrentFiatRate(selectedCurrency, (rate) => {
+      fetchCurrentFiatRate(effectiveSelectedCurrency, (rate) => {
         setLiveFiatRate(rate)
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [liveFiatRate, router.pathname, selectedCurrency])
+  }, [liveFiatRate, router.pathname, effectiveSelectedCurrency])
 
   // WebSocket for liveFiatRate, statistics, and whale transactions
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -717,7 +749,7 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     // Unsubscribe from previous currency if it exists
-    if (previousCurrencyRef.current && previousCurrencyRef.current !== selectedCurrency) {
+    if (previousCurrencyRef.current && previousCurrencyRef.current !== effectiveSelectedCurrency) {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.send(
           JSON.stringify({
@@ -731,8 +763,8 @@ const MyApp = ({ Component, pageProps }) => {
     }
 
     // Update refs
-    selectedCurrencyRef.current = selectedCurrency
-    previousCurrencyRef.current = selectedCurrency
+    selectedCurrencyRef.current = effectiveSelectedCurrency
+    previousCurrencyRef.current = effectiveSelectedCurrency
 
     // Subscribe to new currency
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -740,13 +772,13 @@ const MyApp = ({ Component, pageProps }) => {
         JSON.stringify({
           command: 'subscribe',
           streams: ['statistics', 'whale_transactions', 'rates'],
-          currency: selectedCurrency,
+          currency: effectiveSelectedCurrency,
           id: 1,
           limit: 3
         })
       )
     }
-  }, [selectedCurrency])
+  }, [effectiveSelectedCurrency])
 
   useEffect(() => {
     setSubscriptionExpired(proExpire ? Number(proExpire) < new Date().getTime() : true)
@@ -995,7 +1027,7 @@ const MyApp = ({ Component, pageProps }) => {
               {shouldDeferHomepageChrome ? (
                 <HeaderShell
                   onActivate={() => setNonCriticalUiReady(true)}
-                  selectedCurrency={selectedCurrency}
+                  selectedCurrency={effectiveSelectedCurrency}
                   fiatRate={liveFiatRate}
                 />
               ) : (
@@ -1005,7 +1037,7 @@ const MyApp = ({ Component, pageProps }) => {
                   signOut={signOut}
                   setActiveWallet={setActiveWallet}
                   signOutPro={signOutPro}
-                  selectedCurrency={selectedCurrency}
+                  selectedCurrency={effectiveSelectedCurrency}
                   setSelectedCurrency={setSelectedCurrency}
                   countryCode={countryCode}
                   sessionToken={clientSessionToken}
@@ -1065,7 +1097,7 @@ const MyApp = ({ Component, pageProps }) => {
                   account={clientAccount}
                   setAccount={setAccount}
                   signOut={signOut}
-                  selectedCurrency={selectedCurrency}
+                  selectedCurrency={effectiveSelectedCurrency}
                   setSelectedCurrency={setSelectedCurrency}
                   showAds={showAds}
                   setProExpire={setProExpire}
