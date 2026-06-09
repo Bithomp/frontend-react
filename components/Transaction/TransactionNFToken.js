@@ -280,8 +280,8 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
       {outcome?.nftokenChanges?.length > 0 && nftokenChanges(outcome?.nftokenChanges, txType)}
 
       {nftPreview && (
-        <tr>
-          <TData colSpan="2">
+        <tr style={{ width: '100%' }}>
+          <TData colSpan="2" style={{ width: '100%' }}>
             <TransactionNftPreviewPanel preview={nftPreview} />
           </TData>
         </tr>

@@ -115,9 +115,7 @@ const uritokenChanges = (changes, nftokens, txType, { hideNftId = false } = {}) 
             }
           } else {
             output.push(
-              <React.Fragment key={'t' + i}>
-                {nftData(nftChnages[i], nftInfo, txType, { hideNftId })}
-              </React.Fragment>
+              <React.Fragment key={'t' + i}>{nftData(nftChnages[i], nftInfo, txType, { hideNftId })}</React.Fragment>
             )
           }
         }
@@ -188,8 +186,8 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
         </TData>
       </tr>
       {nftPreview && (
-        <tr>
-          <TData colSpan="2">
+        <tr style={{ width: '100%' }}>
+          <TData colSpan="2" style={{ width: '100%' }}>
             <TransactionNftPreviewPanel preview={nftPreview} />
           </TData>
         </tr>
