@@ -420,6 +420,8 @@
     "no-data": "No data available",
     "loading": "Loading...",
     "filters": "Filters",
+    "external-signing": "External signing",
+    "optional": "optional",
     "login-to-bithomp-pro": "Loading more data is available to <2>logged-in</2> Bithomp Pro subscribers.",
     "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "Failed to load",

@@ -300,7 +300,29 @@ $width: 340px;
   }
 }
 
+.filters-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+
+  &__summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+  }
+}
+
 .filters-nav {
+  &__extra {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
   & ~ .content-text {
     margin-top: 64px;
     @media (max-width: 440px) {

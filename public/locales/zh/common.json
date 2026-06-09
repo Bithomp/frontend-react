@@ -420,6 +420,8 @@
     "no-data": "无可用数据",
     "loading": "加载中...",
     "filters": "过滤器",
+    "external-signing": "外部签名",
+    "optional": "可选",
     "login-to-bithomp-pro": "<2>登录</2> Bithomp Pro 订阅者可以加载更多数据。",
     "renew-bithomp-pro": "您的 Bithomp Pro 订阅已过期。 <1>续订您的订阅</1>。",
     "load-failed": "加载失败",

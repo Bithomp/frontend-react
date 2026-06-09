@@ -1,4 +1,44 @@
 .dappsPageClass {:global {
+  .dapps-period-switch {
+    display: none;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dapps-period-switch__button {
+    border: 1px solid var(--unaccent-icon);
+    border-radius: 10px;
+    background: var(--background-input);
+    color: var(--text-main);
+    min-width: 40px;
+    height: 32px;
+    padding: 0 9px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .dapps-period-switch__button:hover,
+  .dapps-period-switch__button.is-active {
+    background: var(--hover-bg, var(--background-input-hover));
+    border-color: var(--accent-icon);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
+  }
+
+  .dapps-period-switch__button.is-active {
+    color: var(--accent-link);
+    border-color: var(--accent-link);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
+  }
+
+  @media (max-width: 1300px) {
+    .dapps-period-switch {
+      display: inline-flex;
+    }
+  }
+
   /* Prevent row-jump */
   .table-large.expand td,
   .table-large.expand th {

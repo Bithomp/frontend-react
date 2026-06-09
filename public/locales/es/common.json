@@ -420,6 +420,8 @@
     "no-data": "Datos no disponibles",
     "loading": "Cargando...",
     "filters": "Filtros",
+    "external-signing": "Firma externa",
+    "optional": "opcional",
     "login-to-bithomp-pro": "Cargar más datos está disponible para los suscriptores de Bithomp Pro <2>con sesión iniciada</2>.",
     "renew-bithomp-pro": "Tu suscripción a Bithomp Pro ha expirado. <1>Renueva tu suscripción</1>.",
     "load-failed": "Fallo al cargar",

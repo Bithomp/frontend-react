@@ -420,6 +420,8 @@
     "no-data": "Tidak ada data tersedia",
     "loading": "Memuat...",
     "filters": "Filter",
+    "external-signing": "Penandatanganan eksternal",
+    "optional": "opsional",
     "login-to-bithomp-pro": "Memuat lebih banyak data tersedia untuk pelanggan Bithomp Pro yang <2>termasuk login</2>.",
     "renew-bithomp-pro": "Langganan Bithomp Pro Anda telah kedaluwarsa. <1>Perbarui langganan Anda</1>.",
     "load-failed": "Gagal memuat",

@@ -122,12 +122,6 @@ export async function getServerSideProps(context) {
   }
 }
 
-const periodOptions = [
-  { value: 'day', label: 'Day' },
-  { value: 'week', label: 'Week' },
-  { value: 'month', label: 'Month' }
-]
-
 // Build success-by-type map from transactionTypesResults
 const getSuccessByType = (transactionTypesResults) => {
   const res = {}
@@ -154,6 +148,7 @@ export default function Dapps({
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const isMobile = useIsMobile(764)
+  const hasCompactFilters = useIsMobile(1301)
 
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
@@ -350,6 +345,35 @@ export default function Dapps({
     if (!v) setWalletFilter('')
   }
 
+  const periodOptions = [
+    { value: 'day', label: t('tabs.day'), shortLabel: `24${t('units.hours-short')}` },
+    { value: 'week', label: t('tabs.week'), shortLabel: `7${t('units.days-short')}` },
+    { value: 'month', label: t('tabs.month'), shortLabel: `30${t('units.days-short')}` }
+  ]
+
+  const activeFilters = {
+    ...(!excludeNoWallets ? { [t('general.external-signing')]: t('general.optional') } : {}),
+    ...(walletFilter ? { [t('wallet.connected-wallets')]: walletFilter } : {})
+  }
+
+  const periodSwitch = (
+    <div className="dapps-period-switch" aria-label={t('table.period')}>
+      {periodOptions.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          className={`dapps-period-switch__button${period === option.value ? ' is-active' : ''}`}
+          onClick={() => setPeriod(option.value)}
+          aria-pressed={period === option.value}
+          aria-label={option.label}
+          title={option.label}
+        >
+          {option.shortLabel}
+        </button>
+      ))}
+    </div>
+  )
+
   return (
     <div className={dappsPageClass}>
       <SEO title="Dapps" />
@@ -376,10 +400,12 @@ export default function Dapps({
         csvHeaders={csvHeaders}
         selectedCurrency={selectedCurrency}
         setSelectedCurrency={setSelectedCurrency}
+        filters={activeFilters}
+        navExtra={hasCompactFilters ? periodSwitch : null}
       >
         <>
           <div>
-            Period
+            {t('table.period')}
             <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
             <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
               {periodComparisonText(period)}

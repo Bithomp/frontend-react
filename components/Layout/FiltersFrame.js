@@ -16,8 +16,9 @@ import { capitalize, shortHash } from '../../utils/format'
 
 // Filter Indicator Component
 function FilterIndicator({ filters }) {
+  const { t } = useTranslation()
   // Check if any filters are active
-  const activeFilters = Object.entries(filters).filter(
+  const activeFilters = Object.entries(filters || {}).filter(
     ([, value]) => value && value !== '' && value !== null && value !== undefined
   )
 
@@ -32,16 +33,18 @@ function FilterIndicator({ filters }) {
   }
 
   return (
-    <div className="center mb-2">
-      <FaFilter />
-      <span>
-        Filters:{' '}
-        {activeFilters.map(([key, value], index) => (
-          <span key={key}>
-            {index > 0 ? ' · ' : ''}
-            {renderFilterValue(key, value)}
-          </span>
-        ))}
+    <div className="filters-indicator center mb-2">
+      <span className="filters-indicator__summary">
+        <FaFilter />
+        <span>
+          {t('general.filters')}:{' '}
+          {activeFilters.map(([key, value], index) => (
+            <span key={key}>
+              {index > 0 ? ' · ' : ''}
+              {renderFilterValue(key, value)}
+            </span>
+          ))}
+        </span>
       </span>
     </div>
   )
@@ -69,7 +72,8 @@ export default function FiltersFrame({
   rowsPerPage,
   setRowsPerPage,
   onlyCsv,
-  filters
+  filters,
+  navExtra
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -156,6 +160,8 @@ export default function FiltersFrame({
             ) : (
               ''
             )}
+
+            {navExtra ? <div className="filters-nav__extra">{navExtra}</div> : null}
 
             {orderList && (
               <>

@@ -420,6 +420,8 @@
     "no-data": "Keine Daten verfügbar",
     "loading": "Lade...",
     "filters": "Filter",
+    "external-signing": "Externes Signieren",
+    "optional": "optional",
     "login-to-bithomp-pro": "Das Laden weiterer Daten ist für <2>eingeloggte</2> Bithomp Pro-Abonnenten verfügbar.",
     "renew-bithomp-pro": "Ihr Bithomp Pro-Abonnement ist abgelaufen. <1>Abonnement erneuern</1>.",
     "load-failed": "Laden fehlgeschlagen",
