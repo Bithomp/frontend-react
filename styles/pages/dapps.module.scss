@@ -34,8 +34,18 @@
   }
 
   @media (max-width: 1300px) {
+    .filters-nav {
+      right: 30px;
+    }
+
     .dapps-period-switch {
       display: inline-flex;
+    }
+  }
+
+  @media (max-width: 440px) {
+    .filters-nav {
+      right: 15px;
     }
   }
 
