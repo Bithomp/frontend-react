@@ -498,12 +498,13 @@ export default function SignForm({
     } else if (wallet === 'dcent') {
       dcentTxSending(tx)
     } else if (wallet === 'xyra') {
+      const isSignIn = !tx || tx.TransactionType === 'SignIn'
+      const isLoggedInXyra = account?.wallet === 'xyra' && account?.address
+      const xyraConnectionPromise = isMobile && !isLoggedInXyra ? xyraConnect() : null
+
       setScreen('xyra')
       setXyraPreparedTx(null)
       setXyraNeedsClick(false)
-
-      const isSignIn = !tx || tx.TransactionType === 'SignIn'
-      const isLoggedInXyra = account?.wallet === 'xyra' && account?.address
 
       // ✅ SignIn: one click -> connect (if needed) -> close. No "Open Xyra".
       if (isSignIn) {
@@ -517,7 +518,7 @@ export default function SignForm({
 
           setAwaiting(true)
           setStatus('Open Xyra and approve the connection...')
-          const { address } = await xyraConnect()
+          const { address } = await (xyraConnectionPromise || xyraConnect())
           setAwaiting(false)
 
           await onSignIn({ address, wallet: 'xyra', redirectName: signRequest?.redirect })
@@ -539,7 +540,7 @@ export default function SignForm({
         try {
           setAwaiting(true)
           setStatus('Open Xyra and approve the connection...')
-          const { address, publicKey } = await xyraConnect()
+          const { address, publicKey } = await (xyraConnectionPromise || xyraConnect())
           setAwaiting(false)
 
           await onSignIn({ address, wallet: 'xyra', redirectName: signRequest?.redirect })
@@ -624,18 +625,19 @@ export default function SignForm({
       }
 
       //if redirect
-      if (redirectName) {
+      if (redirectName || deferCloseForXamanReturn) {
+        const targetRedirect = redirectName || 'account'
         if (!deferCloseForXamanReturn) {
           signInCancelAndClose()
         }
-        if (redirectName === 'nfts') {
-          router[deferCloseForXamanReturn ? 'replace' : 'push']('/nfts/' + activeAddress)
+        if (targetRedirect === 'nfts') {
+          await router[deferCloseForXamanReturn ? 'replace' : 'push']('/nfts/' + activeAddress)
           return
-        } else if (redirectName === 'nft-offers') {
-          router[deferCloseForXamanReturn ? 'replace' : 'push']('/nft-offers/' + activeAddress)
+        } else if (targetRedirect === 'nft-offers') {
+          await router[deferCloseForXamanReturn ? 'replace' : 'push']('/nft-offers/' + activeAddress)
           return
-        } else if (redirectName === 'account') {
-          router[deferCloseForXamanReturn ? 'replace' : 'push']('/account/' + activeAddress)
+        } else if (targetRedirect === 'account') {
+          await router[deferCloseForXamanReturn ? 'replace' : 'push']('/account/' + activeAddress)
           return
         }
       }
@@ -1095,8 +1097,7 @@ export default function SignForm({
       return
     }
 
-    if (xamanReturn && redirectName && (txType === 'SignIn' || !txHash || signRequest?.receipt)) {
-      setScreen('choose-app')
+    if (xamanReturn && (txType === 'SignIn' || !txHash || signRequest?.receipt)) {
       setSignRequest(null)
       setAwaiting(false)
       setStatus('')
@@ -1422,7 +1423,7 @@ export default function SignForm({
       )}
       {screen && (
         <div className="sign-in-form">
-          <div className="sign-in-body center">
+          <div className={`sign-in-body center${screen === 'choose-app' ? ' choose-app' : ''}`}>
             <div className="close-button" onClick={signInCancelAndClose}></div>
             {askInfoScreens.includes(screen) ? (
               <>

@@ -41,6 +41,44 @@
       height: 520px;
     }
 
+    &.choose-app {
+      .header {
+        padding-top: 42px;
+        font-size: 26px;
+      }
+
+      .signin-apps {
+        display: grid;
+        grid-template-columns: repeat(2, 190px);
+        justify-content: center;
+        gap: 10px 16px;
+        margin-top: 28px;
+        padding-bottom: 32px;
+
+        .signin-app-logo {
+          display: block;
+          width: auto;
+          height: 74px;
+          margin: 0;
+          padding: 12px;
+        }
+
+        .signin-app-inner {
+          gap: 5px;
+        }
+
+        .signin-app-wallets.icons-only {
+          margin-bottom: 4px;
+          min-height: 32px;
+        }
+
+        .signin-app-name {
+          line-height: 1.15;
+          white-space: normal;
+        }
+      }
+    }
+
     @media only screen and (max-width: 480px) {
       width: 100%;
       height: 100%;
@@ -52,6 +90,24 @@
 
       &.loginform {
         height: 100%;
+      }
+
+      &.choose-app {
+        .header {
+          padding-top: 60px;
+          font-size: clamp(18px, 5vw, 22px);
+        }
+
+        .signin-apps {
+          grid-template-columns: repeat(2, 140px);
+          gap: 10px;
+          margin-top: 35px;
+
+          .signin-app-logo {
+            height: 60px;
+            padding: 10px;
+          }
+        }
       }
     }
 
