@@ -665,7 +665,7 @@
       },
       "balances_change": {
         "label": "Balance change",
-        "description": "When a watched Pro address balance changes."
+        "description": "When any watched address balance changes."
       }
     },
     "filters": {

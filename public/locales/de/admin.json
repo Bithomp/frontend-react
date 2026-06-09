@@ -665,7 +665,7 @@
       },
       "balances_change": {
         "label": "Balance-Änderung",
-        "description": "Wenn sich der Saldo einer angesehenen Pro-Adresse ändert."
+        "description": "Wenn sich der Saldo einer beliebigen überwachten Adresse ändert."
       }
     },
     "filters": {

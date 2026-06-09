@@ -665,7 +665,7 @@
       },
       "balances_change": {
         "label": "cambio de saldo",
-        "description": "Cuando cambia el saldo de una dirección Pro observada."
+        "description": "Cuando cambia el saldo de cualquier dirección observada."
       }
     },
     "filters": {

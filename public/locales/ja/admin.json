@@ -665,7 +665,7 @@
       },
       "balances_change": {
         "label": "バランス変更",
-        "description": "監視されている Pro のアドレスバランスが変更されたとき。"
+        "description": "監視中の任意のアドレスの残高が変更されたとき。"
       }
     },
     "filters": {

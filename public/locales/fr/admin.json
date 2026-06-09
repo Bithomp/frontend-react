@@ -665,7 +665,7 @@
       },
       "balances_change": {
         "label": "Changement de solde",
-        "description": "Quand le solde d’une adresse Pro suivie change."
+        "description": "Quand le solde d’une adresse suivie change."
       }
     },
     "filters": {

@@ -251,7 +251,7 @@ const initialChannelForm = {
 }
 
 const defaultRuleName = (t, index = 1) => t('notifications.default-rule-name', { index })
-const defaultRuleEvent = xahauNetwork ? NOTIFICATION_EVENT_TYPES.URITOKEN_SELL : NOTIFICATION_EVENT_TYPES.NFTOKEN_SALE
+const defaultRuleEvent = NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE
 
 const initialRuleForm = {
   connectionId: '',
@@ -369,13 +369,6 @@ const parseRuleFilters = (event, rules = {}, fiatCurrency = 'usd') => {
     const key = ruleKey(field.ruleKey || field.key, fiatCurrency)
     const rule = rules[key]
 
-    if (field.type === 'proAddress') {
-      if (rule && Object.prototype.hasOwnProperty.call(rule, '$eq') && rule.$eq !== null) {
-        filters[field.key] = { value: String(rule.$eq) }
-      }
-      return
-    }
-
     if (field.type === 'address' || field.type === 'text') {
       if (rule && Object.prototype.hasOwnProperty.call(rule, '$eq') && rule.$eq !== null) {
         filters[field.key] = { value: String(rule.$eq) }
@@ -451,13 +444,6 @@ const buildRuleSettings = (formData) => {
   fields.forEach((field) => {
     const filter = filterValue(filters, field.key)
     const key = ruleKey(field.ruleKey || field.key, formData.fiatCurrency)
-
-    if (field.type === 'proAddress') {
-      if (isFilled(filter.value)) {
-        rules[key] = { $eq: String(filter.value).trim() }
-      }
-      return
-    }
 
     if (field.type === 'address' || field.type === 'text') {
       if (isFilled(filter.value)) {
@@ -588,7 +574,6 @@ export default function Notifications({
   const [partnerCountry, setPartnerCountry] = useState('')
   const [partnerName, setPartnerName] = useState('')
   const [profileMessage, setProfileMessage] = useState('')
-  const [proAddresses, setProAddresses] = useState([])
   const [notificationPackages, setNotificationPackages] = useState([])
   const [loadingNotificationPrerequisites, setLoadingNotificationPrerequisites] = useState(false)
   const [notificationPrerequisitesLoaded, setNotificationPrerequisitesLoaded] = useState(false)
@@ -630,25 +615,12 @@ export default function Notifications({
   const partnerMissing = notificationErrorCode === 'errors.partner.not_found'
   const tokenRequired = notificationErrorCode === 'errors.token.required'
   const notificationDataUnavailable = !!error
-  const activeProPackage = activePackage(notificationPackages, 'bithomp_pro')
   const activeBotPackage = activePackage(notificationPackages, 'bot')
   const alertPlan = getAlertPlanForPackage(activeBotPackage)
   const notificationLimitsReady = notificationPrerequisitesLoaded && !loadingNotificationPrerequisites
   const channelLimitReached = channels.length >= alertPlan.connections
   const ruleLimitReached = rules.length >= alertPlan.listeners
   const canShowAlertPlanUpgrade = showAlertPlanUpgrade(alertPlan, activeBotPackage)
-  const hasActiveProSubscription = !!activeProPackage
-  const balanceHistoryAddressOptions = useMemo(
-    () =>
-      proAddresses
-        .filter((item) => item?.address && item?.crawler && item.crawler.status !== 'paused')
-        .map((item) => ({
-          value: item.address,
-          label: item.name ? `${item.name} - ${item.address}` : item.address,
-          status: item.crawler?.status
-        })),
-    [proAddresses]
-  )
 
   useEffect(() => {
     if (!sessionToken) return
@@ -656,20 +628,8 @@ export default function Notifications({
     const loadNotificationPrerequisites = async () => {
       setLoadingNotificationPrerequisites(true)
       try {
-        const [addressesResponse, packagesResponse] = await Promise.allSettled([
-          axiosAdmin.get('user/addresses'),
-          axiosAdmin.get('partner/packages')
-        ])
-
-        if (addressesResponse.status === 'fulfilled') {
-          setProAddresses(Array.isArray(addressesResponse.value?.data?.addresses) ? addressesResponse.value.data.addresses : [])
-        }
-
-        if (packagesResponse.status === 'fulfilled') {
-          setNotificationPackages(
-            Array.isArray(packagesResponse.value?.data?.packages) ? packagesResponse.value.data.packages : []
-          )
-        }
+        const packagesResponse = await axiosAdmin.get('partner/packages').catch(() => null)
+        setNotificationPackages(Array.isArray(packagesResponse?.data?.packages) ? packagesResponse.data.packages : [])
       } finally {
         setNotificationPrerequisitesLoaded(true)
         setLoadingNotificationPrerequisites(false)
@@ -861,15 +821,6 @@ export default function Notifications({
       const filter = filterValue(ruleFormData.filters, field.key)
       if (field.required && !isFilled(filter.value)) {
         errors[field.key] = t('notifications.errors.choose-field', { field: filterLabel(field, t).toLowerCase() })
-      }
-      if (field.type === 'proAddress') {
-        if (!hasActiveProSubscription) {
-          errors[field.key] = t('notifications.errors.pro-required')
-        } else if (balanceHistoryAddressOptions.length === 0) {
-          errors[field.key] = t('notifications.errors.enable-history-first')
-        } else if (isFilled(filter.value) && !balanceHistoryAddressOptions.some((option) => option.value === filter.value)) {
-          errors[field.key] = t('notifications.errors.choose-history-address')
-        }
       }
       if (field.type === 'address' && isFilled(filter.value) && !isAddressValid(filter.value)) {
         errors[field.key] = t('notifications.errors.valid-address')
@@ -1164,48 +1115,6 @@ export default function Notifications({
   const renderRuleFilterField = (field) => {
     const filter = filterValue(ruleFormData.filters, field.key)
     const fieldClassName = `notification-field${field.wide ? ' notification-field-wide' : ''}`
-
-    if (field.type === 'proAddress') {
-      const selectedOption = balanceHistoryAddressOptions.find((option) => option.value === filter.value) || null
-      return (
-        <div className={fieldClassName} key={field.key}>
-          <span>
-            {filterLabel(field, t)}
-            {field.required ? ' *' : ''}
-          </span>
-          <Select
-            className="simple-select"
-            classNamePrefix="react-select"
-            instanceId={`notification-rule-${field.key}`}
-            isDisabled={
-              loadingNotificationPrerequisites ||
-              (notificationPrerequisitesLoaded && !hasActiveProSubscription) ||
-              balanceHistoryAddressOptions.length === 0
-            }
-            isSearchable={true}
-            onChange={(option) => handleRuleFilterChange(field.key, { value: option?.value || '' })}
-            options={balanceHistoryAddressOptions}
-            placeholder={loadingNotificationPrerequisites ? t('notifications.loading-addresses') : t('notifications.choose-address')}
-            value={selectedOption}
-          />
-          {notificationPrerequisitesLoaded && !hasActiveProSubscription && (
-            <small>
-              {t('notifications.pro-required-before')}{' '}
-              <Link href="/admin#bithomp-pro-subscription">Bithomp Pro</Link>.
-            </small>
-          )}
-          {notificationPrerequisitesLoaded &&
-            hasActiveProSubscription &&
-            balanceHistoryAddressOptions.length === 0 && (
-            <small>
-              {t('notifications.enable-history-before')}{' '}
-              <Link href="/admin/pro">{t('tabs.my-addresses')}</Link> {t('notifications.enable-history-after')}.
-            </small>
-          )}
-          {ruleFormErrors[field.key] && <strong>{ruleFormErrors[field.key]}</strong>}
-        </div>
-      )
-    }
 
     if (field.type === 'address') {
       return (

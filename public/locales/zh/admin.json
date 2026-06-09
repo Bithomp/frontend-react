@@ -665,7 +665,7 @@
       },
       "balances_change": {
         "label": "余额变化",
-        "description": "当关注的 Pro 地址余额发生变化时。"
+        "description": "当任何关注地址的余额发生变化时。"
       }
     },
     "filters": {

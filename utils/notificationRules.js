@@ -12,6 +12,13 @@ export const NOTIFICATION_EVENT_TYPES = Object.freeze({
 
 export const NOTIFICATION_EVENT_OPTIONS = [
   {
+    value: NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE,
+    label: 'Balance change',
+    description: 'When any watched address balance changes.',
+    group: 'Account',
+    networks: ['xrpl', 'xahau']
+  },
+  {
     value: NOTIFICATION_EVENT_TYPES.NFTOKEN_SALE,
     label: 'NFT sale',
     description: 'When an NFT sale is detected.',
@@ -38,13 +45,6 @@ export const NOTIFICATION_EVENT_OPTIONS = [
     description: 'When a new NFT sell offer is created.',
     group: 'NFT',
     networks: ['xahau']
-  },
-  {
-    value: NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE,
-    label: 'Balance change',
-    description: 'When a watched Pro address balance changes.',
-    group: 'Account',
-    networks: ['xrpl', 'xahau']
   }
 ]
 
@@ -159,7 +159,7 @@ export const getNotificationTxTypeOptions = ({ xahau = false } = {}) =>
   txTypeOptions(xahau ? XAHAU_TX_TYPES : XRPL_TX_TYPES)
 
 const balanceChangeFilterFields = [
-  { key: 'address', label: 'Address', type: 'proAddress', required: true, wide: true },
+  { key: 'address', label: 'Address', type: 'address', required: true, wide: true },
   { key: 'tx_type', label: 'Transaction type', type: 'txType', wide: true }
 ]
 

@@ -665,7 +665,7 @@
       },
       "balances_change": {
         "label": "밸런스 변경",
-        "description": "시청 중인 Pro 주소 잔액이 변경될 때."
+        "description": "모니터링 중인 모든 주소의 잔액이 변경될 때."
       }
     },
     "filters": {

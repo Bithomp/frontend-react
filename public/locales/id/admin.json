@@ -665,7 +665,7 @@
       },
       "balances_change": {
         "label": "Perubahan keseimbangan",
-        "description": "Ketika saldo alamat Pro yang ditonton berubah."
+        "description": "Ketika saldo alamat mana pun yang dipantau berubah."
       }
     },
     "filters": {
