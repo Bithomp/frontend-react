@@ -1,5 +1,4 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid'
-import TransportWebBLE from '@ledgerhq/hw-transport-web-ble'
 import Xrp from '@ledgerhq/hw-app-xrp'
 import { broadcastTransaction, getNextTransactionParams } from './user'
 import { encode } from 'xrpl-binary-codec-prerelease'
@@ -10,6 +9,10 @@ import axios from 'axios'
 const errorHandle = (error) => {
   const msg = String(error?.message || error)
   const statusCode = error?.statusCode
+
+  if (msg.includes('WebHID') || msg.includes('not supported in this browser')) {
+    throw new Error(msg)
+  }
 
   if (msg.includes('DEVICE_NOT_ONBOARDED') || statusCode === 0x6d07) {
     throw new Error(
@@ -123,18 +126,6 @@ const closeOpenedHidDevices = async () => {
 
 const canUseWebHID = () => typeof navigator !== 'undefined' && !!navigator?.hid
 
-const canUseWebBLE = async () => {
-  if (typeof navigator === 'undefined' || !navigator?.bluetooth) return false
-  if (typeof TransportWebBLE?.isSupported === 'function') {
-    try {
-      return !!(await TransportWebBLE.isSupported())
-    } catch (_) {
-      return false
-    }
-  }
-  return true
-}
-
 export const ledgerwalletForceReset = async () => {
   try {
     await ledgerwalletDisconnect()
@@ -181,24 +172,8 @@ const connectLedger = async () => {
     return app
   }
 
-  const connectBLE = async () => {
-    const bleSupported = await canUseWebBLE()
-    if (!bleSupported) {
-      throw new Error(
-        'Ledger connection is not supported in this browser. Use a browser with WebHID for USB or Web Bluetooth for Bluetooth.'
-      )
-    }
-
-    return TransportWebBLE.create().then((transport) => attachTransport(transport))
-  }
-
   if (!canUseWebHID()) {
-    xrpAppPromise = connectBLE().catch((error) => {
-      xrpAppPromise = null
-      xrpAppInstance = null
-      errorHandle(error)
-    })
-    return xrpAppPromise
+    throw new Error('Ledger connection is not supported in this browser. Use Chrome or Edge desktop with WebHID and connect Ledger by USB.')
   }
 
   xrpAppPromise = TransportWebHID.create()
@@ -256,16 +231,6 @@ const connectLedger = async () => {
 
       xrpAppPromise = null
       xrpAppInstance = null
-      if (await canUseWebBLE()) {
-        try {
-          return await connectBLE()
-        } catch (bleError) {
-          xrpAppPromise = null
-          xrpAppInstance = null
-          errorHandle(bleError)
-          return
-        }
-      }
       errorHandle(error)
     })
 

@@ -1353,17 +1353,6 @@
     "@ledgerhq/hw-transport" "^6.31.5"
     bip32-path "0.4.2"
 
-"@ledgerhq/hw-transport-web-ble@^6.29.4":
-  version "6.34.3"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-web-ble/-/hw-transport-web-ble-6.34.3.tgz#8e2fe8e33ecd43208578c966280ffdb9a402328e"
-  integrity sha512-CvIpCc9eFJcfsmnVG/nDuClxpCPtb8De2kz9+EAL/qogzAzHM+4MgiOIes8wJnJhQ4TCOrb5YCD0IY+lXne0Ow==
-  dependencies:
-    "@ledgerhq/devices" "8.15.0"
-    "@ledgerhq/errors" "^6.35.0"
-    "@ledgerhq/hw-transport" "6.35.3"
-    "@ledgerhq/logs" "^6.17.0"
-    rxjs "7.8.2"
-
 "@ledgerhq/hw-transport-webhid@^6.29.4":
   version "6.30.1"
   resolved "https://registry.npmjs.org/@ledgerhq/hw-transport-webhid/-/hw-transport-webhid-6.30.1.tgz"

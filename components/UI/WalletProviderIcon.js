@@ -42,7 +42,7 @@ export default function WalletProviderIcon({
   if (provider === 'gemwallet') {
     return <Image src="/images/wallets/gemwallet.svg" alt="GemWallet" {...shared} style={withStyle()} />
   }
-  if (provider === 'xaman') {
+  if (provider === 'xaman' || provider === 'xumm') {
     return <Image src="/images/wallets/xaman.png" alt="Xaman" {...shared} style={withStyle({ borderRadius: '50%' })} />
   }
   if (provider === 'ledgerwallet') {

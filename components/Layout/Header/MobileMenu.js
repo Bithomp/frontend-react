@@ -204,7 +204,7 @@ export default function MobileMenu({
                           </span>
                         </span>
                         <span className="wallet-provider-icon">
-                          <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} />
+                          <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} showFallback />
                         </span>
                         <span
                           className="link wallet-disconnect"

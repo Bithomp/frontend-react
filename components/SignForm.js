@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from 'react'
+import { memo, useState, useEffect, useRef } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -183,6 +183,7 @@ export default function SignForm({
   const [rewardDelay, setRewardDelay] = useState()
 
   const [choosenWallet, setChoosenWallet] = useState(null)
+  const processedXamanUuidRef = useRef(null)
 
   useEffect(() => {
     if (!signRequest) return
@@ -304,6 +305,8 @@ export default function SignForm({
 
   useEffect(() => {
     if (!uuid) return
+    if (processedXamanUuidRef.current === uuid) return
+    processedXamanUuidRef.current = uuid
     setScreen('xaman')
     setShowXamanQr(false)
     setStatus(t('signin.xaman.statuses.wait'))
@@ -1708,15 +1711,17 @@ export default function SignForm({
                         disabled={false}
                       />
 
-                      <WalletTile
-                        name={isMobile ? 'Ledger (Bluetooth)' : 'Ledger (Hardware wallet)'}
-                        alt="Ledger Wallet"
-                        src="/images/wallets/ledgerwallet-large.svg"
-                        width={110}
-                        height={48}
-                        onClick={() => txSend({ wallet: 'ledgerwallet' })}
-                        disabled={false}
-                      />
+                      {!isMobile && (
+                        <WalletTile
+                          name="Ledger (Hardware wallet)"
+                          alt="Ledger Wallet"
+                          src="/images/wallets/ledgerwallet-large.svg"
+                          width={110}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'ledgerwallet' })}
+                          disabled={false}
+                        />
+                      )}
 
                       {/* available only for mainnet and testnet */}
                       {(networkId === 0 || networkId === 1) && (

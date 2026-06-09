@@ -23,7 +23,6 @@
     "@emotion/styled": "^11.13.0",
     "@gemwallet/api": "^3.8.0",
     "@ledgerhq/hw-app-xrp": "^6.29.4",
-    "@ledgerhq/hw-transport-web-ble": "^6.29.4",
     "@ledgerhq/hw-transport-webhid": "^6.29.4",
     "@marsidev/react-turnstile": "^0.7.2",
     "@metamask/sdk": "^0.30.3",
