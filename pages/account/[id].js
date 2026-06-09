@@ -1727,6 +1727,13 @@ export default function Account({
       activatedAccountsLoadingMore ||
       activatedAccountsCount > 0 ||
       activatedAccounts.length > 0)
+  const activatedAccountsCountText = shortNiceNumber(activatedAccountsCount, 0, 1)
+  const activatedAccountsCountFullText = niceNumber(activatedAccountsCount, null, null, 15)
+  const showActivatedAccountsCountTooltip = activatedAccountsCountText !== activatedAccountsCountFullText
+  const activatedAccountsSpentText =
+    `${shortNiceNumber(activatedAccountsSpent, 0, 1)} ${nativeCurrency}`
+  const activatedAccountsSpentFullText = `${niceNumber(activatedAccountsSpent, null, null, 15)} ${nativeCurrency}`
+  const showActivatedAccountsSpentTooltip = activatedAccountsSpentText !== activatedAccountsSpentFullText
   const hasColumn4ObjectSections =
     hasIssuedTokensSection ||
     hasIssuerSettingsData ||
@@ -10639,27 +10646,31 @@ export default function Account({
             {hasActivatedAccountsSection && (
               <>
                 <div className="section-header-row object-section-header-row">
-                  <div className="section-title object-section-title">
-                    {ta('sections.activated-accounts')}{' '}
+                  <div className="section-title object-section-title activated-accounts-title">
+                    {ta('statuses.activated')}{' '}
                     {(!activatedAccountsLoading || activatedAccountsCount > 0) && (
                       <span className="object-title-count" suppressHydrationWarning>
-                        <span className="tooltip">
-                          {shortNiceNumber(activatedAccountsCount, 0, 1)}
-                          <span className="tooltiptext no-brake">{fullNiceNumber(activatedAccountsCount)}</span>
-                        </span>
+                        {showActivatedAccountsCountTooltip ? (
+                          <span className="tooltip summary-tooltip">
+                            {activatedAccountsCountText}
+                            <span className="tooltiptext no-brake">{activatedAccountsCountFullText}</span>
+                          </span>
+                        ) : (
+                          activatedAccountsCountText
+                        )}
                       </span>
                     )}
                     {activatedAccountsSpent > 0 && (
                       <span className="object-title-count" suppressHydrationWarning>
                         {' · '}
-                        <span className="tooltip">
-                          {activatedAccountsSpent >= 1000
-                            ? `${niceNumber(activatedAccountsSpent / 1000, 1)}K ${nativeCurrency}`
-                            : `${shortNiceNumber(activatedAccountsSpent, 2, 1)} ${nativeCurrency}`}
-                          <span className="tooltiptext no-brake">
-                            {fullNiceNumber(activatedAccountsSpent)} {nativeCurrency}
+                        {showActivatedAccountsSpentTooltip ? (
+                          <span className="tooltip summary-tooltip">
+                            {activatedAccountsSpentText}
+                            <span className="tooltiptext no-brake">{activatedAccountsSpentFullText}</span>
                           </span>
-                        </span>
+                        ) : (
+                          activatedAccountsSpentText
+                        )}
                       </span>
                     )}
                   </div>
@@ -13279,6 +13290,15 @@ export default function Account({
           flex: 0 0 auto;
           min-width: max-content;
           max-width: min(38%, 220px);
+        }
+
+        .activated-accounts-title,
+        .activated-accounts-title .object-title-count {
+          overflow: visible;
+        }
+
+        .activated-accounts-title .summary-tooltip {
+          cursor: default;
         }
 
         @media (max-width: 560px) {
