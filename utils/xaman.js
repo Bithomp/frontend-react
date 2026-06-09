@@ -2,7 +2,7 @@ import axios from 'axios'
 
 let xamanWs
 
-export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, afterSubmitExe }) => {
+export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, afterSubmitExe, xamanReturn = false }) => {
   const response = await axios('app/xaman/payload/' + uuid)
   const data = response.data
   if (data) {
@@ -37,7 +37,8 @@ export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, aft
         broker: data.custom_meta?.blob?.broker,
         txHash: data.response?.txid,
         txType: data.payload?.tx_type,
-        result
+        result,
+        xamanReturn
       })
     }
 

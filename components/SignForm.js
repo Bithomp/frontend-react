@@ -310,7 +310,7 @@ export default function SignForm({
     setScreen('xaman')
     setShowXamanQr(false)
     setStatus(t('signin.xaman.statuses.wait'))
-    xamanProcessSignedData({ uuid, afterSigning, onSignIn, afterSubmitExe })
+    xamanProcessSignedData({ uuid, afterSigning, onSignIn, afterSubmitExe, xamanReturn: true })
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
 
@@ -629,13 +629,13 @@ export default function SignForm({
           signInCancelAndClose()
         }
         if (redirectName === 'nfts') {
-          router.push('/nfts/' + activeAddress)
+          router[deferCloseForXamanReturn ? 'replace' : 'push']('/nfts/' + activeAddress)
           return
         } else if (redirectName === 'nft-offers') {
-          router.push('/nft-offers/' + activeAddress)
+          router[deferCloseForXamanReturn ? 'replace' : 'push']('/nft-offers/' + activeAddress)
           return
         } else if (redirectName === 'account') {
-          router.push('/account/' + activeAddress)
+          router[deferCloseForXamanReturn ? 'replace' : 'push']('/account/' + activeAddress)
           return
         }
       }
@@ -1049,7 +1049,7 @@ export default function SignForm({
     }
   }
 
-  const afterSubmitExe = async ({ redirectName, broker, txHash, txType, result }) => {
+  const afterSubmitExe = async ({ redirectName, broker, txHash, txType, result, xamanReturn = false }) => {
     //if broker, notify about the offer
     if (broker) {
       setStatus(t('signin.status.awaiting-broker', { serviceName: broker }))
@@ -1092,6 +1092,15 @@ export default function SignForm({
           delay(3000, closeSignInFormAndRefresh)
         }
       }
+      return
+    }
+
+    if (xamanReturn && redirectName && (txType === 'SignIn' || !txHash || signRequest?.receipt)) {
+      setScreen('choose-app')
+      setSignRequest(null)
+      setAwaiting(false)
+      setStatus('')
+      setRefreshPage(Date.now())
       return
     }
 

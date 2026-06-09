@@ -43,7 +43,15 @@ export default function WalletProviderIcon({
     return <Image src="/images/wallets/gemwallet.svg" alt="GemWallet" {...shared} style={withStyle()} />
   }
   if (provider === 'xaman' || provider === 'xumm') {
-    return <Image src="/images/wallets/xaman.png" alt="Xaman" {...shared} style={withStyle({ borderRadius: '50%' })} />
+    return (
+      <Image
+        src="/images/wallets/square-logos/xaman.png"
+        alt="Xaman"
+        {...shared}
+        unoptimized
+        style={withStyle({ borderRadius: '50%' })}
+      />
+    )
   }
   if (provider === 'ledgerwallet') {
     return <Image src="/images/wallets/ledgerwallet.svg" alt="Ledger Wallet" {...shared} style={withStyle({ marginBottom: -2 })} />
