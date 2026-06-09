@@ -1,7 +1,9 @@
 import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 
 import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarSrc, retinaImageSize } from '../../../utils'
+import { shortHash } from '../../../utils/format'
 
 import WalletProviderIcon from '../../UI/WalletProviderIcon'
 
@@ -68,6 +70,8 @@ import { AiFillStar } from 'react-icons/ai'
 
 const Link = (props) => <NextLink {...props} prefetch={false} />
 
+const walletDisplayName = (walletItem) => walletItem?.username || shortHash(walletItem?.address)
+
 const handleClick = (e) => {
   if (e.target.getAttribute('data-expanded') !== null) {
     e.target.setAttribute('data-expanded', e.target.getAttribute('data-expanded') === 'true' ? 'false' : 'true')
@@ -83,19 +87,47 @@ export default function MobileMenu({
   proName,
   signOutPro,
   signOut,
+  setActiveWallet,
   account,
   //countryCode,
   sessionToken,
   openEmailLogin
 }) {
   const { t } = useTranslation('common')
+  const router = useRouter()
 
   const iconStyle = { marginRight: '6px', fontSize: '1.1em' }
   const itemIconStyle = { marginRight: 6, fontSize: '1.05em', marginTop: 1, flexShrink: 0 }
   const proLoggedIn = proName && sessionToken
   const wallets = Array.isArray(account?.wallets) ? account.wallets : []
+  const orderedWallets = [...wallets].sort((a, b) => (b?.connectedAt || 0) - (a?.connectedAt || 0))
   const activeWallet = wallets.find((w) => w?.id === account?.activeWalletId) || wallets[0] || null
-  const activeProvider = activeWallet?.provider || account?.wallet || null
+  const activeWalletId = activeWallet?.id || account?.activeWalletId || null
+
+  const handleWalletSwitch = (walletItem) => {
+    if (!walletItem?.id) return
+
+    const isActiveWallet = walletItem.id === activeWalletId
+    if (isActiveWallet) {
+      if (!router.asPath.startsWith('/account/' + walletItem.address) && !router.pathname.startsWith('/services')) {
+        router.push('/account/' + walletItem.address)
+        mobileMenuToggle()
+      }
+      return
+    }
+
+    setActiveWallet?.(walletItem.id)
+    mobileMenuToggle()
+  }
+
+  const handleConnectAnotherWallet = () => {
+    setSignRequest?.(
+      router.pathname.startsWith('/account')
+        ? { redirect: 'account', connectAnotherWallet: true }
+        : { connectAnotherWallet: true }
+    )
+    mobileMenuToggle()
+  }
 
   return (
     <div className="mobile-menu" onClick={handleClick}>
@@ -142,23 +174,62 @@ export default function MobileMenu({
                 <IoSettingsOutline style={itemIconStyle} />
                 {t('menu.wallet.my-account-settings')}
               </Link>
+              {!!orderedWallets.length && (
+                <div className="mobile-wallets-block">
+                  <div className="wallets-title center">{t('menu.wallet.connected-wallets')}</div>
+                  {orderedWallets.map((walletItem) => {
+                    const isActiveWallet = walletItem.id === activeWalletId
+
+                    return (
+                      <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
+                        <span
+                          className={
+                            'link wallet-switch' +
+                            (isActiveWallet && router.asPath.startsWith('/account/' + walletItem.address)
+                              ? ' wallet-switch-active'
+                              : '')
+                          }
+                          onClick={() => handleWalletSwitch(walletItem)}
+                        >
+                          <img
+                            alt="avatar"
+                            src={avatarSrc(walletItem.address, { size: retinaImageSize(20), hashIconZoom: 12 })}
+                            width="20"
+                            height="20"
+                            className="wallet-row-avatar"
+                          />
+                          <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
+                          <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>
+                            {isActiveWallet && '●'}
+                          </span>
+                        </span>
+                        <span className="wallet-provider-icon">
+                          <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} />
+                        </span>
+                        <span
+                          className="link wallet-disconnect"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            signOut(walletItem.id)
+                          }}
+                        >
+                          <IoLogOutOutline aria-label={t('menu.wallet.disconnect')} />
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+              <span onClick={handleConnectAnotherWallet} className="mobile-menu-item link">
+                <IoWallet style={itemIconStyle} />
+                {t('menu.wallet.connect-another-wallet')}
+              </span>
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                   <IoAtOutline style={itemIconStyle} />
                   {t('menu.services.username')}
                 </Link>
               )}
-              <span onClick={() => signOut()} className="mobile-menu-item link">
-                <WalletProviderIcon
-                  provider={activeProvider}
-                  walletItem={activeWallet}
-                  style={{ marginRight: 6 }}
-                  showFallback
-                  fallbackStyle={itemIconStyle}
-                />
-                {t('signin.signout')}
-                <IoLogOutOutline style={{ marginLeft: 'auto', width: 18, height: 18, opacity: 0.9 }} />
-              </span>
             </>
           ) : (
             <span onClick={() => setSignRequest?.({})} className="link mobile-menu-item">

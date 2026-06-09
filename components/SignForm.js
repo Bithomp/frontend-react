@@ -1708,17 +1708,15 @@ export default function SignForm({
                         disabled={false}
                       />
 
-                      {!isMobile && (
-                        <WalletTile
-                          name="Ledger (Hardware wallet)"
-                          alt="Ledger Wallet"
-                          src="/images/wallets/ledgerwallet-large.svg"
-                          width={110}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'ledgerwallet' })}
-                          disabled={false}
-                        />
-                      )}
+                      <WalletTile
+                        name={isMobile ? 'Ledger (Bluetooth)' : 'Ledger (Hardware wallet)'}
+                        alt="Ledger Wallet"
+                        src="/images/wallets/ledgerwallet-large.svg"
+                        width={110}
+                        height={48}
+                        onClick={() => txSend({ wallet: 'ledgerwallet' })}
+                        disabled={false}
+                      />
 
                       {/* available only for mainnet and testnet */}
                       {(networkId === 0 || networkId === 1) && (

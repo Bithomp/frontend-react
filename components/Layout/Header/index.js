@@ -1022,6 +1022,7 @@ export default function Header({
           proName={proName}
           sessionToken={sessionToken}
           signOut={signOut}
+          setActiveWallet={setActiveWallet}
           signOutPro={signOutPro}
           username={username}
           isCopied={isCopied}

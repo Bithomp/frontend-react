@@ -1,4 +1,5 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid'
+import TransportWebBLE from '@ledgerhq/hw-transport-web-ble'
 import Xrp from '@ledgerhq/hw-app-xrp'
 import { broadcastTransaction, getNextTransactionParams } from './user'
 import { encode } from 'xrpl-binary-codec-prerelease'
@@ -120,6 +121,20 @@ const closeOpenedHidDevices = async () => {
   }
 }
 
+const canUseWebHID = () => typeof navigator !== 'undefined' && !!navigator?.hid
+
+const canUseWebBLE = async () => {
+  if (typeof navigator === 'undefined' || !navigator?.bluetooth) return false
+  if (typeof TransportWebBLE?.isSupported === 'function') {
+    try {
+      return !!(await TransportWebBLE.isSupported())
+    } catch (_) {
+      return false
+    }
+  }
+  return true
+}
+
 export const ledgerwalletForceReset = async () => {
   try {
     await ledgerwalletDisconnect()
@@ -138,7 +153,7 @@ export const ledgerwalletForceReset = async () => {
   setGlobalLedgerApp(null)
 }
 
-const connectLedgerHID = async () => {
+const connectLedger = async () => {
   const globalApp = getGlobalLedgerApp()
   if (globalApp?.transport) {
     xrpAppInstance = globalApp
@@ -164,6 +179,26 @@ const connectLedgerHID = async () => {
     }
 
     return app
+  }
+
+  const connectBLE = async () => {
+    const bleSupported = await canUseWebBLE()
+    if (!bleSupported) {
+      throw new Error(
+        'Ledger connection is not supported in this browser. Use a browser with WebHID for USB or Web Bluetooth for Bluetooth.'
+      )
+    }
+
+    return TransportWebBLE.create().then((transport) => attachTransport(transport))
+  }
+
+  if (!canUseWebHID()) {
+    xrpAppPromise = connectBLE().catch((error) => {
+      xrpAppPromise = null
+      xrpAppInstance = null
+      errorHandle(error)
+    })
+    return xrpAppPromise
   }
 
   xrpAppPromise = TransportWebHID.create()
@@ -221,6 +256,16 @@ const connectLedgerHID = async () => {
 
       xrpAppPromise = null
       xrpAppInstance = null
+      if (await canUseWebBLE()) {
+        try {
+          return await connectBLE()
+        } catch (bleError) {
+          xrpAppPromise = null
+          xrpAppInstance = null
+          errorHandle(bleError)
+          return
+        }
+      }
       errorHandle(error)
     })
 
@@ -239,7 +284,7 @@ const getLedgerAddress = async (xrpApp, path = "44'/144'/0'/0/0") => {
 const getLedgerDerivationPath = (accountIndex = 0) => `44'/144'/${accountIndex}'/0/0`
 
 export const ledgerwalletGetAddresses = async ({ start = 0, count = 20 } = {}) => {
-  const xrpApp = await connectLedgerHID()
+  const xrpApp = await connectLedger()
   const safeStart = Number.isFinite(start) ? Math.max(0, Number(start)) : 0
   const safeCount = Number.isFinite(count) ? Math.min(50, Math.max(1, Number(count))) : 20
 
@@ -505,7 +550,7 @@ export const ledgerwalletTxSend = async ({
   t
 }) => {
   try {
-    const xrpApp = await connectLedgerHID()
+    const xrpApp = await connectLedger()
     let path = selectedPath || null
     let address = selectedAddress || null
     let publicKey = selectedPublicKey || null
