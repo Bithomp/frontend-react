@@ -292,18 +292,8 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
         (tx.Amount || tx.Expiration || tx.Destination) && (
           <>
             <tr>
-              <TData className="bold">
-                {!outcome?.nftokenChanges?.length && <br />}
+              <TData colSpan="2" className="bold">
                 NFT Offer Details
-              </TData>
-              <TData>
-                {!outcome?.nftokenChanges?.length && <br />}
-                <br />
-              </TData>
-            </tr>
-            <tr>
-              <TData colSpan="2">
-                <hr />
               </TData>
             </tr>
 
@@ -342,11 +332,6 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
                 </TData>
               </tr>
             )}
-            <tr>
-              <TData colSpan="2">
-                <hr />
-              </TData>
-            </tr>
           </>
         )}
       {txType === 'NFTokenCancelOffer' &&
