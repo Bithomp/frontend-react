@@ -19,6 +19,18 @@ export default function SEO({
 
   description = description || title
 
+  const hasExplorerName = (value) =>
+    value && String(value).toLowerCase().includes(explorerName.toLowerCase())
+  const pageTitle = title || page
+  const seoTitle =
+    titleWithNetwork || hasExplorerName(pageTitle) || !pageTitle
+      ? pageTitle
+      : `${pageTitle} | ${explorerName}`
+  const seoDescription =
+    descriptionWithNetwork || hasExplorerName(description) || !description
+      ? description
+      : `${description} ${explorerName}`
+
   const cleanPath = (router.asPath || '/').split('#')[0].split('?')[0]
   const normalizedPath = cleanPath === '/' ? '' : cleanPath
   const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
@@ -27,8 +39,8 @@ export default function SEO({
   let openGraph = {
     type: 'website',
     url: canonical,
-    title: title || page,
-    description,
+    title: seoTitle,
+    description: seoDescription,
     locale: isEnglishLikeLocale ? 'en' : router.locale,
     site_name: websiteName || explorerName + ' ' + (page ? page : 'Explorer')
   }
@@ -104,8 +116,8 @@ export default function SEO({
   return (
     <>
       <NextSeo
-        title={titleWithNetwork ? title : explorerName + ' ' + title}
-        description={descriptionWithNetwork ? description : description + ' ' + explorerName}
+        title={seoTitle}
+        description={seoDescription}
         openGraph={openGraph}
         twitter={twitter}
         languageAlternates={languageAlternates}
