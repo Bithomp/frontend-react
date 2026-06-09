@@ -753,7 +753,11 @@ export const TransactionCard = ({
           line-height: 1.38;
           vertical-align: top;
         }
-        :global(.tx-detail-table > tbody > tr > td.tx-td:first-child) {
+        :global(.tx-detail-table > tbody > tr.tx-nft-preview-row),
+        :global(.tx-detail-table > tbody > tr.tx-nft-preview-row > td.tx-td) {
+          width: 100%;
+        }
+        :global(.tx-detail-table > tbody > tr:not(.tx-nft-preview-row) > td.tx-td:first-child) {
           color: var(--text-secondary);
           font-size: 12px;
           font-weight: 700;
@@ -858,7 +862,7 @@ export const TransactionCard = ({
             text-align: left !important;
             overflow-wrap: anywhere;
           }
-          :global(.tx-detail-table > tbody > tr > td.tx-td:first-child) {
+          :global(.tx-detail-table > tbody > tr:not(.tx-nft-preview-row) > td.tx-td:first-child) {
             margin-bottom: 5px;
             color: var(--text-secondary);
             font-size: 12px;

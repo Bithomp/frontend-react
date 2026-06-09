@@ -186,8 +186,8 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
         </TData>
       </tr>
       {nftPreview && (
-        <tr style={{ width: '100%' }}>
-          <TData colSpan="2" style={{ width: '100%' }}>
+        <tr className="tx-nft-preview-row">
+          <TData colSpan="2">
             <TransactionNftPreviewPanel preview={nftPreview} />
           </TData>
         </tr>

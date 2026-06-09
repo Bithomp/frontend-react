@@ -159,7 +159,7 @@ export const TransactionNftPreviewPanel = ({ preview }) => {
                       <Link href={item.link}>{shortHash(item.value, 8)}</Link> <CopyButton text={item.value} />
                     </span>
                   ) : item.copy ? (
-                    <span className="copy-inline" style={{ whiteSpace: 'normal' }}>
+                    <span className="copy-inline">
                       <span>{item.value}</span> <CopyButton text={item.value} />
                     </span>
                   ) : (
