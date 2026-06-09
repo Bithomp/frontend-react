@@ -5711,7 +5711,7 @@ export default function Account({
                                   <Link
                                     href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&limit=${token.HighLimit?.value}`}
                                     onClick={(event) => event.stopPropagation()}
-                                    className="change-limit-link"
+                                    className="change-limit-link no-brake"
                                   >
                                     [{ta('actions.change')}]
                                   </Link>
@@ -5738,7 +5738,7 @@ export default function Account({
                                   <Link
                                     href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&limit=${token.LowLimit?.value}`}
                                     onClick={(event) => event.stopPropagation()}
-                                    className="change-limit-link"
+                                    className="change-limit-link no-brake"
                                   >
                                     [{ta('actions.change')}]
                                   </Link>
@@ -13518,9 +13518,8 @@ export default function Account({
           min-width: 0;
           color: var(--text);
           text-align: left;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          overflow-wrap: anywhere;
+          white-space: normal;
         }
 
         .reserve-breakdown-count {
