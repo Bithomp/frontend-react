@@ -9061,7 +9061,7 @@ export default function Account({
                     const isSell = !!offer?.flags?.sell
                     const baseAmount = isSell ? offer?.TakerGets : offer?.TakerPays
                     const quoteAmount = isSell ? offer?.TakerPays : offer?.TakerGets
-                    const collapsedMainLabel = isSell ? ta('tabs.selling-lower') : ta('tabs.buying-lower')
+                    const collapsedMainLabel = isSell ? ta('tabs.selling') : ta('tabs.buying')
                     const collapsedPrimary = amountFormat(baseAmount, {
                       short: true,
                       maxFractionDigits: 2,
@@ -9125,7 +9125,7 @@ export default function Account({
                         {isExpanded && (
                           <div className="asset-details">
                             <div className="detail-row">
-                              <span>{isSell ? `${ta('tabs.selling-lower')}:` : `${ta('labels.wants-to-buy')}:`}</span>
+                              <span>{isSell ? `${ta('tabs.selling')}:` : `${ta('labels.wants-to-buy')}:`}</span>
                               <span>
                                 {amountFormat(isSell ? offer?.TakerGets : offer?.TakerPays, {
                                   icon: true,
