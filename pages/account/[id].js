@@ -73,18 +73,15 @@ const uniqueNftsById = (nfts) => {
 const enrichNftsWithLoadedDetails = (nfts, loadedNfts) => {
   if (!Array.isArray(nfts) || !Array.isArray(loadedNfts) || loadedNfts.length === 0) return nfts
 
-  const loadedById = new Map(
-    loadedNfts
-      .map((nft) => [nftTokenIdFromData(nft), nft])
-      .filter(([nftId]) => !!nftId)
-  )
+  const loadedById = new Map(loadedNfts.map((nft) => [nftTokenIdFromData(nft), nft]).filter(([nftId]) => !!nftId))
 
   return nfts.map((nft) => {
     const loadedNft = loadedById.get(nftTokenIdFromData(nft))
     if (!loadedNft) return nft
 
     const buyOffers = Array.isArray(nft?.buyOffers) && nft.buyOffers.length > 0 ? nft.buyOffers : loadedNft.buyOffers
-    const sellOffers = Array.isArray(nft?.sellOffers) && nft.sellOffers.length > 0 ? nft.sellOffers : loadedNft.sellOffers
+    const sellOffers =
+      Array.isArray(nft?.sellOffers) && nft.sellOffers.length > 0 ? nft.sellOffers : loadedNft.sellOffers
 
     return {
       ...loadedNft,
@@ -1473,8 +1470,7 @@ export default function Account({
             ? burnedNftsCount
             : 0
   const shouldShowNftSearch =
-    nftSearchBaseCount > 0 &&
-    (nftSearchBaseCount > NFT_INITIAL_LIMIT || !!nftMarkers[nftTab] || !!nftSearchQuery)
+    nftSearchBaseCount > 0 && (nftSearchBaseCount > NFT_INITIAL_LIMIT || !!nftMarkers[nftTab] || !!nftSearchQuery)
   const activeNftList =
     nftTab === 'owned'
       ? nftSearchActive && nftSearchReady
@@ -1730,8 +1726,7 @@ export default function Account({
   const activatedAccountsCountText = shortNiceNumber(activatedAccountsCount, 0, 1)
   const activatedAccountsCountFullText = niceNumber(activatedAccountsCount, null, null, 15)
   const showActivatedAccountsCountTooltip = activatedAccountsCountText !== activatedAccountsCountFullText
-  const activatedAccountsSpentText =
-    `${shortNiceNumber(activatedAccountsSpent, 0, 1)} ${nativeCurrency}`
+  const activatedAccountsSpentText = `${shortNiceNumber(activatedAccountsSpent, 0, 1)} ${nativeCurrency}`
   const activatedAccountsSpentFullText = `${niceNumber(activatedAccountsSpent, null, null, 15)} ${nativeCurrency}`
   const showActivatedAccountsSpentTooltip = activatedAccountsSpentText !== activatedAccountsSpentFullText
   const hasColumn4ObjectSections =
@@ -1749,7 +1744,8 @@ export default function Account({
     hasOutgoingPaychannels ||
     hasActivatedAccountsSection
   const showObjectsLoadStatus =
-    !!data?.ledgerInfo?.activated && (objectsLoading || accountObjectsLoadingMore || !!objectsError || !!accountObjectsMarker)
+    !!data?.ledgerInfo?.activated &&
+    (objectsLoading || accountObjectsLoadingMore || !!objectsError || !!accountObjectsMarker)
 
   useEffect(() => {
     if (refreshPageRef.current === refreshPage) return
@@ -2539,8 +2535,7 @@ export default function Account({
     setReceivedChecks(accountObjectWithChecks.filter((node) => node.Destination === data.address))
     setSentChecks(accountObjectWithChecks.filter((node) => node.Account === data.address))
 
-    const accountObjectWithPaychannels =
-      accountObjects.filter((node) => node.LedgerEntryType === 'PayChannel') || []
+    const accountObjectWithPaychannels = accountObjects.filter((node) => node.LedgerEntryType === 'PayChannel') || []
     setOutgoingPaychannels(accountObjectWithPaychannels.filter((node) => node.Account === data.address))
     setIncomingPaychannels(accountObjectWithPaychannels.filter((node) => node.Destination === data.address))
 
@@ -6123,9 +6118,7 @@ export default function Account({
                       {nftSearchActive && nftSearchReady && !nftSearchLoading && (
                         <div className="token-search-count">
                           {ta('counts.nfts-found', {
-                            count: nftSearchMarker
-                              ? `${nftSearchResults.length}+`
-                              : nftSearchResults.length
+                            count: nftSearchMarker ? `${nftSearchResults.length}+` : nftSearchResults.length
                           })}
                         </div>
                       )}
@@ -6850,9 +6843,7 @@ export default function Account({
                       const removedAccountDetails = isAccountDeleteTx
                         ? txdata?.specification?.source?.addressDetails
                         : null
-                      const removedAccountDestinationAddress = isAccountDeleteTx
-                        ? tx?.Destination || null
-                        : null
+                      const removedAccountDestinationAddress = isAccountDeleteTx ? tx?.Destination || null : null
                       const removedAccountDestinationDetails = isAccountDeleteTx
                         ? txdata?.specification?.destination?.addressDetails
                         : null
@@ -7172,10 +7163,10 @@ export default function Account({
                             ? canceledNftOfferOwnerAddress || counterparty
                             : cancelNftInitiatorAddress || counterparty
                           : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                          ? nftBuyerAddress
-                          : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                            ? nftSellerAddress
-                            : counterparty
+                            ? nftBuyerAddress
+                            : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                              ? nftSellerAddress
+                              : counterparty
                       const resolvedCounterpartyDetails = isAccountDeleteTx
                         ? isSource
                           ? removedAccountDestinationDetails
@@ -7185,10 +7176,10 @@ export default function Account({
                             ? canceledNftOfferOwnerDetails || counterpartyDetails
                             : cancelNftInitiatorDetails || counterpartyDetails
                           : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                          ? nftBuyerDetails
-                          : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                            ? nftSellerDetails
-                            : counterpartyDetails
+                            ? nftBuyerDetails
+                            : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                              ? nftSellerDetails
+                              : counterpartyDetails
                       const trustSetSpecification = txdata?.specification
                       const trustSetToken =
                         tx?.TransactionType === 'TrustSet' && tx?.LimitAmount
@@ -7284,13 +7275,13 @@ export default function Account({
                                 ? isSource
                                   ? ta('labels.from')
                                   : ta('labels.by')
-                              : isCreateNftOfferTx && isSource && !!counterparty
-                                ? ta('phrases.for')
-                                : isBrokeredNftAccept
-                                  ? ta('labels.by-broker')
-                                  : isSource
-                                    ? ta('labels.to')
-                                    : ta('labels.from')
+                                : isCreateNftOfferTx && isSource && !!counterparty
+                                  ? ta('phrases.for')
+                                  : isBrokeredNftAccept
+                                    ? ta('labels.by-broker')
+                                    : isSource
+                                      ? ta('labels.to')
+                                      : ta('labels.from')
                         : null
                       const accountSetSpec = txdata?.specification || {}
                       const accountSetSettings = outcome?.settingsChanges || {}
@@ -7442,21 +7433,16 @@ export default function Account({
                         if (isAcceptNftOfferTx) {
                           if (!isSuccessful) return ta('transactions.nft-offer-accept')
                           if (nftViewerRole === 'seller')
-                            return isFreeNftAccept
-                              ? ta('transactions.transferred-nft')
-                              : ta('transactions.sold-nft')
+                            return isFreeNftAccept ? ta('transactions.transferred-nft') : ta('transactions.sold-nft')
                           if (nftViewerRole === 'buyer')
-                            return isFreeNftAccept
-                              ? ta('transactions.received-nft')
-                              : ta('transactions.bought-nft')
+                            return isFreeNftAccept ? ta('transactions.received-nft') : ta('transactions.bought-nft')
 
                           const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
                           if (amountChangeValue > 0) return ta('transactions.sold-nft')
                           if (amountChangeValue < 0) return ta('transactions.bought-nft')
 
                           if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
-                            if (nftDestination?.address === data?.address)
-                              return ta('transactions.received-nft-offer')
+                            if (nftDestination?.address === data?.address) return ta('transactions.received-nft-offer')
                             return ta('transactions.nft-transfer')
                           }
 
@@ -7601,13 +7587,9 @@ export default function Account({
                         nftMintSellOfferDisplay
                       const fallbackTxTypeLabel = getTransactionTypeLabel(txType)
                       const escrowCreateCollapsedLabel =
-                        txType === 'EscrowCreate'
-                          ? ta('transactions.escrow-created')
-                          : null
+                        txType === 'EscrowCreate' ? ta('transactions.escrow-created') : null
                       const checkCreateCollapsedLabel =
-                        txType === 'CheckCreate'
-                          ? ta('transactions.check-created')
-                          : null
+                        txType === 'CheckCreate' ? ta('transactions.check-created') : null
                       const checkActionCollapsedLabel =
                         txType === 'CheckCash'
                           ? ta('transactions.check-redeemed')
@@ -7623,9 +7605,7 @@ export default function Account({
                           : ta('transactions.regular-key-removed')
                         : null
                       const paymentCollapsedLabel =
-                        txType === 'Payment' && counterparty
-                          ? ta('transactions.payment')
-                          : null
+                        txType === 'Payment' && counterparty ? ta('transactions.payment') : null
                       const accountDeleteCollapsedLabel = isAccountDeleteTx
                         ? isSource
                           ? ta('transactions.deleted-account')
@@ -7704,11 +7684,13 @@ export default function Account({
                               aria-label={ta('aria.open-transaction')}
                               onClick={(event) => event.stopPropagation()}
                             >
-                              <MdOpenInNew aria-hidden="true" />
+                              <MdOpenInNew aria-hidden="true" style={{ marginBottom: -1.5 }} />
                               <span className="tooltiptext left below no-brake">{ta('aria.open-transaction')}</span>
                             </Link>
                           )}
-                          {tx?.date ? timeOrDate(tx.date, 'ripple', { timeOnlyWithinHours: 24, dateWithTime: true }) : '-'}
+                          {tx?.date
+                            ? timeOrDate(tx.date, 'ripple', { timeOnlyWithinHours: 24, dateWithTime: true })
+                            : '-'}
                         </span>
                       )
 
@@ -7821,9 +7803,7 @@ export default function Account({
                                         className={`tx-counterparty-inline ${isNftOfferTx ? 'tx-nft-counterparty-inline' : ''}`}
                                       >
                                         {directionLabel && (
-                                          <span className="tx-counterparty-label">
-                                            {directionLabel}{' '}
-                                          </span>
+                                          <span className="tx-counterparty-label">{directionLabel} </span>
                                         )}
                                         <AddressWithIconInline
                                           data={{
@@ -11394,7 +11374,6 @@ export default function Account({
         .tx-asset-logo {
           display: flex;
           align-items: flex-start;
-          gap: 8px;
           min-width: 0;
         }
 
@@ -11504,7 +11483,7 @@ export default function Account({
           margin-left: 0;
           display: inline-flex;
           align-items: center;
-          gap: 5px;
+          gap: 2px;
           color: var(--text-secondary);
           font-size: 11px;
           line-height: 1;
@@ -12288,7 +12267,7 @@ export default function Account({
 
         .asset-item {
           --asset-card-padding-y: 6px;
-          --asset-card-padding-x: 12px;
+          --asset-card-padding-x: 6px;
           --asset-card-body-min-height: 46px;
           background: var(--background-input);
           border-radius: 6px;
