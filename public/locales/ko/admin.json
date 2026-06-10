@@ -128,6 +128,10 @@
   "profile": {
     "email": "이메일",
     "until": "까지",
+    "subscription-status": "Bithomp Pro",
+    "subscription-active": "활성",
+    "subscription-inactive": "비활성",
+    "subscription-buy": "구독 구매",
     "priority-support-before": "우선 지원을 받으려면 제목을 사용하세요.",
     "priority-support-after": "우리에게 이메일을 보낼 때",
     "guest": {

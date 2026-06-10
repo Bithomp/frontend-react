@@ -128,6 +128,10 @@
   "profile": {
     "email": "Email",
     "until": "до",
+    "subscription-status": "Bithomp Pro",
+    "subscription-active": "Активна",
+    "subscription-inactive": "Не активна",
+    "subscription-buy": "Купить подписку",
     "priority-support-before": "Для приоритетной поддержки используйте тему",
     "priority-support-after": "при отправке письма на",
     "guest": {
@@ -230,7 +234,7 @@
     "balance-history": "История баланса",
     "bot-settings": "Настройки бота",
     "no-verified-addresses": "Пока нет подтвержденных адресов.",
-    "activate-analysis-before": "Активируйте историю баланса через",
+    "activate-analysis-before": "Включите историю баланса через",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Достигнут лимит адресов для вашего тарифа.",
     "add-limit-support": "Если вам нужно больше адресов, напишите нам на",

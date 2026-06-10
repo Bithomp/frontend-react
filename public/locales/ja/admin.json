@@ -128,6 +128,10 @@
   "profile": {
     "email": "メール",
     "until": "まで",
+    "subscription-status": "Bithomp Pro",
+    "subscription-active": "有効",
+    "subscription-inactive": "無効",
+    "subscription-buy": "サブスクリプションを購入",
     "priority-support-before": "優先サポートについては、件名を使用してください",
     "priority-support-after": "私たちに電子メールを送信するとき",
     "guest": {

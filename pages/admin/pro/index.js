@@ -222,7 +222,7 @@ export default function Pro({
 
   const verifiedAddressCount = Array.isArray(verifiedAddresses) ? verifiedAddresses.length : 0
   const addressLimitReached = verifiedAddressCount >= PRO_ADDRESS_LIMIT
-  const canAddAddress = !subscriptionExpired && !addressLimitReached
+  const canAddAddress = !addressLimitReached
 
   const addressButtons = (address, options) => {
     return (

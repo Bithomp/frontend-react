@@ -128,6 +128,10 @@
   "profile": {
     "email": "电子邮件",
     "until": "至",
+    "subscription-status": "Bithomp Pro",
+    "subscription-active": "已激活",
+    "subscription-inactive": "未激活",
+    "subscription-buy": "购买订阅",
     "priority-support-before": "如需优先支持，请在邮件主题中使用",
     "priority-support-after": "并发送邮件至",
     "guest": {
@@ -230,7 +234,7 @@
     "balance-history": "余额历史",
     "bot-settings": "机器人设置",
     "no-verified-addresses": "还没有已验证地址。",
-    "activate-analysis-before": "通过以下方式激活余额历史",
+    "activate-analysis-before": "通过以下方式启用余额历史",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "你已达到当前套餐的地址数量上限。",
     "add-limit-support": "如果你需要更多地址，请联系我们",

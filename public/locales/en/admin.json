@@ -128,6 +128,10 @@
   "profile": {
     "email": "Email",
     "until": "until",
+    "subscription-status": "Bithomp Pro",
+    "subscription-active": "Active",
+    "subscription-inactive": "Not active",
+    "subscription-buy": "Buy subscription",
     "priority-support-before": "For priority support, please use subject",
     "priority-support-after": "when sending us an e-mail to",
     "guest": {
@@ -230,7 +234,7 @@
     "balance-history": "Balance history",
     "bot-settings": "Bot settings",
     "no-verified-addresses": "No verified addresses yet.",
-    "activate-analysis-before": "Activate balance history with",
+    "activate-analysis-before": "Enable balance history with",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "You reached the address limit for your plan.",
     "add-limit-support": "If you need more addresses, contact us at",

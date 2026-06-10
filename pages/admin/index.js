@@ -2,10 +2,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import Mailto from 'react-protected-mailto'
+import Link from 'next/link'
 
 import SEO from '../../components/SEO'
 
 import { getIsSsrMobile } from '../../utils/mobile'
+import { fullDateAndTime } from '../../utils/format'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
 import styles from '@/styles/pages/admin.module.scss'
@@ -79,6 +81,7 @@ export default function Admin({
   const [profileLoaded, setProfileLoaded] = useState(false)
   const [billingCountry, setBillingCountry] = useState('')
   const [choosingBillingCountry, setChoosingBillingCountry] = useState(false)
+  const proSubscriptionActive = !!packageData && (!packageData.expiredAt || packageData.expiredAt * 1000 > Date.now())
 
   useEffect(() => {
     redirectTokenRun()
@@ -251,6 +254,31 @@ export default function Admin({
                         showLabel={false}
                         onSaved={(country) => setPartnerData((prev) => ({ ...(prev || {}), country }))}
                       />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="left">{t('profile.subscription-status', { ns: 'admin' })}</td>
+                    <td className="left">
+                      <b className={proSubscriptionActive ? 'green' : 'orange'}>
+                        {proSubscriptionActive
+                          ? t('profile.subscription-active', { ns: 'admin' })
+                          : t('profile.subscription-inactive', { ns: 'admin' })}
+                      </b>
+                      {proSubscriptionActive && packageData?.expiredAt && (
+                        <>
+                          {' '}
+                          {t('profile.until', { ns: 'admin' })}{' '}
+                          <span className="no-brake">{fullDateAndTime(packageData.expiredAt + 1, 'expiration')}</span>
+                        </>
+                      )}
+                      {!proSubscriptionActive && (
+                        <>
+                          {' '}
+                          <Link href="#bithomp-pro-subscription">
+                            {t('profile.subscription-buy', { ns: 'admin' })}
+                          </Link>
+                        </>
+                      )}
                     </td>
                   </tr>
                 </tbody>

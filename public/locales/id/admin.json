@@ -128,6 +128,10 @@
   "profile": {
     "email": "E-mail",
     "until": "hingga",
+    "subscription-status": "Bithomp Pro",
+    "subscription-active": "Aktif",
+    "subscription-inactive": "Tidak aktif",
+    "subscription-buy": "Beli langganan",
     "priority-support-before": "Untuk dukungan prioritas, silakan gunakan subjek",
     "priority-support-after": "saat mengirimi kami email ke",
     "guest": {

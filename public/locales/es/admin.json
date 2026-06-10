@@ -128,6 +128,10 @@
   "profile": {
     "email": "Correo electrónico",
     "until": "hasta",
+    "subscription-status": "Bithomp Pro",
+    "subscription-active": "Activa",
+    "subscription-inactive": "No activa",
+    "subscription-buy": "Comprar suscripción",
     "priority-support-before": "Para soporte prioritario, utilice el asunto",
     "priority-support-after": "al enviarnos un correo electrónico a",
     "guest": {
@@ -230,7 +234,7 @@
     "balance-history": "Historial de saldo",
     "bot-settings": "Configuración de robots",
     "no-verified-addresses": "Aún no hay direcciones verificadas.",
-    "activate-analysis-before": "Activar historial de saldo con",
+    "activate-analysis-before": "Habilitar historial de saldo con",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Alcanzaste el límite de direcciones para tu plan.",
     "add-limit-support": "Si necesitas más direcciones, contáctanos en",

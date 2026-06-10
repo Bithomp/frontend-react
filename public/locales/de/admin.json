@@ -128,6 +128,10 @@
   "profile": {
     "email": "E-Mail",
     "until": "bis",
+    "subscription-status": "Bithomp Pro",
+    "subscription-active": "Aktiv",
+    "subscription-inactive": "Nicht aktiv",
+    "subscription-buy": "Abonnement kaufen",
     "priority-support-before": "Für vorrangigen Support verwenden Sie bitte den Betreff",
     "priority-support-after": "wenn Sie uns eine E-Mail an senden",
     "guest": {
