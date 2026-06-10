@@ -237,6 +237,7 @@
     "activate-analysis-before": "Activez l’historique des soldes avec",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Vous avez atteint la limite d’adresses de votre forfait.",
+    "add-limit-pro": "Pour ajouter jusqu’à {{count}} adresses, abonnez-vous à",
     "add-limit-support": "Si vous avez besoin de plus d’adresses, contactez-nous à",
     "verify-first": "Vérifiez une adresse pour activer les outils Pro.",
     "address-placeholder": "Saisissez une adresse",

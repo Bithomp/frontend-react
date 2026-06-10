@@ -237,6 +237,7 @@
     "activate-analysis-before": "다음으로 잔액 내역을 활성화하세요.",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "요금제의 주소 한도에 도달했습니다.",
+    "add-limit-pro": "최대 {{count}}개의 주소를 추가하려면 구독하세요",
     "add-limit-support": "더 많은 주소가 필요하면 다음으로 문의하세요",
     "verify-first": "Pro 도구를 활성화하려면 주소를 확인하세요.",
     "address-placeholder": "주소를 입력하세요",

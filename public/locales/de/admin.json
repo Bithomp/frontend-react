@@ -237,6 +237,7 @@
     "activate-analysis-before": "Aktivieren Sie den Saldoverlauf mit",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Sie haben das Adresslimit für Ihren Plan erreicht.",
+    "add-limit-pro": "Um bis zu {{count}} Adressen hinzuzufügen, abonnieren Sie",
     "add-limit-support": "Wenn Sie weitere Adressen benötigen, kontaktieren Sie uns unter",
     "verify-first": "Überprüfen Sie eine Adresse, um Pro Tools zu aktivieren.",
     "address-placeholder": "Adresse eingeben",

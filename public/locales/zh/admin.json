@@ -237,6 +237,7 @@
     "activate-analysis-before": "通过以下方式启用余额历史",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "你已达到当前套餐的地址数量上限。",
+    "add-limit-pro": "如需添加最多 {{count}} 个地址，请订阅",
     "add-limit-support": "如果你需要更多地址，请联系我们",
     "verify-first": "验证地址以启用 Pro 工具。",
     "address-placeholder": "输入地址",

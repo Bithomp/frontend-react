@@ -51,8 +51,12 @@ const metamaskSign = async ({
   if (signRequestData?.signOnly) {
     setStatus('Sign the transaction in Metamask.')
     try {
-      //tx.Sequence = 1
-      //tx.Fee = '1'
+      if (!tx.Sequence) {
+        tx.Sequence = 1
+      }
+      if (!tx.Fee) {
+        tx.Fee = '1'
+      }
       const { tx_blob: blob } = await provider.request({
         method: 'wallet_invokeSnap',
         params: {

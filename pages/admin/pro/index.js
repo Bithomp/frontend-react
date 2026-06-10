@@ -21,6 +21,7 @@ import ProTabs from '../../../components/Tabs/ProTabs'
 import CheckBox from '../../../components/UI/CheckBox'
 
 const PRO_ADDRESS_LIMIT = 5
+const FREE_ADDRESS_LIMIT = 1
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -183,6 +184,10 @@ export default function Pro({
       setErrorMessage(t('pro.errors.no-email', { ns: 'admin' }))
       return
     }
+    if (addressLimitReached) {
+      setErrorMessage(t('pro.add-limit', { ns: 'admin', count: addressLimit }))
+      return
+    }
 
     const command = {
       action: 'addAddress',
@@ -221,7 +226,8 @@ export default function Pro({
   }
 
   const verifiedAddressCount = Array.isArray(verifiedAddresses) ? verifiedAddresses.length : 0
-  const addressLimitReached = verifiedAddressCount >= PRO_ADDRESS_LIMIT
+  const addressLimit = subscriptionExpired ? FREE_ADDRESS_LIMIT : PRO_ADDRESS_LIMIT
+  const addressLimitReached = verifiedAddressCount >= addressLimit
   const canAddAddress = !addressLimitReached
 
   const addressButtons = (address, options) => {
@@ -453,19 +459,31 @@ export default function Pro({
                 <div style={{ textAlign: 'left' }}>
                   {verifiedAddressCount > 0 ? (
                     <>
-                      {subscriptionExpired ? (
+                      {addressLimitReached ? (
+                        <>
+                          {t('pro.add-limit', { ns: 'admin', count: addressLimit })}
+                          {subscriptionExpired ? (
+                            <>
+                              <br />
+                              {t('pro.add-limit-pro', { ns: 'admin', count: PRO_ADDRESS_LIMIT })}{' '}
+                              <Link href="/admin#bithomp-pro-subscription">
+                                {t('pro.purchase-pro-link', { ns: 'admin' })}
+                              </Link>.
+                            </>
+                          ) : (
+                            <>
+                              <br />
+                              {t('pro.add-limit-support', { ns: 'admin' })}{' '}
+                              <Mailto email="pro@bithomp.com" headers={{ subject: 'Bithomp Pro address limit' }} />.
+                            </>
+                          )}
+                        </>
+                      ) : subscriptionExpired ? (
                         <>
                           {t('pro.activate-analysis-before', { ns: 'admin' })}{' '}
                           <Link href="/admin#bithomp-pro-subscription">
                             {t('pro.purchase-pro-link', { ns: 'admin' })}
                           </Link>.
-                        </>
-                      ) : addressLimitReached ? (
-                        <>
-                          {t('pro.add-limit', { ns: 'admin', count: PRO_ADDRESS_LIMIT })}
-                          <br />
-                          {t('pro.add-limit-support', { ns: 'admin' })}{' '}
-                          <Mailto email="pro@bithomp.com" headers={{ subject: 'Bithomp Pro address limit' }} />.
                         </>
                       ) : (
                         ''

@@ -237,6 +237,7 @@
     "activate-analysis-before": "Habilitar historial de saldo con",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Alcanzaste el límite de direcciones para tu plan.",
+    "add-limit-pro": "Para añadir hasta {{count}} direcciones, suscríbete a",
     "add-limit-support": "Si necesitas más direcciones, contáctanos en",
     "verify-first": "Verifique una dirección para habilitar las herramientas Pro.",
     "address-placeholder": "Introduzca la dirección",

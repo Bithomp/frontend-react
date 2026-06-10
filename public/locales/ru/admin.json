@@ -237,6 +237,7 @@
     "activate-analysis-before": "Включите историю баланса через",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Достигнут лимит адресов для вашего тарифа.",
+    "add-limit-pro": "Чтобы добавить до {{count}} адресов, оформите",
     "add-limit-support": "Если вам нужно больше адресов, напишите нам на",
     "verify-first": "Подтвердите адрес, чтобы включить Pro-инструменты.",
     "address-placeholder": "Введите адрес",

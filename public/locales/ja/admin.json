@@ -237,6 +237,7 @@
     "activate-analysis-before": "残高履歴を有効にする",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "プランのアドレス制限に達しました。",
+    "add-limit-pro": "最大{{count}}件のアドレスを追加するには登録してください",
     "add-limit-support": "さらにアドレスが必要な場合は、こちらまでご連絡ください",
     "verify-first": "Pro tools を有効にするにはアドレスを確認してください。",
     "address-placeholder": "住所を入力してください",
