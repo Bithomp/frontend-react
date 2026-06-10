@@ -182,8 +182,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         setData(newdata)
         setCountSellOffers(sellOffersCount)
         setCountBuyOffers(buyOffersCount)
-        setSellOffersFilter(defaultOffersFilter(sellOffersCount))
-        setBuyOffersFilter(defaultOffersFilter(buyOffersCount))
+        setSellOffersFilter('active-valid')
+        setBuyOffersFilter('active-valid')
         if (newdata.warnings?.length > 0) {
           updateWarningMessages(newdata.warnings)
         }
@@ -231,15 +231,6 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       }
     }
     return count
-  }
-
-  const defaultOffersFilter = (count) => {
-    if (count?.['active-valid'] > 0) return 'active-valid'
-    if (count?.['active-invalid'] > 0) return 'active-invalid'
-    if (count?.active > 0) return 'active'
-    if (count?.historical > 0) return 'historical'
-    if (count?.all > 0) return 'all'
-    return 'active-valid'
   }
 
   /*
@@ -704,6 +695,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         className="offer-history-filter-select"
         classNamePrefix="react-select"
         instanceId={'offer-history-filter-select-' + type}
+        menuPortalTarget={rendered ? document.body : null}
+        styles={{
+          menuPortal: (base) => ({ ...base, zIndex: 9999 })
+        }}
       />
     )
   }
