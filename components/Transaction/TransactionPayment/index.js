@@ -2,7 +2,7 @@ import { TData } from '../TData'
 import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
-  amountFormat,
+  AmountWithIcon,
   tokenToFiat,
   shortHash
 } from '../../../utils/format'
@@ -39,31 +39,59 @@ const shouldShowDestinationTagProblem = (deliveredAmount) => {
   return !!deliveredAmount.issuer
 }
 
-const PaymentAmountValue = ({ amount, pageFiatRate, selectedCurrency, showFiat, showIcon }) => (
-  <span className="payment-amount-line" suppressHydrationWarning>
-    <span className="payment-delivered-amount" suppressHydrationWarning>
-      {amountFormat(amount, {
-        precise: 'nice',
-        withIssuer: false,
-        noCurrency: true,
-        icon: showIcon,
-        iconSize: showIcon ? PAYMENT_DELIVERED_AMOUNT_ICON_SIZE : undefined,
-        bold: true,
-        color: 'green'
-      })}
-      {' '}
+const PaymentTokenAmount = ({
+  amount,
+  pageFiatRate,
+  selectedCurrency,
+  showFiat = false,
+  showIcon,
+  iconSize = PAYMENT_CHANGE_AMOUNT_ICON_SIZE,
+  color,
+  bold = false,
+  precise
+}) => (
+  <span className="payment-token-amount" suppressHydrationWarning>
+    <span className="payment-token-amount-main">
+      <AmountWithIcon
+        amount={amount}
+        options={{
+          precise,
+          withIssuer: false,
+          noCurrency: true,
+          icon: showIcon,
+          iconSize: showIcon ? iconSize : undefined,
+          bold,
+          color
+        }}
+      />
       <LinkToken token={paymentTokenData(amount)} className="payment-token-link" />
     </span>
-    <span className="payment-fiat" suppressHydrationWarning>
-      {showFiat
-        ? tokenToFiat({
-            amount,
-            selectedCurrency,
-            fiatRate: pageFiatRate,
-            asText: true
-          })
-        : ''}
-    </span>
+    {showFiat && (
+      <span className="payment-fiat" suppressHydrationWarning>
+        {tokenToFiat({
+          amount,
+          selectedCurrency,
+          fiatRate: pageFiatRate,
+          asText: true
+        })}
+      </span>
+    )}
+  </span>
+)
+
+const PaymentAmountValue = ({ amount, pageFiatRate, selectedCurrency, showFiat, showIcon }) => (
+  <span className="payment-amount-line" suppressHydrationWarning>
+    <PaymentTokenAmount
+      amount={amount}
+      pageFiatRate={pageFiatRate}
+      selectedCurrency={selectedCurrency}
+      showFiat={showFiat}
+      showIcon={showIcon}
+      iconSize={PAYMENT_DELIVERED_AMOUNT_ICON_SIZE}
+      precise="nice"
+      bold
+      color="green"
+    />
   </span>
 )
 
@@ -237,82 +265,48 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         {(isConvertion || iouPayment) && !isInsufFee && sourceBalanceChangesList?.length > 0 && (
           <>
             <tr className="tx-payment-extra-row" suppressHydrationWarning>
+              <TData>{isConvertion ? 'Exchanged' : 'Sender spent'}</TData>
               <TData>
-                {isConvertion ? 'Exchanged' : 'Sender spent'}
-                {sourceBalanceChangesList.map((change, index) => {
-                  return <br key={index} />
-                })}
-              </TData>
-              <TData>
-                {sourceBalanceChangesList.map((change, index) => (
-                    <div key={index}>
-                    {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
-                        withIssuer: false,
-                        noCurrency: true,
-                        icon: isHydrated,
-                        iconSize: isHydrated ? PAYMENT_CHANGE_AMOUNT_ICON_SIZE : undefined,
-                        bold: true,
-                        color: 'direction'
-                      })}
-                      {' '}
-                      <LinkToken
-                        token={paymentTokenData(optionalAbsPaymentAmount(change, isConvertion))}
-                        className="payment-token-link"
-                      />
-                      {isHydrated
-                        ? tokenToFiat({
-                            amount: optionalAbsPaymentAmount(change, isConvertion),
-                          selectedCurrency,
-                          fiatRate: pageFiatRate,
-                          asText: true
-                        })
-                      : ''}
-                  </div>
-                ))}
+                <div className="payment-amount-stack">
+                  {sourceBalanceChangesList.map((change, index) => (
+                    <PaymentTokenAmount
+                      key={index}
+                      amount={optionalAbsPaymentAmount(change, isConvertion)}
+                      pageFiatRate={pageFiatRate}
+                      selectedCurrency={selectedCurrency}
+                      showFiat={isHydrated}
+                      showIcon={isHydrated}
+                      bold
+                      color="direction"
+                    />
+                  ))}
+                </div>
               </TData>
             </tr>
             {sourceBalanceChangesList?.length === 2 && showExchangeRate && (
               <tr className="tx-payment-extra-row" suppressHydrationWarning>
                 <TData>Exchange rate</TData>
                 <TData>
-                  {amountFormat(
-                    {
-                      ...sourceBalanceChangesList[0],
-                      value: 1
-                    },
-                    {
-                      withIssuer: false,
-                      noCurrency: true,
-                        icon: isHydrated,
-                        iconSize: isHydrated ? PAYMENT_CHANGE_AMOUNT_ICON_SIZE : undefined,
-                        precise: 'nice'
-                    }
-                  )}
-                  {' '}
-                  <LinkToken
-                    token={paymentTokenData(sourceBalanceChangesList[0])}
-                    className="payment-token-link"
-                  />{' '}
-                  ={' '}
-                  {amountFormat(
-                    {
-                      ...sourceBalanceChangesList[1],
-                      value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                    },
-                    {
-                      precise: 'nice',
-                      withIssuer: false,
-                      noCurrency: true,
-                      icon: isHydrated,
-                      iconSize: isHydrated ? PAYMENT_CHANGE_AMOUNT_ICON_SIZE : undefined,
-                      bold: true
-                    }
-                  )}
-                  {' '}
-                  <LinkToken
-                    token={paymentTokenData(sourceBalanceChangesList[1])}
-                    className="payment-token-link"
-                  />
+                  <span className="payment-exchange-rate">
+                    <PaymentTokenAmount
+                      amount={{
+                        ...sourceBalanceChangesList[0],
+                        value: 1
+                      }}
+                      showIcon={isHydrated}
+                      precise="nice"
+                    />
+                    <span className="payment-exchange-rate-equals">=</span>
+                    <PaymentTokenAmount
+                      amount={{
+                        ...sourceBalanceChangesList[1],
+                        value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                      }}
+                      showIcon={isHydrated}
+                      precise="nice"
+                      bold
+                    />
+                  </span>
                 </TData>
               </tr>
             )}
@@ -328,22 +322,40 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           gap: 2px 9px;
           min-width: 0;
         }
-        :global(.payment-delivered-amount) {
+        :global(.payment-amount-stack) {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+          min-width: 0;
+        }
+        :global(.payment-token-amount) {
+          display: inline-flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 2px 4px;
+          min-width: 0;
+          line-height: 1.2;
+          overflow-wrap: anywhere;
+        }
+        :global(.payment-token-amount-main) {
           min-width: 0;
           display: inline-flex;
           align-items: center;
           gap: 3px;
-          font-size: 20px;
-          line-height: 1.2;
-          overflow-wrap: anywhere;
         }
-        :global(.payment-delivered-amount > span) {
+        :global(.payment-amount-line .payment-token-amount-main) {
+          font-size: 20px;
+        }
+        :global(.payment-exchange-rate) {
           display: inline-flex;
           align-items: center;
+          flex-wrap: wrap;
+          gap: 4px 8px;
+          min-width: 0;
         }
-        :global(.payment-delivered-amount > span > .entity-icon-outline) {
-          margin-top: 0 !important;
-          vertical-align: middle !important;
+        :global(.payment-exchange-rate-equals) {
+          color: var(--text-main);
         }
         :global(.payment-account-cell) {
           min-width: 0;

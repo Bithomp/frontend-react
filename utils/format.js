@@ -945,8 +945,8 @@ export const amountFormat = (amount, options = {}) => {
 
   let showIcon = options?.icon || false
 
-  // do not show icons for native currency
-  if (showIcon && originalCurrency === nativeCurrency) {
+  // do not show icons for native currency unless the caller needs a stable amount icon slot.
+  if (showIcon && originalCurrency === nativeCurrency && !options.nativeIcon) {
     showIcon = false
   }
 
@@ -1023,6 +1023,16 @@ export const amountFormat = (amount, options = {}) => {
 
 export const amountFormatNode = (amount, options) => {
   return <span suppressHydrationWarning>{amountFormat(amount, options)}</span>
+}
+
+export const AmountWithIcon = ({ amount, options = {}, className = '' }) => {
+  const classes = ['amount-with-icon', className].filter(Boolean).join(' ')
+
+  return (
+    <span className={classes} suppressHydrationWarning>
+      {amountFormat(amount, { icon: true, nativeIcon: true, ...options })}
+    </span>
+  )
 }
 
 export const lpTokenName = (data) => {

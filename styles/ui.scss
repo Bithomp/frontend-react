@@ -679,6 +679,26 @@ body.dark {
   box-sizing: border-box;
 }
 
+.amount-with-icon {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  line-height: 1.2;
+  vertical-align: middle;
+
+  > .no-brake {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .entity-icon-outline {
+    flex: 0 0 auto;
+    margin-top: 0 !important;
+    vertical-align: middle !important;
+  }
+}
+
 .button-action {
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
