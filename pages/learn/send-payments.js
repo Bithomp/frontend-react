@@ -224,7 +224,7 @@ export default function SendPayments() {
                       width={20}
                       height={20}
                     />
-                    <span>WalletConnect (e.g., Bifrost, UpHODL, Girin)</span>
+                    <span>WalletConnect (e.g., Bifrost, Girin)</span>
                   </li>
                 )}
 

@@ -48,7 +48,6 @@ const detectWalletConnectWalletId = (session) => {
 
   if (haystack.includes('bifrost')) return 'bifrost'
   if (haystack.includes('girin')) return 'girin'
-  if (haystack.includes('uphodl') || haystack.includes('uphold')) return 'uphodl'
   if (haystack.includes('joey')) return 'joey'
 
   return null

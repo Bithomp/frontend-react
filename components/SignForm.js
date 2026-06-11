@@ -92,8 +92,7 @@ let transactionFetchTries = 0
 const wcWalletIcons = [
   { id: 'joey', name: 'Joey', src: '/images/wallets/square-logos/joey.png' },
   { id: 'bifrost', name: 'Bifrost', src: '/images/wallets/square-logos/bifrost.png' },
-  { id: 'girin', name: 'Girin', src: '/images/wallets/square-logos/girin.png' },
-  { id: 'uphodl', name: 'Uphodl', src: '/images/wallets/square-logos/uphodl.png' }
+  { id: 'girin', name: 'Girin', src: '/images/wallets/square-logos/girin.png' }
 ]
 
 const WalletTile = memo(function WalletTile({
@@ -1736,7 +1735,7 @@ export default function SignForm({
                       {/* available only for mainnet and testnet */}
                       {(networkId === 0 || networkId === 1) && (
                         <WalletTile
-                          name={isMobile ? 'WalletConnect' : 'Joey, Bifrost, Girin, UpHODL'}
+                          name={isMobile ? 'WalletConnect' : 'Joey, Bifrost, Girin'}
                           alt="WalletConnect"
                           onClick={() => txSend({ wallet: 'walletconnect' })}
                           disabled={false}

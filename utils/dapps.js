@@ -81,7 +81,7 @@ export const DAPPS_META = [
       name: 'Bithomp',
       url: 'bithomp.com',
       wallets: ['xaman', 'ledger', 'dcent', 'xyra', 'crossmark', 'gemwallet', 'metamask'],
-      walletconnect: ['joey', 'bifrost', 'girin', 'uphodl'],
+      walletconnect: ['joey', 'bifrost', 'girin'],
       x: 'bithomp',
       discord: 'invite/ZahGJ29WEs',
       instagram: 'bithomp',

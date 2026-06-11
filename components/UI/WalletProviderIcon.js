@@ -4,8 +4,7 @@ import { IoWalletOutline } from 'react-icons/io5'
 const WALLETCONNECT_LOGOS = {
   joey: 'joey.png',
   bifrost: 'bifrost.png',
-  girin: 'girin.png',
-  uphodl: 'uphodl.png'
+  girin: 'girin.png'
 }
 
 export default function WalletProviderIcon({
