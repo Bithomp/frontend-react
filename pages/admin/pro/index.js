@@ -278,7 +278,8 @@ export default function Pro({
           <>
             <h4 className="center">{t('pro.verified-addresses', { ns: 'admin' })}</h4>
             <div>
-              {t('pro.features-intro', { ns: 'admin' })}
+              <p>{t('pro.verification-intro', { ns: 'admin' })}</p>
+              <p>{t('pro.features-intro', { ns: 'admin' })}</p>
               <ul>
                 <li>{t('pro.features.history', { ns: 'admin' })}</li>
                 <li>
@@ -294,6 +295,7 @@ export default function Pro({
                   </li>
                 )}
               </ul>
+              <p>{t('pro.features-note', { ns: 'admin' })}</p>
             </div>
             <br />
 

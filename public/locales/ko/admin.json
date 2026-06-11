@@ -223,7 +223,9 @@
   },
   "pro": {
     "verified-addresses": "확인된 주소",
-    "features-intro": "확인된 주소는 다음 Pro 기능을 잠금 해제합니다.",
+    "verification-intro": "확인된 주소는 해당 지갑을 Pro 서비스용으로 준비합니다. 확인된 지갑으로 로그인하는 기능은 나중에 제공됩니다.",
+    "features-intro": "확인된 주소와 활성 Bithomp Pro 구독이 있으면 다음을 활성화할 수 있습니다.",
+    "features-note": "확인은 설정을 저장합니다. 보고서와 자동 작업은 Bithomp Pro가 활성화된 후 작동합니다.",
     "features": {
       "history": "잔액 내역 및 세금 내보내기.",
       "escrows": "Escrow 자동 완료.",
@@ -234,12 +236,12 @@
     "balance-history": "잔액 내역",
     "bot-settings": "봇 설정",
     "no-verified-addresses": "아직 확인된 주소가 없습니다.",
-    "activate-analysis-before": "다음으로 잔액 내역을 활성화하세요.",
+    "activate-analysis-before": "잔액 내역을 활성화하려면 구독하세요",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "요금제의 주소 한도에 도달했습니다.",
     "add-limit-pro": "최대 {{count}}개의 주소를 추가하려면 구독하세요",
     "add-limit-support": "더 많은 주소가 필요하면 다음으로 문의하세요",
-    "verify-first": "Pro 도구를 활성화하려면 주소를 확인하세요.",
+    "verify-first": "Pro 도구를 준비하려면 주소를 확인하세요.",
     "address-placeholder": "주소를 입력하세요",
     "address-name-placeholder": "개인 주소 이름",
     "guest": {

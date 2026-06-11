@@ -223,7 +223,9 @@
   },
   "pro": {
     "verified-addresses": "Direcciones verificadas",
-    "features-intro": "Las direcciones verificadas desbloquean estas funciones Pro:",
+    "verification-intro": "Una dirección verificada prepara esa billetera para los servicios Pro. El inicio de sesión con billeteras verificadas estará disponible más adelante.",
+    "features-intro": "Con una dirección verificada y una suscripción activa a Bithomp Pro, puedes habilitar:",
+    "features-note": "La verificación guarda la configuración; los informes y las acciones automáticas empiezan a funcionar cuando Bithomp Pro está activo.",
     "features": {
       "history": "Historial de saldos y exportación de impuestos.",
       "escrows": "Escrow de finalización automática.",
@@ -234,12 +236,12 @@
     "balance-history": "Historial de saldo",
     "bot-settings": "Configuración de robots",
     "no-verified-addresses": "Aún no hay direcciones verificadas.",
-    "activate-analysis-before": "Habilitar historial de saldo con",
+    "activate-analysis-before": "Habilita el historial de saldo suscribiéndote a",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Alcanzaste el límite de direcciones para tu plan.",
     "add-limit-pro": "Para añadir hasta {{count}} direcciones, suscríbete a",
     "add-limit-support": "Si necesitas más direcciones, contáctanos en",
-    "verify-first": "Verifique una dirección para habilitar las herramientas Pro.",
+    "verify-first": "Verifica una dirección para preparar las herramientas Pro.",
     "address-placeholder": "Introduzca la dirección",
     "address-name-placeholder": "Nombre de dirección privada",
     "guest": {

@@ -223,7 +223,9 @@
   },
   "pro": {
     "verified-addresses": "Verifizierte Adressen",
-    "features-intro": "Verifizierte Adressen schalten diese Pro-Funktionen frei:",
+    "verification-intro": "Eine verifizierte Adresse bereitet diese Wallet für Pro-Dienste vor. Die Anmeldung mit verifizierten Wallets wird später verfügbar sein.",
+    "features-intro": "Mit einer verifizierten Adresse und einem aktiven Bithomp Pro-Abonnement können Sie Folgendes aktivieren:",
+    "features-note": "Die Verifizierung speichert die Einrichtung; Berichte und automatische Aktionen funktionieren, sobald Bithomp Pro aktiv ist.",
     "features": {
       "history": "Saldenhistorie und Steuerexport.",
       "escrows": "Escrow automatisch fertigstellen.",
@@ -234,12 +236,12 @@
     "balance-history": "Bilanzverlauf",
     "bot-settings": "Bot-Einstellungen",
     "no-verified-addresses": "Noch keine verifizierten Adressen.",
-    "activate-analysis-before": "Aktivieren Sie den Saldoverlauf mit",
+    "activate-analysis-before": "Aktivieren Sie den Saldoverlauf durch ein Abonnement von",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Sie haben das Adresslimit für Ihren Plan erreicht.",
     "add-limit-pro": "Um bis zu {{count}} Adressen hinzuzufügen, abonnieren Sie",
     "add-limit-support": "Wenn Sie weitere Adressen benötigen, kontaktieren Sie uns unter",
-    "verify-first": "Überprüfen Sie eine Adresse, um Pro Tools zu aktivieren.",
+    "verify-first": "Verifizieren Sie eine Adresse, um Pro-Tools vorzubereiten.",
     "address-placeholder": "Adresse eingeben",
     "address-name-placeholder": "Privater Adressname",
     "guest": {

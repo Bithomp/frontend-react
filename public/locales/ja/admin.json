@@ -223,7 +223,9 @@
   },
   "pro": {
     "verified-addresses": "確認済みの住所",
-    "features-intro": "確認されたアドレスでは、次の Pro 機能のロックが解除されます。",
+    "verification-intro": "確認済みアドレスは、そのウォレットを Pro サービス用に準備します。確認済みウォレットでのログインは後日利用可能になります。",
+    "features-intro": "確認済みアドレスと有効な Bithomp Pro サブスクリプションがあると、次を有効にできます。",
+    "features-note": "確認により設定が保存されます。レポートと自動処理は Bithomp Pro が有効になると動作します。",
     "features": {
       "history": "履歴と税輸出のバランスをとる。",
       "escrows": "自動終了Escrow。",
@@ -234,12 +236,12 @@
     "balance-history": "残高履歴",
     "bot-settings": "ボットの設定",
     "no-verified-addresses": "確認されたアドレスはまだありません。",
-    "activate-analysis-before": "残高履歴を有効にする",
+    "activate-analysis-before": "残高履歴を有効にするには登録してください",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "プランのアドレス制限に達しました。",
     "add-limit-pro": "最大{{count}}件のアドレスを追加するには登録してください",
     "add-limit-support": "さらにアドレスが必要な場合は、こちらまでご連絡ください",
-    "verify-first": "Pro tools を有効にするにはアドレスを確認してください。",
+    "verify-first": "Pro tools の準備にはアドレスを確認してください。",
     "address-placeholder": "住所を入力してください",
     "address-name-placeholder": "プライベートアドレス名",
     "guest": {

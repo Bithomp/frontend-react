@@ -223,7 +223,9 @@
   },
   "pro": {
     "verified-addresses": "Alamat terverifikasi",
-    "features-intro": "Alamat terverifikasi membuka kunci fitur Pro ini:",
+    "verification-intro": "Alamat terverifikasi menyiapkan dompet tersebut untuk layanan Pro. Login dengan dompet terverifikasi akan tersedia nanti.",
+    "features-intro": "Dengan alamat terverifikasi dan langganan Bithomp Pro aktif, Anda dapat mengaktifkan:",
+    "features-note": "Verifikasi menyimpan pengaturan; laporan dan tindakan otomatis mulai berjalan setelah Bithomp Pro aktif.",
     "features": {
       "history": "Saldo sejarah dan pajak ekspor.",
       "escrows": "Escrow yang diselesaikan secara otomatis.",
@@ -234,12 +236,12 @@
     "balance-history": "Saldo sejarah",
     "bot-settings": "Pengaturan bot",
     "no-verified-addresses": "Belum ada alamat terverifikasi.",
-    "activate-analysis-before": "Aktifkan riwayat saldo dengan",
+    "activate-analysis-before": "Aktifkan riwayat saldo dengan berlangganan",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "Anda mencapai batas alamat untuk paket Anda.",
     "add-limit-pro": "Untuk menambahkan hingga {{count}} alamat, berlangganan",
     "add-limit-support": "Jika Anda membutuhkan lebih banyak alamat, hubungi kami di",
-    "verify-first": "Verifikasi alamat untuk mengaktifkan alat Pro.",
+    "verify-first": "Verifikasi alamat untuk menyiapkan alat Pro.",
     "address-placeholder": "Masukkan alamat",
     "address-name-placeholder": "Nama alamat pribadi",
     "guest": {
