@@ -579,6 +579,7 @@ export default function Notifications({
   const [notificationPrerequisitesLoaded, setNotificationPrerequisitesLoaded] = useState(false)
 
   const selectedChannel = useMemo(() => NOTIFICATION_CHANNELS[channelType], [channelType])
+  const selectedChannelFields = selectedChannel?.fields || []
   const selectedGuide = useMemo(() => setupGuides.find((guide) => guide.type === channelType), [channelType])
   const ruleChannelOptions = useMemo(
     () =>
@@ -621,6 +622,10 @@ export default function Notifications({
   const channelLimitReached = channels.length >= alertPlan.connections
   const ruleLimitReached = rules.length >= alertPlan.listeners
   const canShowAlertPlanUpgrade = showAlertPlanUpgrade(alertPlan, activeBotPackage)
+  const unsupportedChannelTypeMessage = () =>
+    t('notifications.errors.unsupported-channel-type', {
+      defaultValue: 'This channel type is no longer supported for editing.'
+    })
 
   useEffect(() => {
     if (!sessionToken) return
@@ -779,7 +784,11 @@ export default function Notifications({
       errors.name = t('notifications.errors.channel-name-required')
     }
 
-    selectedChannel.fields.forEach((field) => {
+    if (!selectedChannel) {
+      message = unsupportedChannelTypeMessage()
+    }
+
+    selectedChannelFields.forEach((field) => {
       const value = formData[field.id]?.trim()
       if (field.required && !value) {
         errors[field.id] = t('notifications.errors.field-required', { field: t(`notifications.fields.${field.id}`, { defaultValue: field.label }) })
@@ -874,6 +883,7 @@ export default function Notifications({
     event.preventDefault()
     setFormMessage('')
     if (!validateChannelForm()) return
+    if (!selectedChannel) return
 
     const payload = {
       type: channelType,
@@ -881,7 +891,7 @@ export default function Notifications({
       settings: {}
     }
 
-    selectedChannel.fields.forEach((field) => {
+    selectedChannelFields.forEach((field) => {
       payload.settings[field.id] = formData[field.id]?.trim() || ''
     })
 
@@ -985,6 +995,7 @@ export default function Notifications({
         <div className="notification-form-grid">
           {renderChannelTypePicker({ disabled: !!editingChannel, labelKey: 'notifications.channel-type-label' })}
           {renderSelectedChannelGuide()}
+          {!selectedChannel && <p className="red notification-field-wide">{unsupportedChannelTypeMessage()}</p>}
           <InputField
             className={channelType === NOTIFICATION_CHANNEL_TYPES.TWITTER ? 'notification-field-wide' : ''}
             error={formErrors.name}
@@ -996,7 +1007,7 @@ export default function Notifications({
             required
             value={formData.name || ''}
           />
-          {selectedChannel.fields.map((field) => (
+          {selectedChannelFields.map((field) => (
             <InputField
               error={formErrors[field.id]}
               helpText={t(`notifications.field-help.${field.id}`, { defaultValue: field.helpText })}
@@ -1014,7 +1025,7 @@ export default function Notifications({
         </div>
         {formMessage && <p className="red center">{formMessage}</p>}
         <div className="notification-form-actions">
-          <button className="button-action" disabled={savingChannel} type="submit">
+          <button className="button-action" disabled={savingChannel || !selectedChannel} type="submit">
             {savingChannel
               ? t('common.saving')
               : editingChannel
