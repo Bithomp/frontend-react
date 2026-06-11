@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer'
 import { stripText, shortName, webSiteName } from '.'
+import { encodeAccountID } from 'ripple-address-codec'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
@@ -11,6 +12,43 @@ export const partnerMarketplaces = {
   rhb5g4EHLHCiTAc8fJU5wk2jmsef2wNCxM: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 } //bidds testnet new
 }
 
+const parseNftokenId = (nftokenID) => {
+  if (!/^[A-Fa-f0-9]{64}$/.test(nftokenID || '')) return null
+
+  try {
+    const issuer = encodeAccountID(Buffer.from(nftokenID.slice(8, 48), 'hex'))
+    const scrambledTaxon = Number(BigInt('0x' + nftokenID.slice(48, 56)))
+    const sequence = BigInt('0x' + nftokenID.slice(56, 64))
+    const scramble = Number((384160001n * sequence + 2459n) % 4294967296n)
+    const taxon = (scrambledTaxon ^ scramble) >>> 0
+
+    return { issuer, taxon }
+  } catch {
+    return null
+  }
+}
+
+const biddsCollectionUrl = (offer) => {
+  const nft = offer?.nftoken || offer
+  const nftokenID = offer?.nftokenID || nft?.nftokenID || nft?.NFTokenID
+  const decoded = parseNftokenId(nftokenID)
+  const issuer = nft?.issuer || nft?.Issuer || offer?.issuer || offer?.Issuer || decoded?.issuer
+  const taxon =
+    nft?.nftokenTaxon ??
+    nft?.NFTokenTaxon ??
+    nft?.taxon ??
+    offer?.nftokenTaxon ??
+    offer?.NFTokenTaxon ??
+    offer?.taxon ??
+    decoded?.taxon
+
+  if (!issuer || (taxon !== 0 && !taxon) || !nftokenID) return ''
+
+  return `https://bidds.com/collection/${encodeURIComponent(issuer)}-${encodeURIComponent(taxon)}/?tokenId=${encodeURIComponent(
+    nftokenID
+  )}`
+}
+
 //identified NFT Market Places
 export const mpUrl = (offer) => {
   if (!offer || !offer.destination || !offer.destinationDetails) return ''
@@ -19,7 +57,7 @@ export const mpUrl = (offer) => {
   service = service.trim()
   let url = ''
   if (service === 'bidds') {
-    url = 'https://nft.bidds.com/nft/'
+    return biddsCollectionUrl(offer)
   } else if (service === 'xrp.cafe' || service === 'xrp.cafe (auction)') {
     url = 'https://xrp.cafe/nft/'
   } else if (service === 'xMart') {
