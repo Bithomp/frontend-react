@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
@@ -73,6 +73,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   const [currentTickSize, setCurrentTickSize] = useState(null)
   const [walletLocatorInput, setWalletLocatorInput] = useState('')
   const [currentWalletLocator, setCurrentWalletLocator] = useState('')
+  const previousAccountAddressRef = useRef(account?.address || '')
 
   useEffect(() => {
     return setupServicesTxSuccessFlashListener({
@@ -80,6 +81,17 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
       setErrorMessage
     })
   }, [])
+
+  useEffect(() => {
+    const currentAddress = account?.address || ''
+
+    if (previousAccountAddressRef.current !== currentAddress) {
+      setErrorMessage('')
+      setSuccessMessage('')
+    }
+
+    previousAccountAddressRef.current = currentAddress
+  }, [account?.address])
 
   // Validation states
   const [messageKeyValidation, setMessageKeyValidation] = useState({ isValid: true, message: '' })
