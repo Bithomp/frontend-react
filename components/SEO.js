@@ -11,6 +11,7 @@ export default function SEO({
   descriptionWithNetwork,
   image,
   twitterImage,
+  twitterCardType,
   page,
   websiteName,
   noindex
@@ -76,7 +77,7 @@ export default function SEO({
   let twitter = {
     handle: '@bithomp',
     site: '@xrplexplorer',
-    cardType: 'summary'
+    cardType: twitterCardType || 'summary'
   }
 
   let twitterImageUrl = null

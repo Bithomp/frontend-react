@@ -155,10 +155,19 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
   const transactionPreviewParams = {
     type: transactionSeo.type,
     status: transactionSeo.status,
-    v: '5'
+    v: '9'
   }
-  if (transactionSeo.amount) {
-    transactionPreviewParams.amount = transactionSeo.amount
+  if (transactionSeo.previewTitle) {
+    transactionPreviewParams.title = transactionSeo.previewTitle
+  }
+  if (transactionSeo.previewSubtitle) {
+    transactionPreviewParams.subtitle = transactionSeo.previewSubtitle
+  }
+  if (transactionSeo.previewAmount) {
+    transactionPreviewParams.amount = transactionSeo.previewAmount
+  }
+  if (transactionSeo.previewDetail) {
+    transactionPreviewParams.detail = transactionSeo.previewDetail
   }
   if (transactionSeo.image) {
     transactionPreviewParams.image = transactionSeo.image
@@ -242,6 +251,7 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
         description={transactionSeo.description}
         image={transactionPreviewImage}
         twitterImage={transactionTwitterImage}
+        twitterCardType="summary_large_image"
       />
       <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={effectiveSelectedCurrency} />
     </>
