@@ -14,6 +14,7 @@ import { IoIosRocket } from 'react-icons/io'
 import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
+import AccountContextChip from '../../components/Services/AccountContextChip'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -565,6 +566,7 @@ export default function TokenIssuerSettings({
         <div className="content-center">
           <ServicesTabs category="account" tab="token-issuer-settings" />
           <h1 className="center">{ts('token-issuer-settings-page.title')}</h1>
+          <AccountContextChip account={account} />
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -585,6 +587,7 @@ export default function TokenIssuerSettings({
         <div className="content-center">
           <ServicesTabs category="account" tab="token-issuer-settings" />
           <h1 className="center">{ts('token-issuer-settings-page.title')}</h1>
+          <AccountContextChip account={account} />
           <p className="center">
             {account?.address ? (
               ts('token-issuer-settings-page.introSignedIn', { explorerName })

@@ -17,6 +17,7 @@ import Link from 'next/link'
 import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
+import AccountContextChip from '../../components/Services/AccountContextChip'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -330,6 +331,7 @@ export default function AccountDelete({
       <div className="content-text content-center">
         <ServicesTabs category="account" tab="account-delete" />
         <h1 className="center red">{ts('account-delete.title')}</h1>
+        <AccountContextChip account={account} />
 
         {!txResult && accountData?.ledgerInfo?.deleted ? (
           <>

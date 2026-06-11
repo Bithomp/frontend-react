@@ -21,6 +21,7 @@ import { IoToggleOutline, IoDocumentTextOutline, IoPersonOutline } from 'react-i
 import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
+import AccountContextChip from '../../components/Services/AccountContextChip'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -936,6 +937,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
         <div className="content-center">
           <ServicesTabs category="account" tab="account-settings" />
           <h1 className="center">{ts('account-settings.title')}</h1>
+          <AccountContextChip account={account} />
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -953,6 +955,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
         <div className="content-center">
           <ServicesTabs category="account" tab="account-settings" />
           <h1 className="center">{ts('account-settings.title')}</h1>
+          <AccountContextChip account={account} />
           <p className="center">
             {account?.address ? (
               ts('account-settings.signedIn', { explorerName })

@@ -23,6 +23,7 @@ import { IoIosRocket } from 'react-icons/io'
 import { FaWallet } from 'react-icons/fa6'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
+import AccountContextChip from '../../components/Services/AccountContextChip'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -380,6 +381,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
         <div className="content-center">
           <ServicesTabs category="account" tab="account-control" />
           <h1 className="center">{ts('account-control.title')}</h1>
+          <AccountContextChip account={account} />
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -439,6 +441,7 @@ export default function AccountControl({ account, setSignRequest, sessionToken, 
       <div className="content-center">
         <ServicesTabs category="account" tab="account-control" />
         <h1 className="center">{ts('account-control.title')}</h1>
+        <AccountContextChip account={account} />
         <p className="center">
           {isSignedIn
             ? ts('account-control.introSignedIn', { explorerName })
