@@ -77,7 +77,8 @@ import {
   IoGitBranchOutline,
   IoRocketOutline,
   IoNotificationsOutline,
-  IoCopyOutline
+  IoCopyOutline,
+  IoAddOutline
 } from 'react-icons/io5'
 import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
@@ -911,6 +912,21 @@ export default function Header({
                         </div>
                       )
                     })}
+                    <span
+                      onClick={() => {
+                        setSignRequest(
+                          router.pathname.startsWith('/account')
+                            ? { redirect: 'account', connectAnotherWallet: true }
+                            : { connectAnotherWallet: true }
+                        )
+                      }}
+                      className="wallet-connect-row link"
+                    >
+                      <span className="wallet-connect-icon" aria-hidden="true">
+                        <IoAddOutline />
+                      </span>
+                      {t('menu.wallet.connect-another-wallet')}
+                    </span>
                   </>
                 )}
                 {!username && (
@@ -922,20 +938,6 @@ export default function Header({
                     </Link>
                   </>
                 )}
-                <hr className="hr" />
-                <span
-                  onClick={() => {
-                    setSignRequest(
-                      router.pathname.startsWith('/account')
-                        ? { redirect: 'account', connectAnotherWallet: true }
-                        : { connectAnotherWallet: true }
-                    )
-                  }}
-                  className="link"
-                >
-                  <IoWalletOutline className="menu-item-icon" />
-                  {t('menu.wallet.connect-another-wallet')}
-                </span>
               </>
             )}
 
