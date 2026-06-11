@@ -7,6 +7,18 @@ const WALLETCONNECT_LOGOS = {
   girin: 'girin.png'
 }
 
+export const walletProviderName = ({ provider, walletItem = null } = {}) => {
+  if (provider === 'walletconnect') return walletItem?.walletConnectWalletName || 'WalletConnect'
+  if (provider === 'metamask') return 'MetaMask'
+  if (provider === 'gemwallet') return 'GemWallet'
+  if (provider === 'xaman' || provider === 'xumm') return 'Xaman'
+  if (provider === 'ledgerwallet') return 'Ledger Wallet'
+  if (provider === 'crossmark') return 'Crossmark Wallet'
+  if (provider === 'xyra') return 'Xyra Wallet'
+  if (provider === 'dcent') return "D'Cent Wallet"
+  return provider || 'Wallet'
+}
+
 export default function WalletProviderIcon({
   provider,
   walletItem = null,

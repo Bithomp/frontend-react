@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarSrc, retinaImageSize } from '../../../utils'
 import { shortHash } from '../../../utils/format'
 
-import WalletProviderIcon from '../../UI/WalletProviderIcon'
+import WalletProviderIcon, { walletProviderName } from '../../UI/WalletProviderIcon'
 
 import { IoIosRocket } from 'react-icons/io'
 import { FaUserLarge } from 'react-icons/fa6'
@@ -55,7 +55,8 @@ import {
   IoLogoGithub,
   IoGitBranchOutline,
   IoRocketOutline,
-  IoNotificationsOutline
+  IoNotificationsOutline,
+  IoCopyOutline
 } from 'react-icons/io5'
 import { FaSignOutAlt, FaEye, FaUserCheck, FaUserFriends } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
@@ -67,6 +68,7 @@ import { FaCode } from 'react-icons/fa'
 import { IoLogoBuffer } from 'react-icons/io'
 import { MdGavel, MdMenuBook } from 'react-icons/md'
 import { AiFillStar } from 'react-icons/ai'
+import CopyButton from '../../UI/CopyButton'
 
 const Link = (props) => <NextLink {...props} prefetch={false} />
 
@@ -129,10 +131,75 @@ export default function MobileMenu({
     mobileMenuToggle()
   }
 
+  const connectedWalletsBlock = !!orderedWallets.length && (
+    <div className="mobile-wallets-block">
+      <div className="wallets-title center">{t('menu.wallet.connected-wallets')}</div>
+      {orderedWallets.map((walletItem) => {
+        const isActiveWallet = walletItem.id === activeWalletId
+        const providerName = walletProviderName({ provider: walletItem.provider, walletItem })
+
+        return (
+          <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
+            <span
+              className={
+                'link wallet-switch' +
+                (isActiveWallet && router.asPath.startsWith('/account/' + walletItem.address)
+                  ? ' wallet-switch-active'
+                  : '')
+              }
+              onClick={() => handleWalletSwitch(walletItem)}
+            >
+              <img
+                alt="avatar"
+                src={avatarSrc(walletItem.address, { size: retinaImageSize(20), hashIconZoom: 12 })}
+                width="20"
+                height="20"
+                className="wallet-row-avatar"
+              />
+              <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
+            </span>
+            <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>
+              {isActiveWallet && '●'}
+            </span>
+            <span className="wallet-provider-icon" aria-label={providerName} tabIndex={0}>
+              <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} showFallback />
+              <span className="wallet-provider-tooltip">{providerName}</span>
+            </span>
+            <span
+              className="wallet-copy"
+              onClick={(event) => {
+                event.stopPropagation()
+              }}
+            >
+              <CopyButton
+                text={walletItem.address}
+                buttonClassName="wallet-copy-button"
+                title={false}
+                tooltipClassName="wallet-copy-tooltip"
+              >
+                <IoCopyOutline aria-hidden="true" />
+              </CopyButton>
+            </span>
+            <span
+              className="link wallet-disconnect"
+              onClick={(event) => {
+                event.stopPropagation()
+                signOut(walletItem.id)
+              }}
+            >
+              <IoLogOutOutline aria-label={t('menu.wallet.disconnect')} />
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+
   return (
     <div className="mobile-menu" onClick={handleClick}>
       <div className="mobile-menu-wrap">
         <br />
+        {displayName && connectedWalletsBlock}
         <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
           {displayName ? (
             <>
@@ -174,52 +241,6 @@ export default function MobileMenu({
                 <IoSettingsOutline style={itemIconStyle} />
                 {t('menu.wallet.my-account-settings')}
               </Link>
-              {!!orderedWallets.length && (
-                <div className="mobile-wallets-block">
-                  <div className="wallets-title center">{t('menu.wallet.connected-wallets')}</div>
-                  {orderedWallets.map((walletItem) => {
-                    const isActiveWallet = walletItem.id === activeWalletId
-
-                    return (
-                      <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
-                        <span
-                          className={
-                            'link wallet-switch' +
-                            (isActiveWallet && router.asPath.startsWith('/account/' + walletItem.address)
-                              ? ' wallet-switch-active'
-                              : '')
-                          }
-                          onClick={() => handleWalletSwitch(walletItem)}
-                        >
-                          <img
-                            alt="avatar"
-                            src={avatarSrc(walletItem.address, { size: retinaImageSize(20), hashIconZoom: 12 })}
-                            width="20"
-                            height="20"
-                            className="wallet-row-avatar"
-                          />
-                          <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
-                          <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>
-                            {isActiveWallet && '●'}
-                          </span>
-                        </span>
-                        <span className="wallet-provider-icon">
-                          <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} showFallback />
-                        </span>
-                        <span
-                          className="link wallet-disconnect"
-                          onClick={(event) => {
-                            event.stopPropagation()
-                            signOut(walletItem.id)
-                          }}
-                        >
-                          <IoLogOutOutline aria-label={t('menu.wallet.disconnect')} />
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
               <span onClick={handleConnectAnotherWallet} className="mobile-menu-item link">
                 <IoWallet style={itemIconStyle} />
                 {t('menu.wallet.connect-another-wallet')}

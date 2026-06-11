@@ -76,11 +76,13 @@ import {
   IoLogoGithub,
   IoGitBranchOutline,
   IoRocketOutline,
-  IoNotificationsOutline
+  IoNotificationsOutline,
+  IoCopyOutline
 } from 'react-icons/io5'
 import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
-import WalletProviderIcon from '../../UI/WalletProviderIcon'
+import WalletProviderIcon, { walletProviderName } from '../../UI/WalletProviderIcon'
+import CopyButton from '../../UI/CopyButton'
 
 const Link = (props) => <NextLink {...props} prefetch={false} />
 
@@ -811,7 +813,7 @@ export default function Header({
             style={{ width: '100%', justifyContent: 'flex-end' }}
             containerStyle={{ minWidth: 215, textAlign: 'right' }}
           >
-            {(displayName || proLoggedIn) && <div style={{ minWidth: '250px' }}></div>}
+            {(displayName || proLoggedIn) && <div className="account-dropdown-spacer"></div>}
             {!displayName && (
               <span
                 onClick={() => {
@@ -851,6 +853,7 @@ export default function Header({
                     <div className="wallets-title center">{t('menu.wallet.connected-wallets')}</div>
                     {orderedWallets.map((walletItem) => {
                       const isActiveWallet = walletItem.id === activeWalletId
+                      const providerName = walletProviderName({ provider: walletItem.provider, walletItem })
 
                       return (
                         <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
@@ -887,8 +890,19 @@ export default function Header({
                               )}
                             </span>
                           </span>
-                          <span className="wallet-provider-icon">
+                          <span className="wallet-provider-icon" aria-label={providerName} tabIndex={0}>
                             <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} />
+                            <span className="wallet-provider-tooltip">{providerName}</span>
+                          </span>
+                          <span className="wallet-copy" onClick={(event) => event.stopPropagation()}>
+                            <CopyButton
+                              text={walletItem.address}
+                              buttonClassName="wallet-copy-button"
+                              title={false}
+                              tooltipClassName="wallet-copy-tooltip"
+                            >
+                              <IoCopyOutline aria-hidden="true" />
+                            </CopyButton>
                           </span>
                           <span className="link wallet-disconnect" onClick={() => signOut(walletItem.id)}>
                             <IoLogOutOutline aria-label={t('menu.wallet.disconnect')} />

@@ -171,14 +171,23 @@ header {
         border-left: 1px solid var(--background-menu);
       }
 
+      .account-dropdown & {
+        min-width: 330px;
+      }
+
+      .account-dropdown-spacer {
+        min-width: 330px;
+      }
+
       .wallet-row {
-        display: flex;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 28px 30px 34px;
         align-items: center;
+        min-height: 40px;
         border-right: 1px solid var(--background-menu);
         border-left: 1px solid var(--background-menu);
 
         .wallet-switch {
-          flex: 1;
           min-width: 0;
           display: flex;
           align-items: center;
@@ -199,7 +208,6 @@ header {
             color: #f7931a;
             font-size: 10px;
             line-height: 1;
-            margin-right: 10px;
             flex-shrink: 0;
             display: inline-flex;
             justify-content: center;
@@ -242,34 +250,21 @@ header {
               color: var(--text-contrast);
             }
           }
-
-          .wallet-provider-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 16px;
-            height: 16px;
-
-            .wallet-logo {
-              margin-right: 0;
-              display: block;
-            }
-          }
         }
 
-        .wallet-disconnect {
-          position: relative;
+        .wallet-provider-icon,
+        .wallet-copy {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 10px 12px;
-          font-size: 18px;
-          line-height: 1;
-          color: var(--text-contrast);
-          opacity: 0.88;
-          border: none;
+          width: 100%;
+          height: 100%;
+        }
 
-          .wallet-disconnect-tooltip {
+        .wallet-provider-icon {
+          position: relative;
+
+          .wallet-provider-tooltip {
             position: absolute;
             right: 100%;
             margin-right: 1px;
@@ -288,7 +283,138 @@ header {
             transition: opacity 0.15s ease;
           }
 
+          &:hover,
+          &:focus-within {
+            .wallet-provider-tooltip {
+              opacity: 1;
+              visibility: visible;
+            }
+          }
+        }
+
+        .wallet-provider-icon .wallet-logo {
+          margin-right: 0;
+          display: block;
+        }
+
+        .wallet-copy {
+          position: relative;
+
+          .tooltip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            word-break: keep-all;
+
+            &:hover,
+            &:focus-within {
+              z-index: 10;
+            }
+          }
+
+          .wallet-copy-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 100%;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--accent-link);
+            cursor: pointer;
+            font-size: 17px;
+            line-height: 1;
+            opacity: 0.88;
+
+            &:hover {
+              opacity: 1;
+            }
+          }
+
+          .tooltip .tooltiptext.wallet-copy-tooltip {
+            position: absolute;
+            z-index: 10;
+            right: 100%;
+            left: auto;
+            bottom: auto;
+            margin-right: 1px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            background: rgba(10, 14, 12, 0.95);
+            color: var(--text-contrast);
+            border: 1px solid var(--background-menu);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 1.2;
+            width: max-content;
+            max-width: none;
+            text-align: center;
+            box-shadow: none;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+
+            &:before,
+            &:after {
+              display: none;
+            }
+
+            &.is-visible {
+              opacity: 1;
+              visibility: visible;
+              transform: translateY(-50%);
+            }
+          }
+
+          .tooltip:hover .tooltiptext.wallet-copy-tooltip,
+          .tooltip:focus-within .tooltiptext.wallet-copy-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%);
+          }
+        }
+
+        .wallet-disconnect {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          padding: 0;
+          font-size: 18px;
+          line-height: 1;
+          color: var(--text-contrast);
+          opacity: 0.88;
+          border: none;
+
+          .wallet-disconnect-tooltip {
+            position: absolute;
+            z-index: 20;
+            right: 100%;
+            margin-right: 1px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            background: rgba(10, 14, 12, 0.95);
+            color: var(--text-contrast);
+            border: 1px solid var(--background-menu);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+          }
+
           &:hover {
+            z-index: 30;
             opacity: 1;
             color: var(--accent-link);
 
@@ -299,6 +425,8 @@ header {
           }
 
           &:focus-within {
+            z-index: 30;
+
             .wallet-disconnect-tooltip {
               opacity: 1;
               visibility: visible;
@@ -703,6 +831,7 @@ header {
 }
 
 .mobile-menu {
+  --mobile-menu-gutter: clamp(18px, 4vw, 28px);
   margin-top: 55px;
   background-color: var(--background-menu);
   height: calc(100% - 55px);
@@ -718,17 +847,18 @@ header {
   flex-direction: column;
 
   .mobile-menu-wrap {
-    padding-top: 5px;
+    padding-top: 12px;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom));
   }
 
   .mobile-menu-item {
     text-decoration: none;
     display: flex;
     align-items: center;
-    margin: 5px 40px;
+    margin: 4px var(--mobile-menu-gutter);
     color: #fff;
     font-size: 16px;
-    padding-left: 10px;
+    padding: 3px 0 3px 8px;
 
     .user-icon {
       width: 24px;
@@ -758,28 +888,49 @@ header {
   .mobile-wallets-block {
     display: grid;
     gap: 0;
-    margin: 4px 40px 8px;
-    border: 1px solid color-mix(in srgb, #fff 22%, transparent);
+    margin: 0 var(--mobile-menu-gutter) 18px;
+    border: 1px solid color-mix(in srgb, #fff 20%, transparent);
     border-radius: 8px;
     overflow: hidden;
+    background: color-mix(in srgb, #000 8%, transparent);
 
     .wallets-title {
-      padding: 8px 10px;
+      padding: 8px 12px 7px;
       color: #fff;
-      font-size: 13px;
-      opacity: 0.82;
-      border-bottom: 1px solid color-mix(in srgb, #fff 14%, transparent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      opacity: 0.7;
+      text-align: left;
+      text-transform: uppercase;
+      border-bottom: 1px solid color-mix(in srgb, #fff 10%, transparent);
     }
 
     .wallet-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 28px 34px;
+      grid-template-columns: minmax(0, 1fr) 14px 32px 34px 34px;
       align-items: center;
-      min-height: 42px;
+      min-height: 44px;
       border-top: 1px solid color-mix(in srgb, #fff 10%, transparent);
 
       &:first-of-type {
         border-top: 0;
+      }
+
+      &.active {
+        background: color-mix(in srgb, var(--accent-link) 18%, transparent);
+
+        .wallet-row-avatar {
+          border-color: #f7931a;
+          box-shadow:
+            0 0 0 1px rgba(0, 0, 0, 0.28),
+            0 0 0 2px color-mix(in srgb, #f7931a 35%, transparent);
+        }
+
+        .wallet-switch-label {
+          font-weight: 600;
+        }
       }
     }
 
@@ -787,9 +938,10 @@ header {
       display: flex;
       min-width: 0;
       align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
+      gap: 10px;
+      padding: 8px 10px 8px 12px;
       color: #fff;
+      font-size: 16px;
       line-height: 1.25;
     }
 
@@ -806,13 +958,18 @@ header {
       border-radius: 50%;
       border: 2px solid color-mix(in srgb, var(--accent-link) 55%, transparent);
       box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+      width: 24px;
+      height: 24px;
     }
 
     .wallet-active-indicator {
-      width: 10px;
-      flex-shrink: 0;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
       color: #f7931a;
-      font-size: 10px;
+      font-size: 11px;
       line-height: 1;
     }
 
@@ -820,16 +977,127 @@ header {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      height: 100%;
+      position: relative;
+
+      .wallet-provider-tooltip {
+        position: absolute;
+        right: 100%;
+        margin-right: 1px;
+        top: 50%;
+        transform: translateY(-50%);
+        white-space: nowrap;
+        background: rgba(10, 14, 12, 0.95);
+        color: #fff;
+        border: 1px solid color-mix(in srgb, #fff 14%, transparent);
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 12px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+      }
+
+      &:hover,
+      &:focus-within {
+        .wallet-provider-tooltip {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
     }
 
     .wallet-provider-icon .wallet-logo {
       margin-right: 0;
     }
 
+    .wallet-copy {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      position: relative;
+
+      .tooltip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        word-break: keep-all;
+
+        &:hover,
+        &:focus-within {
+          z-index: 10;
+        }
+      }
+
+      .wallet-copy-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--accent-link);
+        cursor: pointer;
+        font-size: 17px;
+        line-height: 1;
+      }
+
+      .tooltip .tooltiptext.wallet-copy-tooltip {
+        position: absolute;
+        z-index: 10;
+        right: 100%;
+        left: auto;
+        bottom: auto;
+        margin-right: 1px;
+        top: 50%;
+        transform: translateY(-50%);
+        white-space: nowrap;
+        background: rgba(10, 14, 12, 0.95);
+        color: #fff;
+        border: 1px solid color-mix(in srgb, #fff 14%, transparent);
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.2;
+        width: max-content;
+        max-width: none;
+        text-align: center;
+        box-shadow: none;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+
+        &:before,
+        &:after {
+          display: none;
+        }
+
+        &.is-visible {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(-50%);
+        }
+      }
+
+      .tooltip:hover .tooltiptext.wallet-copy-tooltip,
+      .tooltip:focus-within .tooltiptext.wallet-copy-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(-50%);
+      }
+    }
+
     .wallet-disconnect {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
       height: 100%;
       color: #fff;
       opacity: 0.88;
@@ -842,10 +1110,10 @@ header {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0 40px;
+    margin: 0 var(--mobile-menu-gutter);
     color: #fff;
     font-size: 18px;
-    padding: 4px 22px 4px 0;
+    padding: 6px 22px 6px 0;
     border-bottom: 1px solid #fff;
     cursor: pointer;
 
