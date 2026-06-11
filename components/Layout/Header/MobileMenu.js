@@ -56,7 +56,8 @@ import {
   IoGitBranchOutline,
   IoRocketOutline,
   IoNotificationsOutline,
-  IoCopyOutline
+  IoCopyOutline,
+  IoAddOutline
 } from 'react-icons/io5'
 import { FaSignOutAlt, FaEye, FaUserCheck, FaUserFriends } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
@@ -192,6 +193,12 @@ export default function MobileMenu({
           </div>
         )
       })}
+      <span onClick={handleConnectAnotherWallet} className="wallet-connect-row link">
+        <span className="wallet-connect-icon" aria-hidden="true">
+          <IoAddOutline />
+        </span>
+        {t('menu.wallet.connect-another-wallet')}
+      </span>
     </div>
   )
 
@@ -241,10 +248,6 @@ export default function MobileMenu({
                 <IoSettingsOutline style={itemIconStyle} />
                 {t('menu.wallet.my-account-settings')}
               </Link>
-              <span onClick={handleConnectAnotherWallet} className="mobile-menu-item link">
-                <IoWallet style={itemIconStyle} />
-                {t('menu.wallet.connect-another-wallet')}
-              </span>
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                   <IoAtOutline style={itemIconStyle} />

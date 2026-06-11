@@ -1103,6 +1103,38 @@ header {
       opacity: 0.88;
       font-size: 18px;
     }
+
+    .wallet-connect-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.25;
+      border-top: 1px solid color-mix(in srgb, #fff 12%, transparent);
+
+      .wallet-connect-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: 2px solid color-mix(in srgb, var(--accent-link) 60%, transparent);
+        background: color-mix(in srgb, var(--accent-link) 14%, transparent);
+        color: #fff;
+
+        svg {
+          width: 18px;
+          height: 18px;
+          display: block;
+          stroke-width: 48px;
+        }
+      }
+    }
   }
 
   .mobile-menu-directory {
