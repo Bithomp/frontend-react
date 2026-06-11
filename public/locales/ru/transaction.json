@@ -185,6 +185,8 @@
     "Issuer Fee (Transfer rate)": "Комиссия эмитента (transfer rate)",
     "It was instructed to spend up to {{amount}}.": "Было указано потратить до {{amount}}.",
     "It was instructed to deliver at least {{amount}}.": "Было указано доставить минимум {{amount}}.",
+    "Spend up to {{amount}}.": "Потратить до {{amount}}.",
+    "Valid until {{date}}.": "Действителен до {{date}}.",
     "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "Было указано провести этот платеж, даже если вся сумма не может быть доставлена из-за нехватки ликвидности или средств на аккаунте отправителя.",
     "It was instructed to disregard any direct paths from the source account to the destination account.": "Было указано игнорировать прямые пути от аккаунта отправителя к аккаунту получателя.",
     "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "Было указано использовать только пути, где все конвертации имеют курс не хуже чем 1 {{sourceCurrency}} = {{amount}}.",

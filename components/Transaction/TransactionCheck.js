@@ -7,15 +7,20 @@ import { fullDateAndTime, timeFromNow } from '../../utils/format'
 import { useTranslation } from 'next-i18next'
 import { timestampExpired } from '../../utils'
 import { addressBalanceChanges, dappBySourceTag } from '../../utils/transaction'
+import { LinkObject } from '../../utils/links'
 
 export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
   const { t, i18n } = useTranslation()
+  const { t: txT } = useTranslation('transaction')
 
   if (!data) return null
 
   const { outcome, tx, specification } = data
 
   const checkChanges = outcome?.checkChanges
+  const isCheckCash = tx?.TransactionType === 'CheckCash'
+  const isFinalizedCheck = tx?.TransactionType === 'CheckCash' || tx?.TransactionType === 'CheckCancel'
+  const checkObjectLedgerIndex = isFinalizedCheck && outcome?.ledgerIndex ? outcome.ledgerIndex - 1 : null
   const sendMax = tx?.TransactionType === 'CheckCreate' ? specification?.sendMax : checkChanges?.sendMax
 
   //here we need to check destination balance changes, as executor can be source/destination or anyone when expired
@@ -48,6 +53,26 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
 
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(specification.source.tag)
+  const finalizedCheckSpecification = []
+
+  if (isCheckCash && sendMax) {
+    finalizedCheckSpecification.push({
+      key: 'sendMax',
+      text: txT('labels.Spend up to {{amount}}.', {
+        amount: amountFormat(sendMax, { precise: 'nice', noSpace: true })
+      })
+    })
+  }
+
+  if (isFinalizedCheck && checkChanges?.expiration) {
+    finalizedCheckSpecification.push({
+      key: 'expiration',
+      suppressHydrationWarning: true,
+      text: txT('labels.Valid until {{date}}.', {
+        date: fullDateAndTime(checkChanges.expiration, null, { asText: true })
+      })
+    })
+  }
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -94,12 +119,16 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
             <tr>
               <TData>Check ID</TData>
               <TData>
-                {shortHash(checkChanges.checkID, 10)} <CopyButton text={checkChanges.checkID} />
+                <LinkObject
+                  objectId={checkChanges.checkID}
+                  hash={10}
+                  ledgerIndex={checkObjectLedgerIndex}
+                />
               </TData>
             </tr>
           )}
 
-          {sendMax && (
+          {sendMax && !isCheckCash && (
             <tr>
               <TData>Max amount</TData>
               <TData>
@@ -113,7 +142,7 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
             </tr>
           )}
 
-          {checkChanges.expiration && (
+          {checkChanges.expiration && !isFinalizedCheck && (
             <tr>
               <TData className={timestampExpired(checkChanges.expiration) ? 'red' : ''}>
                 {expirationExpired(t, checkChanges.expiration)}
@@ -125,10 +154,11 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
               </TData>
             </tr>
           )}
+
         </>
       )}
 
-      {tx.TransactionType === 'CheckCash' && destinationBalanceChangesList?.length > 0 && (
+      {isCheckCash && destinationBalanceChangesList?.length > 0 && (
         <tr>
           <TData>
             Redeemed
@@ -160,6 +190,30 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
+
+      {finalizedCheckSpecification.length > 0 && (
+        <tr className="tx-instruction-row">
+          <TData>Specification</TData>
+              <TData>
+            <ul className="tx-specification-list">
+              {finalizedCheckSpecification.map((item) => (
+                <li key={item.key} suppressHydrationWarning={item.suppressHydrationWarning}>
+                  {item.text}
+                </li>
+              ))}
+            </ul>
+          </TData>
+        </tr>
+      )}
+      <style jsx>{`
+        .tx-specification-list {
+          margin: 0;
+          padding-left: 18px;
+        }
+        .tx-specification-list li + li {
+          margin-top: 3px;
+        }
+      `}</style>
     </TransactionCard>
   )
 }

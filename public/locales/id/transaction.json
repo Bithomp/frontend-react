@@ -185,6 +185,8 @@
     "Issuer Fee (Transfer rate)": "Biaya penerbit (transfer rate)",
     "It was instructed to spend up to {{amount}}.": "Diinstruksikan untuk membelanjakan hingga {{amount}}.",
     "It was instructed to deliver at least {{amount}}.": "Diinstruksikan untuk mengirim setidaknya {{amount}}.",
+    "Spend up to {{amount}}.": "Belanjakan hingga {{amount}}.",
+    "Valid until {{date}}.": "Berlaku hingga {{date}}.",
     "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "Diinstruksikan agar pembayaran ini tetap diproses meskipun seluruh jumlah tidak dapat dikirim karena kurangnya likuiditas atau dana di akun sumber.",
     "It was instructed to disregard any direct paths from the source account to the destination account.": "Diinstruksikan untuk mengabaikan jalur langsung dari akun sumber ke akun tujuan.",
     "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "Diinstruksikan untuk hanya menggunakan jalur dengan semua konversi memiliki kurs yang sama atau lebih baik dari 1 {{sourceCurrency}} = {{amount}}.",

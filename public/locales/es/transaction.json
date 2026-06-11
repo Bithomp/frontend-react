@@ -185,6 +185,8 @@
     "Issuer Fee (Transfer rate)": "Comisión del emisor (tasa de transferencia)",
     "It was instructed to spend up to {{amount}}.": "Se indicó gastar hasta {{amount}}.",
     "It was instructed to deliver at least {{amount}}.": "Se indicó entregar al menos {{amount}}.",
+    "Spend up to {{amount}}.": "Gastar hasta {{amount}}.",
+    "Valid until {{date}}.": "Válido hasta {{date}}.",
     "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "Se indicó que este pago se procese incluso si no se puede entregar el importe completo por falta de liquidez o fondos en la cuenta de origen.",
     "It was instructed to disregard any direct paths from the source account to the destination account.": "Se indicó ignorar cualquier ruta directa desde la cuenta de origen a la cuenta de destino.",
     "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "Se indicó usar solo rutas donde todas las conversiones tengan una tasa igual o mejor que 1 {{sourceCurrency}} = {{amount}}.",

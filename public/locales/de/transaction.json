@@ -185,6 +185,8 @@
     "Issuer Fee (Transfer rate)": "Emittentengebühr (Transferrate)",
     "It was instructed to spend up to {{amount}}.": "Es wurde angewiesen, bis zu {{amount}} auszugeben.",
     "It was instructed to deliver at least {{amount}}.": "Es wurde angewiesen, mindestens {{amount}} zu liefern.",
+    "Spend up to {{amount}}.": "Bis zu {{amount}} ausgeben.",
+    "Valid until {{date}}.": "Gültig bis {{date}}.",
     "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "Es wurde angewiesen, diese Zahlung auch dann auszuführen, wenn der gesamte Betrag wegen mangelnder Liquidität oder fehlender Mittel im Quellkonto nicht geliefert werden kann.",
     "It was instructed to disregard any direct paths from the source account to the destination account.": "Es wurde angewiesen, direkte Pfade vom Quellkonto zum Zielkonto zu ignorieren.",
     "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "Es wurde angewiesen, nur Pfade zu verwenden, bei denen alle Umrechnungen einen Kurs von mindestens 1 {{sourceCurrency}} = {{amount}} haben.",

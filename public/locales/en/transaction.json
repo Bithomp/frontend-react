@@ -185,6 +185,8 @@
     "Issuer Fee (Transfer rate)": "Issuer fee (transfer rate)",
     "It was instructed to spend up to {{amount}}.": "It was instructed to spend up to {{amount}}.",
     "It was instructed to deliver at least {{amount}}.": "It was instructed to deliver at least {{amount}}.",
+    "Spend up to {{amount}}.": "Spend up to {{amount}}.",
+    "Valid until {{date}}.": "Valid until {{date}}.",
     "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.",
     "It was instructed to disregard any direct paths from the source account to the destination account.": "It was instructed to disregard any direct paths from the source account to the destination account.",
     "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "It was instructed to only take paths where all conversions have a rate equal to or better than 1 {{sourceCurrency}} = {{amount}}.",

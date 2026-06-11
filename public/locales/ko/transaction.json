@@ -185,6 +185,8 @@
     "Issuer Fee (Transfer rate)": "발행자 수수료(전송 비율)",
     "It was instructed to spend up to {{amount}}.": "최대 {{amount}}까지 지출하도록 지정되었습니다.",
     "It was instructed to deliver at least {{amount}}.": "최소 {{amount}}을 전달하도록 지정되었습니다.",
+    "Spend up to {{amount}}.": "최대 {{amount}}까지 지출.",
+    "Valid until {{date}}.": "{{date}}까지 유효.",
     "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "유동성 부족 또는 원본 계정의 자금 부족으로 전체 금액을 전달할 수 없더라도 이 결제가 진행되도록 지정되었습니다.",
     "It was instructed to disregard any direct paths from the source account to the destination account.": "원본 계정에서 대상 계정으로 가는 직접 경로를 무시하도록 지정되었습니다.",
     "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "모든 변환의 환율이 1 {{sourceCurrency}} = {{amount}} 이상인 경로만 사용하도록 지정되었습니다.",

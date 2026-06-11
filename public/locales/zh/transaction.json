@@ -185,6 +185,8 @@
     "Issuer Fee (Transfer rate)": "发行人费用（转账费率）",
     "It was instructed to spend up to {{amount}}.": "指示最多花费 {{amount}}。",
     "It was instructed to deliver at least {{amount}}.": "指示至少交付{{amount}}。",
+    "Spend up to {{amount}}.": "最多花费 {{amount}}。",
+    "Valid until {{date}}.": "有效期至 {{date}}。",
     "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "即使由于源账户缺乏流动性或资金而无法交付全部金额，该付款仍将完成。",
     "It was instructed to disregard any direct paths from the source account to the destination account.": "已指示忽略从源账户到目标账户的任何直接路径。",
     "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "指示仅采用所有转化率等于或优于 1 {{sourceCurrency}} = {{amount}} 的路径。",

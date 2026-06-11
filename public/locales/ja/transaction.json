@@ -185,6 +185,8 @@
     "Issuer Fee (Transfer rate)": "発行者手数料（転送率）",
     "It was instructed to spend up to {{amount}}.": "最大 {{amount}} まで支払うよう指定されました。",
     "It was instructed to deliver at least {{amount}}.": "少なくとも {{amount}} を届けるよう指定されました。",
+    "Spend up to {{amount}}.": "最大 {{amount}} まで支払う。",
+    "Valid until {{date}}.": "{{date}} まで有効。",
     "It was instructed for this payment to go through even if the whole amount cannot be delivered because of a lack of liquidity or funds in the source account.": "流動性不足または送信元アカウントの資金不足により全額を届けられない場合でも、この支払いを実行するよう指定されました。",
     "It was instructed to disregard any direct paths from the source account to the destination account.": "送信元アカウントから宛先アカウントへの直接パスを無視するよう指定されました。",
     "It was instructed to only take paths where all the conversions have rate that is equal or better than 1 {{sourceCurrency}} = {{amount}}.": "すべての換算レートが 1 {{sourceCurrency}} = {{amount}} と同等以上のパスのみを使用するよう指定されました。",
