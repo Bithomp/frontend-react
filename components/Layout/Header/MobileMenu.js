@@ -322,6 +322,10 @@ export default function MobileMenu({
             <IoSettingsOutline style={itemIconStyle} />
             {t('menu.services.account-settings')}
           </Link>
+          <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <IoInformationCircleOutline style={itemIconStyle} />
+            {t('menu.services.submit-account-information')}
+          </Link>
           <Link href="/services/toml-checker" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCodeSlashOutline style={itemIconStyle} />
             {t('menu.services.toml-checker')}

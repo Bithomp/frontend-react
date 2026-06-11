@@ -442,9 +442,13 @@ export default function Header({
               <IoSettingsOutline className="menu-item-icon" />
               {t('menu.services.account-settings')}
             </Link>
+            <Link href="/submit-account-information">
+              <IoInformationCircleOutline className="menu-item-icon" />
+              {t('menu.services.submit-account-information')}
+            </Link>
             <Link href="/services/toml-checker">
-                <IoCodeSlashOutline className="menu-item-icon" />
-                {t('menu.services.toml-checker')}
+              <IoCodeSlashOutline className="menu-item-icon" />
+              {t('menu.services.toml-checker')}
               <span className="menu-item-badge">{t('menu.badges.new')}</span>
             </Link>
             <Link href="/faucet">
@@ -836,6 +840,10 @@ export default function Header({
                 <Link href="/services/account-settings/">
                   <IoSettingsOutline className="menu-item-icon" />
                   {t('menu.services.account-settings')}
+                </Link>
+                <Link href="/submit-account-information">
+                  <IoInformationCircleOutline className="menu-item-icon" />
+                  {t('menu.services.submit-account-information')}
                 </Link>
                 {!!wallets.length && (
                   <>
