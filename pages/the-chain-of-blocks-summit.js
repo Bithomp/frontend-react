@@ -19,8 +19,8 @@ export default function ChainOfBlocksSummit() {
   return (
     <>
       <SEO
-        title={'CHAIN OF BLOCKS SUMMIT 2026 — XRPL Community Summit.'}
-        description="The XRPL Community Summit in Europe — 2026 in Valletta, Malta. Insights, inspiration, and IRL connection."
+        title={'CHAIN OF BLOCKS SUMMIT — Malta Web3 Community Summit.'}
+        description="Chain Of Blocks Summit in Malta — a community event for XRPL and the broader Web3 ecosystem. 2026 recap and 2027 updates."
         noindex={network !== 'mainnet'}
         image={{
           file: '/images/chainOfBlocksSummit/2026-summit-preview.jpeg',
@@ -35,7 +35,7 @@ export default function ChainOfBlocksSummit() {
       />
       <article className="prose sm:prose-lg dark:prose-invert content-center">
         <h1>CHAIN OF BLOCKS SUMMIT</h1>
-        <h2>Europe | Malta | 20–22 May 2026</h2>
+        <h2>Europe | Malta | Web3 Real-World Integration & Interoperability</h2>
         <figure>
           <Image
             src={'/images/chainOfBlocksSummit/2026-summit-preview.jpeg'}
@@ -48,19 +48,19 @@ export default function ChainOfBlocksSummit() {
           <figcaption>Chain Of Blocks Summit 2026</figcaption>
         </figure>
         <p>
-          {' '}
-          <strong>20–22 May 2026 · Valletta, Malta</strong>
+          <strong>The 2026 edition took place 20–22 May 2026 in Valletta, Malta.</strong>
         </p>
         <p>
-          <strong>XRPL community summit in Europe.</strong> Over three days in the historic city of Valletta,
-          participants will come together for Innovation, Networking, Education, and Unforgettable Experiences.
+          <strong>Chain Of Blocks Summit</strong> is a community-first summit rooted in XRPL and expanding into the
+          broader Web3 ecosystem. The Malta edition brought builders, founders, institutions, creators, and users
+          together around Innovation, Networking, Education, and Unforgettable Experiences.
         </p>
-        <h2>📍 What’s Happening</h2>
+        <h2>📍 What Happened in 2026</h2>
         <p>
-          Join us on a beautiful Mediterranean island 🌞 for three days dedicated to the XRPL. Whether you're building,
-          investing, or just getting started — this summit is for you.
+          The 2026 summit gathered the community on a beautiful Mediterranean island 🌞 for three days of talks,
+          networking, and real-world Web3 conversations.
         </p>
-        <p>Expect conversations and initiatives around:</p>
+        <p>Conversations and initiatives focused on:</p>
         <ul>
           <li>Cross-chain collaboration and interoperability</li>
           <li>Real-world blockchain adoption</li>
@@ -103,31 +103,32 @@ export default function ChainOfBlocksSummit() {
           <li>Strengthen the XRPL community</li>
           <li>Create an event that feels real — and fun — on a beautiful sunny island</li>
         </ul>
-        <h2>🎤 Get Involved</h2>
-        <p>We’re currently:</p>
-        <ul>
-          <li>Looking for speakers and XRPL projects to present</li>
-          <li>Welcoming sponsors</li>
-          <li>Inviting everyone to join us in Malta — developers, creators, users, and newcomers</li>
-        </ul>
-        Want to become a sponsor or apply as a speaker? You can do it on <Link href="https://chainofblockssummit.com/">chainofblockssummit.com</Link>.<h2>🧡 Community First</h2>
+        <h2>🎤 Looking Toward 2027</h2>
         <p>
-          This event is made by the XRPL community, for the community. It’s the first step toward something bigger — and
-          we’d love for you to be a part of it.
+          The 2026 event has passed. The next edition is being planned, and this page will be updated when 2027 dates,
+          venue details, speaker applications, sponsorship opportunities, and tickets are announced.
         </p>
-        <h2>🎫 Get your Tickets</h2>
+        <p>Future editions are expected to continue welcoming:</p>
+        <ul>
+          <li>Speakers and XRPL/Web3 projects to present</li>
+          <li>Sponsors and ecosystem partners</li>
+          <li>Developers, creators, users, institutions, and newcomers</li>
+        </ul>
+        Follow updates on <Link href="https://chainofblockssummit.com/">chainofblockssummit.com</Link>.<h2>🧡 Community First</h2>
         <p>
-          Tickets are available on <Link href="https://luma.com/8xdc6wgg">https://luma.com/8xdc6wgg</Link>.
-          {/*
-          All the event details and tickets are available on Eventbrite:{' '}
-          <Link href="https://ChainOfBlocksSummit.eventbrite.com">https://ChainOfBlocksSummit.eventbrite.com</Link>.
-          */}
+          This event is made by the community, for the community. It is a step toward something bigger: stronger
+          collaboration, more useful products, and more real-world blockchain adoption.
+        </p>
+        <h2>🎫 Tickets</h2>
+        <p>
+          Tickets for the 2026 edition are no longer promoted here because the event has already taken place. Ticket
+          information for the next edition will be added when it is officially available.
         </p>
         <h2>🌍 Let’s build.</h2>
         <p>
           📩 Interested in speaking, sponsoring, or helping out? DM <Link href="https://x.com/bithomp">Bithomp</Link>.
         </p>
-        <p>📅 See you in Malta 20–22 May 2026</p>
+        <p>📅 See you at the next Chain Of Blocks Summit.</p>
       </article>
     </>
   )
