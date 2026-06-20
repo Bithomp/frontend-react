@@ -16,7 +16,7 @@ export const getServerSideProps = async (context) => {
       queryCurrency2: currency2 || null,
       queryCurrency2Issuer: currency2Issuer || null,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'services']))
+      ...(await serverSideTranslations(locale, ['common', 'services', 'amm']))
     }
   }
 }

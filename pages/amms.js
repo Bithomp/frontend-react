@@ -67,7 +67,7 @@ export async function getServerSideProps(context) {
       fiatRateServer,
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'amm', 'services']))
     }
   }
 }
@@ -118,6 +118,18 @@ const LPToken = ({ a }) => {
   )
 }
 
+const isNativeAmmAsset = (amount) => !amount?.issuer && !amount?.mpt_issuance_id
+
+const assetTxIssue = (amount) => {
+  if (amount?.mpt_issuance_id) return { mpt_issuance_id: amount.mpt_issuance_id }
+  if (isNativeAmmAsset(amount)) return { currency: nativeCurrency }
+
+  return {
+    currency: amount.currency,
+    issuer: amount.issuer
+  }
+}
+
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
   return list.map((a) => {
@@ -146,7 +158,8 @@ export default function Amms({
   selectedCurrencyServer,
   setSelectedCurrency,
   openEmailLogin,
-  signOutPro
+  signOutPro,
+  setSignRequest
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -296,6 +309,33 @@ export default function Amms({
     { label: 'Updated', key: 'updatedAtFormated' }
   ]
 
+  const openAmmDeposit = (amm) => {
+    if (!setSignRequest || !amm?.amount || !amm?.amount2) return
+
+    const signData = {
+      asset1: amm.amount,
+      asset2: amm.amount2,
+      tradingFee: amm.tradingFee,
+      lpToken: amm?.lpTokenBalance?.currency
+        ? {
+            currency: amm.lpTokenBalance.currency,
+            issuer: amm.lpTokenBalance.issuer || amm.account,
+            value: amm.lpTokenBalance.value
+          }
+        : null
+    }
+
+    setSignRequest({
+      action: 'ammDeposit',
+      request: {
+        TransactionType: 'AMMDeposit',
+        Asset: assetTxIssue(signData.asset1),
+        Asset2: assetTxIssue(signData.asset2)
+      },
+      data: signData
+    })
+  }
+
   return (
     <>
       <SEO
@@ -417,18 +457,14 @@ export default function Amms({
                               <td className="right">{timeFromNow(a.createdAt, i18n)}</td>
                               <td className="right">{showAmmPercents(a.tradingFee)}</td>
                               <td className="center" onClick={(e) => e.stopPropagation()}>
-                                <Link
-                                  href={
-                                    '/services/amm/deposit?currency=' +
-                                    (a.amount?.currency || nativeCurrency) +
-                                    (a.amount?.issuer ? '&currencyIssuer=' + a.amount?.issuer : '') +
-                                    '&currency2=' +
-                                    (a.amount2?.currency || nativeCurrency) +
-                                    (a.amount2?.issuer ? '&currency2Issuer=' + a.amount2?.issuer : '')
-                                  }
+                                <button
+                                  type="button"
+                                  className="button-action thin narrow"
+                                  disabled={!setSignRequest}
+                                  onClick={() => openAmmDeposit(a)}
                                 >
-                                  Deposit
-                                </Link>
+                                  {t('menu.amm.deposit')}
+                                </button>
                               </td>
                             </tr>
                           ))}
@@ -508,19 +544,14 @@ export default function Amms({
                             </table>
                             <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
                             <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
-                            <Link
-                              href={
-                                '/services/amm/deposit?currency=' +
-                                (a.amount?.currency || nativeCurrency) +
-                                (a.amount?.issuer ? '&currencyIssuer=' + a.amount?.issuer : '') +
-                                '&currency2=' +
-                                (a.amount2?.currency || nativeCurrency) +
-                                (a.amount2?.issuer ? '&currency2Issuer=' + a.amount2?.issuer : '')
-                              }
+                            <button
+                              type="button"
                               className="button-action thin narrow"
+                              disabled={!setSignRequest}
+                              onClick={() => openAmmDeposit(a)}
                             >
-                              Deposit
-                            </Link>{' '}
+                              {t('menu.amm.deposit')}
+                            </button>{' '}
                             <button
                               className="button-action thin narrow"
                               onClick={() => router.push('/amm/' + a.ammID)}

@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "AMM-эксплорер",
+    "metaDescription": "Поиск AMM-пулов, резервов, ликвидности, участников, аукциона и голосов за комиссию.",
+    "heading": "AMM-эксплорер",
+    "intro": "Найдите AMM-пул по AMM ID, AMM-аккаунту, LP-токену или паре активов.",
+    "placeholderLong": "Поиск по AMM ID, аккаунту, LP-токену, эмитенту, валюте или паре",
+    "placeholderShort": "Поиск AMM-пулов"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "Данные AMM-пула{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "Транзакция",
+    "loading": "Загрузка",
+    "update": "Обновить",
+    "reset": "Сбросить",
+    "active": "Активен",
+    "expired": "Истёк",
+    "chartDataUnavailable": "Данные графика пока недоступны"
+  },
+  "hero": {
+    "eyebrow": "Автоматический маркет-мейкер",
+    "tvl": "Стоимость в пуле",
+    "tradingFee": "Торговая комиссия",
+    "votes": "Голоса",
+    "vote": "Голосовать",
+    "deposit": "Внести",
+    "withdraw": "Вывести"
+  },
+  "overview": {
+    "assetPrices": "Цены активов",
+    "reserves": "Резервы",
+    "poolStats": "Статистика пула",
+    "lpSupply": "Всего LP",
+    "contributors": "Участники пула",
+    "trustlines": "Трастлайны",
+    "dexTrades": "DEX сделки"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "По сравнению с последним закрытым днём",
+    "comparedPreviousClosedDay": "По сравнению с предыдущим закрытым днём",
+    "comparedPreviousClosedDayAccounts": "Аккаунты по сравнению с предыдущим закрытым днём",
+    "comparedPreviousClosedDayVolume": "Объём по сравнению с предыдущим закрытым днём",
+    "fiatReserve24h": "Изменение стоимости резерва в фиате за 24ч",
+    "price24h": "Изменение цены за 24ч"
+  },
+  "daily": {
+    "title": "Ликвидность за последний закрытый день",
+    "deposits": "Депозиты",
+    "withdrawals": "Выводы",
+    "depositTxs": "Транзакции депозитов",
+    "withdrawalTxs": "Транзакции выводов",
+    "depositors": "Депозиторы",
+    "withdrawers": "Выводившие",
+    "volume": "Объём",
+    "volumeUnavailable": "Объём недоступен"
+  },
+  "charts": {
+    "poolHistory": "История пула",
+    "subtitle": "Свопы, резервы, депозиты / выводы и LP-участники по дням.",
+    "lastReports": "Последние {{count}} дневных отчётов",
+    "swaps": "Свопы",
+    "depositsWithdrawals": "Депозиты / выводы",
+    "assetVolume": "Объём депозитов / выводов {{asset}}",
+    "series": {
+      "swaps": "Свопы"
+    }
+  },
+  "activity": {
+    "title": "Активность",
+    "titleNote": "24ч",
+    "dex": "DEX",
+    "deposits": "Депозиты",
+    "withdrawals": "Выводы",
+    "latest": "Новые",
+    "largest": "Крупные",
+    "emptyDex": "За последние 24 часа нет AMM DEX-сделок",
+    "emptyLiquidity": "За последние 24 часа нет AMM активности {{type}}"
+  },
+  "contributors": {
+    "title": "LP-участники",
+    "subtitle": "Топ 100 держателей доли в пуле.",
+    "viewAll": "Показать все",
+    "others": "Другие",
+    "top100": "Топ 100",
+    "shareTooltip": "Доля {{value}}%",
+    "wallet": "Кошелек",
+    "share": "Доля",
+    "lpTokens": "LP-токены",
+    "lpTokenAmount": "{{amount}} LP-токен",
+    "showTop10": "Показать топ 10",
+    "showTopCount": "Показать топ {{count}}",
+    "unavailable": "LP-участники пока недоступны"
+  },
+  "details": {
+    "title": "Данные леджера и история",
+    "subtitle": "AMM-аккаунт, транзакция создания и состояние пула в прошлом.",
+    "historicalLookup": "Исторический поиск",
+    "historicalHint": "Загружает отдельный срез ниже, не меняя текущие данные пула сверху.",
+    "snapshotBadge": "Срез {{time}}",
+    "poolIdentifiers": "Идентификаторы пула",
+    "ammAddress": "AMM-адрес",
+    "ammId": "AMM ID",
+    "created": "Создан",
+    "lastUpdate": "Последнее обновление"
+  },
+  "historical": {
+    "poolState": "Состояние пула в прошлом",
+    "snapshotAt": "Срез на {{time}}",
+    "snapshotFallback": "Резервы, комиссия и LP-баланс на этот момент.",
+    "loadingRates": "Загружаем исторические фиатные курсы.",
+    "nearestRates": "Фиатная оценка рассчитана по ближайшим историческим курсам.",
+    "historicalFiatUnavailable": "Историческая фиатная оценка недоступна",
+    "loadingHistoricalFiat": "Загрузка исторической фиатной оценки",
+    "tvlAtSnapshot": "Стоимость в пуле на этот момент",
+    "asset1": "Актив 1",
+    "asset2": "Актив 2",
+    "lpTokenBalance": "Баланс LP-токена",
+    "auctionSlot": "Аукционный слот в прошлом",
+    "stateAt": "Состояние на {{time}}",
+    "auctionStateAtSelectedTime": "Состояние аукционного слота на выбранный момент.",
+    "voteSlots": "Слоты голосования в прошлом",
+    "voteSlotsAtSelectedTime": "Слоты голосования на выбранный момент",
+    "noVoteSlotsSnapshot": "В этом срезе нет слотов голосования.",
+    "statusAtSnapshot": "Статус на этот момент",
+    "slotHolder": "Владелец слота",
+    "holderFee": "Комиссия владельца",
+    "lpBid": "Ставка LP",
+    "slotEnds": "Слот заканчивается",
+    "authorizedDiscountAccounts": "Аккаунты с доступом к скидке",
+    "noAuctionSlotSnapshot": "В этом срезе нет аукционного слота."
+  },
+  "voteSlots": {
+    "title": "Слоты голосования",
+    "activeVoters": "{{count}} активных голосующих",
+    "fee": "Комиссия",
+    "weight": "Вес"
+  },
+  "auction": {
+    "slot": "Аукционный слот",
+    "activeDescription": "Сделайте ставку выше текущей, чтобы торговать со сниженной комиссией.",
+    "openDescription": "Получите новый слот со сниженной комиссией до 24 часов.",
+    "activeSlot": "Активный слот",
+    "openSlot": "Свободный слот",
+    "feeIfWin": "Комиссия при победе",
+    "poolFee": "Комиссия пула",
+    "discountWindow": "Срок скидки",
+    "upTo24h": "До 24ч",
+    "feeSaving": "Экономия комиссии",
+    "currentSlotHolder": "Текущий владелец слота",
+    "currentHolderFee": "Комиссия для владельца",
+    "currentLpBid": "Текущая ставка LP",
+    "slotEnds": "Слот заканчивается",
+    "authorizedDiscountAccounts": "Аккаунты с доступом к скидке",
+    "bidWithLp": "Сделать ставку LP",
+    "bidWithLpAmount": "Поставить {{amount}}",
+    "bidWithLpHint": "Подходит, если у вас уже есть LP-токены.",
+    "checkingLpBalance": "Проверяем LP-баланс",
+    "checkingLpBalanceHint": "Проверяем, хватает ли LP в подключенном кошельке для ставки.",
+    "notEnoughLp": "LP не хватает для ставки",
+    "notEnoughLpHint": "Сначала получите недостающие LP, затем сделайте ставку на слот.",
+    "enoughLpHint": "В подключенном кошельке хватает LP для максимального лимита ставки.",
+    "yourLpBalance": "Ваш LP-баланс",
+    "lpRequired": "Нужно LP",
+    "lpMissing": "Не хватает LP",
+    "paidLpBidOverbid": "Ставка LP, чтобы перебить текущую",
+    "paidLpBidClaim": "Ставка LP, чтобы получить слот",
+    "maxLpSpendCap": "Максимум LP к списанию",
+    "winningBidSpent": "Победная ставка списывается",
+    "winningBidSpentText": "LP-токены, списанные по победной ставке, оплачивают слот со скидкой и не возвращаются после окончания 24ч периода. Неиспользованный запас между ставкой и максимумом не списывается.",
+    "extraDiscountAccounts": "Дополнительные аккаунты со скидкой",
+    "addAccount": "+ Добавить аккаунт",
+    "addressPlaceholder": "Адрес {{number}}",
+    "addAccountsHint": "Можно добавить до 4 аккаунтов, которые тоже смогут торговать со скидкой.",
+    "signingAccountNote": "Аккаунт, который подписывает транзакцию, получает скидку автоматически. Если вашу ставку перебьют до конца срока, возможный возврат рассчитывается протоколом по оставшемуся времени слота.",
+    "mintLpThenBid": "Получить LP и сделать ставку",
+    "mintLpThenBidHint": "Подходит, если у вас ещё нет LP-токенов для ставки.",
+    "getMissingLp": "Получить недостающие LP",
+    "getMissingLpHint": "Получить только LP, которых не хватает до максимального лимита ставки.",
+    "lpToMintFirst": "LP для ставки",
+    "mintLpNote": "Сначала получите достаточно LP, чтобы хватило на максимальную ставку. Затем ставка спишет LP; остаток останется в кошельке.",
+    "mintMissingLpNote": "Получаем только недостающие LP. После подтверждения можно будет сделать ставку с этого кошелька.",
+    "withAsset": "Через {{asset}}",
+    "withBothAssets": "Через оба актива",
+    "payUpTo": "До {{amount}}",
+    "payBoth": "{{amount1}} + {{amount2}}",
+    "breakEvenVolume": "Объём для окупаемости",
+    "breakEvenHint": "Объём свопов, при котором экономия на комиссии покроет ставку.",
+    "lpDepositTransaction": "Транзакция депозита LP: ",
+    "auctionBidTransaction": "Транзакция ставки на аукционе: ",
+    "winningBidPaid": "Победная ставка LP списывается за слот со скидкой.",
+    "discountEnds": "Скидка длится до 24 часов и может закончиться раньше, если ставку перебьют.",
+    "singleAssetCap": "Для вариантов с одним активом задаётся максимум; фактический депозит может быть меньше.",
+    "showExpiredSlotDetails": "Показать детали истёкшего слота",
+    "lastHolder": "Последний владелец",
+    "expiredHolderFee": "Комиссия последнего владельца",
+    "lastLpBid": "Последняя ставка LP",
+    "expiredAt": "Истёк",
+    "previouslyAuthorizedAccounts": "Ранее авторизованные аккаунты",
+    "notAvailableAfterExpiry": "Недоступно после истечения",
+    "invalidAuthorizedAccount": "Некорректный авторизованный аккаунт: {{account}}",
+    "lpBalanceShortfall": "Для ставки с этого кошелька не хватает {{amount}}.",
+    "bidderAlreadyDiscounted": "Аккаунт, который делает ставку, уже получает скидку и не может быть добавлен как авторизованный аккаунт.",
+    "yourSlotDescription": "Этот кошелёк уже получает сниженную комиссию по активному слоту.",
+    "yourActiveSlot": "Этот слот со скидкой ваш",
+    "yourAuthorizedSlot": "Этот кошелёк авторизован для скидки",
+    "yourDiscountHint": "Вы уже торгуете с комиссией этого слота, пока он не истечёт или его не перебьют.",
+    "yourDiscountedFee": "Ваша комиссия",
+    "yourFeeSaving": "Ваша экономия",
+    "yourPaidBid": "Ваша ставка LP",
+    "minimumOverbid": "Минимум, чтобы перебить вас"
+  },
+  "lpAnalytics": {
+    "title": "Аналитика LP-токена"
+  },
+  "errors": {
+    "noAmmData": "Информация для этого AMM ID не найдена.",
+    "noHistoricalData": "Информация для этого AMM ID на это время выбранного дня не найдена."
+  },
+  "sign": {
+    "depositTitle": "AMM-депозит",
+    "withdrawTitle": "AMM-вывод",
+    "feeVoteTitle": "Голосование за комиссию AMM",
+    "deposit": {
+      "modeLabel": "Тип депозита",
+      "pool": "Пул",
+      "assetToDeposit": "Что внести",
+      "lpTokensToReceive": "Сколько LP получить",
+      "amountLabel": "Сумма, {{asset}}",
+      "maxAmountLabel": "Макс. сумма, {{asset}}",
+      "asset1AmountLabel": "Сумма актива 1, {{asset}}",
+      "asset2AmountLabel": "Сумма актива 2, {{asset}}",
+      "approxAssetsToDeposit": "Что внести",
+      "maxPricePerLp": "Макс. цена за LP в {{asset}}",
+      "singleAssetLimitNote": "Включает буфер 0.5%. Транзакция может списать меньше, но не больше.",
+      "priceLimitNote": "Рассчитано по текущему пулу и включает буфер 0.5%.",
+      "approxLpReceived": "LP к получению",
+      "youWillGetLp": "Вы получите",
+      "available": "Доступно",
+      "max": "Макс.",
+      "balanceLoading": "Загружаем баланс...",
+      "modes": {
+        "singleAsset": {
+          "label": "Один актив",
+          "description": "Внести один актив и получить долю в пуле."
+        },
+        "twoAsset": {
+          "label": "Два актива",
+          "description": "Внести оба актива одной транзакцией."
+        },
+        "exactLp": {
+          "label": "Точное количество LP",
+          "description": "Внести оба актива так, чтобы получить указанное количество LP."
+        },
+        "singleAssetForLp": {
+          "label": "Один актив для LP",
+          "description": "Внести один актив и запросить конкретное количество LP-токенов."
+        },
+        "singleAssetWithLimit": {
+          "label": "Один актив с лимитом",
+          "description": "Внести один актив с ограничением по эффективной цене."
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "Тип вывода",
+      "pool": "Пул",
+      "assetToWithdraw": "Что вывести",
+      "amountLabel": "Сумма, {{asset}}",
+      "minimumAmountLabel": "Минимальная сумма, {{asset}}",
+      "asset1AmountLabel": "Сумма актива 1, {{asset}}",
+      "asset2AmountLabel": "Сумма актива 2, {{asset}}",
+      "lpTokensToRedeemUpTo": "LP к списанию, до",
+      "assetAmountToReceiveUpTo": "Актив к получению, до {{asset}}",
+      "lpAssetCapsNote": "Количество LP ограничивает списание; сумма актива ограничивает получение. Рассчитанная сумма актива включает буфер 0.5%.",
+      "lpTokensToRedeem": "LP к списанию",
+      "approxAssetsToReceive": "К получению",
+      "maxLpPerAsset": "Макс. LP на {{asset}}",
+      "priceLimitNote": "Рассчитано по текущему пулу и включает буфер 0.5%.",
+      "approxLpToRedeem": "LP к списанию",
+      "modes": {
+        "twoAsset": {
+          "label": "Два актива",
+          "description": "Вывести оба актива одной транзакцией."
+        },
+        "singleAsset": {
+          "label": "Один актив",
+          "description": "Вывести один актив из пула."
+        },
+        "redeemLp": {
+          "label": "Обменять LP",
+          "description": "Обменять LP-токены на оба актива пула."
+        },
+        "singleAssetForLp": {
+          "label": "Один актив за LP",
+          "description": "Обменять LP-токены на один актив с лимитами по LP и активу."
+        },
+        "allLpIntoOneAsset": {
+          "label": "Все LP в один актив",
+          "description": "Вывести всю LP-позицию в один актив с минимальной суммой."
+        },
+        "singleAssetWithLimit": {
+          "label": "Один актив с лимитом",
+          "description": "Вывести один актив с ограничением по эффективной цене."
+        },
+        "withdrawAll": {
+          "label": "Вывести все",
+          "description": "Вывести всю LP-позицию в оба актива."
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "Торговая комиссия",
+      "confirmText": "Проверьте комиссию AMM перед подписанием. Значение будет записано в леджер как голос AMM.",
+      "voteValue": "Комиссия в голосе",
+      "invalidFee": "Торговая комиссия должна быть числом от 0 до 1%."
+    }
+  }
+}

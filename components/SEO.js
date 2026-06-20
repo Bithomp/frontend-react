@@ -14,7 +14,8 @@ export default function SEO({
   twitterCardType,
   page,
   websiteName,
-  noindex
+  noindex,
+  canonicalPath
 }) {
   const router = useRouter()
 
@@ -33,9 +34,13 @@ export default function SEO({
       : `${description} ${explorerName}`
 
   const cleanPath = (router.asPath || '/').split('#')[0].split('?')[0]
+  const cleanCanonicalPath = canonicalPath ? canonicalPath.split('#')[0].split('?')[0] : cleanPath
   const normalizedPath = cleanPath === '/' ? '' : cleanPath
+  const normalizedCanonicalPath = cleanCanonicalPath === '/' ? '' : cleanCanonicalPath
   const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
-  const canonical = isEnglishLikeLocale ? server + normalizedPath : `${server}/${router.locale}${normalizedPath}`
+  const canonical = isEnglishLikeLocale
+    ? server + normalizedCanonicalPath
+    : `${server}/${router.locale}${normalizedCanonicalPath}`
 
   let openGraph = {
     type: 'website',
@@ -96,7 +101,7 @@ export default function SEO({
   }
 
   // don't add the slash after language, otherwise redirects and it is bad for SEO
-  let path = cleanPath !== '/' ? cleanPath : ''
+  let path = cleanCanonicalPath !== '/' ? cleanCanonicalPath : ''
 
   let languageAlternates = [
     { hrefLang: 'x-default', href: server + path },

@@ -258,19 +258,18 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const renderAmountWithIssuer = (amountData, options) => (
     <>
       {amountFormat(amountData, { withIssuer: true, bold: true, precise: 'nice' })}
-      {options?.includeFiat &&
-        selectedCurrency &&
-        amountData?.value &&
-        amountData?.currency &&
-        amountData?.value !== '0' && (
-          <span style={{ fontWeight: 'normal' }}>
-            {tokenToFiat({
-              amount: amountData,
-              selectedCurrency,
-              fiatRate: pageFiatRate
-            })}{' '}
-          </span>
-        )}
+      {options?.includeFiat && (
+        <span style={{ fontWeight: 'normal' }} suppressHydrationWarning>
+          {selectedCurrency && amountData?.value && amountData?.currency && amountData?.value !== '0'
+            ? tokenToFiat({
+                amount: amountData,
+                selectedCurrency,
+                fiatRate: pageFiatRate,
+                asText: true
+              })
+            : ''}{' '}
+        </span>
+      )}
     </>
   )
 
@@ -349,11 +348,14 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
                   {targetReceivedList.map((change, idx) => (
                     <div key={idx}>
                       {amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}
-                      {tokenToFiat({
-                        amount: change,
-                        selectedCurrency,
-                        fiatRate: pageFiatRate
-                      })}
+                      <span suppressHydrationWarning>
+                        {tokenToFiat({
+                          amount: change,
+                          selectedCurrency,
+                          fiatRate: pageFiatRate,
+                          asText: true
+                        })}
+                      </span>
                     </div>
                   ))}
                 </TData>

@@ -30,6 +30,7 @@ import TokenTabs from '../../components/Tabs/TokenTabs'
 import HomeTeaser, { HomeTeaseRow } from '../../components/Home/HomeTeaser'
 import homeTeaserStyles from '@/styles/components/home-teaser.module.scss'
 import TokenCharts from '../../components/Token/TokenCharts'
+import AmmDetailsPage, { fetchAmmPageData } from '../../components/Amm/AmmDetailsPage'
 
 const tokenSwapsUrl = (token, type, limit = 5) => {
   if (!token) return ''
@@ -64,6 +65,13 @@ export async function getServerSideProps(context) {
   let currency = null
   let isNativeTokenRoute = false
   let tokenId = null
+  let initialAmmData = null
+  let initialAmmSwapsData = null
+  let initialAmmChartData = null
+  let initialAmmLpTokenData = null
+  let initialAmmLpChartData = null
+  let initialAmmContributorsData = null
+  let initialAmmErrorMessage = null
 
   // Parse the dynamic route parameters
   if (id && Array.isArray(id) && id.length >= 2) {
@@ -171,6 +179,21 @@ export async function getServerSideProps(context) {
     }
   }
 
+  if (initialData?.currencyDetails?.type === 'lp_token' && initialData.currencyDetails?.ammID) {
+    const ammPageData = await fetchAmmPageData({
+      id: initialData.currencyDetails.ammID,
+      req,
+      selectedCurrencyServer
+    })
+    initialAmmData = ammPageData.initialData
+    initialAmmSwapsData = ammPageData.initialSwapsData
+    initialAmmChartData = ammPageData.initialChartData
+    initialAmmLpTokenData = ammPageData.initialLpTokenData
+    initialAmmLpChartData = ammPageData.initialLpChartData
+    initialAmmContributorsData = ammPageData.initialContributorsData
+    initialAmmErrorMessage = ammPageData.initialErrorMessage
+  }
+
   return {
     props: {
       initialData: initialData || null,
@@ -178,10 +201,17 @@ export async function getServerSideProps(context) {
       isSsrMobile: getIsSsrMobile(context),
       fiatRateServer,
       selectedCurrencyServer,
+      initialAmmData,
+      initialAmmSwapsData,
+      initialAmmChartData,
+      initialAmmLpTokenData,
+      initialAmmLpChartData,
+      initialAmmContributorsData,
+      initialAmmErrorMessage,
       issuer,
       currency,
       tokenId,
-      ...(await serverSideTranslations(locale, ['common', 'token']))
+      ...(await serverSideTranslations(locale, ['common', 'token', 'services']))
     }
   }
 }
@@ -194,7 +224,15 @@ export default function TokenPage({
   fiatRate: fiatRateApp,
   fiatRateServer,
   setSignRequest,
-  isSsrMobile
+  account,
+  isSsrMobile,
+  initialAmmData,
+  initialAmmSwapsData,
+  initialAmmChartData,
+  initialAmmLpTokenData,
+  initialAmmLpChartData,
+  initialAmmContributorsData,
+  initialAmmErrorMessage
 }) {
   const router = useRouter()
   const { t: tt } = useTranslation('token')
@@ -950,6 +988,32 @@ export default function TokenPage({
       </button>
     </>
   )
+
+  if (isLpToken && lpAmmId) {
+    return (
+      <AmmDetailsPage
+        id={lpAmmId}
+        initialData={initialAmmData}
+        initialSwapsData={initialAmmSwapsData}
+        initialChartData={initialAmmChartData}
+        initialLpTokenData={initialAmmLpTokenData}
+        initialLpChartData={initialAmmLpChartData}
+        initialContributorsData={initialAmmContributorsData}
+        initialErrorMessage={initialAmmErrorMessage}
+        ledgerTimestampQuery=""
+        isSsrMobile={isSsrMobile}
+        fiatRate={fiatRateApp}
+        selectedCurrency={selectedCurrencyApp}
+        fiatRateServer={fiatRateServer}
+        selectedCurrencyServer={selectedCurrencyServer}
+        canonicalPath={`/amm/${lpAmmId}`}
+        lpTokenData={token}
+        showTopTabs={false}
+        setSignRequest={setSignRequest}
+        account={account}
+      />
+    )
+  }
 
   const renderTokenActivityWidget = ({
     title,

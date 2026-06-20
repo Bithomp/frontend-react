@@ -302,6 +302,11 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   const address = data[name]
   const size = 16
   const noLink = options?.noLink
+  const label = options?.showAddress
+    ? noLink
+      ? shortAddress(address, options?.short || 6)
+      : <Link href={'/account/' + address}>{shortAddress(address, options?.short || 6)}</Link>
+    : addressUsernameOrServiceLink(data, name, options)
   const icon = (
     <Avatar
       src={avatarSrc(address)}
@@ -316,21 +321,13 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   )
 
   return (
-    <span className="no-brake">
+    <span className={['no-brake', options?.className].filter(Boolean).join(' ')}>
       {noLink ? (
         icon
       ) : (
         <Link href={'/account/' + address}>{icon}</Link>
       )}
-      {options?.showAddress ? (
-        noLink ? (
-          shortAddress(address, options?.short || 6)
-        ) : (
-          <Link href={'/account/' + address}>{shortAddress(address, options?.short || 6)}</Link>
-        )
-      ) : (
-        addressUsernameOrServiceLink(data, name, options)
-      )}
+      {options?.labelClassName ? <span className={options.labelClassName}>{label}</span> : label}
     </span>
   )
 }
@@ -482,7 +479,7 @@ export const tokenToFiat = (params) => {
         className={'tooltiptext no-brake' + (params?.tooltipDirection ? ' ' + params.tooltipDirection : '')}
         suppressHydrationWarning
       >
-        1 {currency} = {shortNiceNumber(effectiveFiatRate, 2, 1, selectedCurrency)}
+        1 {currency} = {niceNumber(effectiveFiatRate, null, selectedCurrency, 8)}
       </span>
     </span>
   )
@@ -813,6 +810,9 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   if (type === 'broker' && data?.broker === 'no broker') {
     return <b>{options.noBroker}</b>
   }
+  if (options.fullAddress) {
+    return options.noLink ? data?.[type] : <Link href={options.url + data?.[type]}>{data?.[type]}</Link>
+  }
   if (userOrServiceLink(data, type) !== '') {
     if (options.noLink) {
       const details = data?.[type + 'Details']
@@ -985,7 +985,7 @@ export const amountFormat = (amount, options = {}) => {
     )
   } else if (options.withIssuer) {
     return (
-      <>
+      <span suppressHydrationWarning>
         {tokenImage}
         <StyleAmount>{options.noCurrency ? amountText : `${amountText} ${textCurrency}`}</StyleAmount>
         {issuer ? (
@@ -1003,7 +1003,7 @@ export const amountFormat = (amount, options = {}) => {
         ) : (
           ''
         )}
-      </>
+      </span>
     )
   } else if (options?.icon) {
     // keep options?.icon as showIcon is false for native currency
@@ -1017,7 +1017,7 @@ export const amountFormat = (amount, options = {}) => {
       </span>
     )
   } else {
-    return amountText + ' ' + textCurrency
+    return options.noCurrency ? amountText : amountText + ' ' + textCurrency
   }
 }
 
@@ -1027,10 +1027,17 @@ export const amountFormatNode = (amount, options) => {
 
 export const AmountWithIcon = ({ amount, options = {}, className = '' }) => {
   const classes = ['amount-with-icon', className].filter(Boolean).join(' ')
+  const linkedCurrency = options.linkCurrency
+  const amountOptions = linkedCurrency ? { ...options, noCurrency: true } : options
 
   return (
     <span className={classes} suppressHydrationWarning>
-      {amountFormat(amount, { icon: true, nativeIcon: true, ...options })}
+      {amountFormat(amount, { icon: true, nativeIcon: true, ...amountOptions })}
+      {linkedCurrency ? (
+        <span className="no-inherit" style={{ marginLeft: 4 }}>
+          <LinkToken token={amount} />
+        </span>
+      ) : null}
     </span>
   )
 }

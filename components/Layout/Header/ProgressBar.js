@@ -1,39 +1,13 @@
-export default function ProgressBar({ goneSeconds, maxSeconds }) {
-
-  let completed = parseInt((goneSeconds / maxSeconds) * 100);
-  let minutes = Math.floor(goneSeconds / 60);
-  let seconds = goneSeconds - minutes * 60;
-  seconds = seconds < 10 ? "0" + seconds : seconds;
-
-  const containerStyles = {
-    height: 22,
-    width: '60%',
-    backgroundColor: "#e0e0de",
-    borderRadius: 50,
-    margin: 10,
-    textAlign: 'center',
-    display: "inline-block"
-  }
-
-  const fillerStyles = {
-    height: '100%',
-    width: `${completed}%`,
-    backgroundColor: "#008ffb",
-    borderRadius: 'inherit',
-    textAlign: 'center'
-  }
-
-  const labelStyles = {
-    padding: 5,
-    color: 'white',
-    fontWeight: 'bold'
-  }
+export default function ProgressBar({ goneSeconds, maxSeconds, className = '' }) {
+  const completed = Math.max(0, Math.min(100, parseInt((goneSeconds / maxSeconds) * 100)))
+  const minutes = Math.floor(goneSeconds / 60)
+  let seconds = goneSeconds - minutes * 60
+  seconds = seconds < 10 ? `0${seconds}` : seconds
 
   return (
-    <div style={containerStyles}>
-      <div style={fillerStyles}>
-        <span style={labelStyles}>{`${minutes}:${seconds}`}</span>
-      </div>
+    <div className={`progress-bar${className ? ` ${className}` : ''}`}>
+      <div className="progress-bar-fill" style={{ width: `${completed}%` }} />
+      <span className="progress-bar-label">{`${minutes}:${seconds}`}</span>
     </div>
-  );
-};
+  )
+}

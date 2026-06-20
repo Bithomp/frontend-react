@@ -273,6 +273,8 @@
       "update": "Perbarui",
       "reset": "Atur ulang",
       "send": "Kirim",
+      "pools": "Pool",
+      "pool-page": "Halaman pool",
       "get-first-native": "Dapatkan {{nativeCurrency}} pertama Anda",
       "add-token": "Tambahkan token",
       "change": "ubah",

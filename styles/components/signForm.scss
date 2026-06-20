@@ -1,44 +1,325 @@
 .sign-in-form {
-  background: rgba(black, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.56);
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 50;
+  box-sizing: border-box;
+  padding: 16px;
+
+  @media only screen and (max-width: 480px) {
+    padding: 0;
+  }
 
   .header {
     text-align: center;
-    padding: 60px 60px 0;
-    font-size: 28px;
+    padding: 0;
+    font-size: clamp(22px, 4vw, 30px);
     font-weight: bold;
     line-height: 1.2;
     overflow-wrap: normal;
     text-wrap: balance;
 
     @media only screen and (max-width: 480px) {
-      padding: 60px 46px 0;
-      font-size: clamp(18px, 5vw, 22px);
+      font-size: clamp(20px, 6vw, 24px);
     }
   }
 
   .sign-in-body {
-    outline: 3px solid var(--text-main);
-    outline-offset: -15px;
-    position: fixed;
-    width: 480px;
-    height: 680px; // bigger on devnets
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: min(560px, calc(100vw - 32px));
+    height: auto;
     max-height: calc(100dvh - 32px);
     margin: 0;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     overflow-y: auto;
     box-sizing: border-box;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
     background-color: var(--background-main);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+
+    &.info-screen {
+      overflow: hidden;
+    }
 
     &.loginform {
       height: 520px;
+    }
+
+    .sign-in-close {
+      appearance: none;
+      position: absolute;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      margin: 0;
+      padding: 0;
+      top: 16px;
+      right: 16px;
+      border: 1px solid transparent;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--background-main) 78%, transparent);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+
+      &:before,
+      &:after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 2px;
+        border-radius: 999px;
+        background: currentColor;
+      }
+
+      &:before {
+        transform: rotate(45deg);
+      }
+
+      &:after {
+        transform: rotate(-45deg);
+      }
+
+      &:hover,
+      &:focus-visible {
+        border-color: color-mix(in srgb, var(--accent-link) 28%, var(--card-border));
+        background: var(--background-secondary);
+        color: var(--text-main);
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:focus-visible {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 18%, transparent);
+      }
+    }
+
+    .sign-in-modal-header {
+      flex: 0 0 auto;
+      padding: 28px 72px 18px;
+      border-bottom: 1px solid var(--card-border);
+      background: color-mix(in srgb, var(--background-main) 94%, var(--background-secondary));
+    }
+
+    .sign-in-content {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 20px 34px 24px;
+      scrollbar-gutter: stable;
+
+      > .center > br:first-child {
+        display: none;
+      }
+
+      > .center {
+        padding-top: 2px;
+      }
+
+      .halv {
+        width: calc(100% - 24px);
+        max-width: 560px;
+      }
+
+      .quarter {
+        max-width: 270px;
+      }
+
+      .simple-select {
+        max-width: none;
+      }
+    }
+
+    .sign-in-actions {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 16px 24px calc(16px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--card-border);
+      background: color-mix(in srgb, var(--background-main) 92%, var(--background-secondary));
+      box-shadow: 0 -12px 24px rgba(0, 0, 0, 0.06);
+
+      > .tooltip {
+        display: inline-flex;
+      }
+
+      .button-action {
+        margin: 0 !important;
+      }
+    }
+
+    &.amm-sign-form {
+      width: min(720px, calc(100vw - 32px));
+
+      .sign-in-content {
+        padding-top: 22px;
+      }
+    }
+
+    &.amm-vote-fee-form {
+      width: min(560px, calc(100vw - 32px));
+    }
+
+    &.wallet-sign-screen:not(.xaman-sign-screen) {
+      width: min(560px, calc(100vw - 32px));
+      min-height: 300px;
+      padding: 46px 34px 32px;
+      overflow: hidden;
+
+      .header {
+        padding: 0 56px;
+        font-size: clamp(28px, 5vw, 38px);
+      }
+
+      .wallet-sign-status {
+        display: flex;
+        min-height: 150px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 18px 0 0;
+        padding: 0 10px;
+        line-height: 1.35;
+        text-wrap: balance;
+      }
+    }
+
+    &.xaman-sign-screen {
+      width: min(520px, calc(100vw - 32px));
+      padding: 38px 34px 28px;
+      overflow: hidden;
+
+      .header {
+        padding: 0 52px 0;
+        font-size: clamp(28px, 5vw, 40px);
+      }
+
+      .xaman-signing {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        margin-top: 20px;
+      }
+
+      .signin-actions-list.xaman-steps {
+        display: grid;
+        gap: 7px;
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 400px;
+        margin: 0;
+        padding: 13px 18px 13px 40px;
+        border: 1px solid var(--card-border);
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--background-secondary) 55%, transparent);
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.35;
+        text-align: left;
+
+        li::marker {
+          color: var(--text-secondary);
+          font-weight: 700;
+        }
+      }
+
+      .xaman-qr-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+      }
+
+      .xaman-qr-code {
+        padding: 10px;
+        border: 1px solid color-mix(in srgb, var(--card-border) 58%, #fff 42%);
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        line-height: 0;
+
+        img {
+          display: block;
+          width: min(220px, calc(100vw - 120px));
+          height: auto;
+          border-radius: 4px;
+        }
+      }
+
+      .xaman-qr-expired {
+        display: flex;
+        min-height: 220px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .xaman-qr-status,
+      .xaman-waiting-state {
+        max-width: 400px;
+        color: var(--orange);
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.35;
+        text-align: center;
+      }
+
+      .xaman-waiting-state {
+        display: flex;
+        min-height: 260px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+      }
+
+      .progress-bar {
+        position: relative;
+        width: min(320px, 100%);
+        height: 14px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--background-secondary);
+        box-shadow: inset 0 0 0 1px var(--card-border);
+      }
+
+      .progress-bar-fill {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: inherit;
+        background: var(--accent-link);
+        transition: width 0.35s linear;
+      }
+
+      .progress-bar-label {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+      }
     }
 
     &.choose-app {
@@ -83,13 +364,100 @@
       width: 100%;
       height: 100%;
       max-height: none;
+      border: 0;
+      border-radius: 0;
       margin: 0;
-      top: 0;
-      left: 0;
-      transform: none;
 
       &.loginform {
         height: 100%;
+      }
+
+      &.amm-sign-form {
+        height: 100%;
+      }
+
+      .sign-in-modal-header {
+        padding: 24px 64px 16px;
+      }
+
+      .sign-in-content {
+        padding: 18px 18px 22px;
+
+        .halv,
+        .quarter {
+          width: 100%;
+          max-width: 100%;
+          margin-left: 0;
+          margin-right: 0;
+        }
+      }
+
+      .sign-in-actions {
+        gap: 10px;
+        padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+
+        .button-action {
+          flex: 1 1 0;
+          min-width: 0;
+        }
+
+        > .tooltip {
+          flex: 1 1 0;
+
+          .button-action {
+            width: 100%;
+          }
+        }
+      }
+
+      &.amm-vote-fee-form {
+        height: 100%;
+      }
+
+      &.xaman-sign-screen {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        padding: 34px 18px calc(24px + env(safe-area-inset-bottom));
+
+        .header {
+          padding: 34px 48px 0;
+          font-size: clamp(24px, 8vw, 32px);
+        }
+
+        .xaman-signing {
+          margin-top: 24px;
+        }
+
+        .xaman-qr-code {
+          padding: 8px;
+
+          img {
+            width: min(240px, calc(100vw - 68px));
+          }
+        }
+
+        .progress-bar {
+          width: min(300px, calc(100vw - 68px));
+        }
+      }
+
+      &.wallet-sign-screen:not(.xaman-sign-screen) {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        padding: 58px 18px calc(22px + env(safe-area-inset-bottom));
+
+        .header {
+          padding: 0 46px;
+          font-size: clamp(24px, 8vw, 32px);
+        }
+
+        .wallet-sign-status {
+          min-height: 130px;
+          margin-top: 18px;
+          padding: 0;
+        }
       }
 
       &.choose-app {
@@ -122,24 +490,330 @@
       position: relative;
     }
 
+    .ammModeDescription {
+      padding-top: 7px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .ammPoolSummary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 28px;
+      text-align: center;
+
+      .input-title {
+        width: auto;
+        padding-bottom: 0;
+        color: var(--text-secondary);
+      }
+    }
+
+    .ammPoolPair {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      line-height: 1.2;
+    }
+
+    .ammAssetSelectOption {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 22px;
+      line-height: 1;
+
+      .entity-icon-outline {
+        flex: 0 0 auto;
+        vertical-align: middle !important;
+      }
+    }
+
+    .ammAmountFiatEstimate {
+      display: block;
+      height: calc(13px * 1.25 + 5px);
+      min-height: calc(13px * 1.25 + 5px);
+      padding-top: 5px;
+      padding-bottom: 0;
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.25;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ammAmountHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 22px;
+    }
+
+    .ammAvailableBalance {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      min-width: 0;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.2;
+      text-align: right;
+      white-space: nowrap;
+
+      > span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .ammMaxAmountButton {
+      appearance: none;
+      flex: 0 0 auto;
+      min-height: 22px;
+      padding: 2px 8px;
+      border: 1px solid color-mix(in srgb, var(--accent-link) 36%, var(--card-border));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent-link) 8%, transparent);
+      color: var(--accent-link);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+
+      &:hover,
+      &:focus-visible {
+        border-color: var(--accent-link);
+        background: color-mix(in srgb, var(--accent-link) 14%, transparent);
+      }
+    }
+
+    .ammLpEstimate {
+      min-height: 24px;
+      color: var(--text-secondary);
+      text-align: left;
+
+      b {
+        color: var(--text-main);
+        white-space: nowrap;
+      }
+
+      &.empty {
+        visibility: hidden;
+      }
+    }
+
+    .ammLpEstimateLine {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      max-width: 100%;
+      min-height: 24px;
+      line-height: 1.35;
+      white-space: normal;
+    }
+
+    .ammAmountLimitNote {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .ammVoteFeeForm {
+      display: grid;
+      gap: 18px;
+      width: min(360px, calc(100% - 80px));
+      margin: 28px auto 0;
+      text-align: left;
+
+      @media only screen and (max-width: 480px) {
+        width: calc(100% - 64px);
+        margin-top: 24px;
+      }
+    }
+
+    .ammVoteFeePanel {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--background-secondary) 42%, transparent);
+
+      p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 13px;
+        line-height: 1.35;
+      }
+    }
+
+    .ammVoteFeeField {
+      display: grid;
+      gap: 8px;
+    }
+
+    .ammVoteFeeLabelRow {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text-main);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .ammVoteFeeRange {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ammVoteFeeInputWrap {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      border: 1px solid var(--accent-link);
+      border-radius: 8px;
+      background: var(--background-main);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-link) 12%, transparent);
+
+      &:focus-within {
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-link) 18%, transparent);
+      }
+
+      .input-text {
+        flex: 1 1 auto;
+        min-width: 0;
+        height: 42px;
+        border: 0;
+        border-radius: 8px 0 0 8px;
+        box-shadow: none;
+        background: transparent;
+      }
+
+      > span {
+        flex: 0 0 auto;
+        padding: 0 14px 0 8px;
+        color: var(--text-secondary);
+        font-weight: 700;
+      }
+    }
+
+    .ammVoteFeePreview {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 16px;
+      border: 1px solid color-mix(in srgb, var(--accent-link) 24%, var(--card-border));
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--accent-link) 7%, transparent);
+
+      span {
+        color: var(--text-secondary);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      strong {
+        color: var(--text-main);
+        font-size: 22px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      &.muted {
+        background: color-mix(in srgb, var(--background-secondary) 42%, transparent);
+
+        strong {
+          color: var(--text-secondary);
+        }
+      }
+    }
+
+    .ammAssetInEstimate {
+      text-align: left;
+
+      &.empty {
+        visibility: hidden;
+      }
+    }
+
+    .ammAssetInEstimateRow {
+      margin-top: 6px;
+
+      &.empty {
+        visibility: hidden;
+      }
+
+      b {
+        display: block;
+        line-height: 1.25;
+      }
+
+      .ammAmountFiatEstimate {
+        padding-top: 2px;
+      }
+    }
+
+    @media only screen and (max-width: 480px) {
+      .ammAmountHeader {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .ammAvailableBalance {
+        justify-content: flex-start;
+        max-width: 100%;
+        text-align: left;
+      }
+    }
+
     .terms-checkbox {
       text-align: left;
-      margin: 10px 52px;
+      width: min(100%, 560px);
+      margin: 16px auto 0;
       font-size: 14px;
+      line-height: 1.4;
+
+      .checkbox {
+        align-items: flex-start;
+        margin-top: 0;
+      }
+
+      .checkbox__label {
+        line-height: 1.4;
+      }
+
+      .checkmark {
+        margin-top: 1px;
+      }
 
       @media only screen and (max-width: 480px) {
         text-align: left;
-        margin: 20px 40px;
+        width: 100%;
+        margin-top: 18px;
       }
     }
 
     .terms-checkbox-trustline {
-      margin-left: 60px;
-      margin-right: 60px;
+      width: min(100%, 520px);
 
       @media only screen and (max-width: 480px) {
-        margin-left: 40px;
-        margin-right: 40px;
+        width: 100%;
       }
     }
 
@@ -275,9 +949,12 @@
 
 body.dark {
   .sign-in-form {
-    background: rgba(white, 0.2);
+    background: rgba(0, 0, 0, 0.72);
 
     .sign-in-body {
+      border-color: color-mix(in srgb, var(--card-border) 72%, #fff 28%);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+
       .signin-apps {
         .signin-app-logo {
           background-color: #f9f9f9;

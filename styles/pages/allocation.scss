@@ -1,27 +1,6 @@
 .page-allocation {
   max-width: 1200px !important;
 
-  // Force ApexCharts tooltip to always be dark-on-dark-proof
-  .apexcharts-tooltip {
-    background: #1e2a30 !important;
-    border-color: #374650 !important;
-    color: #f0f0f0 !important;
-
-    .apexcharts-tooltip-title {
-      background: #243038 !important;
-      border-bottom-color: #374650 !important;
-      color: #ffffff !important;
-    }
-
-    .apexcharts-tooltip-text,
-    .apexcharts-tooltip-y-group,
-    .apexcharts-tooltip-z-group,
-    .apexcharts-tooltip-text-y-label,
-    .apexcharts-tooltip-text-y-value {
-      color: #f0f0f0 !important;
-    }
-  }
-
   .allocation-subtitle {
     color: var(--text-secondary);
     margin-bottom: 24px;

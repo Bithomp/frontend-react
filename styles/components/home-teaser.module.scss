@@ -516,6 +516,11 @@
   opacity: 0.45;
 }
 
+.cardRefreshTooltip {
+  max-width: min(220px, calc(100vw - 24px));
+  white-space: nowrap;
+}
+
 .cardRefreshIcon {
   width: 13px;
   height: 13px;

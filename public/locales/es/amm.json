@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "Explorador AMM",
+    "metaDescription": "Busca pools AMM, reservas, actividad de liquidez, contribuyentes, ranuras de subasta y votos de comision.",
+    "heading": "Explorador AMM",
+    "intro": "Busca un pool de creador de mercado automatizado por AMM ID, cuenta AMM, token LP o par de activos.",
+    "placeholderLong": "Busca por AMM ID, cuenta, token LP, emisor, moneda o par",
+    "placeholderShort": "Buscar pools AMM"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "Detalles del pool de creador de mercado automatizado{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "Transaccion",
+    "loading": "Cargando",
+    "update": "Actualizar",
+    "reset": "Restablecer",
+    "active": "Activo",
+    "expired": "Caducado",
+    "chartDataUnavailable": "Los datos del grafico aun no estan disponibles"
+  },
+  "hero": {
+    "eyebrow": "Creador de mercado automatizado",
+    "tvl": "Valor del pool",
+    "tradingFee": "Comision de trading",
+    "votes": "Votos",
+    "vote": "Votar",
+    "deposit": "Depositar",
+    "withdraw": "Retirar"
+  },
+  "overview": {
+    "assetPrices": "Precios de activos",
+    "reserves": "Reservas",
+    "poolStats": "Estadisticas del pool",
+    "lpSupply": "Oferta LP",
+    "contributors": "Contribuyentes",
+    "trustlines": "Trustlines",
+    "dexTrades": "Operaciones DEX"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "Comparado con el ultimo dia cerrado",
+    "comparedPreviousClosedDay": "Comparado con el dia cerrado anterior",
+    "comparedPreviousClosedDayAccounts": "Cuentas comparadas con el dia cerrado anterior",
+    "comparedPreviousClosedDayVolume": "Volumen comparado con el dia cerrado anterior",
+    "fiatReserve24h": "Cambio del valor fiat de la reserva en 24h",
+    "price24h": "Cambio de precio en 24h"
+  },
+  "daily": {
+    "title": "Liquidez del ultimo dia cerrado",
+    "deposits": "Depositos",
+    "withdrawals": "Retiros",
+    "depositTxs": "Txs de deposito",
+    "withdrawalTxs": "Txs de retiro",
+    "depositors": "Depositantes",
+    "withdrawers": "Retiradores",
+    "volume": "Volumen",
+    "volumeUnavailable": "El volumen no esta disponible"
+  },
+  "charts": {
+    "poolHistory": "Historial del pool",
+    "subtitle": "Swaps diarios, reservas, actividad de depositos / retiros y contribuyentes LP.",
+    "lastReports": "Ultimos {{count}} informes diarios",
+    "swaps": "Swaps",
+    "depositsWithdrawals": "Depositos / retiros",
+    "assetVolume": "Volumen de depositos / retiros de {{asset}}",
+    "series": {
+      "swaps": "Swaps"
+    }
+  },
+  "activity": {
+    "title": "Actividad",
+    "titleNote": "24h",
+    "dex": "DEX",
+    "deposits": "Depositos",
+    "withdrawals": "Retiros",
+    "latest": "Recientes",
+    "largest": "Mayores",
+    "emptyDex": "No hay operaciones AMM DEX disponibles en las ultimas 24 horas",
+    "emptyLiquidity": "No hay actividad AMM de {{type}} disponible en las ultimas 24 horas"
+  },
+  "contributors": {
+    "title": "Contribuyentes LP",
+    "subtitle": "Top 100 titulares de participacion del pool.",
+    "viewAll": "Ver todo",
+    "others": "Otros",
+    "top100": "Top 100",
+    "shareTooltip": "{{value}}% de participacion",
+    "wallet": "Wallet",
+    "share": "Participacion",
+    "lpTokens": "Tokens LP",
+    "lpTokenAmount": "{{amount}} token LP",
+    "showTop10": "Mostrar top 10",
+    "showTopCount": "Mostrar top {{count}}",
+    "unavailable": "Los contribuyentes LP aun no estan disponibles"
+  },
+  "details": {
+    "title": "Detalles del ledger y busqueda historica",
+    "subtitle": "Cuenta AMM, transaccion de creacion y estado historico del pool.",
+    "historicalLookup": "Busqueda historica",
+    "historicalHint": "Carga una instantanea separada abajo sin cambiar los datos en vivo del pool de arriba.",
+    "snapshotBadge": "Instantanea {{time}}",
+    "poolIdentifiers": "Identificadores del pool",
+    "ammAddress": "Direccion AMM",
+    "ammId": "AMM ID",
+    "created": "Creado",
+    "lastUpdate": "Ultima actualizacion"
+  },
+  "historical": {
+    "poolState": "Estado historico del pool",
+    "snapshotAt": "Instantanea en {{time}}",
+    "snapshotFallback": "Instantanea de reservas, comision y balance LP.",
+    "loadingRates": "Cargando tasas fiat historicas.",
+    "nearestRates": "Fiat usa las tasas historicas mas cercanas.",
+    "historicalFiatUnavailable": "Fiat historico no disponible",
+    "loadingHistoricalFiat": "Cargando fiat historico",
+    "tvlAtSnapshot": "Valor del pool en la instantanea",
+    "asset1": "Activo 1",
+    "asset2": "Activo 2",
+    "lpTokenBalance": "Balance de token LP",
+    "auctionSlot": "Ranura de subasta historica",
+    "stateAt": "Estado en {{time}}",
+    "auctionStateAtSelectedTime": "Estado de la ranura de subasta en la hora seleccionada.",
+    "voteSlots": "Ranuras de voto historicas",
+    "voteSlotsAtSelectedTime": "Ranuras de voto en la hora seleccionada",
+    "noVoteSlotsSnapshot": "No hay ranuras de voto en esta instantanea.",
+    "statusAtSnapshot": "Estado en la instantanea",
+    "slotHolder": "Titular de la ranura",
+    "holderFee": "Comision del titular",
+    "lpBid": "Oferta LP",
+    "slotEnds": "La ranura termina",
+    "authorizedDiscountAccounts": "Cuentas autorizadas para descuento",
+    "noAuctionSlotSnapshot": "No hay ranura de subasta en esta instantanea."
+  },
+  "voteSlots": {
+    "title": "Ranuras de voto",
+    "activeVoters": "{{count}} votantes activos",
+    "fee": "Comision",
+    "weight": "Peso"
+  },
+  "auction": {
+    "slot": "Ranura de subasta",
+    "activeDescription": "Supera la ranura activa para operar con la comision descontada.",
+    "openDescription": "Reclama una nueva ranura de comision descontada por hasta 24 horas.",
+    "activeSlot": "Ranura activa",
+    "openSlot": "Ranura abierta",
+    "feeIfWin": "Comision si ganas",
+    "poolFee": "Comision del pool",
+    "discountWindow": "Ventana de descuento",
+    "upTo24h": "Hasta 24h",
+    "feeSaving": "Ahorro de comision",
+    "currentSlotHolder": "Titular actual de la ranura",
+    "currentHolderFee": "Comision actual del titular",
+    "currentLpBid": "Oferta LP actual",
+    "slotEnds": "La ranura termina",
+    "authorizedDiscountAccounts": "Cuentas autorizadas para descuento",
+    "bidWithLp": "Ofertar con LP",
+    "bidWithLpAmount": "Ofertar {{amount}}",
+    "bidWithLpHint": "Usa esta ruta si ya tienes tokens LP.",
+    "checkingLpBalance": "Comprobando balance LP",
+    "checkingLpBalanceHint": "Comprobamos si la wallet conectada tiene suficiente LP para ofertar.",
+    "notEnoughLp": "No hay suficiente LP para ofertar",
+    "notEnoughLpHint": "Obtén primero el LP que falta y luego haz la oferta de subasta.",
+    "enoughLpHint": "Tu wallet conectada tiene suficiente LP para el límite máximo de gasto.",
+    "yourLpBalance": "Tu balance LP",
+    "lpRequired": "LP requerido",
+    "lpMissing": "LP faltante",
+    "paidLpBidOverbid": "Oferta LP pagada para superar",
+    "paidLpBidClaim": "Oferta LP pagada para reclamar",
+    "maxLpSpendCap": "Limite maximo de gasto LP",
+    "winningBidSpent": "La oferta ganadora se gasta",
+    "winningBidSpentText": "Los tokens LP pagados compran la ranura de descuento y no se devuelven cuando termina la ventana de 24h. El margen no usado entre oferta y maximo no se paga.",
+    "extraDiscountAccounts": "Cuentas extra con descuento",
+    "addAccount": "+ Agregar cuenta",
+    "addressPlaceholder": "Direccion {{number}}",
+    "addAccountsHint": "Agrega hasta 4 cuentas si otros tambien deben operar con el descuento.",
+    "signingAccountNote": "La cuenta firmante obtiene el descuento automaticamente. Si otra oferta reemplaza la tuya antes de expirar, cualquier reembolso se calcula por protocolo segun el tiempo restante de la ranura.",
+    "mintLpThenBid": "Crear LP y luego ofertar",
+    "mintLpThenBidHint": "Usa esta ruta si primero necesitas obtener tokens LP.",
+    "getMissingLp": "Obtener LP faltante",
+    "getMissingLpHint": "Crea solo la cantidad de LP que falta para el límite máximo de oferta.",
+    "lpToMintFirst": "LP a crear primero",
+    "mintLpNote": "Crea suficiente LP para el limite maximo de gasto. La oferta siguiente gasta tokens LP; solo el LP no gastado por la oferta queda en tu wallet.",
+    "mintMissingLpNote": "Crea solo el LP faltante. Tras la confirmación, podrás ofertar desde esta wallet.",
+    "withAsset": "Con {{asset}}",
+    "withBothAssets": "Con ambos activos",
+    "payUpTo": "Pagar hasta {{amount}}",
+    "payBoth": "Pagar {{amount1}} + {{amount2}}",
+    "breakEvenVolume": "Volumen de equilibrio",
+    "breakEvenHint": "Volumen de swap necesario para que el ahorro de comisiones compense la oferta.",
+    "lpDepositTransaction": "Transaccion de deposito LP: ",
+    "auctionBidTransaction": "Transaccion de oferta de subasta: ",
+    "winningBidPaid": "La oferta LP ganadora se paga por la ranura de descuento.",
+    "discountEnds": "El descuento dura hasta 24 horas y puede terminar antes si te superan.",
+    "singleAssetCap": "Las opciones de un solo activo usan un limite maximo; el deposito final puede ser menor.",
+    "showExpiredSlotDetails": "Mostrar detalles de la ranura caducada",
+    "lastHolder": "Ultimo titular",
+    "expiredHolderFee": "Comision del titular caducado",
+    "lastLpBid": "Ultima oferta LP",
+    "expiredAt": "Caduco en",
+    "previouslyAuthorizedAccounts": "Cuentas autorizadas previamente",
+    "notAvailableAfterExpiry": "No disponible despues de caducar",
+    "invalidAuthorizedAccount": "Cuenta autorizada no valida: {{account}}",
+    "lpBalanceShortfall": "Te faltan {{amount}} para ofertar desde esta wallet.",
+    "bidderAlreadyDiscounted": "La cuenta ofertante ya recibe el descuento y no puede agregarse como cuenta autorizada.",
+    "yourSlotDescription": "Esta wallet ya tiene la ranura activa con comision descontada.",
+    "yourActiveSlot": "Esta ranura de descuento es tuya",
+    "yourAuthorizedSlot": "Esta wallet esta autorizada para el descuento",
+    "yourDiscountHint": "Ya operas con la comision descontada de esta ranura hasta que expire o otra oferta la reemplace.",
+    "yourDiscountedFee": "Tu comision descontada",
+    "yourFeeSaving": "Tu ahorro de comision",
+    "yourPaidBid": "Tu oferta LP pagada",
+    "minimumOverbid": "Minimo para superarte"
+  },
+  "lpAnalytics": {
+    "title": "Analitica del token LP"
+  },
+  "errors": {
+    "noAmmData": "No se encontro informacion para ese AMM ID.",
+    "noHistoricalData": "No se encontro informacion para ese AMM ID en esa hora de ese dia."
+  },
+  "sign": {
+    "depositTitle": "Deposito AMM",
+    "withdrawTitle": "Retiro AMM",
+    "feeVoteTitle": "Voto de comision AMM",
+    "deposit": {
+      "modeLabel": "Modo de deposito",
+      "pool": "Pool",
+      "assetToDeposit": "Activo a depositar",
+      "lpTokensToReceive": "Tokens LP a recibir",
+      "amountLabel": "Importe, {{asset}}",
+      "maxAmountLabel": "Importe max., {{asset}}",
+      "asset1AmountLabel": "Importe activo 1, {{asset}}",
+      "asset2AmountLabel": "Importe activo 2, {{asset}}",
+      "approxAssetsToDeposit": "Activos a depositar",
+      "maxPricePerLp": "Precio max. por LP, {{asset}}",
+      "singleAssetLimitNote": "Incluye un buffer de 0.5%. La transaccion puede gastar menos, pero no mas.",
+      "priceLimitNote": "Sugerido desde el pool actual e incluye un buffer de 0.5%.",
+      "approxLpReceived": "Tokens LP recibidos",
+      "youWillGetLp": "Recibiras",
+      "available": "Disponible",
+      "max": "Max",
+      "balanceLoading": "Cargando saldo...",
+      "modes": {
+        "singleAsset": {
+          "label": "Un activo",
+          "description": "Deposita un activo y recibe una participacion del pool."
+        },
+        "twoAsset": {
+          "label": "Dos activos",
+          "description": "Deposita ambos activos en una transaccion."
+        },
+        "exactLp": {
+          "label": "Tokens LP exactos",
+          "description": "Deposita suficiente de ambos activos para recibir esta cantidad de LP."
+        },
+        "singleAssetForLp": {
+          "label": "Un activo por LP",
+          "description": "Deposita un activo y solicita una cantidad especifica de tokens LP."
+        },
+        "singleAssetWithLimit": {
+          "label": "Un activo con limite",
+          "description": "Deposita un activo con un limite de precio efectivo."
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "Modo de retiro",
+      "pool": "Pool",
+      "assetToWithdraw": "Activo a retirar",
+      "amountLabel": "Importe, {{asset}}",
+      "minimumAmountLabel": "Importe minimo, {{asset}}",
+      "asset1AmountLabel": "Importe activo 1, {{asset}}",
+      "asset2AmountLabel": "Importe activo 2, {{asset}}",
+      "lpTokensToRedeemUpTo": "Tokens LP a canjear, hasta",
+      "assetAmountToReceiveUpTo": "Importe de activo a recibir, hasta {{asset}}",
+      "lpAssetCapsNote": "La cantidad LP limita lo que canjeas; el importe del activo limita lo que recibes. El importe sugerido incluye un buffer de 0.5%.",
+      "lpTokensToRedeem": "Tokens LP a canjear",
+      "approxAssetsToReceive": "Activos a recibir",
+      "maxLpPerAsset": "LP max. por {{asset}}",
+      "priceLimitNote": "Sugerido desde el pool actual e incluye un buffer de 0.5%.",
+      "approxLpToRedeem": "Tokens LP a canjear",
+      "modes": {
+        "twoAsset": {
+          "label": "Dos activos",
+          "description": "Retira ambos activos en una transaccion."
+        },
+        "singleAsset": {
+          "label": "Un activo",
+          "description": "Retira un activo del pool."
+        },
+        "redeemLp": {
+          "label": "Canjear tokens LP",
+          "description": "Canjea tokens LP por ambos activos del pool."
+        },
+        "singleAssetForLp": {
+          "label": "Un activo por LP",
+          "description": "Canjea tokens LP por un activo con limites de LP y activo."
+        },
+        "allLpIntoOneAsset": {
+          "label": "Todo LP a un activo",
+          "description": "Retira toda tu posicion LP como un activo con importe minimo."
+        },
+        "singleAssetWithLimit": {
+          "label": "Un activo con limite",
+          "description": "Retira un activo con un limite de precio efectivo."
+        },
+        "withdrawAll": {
+          "label": "Retirar todo",
+          "description": "Retira toda tu posicion LP en ambos activos."
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "Comision de trading",
+      "confirmText": "Confirma la comision de trading AMM antes de firmar. El valor se guarda en el ledger como un voto AMM.",
+      "voteValue": "Valor del voto",
+      "invalidFee": "La comision de trading debe ser un numero de 0 a 1%."
+    }
+  }
+}

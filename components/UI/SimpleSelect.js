@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
 
-export default function SimpleSelect({ value, setValue, optionsList, className }) {
+export default function SimpleSelect({
+  value,
+  setValue,
+  optionsList,
+  className,
+  instanceId = 'dropdown',
+  formatOptionLabel
+}) {
   const [rendered, setRendered] = useState(false)
   const [choosenOption, setChoosenOption] = useState(undefined)
 
@@ -35,9 +42,10 @@ export default function SimpleSelect({ value, setValue, optionsList, className }
 
   return (
     <Select
-      instanceId="dropdown"
+      instanceId={instanceId}
       value={choosenOption}
       options={optionsList}
+      formatOptionLabel={formatOptionLabel}
       onChange={(option) => {
         setValue(option.value)
         setChoosenOption(option)

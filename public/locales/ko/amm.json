@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "AMM 탐색기",
+    "metaDescription": "AMM 풀, 준비금, 유동성 활동, 기여자, 경매 슬롯, 수수료 투표를 찾아보세요.",
+    "heading": "AMM 탐색기",
+    "intro": "AMM ID, AMM 계정, LP 토큰 또는 자산 페어로 자동화 마켓 메이커 풀을 검색하세요.",
+    "placeholderLong": "AMM ID, 계정, LP 토큰, 발행자, 통화 또는 페어 검색",
+    "placeholderShort": "AMM 풀 검색"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "자동화 마켓 메이커 풀 상세 정보{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "트랜잭션",
+    "loading": "로딩 중",
+    "update": "업데이트",
+    "reset": "초기화",
+    "active": "활성",
+    "expired": "만료됨",
+    "chartDataUnavailable": "차트 데이터가 아직 없습니다"
+  },
+  "hero": {
+    "eyebrow": "자동화 마켓 메이커",
+    "tvl": "풀 가치",
+    "tradingFee": "거래 수수료",
+    "votes": "투표",
+    "vote": "투표",
+    "deposit": "예치",
+    "withdraw": "출금"
+  },
+  "overview": {
+    "assetPrices": "자산 가격",
+    "reserves": "준비금",
+    "poolStats": "풀 통계",
+    "lpSupply": "LP 공급량",
+    "contributors": "기여자",
+    "trustlines": "트러스트라인",
+    "dexTrades": "DEX 거래"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "마지막 마감일과 비교",
+    "comparedPreviousClosedDay": "이전 마감일과 비교",
+    "comparedPreviousClosedDayAccounts": "이전 마감일 계정 수와 비교",
+    "comparedPreviousClosedDayVolume": "이전 마감일 거래량과 비교",
+    "fiatReserve24h": "24시간 동안 준비금의 법정화폐 가치 변화",
+    "price24h": "24시간 가격 변화"
+  },
+  "daily": {
+    "title": "마지막 마감일 유동성",
+    "deposits": "예치",
+    "withdrawals": "출금",
+    "depositTxs": "예치 tx",
+    "withdrawalTxs": "출금 tx",
+    "depositors": "예치자",
+    "withdrawers": "출금자",
+    "volume": "거래량",
+    "volumeUnavailable": "거래량을 사용할 수 없습니다"
+  },
+  "charts": {
+    "poolHistory": "풀 기록",
+    "subtitle": "일별 스왑, 준비금, 예치 / 출금 활동 및 LP 기여자.",
+    "lastReports": "최근 {{count}}개 일별 리포트",
+    "swaps": "스왑",
+    "depositsWithdrawals": "예치 / 출금",
+    "assetVolume": "{{asset}} 예치 / 출금 거래량",
+    "series": {
+      "swaps": "스왑"
+    }
+  },
+  "activity": {
+    "title": "활동",
+    "titleNote": "24시간",
+    "dex": "DEX",
+    "deposits": "예치",
+    "withdrawals": "출금",
+    "latest": "최신",
+    "largest": "최대",
+    "emptyDex": "최근 24시간 동안 사용 가능한 AMM DEX 거래가 없습니다",
+    "emptyLiquidity": "최근 24시간 동안 사용 가능한 AMM {{type}} 활동이 없습니다"
+  },
+  "contributors": {
+    "title": "LP 기여자",
+    "subtitle": "풀 지분 보유자 상위 100명.",
+    "viewAll": "전체 보기",
+    "others": "기타",
+    "top100": "상위 100",
+    "shareTooltip": "{{value}}% 지분",
+    "wallet": "지갑",
+    "share": "지분",
+    "lpTokens": "LP 토큰",
+    "lpTokenAmount": "{{amount}} LP 토큰",
+    "showTop10": "상위 10개 보기",
+    "showTopCount": "상위 {{count}}개 보기",
+    "unavailable": "LP 기여자를 아직 사용할 수 없습니다"
+  },
+  "details": {
+    "title": "레저 상세 정보 및 과거 조회",
+    "subtitle": "AMM 계정, 생성 트랜잭션 및 과거 풀 상태.",
+    "historicalLookup": "과거 조회",
+    "historicalHint": "위의 실시간 풀 데이터를 변경하지 않고 아래에 별도 스냅샷을 불러옵니다.",
+    "snapshotBadge": "스냅샷 {{time}}",
+    "poolIdentifiers": "풀 식별자",
+    "ammAddress": "AMM 주소",
+    "ammId": "AMM ID",
+    "created": "생성됨",
+    "lastUpdate": "마지막 업데이트"
+  },
+  "historical": {
+    "poolState": "과거 풀 상태",
+    "snapshotAt": "{{time}} 스냅샷",
+    "snapshotFallback": "준비금, 수수료 및 LP 잔액 스냅샷.",
+    "loadingRates": "과거 법정화폐 환율을 불러오는 중.",
+    "nearestRates": "법정화폐 값은 가장 가까운 과거 환율을 사용합니다.",
+    "historicalFiatUnavailable": "과거 법정화폐 값을 사용할 수 없음",
+    "loadingHistoricalFiat": "과거 법정화폐 값 로딩 중",
+    "tvlAtSnapshot": "스냅샷 시점 풀 가치",
+    "asset1": "자산 1",
+    "asset2": "자산 2",
+    "lpTokenBalance": "LP 토큰 잔액",
+    "auctionSlot": "과거 경매 슬롯",
+    "stateAt": "{{time}} 상태",
+    "auctionStateAtSelectedTime": "선택한 시점의 경매 슬롯 상태.",
+    "voteSlots": "과거 투표 슬롯",
+    "voteSlotsAtSelectedTime": "선택한 시점의 투표 슬롯",
+    "noVoteSlotsSnapshot": "이 스냅샷에는 투표 슬롯이 없습니다.",
+    "statusAtSnapshot": "스냅샷 상태",
+    "slotHolder": "슬롯 보유자",
+    "holderFee": "보유자 수수료",
+    "lpBid": "LP 입찰",
+    "slotEnds": "슬롯 종료",
+    "authorizedDiscountAccounts": "할인 승인 계정",
+    "noAuctionSlotSnapshot": "이 스냅샷에는 경매 슬롯이 없습니다."
+  },
+  "voteSlots": {
+    "title": "투표 슬롯",
+    "activeVoters": "활성 투표자 {{count}}명",
+    "fee": "수수료",
+    "weight": "가중치"
+  },
+  "auction": {
+    "slot": "경매 슬롯",
+    "activeDescription": "활성 슬롯보다 높게 입찰해 할인 수수료로 거래하세요.",
+    "openDescription": "최대 24시간 동안 새 할인 수수료 슬롯을 확보하세요.",
+    "activeSlot": "활성 슬롯",
+    "openSlot": "열린 슬롯",
+    "feeIfWin": "낙찰 시 수수료",
+    "poolFee": "풀 수수료",
+    "discountWindow": "할인 기간",
+    "upTo24h": "최대 24시간",
+    "feeSaving": "수수료 절감",
+    "currentSlotHolder": "현재 슬롯 보유자",
+    "currentHolderFee": "현재 보유자 수수료",
+    "currentLpBid": "현재 LP 입찰",
+    "slotEnds": "슬롯 종료",
+    "authorizedDiscountAccounts": "할인 승인 계정",
+    "bidWithLp": "LP로 입찰",
+    "bidWithLpAmount": "{{amount}} 입찰",
+    "bidWithLpHint": "이미 LP 토큰을 보유하고 있다면 이 방법을 사용하세요.",
+    "checkingLpBalance": "LP 잔액 확인 중",
+    "checkingLpBalanceHint": "연결된 지갑에 입찰에 충분한 LP가 있는지 확인하고 있습니다.",
+    "notEnoughLp": "입찰에 필요한 LP가 부족합니다",
+    "notEnoughLpHint": "먼저 부족한 LP를 받은 다음 경매 입찰을 진행하세요.",
+    "enoughLpHint": "연결된 지갑에 최대 지출 한도에 충분한 LP가 있습니다.",
+    "yourLpBalance": "내 LP 잔액",
+    "lpRequired": "필요한 LP",
+    "lpMissing": "부족한 LP",
+    "paidLpBidOverbid": "상회 입찰에 지불되는 LP 입찰",
+    "paidLpBidClaim": "슬롯 확보에 지불되는 LP 입찰",
+    "maxLpSpendCap": "최대 LP 지출 한도",
+    "winningBidSpent": "낙찰 입찰은 사용됩니다",
+    "winningBidSpentText": "지불한 LP 토큰은 할인 슬롯을 구매하며 24시간 기간이 끝나도 반환되지 않습니다. 입찰과 최대값 사이의 미사용 여유분은 지불되지 않습니다.",
+    "extraDiscountAccounts": "추가 할인 계정",
+    "addAccount": "+ 계정 추가",
+    "addressPlaceholder": "주소 {{number}}",
+    "addAccountsHint": "다른 계정도 할인으로 거래해야 한다면 최대 4개까지 추가하세요.",
+    "signingAccountNote": "서명 계정은 자동으로 할인을 받습니다. 만료 전에 다른 입찰이 대체하면 남은 슬롯 시간에 따라 프로토콜이 환불을 계산합니다.",
+    "mintLpThenBid": "LP 발행 후 입찰",
+    "mintLpThenBidHint": "먼저 LP 토큰을 받아야 한다면 이 방법을 사용하세요.",
+    "getMissingLp": "부족한 LP 받기",
+    "getMissingLpHint": "최대 입찰 한도에 부족한 LP 수량만 발행합니다.",
+    "lpToMintFirst": "먼저 발행할 LP",
+    "mintLpNote": "최대 지출 한도에 충분한 LP를 발행합니다. 이후 입찰은 LP 토큰을 사용하며, 입찰에 사용되지 않은 LP만 지갑에 남습니다.",
+    "mintMissingLpNote": "부족한 LP만 발행합니다. 확인 후 이 지갑으로 입찰할 수 있습니다.",
+    "withAsset": "{{asset}} 사용",
+    "withBothAssets": "두 자산 사용",
+    "payUpTo": "최대 {{amount}} 지불",
+    "payBoth": "{{amount1}} + {{amount2}} 지불",
+    "breakEvenVolume": "손익분기 거래량",
+    "breakEvenHint": "수수료 절감액이 입찰 비용을 상쇄하는 데 필요한 스왑 거래량.",
+    "lpDepositTransaction": "LP 예치 트랜잭션: ",
+    "auctionBidTransaction": "경매 입찰 트랜잭션: ",
+    "winningBidPaid": "낙찰 LP 입찰은 할인 슬롯 비용으로 지불됩니다.",
+    "discountEnds": "할인은 최대 24시간 지속되며 더 높은 입찰이 있으면 더 빨리 종료될 수 있습니다.",
+    "singleAssetCap": "단일 자산 옵션은 최대 한도를 사용하며 최종 예치액은 더 낮을 수 있습니다.",
+    "showExpiredSlotDetails": "만료된 슬롯 상세 보기",
+    "lastHolder": "마지막 보유자",
+    "expiredHolderFee": "만료된 보유자 수수료",
+    "lastLpBid": "마지막 LP 입찰",
+    "expiredAt": "만료 시각",
+    "previouslyAuthorizedAccounts": "이전에 승인된 계정",
+    "notAvailableAfterExpiry": "만료 후 사용할 수 없음",
+    "invalidAuthorizedAccount": "잘못된 승인 계정: {{account}}",
+    "lpBalanceShortfall": "이 지갑으로 입찰하려면 {{amount}}가 부족합니다.",
+    "bidderAlreadyDiscounted": "입찰자 계정은 이미 할인을 받고 있어 승인 계정으로 추가할 수 없습니다.",
+    "yourSlotDescription": "이 지갑은 이미 활성 할인 수수료 슬롯을 가지고 있습니다.",
+    "yourActiveSlot": "이 할인 슬롯은 내 것입니다",
+    "yourAuthorizedSlot": "이 지갑은 할인 사용이 승인되었습니다",
+    "yourDiscountHint": "슬롯이 만료되거나 다른 입찰로 교체될 때까지 이 슬롯의 할인 수수료로 거래할 수 있습니다.",
+    "yourDiscountedFee": "내 할인 수수료",
+    "yourFeeSaving": "내 수수료 절감",
+    "yourPaidBid": "내가 지불한 LP 입찰",
+    "minimumOverbid": "내 입찰을 넘기 위한 최소값"
+  },
+  "lpAnalytics": {
+    "title": "LP 토큰 분석"
+  },
+  "errors": {
+    "noAmmData": "해당 AMM ID에 대한 정보를 찾을 수 없습니다.",
+    "noHistoricalData": "해당 날짜의 해당 시점에 이 AMM ID 정보를 찾을 수 없습니다."
+  },
+  "sign": {
+    "depositTitle": "AMM 예치",
+    "withdrawTitle": "AMM 출금",
+    "feeVoteTitle": "AMM 수수료 투표",
+    "deposit": {
+      "modeLabel": "예치 모드",
+      "pool": "풀",
+      "assetToDeposit": "예치할 자산",
+      "lpTokensToReceive": "받을 LP 토큰",
+      "amountLabel": "금액, {{asset}}",
+      "maxAmountLabel": "최대 금액, {{asset}}",
+      "asset1AmountLabel": "자산 1 금액, {{asset}}",
+      "asset2AmountLabel": "자산 2 금액, {{asset}}",
+      "approxAssetsToDeposit": "예치 자산",
+      "maxPricePerLp": "LP당 최대 가격, {{asset}}",
+      "singleAssetLimitNote": "0.5% 버퍼가 포함됩니다. 트랜잭션은 더 적게 쓸 수 있지만 더 많이 쓸 수는 없습니다.",
+      "priceLimitNote": "현재 풀 기준 제안값이며 0.5% 버퍼를 포함합니다.",
+      "approxLpReceived": "수령 LP 토큰",
+      "youWillGetLp": "받게 됩니다",
+      "available": "사용 가능",
+      "max": "최대",
+      "balanceLoading": "잔액 로딩 중...",
+      "modes": {
+        "singleAsset": {
+          "label": "단일 자산",
+          "description": "하나의 자산을 예치하고 풀 지분을 받습니다."
+        },
+        "twoAsset": {
+          "label": "두 자산",
+          "description": "두 자산을 한 트랜잭션으로 예치합니다."
+        },
+        "exactLp": {
+          "label": "정확한 LP 토큰",
+          "description": "이 LP 수량을 받기 위해 두 자산을 충분히 예치합니다."
+        },
+        "singleAssetForLp": {
+          "label": "LP용 단일 자산",
+          "description": "하나의 자산을 예치하고 특정 LP 토큰 수량을 요청합니다."
+        },
+        "singleAssetWithLimit": {
+          "label": "한도 있는 단일 자산",
+          "description": "유효 가격 한도로 하나의 자산을 예치합니다."
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "출금 모드",
+      "pool": "풀",
+      "assetToWithdraw": "출금할 자산",
+      "amountLabel": "금액, {{asset}}",
+      "minimumAmountLabel": "최소 금액, {{asset}}",
+      "asset1AmountLabel": "자산 1 금액, {{asset}}",
+      "asset2AmountLabel": "자산 2 금액, {{asset}}",
+      "lpTokensToRedeemUpTo": "상환할 LP 토큰, 최대",
+      "assetAmountToReceiveUpTo": "받을 자산 금액, 최대 {{asset}}",
+      "lpAssetCapsNote": "LP 금액은 상환량을 제한하고, 자산 금액은 수령량을 제한합니다. 제안 자산 금액에는 0.5% 버퍼가 포함됩니다.",
+      "lpTokensToRedeem": "상환할 LP 토큰",
+      "approxAssetsToReceive": "수령 자산",
+      "maxLpPerAsset": "{{asset}}당 최대 LP",
+      "priceLimitNote": "현재 풀 기준 제안값이며 0.5% 버퍼를 포함합니다.",
+      "approxLpToRedeem": "상환 LP 토큰",
+      "modes": {
+        "twoAsset": {
+          "label": "두 자산",
+          "description": "두 자산을 한 트랜잭션으로 출금합니다."
+        },
+        "singleAsset": {
+          "label": "단일 자산",
+          "description": "풀에서 하나의 자산을 출금합니다."
+        },
+        "redeemLp": {
+          "label": "LP 토큰 상환",
+          "description": "LP 토큰을 두 풀 자산으로 상환합니다."
+        },
+        "singleAssetForLp": {
+          "label": "LP용 단일 자산",
+          "description": "LP 및 자산 한도로 LP 토큰을 하나의 자산으로 상환합니다."
+        },
+        "allLpIntoOneAsset": {
+          "label": "모든 LP를 한 자산으로",
+          "description": "전체 LP 포지션을 최소 금액 조건으로 하나의 자산으로 출금합니다."
+        },
+        "singleAssetWithLimit": {
+          "label": "한도 있는 단일 자산",
+          "description": "유효 가격 한도로 하나의 자산을 출금합니다."
+        },
+        "withdrawAll": {
+          "label": "전체 출금",
+          "description": "전체 LP 포지션을 두 자산으로 출금합니다."
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "거래 수수료",
+      "confirmText": "서명하기 전에 AMM 거래 수수료를 확인하세요. 이 값은 AMM 투표로 레저에 저장됩니다.",
+      "voteValue": "투표 값",
+      "invalidFee": "거래 수수료는 0에서 1% 사이의 숫자여야 합니다."
+    }
+  }
+}

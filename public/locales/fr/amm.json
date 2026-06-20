@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "Explorateur AMM",
+    "metaDescription": "Recherchez des pools AMM, reserves, activite de liquidite, contributeurs, slots d'enchere et votes de frais.",
+    "heading": "Explorateur AMM",
+    "intro": "Recherchez un pool de teneur de marche automatise par AMM ID, compte AMM, token LP ou paire d'actifs.",
+    "placeholderLong": "Recherche par AMM ID, compte, token LP, emetteur, devise ou paire",
+    "placeholderShort": "Rechercher des pools AMM"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "Details du pool de teneur de marche automatise{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "Transaction",
+    "loading": "Chargement",
+    "update": "Mettre a jour",
+    "reset": "Reinitialiser",
+    "active": "Actif",
+    "expired": "Expire",
+    "chartDataUnavailable": "Les donnees du graphique ne sont pas encore disponibles"
+  },
+  "hero": {
+    "eyebrow": "Teneur de marche automatise",
+    "tvl": "Valeur du pool",
+    "tradingFee": "Frais de trading",
+    "votes": "Votes",
+    "vote": "Voter",
+    "deposit": "Deposer",
+    "withdraw": "Retirer"
+  },
+  "overview": {
+    "assetPrices": "Prix des actifs",
+    "reserves": "Reserves",
+    "poolStats": "Statistiques du pool",
+    "lpSupply": "Offre LP",
+    "contributors": "Contributeurs",
+    "trustlines": "Trustlines",
+    "dexTrades": "Trades DEX"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "Compare au dernier jour cloture",
+    "comparedPreviousClosedDay": "Compare au jour cloture precedent",
+    "comparedPreviousClosedDayAccounts": "Comptes compares au jour cloture precedent",
+    "comparedPreviousClosedDayVolume": "Volume compare au jour cloture precedent",
+    "fiatReserve24h": "Variation de la valeur fiat de la reserve sur 24h",
+    "price24h": "Variation du prix sur 24h"
+  },
+  "daily": {
+    "title": "Liquidite du dernier jour cloture",
+    "deposits": "Depots",
+    "withdrawals": "Retraits",
+    "depositTxs": "Txs de depot",
+    "withdrawalTxs": "Txs de retrait",
+    "depositors": "Deposants",
+    "withdrawers": "Retirants",
+    "volume": "Volume",
+    "volumeUnavailable": "Le volume n'est pas disponible"
+  },
+  "charts": {
+    "poolHistory": "Historique du pool",
+    "subtitle": "Swaps quotidiens, reserves, activite de depots / retraits et contributeurs LP.",
+    "lastReports": "Derniers {{count}} rapports quotidiens",
+    "swaps": "Swaps",
+    "depositsWithdrawals": "Depots / retraits",
+    "assetVolume": "Volume de depots / retraits {{asset}}",
+    "series": {
+      "swaps": "Swaps"
+    }
+  },
+  "activity": {
+    "title": "Activite",
+    "titleNote": "24h",
+    "dex": "DEX",
+    "deposits": "Depots",
+    "withdrawals": "Retraits",
+    "latest": "Recents",
+    "largest": "Plus grands",
+    "emptyDex": "Aucun trade AMM DEX disponible sur les dernieres 24 heures",
+    "emptyLiquidity": "Aucune activite AMM {{type}} disponible sur les dernieres 24 heures"
+  },
+  "contributors": {
+    "title": "Contributeurs LP",
+    "subtitle": "Top 100 des detenteurs de parts du pool.",
+    "viewAll": "Voir tout",
+    "others": "Autres",
+    "top100": "Top 100",
+    "shareTooltip": "{{value}}% de part",
+    "wallet": "Wallet",
+    "share": "Part",
+    "lpTokens": "Tokens LP",
+    "lpTokenAmount": "{{amount}} token LP",
+    "showTop10": "Afficher le top 10",
+    "showTopCount": "Afficher le top {{count}}",
+    "unavailable": "Les contributeurs LP ne sont pas encore disponibles"
+  },
+  "details": {
+    "title": "Details du ledger et recherche historique",
+    "subtitle": "Compte AMM, transaction de creation et etat historique du pool.",
+    "historicalLookup": "Recherche historique",
+    "historicalHint": "Charge un snapshot separe ci-dessous sans modifier les donnees live du pool au-dessus.",
+    "snapshotBadge": "Snapshot {{time}}",
+    "poolIdentifiers": "Identifiants du pool",
+    "ammAddress": "Adresse AMM",
+    "ammId": "AMM ID",
+    "created": "Cree",
+    "lastUpdate": "Derniere mise a jour"
+  },
+  "historical": {
+    "poolState": "Etat historique du pool",
+    "snapshotAt": "Snapshot a {{time}}",
+    "snapshotFallback": "Snapshot des reserves, frais et solde LP.",
+    "loadingRates": "Chargement des taux fiat historiques.",
+    "nearestRates": "Fiat utilise les taux historiques les plus proches.",
+    "historicalFiatUnavailable": "Fiat historique indisponible",
+    "loadingHistoricalFiat": "Chargement du fiat historique",
+    "tvlAtSnapshot": "Valeur du pool au snapshot",
+    "asset1": "Actif 1",
+    "asset2": "Actif 2",
+    "lpTokenBalance": "Solde du token LP",
+    "auctionSlot": "Slot d'enchere historique",
+    "stateAt": "Etat a {{time}}",
+    "auctionStateAtSelectedTime": "Etat du slot d'enchere a l'heure selectionnee.",
+    "voteSlots": "Slots de vote historiques",
+    "voteSlotsAtSelectedTime": "Slots de vote a l'heure selectionnee",
+    "noVoteSlotsSnapshot": "Aucun slot de vote dans ce snapshot.",
+    "statusAtSnapshot": "Statut au snapshot",
+    "slotHolder": "Detenteur du slot",
+    "holderFee": "Frais du detenteur",
+    "lpBid": "Enchere LP",
+    "slotEnds": "Fin du slot",
+    "authorizedDiscountAccounts": "Comptes autorises pour la remise",
+    "noAuctionSlotSnapshot": "Aucun slot d'enchere dans ce snapshot."
+  },
+  "voteSlots": {
+    "title": "Slots de vote",
+    "activeVoters": "{{count}} votants actifs",
+    "fee": "Frais",
+    "weight": "Poids"
+  },
+  "auction": {
+    "slot": "Slot d'enchere",
+    "activeDescription": "Surencherissez sur le slot actif pour trader avec les frais reduits.",
+    "openDescription": "Reclamez un nouveau slot de frais reduits pour jusqu'a 24 heures.",
+    "activeSlot": "Slot actif",
+    "openSlot": "Slot ouvert",
+    "feeIfWin": "Frais si vous gagnez",
+    "poolFee": "Frais du pool",
+    "discountWindow": "Fenetre de remise",
+    "upTo24h": "Jusqu'a 24h",
+    "feeSaving": "Economie de frais",
+    "currentSlotHolder": "Detenteur actuel du slot",
+    "currentHolderFee": "Frais actuels du detenteur",
+    "currentLpBid": "Enchere LP actuelle",
+    "slotEnds": "Fin du slot",
+    "authorizedDiscountAccounts": "Comptes autorises pour la remise",
+    "bidWithLp": "Encherir avec LP",
+    "bidWithLpAmount": "Encherir {{amount}}",
+    "bidWithLpHint": "Utilisez cette voie si vous detenez deja des tokens LP.",
+    "checkingLpBalance": "Verification du solde LP",
+    "checkingLpBalanceHint": "Nous verifions si le wallet connecte a assez de LP pour encherir.",
+    "notEnoughLp": "Pas assez de LP pour encherir",
+    "notEnoughLpHint": "Obtenez d'abord les LP manquants, puis placez l'enchere.",
+    "enoughLpHint": "Votre wallet connecte a assez de LP pour le plafond de depense max.",
+    "yourLpBalance": "Votre solde LP",
+    "lpRequired": "LP requis",
+    "lpMissing": "LP manquant",
+    "paidLpBidOverbid": "Enchere LP payee pour surencherir",
+    "paidLpBidClaim": "Enchere LP payee pour reclamer",
+    "maxLpSpendCap": "Plafond de depense LP max",
+    "winningBidSpent": "L'enchere gagnante est depensee",
+    "winningBidSpentText": "Les tokens LP payes achetent le slot de remise et ne sont pas retournes quand la fenetre de 24h expire. La marge non utilisee entre l'enchere et le maximum n'est pas payee.",
+    "extraDiscountAccounts": "Comptes de remise supplementaires",
+    "addAccount": "+ Ajouter un compte",
+    "addressPlaceholder": "Adresse {{number}}",
+    "addAccountsHint": "Ajoutez jusqu'a 4 comptes si d'autres doivent aussi trader avec la remise.",
+    "signingAccountNote": "Le compte signataire obtient automatiquement la remise. Si une autre enchere remplace la votre avant l'expiration, tout remboursement est calcule par le protocole selon le temps restant du slot.",
+    "mintLpThenBid": "Creer des LP, puis encherir",
+    "mintLpThenBidHint": "Utilisez cette voie si vous devez d'abord obtenir des tokens LP.",
+    "getMissingLp": "Obtenir les LP manquants",
+    "getMissingLpHint": "Cree seulement la quantite de LP manquante pour le plafond d'enchere max.",
+    "lpToMintFirst": "LP a creer d'abord",
+    "mintLpNote": "Cree assez de LP pour le plafond de depense max. L'enchere suivante depense des tokens LP; seuls les LP non depenses par l'enchere restent dans votre wallet.",
+    "mintMissingLpNote": "Cree seulement les LP manquants. Apres confirmation, vous pourrez encherir avec ce wallet.",
+    "withAsset": "Avec {{asset}}",
+    "withBothAssets": "Avec les deux actifs",
+    "payUpTo": "Payer jusqu'a {{amount}}",
+    "payBoth": "Payer {{amount1}} + {{amount2}}",
+    "breakEvenVolume": "Volume d'equilibre",
+    "breakEvenHint": "Volume de swap necessaire pour que l'economie de frais compense l'enchere.",
+    "lpDepositTransaction": "Transaction de depot LP: ",
+    "auctionBidTransaction": "Transaction d'enchere: ",
+    "winningBidPaid": "L'enchere LP gagnante paie le slot de remise.",
+    "discountEnds": "La remise dure jusqu'a 24 heures et peut finir plus tot si vous etes surencheri.",
+    "singleAssetCap": "Les options a actif unique utilisent un plafond maximum; le depot final peut etre plus bas.",
+    "showExpiredSlotDetails": "Afficher les details du slot expire",
+    "lastHolder": "Dernier detenteur",
+    "expiredHolderFee": "Frais du detenteur expire",
+    "lastLpBid": "Derniere enchere LP",
+    "expiredAt": "Expire a",
+    "previouslyAuthorizedAccounts": "Comptes precedemment autorises",
+    "notAvailableAfterExpiry": "Indisponible apres expiration",
+    "invalidAuthorizedAccount": "Compte autorise invalide: {{account}}",
+    "lpBalanceShortfall": "Il vous manque {{amount}} pour encherir avec ce wallet.",
+    "bidderAlreadyDiscounted": "Le compte encherisseur obtient deja la remise et ne peut pas etre ajoute comme compte autorise.",
+    "yourSlotDescription": "Ce wallet dispose deja du slot actif avec frais reduits.",
+    "yourActiveSlot": "Ce slot de remise est le votre",
+    "yourAuthorizedSlot": "Ce wallet est autorise pour la remise",
+    "yourDiscountHint": "Vous tradez deja avec les frais reduits de ce slot jusqu'a son expiration ou jusqu'a ce qu'une autre enchere le remplace.",
+    "yourDiscountedFee": "Vos frais reduits",
+    "yourFeeSaving": "Votre economie de frais",
+    "yourPaidBid": "Votre enchere LP payee",
+    "minimumOverbid": "Minimum pour vous surencherir"
+  },
+  "lpAnalytics": {
+    "title": "Analyse du token LP"
+  },
+  "errors": {
+    "noAmmData": "Aucune information trouvee pour cet AMM ID.",
+    "noHistoricalData": "Aucune information trouvee pour cet AMM ID a cette heure de ce jour."
+  },
+  "sign": {
+    "depositTitle": "Depot AMM",
+    "withdrawTitle": "Retrait AMM",
+    "feeVoteTitle": "Vote de frais AMM",
+    "deposit": {
+      "modeLabel": "Mode de depot",
+      "pool": "Pool",
+      "assetToDeposit": "Actif a deposer",
+      "lpTokensToReceive": "Tokens LP a recevoir",
+      "amountLabel": "Montant, {{asset}}",
+      "maxAmountLabel": "Montant max, {{asset}}",
+      "asset1AmountLabel": "Montant actif 1, {{asset}}",
+      "asset2AmountLabel": "Montant actif 2, {{asset}}",
+      "approxAssetsToDeposit": "Actifs a deposer",
+      "maxPricePerLp": "Prix max par LP, {{asset}}",
+      "singleAssetLimitNote": "Inclut un buffer de 0.5%. La transaction peut depenser moins, mais pas plus.",
+      "priceLimitNote": "Suggere depuis le pool actuel et inclut un buffer de 0.5%.",
+      "approxLpReceived": "Tokens LP recus",
+      "youWillGetLp": "Vous recevrez",
+      "available": "Disponible",
+      "max": "Max",
+      "balanceLoading": "Chargement du solde...",
+      "modes": {
+        "singleAsset": {
+          "label": "Un actif",
+          "description": "Deposer un actif et recevoir une part du pool."
+        },
+        "twoAsset": {
+          "label": "Deux actifs",
+          "description": "Deposer les deux actifs en une transaction."
+        },
+        "exactLp": {
+          "label": "Tokens LP exacts",
+          "description": "Deposer assez des deux actifs pour recevoir ce montant LP."
+        },
+        "singleAssetForLp": {
+          "label": "Un actif pour LP",
+          "description": "Deposer un actif et demander un montant specifique de tokens LP."
+        },
+        "singleAssetWithLimit": {
+          "label": "Un actif avec limite",
+          "description": "Deposer un actif avec une limite de prix effective."
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "Mode de retrait",
+      "pool": "Pool",
+      "assetToWithdraw": "Actif a retirer",
+      "amountLabel": "Montant, {{asset}}",
+      "minimumAmountLabel": "Montant minimum, {{asset}}",
+      "asset1AmountLabel": "Montant actif 1, {{asset}}",
+      "asset2AmountLabel": "Montant actif 2, {{asset}}",
+      "lpTokensToRedeemUpTo": "Tokens LP a racheter, jusqu'a",
+      "assetAmountToReceiveUpTo": "Montant d'actif a recevoir, jusqu'a {{asset}}",
+      "lpAssetCapsNote": "Le montant LP limite ce que vous rachetez; le montant d'actif limite ce que vous recevez. Le montant suggere inclut un buffer de 0.5%.",
+      "lpTokensToRedeem": "Tokens LP a racheter",
+      "approxAssetsToReceive": "Actifs a recevoir",
+      "maxLpPerAsset": "LP max par {{asset}}",
+      "priceLimitNote": "Suggere depuis le pool actuel et inclut un buffer de 0.5%.",
+      "approxLpToRedeem": "Tokens LP a racheter",
+      "modes": {
+        "twoAsset": {
+          "label": "Deux actifs",
+          "description": "Retirer les deux actifs en une transaction."
+        },
+        "singleAsset": {
+          "label": "Un actif",
+          "description": "Retirer un actif du pool."
+        },
+        "redeemLp": {
+          "label": "Racheter des tokens LP",
+          "description": "Racheter des tokens LP contre les deux actifs du pool."
+        },
+        "singleAssetForLp": {
+          "label": "Un actif pour LP",
+          "description": "Racheter des tokens LP contre un actif avec limites LP et actif."
+        },
+        "allLpIntoOneAsset": {
+          "label": "Tous les LP en un actif",
+          "description": "Retirer toute votre position LP en un actif avec un montant minimum."
+        },
+        "singleAssetWithLimit": {
+          "label": "Un actif avec limite",
+          "description": "Retirer un actif avec une limite de prix effective."
+        },
+        "withdrawAll": {
+          "label": "Tout retirer",
+          "description": "Retirer toute votre position LP dans les deux actifs."
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "Frais de trading",
+      "confirmText": "Confirmez les frais de trading AMM avant de signer. La valeur est enregistree sur le ledger comme vote AMM.",
+      "voteValue": "Valeur du vote",
+      "invalidFee": "Les frais de trading doivent etre un nombre de 0 a 1%."
+    }
+  }
+}

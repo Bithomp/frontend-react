@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "Penjelajah AMM",
+    "metaDescription": "Cari pool AMM, cadangan, aktivitas likuiditas, kontributor, slot lelang, dan vote biaya.",
+    "heading": "Penjelajah AMM",
+    "intro": "Cari pool automated market maker berdasarkan AMM ID, akun AMM, token LP, atau pasangan aset.",
+    "placeholderLong": "Cari berdasarkan AMM ID, akun, token LP, issuer, mata uang, atau pasangan",
+    "placeholderShort": "Cari pool AMM"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "Detail pool automated market maker{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "Transaksi",
+    "loading": "Memuat",
+    "update": "Perbarui",
+    "reset": "Reset",
+    "active": "Aktif",
+    "expired": "Kedaluwarsa",
+    "chartDataUnavailable": "Data chart belum tersedia"
+  },
+  "hero": {
+    "eyebrow": "Automated market maker",
+    "tvl": "Nilai pool",
+    "tradingFee": "Biaya trading",
+    "votes": "Vote",
+    "vote": "Vote",
+    "deposit": "Deposit",
+    "withdraw": "Tarik"
+  },
+  "overview": {
+    "assetPrices": "Harga aset",
+    "reserves": "Cadangan",
+    "poolStats": "Statistik pool",
+    "lpSupply": "Suplai LP",
+    "contributors": "Kontributor",
+    "trustlines": "Trustline",
+    "dexTrades": "Trade DEX"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "Dibandingkan dengan hari tertutup terakhir",
+    "comparedPreviousClosedDay": "Dibandingkan dengan hari tertutup sebelumnya",
+    "comparedPreviousClosedDayAccounts": "Akun dibandingkan dengan hari tertutup sebelumnya",
+    "comparedPreviousClosedDayVolume": "Volume dibandingkan dengan hari tertutup sebelumnya",
+    "fiatReserve24h": "Perubahan nilai fiat cadangan selama 24 jam",
+    "price24h": "Perubahan harga selama 24 jam"
+  },
+  "daily": {
+    "title": "Likuiditas hari tertutup terakhir",
+    "deposits": "Deposit",
+    "withdrawals": "Penarikan",
+    "depositTxs": "Tx deposit",
+    "withdrawalTxs": "Tx penarikan",
+    "depositors": "Depositor",
+    "withdrawers": "Penarik",
+    "volume": "Volume",
+    "volumeUnavailable": "Volume tidak tersedia"
+  },
+  "charts": {
+    "poolHistory": "Riwayat pool",
+    "subtitle": "Swap harian, cadangan, aktivitas deposit / penarikan, dan kontributor LP.",
+    "lastReports": "{{count}} laporan harian terakhir",
+    "swaps": "Swap",
+    "depositsWithdrawals": "Deposit / penarikan",
+    "assetVolume": "Volume deposit / penarikan {{asset}}",
+    "series": {
+      "swaps": "Swap"
+    }
+  },
+  "activity": {
+    "title": "Aktivitas",
+    "titleNote": "24j",
+    "dex": "DEX",
+    "deposits": "Deposit",
+    "withdrawals": "Penarikan",
+    "latest": "Terbaru",
+    "largest": "Terbesar",
+    "emptyDex": "Tidak ada trade AMM DEX dalam 24 jam terakhir",
+    "emptyLiquidity": "Tidak ada aktivitas AMM {{type}} dalam 24 jam terakhir"
+  },
+  "contributors": {
+    "title": "Kontributor LP",
+    "subtitle": "Top 100 pemegang bagian pool.",
+    "viewAll": "Lihat semua",
+    "others": "Lainnya",
+    "top100": "Top 100",
+    "shareTooltip": "{{value}}% bagian",
+    "wallet": "Wallet",
+    "share": "Bagian",
+    "lpTokens": "Token LP",
+    "lpTokenAmount": "{{amount}} token LP",
+    "showTop10": "Tampilkan top 10",
+    "showTopCount": "Tampilkan top {{count}}",
+    "unavailable": "Kontributor LP belum tersedia"
+  },
+  "details": {
+    "title": "Detail ledger dan pencarian historis",
+    "subtitle": "Akun AMM, transaksi pembuatan, dan status historis pool.",
+    "historicalLookup": "Pencarian historis",
+    "historicalHint": "Memuat snapshot terpisah di bawah tanpa mengubah data pool live di atas.",
+    "snapshotBadge": "Snapshot {{time}}",
+    "poolIdentifiers": "Identifier pool",
+    "ammAddress": "Alamat AMM",
+    "ammId": "AMM ID",
+    "created": "Dibuat",
+    "lastUpdate": "Pembaruan terakhir"
+  },
+  "historical": {
+    "poolState": "Status pool historis",
+    "snapshotAt": "Snapshot pada {{time}}",
+    "snapshotFallback": "Snapshot cadangan, biaya, dan saldo LP.",
+    "loadingRates": "Memuat kurs fiat historis.",
+    "nearestRates": "Fiat memakai kurs historis terdekat.",
+    "historicalFiatUnavailable": "Fiat historis tidak tersedia",
+    "loadingHistoricalFiat": "Memuat fiat historis",
+    "tvlAtSnapshot": "Nilai pool pada snapshot",
+    "asset1": "Aset 1",
+    "asset2": "Aset 2",
+    "lpTokenBalance": "Saldo token LP",
+    "auctionSlot": "Slot lelang historis",
+    "stateAt": "Status pada {{time}}",
+    "auctionStateAtSelectedTime": "Status slot lelang pada waktu yang dipilih.",
+    "voteSlots": "Slot vote historis",
+    "voteSlotsAtSelectedTime": "Slot vote pada waktu yang dipilih",
+    "noVoteSlotsSnapshot": "Tidak ada slot vote dalam snapshot ini.",
+    "statusAtSnapshot": "Status pada snapshot",
+    "slotHolder": "Pemegang slot",
+    "holderFee": "Biaya pemegang",
+    "lpBid": "Bid LP",
+    "slotEnds": "Slot berakhir",
+    "authorizedDiscountAccounts": "Akun diskon yang diotorisasi",
+    "noAuctionSlotSnapshot": "Tidak ada slot lelang dalam snapshot ini."
+  },
+  "voteSlots": {
+    "title": "Slot vote",
+    "activeVoters": "{{count}} voter aktif",
+    "fee": "Biaya",
+    "weight": "Bobot"
+  },
+  "auction": {
+    "slot": "Slot lelang",
+    "activeDescription": "Lampaui slot aktif untuk trading dengan biaya diskon.",
+    "openDescription": "Klaim slot biaya diskon baru hingga 24 jam.",
+    "activeSlot": "Slot aktif",
+    "openSlot": "Slot terbuka",
+    "feeIfWin": "Biaya jika menang",
+    "poolFee": "Biaya pool",
+    "discountWindow": "Jendela diskon",
+    "upTo24h": "Hingga 24j",
+    "feeSaving": "Penghematan biaya",
+    "currentSlotHolder": "Pemegang slot saat ini",
+    "currentHolderFee": "Biaya pemegang saat ini",
+    "currentLpBid": "Bid LP saat ini",
+    "slotEnds": "Slot berakhir",
+    "authorizedDiscountAccounts": "Akun diskon yang diotorisasi",
+    "bidWithLp": "Bid dengan LP",
+    "bidWithLpAmount": "Bid {{amount}}",
+    "bidWithLpHint": "Gunakan opsi ini jika Anda sudah memiliki token LP.",
+    "checkingLpBalance": "Memeriksa saldo LP",
+    "checkingLpBalanceHint": "Kami memeriksa apakah wallet terhubung memiliki cukup LP untuk bid.",
+    "notEnoughLp": "LP tidak cukup untuk bid",
+    "notEnoughLpHint": "Dapatkan LP yang kurang terlebih dahulu, lalu pasang bid lelang.",
+    "enoughLpHint": "Wallet terhubung memiliki cukup LP untuk batas belanja maksimum.",
+    "yourLpBalance": "Saldo LP Anda",
+    "lpRequired": "LP dibutuhkan",
+    "lpMissing": "LP kurang",
+    "paidLpBidOverbid": "Bid LP berbayar untuk melampaui",
+    "paidLpBidClaim": "Bid LP berbayar untuk klaim",
+    "maxLpSpendCap": "Batas belanja LP maksimum",
+    "winningBidSpent": "Bid menang akan dibelanjakan",
+    "winningBidSpentText": "Token LP yang dibayar membeli slot diskon dan tidak dikembalikan saat jendela 24 jam berakhir. Ruang yang tidak terpakai antara bid dan maksimum tidak dibayar.",
+    "extraDiscountAccounts": "Akun diskon tambahan",
+    "addAccount": "+ Tambah akun",
+    "addressPlaceholder": "Alamat {{number}}",
+    "addAccountsHint": "Tambahkan hingga 4 akun jika akun lain juga harus trading dengan diskon.",
+    "signingAccountNote": "Akun penandatangan otomatis mendapat diskon. Jika bid lain menggantikan bid Anda sebelum kedaluwarsa, refund apa pun dihitung protokol berdasarkan sisa waktu slot.",
+    "mintLpThenBid": "Mint LP, lalu bid",
+    "mintLpThenBidHint": "Gunakan opsi ini jika Anda perlu mendapatkan token LP terlebih dahulu.",
+    "getMissingLp": "Dapatkan LP kurang",
+    "getMissingLpHint": "Mint hanya jumlah LP yang kurang untuk batas bid maksimum.",
+    "lpToMintFirst": "LP yang perlu di-mint dulu",
+    "mintLpNote": "Mint LP yang cukup untuk batas belanja maksimum. Bid berikutnya membelanjakan token LP; hanya LP yang tidak dibelanjakan oleh bid tetap di wallet Anda.",
+    "mintMissingLpNote": "Mint hanya LP yang kurang. Setelah dikonfirmasi, Anda dapat bid dari wallet ini.",
+    "withAsset": "Dengan {{asset}}",
+    "withBothAssets": "Dengan kedua aset",
+    "payUpTo": "Bayar hingga {{amount}}",
+    "payBoth": "Bayar {{amount1}} + {{amount2}}",
+    "breakEvenVolume": "Volume impas",
+    "breakEvenHint": "Volume swap yang diperlukan agar penghematan biaya menutup bid.",
+    "lpDepositTransaction": "Transaksi deposit LP: ",
+    "auctionBidTransaction": "Transaksi bid lelang: ",
+    "winningBidPaid": "Bid LP yang menang dibayar untuk slot diskon.",
+    "discountEnds": "Diskon berlangsung hingga 24 jam dan bisa selesai lebih cepat jika ada bid yang melampaui.",
+    "singleAssetCap": "Opsi satu aset memakai batas maksimum; deposit akhir bisa lebih rendah.",
+    "showExpiredSlotDetails": "Tampilkan detail slot kedaluwarsa",
+    "lastHolder": "Pemegang terakhir",
+    "expiredHolderFee": "Biaya pemegang kedaluwarsa",
+    "lastLpBid": "Bid LP terakhir",
+    "expiredAt": "Kedaluwarsa pada",
+    "previouslyAuthorizedAccounts": "Akun yang sebelumnya diotorisasi",
+    "notAvailableAfterExpiry": "Tidak tersedia setelah kedaluwarsa",
+    "invalidAuthorizedAccount": "Akun otorisasi tidak valid: {{account}}",
+    "lpBalanceShortfall": "Anda kurang {{amount}} untuk bid dari wallet ini.",
+    "bidderAlreadyDiscounted": "Akun bidder sudah mendapat diskon dan tidak bisa ditambahkan sebagai akun otorisasi.",
+    "yourSlotDescription": "Wallet ini sudah memiliki slot diskon aktif.",
+    "yourActiveSlot": "Slot diskon ini milik Anda",
+    "yourAuthorizedSlot": "Wallet ini diotorisasi untuk diskon",
+    "yourDiscountHint": "Anda sudah trading dengan biaya diskon slot ini hingga slot berakhir atau digantikan oleh bid lain.",
+    "yourDiscountedFee": "Biaya diskon Anda",
+    "yourFeeSaving": "Penghematan biaya Anda",
+    "yourPaidBid": "Bid LP Anda yang dibayar",
+    "minimumOverbid": "Minimum untuk mengalahkan bid Anda"
+  },
+  "lpAnalytics": {
+    "title": "Analitik token LP"
+  },
+  "errors": {
+    "noAmmData": "Tidak ada informasi untuk AMM ID tersebut.",
+    "noHistoricalData": "Tidak ada informasi untuk AMM ID tersebut pada waktu hari itu."
+  },
+  "sign": {
+    "depositTitle": "Deposit AMM",
+    "withdrawTitle": "Penarikan AMM",
+    "feeVoteTitle": "Vote biaya AMM",
+    "deposit": {
+      "modeLabel": "Mode deposit",
+      "pool": "Pool",
+      "assetToDeposit": "Aset untuk deposit",
+      "lpTokensToReceive": "Token LP yang diterima",
+      "amountLabel": "Jumlah, {{asset}}",
+      "maxAmountLabel": "Jumlah maks., {{asset}}",
+      "asset1AmountLabel": "Jumlah aset 1, {{asset}}",
+      "asset2AmountLabel": "Jumlah aset 2, {{asset}}",
+      "approxAssetsToDeposit": "Aset untuk deposit",
+      "maxPricePerLp": "Harga maks. per LP, {{asset}}",
+      "singleAssetLimitNote": "Termasuk buffer 0.5%. Transaksi bisa membelanjakan lebih sedikit, tetapi tidak lebih.",
+      "priceLimitNote": "Disarankan dari pool saat ini dan mencakup buffer 0.5%.",
+      "approxLpReceived": "Token LP diterima",
+      "youWillGetLp": "Anda akan menerima",
+      "available": "Tersedia",
+      "max": "Maks",
+      "balanceLoading": "Memuat saldo...",
+      "modes": {
+        "singleAsset": {
+          "label": "Satu aset",
+          "description": "Deposit satu aset dan terima bagian pool."
+        },
+        "twoAsset": {
+          "label": "Dua aset",
+          "description": "Deposit kedua aset dalam satu transaksi."
+        },
+        "exactLp": {
+          "label": "Token LP tepat",
+          "description": "Deposit cukup dari kedua aset untuk menerima jumlah LP ini."
+        },
+        "singleAssetForLp": {
+          "label": "Satu aset untuk LP",
+          "description": "Deposit satu aset dan minta jumlah token LP tertentu."
+        },
+        "singleAssetWithLimit": {
+          "label": "Satu aset dengan batas",
+          "description": "Deposit satu aset dengan batas harga efektif."
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "Mode penarikan",
+      "pool": "Pool",
+      "assetToWithdraw": "Aset untuk ditarik",
+      "amountLabel": "Jumlah, {{asset}}",
+      "minimumAmountLabel": "Jumlah minimum, {{asset}}",
+      "asset1AmountLabel": "Jumlah aset 1, {{asset}}",
+      "asset2AmountLabel": "Jumlah aset 2, {{asset}}",
+      "lpTokensToRedeemUpTo": "Token LP untuk ditebus, hingga",
+      "assetAmountToReceiveUpTo": "Jumlah aset yang diterima, hingga {{asset}}",
+      "lpAssetCapsNote": "Jumlah LP membatasi yang Anda tebus; jumlah aset membatasi yang Anda terima. Jumlah aset yang disarankan mencakup buffer 0.5%.",
+      "lpTokensToRedeem": "Token LP untuk ditebus",
+      "approxAssetsToReceive": "Aset diterima",
+      "maxLpPerAsset": "LP maks. per {{asset}}",
+      "priceLimitNote": "Disarankan dari pool saat ini dan mencakup buffer 0.5%.",
+      "approxLpToRedeem": "Token LP ditebus",
+      "modes": {
+        "twoAsset": {
+          "label": "Dua aset",
+          "description": "Tarik kedua aset dalam satu transaksi."
+        },
+        "singleAsset": {
+          "label": "Satu aset",
+          "description": "Tarik satu aset dari pool."
+        },
+        "redeemLp": {
+          "label": "Tebus token LP",
+          "description": "Tebus token LP untuk kedua aset pool."
+        },
+        "singleAssetForLp": {
+          "label": "Satu aset untuk LP",
+          "description": "Tebus token LP untuk satu aset dengan batas LP dan aset."
+        },
+        "allLpIntoOneAsset": {
+          "label": "Semua LP ke satu aset",
+          "description": "Tarik seluruh posisi LP Anda sebagai satu aset dengan jumlah minimum."
+        },
+        "singleAssetWithLimit": {
+          "label": "Satu aset dengan batas",
+          "description": "Tarik satu aset dengan batas harga efektif."
+        },
+        "withdrawAll": {
+          "label": "Tarik semua",
+          "description": "Tarik seluruh posisi LP Anda ke kedua aset."
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "Biaya trading",
+      "confirmText": "Konfirmasi biaya trading AMM sebelum menandatangani. Nilai disimpan di ledger sebagai vote AMM.",
+      "voteValue": "Nilai vote",
+      "invalidFee": "Biaya trading harus angka dari 0 sampai 1%."
+    }
+  }
+}

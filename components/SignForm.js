@@ -43,6 +43,9 @@ import SetDomain from './SignForms/SetDomain'
 import SetDid from './SignForms/SetDid'
 import SetTrustline from './SignForms/SetTrustline'
 import Payment from './SignForms/Payment'
+import AmmDeposit from './SignForms/AmmDeposit'
+import AmmWithdraw from './SignForms/AmmWithdraw'
+import AmmVoteFee from './SignForms/AmmVoteFee'
 import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 import { WalletConnect } from './Walletconnect'
@@ -54,8 +57,10 @@ import { broadcastTransaction, getNextTransactionParams } from '../utils/user'
 const qr = '/images/qr.gif'
 
 const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'castVoteSeat']
+const ammTxs = ['ammDeposit', 'ammWithdraw', 'ammVoteFee']
 const askInfoScreens = [
   ...voteTxs,
+  ...ammTxs,
   'NFTokenAcceptOffer',
   'NFTokenCreateOffer',
   'NFTokenBurn',
@@ -68,7 +73,11 @@ const askInfoScreens = [
   'NFTokenModify'
 ]
 const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
-  if (!signRequest || agreedToRisks) return null
+  if (!signRequest) return null
+  if (signRequest.action === 'ammDeposit' && !signRequest.data?.depositConfirmed) return 'ammDeposit'
+  if (signRequest.action === 'ammWithdraw' && !signRequest.data?.withdrawConfirmed) return 'ammWithdraw'
+  if (signRequest.action === 'ammVoteFee' && !signRequest.data?.feeConfirmed) return 'ammVoteFee'
+  if (agreedToRisks) return null
   const tx = signRequest.request || { TransactionType: 'SignIn' }
   if (tx.TransactionType === 'NFTokenAcceptOffer' && signRequest.offerAmount !== '0') return 'NFTokenAcceptOffer'
   if (signRequest.action === 'nftTransfer') return 'nftTransfer'
@@ -85,7 +94,7 @@ const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
   if (signRequest.action && voteTxs.includes(signRequest.action)) return signRequest.action
   return null
 }
-const noCheckboxScreens = [...voteTxs, 'setDomain', 'setDid', 'setAvatar']
+const noCheckboxScreens = [...voteTxs, ...ammTxs, 'setDomain', 'setDid', 'setAvatar']
 
 let transactionFetchTries = 0
 
@@ -154,9 +163,11 @@ export default function SignForm({
   setRefreshPage,
   saveAddressData,
   wcSessions,
-  setWcSessions
+  setWcSessions,
+  selectedCurrency,
+  fiatRate
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'amm'])
   const router = useRouter()
   const isMobile = useIsMobile()
 
@@ -1373,6 +1384,8 @@ export default function SignForm({
     crossmark: 'Crossmark',
     xyra: 'Xyra'
   }
+  const walletSignScreens = ['xaman', 'gemwallet', 'ledgerwallet', 'dcent', 'metamask', 'walletconnect', 'crossmark', 'xyra']
+  const isWalletSignScreen = walletSignScreens.includes(screen)
 
   const supportedByCrossmark = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
   const supportedByMetamask = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
@@ -1399,8 +1412,14 @@ export default function SignForm({
   const supportedByDcent =
     !signRequest?.request?.TransactionType || dcentSupportedTxTypes.includes(signRequest.request.TransactionType)
   const isSignDisabled = !agreedToRisks || formError
+  const needsAmmDepositConsent =
+    screen === 'ammDeposit' && signRequest?.data?.depositFormValid && !signRequest?.data?.depositAgreementsConfirmed
   const signDisabledTooltip = !agreedToRisks
-    ? 'Please confirm the checkbox first.'
+    ? needsAmmDepositConsent
+      ? 'Please confirm the checkboxes first.'
+      : noCheckboxScreens.includes(screen)
+      ? 'Please complete the form first.'
+      : 'Please confirm the checkbox first.'
     : formError
       ? 'Please complete all required fields correctly.'
       : ''
@@ -1422,286 +1441,331 @@ export default function SignForm({
       )}
       {screen && (
         <div className="sign-in-form">
-          <div className={`sign-in-body center${screen === 'choose-app' ? ' choose-app' : ''}`}>
-            <div className="close-button" onClick={signInCancelAndClose}></div>
+          <div
+            className={`sign-in-body center${screen === 'choose-app' ? ' choose-app' : ''}${
+              ammTxs.includes(screen) ? ' amm-sign-form' : ''
+            }${screen === 'ammVoteFee' ? ' amm-vote-fee-form' : ''}${
+              askInfoScreens.includes(screen) ? ' info-screen' : ''
+            }${isWalletSignScreen ? ' wallet-sign-screen' : ''}${screen === 'xaman' ? ' xaman-sign-screen' : ''}`}
+          >
+            <button
+              type="button"
+              className="sign-in-close"
+              onClick={signInCancelAndClose}
+              aria-label="Close"
+            />
             {askInfoScreens.includes(screen) ? (
               <>
-                <div className="header">
-                  {screen === 'NFTokenBurn' && t('signin.confirm.nft-burn-header')}
-                  {screen === 'NFTokenModify' && "Update NFT's URI"}
-                  {screen === 'NFTokenAcceptOffer' &&
-                    (signRequest.offerType === 'buy'
-                      ? t('signin.confirm.nft-accept-buy-offer-header')
-                      : t('signin.confirm.nft-accept-sell-offer-header'))}
-                  {screen === 'NFTokenCreateOffer' &&
-                    (signRequest.request.Flags === 1 || xls35Sell
-                      ? t('signin.confirm.nft-create-sell-offer-header')
-                      : t('signin.confirm.nft-create-buy-offer-header'))}
-                  {screen === 'nftTransfer' && t('signin.confirm.nft-create-transfer-offer-header')}
-                  {screen === 'setDomain' && t('signin.confirm.set-domain')}
-                  {screen === 'setDid' && t('signin.confirm.set-did')}
-                  {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
-                  {screen === 'setTrustline' && 'Add a token'}
-                  {screen === 'payment' && 'Send'}
-                  {voteTxs.includes(screen) && 'Cast a vote'}
+                <div className="sign-in-modal-header">
+                  <div className="header">
+                    {screen === 'NFTokenBurn' && t('signin.confirm.nft-burn-header')}
+                    {screen === 'NFTokenModify' && "Update NFT's URI"}
+                    {screen === 'NFTokenAcceptOffer' &&
+                      (signRequest.offerType === 'buy'
+                        ? t('signin.confirm.nft-accept-buy-offer-header')
+                        : t('signin.confirm.nft-accept-sell-offer-header'))}
+                    {screen === 'NFTokenCreateOffer' &&
+                      (signRequest.request.Flags === 1 || xls35Sell
+                        ? t('signin.confirm.nft-create-sell-offer-header')
+                        : t('signin.confirm.nft-create-buy-offer-header'))}
+                    {screen === 'nftTransfer' && t('signin.confirm.nft-create-transfer-offer-header')}
+                    {screen === 'setDomain' && t('signin.confirm.set-domain')}
+                    {screen === 'setDid' && t('signin.confirm.set-did')}
+                    {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
+                    {screen === 'setTrustline' && 'Add a token'}
+                    {screen === 'payment' && 'Send'}
+                    {screen === 'ammDeposit' && t('sign.depositTitle', { ns: 'amm' })}
+                    {screen === 'ammWithdraw' && t('sign.withdrawTitle', { ns: 'amm' })}
+                    {screen === 'ammVoteFee' && t('sign.feeVoteTitle', { ns: 'amm' })}
+                    {voteTxs.includes(screen) && 'Cast a vote'}
+                  </div>
                 </div>
 
-                {screen === 'NFTokenCreateOffer' && (
-                  <NFTokenCreateOffer
-                    signRequest={signRequest}
-                    setSignRequest={setSignRequest}
-                    setStatus={setStatus}
-                    setFormError={setFormError}
-                    account={account}
-                  />
-                )}
+                <div className="sign-in-content">
+                  {screen === 'NFTokenCreateOffer' && (
+                    <NFTokenCreateOffer
+                      signRequest={signRequest}
+                      setSignRequest={setSignRequest}
+                      setStatus={setStatus}
+                      setFormError={setFormError}
+                      account={account}
+                    />
+                  )}
 
-                {screen === 'NFTokenModify' && (
-                  <NFTokenModify signRequest={signRequest} setSignRequest={setSignRequest} setStatus={setStatus} />
-                )}
+                  {screen === 'NFTokenModify' && (
+                    <NFTokenModify signRequest={signRequest} setSignRequest={setSignRequest} setStatus={setStatus} />
+                  )}
 
-                {screen === 'nftTransfer' && (
-                  <NftTransfer
-                    signRequest={signRequest}
-                    setSignRequest={setSignRequest}
-                    setStatus={setStatus}
-                    setFormError={setFormError}
-                  />
-                )}
+                  {screen === 'nftTransfer' && (
+                    <NftTransfer
+                      signRequest={signRequest}
+                      setSignRequest={setSignRequest}
+                      setStatus={setStatus}
+                      setFormError={setFormError}
+                    />
+                  )}
 
-                {screen === 'setDomain' && (
-                  <SetDomain
-                    setSignRequest={setSignRequest}
-                    signRequest={signRequest}
-                    setStatus={setStatus}
-                    setAgreedToRisks={setAgreedToRisks}
-                  />
-                )}
+                  {screen === 'setDomain' && (
+                    <SetDomain
+                      setSignRequest={setSignRequest}
+                      signRequest={signRequest}
+                      setStatus={setStatus}
+                      setAgreedToRisks={setAgreedToRisks}
+                    />
+                  )}
 
-                {screen === 'setDid' && (
-                  <SetDid
-                    setSignRequest={setSignRequest}
-                    signRequest={signRequest}
-                    setStatus={setStatus}
-                    setAgreedToRisks={setAgreedToRisks}
-                  />
-                )}
+                  {screen === 'setDid' && (
+                    <SetDid
+                      setSignRequest={setSignRequest}
+                      signRequest={signRequest}
+                      setStatus={setStatus}
+                      setAgreedToRisks={setAgreedToRisks}
+                    />
+                  )}
 
-                {screen === 'setAvatar' && (
-                  <SetAvatar
-                    setSignRequest={setSignRequest}
-                    signRequest={signRequest}
-                    setStatus={setStatus}
-                    setAgreedToRisks={setAgreedToRisks}
-                  />
-                )}
+                  {screen === 'setAvatar' && (
+                    <SetAvatar
+                      setSignRequest={setSignRequest}
+                      signRequest={signRequest}
+                      setStatus={setStatus}
+                      setAgreedToRisks={setAgreedToRisks}
+                    />
+                  )}
 
-                {screen === 'setTrustline' && (
-                  <SetTrustline
-                    setSignRequest={setSignRequest}
-                    signRequest={signRequest}
-                    setStatus={setStatus}
-                    setAgreedToRisks={setAgreedToRisks}
-                    setFormError={setFormError}
-                  />
-                )}
+                  {screen === 'setTrustline' && (
+                    <SetTrustline
+                      setSignRequest={setSignRequest}
+                      signRequest={signRequest}
+                      setStatus={setStatus}
+                      setAgreedToRisks={setAgreedToRisks}
+                      setFormError={setFormError}
+                    />
+                  )}
 
-                {screen === 'payment' && (
-                  <Payment
-                    setSignRequest={setSignRequest}
-                    signRequest={signRequest}
-                    setStatus={setStatus}
-                    setFormError={setFormError}
-                  />
-                )}
+                  {screen === 'payment' && (
+                    <Payment
+                      setSignRequest={setSignRequest}
+                      signRequest={signRequest}
+                      setStatus={setStatus}
+                      setFormError={setFormError}
+                    />
+                  )}
 
-                {screen === 'castVoteRewardDelay' && (
-                  <div className="center">
-                    <br />
-                    <span className="halv">
-                      <span className="input-title">Reward delay (in seconds)</span>
-                      <input
-                        placeholder="2600000"
-                        onChange={onRewardDelayChange}
-                        className="input-text"
-                        spellCheck="false"
-                        value={rewardDelay}
-                      />
-                    </span>
-                    <div>
-                      <br />
-                      {!status && rewardDelay ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />}
-                    </div>
-                  </div>
-                )}
+                  {screen === 'ammDeposit' && (
+                    <AmmDeposit
+                      signRequest={signRequest}
+                      setSignRequest={setSignRequest}
+                      setStatus={setStatus}
+                      setAgreedToRisks={setAgreedToRisks}
+                      selectedCurrency={selectedCurrency}
+                      fiatRate={fiatRate}
+                      account={account}
+                    />
+                  )}
 
-                {screen === 'castVoteRewardRate' && (
-                  <div className="center">
-                    <br />
-                    <span className="halv">
-                      <span className="input-title">
-                        Reward rate (per month compounding)
-                        <br />A number from 0 to 1, where 1 would be 100%
-                      </span>
-                      <input
-                        placeholder="0.00333333333333333"
-                        onChange={onRewardRateChange}
-                        className="input-text"
-                        spellCheck="false"
-                        value={rewardRate}
-                      />
-                    </span>
-                    <div>
-                      <br />
-                      {!status && rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />}
-                    </div>
-                  </div>
-                )}
+                  {screen === 'ammWithdraw' && (
+                    <AmmWithdraw
+                      signRequest={signRequest}
+                      setSignRequest={setSignRequest}
+                      setStatus={setStatus}
+                      setAgreedToRisks={setAgreedToRisks}
+                      selectedCurrency={selectedCurrency}
+                      fiatRate={fiatRate}
+                    />
+                  )}
 
-                {screen === 'castVoteSeat' && (
-                  <div className="center">
-                    <br />
-                    <div>
-                      {signRequest.layer === 2 && (
-                        <span className="quarter">
-                          <span className="input-title">{t('signin.target-table')}</span>
-                          <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
-                        </span>
-                      )}
-                      <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
-                        <span className="input-title">Seat</span>
-                        <Select
-                          options={[
-                            { value: '00', label: '0' },
-                            { value: '01', label: '1' },
-                            { value: '02', label: '2' },
-                            { value: '03', label: '3' },
-                            { value: '04', label: '4' },
-                            { value: '05', label: '5' },
-                            { value: '06', label: '6' },
-                            { value: '07', label: '7' },
-                            { value: '08', label: '8' },
-                            { value: '09', label: '9' },
-                            { value: '0A', label: '10' },
-                            { value: '0B', label: '11' },
-                            { value: '0C', label: '12' },
-                            { value: '0D', label: '13' },
-                            { value: '0E', label: '14' },
-                            { value: '0F', label: '15' },
-                            { value: '10', label: '16' },
-                            { value: '11', label: '17' },
-                            { value: '12', label: '18' },
-                            { value: '13', label: '19' }
-                          ]}
-                          defaultValue={{ value: '13', label: '19' }}
-                          onChange={onSeatSelect}
-                          isSearchable={false}
-                          className="simple-select"
-                          classNamePrefix="react-select"
-                          instanceId="seat-select"
-                        />
-                      </span>
-                    </div>
-
-                    <div className="terms-checkbox">
-                      <CheckBox checked={erase} setChecked={onEraseCheck}>
-                        Vacate the seat
-                      </CheckBox>
-                    </div>
-
-                    {!erase && (
+                  {screen === 'castVoteRewardDelay' && (
+                    <div className="center">
                       <span className="halv">
-                        <span className="input-title">{t('table.address')}</span>
+                        <span className="input-title">Reward delay (in seconds)</span>
                         <input
-                          placeholder={t('search.enter-address')}
-                          onChange={(e) => onSeatValueChange(e.target.value)}
+                          placeholder="2600000"
+                          onChange={onRewardDelayChange}
                           className="input-text"
                           spellCheck="false"
+                          value={rewardDelay}
                         />
                       </span>
-                    )}
-                  </div>
-                )}
+                      <div>
+                        {!status && rewardDelay ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />}
+                      </div>
+                    </div>
+                  )}
 
-                {screen === 'castVoteHook' && (
-                  <div className="center">
-                    <br />
-                    <div>
-                      {signRequest.layer === 2 && (
-                        <span className="quarter">
-                          <span className="input-title">{t('signin.target-table')}</span>
-                          <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
-                        </span>
-                      )}
-                      <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
-                        <span className="input-title">Place</span>
-                        <Select
-                          options={[
-                            { value: 0, label: '0' },
-                            { value: 1, label: '1' },
-                            { value: 2, label: '2' },
-                            { value: 3, label: '3' },
-                            { value: 4, label: '4' },
-                            { value: 5, label: '5' },
-                            { value: 6, label: '6' },
-                            { value: 7, label: '7' },
-                            { value: 8, label: '8' },
-                            { value: 9, label: '9' }
-                          ]}
-                          defaultValue={{ value: 2, label: '2' }}
-                          onChange={onPlaceSelect}
-                          isSearchable={false}
-                          className="simple-select"
-                          classNamePrefix="react-select"
-                          instanceId="hook-topic-select"
-                        />
-                      </span>
-                    </div>
-                    <div className="terms-checkbox">
-                      <CheckBox checked={erase} setChecked={onEraseCheck}>
-                        Erase the hook
-                      </CheckBox>
-                    </div>
-                    {!erase && (
+                  {screen === 'castVoteRewardRate' && (
+                    <div className="center">
                       <span className="halv">
-                        <span className="input-title">Hook</span>
+                        <span className="input-title">
+                          Reward rate (per month compounding)
+                          <br />A number from 0 to 1, where 1 would be 100%
+                        </span>
                         <input
-                          placeholder="Enter hook value"
-                          onChange={(e) => onHookValueChange(e.target.value)}
+                          placeholder="0.00333333333333333"
+                          onChange={onRewardRateChange}
                           className="input-text"
                           spellCheck="false"
+                          value={rewardRate}
                         />
                       </span>
-                    )}
-                  </div>
-                )}
+                      <div>
+                        {!status && rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />}
+                      </div>
+                    </div>
+                  )}
 
-                {!noCheckboxScreens.includes(screen) && (
-                  <div className={`terms-checkbox ${screen === 'setTrustline' ? 'terms-checkbox-trustline' : ''}`}>
-                    <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks}>
-                      {checkBoxText(screen, signRequest)}
-                    </CheckBox>
-                  </div>
-                )}
+                  {screen === 'ammVoteFee' && (
+                    <AmmVoteFee
+                      signRequest={signRequest}
+                      setSignRequest={setSignRequest}
+                      setStatus={setStatus}
+                      setAgreedToRisks={setAgreedToRisks}
+                    />
+                  )}
 
-                <div>{status ? <b className="orange">{status}</b> : <br />}</div>
+                  {screen === 'castVoteSeat' && (
+                    <div className="center">
+                      <div>
+                        {signRequest.layer === 2 && (
+                          <span className="quarter">
+                            <span className="input-title">{t('signin.target-table')}</span>
+                            <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
+                          </span>
+                        )}
+                        <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
+                          <span className="input-title">Seat</span>
+                          <Select
+                            options={[
+                              { value: '00', label: '0' },
+                              { value: '01', label: '1' },
+                              { value: '02', label: '2' },
+                              { value: '03', label: '3' },
+                              { value: '04', label: '4' },
+                              { value: '05', label: '5' },
+                              { value: '06', label: '6' },
+                              { value: '07', label: '7' },
+                              { value: '08', label: '8' },
+                              { value: '09', label: '9' },
+                              { value: '0A', label: '10' },
+                              { value: '0B', label: '11' },
+                              { value: '0C', label: '12' },
+                              { value: '0D', label: '13' },
+                              { value: '0E', label: '14' },
+                              { value: '0F', label: '15' },
+                              { value: '10', label: '16' },
+                              { value: '11', label: '17' },
+                              { value: '12', label: '18' },
+                              { value: '13', label: '19' }
+                            ]}
+                            defaultValue={{ value: '13', label: '19' }}
+                            onChange={onSeatSelect}
+                            isSearchable={false}
+                            className="simple-select"
+                            classNamePrefix="react-select"
+                            instanceId="seat-select"
+                          />
+                        </span>
+                      </div>
 
-                <br />
-                <button type="button" className="button-action" onClick={signInCancelAndClose} style={buttonStyle}>
-                  {t('button.cancel')}
-                </button>
-                <span className={signDisabledTooltip ? 'tooltip' : ''}>
-                  <button
-                    type="button"
-                    className="button-action"
-                    onClick={() => txSend()}
-                    style={buttonStyle}
-                    disabled={isSignDisabled}
-                  >
-                    {t('button.sign')}
+                      <div className="terms-checkbox">
+                        <CheckBox checked={erase} setChecked={onEraseCheck}>
+                          Vacate the seat
+                        </CheckBox>
+                      </div>
+
+                      {!erase && (
+                        <span className="halv">
+                          <span className="input-title">{t('table.address')}</span>
+                          <input
+                            placeholder={t('search.enter-address')}
+                            onChange={(e) => onSeatValueChange(e.target.value)}
+                            className="input-text"
+                            spellCheck="false"
+                          />
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {screen === 'castVoteHook' && (
+                    <div className="center">
+                      <div>
+                        {signRequest.layer === 2 && (
+                          <span className="quarter">
+                            <span className="input-title">{t('signin.target-table')}</span>
+                            <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
+                          </span>
+                        )}
+                        <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
+                          <span className="input-title">Place</span>
+                          <Select
+                            options={[
+                              { value: 0, label: '0' },
+                              { value: 1, label: '1' },
+                              { value: 2, label: '2' },
+                              { value: 3, label: '3' },
+                              { value: 4, label: '4' },
+                              { value: 5, label: '5' },
+                              { value: 6, label: '6' },
+                              { value: 7, label: '7' },
+                              { value: 8, label: '8' },
+                              { value: 9, label: '9' }
+                            ]}
+                            defaultValue={{ value: 2, label: '2' }}
+                            onChange={onPlaceSelect}
+                            isSearchable={false}
+                            className="simple-select"
+                            classNamePrefix="react-select"
+                            instanceId="hook-topic-select"
+                          />
+                        </span>
+                      </div>
+                      <div className="terms-checkbox">
+                        <CheckBox checked={erase} setChecked={onEraseCheck}>
+                          Erase the hook
+                        </CheckBox>
+                      </div>
+                      {!erase && (
+                        <span className="halv">
+                          <span className="input-title">Hook</span>
+                          <input
+                            placeholder="Enter hook value"
+                            onChange={(e) => onHookValueChange(e.target.value)}
+                            className="input-text"
+                            spellCheck="false"
+                          />
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {!noCheckboxScreens.includes(screen) && (
+                    <div className={`terms-checkbox ${screen === 'setTrustline' ? 'terms-checkbox-trustline' : ''}`}>
+                      <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks}>
+                        {checkBoxText(screen, signRequest)}
+                      </CheckBox>
+                    </div>
+                  )}
+
+                  {status && <div className="signin-status"><b className="orange">{status}</b></div>}
+                </div>
+
+                <div className="sign-in-actions">
+                  <button type="button" className="button-action" onClick={signInCancelAndClose} style={buttonStyle}>
+                    {t('button.cancel')}
                   </button>
-                  {signDisabledTooltip && <span className="tooltiptext left">{signDisabledTooltip}</span>}
-                </span>
+                  <span className={signDisabledTooltip ? 'tooltip' : ''}>
+                    <button
+                      type="button"
+                      className="button-action"
+                      onClick={() => txSend()}
+                      style={buttonStyle}
+                      disabled={isSignDisabled}
+                    >
+                      {t('button.sign')}
+                    </button>
+                    {signDisabledTooltip && <span className="tooltiptext left">{signDisabledTooltip}</span>}
+                  </span>
+                </div>
               </>
             ) : (
               <>
@@ -1828,23 +1892,20 @@ export default function SignForm({
                         : t('signin.login-with', { appName: walletNames[screen] })}
                     </div>
                     {screen === 'xaman' && (
-                      <>
+                      <div className="xaman-signing">
                         {!isMobile && (
-                          <div className="signin-actions-list">
-                            1. {t('signin.xaman.open-app')}
-                            <br />
+                          <ol className="signin-actions-list xaman-steps">
+                            <li>{t('signin.xaman.open-app')}</li>
                             {devNet ? (
                               <>
-                                2. {t('signin.xaman.change-settings')}
-                                <br />
-                                3. {t('signin.xaman.scan-qr')}
+                                <li>{t('signin.xaman.change-settings')}</li>
+                                <li>{t('signin.xaman.scan-qr')}</li>
                               </>
                             ) : (
-                              <>2. {t('signin.xaman.scan-qr')}</>
+                              <li>{t('signin.xaman.scan-qr')}</li>
                             )}
-                          </div>
+                          </ol>
                         )}
-                        <br />
                         {showXamanQr ? (
                           <XamanQr
                             expiredQr={expiredQr}
@@ -1853,18 +1914,12 @@ export default function SignForm({
                             status={status}
                           />
                         ) : (
-                          <div className="orange bold center" style={{ margin: '30px' }}>
-                            {awaiting && (
-                              <>
-                                <span className="waiting"></span>
-                                <br />
-                                <br />
-                              </>
-                            )}
-                            {status}
+                          <div className="xaman-waiting-state">
+                            {awaiting && <span className="waiting"></span>}
+                            <b className="orange">{status}</b>
                           </div>
                         )}
-                      </>
+                      </div>
                     )}{' '}
                     {screen === 'xyra' && !awaiting && xyraNeedsClick && xyraPreparedTx && (
                       <div style={{ marginTop: 30 }}>
@@ -1914,7 +1969,7 @@ export default function SignForm({
                     )}{' '}
                     {screen !== 'xaman' && (
                       <>
-                        <div className="orange bold center" style={{ margin: '30px' }}>
+                        <div className="wallet-sign-status orange bold center">
                           {awaiting && (
                             <>
                               <span className="waiting"></span>

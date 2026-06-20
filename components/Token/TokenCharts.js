@@ -337,7 +337,6 @@ function TokenChart({ group, expanded = false }) {
         tooltip: {
           shared: true,
           intersect: false,
-          theme,
           fixed: group.tooltipFixed && !expanded
             ? {
                 enabled: true,
@@ -372,7 +371,7 @@ function TokenChart({ group, expanded = false }) {
         yaxis
       }
     },
-    [expanded, gridColor, group, labelColor, textColor, theme]
+    [expanded, gridColor, group, labelColor, textColor]
   )
 
   return (

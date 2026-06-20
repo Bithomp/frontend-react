@@ -1081,6 +1081,8 @@ const MyApp = ({ Component, pageProps }) => {
                   saveAddressData={saveAddressData}
                   wcSessions={wcSessions}
                   setWcSessions={setWcSessions}
+                  selectedCurrency={effectiveSelectedCurrency}
+                  fiatRate={liveFiatRate}
                 />
               )}
               {isEmailLoginOpen && (

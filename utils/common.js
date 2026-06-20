@@ -14,9 +14,13 @@ export const fetchHistoricalRate = async ({ timestamp, selectedCurrency, setPage
   ).catch(() => {
     console.log("ERROR: can't get historical rate")
   })
-  if (response?.data?.[selectedCurrency]) {
-    setPageFiatRate(response.data[selectedCurrency])
+  const rate = response?.data?.[selectedCurrency] ?? response?.data?.[selectedCurrency.toLowerCase()]
+  if (rate !== undefined) {
+    const numericRate = Number(rate)
+    if (typeof setPageFiatRate === 'function') setPageFiatRate(numericRate)
+    return numericRate
   }
+  return null
 }
 
 // Fetch the current fiat rate for an IOU/trustline token.
@@ -27,18 +31,29 @@ export const fetchCurrentTokenFiatRate = async ({ issuer, currency, selectedCurr
     `v2/trustlines/token/${issuer}/${encodeURIComponent(currency)}/rate/current?convertCurrencies=${selectedCurrency}`
   ).catch(() => null)
   const rate = response?.data?.[selectedCurrency.toLowerCase()]
-  if (rate !== undefined) setRate(Number(rate))
+  if (rate !== undefined) {
+    const numericRate = Number(rate)
+    if (typeof setRate === 'function') setRate(numericRate)
+    return numericRate
+  }
+  return null
 }
 
 // Fetch the historical fiat rate for an IOU/trustline token at a given point in time.
-// date can be a Unix timestamp in seconds (number) or an ISO string / Date object.
+// date can be a Unix timestamp in seconds or milliseconds (number), or an ISO string / Date object.
 // setRate receives the rate as a number (how many selectedCurrency per 1 token).
 export const fetchHistoricalTokenFiatRate = async ({ issuer, currency, date, selectedCurrency, setRate }) => {
   if (devNet || !issuer || !currency || !date || !selectedCurrency) return
-  const timestamp = typeof date === 'number' ? date : Math.floor(new Date(date).getTime() / 1000)
+  const rawTimestamp = typeof date === 'number' ? date : new Date(date).getTime()
+  const timestamp = rawTimestamp < 1000000000000 ? rawTimestamp * 1000 : rawTimestamp
   const response = await axios(
     `v2/trustlines/token/${issuer}/${encodeURIComponent(currency)}/rate/history?date=${timestamp}&convertCurrencies=${selectedCurrency}`
   ).catch(() => null)
   const rate = response?.data?.[selectedCurrency.toLowerCase()]
-  if (rate !== undefined) setRate(Number(rate))
+  if (rate !== undefined) {
+    const numericRate = Number(rate)
+    if (typeof setRate === 'function') setRate(numericRate)
+    return numericRate
+  }
+  return null
 }

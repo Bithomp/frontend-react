@@ -1,4 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 
 import SearchBlock from '../../components/Layout/SearchBlock'
 import SEO from '../../components/SEO'
@@ -9,7 +10,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(context.locale, ['common']))
+      ...(await serverSideTranslations(context.locale, ['common', 'amm']))
     }
   }
 }
@@ -19,29 +20,25 @@ const Container = ({ children }) => {
 }
 
 const AmmSearch = () => {
+  const { t } = useTranslation('amm')
   const width = useWidth()
   return (
     <>
       <SEO
-        page="AMM pool details"
-        title="AMM pool details"
-        description="Automated market maker pool information search"
+        page={t('search.pageTitle')}
+        title={t('search.pageTitle')}
+        description={t('search.metaDescription')}
       />
       <Container>
-        <h1 className="center">Automated market maker pool information search</h1>
+        <h1 className="center">{t('search.heading')}</h1>
         <p className="center">
-          Dive into the world of Autmated Market Maker (AMM) pools. Get access to up-to-date AMM pool information.
-          Search by AMM ID, Liquidity Pool (LP) token, AMM owner address.
+          {t('search.intro')}
         </p>
         <br />
         <SearchBlock
           tab="amm"
           type="explorer"
-          searchPlaceholderText={
-            width > 600
-              ? 'Search by AMM ID, Liquidity Pool (LP) token, AMM owner address'
-              : 'AMM ID, LP token or AMM address'
-          }
+          searchPlaceholderText={width > 600 ? t('search.placeholderLong') : t('search.placeholderShort')}
         />
       </Container>
     </>

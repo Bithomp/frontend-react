@@ -491,7 +491,7 @@ export async function getServerSideProps(context) {
         initialSignerAccountsData,
         initialNftMinterAccountsData,
         initialActivatedAccountsData,
-        ...(await serverSideTranslations(locale, ['common', 'account', 'transaction-errors']))
+        ...(await serverSideTranslations(locale, ['common', 'account', 'amm', 'services', 'transaction-errors']))
       }
     }
   } else {
@@ -505,7 +505,7 @@ export async function getServerSideProps(context) {
         initialSignerAccountsData,
         initialNftMinterAccountsData,
         initialActivatedAccountsData,
-        ...(await serverSideTranslations(locale, ['common', 'account', 'transaction-errors']))
+        ...(await serverSideTranslations(locale, ['common', 'account', 'amm', 'services', 'transaction-errors']))
       }
     }
   }
@@ -532,11 +532,13 @@ import {
   shortHash,
   shortNiceNumber,
   serviceUsernameOrAddressText,
+  TokenImage,
   timeFromNow,
   timeOrDate,
   transferRateToPercent,
   userOrServiceName
 } from '../../utils/format'
+import { LinkToken } from '../../utils/links'
 import { scaleAmount, subtract } from '../../utils/calc'
 import {
   addressBalanceChanges,
@@ -680,6 +682,20 @@ const tokenSearchText = (token, accountAddress) => {
   return fields.map(searchValue).join(' ').toLowerCase()
 }
 
+const ammCurrencyDetailsId = (currencyDetails) => currencyDetails?.ammID || null
+
+const isNativeAmmAsset = (asset) => !asset || typeof asset !== 'object' || (!asset.issuer && !asset.mpt_issuance_id)
+
+const ammAssetTxIssue = (asset) => {
+  if (asset?.mpt_issuance_id) return { mpt_issuance_id: asset.mpt_issuance_id }
+  if (isNativeAmmAsset(asset)) return { currency: nativeCurrency }
+
+  return {
+    currency: asset.currency,
+    issuer: asset.issuer
+  }
+}
+
 const nftResourceForTab = () => (xahauNetwork ? 'uritokens' : 'nfts')
 
 const nftSearchUrl = ({ address, tab, search, marker, ledgerTimestamp }) => {
@@ -778,6 +794,7 @@ export default function Account({
   const [tokenSearch, setTokenSearch] = useState('')
   const [tokenTab, setTokenTab] = useState('all')
   const [tokenDisplayLimit, setTokenDisplayLimit] = useState(TOKEN_PREVIEW_LIMIT)
+  const [ammActionLoadingKey, setAmmActionLoadingKey] = useState(null)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(
     ledgerTimestampQuery ? new Date(ledgerTimestampQuery) : new Date()
   )
@@ -1025,6 +1042,49 @@ export default function Account({
     if (effectiveLedgerTimestamp) return ta('tooltips.historical-unavailable')
     return ta('tooltips.send-unavailable')
   })()
+  const openAmmLiquidityPopup = async ({ token, action, actionKey }) => {
+    const currencyDetails = token?.Balance?.currencyDetails
+    const ammID = ammCurrencyDetailsId(currencyDetails)
+    if (!setSignRequest || !ammID) return
+
+    const transactionType = action === 'ammDeposit' ? 'AMMDeposit' : 'AMMWithdraw'
+
+    setAmmActionLoadingKey(actionKey)
+
+    try {
+      const ammResponse = await axios(`v2/amm/${encodeURIComponent(ammID)}?priceNativeCurrencySpot=true`)
+      const ammData = ammResponse?.data || null
+      const asset1 = ammData?.amount
+      const asset2 = ammData?.amount2
+      const lpToken = ammData?.lpTokenBalance
+
+      if (!asset1 || !asset2 || !lpToken?.currency || !lpToken?.issuer || !lpToken?.value) return
+
+      setSignRequest({
+        action,
+        redirect: 'account',
+        request: {
+          TransactionType: transactionType,
+          Asset: ammAssetTxIssue(asset1),
+          Asset2: ammAssetTxIssue(asset2)
+        },
+        data: {
+          asset1,
+          asset2,
+          tradingFee: ammData.tradingFee,
+          lpToken: {
+            currency: lpToken.currency,
+            issuer: lpToken.issuer,
+            value: lpToken.value
+          }
+        }
+      })
+    } catch {
+      return
+    } finally {
+      setAmmActionLoadingKey(null)
+    }
+  }
   const getFirstNativeUrl = getCoinsUrl ? getCoinsUrl + (devNet ? '?address=' + data?.address : '') : ''
   const hasAccountControlData =
     hasRegularKey ||
@@ -5478,6 +5538,21 @@ export default function Account({
                 if (!issuer?.issuer || !trustlineCurrencyCode) return ta('tooltips.trustline-incomplete')
                 return ta('tooltips.remove-trustline-unavailable')
               })()
+              const tokenPoolsUrl =
+                !isLpToken && trustlineCurrencyCode && issuer?.issuer
+                  ? `/amms?currency=${encodeURIComponent(trustlineCurrencyCode)}&currencyIssuer=${encodeURIComponent(
+                      issuer.issuer
+                    )}`
+                  : null
+              const lpAmmId = isLpToken ? ammCurrencyDetailsId(token.Balance?.currencyDetails) : null
+              const canOpenAmmAction =
+                isLpToken &&
+                !!setSignRequest &&
+                !effectiveLedgerTimestamp &&
+                !!lpAmmId
+              const ammDepositActionKey = `${tokenUniqueKey}-ammDeposit`
+              const ammWithdrawActionKey = `${tokenUniqueKey}-ammWithdraw`
+              const ammActionBusy = !!ammActionLoadingKey
 
               return (
                 <div
@@ -5593,17 +5668,32 @@ export default function Account({
                                     </span>
                                   </span>
                                 </div>
-                                {asset1 && (
+                                {lpAmmId && (
+                                  <div className="detail-row">
+                                    <span>{ta('labels.amm-id')}:</span>
+                                    <span className="copy-inline">
+                                      <Link
+                                        href={`/amm/${lpAmmId}`}
+                                        className="change-limit-link no-brake"
+                                        onClick={(event) => event.stopPropagation()}
+                                      >
+                                        {shortHash(lpAmmId)}
+                                      </Link>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={lpAmmId} />
+                                      </span>
+                                    </span>
+                                  </div>
+                                )}
+                                {asset1 && asset2 && (
                                   <>
                                     <div className="detail-row">
                                       <span>{ta('labels.asset-1')}:</span>
                                       <span className="amount-with-fiat" onClick={(event) => event.stopPropagation()}>
-                                        <span>
-                                          {amountFormat(amount1Raw, {
-                                            icon: true,
-                                            bold: true,
-                                            short: true
-                                          })}
+                                        <span className="no-brake">
+                                          <TokenImage token={asset1} />
+                                          <span className="bold">{amountFormat(amount1Raw, { noCurrency: true, short: true })}</span>{' '}
+                                          <LinkToken token={asset1} />
                                         </span>
                                         {amount1FiatText ? (
                                           <span className="fiat-line" suppressHydrationWarning>
@@ -5612,26 +5702,13 @@ export default function Account({
                                         ) : null}
                                       </span>
                                     </div>
-                                    {asset1?.issuer && (
-                                      <div className="detail-row">
-                                        <span>{ta('labels.asset-1-issuer')}:</span>
-                                        <span className="copy-inline">
-                                          <AddressWithIconInline data={asset1} name="issuer" options={{ short: 6 }} />
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={asset1?.issuer} />
-                                          </span>
-                                        </span>
-                                      </div>
-                                    )}
                                     <div className="detail-row">
                                       <span>{ta('labels.asset-2')}:</span>
                                       <span className="amount-with-fiat" onClick={(event) => event.stopPropagation()}>
-                                        <span>
-                                          {amountFormat(amount2Raw, {
-                                            icon: true,
-                                            bold: true,
-                                            short: true
-                                          })}
+                                        <span className="no-brake">
+                                          <TokenImage token={asset2} />
+                                          <span className="bold">{amountFormat(amount2Raw, { noCurrency: true, short: true })}</span>{' '}
+                                          <LinkToken token={asset2} />
                                         </span>
                                         {amount2FiatText ? (
                                           <span className="fiat-line" suppressHydrationWarning>
@@ -5640,17 +5717,6 @@ export default function Account({
                                         ) : null}
                                       </span>
                                     </div>
-                                    {asset2?.issuer && (
-                                      <div className="detail-row">
-                                        <span>{ta('labels.asset-2-issuer')}:</span>
-                                        <span className="copy-inline">
-                                          <AddressWithIconInline data={asset2} name="issuer" options={{ short: 6 }} />
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={asset2?.issuer} />
-                                          </span>
-                                        </span>
-                                      </div>
-                                    )}
                                   </>
                                 )}
                               </>
@@ -5788,42 +5854,43 @@ export default function Account({
                         <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                           <button
                             type="button"
-                            className="card-action-btn redeem"
-                            onClick={() =>
-                              router.push(
-                                `/services/amm/deposit?currency=${token.Balance?.currencyDetails?.asset?.currency}${
-                                  token.Balance?.currencyDetails?.asset?.issuer
-                                    ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
-                                    : ''
-                                }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
-                                  token.Balance?.currencyDetails?.asset2?.issuer
-                                    ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
-                                    : ''
-                                }`
-                              )
-                            }
+                            className={`card-action-btn ${canOpenAmmAction ? 'redeem' : 'disabled'}`}
+                            disabled={!canOpenAmmAction || ammActionBusy}
+                            onClick={() => {
+                              if (!canOpenAmmAction || ammActionBusy) return
+                              openAmmLiquidityPopup({
+                                token,
+                                action: 'ammDeposit',
+                                actionKey: ammDepositActionKey
+                              })
+                            }}
                           >
                             <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.deposit')}
                           </button>
                           <button
                             type="button"
-                            className="card-action-btn cancel"
-                            onClick={() =>
-                              router.push(
-                                `/services/amm/withdraw?currency=${token.Balance?.currencyDetails?.asset?.currency}${
-                                  token.Balance?.currencyDetails?.asset?.issuer
-                                    ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
-                                    : ''
-                                }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
-                                  token.Balance?.currencyDetails?.asset2?.issuer
-                                    ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
-                                    : ''
-                                }`
-                              )
-                            }
+                            className={`card-action-btn ${canOpenAmmAction ? 'cancel' : 'disabled'}`}
+                            disabled={!canOpenAmmAction || ammActionBusy}
+                            onClick={() => {
+                              if (!canOpenAmmAction || ammActionBusy) return
+                              openAmmLiquidityPopup({
+                                token,
+                                action: 'ammWithdraw',
+                                actionKey: ammWithdrawActionKey
+                              })
+                            }}
                           >
                             <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.withdraw')}
                           </button>
+                          {lpAmmId && (
+                            <button
+                              type="button"
+                              className="card-action-btn pools"
+                              onClick={() => router.push(`/amm/${lpAmmId}`)}
+                            >
+                              <TbBinaryTree style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.pool-page')}
+                            </button>
+                          )}
                         </div>
                       )}
                       {!isLpToken && (
@@ -5870,6 +5937,15 @@ export default function Account({
                             >
                               <MdSouth style={{ fontSize: 16, marginBottom: -2 }} />{' '}
                               {ta('actions.get-more-token', { amount: 1, token: 'RLUSD' })}
+                            </button>
+                          )}
+                          {tokenPoolsUrl && (
+                            <button
+                              type="button"
+                              className="card-action-btn pools"
+                              onClick={() => router.push(tokenPoolsUrl)}
+                            >
+                              <TbBinaryTree style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.pools')}
                             </button>
                           )}
                           <span className={disabledRemoveTrustlineTooltip ? 'tooltip' : ''}>
@@ -13358,6 +13434,7 @@ export default function Account({
           align-items: center;
           gap: 5px;
           cursor: pointer;
+          text-decoration: none;
           transition:
             background-color 0.16s ease,
             border-color 0.16s ease,
@@ -13394,6 +13471,29 @@ export default function Account({
         .card-action-btn.cancel:hover {
           border-color: color-mix(in srgb, var(--red) 78%, var(--border-color));
           background: color-mix(in srgb, var(--red) 24%, var(--background-input));
+        }
+
+        .card-action-btn.pools {
+          color: #7c3aed;
+          border-color: color-mix(in srgb, #7c3aed 46%, var(--border-color));
+          background: color-mix(in srgb, #7c3aed 12%, var(--background-input));
+        }
+
+        .card-action-btn.pools:hover {
+          border-color: color-mix(in srgb, #7c3aed 68%, var(--border-color));
+          background: color-mix(in srgb, #7c3aed 20%, var(--background-input));
+        }
+
+        :global(body.dark) .card-action-btn.pools {
+          color: #ddd6fe;
+          border-color: color-mix(in srgb, #8b5cf6 72%, var(--border-color));
+          background: color-mix(in srgb, #7c3aed 30%, var(--background-input));
+        }
+
+        :global(body.dark) .card-action-btn.pools:hover {
+          color: #f5f3ff;
+          border-color: color-mix(in srgb, #a78bfa 86%, var(--border-color));
+          background: color-mix(in srgb, #7c3aed 42%, var(--background-input));
         }
 
         .card-action-btn.disabled,

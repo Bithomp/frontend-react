@@ -75,7 +75,7 @@ export default function HomeTeaser({
                   className={`${styles.cardRefreshIcon} ${isRefreshing ? styles.cardRefreshIconSpinning : ''}`.trim()}
                 />
               </button>
-              {isRefreshHidden ? <span className="tooltiptext left no-brake">{refreshTitle}</span> : null}
+              {isRefreshHidden ? <span className={`tooltiptext below left no-brake ${styles.cardRefreshTooltip}`}>{refreshTitle}</span> : null}
             </span>
           ) : null}
           {href ? (

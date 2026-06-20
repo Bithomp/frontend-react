@@ -559,21 +559,6 @@
     text-align: center;
   }
 
-  .tokenChartsSection .apexcharts-tooltip,
-  .tokenChartsSection .apexcharts-tooltip-title {
-    background: var(--card-bg) !important;
-    color: var(--text-main) !important;
-  }
-
-  .tokenChartsSection .apexcharts-tooltip {
-    border: 1px solid color-mix(in srgb, var(--card-border) 72%, var(--text-secondary)) !important;
-    box-shadow: 0 8px 22px color-mix(in srgb, #000 20%, transparent) !important;
-  }
-
-  .tokenChartsSection .apexcharts-tooltip-title {
-    border-bottom: 1px solid color-mix(in srgb, var(--card-border) 64%, var(--text-secondary)) !important;
-  }
-
   .tokenActivityGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 620px), 1fr));
@@ -810,6 +795,1880 @@
     white-space: nowrap;
   }
 
+  .ammPage .tokenLayout {
+    width: min(calc(100% - 40px), 1480px);
+  }
+
+  .ammHero {
+    grid-template-columns: minmax(360px, 1fr) minmax(230px, 0.38fr) minmax(130px, 160px) minmax(150px, 180px);
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ammHeroMain {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    min-width: 0;
+  }
+
+  .ammHeroText {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    padding-top: 10px;
+  }
+
+  .ammHeroCoins {
+    position: relative;
+    width: 164px;
+    height: 92px;
+    flex: 0 0 auto;
+  }
+
+  .ammHeroCoin {
+    position: absolute;
+    width: 92px;
+    height: 92px;
+    box-sizing: border-box;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--card-border) 48%, transparent),
+      0 0 0 3px color-mix(in srgb, #fff 18%, transparent),
+      0 10px 28px rgba(0, 0, 0, 0.18);
+    object-fit: cover;
+  }
+
+  .ammHeroCoinBack {
+    top: 0;
+    left: 0;
+  }
+
+  .ammHeroCoinFront {
+    right: 0;
+    top: 0;
+    z-index: 2;
+  }
+
+  .ammEyebrow {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .ammHero h1 {
+    margin: 0;
+    color: var(--text-main);
+    font-size: clamp(32px, 3.8vw, 52px);
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+
+  .ammHeroActions {
+    display: grid;
+    gap: 8px;
+    align-self: stretch;
+    align-content: center;
+
+    .button-action.wide {
+      width: 100%;
+      min-height: 40px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+
+  .ammTvlHero {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    min-width: 0;
+    min-height: 92px;
+    padding: 19px 0 0 16px;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 1px;
+      height: 72px;
+      background: color-mix(in srgb, var(--card-border) 78%, transparent);
+      transform: translateY(-50%);
+    }
+
+    > span:first-child {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    > strong {
+      min-width: 0;
+      color: var(--text-main);
+      font-size: clamp(28px, 3vw, 52px);
+      line-height: 0.98;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .ammHeroFee {
+    position: relative;
+    display: grid;
+    gap: 5px;
+    align-content: start;
+    min-width: 0;
+    min-height: 92px;
+    padding: 19px 0 0 14px;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 1px;
+      height: 72px;
+      background: color-mix(in srgb, var(--card-border) 78%, transparent);
+      transform: translateY(-50%);
+    }
+
+    > span:first-child {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    > strong {
+      color: var(--text-main);
+      font-size: 20px;
+      font-weight: 650;
+      line-height: 1;
+    }
+
+    .button-action.thin.narrow {
+      min-height: 28px;
+      margin: 0;
+      padding: 4px 10px;
+      font-size: 12px;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+  }
+
+  .ammHeroFeeActions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ammMetricsPanel {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ammMetricGrid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 10px;
+    align-items: stretch;
+
+    > .ammMetricCard {
+      display: grid;
+      align-content: start;
+      gap: 7px;
+      min-width: 0;
+      min-height: 74px;
+      padding: 10px 12px;
+      border: 1px solid color-mix(in srgb, var(--card-border) 76%, transparent);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--card-bg) 72%, transparent);
+    }
+
+    > .ammMetricCard > span:first-child {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.15;
+    }
+
+    > .ammMetricCard > span:last-child {
+      min-width: 0;
+      font-size: 14px;
+    }
+  }
+
+  .ammMetricCard-assetPrices {
+    grid-column: span 4;
+  }
+
+  .ammMetricCard-reserves {
+    grid-column: span 4;
+  }
+
+  .ammMetricCard-poolStats {
+    grid-column: span 4;
+    align-content: stretch;
+  }
+
+  .ammMetricQuietLink {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary) !important;
+    font-weight: 700;
+    line-height: 1.1;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--text-secondary) 48%, transparent);
+    text-underline-offset: 2px;
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--text-main) !important;
+      text-decoration-color: currentColor;
+    }
+  }
+
+  .ammMetricAmountLine {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    vertical-align: middle;
+
+    > span,
+    > a {
+      min-width: 0;
+    }
+  }
+
+  .ammMetricRows {
+    gap: 4px;
+  }
+
+  .ammMetricRows .ammMetricAmountLine {
+    min-height: 22px;
+  }
+
+  .ammMetricAmountLineWithDelta {
+    grid-template-columns: minmax(0, max-content) auto;
+    column-gap: clamp(10px, 4vw, 28px);
+  }
+
+  .ammMetricDeltaStack {
+    display: grid;
+    grid-template-columns: minmax(0, max-content) 78px minmax(10px, 1fr) auto;
+    gap: 4px 8px;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .ammMetricDeltaStack .ammMetricAmountLineWithDelta {
+    display: contents;
+  }
+
+  .ammMetricAmountMain {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+
+    > span,
+    > a {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .ammMetricAmountMainWithTooltip,
+  .ammMetricAmountMainWithTooltip > .ammMetricAmountTooltip {
+    overflow: visible;
+  }
+
+  .ammMetricAmountLineWithDelta .ammMetricAmountMain {
+    grid-column: 1;
+  }
+
+  .ammMetricAmountDeltaColumn {
+    grid-column: 2;
+    display: inline-flex;
+    justify-content: flex-end;
+    min-width: 0;
+    overflow: visible !important;
+  }
+
+  .ammMetricAmountAside {
+    grid-column: 4;
+    display: grid;
+    grid-template-columns: auto 78px;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .ammMetricAmountFiat {
+    color: var(--text-secondary);
+    font-size: 0.94em;
+    white-space: nowrap;
+  }
+
+  .ammMetricDelta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    min-width: 62px;
+    height: 22px;
+    padding: 0 6px;
+    border: 1px solid color-mix(in srgb, var(--text-secondary) 22%, transparent);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--background-secondary) 46%, transparent);
+    font-size: 10.5px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .ammMetricDelta-empty {
+    visibility: hidden;
+  }
+
+  .ammMetricSubList {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 18px;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .ammMetricSubRow {
+    display: grid;
+    grid-template-columns: minmax(78px, 1fr) minmax(38px, max-content) minmax(62px, max-content);
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+
+    > strong {
+      justify-content: flex-end;
+      min-width: 0;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.15;
+      text-align: right;
+      white-space: nowrap;
+    }
+  }
+
+  .ammMetricSubLabel {
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ammMetricSubValue {
+    display: inline-flex;
+    align-items: center;
+    justify-self: end;
+  }
+
+  .ammMetricSubRow > .ammMetricDelta {
+    justify-self: end;
+  }
+
+  .ammMetricDelta-up {
+    border-color: color-mix(in srgb, var(--green) 38%, transparent);
+    color: var(--green);
+    background: color-mix(in srgb, var(--green) 9%, transparent);
+  }
+
+  .ammMetricDelta-down {
+    border-color: color-mix(in srgb, var(--red) 34%, transparent);
+    color: var(--red);
+    background: color-mix(in srgb, var(--red) 8%, transparent);
+  }
+
+  .ammClosedDaySection {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ammClosedDayTitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.15;
+  }
+
+  .ammClosedDayGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ammClosedDayGroup {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 8px;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 76%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 72%, transparent);
+  }
+
+  .ammClosedDayStats {
+    display: grid;
+    grid-template-rows: 13px 22px 22px;
+    align-content: start;
+    gap: 5px;
+    min-width: 0;
+    padding: 6px 4px 4px 8px;
+  }
+
+  .ammClosedDayHeader {
+    display: grid;
+    grid-row: 1 / span 2;
+    grid-template-rows: 13px 22px;
+    gap: 5px;
+    min-width: 0;
+
+    > span {
+      min-width: 0;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    > strong {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.15;
+    }
+  }
+
+  .ammClosedDayHeader > strong > span:last-child,
+  .ammClosedDayMeta > strong {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+    min-width: 0;
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .ammClosedDayMeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 22px;
+    min-width: 0;
+
+    > span {
+      min-width: 0;
+    }
+  }
+
+  .ammClosedDayHeader > strong > span:first-child,
+  .ammClosedDayMeta > span {
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ammClosedDayVolumes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 96px minmax(104px, max-content);
+    grid-template-rows: 13px 22px 22px;
+    align-content: start;
+    gap: 5px 8px;
+    min-width: 0;
+    padding: 6px 4px 4px 8px;
+  }
+
+  .ammClosedDayVolumeTitle {
+    grid-column: 1 / -1;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .ammClosedDayVolumes .ammMetricAmountLine {
+    min-height: 22px;
+    gap: 6px;
+  }
+
+  .ammClosedDayVolumes .ammMetricAmountLineWithDelta {
+    display: contents;
+  }
+
+  .ammClosedDayVolumes .ammMetricAmountMain,
+  .ammClosedDayVolumes .ammMetricAmountFiat {
+    font-size: 12px;
+  }
+
+  .ammClosedDayVolumes .ammMetricAmountAside {
+    grid-column: 3;
+    grid-template-columns: auto;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-left: 0;
+  }
+
+  .ammChartsSection {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ammChartsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .ammChartCard {
+    display: grid;
+    grid-template-rows: auto minmax(190px, 1fr);
+    gap: 8px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+    box-shadow: var(--card-shadow);
+
+    h3 {
+      margin: 0;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .tokenChartEmpty {
+      display: grid;
+      place-items: center;
+      min-height: 190px;
+      padding: 12px;
+    }
+  }
+
+  .ammActivityCard {
+    --home-teaser-min-height: 0;
+    overflow: hidden;
+  }
+
+  .ammActivitySection .tokenActivityGrid {
+    align-items: stretch;
+  }
+
+  .ammActivitySection .tokenActivityCard {
+    align-self: stretch;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: none;
+  }
+
+  .ammActivityCard > div:last-child {
+    min-height: 0;
+    overflow-y: visible;
+  }
+
+  .ammActivityFilters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .ammActivityFilterGroup {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+    padding: 3px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 68%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--background-secondary) 42%, transparent);
+  }
+
+  .ammActivitySortGroup {
+    background: color-mix(in srgb, var(--link-color) 8%, var(--background-secondary));
+  }
+
+  .ammSwapRow {
+    display: grid;
+    grid-template-columns: 44px minmax(220px, 1fr) minmax(130px, auto) !important;
+    gap: 8px !important;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--card-border);
+    color: inherit;
+    text-decoration: none;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: var(--background-secondary);
+      text-decoration: none;
+    }
+  }
+
+  .ammSwapAddress {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+
+    * {
+      white-space: nowrap;
+    }
+  }
+
+  .ammSwapAddressInline {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .ammSwapAddressText {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ammSwapValues {
+    display: grid;
+    gap: 2px;
+    justify-items: end;
+    min-width: 0;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+    text-align: right;
+
+    > span {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .ammContributorsCard {
+    position: relative;
+    scroll-margin-top: 96px;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    box-sizing: border-box;
+    gap: 10px;
+    min-width: 0;
+    min-height: 0;
+    height: 100% !important;
+    max-height: none;
+    padding: 14px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+  }
+
+  .ammContributorsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--card-border);
+
+    > div {
+      min-width: 0;
+    }
+
+    h2 {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      margin: 0;
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.2;
+      text-transform: none;
+    }
+
+    .ammContributorsCount {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      margin-top: 0;
+      padding: 2px 6px 1px;
+      border: 1px solid color-mix(in srgb, var(--card-border) 72%, var(--text-secondary));
+      border-radius: 999px;
+      color: var(--text-main);
+      background: color-mix(in srgb, var(--background-secondary) 55%, transparent);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    span {
+      display: block;
+      margin-top: 3px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    a {
+      flex: 0 0 auto;
+      color: var(--link-color);
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+
+      &:hover {
+        color: var(--link-hover);
+      }
+    }
+  }
+
+  .ammContributorsBody {
+    display: grid;
+    grid-template-columns: minmax(170px, 260px) minmax(0, 1fr);
+    gap: 22px;
+    align-items: stretch;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .ammContributorsChart {
+    min-width: 0;
+    max-width: 230px;
+    overflow: visible;
+    justify-self: center;
+    align-self: start;
+
+    .apexcharts-canvas {
+      overflow: visible !important;
+    }
+
+    .apexcharts-datalabel-label {
+      fill: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .apexcharts-datalabel-value {
+      fill: var(--text-main);
+    }
+  }
+
+  .ammContributorsList {
+    display: grid;
+    align-content: start;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    max-height: none;
+    contain: size;
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+  }
+
+  .ammContributorsToggle {
+    display: none;
+    justify-self: end;
+    min-height: 28px;
+    margin: 8px 0 0;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.1;
+  }
+
+  .ammContributorListHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) 74px 108px;
+    gap: 8px;
+    align-items: center;
+    padding: 0 0 7px;
+    border-bottom: 1px solid color-mix(in srgb, var(--card-border) 80%, transparent);
+    color: var(--text-secondary);
+    background: var(--card-bg);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: uppercase;
+
+    > span:nth-child(3),
+    > span:nth-child(4) {
+      text-align: right;
+    }
+  }
+
+  .ammContributorRow {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) 74px 108px;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--card-border);
+    color: inherit;
+    text-decoration: none;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: color-mix(in srgb, var(--amm-contributor-color, var(--link-color)) 12%, var(--background-secondary));
+      text-decoration: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid color-mix(in srgb, var(--amm-contributor-color, var(--link-color)) 72%, transparent);
+      outline-offset: -2px;
+    }
+  }
+
+  .ammContributorAddress {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .ammContributorAddressInline {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .ammContributorAddressInline > .entity-icon-outline,
+  .ammContributorAddressInline > a:first-child {
+    flex: 0 0 auto;
+  }
+
+  .ammContributorAddressText {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    white-space: nowrap;
+  }
+
+  .ammContributorShare,
+  .ammContributorLp {
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .ammContributorShare {
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .ammContributorLp {
+    display: grid;
+    gap: 2px;
+    justify-items: end;
+    color: var(--text-secondary);
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ammContributorFiat {
+    color: var(--text-secondary);
+    font-size: 11px;
+    line-height: 1.1;
+  }
+
+  .ammDetailsGrid {
+    display: grid;
+    grid-template-columns: minmax(340px, 0.88fr) minmax(0, 1.12fr);
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ammLookupCard,
+  .ammLedgerCard,
+  .ammAuctionCard,
+  .ammVoteCard {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 74%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+
+    h3 {
+      margin: 0;
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    span {
+      min-width: 0;
+    }
+  }
+
+  .ammLookupCard {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(220px, 0.42fr) minmax(360px, 1fr);
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ammLookupHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    min-width: 0;
+
+    > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+  }
+
+  .ammLookupHeader > div > span,
+  .ammVoteHeader > span {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .ammLookupControls {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    justify-self: stretch;
+    min-width: 0;
+  }
+
+  .ammLookupPicker {
+    min-width: 0;
+
+    .react-datepicker-wrapper,
+    .react-datepicker__input-container {
+      width: 100%;
+    }
+
+    .dateAndTimeRange {
+      width: 100%;
+      height: 38px;
+      min-width: 0;
+      margin: 0;
+      padding: 7px 10px;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+  }
+
+  .ammLookupActions {
+    display: inline-grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 6px;
+    align-items: center;
+    justify-content: end;
+    min-width: 0;
+
+    .button-action.thin.narrow {
+      min-height: 38px;
+      margin: 0;
+      white-space: nowrap;
+    }
+  }
+
+  .ammHistoricalBadge {
+    flex: 0 0 auto;
+    padding: 4px 8px;
+    border: 1px solid color-mix(in srgb, var(--orange) 55%, var(--card-border));
+    border-radius: 999px;
+    color: var(--orange);
+    background: color-mix(in srgb, var(--orange) 10%, transparent);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .ammSnapshotCard,
+  .ammSnapshotNotice {
+    border-color: color-mix(in srgb, var(--orange) 38%, var(--card-border));
+    background: color-mix(in srgb, var(--orange) 5%, var(--background-secondary));
+  }
+
+  .ammLedgerRows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ammLedgerCard {
+    grid-column: 1 / -1;
+  }
+
+  .ammAuctionCard {
+    grid-column: 1 / -1;
+  }
+
+  .ammAuctionHeader {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+
+    > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    span {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+  }
+
+  .ammAuctionStatus {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 78%, transparent);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--card-bg) 65%, transparent);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .ammAuctionStatusActive {
+    border-color: color-mix(in srgb, var(--green) 42%, var(--card-border));
+    color: var(--green);
+    background: color-mix(in srgb, var(--green) 9%, transparent);
+  }
+
+  .ammAuctionSummaryGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--card-border) 58%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 46%, transparent);
+  }
+
+  .ammAuctionSummaryItem {
+    display: grid;
+    align-content: start;
+    gap: 5px;
+    min-width: 0;
+    padding: 10px 12px;
+    border-left: 1px solid color-mix(in srgb, var(--card-border) 55%, transparent);
+
+    &:first-child {
+      border-left: none;
+    }
+
+    > span {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    > strong {
+      color: var(--text-main);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+  }
+
+  .ammAuctionSummaryItemMain {
+    background: color-mix(in srgb, var(--link-color) 7%, transparent);
+
+    > strong {
+      color: var(--link-color);
+    }
+  }
+
+  .ammAuctionBody {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ammAuctionCurrentStrip {
+    display: grid;
+    grid-template-columns: minmax(260px, 1.5fr) repeat(3, minmax(130px, 1fr));
+    gap: 0;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--card-border) 58%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--background-secondary) 42%, transparent);
+  }
+
+  .ammAuctionInfoItem {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    padding: 9px 10px;
+    border-left: 1px solid color-mix(in srgb, var(--card-border) 50%, transparent);
+
+    &:first-child {
+      border-left: none;
+    }
+
+    > span {
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    > strong {
+      min-width: 0;
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.25;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .ammAuctionInfoItemWide {
+    overflow-x: auto;
+
+    > strong {
+      overflow-x: auto;
+      overflow-y: hidden;
+      overflow-wrap: normal;
+      text-overflow: clip;
+      white-space: nowrap;
+
+      table,
+      tbody,
+      tr,
+      td,
+      .brake,
+      a {
+        overflow-wrap: normal;
+        word-break: normal;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .ammAuctionActionsGrid {
+    display: grid;
+    grid-template-columns: minmax(340px, 1fr) minmax(340px, 1fr);
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ammAuctionActionPanel {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 60%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 44%, transparent);
+
+    .button-action {
+      min-height: 36px;
+      margin: 0;
+      padding: 8px 12px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+  }
+
+  .ammAuctionActionPanelFull {
+    grid-column: 1 / -1;
+  }
+
+  .ammAuctionActionPanelBid {
+    border-color: color-mix(in srgb, var(--link-color) 28%, var(--card-border));
+    background: color-mix(in srgb, var(--link-color) 5%, var(--card-bg));
+  }
+
+  .ammAuctionBalancePanel {
+    border-color: color-mix(in srgb, var(--card-border) 76%, transparent);
+    background: color-mix(in srgb, var(--background-secondary) 34%, var(--card-bg));
+  }
+
+  .ammAuctionBalancePanelShort {
+    border-color: color-mix(in srgb, var(--orange) 34%, var(--card-border));
+    background: color-mix(in srgb, var(--orange) 5%, var(--card-bg));
+  }
+
+  .ammAuctionOwnedPanel {
+    border-color: color-mix(in srgb, var(--green) 38%, var(--card-border));
+    background: color-mix(in srgb, var(--green) 7%, var(--card-bg));
+
+    .ammAuctionActionHeader > strong {
+      color: var(--green);
+    }
+  }
+
+  .ammAuctionActionHeader {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+
+    > strong {
+      color: var(--text-main);
+      font-size: 15px;
+      line-height: 1.15;
+    }
+
+    > span {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+  }
+
+  .ammAuctionAmountRows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    min-width: 0;
+
+    > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      padding: 8px;
+      border-radius: 7px;
+      background: color-mix(in srgb, var(--background-secondary) 54%, transparent);
+
+      > span {
+        color: var(--text-secondary);
+        font-size: 11px;
+        line-height: 1.2;
+      }
+
+      > strong {
+        color: var(--text-main);
+        font-size: 12px;
+        font-weight: 650;
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+      }
+    }
+
+    > .ammAuctionAmountCost {
+      border: 1px solid color-mix(in srgb, var(--orange) 44%, var(--card-border));
+      background: color-mix(in srgb, var(--orange) 7%, var(--background-secondary));
+
+      > span,
+      > strong {
+        color: var(--orange);
+      }
+    }
+  }
+
+  .ammAuctionBalanceRows {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ammAuctionWalletStatus {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid color-mix(in srgb, var(--green) 34%, var(--card-border));
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--green) 7%, transparent);
+
+    > span {
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    > strong {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: right;
+    }
+  }
+
+  .ammAuctionCostWarning {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, var(--orange) 48%, var(--card-border));
+    border-left-width: 4px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--orange) 10%, var(--card-bg));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--orange) 18%, transparent);
+
+    > strong {
+      color: var(--orange);
+      font-size: 13px;
+      line-height: 1.15;
+    }
+
+    > span {
+      color: var(--text-main);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+  }
+
+  .ammAuctionCostWarningStrong {
+    border-color: color-mix(in srgb, var(--orange) 64%, var(--card-border));
+    background: color-mix(in srgb, var(--orange) 14%, var(--card-bg));
+  }
+
+  .ammAuctionMintTarget {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    padding: 8px 0;
+    border-top: 1px solid color-mix(in srgb, var(--card-border) 48%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--card-border) 48%, transparent);
+
+    > span {
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    > strong {
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .ammAuctionDepositOptions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ammAuctionDepositOption {
+    display: grid;
+    align-content: end;
+    gap: 4px;
+    min-width: 0;
+    padding: 0;
+
+    > span:first-child {
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.2;
+      padding: 0 2px;
+    }
+
+    .button-action {
+      white-space: normal;
+      line-height: 1.2;
+    }
+  }
+
+  .ammAuctionAuthField {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .ammAuctionAuthHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ammAuctionAuthToggle {
+    min-height: 28px;
+    height: 28px;
+    min-width: 0;
+    margin: 0;
+    padding: 5px 9px;
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .ammAuctionAuthGrid {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+
+    .center {
+      text-align: left;
+    }
+
+    .form-input {
+      min-width: 0;
+      margin: 0;
+    }
+
+    .react-select__control {
+      min-height: 34px;
+    }
+
+    .react-select__input-container,
+    .react-select__placeholder,
+    .react-select__single-value {
+      font-size: 12px;
+    }
+  }
+
+  .ammAuctionBreakEven {
+    display: grid;
+    grid-template-columns: minmax(190px, 0.55fr) minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 55%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--background-secondary) 32%, transparent);
+
+    > div:first-child {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+
+      > strong {
+        color: var(--text-main);
+        font-size: 14px;
+        line-height: 1.15;
+      }
+
+      > span {
+        color: var(--text-secondary);
+        font-size: 12px;
+        line-height: 1.3;
+      }
+    }
+  }
+
+  .ammAuctionBreakEvenRows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    min-width: 0;
+
+    > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+
+      > span {
+        color: var(--text-secondary);
+        font-size: 11px;
+        line-height: 1.2;
+      }
+
+      > strong {
+        color: var(--text-main);
+        font-size: 12px;
+        font-weight: 650;
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  .ammAuctionNotes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 8px;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, var(--orange) 36%, var(--card-border));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--orange) 7%, var(--card-bg));
+
+    > span {
+      position: relative;
+      padding-left: 12px;
+      color: var(--text-main);
+      font-size: 12px;
+      line-height: 1.35;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0.55em;
+        left: 0;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: color-mix(in srgb, var(--orange) 64%, var(--text-main));
+      }
+    }
+
+    > .ammAuctionNoteWarning {
+      color: var(--orange);
+      font-weight: 700;
+    }
+  }
+
+  .ammLedgerRow {
+    display: grid;
+    gap: 5px;
+    align-content: start;
+    min-width: 0;
+    padding: 9px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 62%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 56%, transparent);
+
+    > span:first-child {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    > strong {
+      min-width: 0;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .ammLedgerRowInline {
+    > strong {
+      overflow-x: auto;
+      overflow-y: hidden;
+      overflow-wrap: normal;
+      white-space: nowrap;
+
+      table,
+      tbody,
+      tr,
+      td {
+        white-space: nowrap;
+      }
+
+      .brake,
+      a {
+        overflow-wrap: normal;
+        word-break: normal;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .ammAuctionHistory {
+    display: block;
+    min-width: 0;
+
+    summary {
+      cursor: pointer;
+      color: var(--link-color);
+      font-weight: 700;
+    }
+  }
+
+  .ammAuctionHistoryRows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+
+    > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid color-mix(in srgb, var(--card-border) 58%, transparent);
+      border-radius: 7px;
+      background: color-mix(in srgb, var(--card-bg) 48%, transparent);
+    }
+  }
+
+  .ammAuctionHistoryLabel {
+    color: var(--text-secondary);
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  .ammAuctionHistoryValue {
+    min-width: 0;
+    color: var(--text-main);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .ammAuctionHistoryValueAddress {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overflow-wrap: normal;
+    white-space: nowrap;
+
+    table,
+    tbody,
+    tr,
+    td,
+    .brake,
+    a {
+      overflow-wrap: normal;
+      word-break: normal;
+      white-space: nowrap;
+    }
+  }
+
+  .ammVoteCard {
+    grid-column: 1 / -1;
+    scroll-margin-top: 96px;
+  }
+
+  .ammVoteHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ammVoteHeaderActions {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px clamp(18px, 2vw, 28px);
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.1;
+
+    > span {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .button-action.thin.narrow {
+      flex: 0 0 auto;
+      min-height: 28px;
+      margin: 0 0 0 12px;
+      padding: 4px 10px;
+      font-size: 12px;
+      line-height: 1.1;
+    }
+  }
+
+  .ammVoteList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr));
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ammVoteRow {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) minmax(130px, auto);
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+    padding: 9px;
+    border: 1px solid color-mix(in srgb, var(--card-border) 68%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 62%, transparent);
+  }
+
+  .ammVoteRank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    color: var(--text-secondary);
+    background: var(--background-secondary);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .ammVoteAccount {
+    min-width: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    * {
+      white-space: nowrap;
+    }
+  }
+
+  .ammVoteStats {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 6px;
+    justify-content: end;
+    min-width: 0;
+
+    > span {
+      display: grid;
+      gap: 2px;
+      min-width: 52px;
+      color: var(--text-secondary);
+      font-size: 10px;
+      line-height: 1.1;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    strong {
+      color: var(--text-main);
+      font-size: 12px;
+      line-height: 1.1;
+    }
+  }
+
+  .ammLpDisclosure {
+    min-width: 0;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+    box-shadow: var(--card-shadow);
+
+    summary {
+      cursor: pointer;
+      padding: 14px;
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+  }
+
+  .ammLpAnalyticsBody {
+    padding: 0 14px 14px;
+
+    .tokenChartsSection {
+      margin-top: 0;
+    }
+  }
+
   @media only screen and (min-width: 1500px) {
     .tokenOverview {
       grid-template-columns:
@@ -994,6 +2853,15 @@
     .tokenSwapSource {
       display: none;
     }
+
+    .ammSwapRow {
+      grid-template-columns: 34px minmax(0, 1fr) minmax(82px, auto) !important;
+      gap: 5px !important;
+    }
+
+    .ammSwapValues {
+      font-size: 10.5px;
+    }
   }
 
   @media only screen and (max-width: 1250px) {
@@ -1019,6 +2887,62 @@
 
     .tokenChartsGrid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ammHero {
+      grid-template-columns: minmax(0, 1fr) minmax(210px, 260px) minmax(130px, 160px);
+    }
+
+    .ammHeroActions {
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ammTvlHero,
+    .ammHeroFee {
+      padding-left: 14px;
+    }
+
+    .ammTvlHero > strong {
+      font-size: clamp(26px, 3.6vw, 42px);
+    }
+
+    .ammMetricGrid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .ammMetricCard-assetPrices,
+    .ammMetricCard-reserves,
+    .ammMetricCard-poolStats {
+      grid-column: span 2;
+    }
+
+    .ammMetricCard-poolStats .ammMetricSubList {
+      grid-template-columns: 1fr;
+    }
+
+    .ammMetricCard-reserves .ammMetricDeltaStack {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .ammMetricCard-reserves .ammMetricAmountAside {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      padding-left: 24px;
+      white-space: normal;
+    }
+
+    .ammClosedDayGroup {
+      grid-template-columns: 1fr;
+    }
+
+    .ammDetailsGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .ammChartsGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -1081,6 +3005,92 @@
     .tokenActivityCard {
       height: auto !important;
     }
+
+    .ammHero {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ammHeroMain {
+      grid-column: 1 / -1;
+    }
+
+    .ammTvlHero,
+    .ammHeroFee {
+      min-height: 96px;
+      align-content: start;
+      padding: 19px 0 0 14px;
+    }
+
+    .ammHeroFee {
+      justify-items: start;
+      text-align: left;
+    }
+
+    .ammHeroActions {
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ammMetricGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .ammMetricCard-assetPrices,
+    .ammMetricCard-reserves,
+    .ammMetricCard-poolStats {
+      grid-column: span 1;
+    }
+
+    .ammMetricCard-poolStats .ammMetricSubList {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ammMetricCard-reserves .ammMetricDeltaStack {
+      grid-template-columns: minmax(0, max-content) 78px minmax(10px, 1fr) auto;
+    }
+
+    .ammMetricCard-reserves .ammMetricAmountAside {
+      grid-column: 4;
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+      padding-left: 0;
+      white-space: nowrap;
+    }
+
+    .ammClosedDayGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .ammAuctionSummaryGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ammAuctionSummaryItem:nth-child(odd) {
+      border-left: none;
+    }
+
+    .ammAuctionSummaryItem:nth-child(n + 3) {
+      border-top: 1px solid color-mix(in srgb, var(--card-border) 55%, transparent);
+    }
+
+    .ammAuctionCurrentStrip,
+    .ammAuctionActionsGrid,
+    .ammAuctionBreakEven {
+      grid-template-columns: 1fr;
+    }
+
+    .ammAuctionInfoItem {
+      border-top: 1px solid color-mix(in srgb, var(--card-border) 50%, transparent);
+      border-left: none;
+
+      &:first-child {
+        border-top: none;
+      }
+    }
+
+    .ammChartsGrid {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media only screen and (max-width: 700px) {
@@ -1090,6 +3100,23 @@
     .tokenStatsPanel,
     .tokenMetadataPanel {
       grid-column: 1 / -1;
+    }
+
+    .ammMetricGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .ammMetricCard-assetPrices {
+      grid-column: span 1;
+    }
+
+    .ammMetricCard-reserves,
+    .ammMetricCard-poolStats {
+      grid-column: span 1;
+    }
+
+    .ammMetricSubList {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -1134,6 +3161,345 @@
       padding: 12px;
     }
 
+    .ammHero h1 {
+      font-size: clamp(28px, 12vw, 40px);
+    }
+
+    .ammHero {
+      grid-template-columns: 1fr;
+    }
+
+    .ammHeroMain {
+      grid-template-columns: 1fr;
+      grid-column: auto;
+      align-items: center;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .ammHeroText {
+      padding-top: 0;
+    }
+
+    .ammHeroCoins {
+      width: 120px;
+      height: 68px;
+    }
+
+    .ammHeroCoin {
+      width: 68px;
+      height: 68px;
+    }
+
+    .ammHeroActions {
+      grid-template-columns: 1fr;
+    }
+
+    .ammTvlHero {
+      min-height: 0;
+      align-content: center;
+      padding: 10px 0 0;
+      border-top: 1px solid color-mix(in srgb, var(--card-border) 78%, transparent);
+      text-align: center;
+
+      &:before {
+        display: none;
+      }
+
+      > strong {
+        font-size: clamp(28px, 10vw, 40px);
+      }
+    }
+
+    .ammHeroFee {
+      min-height: 0;
+      align-content: center;
+      padding: 10px 0 0;
+      border-top: 1px solid color-mix(in srgb, var(--card-border) 78%, transparent);
+      justify-items: center;
+      text-align: center;
+
+      &:before {
+        display: none;
+      }
+    }
+
+    .ammActivityFilters {
+      justify-content: flex-start;
+    }
+
+    .ammActivityFilterGroup {
+      border-radius: 8px;
+    }
+
+    .ammMetricGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .ammMetricCard-assetPrices,
+    .ammMetricCard-reserves,
+    .ammMetricCard-poolStats {
+      grid-column: span 1;
+    }
+
+    .ammMetricAmountLine {
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+
+    .ammMetricAmountLineWithDelta {
+      grid-template-columns: 1fr;
+    }
+
+    .ammMetricDeltaStack {
+      grid-template-columns: 1fr;
+    }
+
+    .ammMetricSubList {
+      grid-template-columns: 1fr;
+    }
+
+    .ammMetricDeltaStack .ammMetricAmountLineWithDelta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 3px 8px;
+    }
+
+    .ammMetricAmountLineWithDelta .ammMetricAmountMain {
+      grid-column: 1;
+      width: 100%;
+    }
+
+    .ammMetricAmountDeltaColumn {
+      grid-column: 2;
+    }
+
+    .ammMetricAmountAside {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+      min-width: 0;
+    }
+
+    .ammMetricCard-assetPrices .ammMetricAmountLine {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .ammMetricCard-assetPrices .ammMetricAmountAside {
+      grid-column: 2;
+      justify-content: flex-end;
+    }
+
+    .ammMetricCard-reserves .ammMetricDeltaStack {
+      grid-template-columns: minmax(0, max-content) 78px minmax(10px, 1fr) auto;
+      gap: 4px 8px;
+    }
+
+    .ammMetricCard-reserves .ammMetricAmountLineWithDelta {
+      display: contents;
+    }
+
+    .ammMetricCard-reserves .ammMetricAmountMain {
+      width: auto;
+    }
+
+    .ammMetricCard-reserves .ammMetricAmountAside {
+      grid-column: 4;
+      justify-content: flex-end;
+      padding-left: 0;
+      white-space: nowrap;
+    }
+
+    .ammClosedDayVolumes {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      gap: 6px;
+    }
+
+    .ammClosedDayVolumes .ammMetricAmountLineWithDelta {
+      display: grid;
+      min-height: auto;
+      grid-template-columns: minmax(0, 1fr) 78px minmax(104px, max-content);
+    }
+
+    .ammClosedDayVolumes .ammMetricAmountAside {
+      grid-column: 3;
+      justify-content: flex-end;
+      padding-left: 0;
+    }
+
+    .ammClosedDayGroup {
+      grid-template-columns: 1fr;
+    }
+
+    .ammLookupControls,
+    .ammLookupCard,
+    .ammAuctionAmountRows,
+    .ammAuctionBreakEvenRows,
+    .ammAuctionDepositOptions,
+    .ammAuctionHistoryRows,
+    .ammContributorsBody,
+    .ammContributorRow,
+    .ammLedgerRows,
+    .ammLedgerRow,
+    .ammVoteStats {
+      grid-template-columns: 1fr;
+    }
+
+    .ammAuctionHeader {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .ammAuctionStatus {
+      justify-self: start;
+    }
+
+    .ammAuctionSummaryGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .ammAuctionSummaryItem {
+      border-top: 1px solid color-mix(in srgb, var(--card-border) 55%, transparent);
+      border-left: none;
+
+      &:first-child {
+        border-top: none;
+      }
+    }
+
+    .ammActivitySection .tokenActivityCard,
+    .ammContributorsCard {
+      grid-template-rows: auto;
+      height: auto !important;
+      max-height: none;
+      overflow: visible;
+    }
+
+    .ammActivityCard > div:last-child {
+      overflow-y: visible;
+    }
+
+    .ammContributorsBody {
+      gap: 12px;
+      align-items: start;
+      height: auto;
+    }
+
+    .ammContributorsList {
+      contain: none;
+      height: auto;
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+    }
+
+    .ammContributorsList-collapsed .ammContributorRow:nth-of-type(n + 11) {
+      display: none;
+    }
+
+    .ammContributorsList-expanded {
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .ammContributorsToggle {
+      display: inline-flex;
+      justify-self: stretch;
+      width: 100%;
+    }
+
+    .ammContributorListHeader {
+      display: none;
+    }
+
+    .ammContributorRow {
+      grid-template-columns: 26px minmax(0, 1fr) 62px 96px;
+      gap: 6px;
+      padding: 5px 0;
+    }
+
+    .ammContributorShare,
+    .ammContributorLp {
+      grid-column: auto;
+      text-align: right;
+    }
+
+    .ammContributorAddress {
+      font-size: 12px;
+    }
+
+    .ammContributorShare {
+      font-size: 12px;
+    }
+
+    .ammContributorLp,
+    .ammContributorFiat {
+      font-size: 11px;
+    }
+
+    .ammVoteHeader {
+      align-items: center;
+      gap: 8px;
+
+      h3 {
+        min-width: 0;
+      }
+    }
+
+    .ammVoteHeaderActions {
+      flex: 0 0 auto;
+      gap: 8px 18px;
+      font-size: 12px;
+
+      .button-action.thin.narrow {
+        min-height: 36px;
+        padding: 6px 12px;
+      }
+    }
+
+    .ammVoteRow {
+      grid-template-columns: 26px minmax(0, 1fr) minmax(92px, auto);
+      gap: 7px;
+      padding: 7px 8px;
+    }
+
+    .ammVoteRank {
+      width: 24px;
+      height: 24px;
+    }
+
+    .ammVoteAccount {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ammVoteStats {
+      grid-template-columns: 1fr;
+      justify-content: stretch;
+      gap: 4px;
+
+      > span {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-width: 0;
+        text-align: right;
+      }
+    }
+
+    .ammLookupActions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      justify-content: stretch;
+
+      .button-action.thin.narrow {
+        width: 100%;
+      }
+    }
+
     .tokenChartsHeader {
       align-items: start;
       flex-direction: column;
@@ -1151,6 +3517,40 @@
   }
 
   @media only screen and (max-width: 520px) {
+    .ammMetricCard-poolStats .ammMetricSubList {
+      grid-template-columns: 1fr;
+    }
+
+    .ammMetricCard-reserves .ammMetricDeltaStack {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .ammMetricCard-reserves .ammMetricAmountLineWithDelta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4px 8px;
+    }
+
+    .ammMetricCard-reserves .ammMetricAmountAside {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+      gap: 8px;
+      padding-left: 26px;
+      white-space: normal;
+    }
+
+    .ammClosedDayVolumes .ammMetricAmountLineWithDelta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .ammClosedDayVolumes .ammMetricAmountAside {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+      padding-left: 26px;
+    }
+
     .tokenChartsGrid {
       grid-template-columns: 1fr;
     }

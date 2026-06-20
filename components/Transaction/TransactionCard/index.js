@@ -450,11 +450,14 @@ export const TransactionCard = ({
                                                 showPlus: true,
                                                 color: 'direction'
                                               })}
-                                              {tokenToFiat({
-                                                amount: c,
-                                                selectedCurrency,
-                                                fiatRate: pageFiatRate
-                                              })}
+                                              <span suppressHydrationWarning>
+                                                {tokenToFiat({
+                                                  amount: c,
+                                                  selectedCurrency,
+                                                  fiatRate: pageFiatRate,
+                                                  asText: true
+                                                })}
+                                              </span>
                                             </div>
                                           )
                                         })}

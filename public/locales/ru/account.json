@@ -273,6 +273,8 @@
       "update": "Обновить",
       "reset": "Сбросить",
       "send": "Отправить",
+      "pools": "Пулы",
+      "pool-page": "Страница пула",
       "get-first-native": "Получить первые {{nativeCurrency}}",
       "add-token": "Добавить токен",
       "change": "изменить",

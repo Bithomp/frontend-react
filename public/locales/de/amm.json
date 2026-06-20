@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "AMM Explorer",
+    "metaDescription": "Finde AMM Pools, Reserven, Liquiditaetsaktivitaet, Mitwirkende, Auktions-Slots und Gebuehrenstimmen.",
+    "heading": "AMM Explorer",
+    "intro": "Suche einen Automated-Market-Maker-Pool nach AMM ID, AMM Konto, LP Token oder Asset-Paar.",
+    "placeholderLong": "Suche nach AMM ID, Konto, LP Token, Emittent, Waehrung oder Paar",
+    "placeholderShort": "AMM Pools suchen"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "Details zum Automated-Market-Maker-Pool{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "Transaktion",
+    "loading": "Wird geladen",
+    "update": "Aktualisieren",
+    "reset": "Zuruecksetzen",
+    "active": "Aktiv",
+    "expired": "Abgelaufen",
+    "chartDataUnavailable": "Diagrammdaten sind noch nicht verfuegbar"
+  },
+  "hero": {
+    "eyebrow": "Automated Market Maker",
+    "tvl": "Poolwert",
+    "tradingFee": "Handelsgebuehr",
+    "votes": "Stimmen",
+    "vote": "Abstimmen",
+    "deposit": "Einzahlen",
+    "withdraw": "Auszahlen"
+  },
+  "overview": {
+    "assetPrices": "Asset-Preise",
+    "reserves": "Reserven",
+    "poolStats": "Pool-Statistik",
+    "lpSupply": "LP Angebot",
+    "contributors": "Mitwirkende",
+    "trustlines": "Trustlines",
+    "dexTrades": "DEX Trades"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "Verglichen mit dem letzten geschlossenen Tag",
+    "comparedPreviousClosedDay": "Verglichen mit dem vorherigen geschlossenen Tag",
+    "comparedPreviousClosedDayAccounts": "Konten im Vergleich zum vorherigen geschlossenen Tag",
+    "comparedPreviousClosedDayVolume": "Volumen im Vergleich zum vorherigen geschlossenen Tag",
+    "fiatReserve24h": "Aenderung des Fiat-Werts der Reserve ueber 24h",
+    "price24h": "Preisaenderung ueber 24h"
+  },
+  "daily": {
+    "title": "Liquiditaet am letzten geschlossenen Tag",
+    "deposits": "Einzahlungen",
+    "withdrawals": "Auszahlungen",
+    "depositTxs": "Einzahlungs-Txs",
+    "withdrawalTxs": "Auszahlungs-Txs",
+    "depositors": "Einzahler",
+    "withdrawers": "Auszahler",
+    "volume": "Volumen",
+    "volumeUnavailable": "Volumen ist nicht verfuegbar"
+  },
+  "charts": {
+    "poolHistory": "Pool-Verlauf",
+    "subtitle": "Taegliche Swaps, Reserven, Einzahlungs- / Auszahlungsaktivitaet und LP Mitwirkende.",
+    "lastReports": "Letzte {{count}} Tagesberichte",
+    "swaps": "Swaps",
+    "depositsWithdrawals": "Einzahlungen / Auszahlungen",
+    "assetVolume": "{{asset}} Einzahlungs- / Auszahlungsvolumen",
+    "series": {
+      "swaps": "Swaps"
+    }
+  },
+  "activity": {
+    "title": "Aktivitaet",
+    "titleNote": "24h",
+    "dex": "DEX",
+    "deposits": "Einzahlungen",
+    "withdrawals": "Auszahlungen",
+    "latest": "Neueste",
+    "largest": "Groesste",
+    "emptyDex": "Keine AMM DEX Trades in den letzten 24 Stunden verfuegbar",
+    "emptyLiquidity": "Keine AMM {{type}} Aktivitaet in den letzten 24 Stunden verfuegbar"
+  },
+  "contributors": {
+    "title": "LP Mitwirkende",
+    "subtitle": "Top 100 Inhaber von Pool-Anteilen.",
+    "viewAll": "Alle anzeigen",
+    "others": "Andere",
+    "top100": "Top 100",
+    "shareTooltip": "{{value}}% Anteil",
+    "wallet": "Wallet",
+    "share": "Anteil",
+    "lpTokens": "LP Token",
+    "lpTokenAmount": "{{amount}} LP Token",
+    "showTop10": "Top 10 anzeigen",
+    "showTopCount": "Top {{count}} anzeigen",
+    "unavailable": "LP Mitwirkende sind noch nicht verfuegbar"
+  },
+  "details": {
+    "title": "Ledger-Details und historische Suche",
+    "subtitle": "AMM Konto, Erstellungstransaktion und historischer Pool-Zustand.",
+    "historicalLookup": "Historische Suche",
+    "historicalHint": "Laedt unten einen separaten Snapshot, ohne die Live-Pooldaten oben zu aendern.",
+    "snapshotBadge": "Snapshot {{time}}",
+    "poolIdentifiers": "Pool-Kennungen",
+    "ammAddress": "AMM Adresse",
+    "ammId": "AMM ID",
+    "created": "Erstellt",
+    "lastUpdate": "Letzte Aktualisierung"
+  },
+  "historical": {
+    "poolState": "Historischer Pool-Zustand",
+    "snapshotAt": "Snapshot um {{time}}",
+    "snapshotFallback": "Snapshot von Reserven, Gebuehr und LP Bilanz.",
+    "loadingRates": "Historische Fiat-Kurse werden geladen.",
+    "nearestRates": "Fiat nutzt die naechsten historischen Kurse.",
+    "historicalFiatUnavailable": "Historisches Fiat nicht verfuegbar",
+    "loadingHistoricalFiat": "Historisches Fiat wird geladen",
+    "tvlAtSnapshot": "Poolwert im Snapshot",
+    "asset1": "Asset 1",
+    "asset2": "Asset 2",
+    "lpTokenBalance": "LP Token-Bilanz",
+    "auctionSlot": "Historischer Auktions-Slot",
+    "stateAt": "Status um {{time}}",
+    "auctionStateAtSelectedTime": "Auktions-Slot-Status zur gewaehlten Zeit.",
+    "voteSlots": "Historische Vote-Slots",
+    "voteSlotsAtSelectedTime": "Vote-Slots zur gewaehlten Zeit",
+    "noVoteSlotsSnapshot": "Keine Vote-Slots in diesem Snapshot.",
+    "statusAtSnapshot": "Status im Snapshot",
+    "slotHolder": "Slot-Inhaber",
+    "holderFee": "Gebuehr des Inhabers",
+    "lpBid": "LP Gebot",
+    "slotEnds": "Slot endet",
+    "authorizedDiscountAccounts": "Autorisierte Rabattkonten",
+    "noAuctionSlotSnapshot": "Kein Auktions-Slot in diesem Snapshot."
+  },
+  "voteSlots": {
+    "title": "Vote-Slots",
+    "activeVoters": "{{count}} aktive Waehler",
+    "fee": "Gebuehr",
+    "weight": "Gewicht"
+  },
+  "auction": {
+    "slot": "Auktions-Slot",
+    "activeDescription": "Ueberbiete den aktiven Slot, um mit reduzierter Gebuehr zu handeln.",
+    "openDescription": "Beanspruche einen neuen Gebuehrenrabatt-Slot fuer bis zu 24 Stunden.",
+    "activeSlot": "Aktiver Slot",
+    "openSlot": "Offener Slot",
+    "feeIfWin": "Gebuehr bei Gewinn",
+    "poolFee": "Pool-Gebuehr",
+    "discountWindow": "Rabattfenster",
+    "upTo24h": "Bis zu 24h",
+    "feeSaving": "Gebuehrenersparnis",
+    "currentSlotHolder": "Aktueller Slot-Inhaber",
+    "currentHolderFee": "Aktuelle Inhabergebuehr",
+    "currentLpBid": "Aktuelles LP Gebot",
+    "slotEnds": "Slot endet",
+    "authorizedDiscountAccounts": "Autorisierte Rabattkonten",
+    "bidWithLp": "Mit LP bieten",
+    "bidWithLpAmount": "Mit {{amount}} bieten",
+    "bidWithLpHint": "Nutze diesen Weg, wenn du bereits LP Token haeltst.",
+    "checkingLpBalance": "LP Guthaben wird geprueft",
+    "checkingLpBalanceHint": "Wir pruefen, ob die verbundene Wallet genug LP fuer das Gebot hat.",
+    "notEnoughLp": "Nicht genug LP fuer das Gebot",
+    "notEnoughLpHint": "Hole zuerst die fehlenden LP und biete danach auf den Auktions-Slot.",
+    "enoughLpHint": "Deine verbundene Wallet hat genug LP fuer das maximale Ausgabenlimit.",
+    "yourLpBalance": "Dein LP Guthaben",
+    "lpRequired": "Benoetigte LP",
+    "lpMissing": "Fehlende LP",
+    "paidLpBidOverbid": "Bezahltes LP Gebot zum Ueberbieten",
+    "paidLpBidClaim": "Bezahltes LP Gebot zum Beanspruchen",
+    "maxLpSpendCap": "Maximales LP Ausgabenlimit",
+    "winningBidSpent": "Das Gewinnergebot wird ausgegeben",
+    "winningBidSpentText": "Bezahlte LP Token kaufen den Rabatt-Slot und werden nach Ablauf des 24h Fensters nicht zurueckgegeben. Ungenutzter Spielraum zwischen Gebot und Maximum wird nicht bezahlt.",
+    "extraDiscountAccounts": "Weitere Rabattkonten",
+    "addAccount": "+ Konto hinzufuegen",
+    "addressPlaceholder": "Adresse {{number}}",
+    "addAccountsHint": "Fuege bis zu 4 Konten hinzu, wenn andere ebenfalls mit Rabatt handeln sollen.",
+    "signingAccountNote": "Das signierende Konto erhaelt den Rabatt automatisch. Wenn ein anderes Gebot deines vor Ablauf ersetzt, wird eine moegliche Rueckerstattung vom Protokoll anhand der verbleibenden Slot-Zeit berechnet.",
+    "mintLpThenBid": "LP praegen, dann bieten",
+    "mintLpThenBidHint": "Nutze diesen Weg, wenn du zuerst LP Token erhalten musst.",
+    "getMissingLp": "Fehlende LP holen",
+    "getMissingLpHint": "Praegt nur die LP Menge, die bis zum maximalen Gebotslimit fehlt.",
+    "lpToMintFirst": "Zuerst zu praegende LP",
+    "mintLpNote": "Praegt genug LP fuer das maximale Ausgabenlimit. Das folgende Gebot gibt LP Token aus; nur nicht ausgegebene LP bleiben in deiner Wallet.",
+    "mintMissingLpNote": "Praegt nur die fehlenden LP. Nach der Bestaetigung kannst du mit dieser Wallet bieten.",
+    "withAsset": "Mit {{asset}}",
+    "withBothAssets": "Mit beiden Assets",
+    "payUpTo": "Bis zu {{amount}} zahlen",
+    "payBoth": "{{amount1}} + {{amount2}} zahlen",
+    "breakEvenVolume": "Break-even-Volumen",
+    "breakEvenHint": "Swap-Volumen, damit die Gebuehrenersparnis das Gebot ausgleicht.",
+    "lpDepositTransaction": "LP Einzahlungs-Transaktion: ",
+    "auctionBidTransaction": "Auktionsgebot-Transaktion: ",
+    "winningBidPaid": "Das gewinnende LP Gebot wird fuer den Rabatt-Slot bezahlt.",
+    "discountEnds": "Der Rabatt gilt bis zu 24 Stunden und kann frueher enden, wenn du ueberboten wirst.",
+    "singleAssetCap": "Einzel-Asset-Optionen verwenden ein Maximum; die endgueltige Einzahlung kann niedriger sein.",
+    "showExpiredSlotDetails": "Details des abgelaufenen Slots anzeigen",
+    "lastHolder": "Letzter Inhaber",
+    "expiredHolderFee": "Abgelaufene Inhabergebuehr",
+    "lastLpBid": "Letztes LP Gebot",
+    "expiredAt": "Abgelaufen um",
+    "previouslyAuthorizedAccounts": "Zuvor autorisierte Konten",
+    "notAvailableAfterExpiry": "Nach Ablauf nicht verfuegbar",
+    "invalidAuthorizedAccount": "Ungueltiges autorisiertes Konto: {{account}}",
+    "lpBalanceShortfall": "Fuer ein Gebot mit dieser Wallet fehlen {{amount}}.",
+    "bidderAlreadyDiscounted": "Das Bieterkonto erhaelt den Rabatt bereits und kann nicht als autorisiertes Konto hinzugefuegt werden.",
+    "yourSlotDescription": "Diese Wallet nutzt bereits den aktiven Rabatt-Slot.",
+    "yourActiveSlot": "Dieser Rabatt-Slot gehoert dir",
+    "yourAuthorizedSlot": "Diese Wallet ist fuer den Rabatt autorisiert",
+    "yourDiscountHint": "Du handelst bereits mit der reduzierten Gebuehr dieses Slots, bis er ablaeuft oder ein anderes Gebot ihn ersetzt.",
+    "yourDiscountedFee": "Deine reduzierte Gebuehr",
+    "yourFeeSaving": "Deine Gebuehrenersparnis",
+    "yourPaidBid": "Dein bezahltes LP Gebot",
+    "minimumOverbid": "Minimum, um dich zu ueberbieten"
+  },
+  "lpAnalytics": {
+    "title": "LP Token-Analyse"
+  },
+  "errors": {
+    "noAmmData": "Keine Informationen fuer diese AMM ID gefunden.",
+    "noHistoricalData": "Keine Informationen fuer diese AMM ID zu dieser Zeit dieses Tages gefunden."
+  },
+  "sign": {
+    "depositTitle": "AMM Einzahlung",
+    "withdrawTitle": "AMM Auszahlung",
+    "feeVoteTitle": "AMM Gebuehrenabstimmung",
+    "deposit": {
+      "modeLabel": "Einzahlungsmodus",
+      "pool": "Pool",
+      "assetToDeposit": "Einzuzahlendes Asset",
+      "lpTokensToReceive": "Zu erhaltende LP Token",
+      "amountLabel": "Betrag, {{asset}}",
+      "maxAmountLabel": "Max. Betrag, {{asset}}",
+      "asset1AmountLabel": "Asset 1 Betrag, {{asset}}",
+      "asset2AmountLabel": "Asset 2 Betrag, {{asset}}",
+      "approxAssetsToDeposit": "Einzuzahlende Assets",
+      "maxPricePerLp": "Max. Preis pro LP, {{asset}}",
+      "singleAssetLimitNote": "Enthaelt einen Puffer von 0.5%. Die Transaktion kann weniger, aber nicht mehr ausgeben.",
+      "priceLimitNote": "Aus dem aktuellen Pool vorgeschlagen und mit 0.5% Puffer.",
+      "approxLpReceived": "Erhaltene LP Token",
+      "youWillGetLp": "Sie erhalten",
+      "available": "Verfuegbar",
+      "max": "Max",
+      "balanceLoading": "Saldo wird geladen...",
+      "modes": {
+        "singleAsset": {
+          "label": "Ein Asset",
+          "description": "Zahle ein Asset ein und erhalte einen Pool-Anteil."
+        },
+        "twoAsset": {
+          "label": "Zwei Assets",
+          "description": "Zahle beide Assets in einer Transaktion ein."
+        },
+        "exactLp": {
+          "label": "Exakte LP Token",
+          "description": "Zahle genug von beiden Assets ein, um diese LP Menge zu erhalten."
+        },
+        "singleAssetForLp": {
+          "label": "Ein Asset fuer LP",
+          "description": "Zahle ein Asset ein und fordere eine bestimmte LP Token-Menge an."
+        },
+        "singleAssetWithLimit": {
+          "label": "Ein Asset mit Limit",
+          "description": "Zahle ein Asset mit effektivem Preislimit ein."
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "Auszahlungsmodus",
+      "pool": "Pool",
+      "assetToWithdraw": "Auszuzahlendes Asset",
+      "amountLabel": "Betrag, {{asset}}",
+      "minimumAmountLabel": "Mindestbetrag, {{asset}}",
+      "asset1AmountLabel": "Asset 1 Betrag, {{asset}}",
+      "asset2AmountLabel": "Asset 2 Betrag, {{asset}}",
+      "lpTokensToRedeemUpTo": "Einzuloesende LP Token, bis zu",
+      "assetAmountToReceiveUpTo": "Zu erhaltender Asset-Betrag, bis zu {{asset}}",
+      "lpAssetCapsNote": "Die LP Menge begrenzt, was du einloest; die Asset-Menge begrenzt, was du erhaeltst. Der vorgeschlagene Asset-Betrag enthaelt 0.5% Puffer.",
+      "lpTokensToRedeem": "Einzuloesende LP Token",
+      "approxAssetsToReceive": "Zu erhaltende Assets",
+      "maxLpPerAsset": "Max. LP pro {{asset}}",
+      "priceLimitNote": "Aus dem aktuellen Pool vorgeschlagen und mit 0.5% Puffer.",
+      "approxLpToRedeem": "Einzuloesende LP Token",
+      "modes": {
+        "twoAsset": {
+          "label": "Zwei Assets",
+          "description": "Zahle beide Assets in einer Transaktion aus."
+        },
+        "singleAsset": {
+          "label": "Ein Asset",
+          "description": "Zahle ein Asset aus dem Pool aus."
+        },
+        "redeemLp": {
+          "label": "LP Token einloesen",
+          "description": "Loese LP Token fuer beide Pool-Assets ein."
+        },
+        "singleAssetForLp": {
+          "label": "Ein Asset fuer LP",
+          "description": "Loese LP Token fuer ein Asset mit LP- und Asset-Limits ein."
+        },
+        "allLpIntoOneAsset": {
+          "label": "Alle LP in ein Asset",
+          "description": "Zahle deine gesamte LP Position als ein Asset mit Mindestbetrag aus."
+        },
+        "singleAssetWithLimit": {
+          "label": "Ein Asset mit Limit",
+          "description": "Zahle ein Asset mit effektivem Preislimit aus."
+        },
+        "withdrawAll": {
+          "label": "Alles auszahlen",
+          "description": "Zahle deine gesamte LP Position in beide Assets aus."
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "Handelsgebuehr",
+      "confirmText": "Bestaetige die AMM Handelsgebuehr vor dem Signieren. Der Wert wird im Ledger als AMM Stimme gespeichert.",
+      "voteValue": "Stimmwert",
+      "invalidFee": "Die Handelsgebuehr muss eine Zahl von 0 bis 1% sein."
+    }
+  }
+}

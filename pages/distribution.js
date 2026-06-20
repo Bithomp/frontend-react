@@ -140,12 +140,14 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
     return 0
   }
 
+  const HydrationValue = ({ children }) => <span suppressHydrationWarning>{children}</span>
+
   const renderBalance = (amount, totalCoins) => (
-    <>
+    <HydrationValue>
       {amountFormat(amount)} {percentFormat(amount, totalCoins)}
       <br />
       {devNet ? t('table.no-value') : fiatRate > 0 && tokenToFiat({ amount, selectedCurrency, fiatRate })}
-    </>
+    </HydrationValue>
   )
 
   const renderLoadingState = () => (
@@ -402,7 +404,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                             </td>
                             <td className="right">
                               {token?.issuer ? (
-                                <>
+                                <HydrationValue>
                                   {amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })}{' '}
                                   {percentFormat(r.balance, rawData.summary?.totalCoins)}
                                   <br />
@@ -411,7 +413,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                     selectedCurrency,
                                     fiatRate: priceFiat
                                   })}
-                                </>
+                                </HydrationValue>
                               ) : (
                                 renderBalance(r.balance, rawData.summary?.totalCoins)
                               )}
@@ -460,31 +462,33 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                               {renderAddressCell(r)}
                               <p>
                                 {t('table.balance')}:{' '}
-                                {token?.issuer
-                                  ? amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })
-                                  : amountFormat(r.balance)}{' '}
-                                {percentFormat(r.balance, rawData.summary?.totalCoins)}{' '}
-                                {token?.issuer ? (
-                                  <>
-                                    {tokenToFiat({
-                                      amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
-                                      selectedCurrency,
-                                      fiatRate: priceFiat
-                                    })}
-                                  </>
-                                ) : (
-                                  <>
-                                    {devNet
-                                      ? t('table.no-value')
-                                      : fiatRate > 0 &&
-                                        token?.currency === nativeCurrency &&
-                                        tokenToFiat({
-                                          amount: r.balance,
-                                          selectedCurrency,
-                                          fiatRate
-                                        })}
-                                  </>
-                                )}
+                                <HydrationValue>
+                                  {token?.issuer
+                                    ? amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })
+                                    : amountFormat(r.balance)}{' '}
+                                  {percentFormat(r.balance, rawData.summary?.totalCoins)}{' '}
+                                  {token?.issuer ? (
+                                    <>
+                                      {tokenToFiat({
+                                        amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
+                                        selectedCurrency,
+                                        fiatRate: priceFiat
+                                      })}
+                                    </>
+                                  ) : (
+                                    <>
+                                      {devNet
+                                        ? t('table.no-value')
+                                        : fiatRate > 0 &&
+                                          token?.currency === nativeCurrency &&
+                                          tokenToFiat({
+                                            amount: r.balance,
+                                            selectedCurrency,
+                                            fiatRate
+                                          })}
+                                    </>
+                                  )}
+                                </HydrationValue>
                               </p>
                               {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
                                 <>

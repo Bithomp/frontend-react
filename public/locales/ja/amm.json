@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "AMM エクスプローラー",
+    "metaDescription": "AMM プール、リザーブ、流動性アクティビティ、コントリビューター、オークションスロット、手数料投票を検索できます。",
+    "heading": "AMM エクスプローラー",
+    "intro": "AMM ID、AMM アカウント、LP トークン、または資産ペアで自動マーケットメーカーのプールを検索します。",
+    "placeholderLong": "AMM ID、アカウント、LP トークン、発行者、通貨、ペアで検索",
+    "placeholderShort": "AMM プールを検索"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "自動マーケットメーカーのプール詳細{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "トランザクション",
+    "loading": "読み込み中",
+    "update": "更新",
+    "reset": "リセット",
+    "active": "有効",
+    "expired": "期限切れ",
+    "chartDataUnavailable": "チャートデータはまだ利用できません"
+  },
+  "hero": {
+    "eyebrow": "自動マーケットメーカー",
+    "tvl": "プール価値",
+    "tradingFee": "取引手数料",
+    "votes": "投票",
+    "vote": "投票",
+    "deposit": "入金",
+    "withdraw": "出金"
+  },
+  "overview": {
+    "assetPrices": "資産価格",
+    "reserves": "リザーブ",
+    "poolStats": "プール統計",
+    "lpSupply": "LP 供給量",
+    "contributors": "コントリビューター",
+    "trustlines": "トラストライン",
+    "dexTrades": "DEX 取引"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "直近の確定日と比較",
+    "comparedPreviousClosedDay": "前の確定日と比較",
+    "comparedPreviousClosedDayAccounts": "前の確定日のアカウント数と比較",
+    "comparedPreviousClosedDayVolume": "前の確定日のボリュームと比較",
+    "fiatReserve24h": "24時間のリザーブ法定通貨価値の変化",
+    "price24h": "24時間の価格変化"
+  },
+  "daily": {
+    "title": "直近確定日の流動性",
+    "deposits": "入金",
+    "withdrawals": "出金",
+    "depositTxs": "入金 tx",
+    "withdrawalTxs": "出金 tx",
+    "depositors": "入金者",
+    "withdrawers": "出金者",
+    "volume": "ボリューム",
+    "volumeUnavailable": "ボリュームは利用できません"
+  },
+  "charts": {
+    "poolHistory": "プール履歴",
+    "subtitle": "日次スワップ、リザーブ、入金 / 出金アクティビティ、LP コントリビューター。",
+    "lastReports": "直近 {{count}} 件の日次レポート",
+    "swaps": "スワップ",
+    "depositsWithdrawals": "入金 / 出金",
+    "assetVolume": "{{asset}} 入金 / 出金ボリューム",
+    "series": {
+      "swaps": "スワップ"
+    }
+  },
+  "activity": {
+    "title": "アクティビティ",
+    "titleNote": "24時間",
+    "dex": "DEX",
+    "deposits": "入金",
+    "withdrawals": "出金",
+    "latest": "最新",
+    "largest": "最大",
+    "emptyDex": "過去24時間の AMM DEX 取引はありません",
+    "emptyLiquidity": "過去24時間の AMM {{type}} アクティビティはありません"
+  },
+  "contributors": {
+    "title": "LP コントリビューター",
+    "subtitle": "プールシェア保有者トップ100。",
+    "viewAll": "すべて表示",
+    "others": "その他",
+    "top100": "トップ100",
+    "shareTooltip": "{{value}}% シェア",
+    "wallet": "ウォレット",
+    "share": "シェア",
+    "lpTokens": "LP トークン",
+    "lpTokenAmount": "{{amount}} LP トークン",
+    "showTop10": "トップ10を表示",
+    "showTopCount": "トップ {{count}} を表示",
+    "unavailable": "LP コントリビューターはまだ利用できません"
+  },
+  "details": {
+    "title": "レジャー詳細と履歴検索",
+    "subtitle": "AMM アカウント、作成トランザクション、過去のプール状態。",
+    "historicalLookup": "履歴検索",
+    "historicalHint": "上のライブプールデータを変更せず、下に別のスナップショットを読み込みます。",
+    "snapshotBadge": "スナップショット {{time}}",
+    "poolIdentifiers": "プール識別子",
+    "ammAddress": "AMM アドレス",
+    "ammId": "AMM ID",
+    "created": "作成",
+    "lastUpdate": "最終更新"
+  },
+  "historical": {
+    "poolState": "過去のプール状態",
+    "snapshotAt": "{{time}} のスナップショット",
+    "snapshotFallback": "リザーブ、手数料、LP 残高のスナップショット。",
+    "loadingRates": "過去の法定通貨レートを読み込み中。",
+    "nearestRates": "法定通貨は最も近い過去レートを使用します。",
+    "historicalFiatUnavailable": "過去の法定通貨値は利用できません",
+    "loadingHistoricalFiat": "過去の法定通貨値を読み込み中",
+    "tvlAtSnapshot": "スナップショット時のプール価値",
+    "asset1": "資産 1",
+    "asset2": "資産 2",
+    "lpTokenBalance": "LP トークン残高",
+    "auctionSlot": "過去のオークションスロット",
+    "stateAt": "{{time}} の状態",
+    "auctionStateAtSelectedTime": "選択時点のオークションスロット状態。",
+    "voteSlots": "過去の投票スロット",
+    "voteSlotsAtSelectedTime": "選択時点の投票スロット",
+    "noVoteSlotsSnapshot": "このスナップショットに投票スロットはありません。",
+    "statusAtSnapshot": "スナップショット時のステータス",
+    "slotHolder": "スロット保有者",
+    "holderFee": "保有者手数料",
+    "lpBid": "LP 入札",
+    "slotEnds": "スロット終了",
+    "authorizedDiscountAccounts": "割引許可アカウント",
+    "noAuctionSlotSnapshot": "このスナップショットにオークションスロットはありません。"
+  },
+  "voteSlots": {
+    "title": "投票スロット",
+    "activeVoters": "{{count}} 件の有効投票",
+    "fee": "手数料",
+    "weight": "重み"
+  },
+  "auction": {
+    "slot": "オークションスロット",
+    "activeDescription": "有効なスロットを上回る入札で、割引手数料で取引します。",
+    "openDescription": "最大24時間の新しい割引手数料スロットを取得します。",
+    "activeSlot": "有効スロット",
+    "openSlot": "空きスロット",
+    "feeIfWin": "落札時の手数料",
+    "poolFee": "プール手数料",
+    "discountWindow": "割引期間",
+    "upTo24h": "最大24時間",
+    "feeSaving": "手数料削減",
+    "currentSlotHolder": "現在のスロット保有者",
+    "currentHolderFee": "現在の保有者手数料",
+    "currentLpBid": "現在の LP 入札",
+    "slotEnds": "スロット終了",
+    "authorizedDiscountAccounts": "割引許可アカウント",
+    "bidWithLp": "LP で入札",
+    "bidWithLpAmount": "{{amount}} で入札",
+    "bidWithLpHint": "すでに LP トークンを保有している場合に使用します。",
+    "checkingLpBalance": "LP 残高を確認中",
+    "checkingLpBalanceHint": "接続中のウォレットに入札に十分な LP があるか確認しています。",
+    "notEnoughLp": "入札に必要な LP が不足しています",
+    "notEnoughLpHint": "先に不足分の LP を取得してから、オークションに入札してください。",
+    "enoughLpHint": "接続中のウォレットには最大支払い上限に十分な LP があります。",
+    "yourLpBalance": "あなたの LP 残高",
+    "lpRequired": "必要な LP",
+    "lpMissing": "不足している LP",
+    "paidLpBidOverbid": "上回るために支払う LP 入札",
+    "paidLpBidClaim": "取得するために支払う LP 入札",
+    "maxLpSpendCap": "最大 LP 支払い上限",
+    "winningBidSpent": "落札入札は支払われます",
+    "winningBidSpentText": "支払った LP トークンは割引スロットの購入に使われ、24時間の期間終了後も返却されません。入札額と最大額の間の未使用分は支払われません。",
+    "extraDiscountAccounts": "追加の割引アカウント",
+    "addAccount": "+ アカウントを追加",
+    "addressPlaceholder": "アドレス {{number}}",
+    "addAccountsHint": "他のアカウントも割引で取引する場合は最大4件まで追加できます。",
+    "signingAccountNote": "署名アカウントは自動的に割引を受けます。期限前に別の入札で置き換えられた場合、返金は残りスロット時間に基づいてプロトコルが計算します。",
+    "mintLpThenBid": "LP を作成してから入札",
+    "mintLpThenBidHint": "先に LP トークンを取得する必要がある場合に使用します。",
+    "getMissingLp": "不足 LP を取得",
+    "getMissingLpHint": "最大入札上限に不足している LP だけを作成します。",
+    "lpToMintFirst": "先に作成する LP",
+    "mintLpNote": "最大支払い上限に十分な LP を作成します。続く入札で LP トークンが支払われ、入札に使われなかった LP だけがウォレットに残ります。",
+    "mintMissingLpNote": "不足している LP だけを作成します。承認後、このウォレットから入札できます。",
+    "withAsset": "{{asset}} で",
+    "withBothAssets": "両方の資産で",
+    "payUpTo": "最大 {{amount}} を支払う",
+    "payBoth": "{{amount1}} + {{amount2}} を支払う",
+    "breakEvenVolume": "損益分岐ボリューム",
+    "breakEvenHint": "手数料削減が入札額を相殺するために必要なスワップボリューム。",
+    "lpDepositTransaction": "LP 入金トランザクション: ",
+    "auctionBidTransaction": "オークション入札トランザクション: ",
+    "winningBidPaid": "落札 LP 入札は割引スロットのために支払われます。",
+    "discountEnds": "割引は最大24時間続き、上回る入札があると早く終了することがあります。",
+    "singleAssetCap": "単一資産オプションは最大上限を使用します。最終入金額は少なくなる場合があります。",
+    "showExpiredSlotDetails": "期限切れスロットの詳細を表示",
+    "lastHolder": "最後の保有者",
+    "expiredHolderFee": "期限切れ保有者手数料",
+    "lastLpBid": "最後の LP 入札",
+    "expiredAt": "期限切れ時刻",
+    "previouslyAuthorizedAccounts": "以前に許可されたアカウント",
+    "notAvailableAfterExpiry": "期限切れ後は利用できません",
+    "invalidAuthorizedAccount": "無効な許可アカウント: {{account}}",
+    "lpBalanceShortfall": "このウォレットから入札するには {{amount}} 不足しています。",
+    "bidderAlreadyDiscounted": "入札者アカウントはすでに割引を受けているため、許可アカウントとして追加できません。",
+    "yourSlotDescription": "このウォレットはすでに有効な割引手数料スロットを持っています。",
+    "yourActiveSlot": "この割引スロットはあなたのものです",
+    "yourAuthorizedSlot": "このウォレットは割引を許可されています",
+    "yourDiscountHint": "このスロットが期限切れになるか、別の入札で置き換えられるまで、割引手数料で取引できます。",
+    "yourDiscountedFee": "あなたの割引手数料",
+    "yourFeeSaving": "あなたの手数料削減",
+    "yourPaidBid": "支払った LP 入札",
+    "minimumOverbid": "あなたを上回る最低入札"
+  },
+  "lpAnalytics": {
+    "title": "LP トークン分析"
+  },
+  "errors": {
+    "noAmmData": "その AMM ID の情報は見つかりませんでした。",
+    "noHistoricalData": "その日のその時刻に、この AMM ID の情報は見つかりませんでした。"
+  },
+  "sign": {
+    "depositTitle": "AMM 入金",
+    "withdrawTitle": "AMM 出金",
+    "feeVoteTitle": "AMM 手数料投票",
+    "deposit": {
+      "modeLabel": "入金モード",
+      "pool": "プール",
+      "assetToDeposit": "入金する資産",
+      "lpTokensToReceive": "受け取る LP トークン",
+      "amountLabel": "金額, {{asset}}",
+      "maxAmountLabel": "最大金額, {{asset}}",
+      "asset1AmountLabel": "資産 1 金額, {{asset}}",
+      "asset2AmountLabel": "資産 2 金額, {{asset}}",
+      "approxAssetsToDeposit": "入金する資産",
+      "maxPricePerLp": "LP あたり最大価格, {{asset}}",
+      "singleAssetLimitNote": "0.5% のバッファを含みます。トランザクションは少なく支払うことはできますが、超過はできません。",
+      "priceLimitNote": "現在のプールから提案され、0.5% のバッファを含みます。",
+      "approxLpReceived": "受け取る LP トークン",
+      "youWillGetLp": "受け取る予定",
+      "available": "利用可能",
+      "max": "最大",
+      "balanceLoading": "残高を読み込み中...",
+      "modes": {
+        "singleAsset": {
+          "label": "単一資産",
+          "description": "1つの資産を入金してプールシェアを受け取ります。"
+        },
+        "twoAsset": {
+          "label": "2つの資産",
+          "description": "両方の資産を1つのトランザクションで入金します。"
+        },
+        "exactLp": {
+          "label": "正確な LP トークン",
+          "description": "この LP 数量を受け取るために両方の資産を十分に入金します。"
+        },
+        "singleAssetForLp": {
+          "label": "LP 用の単一資産",
+          "description": "1つの資産を入金し、特定の LP トークン数量を要求します。"
+        },
+        "singleAssetWithLimit": {
+          "label": "上限付き単一資産",
+          "description": "有効価格上限付きで1つの資産を入金します。"
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "出金モード",
+      "pool": "プール",
+      "assetToWithdraw": "出金する資産",
+      "amountLabel": "金額, {{asset}}",
+      "minimumAmountLabel": "最小金額, {{asset}}",
+      "asset1AmountLabel": "資産 1 金額, {{asset}}",
+      "asset2AmountLabel": "資産 2 金額, {{asset}}",
+      "lpTokensToRedeemUpTo": "償還する LP トークン, 最大",
+      "assetAmountToReceiveUpTo": "受け取る資産金額, 最大 {{asset}}",
+      "lpAssetCapsNote": "LP 金額は償還量を制限し、資産金額は受取量を制限します。提案された資産金額には 0.5% のバッファが含まれます。",
+      "lpTokensToRedeem": "償還する LP トークン",
+      "approxAssetsToReceive": "受け取る資産",
+      "maxLpPerAsset": "{{asset}} あたり最大 LP",
+      "priceLimitNote": "現在のプールから提案され、0.5% のバッファを含みます。",
+      "approxLpToRedeem": "償還する LP トークン",
+      "modes": {
+        "twoAsset": {
+          "label": "2つの資産",
+          "description": "両方の資産を1つのトランザクションで出金します。"
+        },
+        "singleAsset": {
+          "label": "単一資産",
+          "description": "プールから1つの資産を出金します。"
+        },
+        "redeemLp": {
+          "label": "LP トークンを償還",
+          "description": "LP トークンを両方のプール資産に償還します。"
+        },
+        "singleAssetForLp": {
+          "label": "LP 用の単一資産",
+          "description": "LP と資産の上限付きで LP トークンを1つの資産に償還します。"
+        },
+        "allLpIntoOneAsset": {
+          "label": "すべての LP を1資産へ",
+          "description": "LP ポジション全体を最小金額付きで1つの資産として出金します。"
+        },
+        "singleAssetWithLimit": {
+          "label": "上限付き単一資産",
+          "description": "有効価格上限付きで1つの資産を出金します。"
+        },
+        "withdrawAll": {
+          "label": "すべて出金",
+          "description": "LP ポジション全体を両方の資産に出金します。"
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "取引手数料",
+      "confirmText": "署名前に AMM 取引手数料を確認してください。この値は AMM 投票としてレジャーに保存されます。",
+      "voteValue": "投票値",
+      "invalidFee": "取引手数料は 0 から 1% の数値である必要があります。"
+    }
+  }
+}

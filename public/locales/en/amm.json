@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "AMM explorer",
+    "metaDescription": "Find AMM pools, reserves, liquidity activity, contributors, auction slots and fee votes.",
+    "heading": "AMM explorer",
+    "intro": "Search for an automated market maker pool by AMM ID, AMM account, LP token, or asset pair.",
+    "placeholderLong": "Search by AMM ID, account, LP token, issuer, currency, or pair",
+    "placeholderShort": "Search AMM pools"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "Automated market maker pool details{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "Transaction",
+    "loading": "Loading",
+    "update": "Update",
+    "reset": "Reset",
+    "active": "Active",
+    "expired": "Expired",
+    "chartDataUnavailable": "Chart data is not available yet"
+  },
+  "hero": {
+    "eyebrow": "Automated market maker",
+    "tvl": "Total value locked",
+    "tradingFee": "Trading fee",
+    "votes": "Votes",
+    "vote": "Vote",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw"
+  },
+  "overview": {
+    "assetPrices": "Asset prices",
+    "reserves": "Reserves",
+    "poolStats": "Pool stats",
+    "lpSupply": "LP supply",
+    "contributors": "Contributors",
+    "trustlines": "Trustlines",
+    "dexTrades": "DEX trades"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "Compared with last closed day",
+    "comparedPreviousClosedDay": "Compared with previous closed day",
+    "comparedPreviousClosedDayAccounts": "Compared with previous closed day accounts",
+    "comparedPreviousClosedDayVolume": "Compared with previous closed day volume",
+    "fiatReserve24h": "Fiat reserve value change over 24h",
+    "price24h": "Price change over 24h"
+  },
+  "daily": {
+    "title": "Last closed day liquidity",
+    "deposits": "Deposits",
+    "withdrawals": "Withdrawals",
+    "depositTxs": "Deposit txs",
+    "withdrawalTxs": "Withdrawal txs",
+    "depositors": "Depositors",
+    "withdrawers": "Withdrawers",
+    "volume": "Volume",
+    "volumeUnavailable": "Volume is not available"
+  },
+  "charts": {
+    "poolHistory": "Pool history",
+    "subtitle": "Daily swaps, reserves, deposit / withdrawal activity and LP contributors.",
+    "lastReports": "Last {{count}} daily reports",
+    "swaps": "Swaps",
+    "depositsWithdrawals": "Deposits / withdrawals",
+    "assetVolume": "{{asset}} deposit / withdrawal volume",
+    "series": {
+      "swaps": "Swaps"
+    }
+  },
+  "activity": {
+    "title": "Activity",
+    "titleNote": "24h",
+    "dex": "DEX",
+    "deposits": "Deposits",
+    "withdrawals": "Withdrawals",
+    "latest": "Latest",
+    "largest": "Largest",
+    "emptyDex": "No AMM DEX trades available for the last 24 hours",
+    "emptyLiquidity": "No AMM {{type}} activity available for the last 24 hours"
+  },
+  "contributors": {
+    "title": "LP contributors",
+    "subtitle": "Top 100 pool share holders.",
+    "viewAll": "View all",
+    "others": "Others",
+    "top100": "Top 100",
+    "shareTooltip": "{{value}}% share",
+    "wallet": "Wallet",
+    "share": "Share",
+    "lpTokens": "LP tokens",
+    "lpTokenAmount": "{{amount}} LP token",
+    "showTop10": "Show top 10",
+    "showTopCount": "Show top {{count}}",
+    "unavailable": "LP contributors are not available yet"
+  },
+  "details": {
+    "title": "Ledger details and historical lookup",
+    "subtitle": "AMM account, creation transaction and historical pool state.",
+    "historicalLookup": "Historical lookup",
+    "historicalHint": "Loads a separate snapshot below without changing the live pool data above.",
+    "snapshotBadge": "Snapshot {{time}}",
+    "poolIdentifiers": "Pool identifiers",
+    "ammAddress": "AMM address",
+    "ammId": "AMM ID",
+    "created": "Created",
+    "lastUpdate": "Last update"
+  },
+  "historical": {
+    "poolState": "Historical pool state",
+    "snapshotAt": "Snapshot at {{time}}",
+    "snapshotFallback": "Snapshot reserves, fee and LP balance.",
+    "loadingRates": "Loading historical fiat rates.",
+    "nearestRates": "Fiat uses nearest historical rates.",
+    "historicalFiatUnavailable": "Historical fiat unavailable",
+    "loadingHistoricalFiat": "Loading historical fiat",
+    "tvlAtSnapshot": "TVL at snapshot",
+    "asset1": "Asset 1",
+    "asset2": "Asset 2",
+    "lpTokenBalance": "LP token balance",
+    "auctionSlot": "Historical auction slot",
+    "stateAt": "State at {{time}}",
+    "auctionStateAtSelectedTime": "Auction slot state at selected time.",
+    "voteSlots": "Historical vote slots",
+    "voteSlotsAtSelectedTime": "Vote slots at selected time",
+    "noVoteSlotsSnapshot": "No vote slots in this snapshot.",
+    "statusAtSnapshot": "Status at snapshot",
+    "slotHolder": "Slot holder",
+    "holderFee": "Holder fee",
+    "lpBid": "LP bid",
+    "slotEnds": "Slot ends",
+    "authorizedDiscountAccounts": "Authorized discount accounts",
+    "noAuctionSlotSnapshot": "No auction slot in this snapshot."
+  },
+  "voteSlots": {
+    "title": "Vote slots",
+    "activeVoters": "{{count}} active voters",
+    "fee": "Fee",
+    "weight": "Weight"
+  },
+  "auction": {
+    "slot": "Auction slot",
+    "activeDescription": "Outbid the active slot to trade at the discounted fee.",
+    "openDescription": "Claim a fresh discounted fee slot for up to 24 hours.",
+    "activeSlot": "Active slot",
+    "openSlot": "Open slot",
+    "feeIfWin": "Fee if you win",
+    "poolFee": "Pool fee",
+    "discountWindow": "Discount window",
+    "upTo24h": "Up to 24h",
+    "feeSaving": "Fee saving",
+    "currentSlotHolder": "Current slot holder",
+    "currentHolderFee": "Current holder fee",
+    "currentLpBid": "Current LP bid",
+    "slotEnds": "Slot ends",
+    "authorizedDiscountAccounts": "Authorized discount accounts",
+    "bidWithLp": "Bid with LP",
+    "bidWithLpAmount": "Bid {{amount}}",
+    "bidWithLpHint": "Use this path if you already hold LP tokens.",
+    "checkingLpBalance": "Checking LP balance",
+    "checkingLpBalanceHint": "We are checking whether the connected wallet has enough LP to bid.",
+    "notEnoughLp": "Not enough LP to bid",
+    "notEnoughLpHint": "Get the missing LP first, then place the auction bid.",
+    "enoughLpHint": "Your connected wallet has enough LP for the max spend cap.",
+    "yourLpBalance": "Your LP balance",
+    "lpRequired": "LP required",
+    "lpMissing": "LP missing",
+    "paidLpBidOverbid": "Paid LP bid to overbid",
+    "paidLpBidClaim": "Paid LP bid to claim",
+    "maxLpSpendCap": "Max LP spend cap",
+    "winningBidSpent": "Winning bid is spent",
+    "winningBidSpentText": "Paid LP tokens buy the discount slot and are not returned when the 24h window expires. Unused room between bid and max is not paid.",
+    "extraDiscountAccounts": "Extra discount accounts",
+    "addAccount": "+ Add account",
+    "addressPlaceholder": "Address {{number}}",
+    "addAccountsHint": "Add up to 4 accounts if others should trade with the discount too.",
+    "signingAccountNote": "The signing account gets the discount automatically. If another bid replaces yours before expiry, any refund is protocol-calculated from remaining slot time.",
+    "mintLpThenBid": "Mint LP, then bid",
+    "mintLpThenBidHint": "Use this path if you need to get LP tokens first.",
+    "getMissingLp": "Get missing LP",
+    "getMissingLpHint": "Mint only the LP amount missing for the max bid cap.",
+    "lpToMintFirst": "LP to mint first",
+    "mintLpNote": "Mints enough LP for the max spend cap. The follow-up bid spends LP tokens; only LP not spent by the bid stays in your wallet.",
+    "mintMissingLpNote": "Mints the missing LP only. After it confirms, you can bid from this wallet.",
+    "withAsset": "With {{asset}}",
+    "withBothAssets": "With both assets",
+    "payUpTo": "Pay up to {{amount}}",
+    "payBoth": "Pay {{amount1}} + {{amount2}}",
+    "breakEvenVolume": "Break-even volume",
+    "breakEvenHint": "Swap volume needed for fee savings to offset the bid.",
+    "lpDepositTransaction": "LP deposit transaction: ",
+    "auctionBidTransaction": "Auction bid transaction: ",
+    "winningBidPaid": "The winning LP bid is paid for the discount slot.",
+    "discountEnds": "The discount lasts up to 24 hours and can end sooner if outbid.",
+    "singleAssetCap": "Single-asset options use a maximum cap; the final deposit can be lower.",
+    "showExpiredSlotDetails": "Show expired slot details",
+    "lastHolder": "Last holder",
+    "expiredHolderFee": "Expired holder fee",
+    "lastLpBid": "Last LP bid",
+    "expiredAt": "Expired at",
+    "previouslyAuthorizedAccounts": "Previously authorized accounts",
+    "notAvailableAfterExpiry": "Not available after expiry",
+    "invalidAuthorizedAccount": "Invalid authorized account: {{account}}",
+    "lpBalanceShortfall": "You are missing {{amount}} to bid from this wallet.",
+    "bidderAlreadyDiscounted": "The bidder account already gets the discount and cannot be added as an authorized account.",
+    "yourSlotDescription": "This wallet already has the active discounted fee slot.",
+    "yourActiveSlot": "This discount slot is yours",
+    "yourAuthorizedSlot": "This wallet is authorized for the discount",
+    "yourDiscountHint": "You already trade with this slot's discounted fee until it expires or another bid replaces it.",
+    "yourDiscountedFee": "Your discounted fee",
+    "yourFeeSaving": "Your fee saving",
+    "yourPaidBid": "Your paid LP bid",
+    "minimumOverbid": "Minimum to overbid you"
+  },
+  "lpAnalytics": {
+    "title": "LP token analytics"
+  },
+  "errors": {
+    "noAmmData": "No information found for that AMM ID.",
+    "noHistoricalData": "No information found for that AMM ID at this time of that day."
+  },
+  "sign": {
+    "depositTitle": "AMM deposit",
+    "withdrawTitle": "AMM withdraw",
+    "feeVoteTitle": "AMM fee vote",
+    "deposit": {
+      "modeLabel": "Deposit mode",
+      "pool": "Pool",
+      "assetToDeposit": "Asset to deposit",
+      "lpTokensToReceive": "LP tokens to receive",
+      "amountLabel": "Amount, {{asset}}",
+      "maxAmountLabel": "Max amount, {{asset}}",
+      "asset1AmountLabel": "Asset 1 amount, {{asset}}",
+      "asset2AmountLabel": "Asset 2 amount, {{asset}}",
+      "approxAssetsToDeposit": "Assets to deposit",
+      "maxPricePerLp": "Max price per LP, {{asset}}",
+      "singleAssetLimitNote": "Includes a 0.5% buffer. The transaction can spend less, but not more.",
+      "priceLimitNote": "Suggested from the current pool and includes a 0.5% buffer.",
+      "approxLpReceived": "LP tokens received",
+      "youWillGetLp": "You will get",
+      "available": "Available",
+      "max": "Max",
+      "balanceLoading": "Loading balance...",
+      "modes": {
+        "singleAsset": {
+          "label": "Single asset",
+          "description": "Deposit one asset and receive a pool share."
+        },
+        "twoAsset": {
+          "label": "Two assets",
+          "description": "Deposit both assets in one transaction."
+        },
+        "exactLp": {
+          "label": "Exact LP tokens",
+          "description": "Deposit enough of both assets to receive this LP amount."
+        },
+        "singleAssetForLp": {
+          "label": "Single asset for LP",
+          "description": "Deposit one asset and request a specific LP token amount."
+        },
+        "singleAssetWithLimit": {
+          "label": "Single asset with limit",
+          "description": "Deposit one asset with an effective price limit."
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "Withdraw mode",
+      "pool": "Pool",
+      "assetToWithdraw": "Asset to withdraw",
+      "amountLabel": "Amount, {{asset}}",
+      "minimumAmountLabel": "Minimum amount, {{asset}}",
+      "asset1AmountLabel": "Asset 1 amount, {{asset}}",
+      "asset2AmountLabel": "Asset 2 amount, {{asset}}",
+      "lpTokensToRedeemUpTo": "LP tokens to redeem, up to",
+      "assetAmountToReceiveUpTo": "Asset amount to receive, up to {{asset}}",
+      "lpAssetCapsNote": "The LP amount caps what you redeem; the asset amount caps what you receive. Suggested asset amount includes a 0.5% buffer.",
+      "lpTokensToRedeem": "LP tokens to redeem",
+      "approxAssetsToReceive": "Assets to receive",
+      "maxLpPerAsset": "Max LP per {{asset}}",
+      "priceLimitNote": "Suggested from the current pool and includes a 0.5% buffer.",
+      "approxLpToRedeem": "LP tokens to redeem",
+      "modes": {
+        "twoAsset": {
+          "label": "Two assets",
+          "description": "Withdraw both assets in one transaction."
+        },
+        "singleAsset": {
+          "label": "Single asset",
+          "description": "Withdraw one asset from the pool."
+        },
+        "redeemLp": {
+          "label": "Redeem LP tokens",
+          "description": "Redeem LP tokens for both pool assets."
+        },
+        "singleAssetForLp": {
+          "label": "Single asset for LP",
+          "description": "Redeem LP tokens for one asset with both LP and asset caps."
+        },
+        "allLpIntoOneAsset": {
+          "label": "All LP into one asset",
+          "description": "Withdraw all your LP position as one asset with a minimum amount."
+        },
+        "singleAssetWithLimit": {
+          "label": "Single asset with limit",
+          "description": "Withdraw one asset with an effective price limit."
+        },
+        "withdrawAll": {
+          "label": "Withdraw all",
+          "description": "Withdraw your full LP position into both assets."
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "Trading fee",
+      "confirmText": "Confirm the AMM trading fee before signing. The value is stored on ledger as an AMM vote.",
+      "voteValue": "Vote value",
+      "invalidFee": "Trading fee should be a number from 0 to 1%."
+    }
+  }
+}

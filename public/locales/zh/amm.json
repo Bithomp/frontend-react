@@ -1,0 +1,321 @@
+{
+  "search": {
+    "pageTitle": "AMM 浏览器",
+    "metaDescription": "查找 AMM 池、储备、流动性活动、贡献者、拍卖槽和手续费投票。",
+    "heading": "AMM 浏览器",
+    "intro": "按 AMM ID、AMM 账户、LP 代币或资产交易对搜索自动做市商池。",
+    "placeholderLong": "按 AMM ID、账户、LP 代币、发行方、货币或交易对搜索",
+    "placeholderShort": "搜索 AMM 池"
+  },
+  "seo": {
+    "page": "AMM",
+    "detailsDescription": "自动做市商池详情{{poolName}}{{ammID}}"
+  },
+  "common": {
+    "transaction": "交易",
+    "loading": "加载中",
+    "update": "更新",
+    "reset": "重置",
+    "active": "有效",
+    "expired": "已过期",
+    "chartDataUnavailable": "图表数据暂不可用"
+  },
+  "hero": {
+    "eyebrow": "自动做市商",
+    "tvl": "资金池价值",
+    "tradingFee": "交易手续费",
+    "votes": "投票",
+    "vote": "投票",
+    "deposit": "存入",
+    "withdraw": "取出"
+  },
+  "overview": {
+    "assetPrices": "资产价格",
+    "reserves": "储备",
+    "poolStats": "池统计",
+    "lpSupply": "LP 供应量",
+    "contributors": "贡献者",
+    "trustlines": "信任线",
+    "dexTrades": "DEX 交易"
+  },
+  "tooltips": {
+    "comparedLastClosedDay": "与最近一个已关闭日相比",
+    "comparedPreviousClosedDay": "与上一个已关闭日相比",
+    "comparedPreviousClosedDayAccounts": "账户数与上一个已关闭日相比",
+    "comparedPreviousClosedDayVolume": "成交量与上一个已关闭日相比",
+    "fiatReserve24h": "24 小时储备法币价值变化",
+    "price24h": "24 小时价格变化"
+  },
+  "daily": {
+    "title": "最近已关闭日流动性",
+    "deposits": "存入",
+    "withdrawals": "取出",
+    "depositTxs": "存入交易",
+    "withdrawalTxs": "取出交易",
+    "depositors": "存入账户",
+    "withdrawers": "取出账户",
+    "volume": "数量",
+    "volumeUnavailable": "数量不可用"
+  },
+  "charts": {
+    "poolHistory": "池历史",
+    "subtitle": "每日交换、储备、存入 / 取出活动和 LP 贡献者。",
+    "lastReports": "最近 {{count}} 个日报",
+    "swaps": "交换",
+    "depositsWithdrawals": "存入 / 取出",
+    "assetVolume": "{{asset}} 存入 / 取出数量",
+    "series": {
+      "swaps": "交换"
+    }
+  },
+  "activity": {
+    "title": "活动",
+    "titleNote": "24小时",
+    "dex": "DEX",
+    "deposits": "存入",
+    "withdrawals": "取出",
+    "latest": "最新",
+    "largest": "最大",
+    "emptyDex": "过去 24 小时没有可用的 AMM DEX 交易",
+    "emptyLiquidity": "过去 24 小时没有可用的 AMM {{type}} 活动"
+  },
+  "contributors": {
+    "title": "LP 贡献者",
+    "subtitle": "池份额持有者前 100 名。",
+    "viewAll": "查看全部",
+    "others": "其他",
+    "top100": "前 100",
+    "shareTooltip": "{{value}}% 份额",
+    "wallet": "钱包",
+    "share": "份额",
+    "lpTokens": "LP 代币",
+    "lpTokenAmount": "{{amount}} LP 代币",
+    "showTop10": "显示前 10",
+    "showTopCount": "显示前 {{count}}",
+    "unavailable": "LP 贡献者暂不可用"
+  },
+  "details": {
+    "title": "账本详情和历史查询",
+    "subtitle": "AMM 账户、创建交易和历史池状态。",
+    "historicalLookup": "历史查询",
+    "historicalHint": "在下方加载单独快照，不改变上方实时池数据。",
+    "snapshotBadge": "快照 {{time}}",
+    "poolIdentifiers": "池标识",
+    "ammAddress": "AMM 地址",
+    "ammId": "AMM ID",
+    "created": "已创建",
+    "lastUpdate": "最后更新"
+  },
+  "historical": {
+    "poolState": "历史池状态",
+    "snapshotAt": "{{time}} 的快照",
+    "snapshotFallback": "储备、手续费和 LP 余额快照。",
+    "loadingRates": "正在加载历史法币汇率。",
+    "nearestRates": "法币使用最近的历史汇率。",
+    "historicalFiatUnavailable": "历史法币值不可用",
+    "loadingHistoricalFiat": "正在加载历史法币值",
+    "tvlAtSnapshot": "快照时资金池价值",
+    "asset1": "资产 1",
+    "asset2": "资产 2",
+    "lpTokenBalance": "LP 代币余额",
+    "auctionSlot": "历史拍卖槽",
+    "stateAt": "{{time}} 的状态",
+    "auctionStateAtSelectedTime": "所选时间的拍卖槽状态。",
+    "voteSlots": "历史投票槽",
+    "voteSlotsAtSelectedTime": "所选时间的投票槽",
+    "noVoteSlotsSnapshot": "此快照中没有投票槽。",
+    "statusAtSnapshot": "快照状态",
+    "slotHolder": "槽持有者",
+    "holderFee": "持有者手续费",
+    "lpBid": "LP 出价",
+    "slotEnds": "槽结束",
+    "authorizedDiscountAccounts": "授权折扣账户",
+    "noAuctionSlotSnapshot": "此快照中没有拍卖槽。"
+  },
+  "voteSlots": {
+    "title": "投票槽",
+    "activeVoters": "{{count}} 个活跃投票者",
+    "fee": "手续费",
+    "weight": "权重"
+  },
+  "auction": {
+    "slot": "拍卖槽",
+    "activeDescription": "超过当前活跃槽的出价，以折扣手续费交易。",
+    "openDescription": "获取一个新的折扣手续费槽，最长 24 小时。",
+    "activeSlot": "活跃槽",
+    "openSlot": "开放槽",
+    "feeIfWin": "赢得后的手续费",
+    "poolFee": "池手续费",
+    "discountWindow": "折扣窗口",
+    "upTo24h": "最长 24 小时",
+    "feeSaving": "手续费节省",
+    "currentSlotHolder": "当前槽持有者",
+    "currentHolderFee": "当前持有者手续费",
+    "currentLpBid": "当前 LP 出价",
+    "slotEnds": "槽结束",
+    "authorizedDiscountAccounts": "授权折扣账户",
+    "bidWithLp": "用 LP 出价",
+    "bidWithLpAmount": "出价 {{amount}}",
+    "bidWithLpHint": "如果你已经持有 LP 代币，请使用此方式。",
+    "checkingLpBalance": "正在检查 LP 余额",
+    "checkingLpBalanceHint": "正在检查已连接钱包是否有足够 LP 用于出价。",
+    "notEnoughLp": "LP 不足，无法出价",
+    "notEnoughLpHint": "请先获得缺少的 LP，然后再进行拍卖出价。",
+    "enoughLpHint": "已连接钱包有足够 LP 覆盖最大支出上限。",
+    "yourLpBalance": "你的 LP 余额",
+    "lpRequired": "所需 LP",
+    "lpMissing": "缺少 LP",
+    "paidLpBidOverbid": "用于超越的已付 LP 出价",
+    "paidLpBidClaim": "用于获取的已付 LP 出价",
+    "maxLpSpendCap": "最大 LP 支出上限",
+    "winningBidSpent": "获胜出价会被花费",
+    "winningBidSpentText": "支付的 LP 代币用于购买折扣槽，24 小时窗口结束后不会返还。出价和最大值之间未使用的空间不会支付。",
+    "extraDiscountAccounts": "额外折扣账户",
+    "addAccount": "+ 添加账户",
+    "addressPlaceholder": "地址 {{number}}",
+    "addAccountsHint": "如果其他账户也需要使用折扣交易，最多可添加 4 个账户。",
+    "signingAccountNote": "签名账户会自动获得折扣。如果到期前其他出价替代了你的出价，任何退款都会由协议根据剩余槽时间计算。",
+    "mintLpThenBid": "先铸造 LP，再出价",
+    "mintLpThenBidHint": "如果你需要先获得 LP 代币，请使用此方式。",
+    "getMissingLp": "获得缺少的 LP",
+    "getMissingLpHint": "只铸造达到最大出价上限所缺少的 LP 数量。",
+    "lpToMintFirst": "先铸造的 LP",
+    "mintLpNote": "铸造足够 LP 以覆盖最大支出上限。后续出价会花费 LP 代币；只有未被出价花费的 LP 会留在钱包中。",
+    "mintMissingLpNote": "只铸造缺少的 LP。确认后，你可以用该钱包出价。",
+    "withAsset": "使用 {{asset}}",
+    "withBothAssets": "使用两个资产",
+    "payUpTo": "最多支付 {{amount}}",
+    "payBoth": "支付 {{amount1}} + {{amount2}}",
+    "breakEvenVolume": "盈亏平衡交易量",
+    "breakEvenHint": "手续费节省抵消出价所需的交换交易量。",
+    "lpDepositTransaction": "LP 存入交易: ",
+    "auctionBidTransaction": "拍卖出价交易: ",
+    "winningBidPaid": "获胜的 LP 出价会支付给折扣槽。",
+    "discountEnds": "折扣最长持续 24 小时，如果被更高出价超过则可能提前结束。",
+    "singleAssetCap": "单资产选项使用最大上限；最终存入可能更低。",
+    "showExpiredSlotDetails": "显示已过期槽详情",
+    "lastHolder": "最后持有者",
+    "expiredHolderFee": "已过期持有者手续费",
+    "lastLpBid": "最后 LP 出价",
+    "expiredAt": "过期时间",
+    "previouslyAuthorizedAccounts": "之前授权的账户",
+    "notAvailableAfterExpiry": "过期后不可用",
+    "invalidAuthorizedAccount": "无效授权账户: {{account}}",
+    "lpBalanceShortfall": "该钱包出价还缺少 {{amount}}。",
+    "bidderAlreadyDiscounted": "出价账户已经获得折扣，不能添加为授权账户。",
+    "yourSlotDescription": "此钱包已经拥有活跃的折扣手续费槽。",
+    "yourActiveSlot": "此折扣槽属于你",
+    "yourAuthorizedSlot": "此钱包已被授权使用折扣",
+    "yourDiscountHint": "在该槽过期或被其他出价替代之前，你已经可以使用此槽的折扣手续费交易。",
+    "yourDiscountedFee": "你的折扣手续费",
+    "yourFeeSaving": "你的手续费节省",
+    "yourPaidBid": "你支付的 LP 出价",
+    "minimumOverbid": "超过你的最低出价"
+  },
+  "lpAnalytics": {
+    "title": "LP 代币分析"
+  },
+  "errors": {
+    "noAmmData": "未找到该 AMM ID 的信息。",
+    "noHistoricalData": "未找到该 AMM ID 在该日期该时间的信息。"
+  },
+  "sign": {
+    "depositTitle": "AMM 存入",
+    "withdrawTitle": "AMM 取出",
+    "feeVoteTitle": "AMM 手续费投票",
+    "deposit": {
+      "modeLabel": "存入模式",
+      "pool": "池",
+      "assetToDeposit": "要存入的资产",
+      "lpTokensToReceive": "要接收的 LP 代币",
+      "amountLabel": "数量, {{asset}}",
+      "maxAmountLabel": "最大数量, {{asset}}",
+      "asset1AmountLabel": "资产 1 数量, {{asset}}",
+      "asset2AmountLabel": "资产 2 数量, {{asset}}",
+      "approxAssetsToDeposit": "存入资产",
+      "maxPricePerLp": "每 LP 最大价格, {{asset}}",
+      "singleAssetLimitNote": "包含 0.5% 缓冲。交易可以花费更少，但不能更多。",
+      "priceLimitNote": "根据当前池建议，并包含 0.5% 缓冲。",
+      "approxLpReceived": "接收的 LP 代币",
+      "youWillGetLp": "你将获得",
+      "available": "可用",
+      "max": "最大",
+      "balanceLoading": "正在加载余额...",
+      "modes": {
+        "singleAsset": {
+          "label": "单资产",
+          "description": "存入一个资产并获得池份额。"
+        },
+        "twoAsset": {
+          "label": "双资产",
+          "description": "在一笔交易中存入两个资产。"
+        },
+        "exactLp": {
+          "label": "精确 LP 代币",
+          "description": "存入足够的两个资产以获得该 LP 数量。"
+        },
+        "singleAssetForLp": {
+          "label": "单资产换 LP",
+          "description": "存入一个资产并请求指定数量的 LP 代币。"
+        },
+        "singleAssetWithLimit": {
+          "label": "带限制的单资产",
+          "description": "以有效价格限制存入一个资产。"
+        }
+      }
+    },
+    "withdraw": {
+      "modeLabel": "取出模式",
+      "pool": "池",
+      "assetToWithdraw": "要取出的资产",
+      "amountLabel": "数量, {{asset}}",
+      "minimumAmountLabel": "最小数量, {{asset}}",
+      "asset1AmountLabel": "资产 1 数量, {{asset}}",
+      "asset2AmountLabel": "资产 2 数量, {{asset}}",
+      "lpTokensToRedeemUpTo": "要赎回的 LP 代币，最多",
+      "assetAmountToReceiveUpTo": "要接收的资产数量，最多 {{asset}}",
+      "lpAssetCapsNote": "LP 数量限制你赎回的数量；资产数量限制你接收的数量。建议资产数量包含 0.5% 缓冲。",
+      "lpTokensToRedeem": "要赎回的 LP 代币",
+      "approxAssetsToReceive": "接收资产",
+      "maxLpPerAsset": "每 {{asset}} 最大 LP",
+      "priceLimitNote": "根据当前池建议，并包含 0.5% 缓冲。",
+      "approxLpToRedeem": "赎回的 LP 代币",
+      "modes": {
+        "twoAsset": {
+          "label": "双资产",
+          "description": "在一笔交易中取出两个资产。"
+        },
+        "singleAsset": {
+          "label": "单资产",
+          "description": "从池中取出一个资产。"
+        },
+        "redeemLp": {
+          "label": "赎回 LP 代币",
+          "description": "将 LP 代币赎回为两个池资产。"
+        },
+        "singleAssetForLp": {
+          "label": "单资产换 LP",
+          "description": "在 LP 和资产限制下，将 LP 代币赎回为一个资产。"
+        },
+        "allLpIntoOneAsset": {
+          "label": "全部 LP 转为单资产",
+          "description": "将你的全部 LP 仓位按最小数量取出为一个资产。"
+        },
+        "singleAssetWithLimit": {
+          "label": "带限制的单资产",
+          "description": "以有效价格限制取出一个资产。"
+        },
+        "withdrawAll": {
+          "label": "全部取出",
+          "description": "将你的全部 LP 仓位取出为两个资产。"
+        }
+      }
+    },
+    "voteFee": {
+      "tradingFee": "交易手续费",
+      "confirmText": "签名前请确认 AMM 交易手续费。该值会作为 AMM 投票存储到账本中。",
+      "voteValue": "投票值",
+      "invalidFee": "交易手续费必须是 0 到 1% 之间的数字。"
+    }
+  }
+}

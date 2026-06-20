@@ -38,21 +38,23 @@ export default function XamanQr({ expiredQr, xamanQrSrc, onReset, status }) {
   }, [expiresInSeconds])
 
   return (
-    <>
+    <div className="xaman-qr-panel">
       {!overtime && (
-        <div className="center">
-          <img width="200" height="200" src={xamanQrSrc} alt="qr-code" />
+        <div className="xaman-qr-code">
+          <img width="220" height="220" src={xamanQrSrc} alt="qr-code" />
         </div>
       )}
       {overtime && (
-        <div style={{ paddingTop: '120px' }}>
-          <input type="button" value={t('xaman.new-qr')} className="button-action" onClick={resetQr} />
+        <div className="xaman-qr-expired">
+          <button type="button" className="button-action secondary" onClick={resetQr}>
+            {t('xaman.new-qr')}
+          </button>
         </div>
       )}
-      <div className="orange bold center" style={{ margin: '20px' }}>
+      <div className="xaman-qr-status">
         {overtime ? t('signin.xaman.statuses.expired') : status}
       </div>
-      {!overtime && <ProgressBar goneSeconds={expiresInSeconds} maxSeconds={180} />}
-    </>
+      {!overtime && <ProgressBar goneSeconds={expiresInSeconds} maxSeconds={180} className="xaman-progress" />}
+    </div>
   )
 }

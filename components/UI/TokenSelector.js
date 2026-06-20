@@ -77,6 +77,7 @@ export default function TokenSelector({
   allOrOne,
   currencyQueryName,
   excludeLPtokens = false,
+  onlyLPtokens = false,
   canLock = false
 }) {
   const { t } = useTranslation()
@@ -139,7 +140,11 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
-      let urlPart = excludeLPtokens ? '&lptokens=false' : '&currencyDetails=true'
+      let urlPart = onlyLPtokens
+        ? '&lptokens=true&currencyDetails=true'
+        : excludeLPtokens
+          ? '&lptokens=false'
+          : '&currencyDetails=true'
       if (canLock) {
         urlPart += '&canLock=true'
       }
