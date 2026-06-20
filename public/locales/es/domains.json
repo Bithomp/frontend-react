@@ -18,5 +18,6 @@
     "check-toml": "Comprobar TOML",
     "check-toml-for-domain": "Comprobar TOML de {{domain}}",
     "addresses": "Direcciones"
-  }
+  },
+  "create-toml": "También puedes <0>crear un archivo TOML</0> con Bithomp."
 }

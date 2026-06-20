@@ -74,7 +74,8 @@
       "view-all-services": "Voir tous les services",
       "nft-mint": "Frappé NFT",
       "tax-reports": "Rapports fiscaux",
-      "username": "Enregistrement de nom d'utilisateur"
+      "username": "Enregistrement de nom d'utilisateur",
+      "toml-generator": "Générateur TOML"
     },
     "business": {
       "advertise": "Annoncer",
@@ -164,6 +165,10 @@
       "ripple-usd": "Ripple USD",
       "nft-minting": "Comment minter un NFT",
       "learn-page": "Voir notre page d’apprentissage"
+    },
+    "identity": {
+      "title": "Identité",
+      "domain-verification": "Vérification de domaine"
     }
   },
   "components": {

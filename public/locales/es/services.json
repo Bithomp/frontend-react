@@ -231,7 +231,8 @@
   },
   "services-page": {
     "search-placeholder": "Buscar por nombre de servicio...",
-    "try-tax-reports": "Probar informes fiscales"
+    "try-tax-reports": "Probar informes fiscales",
+    "identity": "Identidad"
   },
   "amm": {
     "create-title": "Crear un AMM Pool",
@@ -730,6 +731,173 @@
       "transferRateSet": "TransferRate establecida correctamente.",
       "transferRateClear": "TransferRate borrada correctamente.",
       "settings": "Ajustes actualizados correctamente."
+    }
+  },
+  "toml-generator": {
+    "seo-description": "Crea entradas de {{tomlName}} para cuentas, validadores, servidores y tokens de {{ledgerName}}.",
+    "intro": "Crea un archivo {{tomlName}} y colócalo en",
+    "mode-title": "¿Qué quieres añadir?",
+    "modes": {
+      "principal": "Responsable",
+      "token": "Emisor de token",
+      "validator": "Validador",
+      "account": "Cuenta",
+      "server": "Servidor"
+    },
+    "notice": {
+      "before": "El archivo debe servirse por HTTPS. Usa",
+      "middle": "cuando sea posible y habilita",
+      "after": "para que exploradores y wallets puedan leerlo."
+    },
+    "cors-guide": {
+      "title": "Cómo habilitar CORS",
+      "intro": "Usa uno de estos ejemplos para {{tomlName}}. Ajusta la ruta si la configuración del servidor ya apunta al directorio .well-known.",
+      "apache-title": "Configuración de Apache",
+      "htaccess-title": ".htaccess",
+      "nginx-title": "Configuración de nginx",
+      "managed-title": "Hosting gestionado",
+      "managed-text": "Busca custom headers, response headers o CORS rules en el panel de hosting y añade Access-Control-Allow-Origin con el valor * solo para este archivo TOML."
+    },
+    "actions": {
+      "check": "Comprobar TOML",
+      "domains": "Dominios verificados",
+      "add-link": "Añadir enlace",
+      "remove": "Eliminar",
+      "add": "Añadir",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "download": "Descargar"
+    },
+    "sections": {
+      "principal": "Responsable",
+      "validator": "Validador",
+      "issuer": "Emisor",
+      "token-metadata": "Metadatos del token",
+      "token-links": "Enlaces del token"
+    },
+    "fields": {
+      "account-address": "Dirección de cuenta",
+      "network": "Red",
+      "description": "Descripción",
+      "name": "Nombre",
+      "email": "Email",
+      "profile-image": "URL de imagen de perfil",
+      "website": "Sitio web",
+      "x-handle": "Usuario de X",
+      "linkedin": "LinkedIn",
+      "telegram": "Telegram",
+      "github": "GitHub",
+      "validator-public-key": "Clave pública del validador",
+      "attestation": "Atestación",
+      "unl": "UNL",
+      "owner-country": "País del propietario",
+      "server-country": "País del servidor",
+      "network-asn": "ASN de red",
+      "server-location": "Ubicación del servidor",
+      "server-cloud": "Servidor alojado en la nube",
+      "json-rpc": "URL JSON-RPC",
+      "websocket": "URL WebSocket",
+      "peer": "URL peer",
+      "issuer-address": "Dirección del emisor",
+      "issuer-name": "Nombre del emisor",
+      "issuer-icon": "URL del icono del emisor",
+      "issuer-description": "Descripción del emisor",
+      "currency-code": "Código de moneda",
+      "token-name": "Nombre del token",
+      "token-icon": "URL del icono del token",
+      "asset-class": "Clase de activo",
+      "asset-subclass": "Subclase de activo",
+      "display-decimals": "Decimales visibles",
+      "currency-symbol": "Símbolo de moneda",
+      "token-description": "Descripción del token"
+    },
+    "hints": {
+      "attestation": "Generada por validator-keys set_domain. No publiques el token del validador.",
+      "account-address-before": "Añade la cuenta al archivo TOML y luego",
+      "account-address-link": "verifícala en la página de verificación de dominio"
+    },
+    "placeholders": {
+      "address": "r...",
+      "network": "main",
+      "account-desc": "Cómo se usa esta cuenta",
+      "principal-name": "Nombre de la empresa u operador",
+      "email": "support@example.com",
+      "profile-image": "https://example.com/profile.png",
+      "website": "https://example.com",
+      "x-handle": "username",
+      "linkedin": "https://www.linkedin.com/company/example",
+      "telegram": "username",
+      "github": "username",
+      "validator-key": "nH...",
+      "attestation": "Atestación en hexadecimal",
+      "network-asn": "24940",
+      "server-location": "HETZNER-AS, DE",
+      "server-desc": "Clúster de servidor público",
+      "issuer-name": "Ripple",
+      "issuer-desc": "Breve descripción del emisor",
+      "token-name": "Ripple USD",
+      "token-desc": "Qué representa el token",
+      "link-title": "Descripción del enlace"
+    },
+    "generated-title": "{{tomlName}} generado",
+    "warnings": {
+      "account-address": "La dirección de cuenta no parece una dirección clásica válida.",
+      "issuer-address": "La dirección del emisor no parece una dirección clásica válida.",
+      "rwa-subclass": "Los metadatos de tokens RWA deben incluir una subclase de activo.",
+      "display-decimals": "Los decimales visibles deben ser un número entero.",
+      "validator-key": "Las claves públicas de validador normalmente empiezan por n.",
+      "network-asn": "El ASN de red debe ser un número entero."
+    },
+    "asset-classes": {
+      "select": "Seleccionar clase",
+      "rwa": "RWA",
+      "memes": "Memes",
+      "wrapped": "Wrapped",
+      "gaming": "Gaming",
+      "defi": "DeFi",
+      "other": "Otro"
+    },
+    "asset-subclasses": {
+      "select": "Seleccionar subclase",
+      "stablecoin": "Stablecoin",
+      "commodity": "Materia prima",
+      "real_estate": "Bienes raíces",
+      "private_credit": "Crédito privado",
+      "equity": "Acciones",
+      "treasury": "Tesorería",
+      "other": "Otro"
+    },
+    "url-types": {
+      "select": "Seleccionar tipo",
+      "website": "Sitio web",
+      "social": "Social",
+      "document": "Documento"
+    },
+    "networks": {
+      "main": "XRPL Mainnet",
+      "testnet": "XRPL Testnet",
+      "devnet": "XRPL Devnet",
+      "alphanet": "XRPL AlphaNet",
+      "xahau": "Xahau Mainnet",
+      "xahau-testnet": "Xahau Testnet",
+      "xahau-jshooks": "Xahau JS Hooks"
+    },
+    "boolean-options": {
+      "select": "Seleccionar",
+      "true": "Sí",
+      "false": "No"
+    },
+    "validator-guide": {
+      "title": "Cómo verificar el dominio del validador",
+      "intro": "La verificación del dominio del validador necesita un vínculo bidireccional entre el dominio y el validador.",
+      "domain-title": "3. El dominio declara el validador",
+      "domain-text": "Sirve {{tomlName}} desde el dominio e incluye una entrada [[VALIDATORS]] con la clave pública del validador y la attestación.",
+      "validator-title": "1. El validador declara el dominio",
+      "validator-text": "En una máquina que no sea tu validador, usa la herramienta validator-keys con tu archivo validator-keys.json:",
+      "after-command": "Copia la attestación de la salida en el formulario a continuación.",
+      "xrpld-title": "2. Actualizar xrpld.cfg",
+      "xrpld-text": "Actualiza xrpld.cfg con el token de validador generado y reinicia xrpld.",
+      "warning": "No publiques el token de validador. Solo la attestación debe ir en el archivo TOML."
     }
   }
 }

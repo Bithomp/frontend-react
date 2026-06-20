@@ -18,5 +18,6 @@
     "check-toml": "TOMLを確認",
     "check-toml-for-domain": "{{domain}} の TOML を確認",
     "addresses": "アドレス"
-  }
+  },
+  "create-toml": "Bithompで<0>TOMLファイルを作成</0>することもできます。"
 }

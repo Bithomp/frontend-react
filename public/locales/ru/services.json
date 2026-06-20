@@ -231,7 +231,8 @@
   },
   "services-page": {
     "search-placeholder": "Поиск по названию сервиса...",
-    "try-tax-reports": "Попробовать налоговые отчеты"
+    "try-tax-reports": "Попробовать налоговые отчеты",
+    "identity": "Идентификация"
   },
   "amm": {
     "create-title": "Создать AMM Pool",
@@ -730,6 +731,173 @@
       "transferRateSet": "TransferRate успешно установлен.",
       "transferRateClear": "TransferRate успешно очищен.",
       "settings": "Настройки успешно обновлены."
+    }
+  },
+  "toml-generator": {
+    "seo-description": "Создавайте записи {{tomlName}} для аккаунтов, валидаторов, серверов и токенов {{ledgerName}}.",
+    "intro": "Создайте файл {{tomlName}} и разместите его по адресу",
+    "mode-title": "Что вы хотите добавить?",
+    "modes": {
+      "principal": "Контактное лицо",
+      "token": "Эмитент токена",
+      "validator": "Валидатор",
+      "account": "Аккаунт",
+      "server": "Сервер"
+    },
+    "notice": {
+      "before": "Файл должен отдаваться по HTTPS. Используйте",
+      "middle": "если возможно, и включите",
+      "after": "чтобы обозреватели и кошельки могли его читать."
+    },
+    "cors-guide": {
+      "title": "Как включить CORS",
+      "intro": "Используйте один из этих примеров для {{tomlName}}. Измените путь, если конфигурация сервера уже указывает на директорию .well-known.",
+      "apache-title": "Конфигурация Apache",
+      "htaccess-title": ".htaccess",
+      "nginx-title": "Конфигурация nginx",
+      "managed-title": "Managed hosting",
+      "managed-text": "В панели хостинга найдите custom headers, response headers или CORS rules и добавьте Access-Control-Allow-Origin со значением * только для этого TOML-файла."
+    },
+    "actions": {
+      "check": "Проверить TOML",
+      "domains": "Проверенные домены",
+      "add-link": "Добавить ссылку",
+      "remove": "Удалить",
+      "add": "Добавить",
+      "copy": "Копировать",
+      "copied": "Скопировано",
+      "download": "Скачать"
+    },
+    "sections": {
+      "principal": "Контактное лицо",
+      "validator": "Валидатор",
+      "issuer": "Эмитент",
+      "token-metadata": "Метаданные токена",
+      "token-links": "Ссылки токена"
+    },
+    "fields": {
+      "account-address": "Адрес аккаунта",
+      "network": "Сеть",
+      "description": "Описание",
+      "name": "Имя",
+      "email": "Email",
+      "profile-image": "URL изображения профиля",
+      "website": "Сайт",
+      "x-handle": "X аккаунт",
+      "linkedin": "LinkedIn",
+      "telegram": "Telegram",
+      "github": "GitHub",
+      "validator-public-key": "Публичный ключ валидатора",
+      "attestation": "Аттестация",
+      "unl": "UNL",
+      "owner-country": "Страна владельца",
+      "server-country": "Страна сервера",
+      "network-asn": "ASN сети",
+      "server-location": "Расположение сервера",
+      "server-cloud": "Сервер в облаке",
+      "json-rpc": "JSON-RPC URL",
+      "websocket": "WebSocket URL",
+      "peer": "Peer URL",
+      "issuer-address": "Адрес эмитента",
+      "issuer-name": "Имя эмитента",
+      "issuer-icon": "URL иконки эмитента",
+      "issuer-description": "Описание эмитента",
+      "currency-code": "Код валюты",
+      "token-name": "Название токена",
+      "token-icon": "URL иконки токена",
+      "asset-class": "Класс актива",
+      "asset-subclass": "Подкласс актива",
+      "display-decimals": "Отображаемые десятичные знаки",
+      "currency-symbol": "Символ валюты",
+      "token-description": "Описание токена"
+    },
+    "hints": {
+      "attestation": "Создается командой validator-keys set_domain. Не публикуйте token валидатора.",
+      "account-address-before": "Добавьте аккаунт в TOML-файл, затем",
+      "account-address-link": "подтвердите его на странице проверки домена"
+    },
+    "placeholders": {
+      "address": "r...",
+      "network": "main",
+      "account-desc": "Как используется этот аккаунт",
+      "principal-name": "Название компании или оператора",
+      "email": "support@example.com",
+      "profile-image": "https://example.com/profile.png",
+      "website": "https://example.com",
+      "x-handle": "username",
+      "linkedin": "https://www.linkedin.com/company/example",
+      "telegram": "username",
+      "github": "username",
+      "validator-key": "nH...",
+      "attestation": "Hex-аттестация",
+      "network-asn": "24940",
+      "server-location": "HETZNER-AS, DE",
+      "server-desc": "Публичный серверный кластер",
+      "issuer-name": "Ripple",
+      "issuer-desc": "Краткое описание эмитента",
+      "token-name": "Ripple USD",
+      "token-desc": "Что представляет этот токен",
+      "link-title": "Описание ссылки"
+    },
+    "generated-title": "Сгенерированный {{tomlName}}",
+    "warnings": {
+      "account-address": "Адрес аккаунта не похож на корректный classic address.",
+      "issuer-address": "Адрес эмитента не похож на корректный classic address.",
+      "rwa-subclass": "Метаданные RWA-токена должны включать подкласс актива.",
+      "display-decimals": "Отображаемые десятичные знаки должны быть целым числом.",
+      "validator-key": "Публичные ключи валидаторов обычно начинаются с n.",
+      "network-asn": "ASN сети должен быть целым числом."
+    },
+    "asset-classes": {
+      "select": "Выберите класс",
+      "rwa": "RWA",
+      "memes": "Мемы",
+      "wrapped": "Wrapped",
+      "gaming": "Игровые",
+      "defi": "DeFi",
+      "other": "Другое"
+    },
+    "asset-subclasses": {
+      "select": "Выберите подкласс",
+      "stablecoin": "Стейблкоин",
+      "commodity": "Сырьевой товар",
+      "real_estate": "Недвижимость",
+      "private_credit": "Частный кредит",
+      "equity": "Акции",
+      "treasury": "Казначейские бумаги",
+      "other": "Другое"
+    },
+    "url-types": {
+      "select": "Выберите тип",
+      "website": "Сайт",
+      "social": "Соцсеть",
+      "document": "Документ"
+    },
+    "networks": {
+      "main": "XRPL Mainnet",
+      "testnet": "XRPL Testnet",
+      "devnet": "XRPL Devnet",
+      "alphanet": "XRPL AlphaNet",
+      "xahau": "Xahau Mainnet",
+      "xahau-testnet": "Xahau Testnet",
+      "xahau-jshooks": "Xahau JS Hooks"
+    },
+    "boolean-options": {
+      "select": "Выберите",
+      "true": "Да",
+      "false": "Нет"
+    },
+    "validator-guide": {
+      "title": "Как подтвердить домен валидатора",
+      "intro": "Проверка домена валидатора требует двусторонней связи между доменом и валидатором.",
+      "domain-title": "3. Домен указывает валидатор",
+      "domain-text": "Разместите {{tomlName}} на домене и добавьте запись [[VALIDATORS]] с публичным ключом валидатора и аттестацией.",
+      "validator-title": "1. Валидатор указывает домен",
+      "validator-text": "На машине, которая не является валидатором, используйте validator-keys tool с вашим файлом validator-keys.json:",
+      "after-command": "Скопируйте attestation из вывода в форму ниже.",
+      "xrpld-title": "2. Обновите xrpld.cfg",
+      "xrpld-text": "Обновите xrpld.cfg с новым validator token и перезапустите xrpld.",
+      "warning": "Не публикуйте validator token. В TOML-файл нужно добавлять только attestation."
     }
   }
 }

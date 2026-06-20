@@ -74,7 +74,8 @@
       "view-all-services": "모든 서비스 보기",
       "nft-mint": "NFT 민팅",
       "tax-reports": "세금 보고서",
-      "username": "사용자명을 등록하세요"
+      "username": "사용자명을 등록하세요",
+      "toml-generator": "TOML 생성기"
     },
     "business": {
       "advertise": "광고",
@@ -164,6 +165,10 @@
       "ripple-usd": "Ripple USD",
       "nft-minting": "NFT 민팅 방법",
       "learn-page": "학습 페이지 보기"
+    },
+    "identity": {
+      "title": "아이덴티티",
+      "domain-verification": "도메인 검증"
     }
   },
   "components": {

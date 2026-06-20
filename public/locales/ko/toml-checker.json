@@ -26,5 +26,6 @@
     "invalid-toml": "TOML 파일을 찾았지만 파싱할 수 없습니다.",
     "invalid-toml-with-reason": "TOML 파일을 찾았지만 파싱할 수 없습니다: {{reason}}",
     "failed": "지금은 도메인을 확인할 수 없습니다."
-  }
+  },
+  "generator-link": "먼저 파일이 필요하신가요? <0>{{tomlName}} 만들기</0>."
 }

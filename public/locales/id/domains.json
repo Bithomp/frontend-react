@@ -18,5 +18,6 @@
     "check-toml": "Periksa TOML",
     "check-toml-for-domain": "Periksa TOML untuk {{domain}}",
     "addresses": "Alamat"
-  }
+  },
+  "create-toml": "Anda juga dapat <0>membuat file TOML</0> dengan Bithomp."
 }

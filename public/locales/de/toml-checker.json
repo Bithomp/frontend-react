@@ -26,5 +26,6 @@
     "invalid-toml": "Die TOML-Datei wurde gefunden, konnte aber nicht geparst werden.",
     "invalid-toml-with-reason": "Die TOML-Datei wurde gefunden, konnte aber nicht geparst werden: {{reason}}",
     "failed": "Die Domain kann derzeit nicht geprüft werden."
-  }
+  },
+  "generator-link": "Benötigen Sie zuerst eine Datei? <0>{{tomlName}} erstellen</0>."
 }

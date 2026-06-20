@@ -12,6 +12,7 @@ import { useWidth, xahauNetwork, explorerName, ledgerName, webSiteName } from '.
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import RadioOptions from '../components/UI/RadioOptions'
+import ServicesTabs from '../components/Tabs/ServicesTabs'
 import styles from '../styles/pages/domains.module.scss'
 
 const DOMAINS_LIMIT = 100
@@ -53,7 +54,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'domains']))
+      ...(await serverSideTranslations(locale, ['common', 'services', 'domains']))
     }
   }
 }
@@ -142,6 +143,9 @@ export default function Domains({ setSignRequest }) {
   return (
     <>
       <SEO title={t('menu.network.verified-domains')} />
+      <div className="content-text">
+        <ServicesTabs category="identity" tab="domain-verification" />
+      </div>
       <h1 className="center">{t('menu.network.verified-domains')}</h1>
       <FiltersFrame
         count={data.length}
@@ -197,6 +201,12 @@ export default function Domains({ setSignRequest }) {
                     i18nKey="read-about-toml"
                     ns="domains"
                     components={[<Link key="toml-checker-link-read" href="/services/toml-checker" />]}
+                  />
+                  <br />
+                  <Trans
+                    i18nKey="create-toml"
+                    ns="domains"
+                    components={[<Link key="toml-generator-link" href="/services/toml-generator" />]}
                   />
                 </p>
               </div>

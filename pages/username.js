@@ -54,7 +54,7 @@ export const getServerSideProps = async (context) => {
       usernameQuery: username || '',
       receiptQuery: receipt || 'false',
       usernamePrice,
-      ...(await serverSideTranslations(locale, ['common', 'username']))
+      ...(await serverSideTranslations(locale, ['common', 'services', 'username']))
     }
   }
 }
@@ -63,6 +63,7 @@ import CheckBox from '../components/UI/CheckBox'
 import Receipt from '../components/Receipt'
 import SEO from '../components/SEO'
 import AddressInput from '../components/UI/AddressInput'
+import ServicesTabs from '../components/Tabs/ServicesTabs'
 
 const CountrySelect = dynamic(() => import('../components/UI/CountrySelect'), { ssr: false })
 
@@ -511,7 +512,8 @@ export default function Username({
           (addressQuery ? ' ' + addressQuery : '')
         }
       />
-      <div className="page-username content-center">
+      <div className="page-username content-text">
+        <ServicesTabs category="identity" tab="username" />
         <h1 className="center">{t('menu.services.username')}</h1>
         {!step && (
           <>

@@ -82,10 +82,11 @@ export default function ServicesPage() {
       items: [
         { href: '/explorer', title: `${explorerName} Explorer`, icon: RiCompassDiscoverLine },
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: LuFileCheck2 },
-        { href: '/admin/pro/history', title: t('services-page.try-tax-reports', { ns: 'services' }), icon: LuFileCheck2 },
-        { href: '/username', title: t('menu.services.username'), icon: IoPersonOutline },
-        { href: '/submit-account-information', title: t('menu.project-registration'), icon: IoDocumentTextOutline },
-        { href: '/services/toml-checker', title: t('menu.services.toml-checker'), icon: IoCodeOutline },
+        {
+          href: '/admin/pro/history',
+          title: t('services-page.try-tax-reports', { ns: 'services' }),
+          icon: LuFileCheck2
+        },
         !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbBell } : null,
         !devNet ? { href: '/admin/watchlist', title: 'Watchlist', icon: MdVerified } : null
       ].filter(Boolean)
@@ -108,8 +109,16 @@ export default function ServicesPage() {
       id: 'amm',
       title: '🌊 AMM',
       items: [
-        { href: '/services/amm/deposit', title: t('amm.tabs.deposit', { ns: 'services' }), icon: RiArrowDownCircleLine },
-        { href: '/services/amm/withdraw', title: t('amm.tabs.withdraw', { ns: 'services' }), icon: RiArrowUpCircleLine },
+        {
+          href: '/services/amm/deposit',
+          title: t('amm.tabs.deposit', { ns: 'services' }),
+          icon: RiArrowDownCircleLine
+        },
+        {
+          href: '/services/amm/withdraw',
+          title: t('amm.tabs.withdraw', { ns: 'services' }),
+          icon: RiArrowUpCircleLine
+        },
         { href: '/services/amm/vote', title: t('amm.tabs.vote', { ns: 'services' }), icon: RiCheckboxCircleLine },
         { href: '/services/amm/create', title: t('amm.tabs.create', { ns: 'services' }), icon: RiAddCircleLine }
       ]
@@ -123,6 +132,18 @@ export default function ServicesPage() {
         { href: '/learn/issue-a-token', title: 'How to Issue a Token', icon: RiBookOpenLine },
         { href: '/learn/guide-for-token-issuers', title: 'Guide for Token Issuers', icon: IoLayersOutline },
         { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline }
+      ]
+    }
+
+    const identity = {
+      id: 'identity',
+      title: `🪪 ${t('services-page.identity', { ns: 'services' })}`,
+      items: [
+        { href: '/username', title: t('menu.services.username'), icon: IoPersonOutline },
+        { href: '/submit-account-information', title: t('menu.project-registration'), icon: IoDocumentTextOutline },
+        { href: '/services/toml-generator', title: t('menu.services.toml-generator'), icon: IoDocumentTextOutline },
+        { href: '/services/toml-checker', title: t('menu.services.toml-checker'), icon: IoCodeOutline },
+        { href: '/domains', title: t('menu.identity.domain-verification'), icon: IoLayersOutline }
       ]
     }
 
@@ -155,10 +176,10 @@ export default function ServicesPage() {
       ]
     }
 
-    const list = [bithompServices, payments, issuance, account, developers]
+    const list = [bithompServices, identity, payments, issuance, account, developers]
 
     if (!xahauNetwork) {
-      list.splice(2, 0, amm)
+      list.splice(3, 0, amm)
     }
 
     return list

@@ -26,5 +26,6 @@
     "invalid-toml": "File TOML ditemukan, tetapi tidak dapat diuraikan.",
     "invalid-toml-with-reason": "File TOML ditemukan, tetapi tidak dapat diuraikan: {{reason}}",
     "failed": "Tidak dapat memverifikasi domain saat ini."
-  }
+  },
+  "generator-link": "Perlu file terlebih dahulu? <0>Buat {{tomlName}}</0>."
 }

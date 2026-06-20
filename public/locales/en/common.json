@@ -74,7 +74,8 @@
       "view-all-services": "View all services",
       "nft-mint": "Mint NFT",
       "tax-reports": "Tax reports",
-      "username": "Username registration"
+      "username": "Username registration",
+      "toml-generator": "TOML Generator"
     },
     "business": {
       "advertise": "Advertise",
@@ -164,6 +165,10 @@
       "ripple-usd": "Ripple USD",
       "nft-minting": "How to Mint NFT",
       "learn-page": "See our learn page"
+    },
+    "identity": {
+      "title": "Identity",
+      "domain-verification": "Domain verification"
     }
   },
   "components": {

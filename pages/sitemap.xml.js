@@ -23,6 +23,7 @@ const pages = [
   { loc: 'services/token-issuer-settings', changefreq: 'monthly', priority: '0.8' },
   { loc: 'services/account-delete', changefreq: 'monthly', priority: '0.5' },
   { loc: 'services/toml-checker', changefreq: 'monthly', priority: '0.8' },
+  { loc: 'services/toml-generator', changefreq: 'monthly', priority: '0.8' },
 
   { loc: 'whales/receivers', changefreq: 'always', priority: '0.9' },
   { loc: 'whales/senders', changefreq: 'always', priority: '0.9' },

@@ -1,12 +1,14 @@
 import axios from 'axios'
+import Link from 'next/link'
 import SEO from '../../components/SEO'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { explorerName, ledgerName, turnstileLanguage, xahauNetwork } from '../../utils'
+import ServicesTabs from '../../components/Tabs/ServicesTabs'
 
 const COOLDOWN_SECONDS = 10
 
@@ -14,10 +16,15 @@ const normalizeDomain = (value) => {
   const trimmed = String(value || '').trim()
   if (!trimmed) return ''
 
-  return trimmed.replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/.*$/, '').toLowerCase()
+  return trimmed
+    .replace(/^https?:\/\//i, '')
+    .replace(/^www\./i, '')
+    .replace(/\/.*$/, '')
+    .toLowerCase()
 }
 
-const isDomainValid = (value) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i.test(value)
+const isDomainValid = (value) =>
+  /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i.test(value)
 
 const formatResponse = (value) => {
   if (typeof value === 'string') return value
@@ -34,7 +41,11 @@ const getParsedTomlError = (message, tt, tomlName) => {
   const errorText = String(message || '').replace(/\\n/g, '\n')
   const lowerError = errorText.toLowerCase()
 
-  if (lowerError.includes('enotfound') || lowerError.includes('getaddrinfo') || lowerError.includes('could not resolve')) {
+  if (
+    lowerError.includes('enotfound') ||
+    lowerError.includes('getaddrinfo') ||
+    lowerError.includes('could not resolve')
+  ) {
     return tt('errors.domain-not-found')
   }
 
@@ -81,7 +92,7 @@ const getFriendlyError = (error, tt, t, tomlName) => {
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'toml-checker']))
+      ...(await serverSideTranslations(locale, ['common', 'services', 'toml-checker']))
     }
   }
 }
@@ -198,9 +209,18 @@ export default function TomlCheckerPage() {
         title={tt('title', { explorerName })}
         description={tt('description', { explorerName, ledgerName, tomlName })}
       />
-      <div className="content-text content-center">
+      <div className="content-text">
+        <ServicesTabs category="identity" tab="toml-checker" />
         <h1 className="center">{tt('title', { explorerName })}</h1>
         <p className="center">{tt('description', { explorerName, ledgerName, tomlName })}</p>
+        <p className="center">
+          <Trans
+            i18nKey="generator-link"
+            ns="toml-checker"
+            values={{ tomlName }}
+            components={[<Link key="toml-generator-link" href="/services/toml-generator" />]}
+          />
+        </p>
 
         <div className="grey-box toml-checker-box" style={{ maxWidth: 860, margin: '24px auto', textAlign: 'left' }}>
           <h4>{tt('check-title')}</h4>

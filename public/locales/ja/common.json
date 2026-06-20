@@ -74,7 +74,8 @@
       "view-all-services": "すべてのサービスを見る",
       "nft-mint": "NFTのミント",
       "tax-reports": "税務レポート",
-      "username": "ユーザネームの登録"
+      "username": "ユーザネームの登録",
+      "toml-generator": "TOMLジェネレーター"
     },
     "business": {
       "advertise": "広告掲載",
@@ -164,6 +165,10 @@
       "ripple-usd": "Ripple USD",
       "nft-minting": "NFTのミント方法",
       "learn-page": "学習ページを見る"
+    },
+    "identity": {
+      "title": "アイデンティティ",
+      "domain-verification": "ドメイン検証"
     }
   },
   "components": {

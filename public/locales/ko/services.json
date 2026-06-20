@@ -231,7 +231,8 @@
   },
   "services-page": {
     "search-placeholder": "서비스 이름으로 검색...",
-    "try-tax-reports": "세금 보고서 체험"
+    "try-tax-reports": "세금 보고서 체험",
+    "identity": "아이덴티티"
   },
   "amm": {
     "create-title": "AMM Pool 생성",
@@ -730,6 +731,173 @@
       "transferRateSet": "TransferRate가 설정되었습니다.",
       "transferRateClear": "TransferRate가 삭제되었습니다.",
       "settings": "설정이 업데이트되었습니다."
+    }
+  },
+  "toml-generator": {
+    "seo-description": "{{ledgerName}} 계정, 검증인, 서버, 토큰용 {{tomlName}} 항목을 만듭니다.",
+    "intro": "{{tomlName}} 파일을 만들고 다음 위치에 두세요:",
+    "mode-title": "무엇을 추가하시겠습니까?",
+    "modes": {
+      "principal": "담당자",
+      "token": "토큰 발행자",
+      "validator": "검증인",
+      "account": "계정",
+      "server": "서버"
+    },
+    "notice": {
+      "before": "파일은 HTTPS로 제공되어야 합니다. 가능하면",
+      "middle": "을 사용하고",
+      "after": "를 활성화하여 탐색기와 지갑이 읽을 수 있게 하세요."
+    },
+    "cors-guide": {
+      "title": "CORS 활성화 방법",
+      "intro": "{{tomlName}}에 다음 예시 중 하나를 사용하세요. 서버 설정이 이미 .well-known 디렉터리를 가리키는 경우 경로를 조정하세요.",
+      "apache-title": "Apache 설정",
+      "htaccess-title": ".htaccess",
+      "nginx-title": "nginx 설정",
+      "managed-title": "관리형 호스팅",
+      "managed-text": "호스팅 패널에서 custom headers, response headers 또는 CORS rules를 찾아 이 TOML 파일에만 Access-Control-Allow-Origin 값을 *로 추가하세요."
+    },
+    "actions": {
+      "check": "TOML 확인",
+      "domains": "검증된 도메인",
+      "add-link": "링크 추가",
+      "remove": "삭제",
+      "add": "추가",
+      "copy": "복사",
+      "copied": "복사됨",
+      "download": "다운로드"
+    },
+    "sections": {
+      "principal": "담당자",
+      "validator": "검증인",
+      "issuer": "발행자",
+      "token-metadata": "토큰 메타데이터",
+      "token-links": "토큰 링크"
+    },
+    "fields": {
+      "account-address": "계정 주소",
+      "network": "네트워크",
+      "description": "설명",
+      "name": "이름",
+      "email": "이메일",
+      "profile-image": "프로필 이미지 URL",
+      "website": "웹사이트",
+      "x-handle": "X 핸들",
+      "linkedin": "LinkedIn",
+      "telegram": "Telegram",
+      "github": "GitHub",
+      "validator-public-key": "검증인 공개 키",
+      "attestation": "증명",
+      "unl": "UNL",
+      "owner-country": "소유자 국가",
+      "server-country": "서버 국가",
+      "network-asn": "네트워크 ASN",
+      "server-location": "서버 위치",
+      "server-cloud": "클라우드 호스팅 서버",
+      "json-rpc": "JSON-RPC URL",
+      "websocket": "WebSocket URL",
+      "peer": "피어 URL",
+      "issuer-address": "발행자 주소",
+      "issuer-name": "발행자 이름",
+      "issuer-icon": "발행자 아이콘 URL",
+      "issuer-description": "발행자 설명",
+      "currency-code": "통화 코드",
+      "token-name": "토큰 이름",
+      "token-icon": "토큰 아이콘 URL",
+      "asset-class": "자산 클래스",
+      "asset-subclass": "자산 하위 클래스",
+      "display-decimals": "표시 소수 자릿수",
+      "currency-symbol": "통화 기호",
+      "token-description": "토큰 설명"
+    },
+    "hints": {
+      "attestation": "validator-keys set_domain으로 생성됩니다. 검증인 토큰은 공개하지 마세요.",
+      "account-address-before": "계정을 TOML 파일에 추가한 다음",
+      "account-address-link": "도메인 검증 페이지에서 확인하세요"
+    },
+    "placeholders": {
+      "address": "r...",
+      "network": "main",
+      "account-desc": "이 계정의 사용 목적",
+      "principal-name": "회사 또는 운영자 이름",
+      "email": "support@example.com",
+      "profile-image": "https://example.com/profile.png",
+      "website": "https://example.com",
+      "x-handle": "username",
+      "linkedin": "https://www.linkedin.com/company/example",
+      "telegram": "username",
+      "github": "username",
+      "validator-key": "nH...",
+      "attestation": "16진수 증명",
+      "network-asn": "24940",
+      "server-location": "HETZNER-AS, DE",
+      "server-desc": "공용 서버 클러스터",
+      "issuer-name": "Ripple",
+      "issuer-desc": "짧은 발행자 설명",
+      "token-name": "Ripple USD",
+      "token-desc": "이 토큰이 나타내는 것",
+      "link-title": "링크 설명"
+    },
+    "generated-title": "생성된 {{tomlName}}",
+    "warnings": {
+      "account-address": "계정 주소가 유효한 클래식 주소처럼 보이지 않습니다.",
+      "issuer-address": "발행자 주소가 유효한 클래식 주소처럼 보이지 않습니다.",
+      "rwa-subclass": "RWA 토큰 메타데이터에는 자산 하위 클래스가 포함되어야 합니다.",
+      "display-decimals": "표시 소수 자릿수는 정수여야 합니다.",
+      "validator-key": "검증인 공개 키는 보통 n으로 시작합니다.",
+      "network-asn": "네트워크 ASN은 정수여야 합니다."
+    },
+    "asset-classes": {
+      "select": "클래스 선택",
+      "rwa": "RWA",
+      "memes": "밈",
+      "wrapped": "Wrapped",
+      "gaming": "게임",
+      "defi": "DeFi",
+      "other": "기타"
+    },
+    "asset-subclasses": {
+      "select": "하위 클래스 선택",
+      "stablecoin": "스테이블코인",
+      "commodity": "상품",
+      "real_estate": "부동산",
+      "private_credit": "프라이빗 크레딧",
+      "equity": "주식",
+      "treasury": "국채",
+      "other": "기타"
+    },
+    "url-types": {
+      "select": "유형 선택",
+      "website": "웹사이트",
+      "social": "소셜",
+      "document": "문서"
+    },
+    "networks": {
+      "main": "XRPL Mainnet",
+      "testnet": "XRPL Testnet",
+      "devnet": "XRPL Devnet",
+      "alphanet": "XRPL AlphaNet",
+      "xahau": "Xahau Mainnet",
+      "xahau-testnet": "Xahau Testnet",
+      "xahau-jshooks": "Xahau JS Hooks"
+    },
+    "boolean-options": {
+      "select": "선택",
+      "true": "예",
+      "false": "아니요"
+    },
+    "validator-guide": {
+      "title": "검증자 도메인 확인 방법",
+      "intro": "검증자 도메인 확인에는 도메인과 검증자 사이의 양방향 연결이 필요합니다.",
+      "domain-title": "3. 도메인이 검증자를 주장합니다",
+      "domain-text": "도메인에서 {{tomlName}} 파일을 제공하고 검증자 공개 키와 attestation이 있는 [[VALIDATORS]] 항목을 추가합니다.",
+      "validator-title": "1. 검증자가 도메인을 주장합니다",
+      "validator-text": "검증자가 아닌 머신에서 validator-keys.json 파일과 함께 validator-keys tool을 사용합니다:",
+      "after-command": "출력의 attestation을 아래 양식에 복사합니다.",
+      "xrpld-title": "2. xrpld.cfg 업데이트",
+      "xrpld-text": "생성된 validator token으로 xrpld.cfg를 업데이트하고 xrpld를 재시작합니다.",
+      "warning": "validator token을 공개하지 마세요. TOML 파일에는 attestation만 넣어야 합니다."
     }
   }
 }

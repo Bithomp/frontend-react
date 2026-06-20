@@ -47,6 +47,17 @@ export default function ServicesTabs({ category, tab }) {
         },
         { value: 'account-delete', label: ts('services-nav.account-delete'), href: '/services/account-delete' }
       ]
+    },
+    {
+      value: 'identity',
+      label: t('menu.identity.title'),
+      items: [
+        { value: 'username', label: t('menu.services.username'), href: '/username' },
+        { value: 'project-registration', label: t('menu.project-registration'), href: '/submit-account-information' },
+        { value: 'toml-generator', label: t('menu.services.toml-generator'), href: '/services/toml-generator' },
+        { value: 'toml-checker', label: t('menu.services.toml-checker'), href: '/services/toml-checker' },
+        { value: 'domain-verification', label: t('menu.identity.domain-verification'), href: '/domains' }
+      ]
     }
   ].filter(Boolean)
 

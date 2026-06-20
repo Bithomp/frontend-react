@@ -26,5 +26,6 @@
     "invalid-toml": "TOML 文件已找到，但无法解析。",
     "invalid-toml-with-reason": "TOML 文件已找到，但无法解析：{{reason}}",
     "failed": "目前无法验证域名。"
-  }
+  },
+  "generator-link": "需要先生成文件吗？<0>创建 {{tomlName}}</0>。"
 }

@@ -3,6 +3,7 @@
   --tabs-border: color-mix(in srgb, var(--accent-link) 28%, transparent);
   --tab-text: color-mix(in srgb, var(--text-primary) 88%, var(--accent-link));
   --tab-active-text: #fff;
+  --tab-active-shadow: color-mix(in srgb, var(--accent-link) 28%, transparent);
   display: flex;
   justify-content: center;
   position: relative;
@@ -10,7 +11,7 @@
 
   .tabs-scroll {
     overflow: visible;
-    width: fit-content;
+    width: auto;
     max-width: 100%;
   }
 
@@ -24,12 +25,12 @@
     background: var(--tabs-bg);
     border: 1px solid var(--tabs-border);
     border-radius: 14px;
-    width: fit-content;
+    width: auto;
     max-width: 100%;
     box-sizing: border-box;
 
     .tab-item {
-      flex: 0 1 auto;
+      flex: 1 1 auto;
       appearance: none;
       border: none;
       border-radius: 10px;
@@ -45,7 +46,8 @@
       line-height: 1.2;
       margin: 0;
       transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-      min-width: 0;
+      min-width: 88px;
+      max-width: 260px;
       text-align: center;
 
       &:hover {
@@ -64,18 +66,22 @@
           color-mix(in srgb, var(--accent-link) 85%, #458dff) 100%
         );
         color: var(--tab-active-text);
-        box-shadow: 0 8px 22px color-mix(in srgb, var(--accent-link) 28%, transparent);
+        box-shadow: 0 8px 22px var(--tab-active-shadow);
       }
 
       > span {
         display: block;
-        max-width: min(30vw, 220px);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
     }
   }
+}
+
+.dark .tabs {
+  --tab-active-text: #06252c;
+  --tab-active-shadow: color-mix(in srgb, var(--accent-link) 18%, transparent);
 }
 
 .tabs-inline {
@@ -121,13 +127,35 @@
     }
   }
 
+  .tabs + .tabs {
+    width: 100%;
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .tabs-scroll {
+      width: 100%;
+    }
+  }
+
   .tabs-list[aria-label="serviceCategories"] {
     border-color: color-mix(in srgb, var(--accent-link) 18%, transparent);
     background: color-mix(in srgb, var(--bg-elements) 52%, transparent);
   }
 
   .tabs-list[aria-label="servicePages"] {
-    background: transparent;
+    background: var(--tabs-bg);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    width: 100%;
+
+    .tab-item {
+      min-width: 0;
+      max-width: none;
+      min-height: 42px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
   }
 }
 
@@ -170,7 +198,7 @@
 
       .tab-item {
         flex: 0 1 auto;
-        min-width: 0;
+        min-width: max-content;
 
         > span {
           white-space: nowrap;

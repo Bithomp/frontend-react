@@ -13,13 +13,14 @@ import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
 import { localePath } from '../utils'
 import axios from 'axios'
+import ServicesTabs from '../components/Tabs/ServicesTabs'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['submit-account-information', 'common']))
+      ...(await serverSideTranslations(locale, ['submit-account-information', 'common', 'services']))
     }
   }
 }
@@ -264,75 +265,78 @@ export default function SubmitAccountInformation() {
   return (
     <>
       <SEO title={t('menu.project-registration')} />
-      <div className="content-text content-center short-top short-bottom">
-        <h1 className="center">{t('heading', { ns: 'submit-account-information' })}</h1>
+      <div className="content-text short-top short-bottom">
+        <ServicesTabs category="identity" tab="project-registration" />
+        <div className="content-center">
+          <h1 className="center">{t('heading', { ns: 'submit-account-information' })}</h1>
 
-        {!serviceAvailable ? (
-          <p>
-            <Trans ns="submit-account-information" i18nKey="cross-chain">
-              Services are used cross-chain,{' '}
-              <a
-                href={'https://bithomp.com' + localePath('/submit-account-information', i18n.language)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                register a Service on the XRPL mainnet
-              </a>{' '}
-              and it will be also available on other bithomp explorers.
-            </Trans>
-          </p>
-        ) : (
-          <>
-            <p>{t('desc', { ns: 'submit-account-information' })}</p>
-            <p>{t('no-private', { ns: 'submit-account-information' })}</p>
-            <form>
-              {fields.map((field, i) => (
-                <div key={i} className="input-prepend">
-                  <input
-                    type="text"
-                    className="input-text"
-                    ref={(ref) => {
-                      listRef[field.name] = ref
-                    }}
-                    name={field.name}
-                    value={allValues[field.name]}
-                    placeholder={t(`placeholders.${field.name}`, { ns: 'submit-account-information' })}
-                    onChange={changeHandler}
-                  />
-                  <label className="input-label">{field.icon}</label>
+          {!serviceAvailable ? (
+            <p>
+              <Trans ns="submit-account-information" i18nKey="cross-chain">
+                Services are used cross-chain,{' '}
+                <a
+                  href={'https://bithomp.com' + localePath('/submit-account-information', i18n.language)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  register a Service on the XRPL mainnet
+                </a>{' '}
+                and it will be also available on other bithomp explorers.
+              </Trans>
+            </p>
+          ) : (
+            <>
+              <p>{t('desc', { ns: 'submit-account-information' })}</p>
+              <p>{t('no-private', { ns: 'submit-account-information' })}</p>
+              <form>
+                {fields.map((field, i) => (
+                  <div key={i} className="input-prepend">
+                    <input
+                      type="text"
+                      className="input-text"
+                      ref={(ref) => {
+                        listRef[field.name] = ref
+                      }}
+                      name={field.name}
+                      value={allValues[field.name]}
+                      placeholder={t(`placeholders.${field.name}`, { ns: 'submit-account-information' })}
+                      onChange={changeHandler}
+                    />
+                    <label className="input-label">{field.icon}</label>
+                  </div>
+                ))}
+
+                <div className="center" style={style}>
+                  {t('subtitle', { ns: 'submit-account-information' })}
                 </div>
-              ))}
+                <p>{t('info', { ns: 'submit-account-information' })}</p>
 
-              <div className="center" style={style}>
-                {t('subtitle', { ns: 'submit-account-information' })}
-              </div>
-              <p>{t('info', { ns: 'submit-account-information' })}</p>
+                <div className="input-prepend">
+                  <input
+                    ref={(node) => {
+                      emailRef = node
+                    }}
+                    type="email"
+                    className="input-text"
+                    value={email}
+                    onChange={onEmailChange}
+                    placeholder={t('placeholders.email', { ns: 'submit-account-information' })}
+                  />
+                  <label className="input-label">
+                    <AiOutlineMail />
+                  </label>
+                </div>
 
-              <div className="input-prepend">
-                <input
-                  ref={(node) => {
-                    emailRef = node
-                  }}
-                  type="email"
-                  className="input-text"
-                  value={email}
-                  onChange={onEmailChange}
-                  placeholder={t('placeholders.email', { ns: 'submit-account-information' })}
-                />
-                <label className="input-label">
-                  <AiOutlineMail />
-                </label>
-              </div>
+                <button type="button" className="button-action" style={buttonStyle} onClick={onSubmit}>
+                  {t('button.submit')}
+                </button>
+              </form>
+            </>
+          )}
 
-              <button type="button" className="button-action" style={buttonStyle} onClick={onSubmit}>
-                {t('button.submit')}
-              </button>
-            </form>
-          </>
-        )}
-
-        <div style={popupStyles}>
-          {popupMessage && <p className={`center ${error ? 'red' : 'green'}`}>{popupMessage}</p>}
+          <div style={popupStyles}>
+            {popupMessage && <p className={`center ${error ? 'red' : 'green'}`}>{popupMessage}</p>}
+          </div>
         </div>
       </div>
     </>

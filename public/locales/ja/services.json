@@ -231,7 +231,8 @@
   },
   "services-page": {
     "search-placeholder": "サービス名で検索...",
-    "try-tax-reports": "税務レポートを試す"
+    "try-tax-reports": "税務レポートを試す",
+    "identity": "アイデンティティ"
   },
   "amm": {
     "create-title": "AMM Poolを作成",
@@ -730,6 +731,173 @@
       "transferRateSet": "TransferRateを設定しました。",
       "transferRateClear": "TransferRateをクリアしました。",
       "settings": "設定を更新しました。"
+    }
+  },
+  "toml-generator": {
+    "seo-description": "{{ledgerName}} のアカウント、バリデータ、サーバー、トークン用の {{tomlName}} エントリを作成します。",
+    "intro": "{{tomlName}} ファイルを作成し、次の場所に配置します:",
+    "mode-title": "何を追加しますか？",
+    "modes": {
+      "principal": "担当者",
+      "token": "トークン発行者",
+      "validator": "バリデータ",
+      "account": "アカウント",
+      "server": "サーバー"
+    },
+    "notice": {
+      "before": "ファイルはHTTPSで配信する必要があります。可能な場合は",
+      "middle": "を使用し、",
+      "after": "を有効にして、エクスプローラーとウォレットが読み取れるようにしてください。"
+    },
+    "cors-guide": {
+      "title": "CORSを有効にする方法",
+      "intro": "{{tomlName}} には次のいずれかの例を使用してください。サーバー設定がすでに .well-known ディレクトリを指している場合はパスを調整してください。",
+      "apache-title": "Apache設定",
+      "htaccess-title": ".htaccess",
+      "nginx-title": "nginx設定",
+      "managed-title": "マネージドホスティング",
+      "managed-text": "ホスティング管理画面で custom headers、response headers、または CORS rules を探し、このTOMLファイルだけに Access-Control-Allow-Origin を値 * で追加してください。"
+    },
+    "actions": {
+      "check": "TOMLを確認",
+      "domains": "検証済みドメイン",
+      "add-link": "リンクを追加",
+      "remove": "削除",
+      "add": "追加",
+      "copy": "コピー",
+      "copied": "コピー済み",
+      "download": "ダウンロード"
+    },
+    "sections": {
+      "principal": "担当者",
+      "validator": "バリデータ",
+      "issuer": "発行者",
+      "token-metadata": "トークンメタデータ",
+      "token-links": "トークンリンク"
+    },
+    "fields": {
+      "account-address": "アカウントアドレス",
+      "network": "ネットワーク",
+      "description": "説明",
+      "name": "名前",
+      "email": "メール",
+      "profile-image": "プロフィール画像URL",
+      "website": "ウェブサイト",
+      "x-handle": "Xハンドル",
+      "linkedin": "LinkedIn",
+      "telegram": "Telegram",
+      "github": "GitHub",
+      "validator-public-key": "バリデータ公開鍵",
+      "attestation": "証明",
+      "unl": "UNL",
+      "owner-country": "所有者の国",
+      "server-country": "サーバーの国",
+      "network-asn": "ネットワークASN",
+      "server-location": "サーバー所在地",
+      "server-cloud": "クラウドホストのサーバー",
+      "json-rpc": "JSON-RPC URL",
+      "websocket": "WebSocket URL",
+      "peer": "ピアURL",
+      "issuer-address": "発行者アドレス",
+      "issuer-name": "発行者名",
+      "issuer-icon": "発行者アイコンURL",
+      "issuer-description": "発行者の説明",
+      "currency-code": "通貨コード",
+      "token-name": "トークン名",
+      "token-icon": "トークンアイコンURL",
+      "asset-class": "資産クラス",
+      "asset-subclass": "資産サブクラス",
+      "display-decimals": "表示小数桁",
+      "currency-symbol": "通貨記号",
+      "token-description": "トークンの説明"
+    },
+    "hints": {
+      "attestation": "validator-keys set_domain によって生成されます。バリデータトークンは公開しないでください。",
+      "account-address-before": "アカウントをTOMLファイルに追加してから",
+      "account-address-link": "ドメイン検証ページで確認します"
+    },
+    "placeholders": {
+      "address": "r...",
+      "network": "main",
+      "account-desc": "このアカウントの用途",
+      "principal-name": "会社名または運用者名",
+      "email": "support@example.com",
+      "profile-image": "https://example.com/profile.png",
+      "website": "https://example.com",
+      "x-handle": "username",
+      "linkedin": "https://www.linkedin.com/company/example",
+      "telegram": "username",
+      "github": "username",
+      "validator-key": "nH...",
+      "attestation": "16進数の証明",
+      "network-asn": "24940",
+      "server-location": "HETZNER-AS, DE",
+      "server-desc": "公開サーバークラスター",
+      "issuer-name": "Ripple",
+      "issuer-desc": "発行者の短い説明",
+      "token-name": "Ripple USD",
+      "token-desc": "このトークンが表すもの",
+      "link-title": "リンクの説明"
+    },
+    "generated-title": "生成された {{tomlName}}",
+    "warnings": {
+      "account-address": "アカウントアドレスは有効なクラシックアドレスに見えません。",
+      "issuer-address": "発行者アドレスは有効なクラシックアドレスに見えません。",
+      "rwa-subclass": "RWAトークンメタデータには資産サブクラスを含める必要があります。",
+      "display-decimals": "表示小数桁は整数である必要があります。",
+      "validator-key": "バリデータ公開鍵は通常 n で始まります。",
+      "network-asn": "ネットワークASNは整数で入力してください。"
+    },
+    "asset-classes": {
+      "select": "クラスを選択",
+      "rwa": "RWA",
+      "memes": "ミーム",
+      "wrapped": "Wrapped",
+      "gaming": "ゲーム",
+      "defi": "DeFi",
+      "other": "その他"
+    },
+    "asset-subclasses": {
+      "select": "サブクラスを選択",
+      "stablecoin": "ステーブルコイン",
+      "commodity": "コモディティ",
+      "real_estate": "不動産",
+      "private_credit": "プライベートクレジット",
+      "equity": "株式",
+      "treasury": "国債",
+      "other": "その他"
+    },
+    "url-types": {
+      "select": "タイプを選択",
+      "website": "ウェブサイト",
+      "social": "ソーシャル",
+      "document": "文書"
+    },
+    "networks": {
+      "main": "XRPL Mainnet",
+      "testnet": "XRPL Testnet",
+      "devnet": "XRPL Devnet",
+      "alphanet": "XRPL AlphaNet",
+      "xahau": "Xahau Mainnet",
+      "xahau-testnet": "Xahau Testnet",
+      "xahau-jshooks": "Xahau JS Hooks"
+    },
+    "boolean-options": {
+      "select": "選択",
+      "true": "はい",
+      "false": "いいえ"
+    },
+    "validator-guide": {
+      "title": "バリデータードメインの検証方法",
+      "intro": "バリデータードメイン検証には、ドメインとバリデーターの双方向リンクが必要です。",
+      "domain-title": "3. ドメインがバリデーターを示す",
+      "domain-text": "ドメインから {{tomlName}} を配信し、バリデーター公開鍵とアテステーションを含む [[VALIDATORS]] エントリを追加します。",
+      "validator-title": "1. バリデーターがドメインを示す",
+      "validator-text": "バリデーターではないマシンで、validator-keys.json ファイルを使って validator-keys tool を実行します:",
+      "after-command": "出力された attestation を以下のフォームにコピーします。",
+      "xrpld-title": "2. xrpld.cfg を更新する",
+      "xrpld-text": "生成された validator token を xrpld.cfg に設定して xrpld を再起動します。",
+      "warning": "validator token は公開しないでください。TOML ファイルに入れるのは attestation だけです。"
     }
   }
 }

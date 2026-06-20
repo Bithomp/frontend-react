@@ -74,7 +74,8 @@
       "view-all-services": "查看所有服务",
       "nft-mint": "铸造 NFT",
       "tax-reports": "税务报告",
-      "username": "用户名注册"
+      "username": "用户名注册",
+      "toml-generator": "TOML 生成器"
     },
     "business": {
       "advertise": "投放广告",
@@ -164,6 +165,10 @@
       "ripple-usd": "Ripple USD",
       "nft-minting": "如何铸造NFT",
       "learn-page": "查看我们的学习页面"
+    },
+    "identity": {
+      "title": "身份",
+      "domain-verification": "域名验证"
     }
   },
   "components": {

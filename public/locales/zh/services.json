@@ -231,7 +231,8 @@
   },
   "services-page": {
     "search-placeholder": "按服务名称搜索...",
-    "try-tax-reports": "尝试税务报告"
+    "try-tax-reports": "尝试税务报告",
+    "identity": "身份"
   },
   "amm": {
     "create-title": "创建AMM池",
@@ -730,6 +731,173 @@
       "transferRateSet": "TransferRate 设置成功。",
       "transferRateClear": "TransferRate 已成功清除。",
       "settings": "设置已成功更新。"
+    }
+  },
+  "toml-generator": {
+    "seo-description": "为 {{ledgerName}} 账户、验证器、服务器和代币创建 {{tomlName}} 条目。",
+    "intro": "创建 {{tomlName}} 文件，并将其放在",
+    "mode-title": "你想添加什么？",
+    "modes": {
+      "principal": "负责人",
+      "token": "代币发行方",
+      "validator": "验证器",
+      "account": "账户",
+      "server": "服务器"
+    },
+    "notice": {
+      "before": "文件必须通过 HTTPS 提供。尽可能使用",
+      "middle": "并启用",
+      "after": "以便浏览器和钱包可以读取。"
+    },
+    "cors-guide": {
+      "title": "如何启用 CORS",
+      "intro": "可为 {{tomlName}} 使用以下任一示例。如果服务器配置已经指向 .well-known 目录，请调整路径。",
+      "apache-title": "Apache 配置",
+      "htaccess-title": ".htaccess",
+      "nginx-title": "nginx 配置",
+      "managed-title": "托管主机",
+      "managed-text": "在主机控制面板中查找 custom headers、response headers 或 CORS rules，并仅为此 TOML 文件添加 Access-Control-Allow-Origin，值为 *。"
+    },
+    "actions": {
+      "check": "检查 TOML",
+      "domains": "已验证域名",
+      "add-link": "添加链接",
+      "remove": "移除",
+      "add": "添加",
+      "copy": "复制",
+      "copied": "已复制",
+      "download": "下载"
+    },
+    "sections": {
+      "principal": "负责人",
+      "validator": "验证器",
+      "issuer": "发行方",
+      "token-metadata": "代币元数据",
+      "token-links": "代币链接"
+    },
+    "fields": {
+      "account-address": "账户地址",
+      "network": "网络",
+      "description": "描述",
+      "name": "名称",
+      "email": "邮箱",
+      "profile-image": "个人资料图片 URL",
+      "website": "网站",
+      "x-handle": "X 账号",
+      "linkedin": "LinkedIn",
+      "telegram": "Telegram",
+      "github": "GitHub",
+      "validator-public-key": "验证器公钥",
+      "attestation": "证明",
+      "unl": "UNL",
+      "owner-country": "所有者国家",
+      "server-country": "服务器国家",
+      "network-asn": "网络 ASN",
+      "server-location": "服务器位置",
+      "server-cloud": "服务器托管在云端",
+      "json-rpc": "JSON-RPC URL",
+      "websocket": "WebSocket URL",
+      "peer": "Peer URL",
+      "issuer-address": "发行方地址",
+      "issuer-name": "发行方名称",
+      "issuer-icon": "发行方图标 URL",
+      "issuer-description": "发行方描述",
+      "currency-code": "货币代码",
+      "token-name": "代币名称",
+      "token-icon": "代币图标 URL",
+      "asset-class": "资产类别",
+      "asset-subclass": "资产子类别",
+      "display-decimals": "显示小数位",
+      "currency-symbol": "货币符号",
+      "token-description": "代币描述"
+    },
+    "hints": {
+      "attestation": "由 validator-keys set_domain 生成。不要公开验证器 token。",
+      "account-address-before": "将账户添加到 TOML 文件后，",
+      "account-address-link": "在域名验证页面验证它"
+    },
+    "placeholders": {
+      "address": "r...",
+      "network": "main",
+      "account-desc": "此账户的用途",
+      "principal-name": "公司或运营者名称",
+      "email": "support@example.com",
+      "profile-image": "https://example.com/profile.png",
+      "website": "https://example.com",
+      "x-handle": "username",
+      "linkedin": "https://www.linkedin.com/company/example",
+      "telegram": "username",
+      "github": "username",
+      "validator-key": "nH...",
+      "attestation": "十六进制证明",
+      "network-asn": "24940",
+      "server-location": "HETZNER-AS, DE",
+      "server-desc": "公共服务器集群",
+      "issuer-name": "Ripple",
+      "issuer-desc": "发行方简短描述",
+      "token-name": "Ripple USD",
+      "token-desc": "此代币代表什么",
+      "link-title": "链接描述"
+    },
+    "generated-title": "已生成的 {{tomlName}}",
+    "warnings": {
+      "account-address": "账户地址看起来不是有效的 classic address。",
+      "issuer-address": "发行方地址看起来不是有效的 classic address。",
+      "rwa-subclass": "RWA 代币元数据应包含资产子类别。",
+      "display-decimals": "显示小数位应为整数。",
+      "validator-key": "验证器公钥通常以 n 开头。",
+      "network-asn": "网络 ASN 应为整数。"
+    },
+    "asset-classes": {
+      "select": "选择类别",
+      "rwa": "RWA",
+      "memes": "Meme",
+      "wrapped": "Wrapped",
+      "gaming": "游戏",
+      "defi": "DeFi",
+      "other": "其他"
+    },
+    "asset-subclasses": {
+      "select": "选择子类别",
+      "stablecoin": "稳定币",
+      "commodity": "大宗商品",
+      "real_estate": "房地产",
+      "private_credit": "私人信贷",
+      "equity": "股权",
+      "treasury": "国债",
+      "other": "其他"
+    },
+    "url-types": {
+      "select": "选择类型",
+      "website": "网站",
+      "social": "社交",
+      "document": "文档"
+    },
+    "networks": {
+      "main": "XRPL Mainnet",
+      "testnet": "XRPL Testnet",
+      "devnet": "XRPL Devnet",
+      "alphanet": "XRPL AlphaNet",
+      "xahau": "Xahau Mainnet",
+      "xahau-testnet": "Xahau Testnet",
+      "xahau-jshooks": "Xahau JS Hooks"
+    },
+    "boolean-options": {
+      "select": "选择",
+      "true": "是",
+      "false": "否"
+    },
+    "validator-guide": {
+      "title": "如何验证验证器域名",
+      "intro": "验证器域名验证需要在域名和验证器之间建立双向链接。",
+      "domain-title": "3. 域名声明验证器",
+      "domain-text": "从该域名提供 {{tomlName}}，并添加包含验证器公钥和 attestation 的 [[VALIDATORS]] 条目。",
+      "validator-title": "1. 验证器声明域名",
+      "validator-text": "在不是验证器的机器上，使用 validator-keys tool 和你的 validator-keys.json 文件:",
+      "after-command": "将输出中的 attestation 复制到下方表单中。",
+      "xrpld-title": "2. 更新 xrpld.cfg",
+      "xrpld-text": "用生成的 validator token 更新 xrpld.cfg 并重启 xrpld。",
+      "warning": "不要公开 validator token。TOML 文件中只应包含 attestation。"
     }
   }
 }

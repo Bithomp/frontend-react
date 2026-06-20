@@ -231,7 +231,8 @@
   },
   "services-page": {
     "search-placeholder": "Cari berdasarkan nama layanan...",
-    "try-tax-reports": "Coba laporan pajak"
+    "try-tax-reports": "Coba laporan pajak",
+    "identity": "Identitas"
   },
   "amm": {
     "create-title": "Buat AMM Pool",
@@ -730,6 +731,173 @@
       "transferRateSet": "TransferRate berhasil diatur.",
       "transferRateClear": "TransferRate berhasil dihapus.",
       "settings": "Pengaturan berhasil diperbarui."
+    }
+  },
+  "toml-generator": {
+    "seo-description": "Buat entri {{tomlName}} untuk akun, validator, server, dan token {{ledgerName}}.",
+    "intro": "Buat file {{tomlName}} dan letakkan di",
+    "mode-title": "Apa yang ingin Anda tambahkan?",
+    "modes": {
+      "principal": "Penanggung jawab",
+      "token": "Penerbit token",
+      "validator": "Validator",
+      "account": "Akun",
+      "server": "Server"
+    },
+    "notice": {
+      "before": "File harus disajikan melalui HTTPS. Gunakan",
+      "middle": "jika memungkinkan dan aktifkan",
+      "after": "agar explorer dan wallet dapat membacanya."
+    },
+    "cors-guide": {
+      "title": "Cara mengaktifkan CORS",
+      "intro": "Gunakan salah satu contoh ini untuk {{tomlName}}. Sesuaikan path jika konfigurasi server sudah mengarah ke direktori .well-known.",
+      "apache-title": "Konfigurasi Apache",
+      "htaccess-title": ".htaccess",
+      "nginx-title": "Konfigurasi nginx",
+      "managed-title": "Hosting terkelola",
+      "managed-text": "Cari custom headers, response headers, atau CORS rules di panel hosting Anda dan tambahkan Access-Control-Allow-Origin dengan nilai * hanya untuk file TOML ini."
+    },
+    "actions": {
+      "check": "Periksa TOML",
+      "domains": "Domain terverifikasi",
+      "add-link": "Tambah tautan",
+      "remove": "Hapus",
+      "add": "Tambah",
+      "copy": "Salin",
+      "copied": "Disalin",
+      "download": "Unduh"
+    },
+    "sections": {
+      "principal": "Penanggung jawab",
+      "validator": "Validator",
+      "issuer": "Penerbit",
+      "token-metadata": "Metadata token",
+      "token-links": "Tautan token"
+    },
+    "fields": {
+      "account-address": "Alamat akun",
+      "network": "Jaringan",
+      "description": "Deskripsi",
+      "name": "Nama",
+      "email": "Email",
+      "profile-image": "URL gambar profil",
+      "website": "Situs web",
+      "x-handle": "Akun X",
+      "linkedin": "LinkedIn",
+      "telegram": "Telegram",
+      "github": "GitHub",
+      "validator-public-key": "Kunci publik validator",
+      "attestation": "Attestation",
+      "unl": "UNL",
+      "owner-country": "Negara pemilik",
+      "server-country": "Negara server",
+      "network-asn": "ASN jaringan",
+      "server-location": "Lokasi server",
+      "server-cloud": "Server di-host di cloud",
+      "json-rpc": "URL JSON-RPC",
+      "websocket": "URL WebSocket",
+      "peer": "URL peer",
+      "issuer-address": "Alamat penerbit",
+      "issuer-name": "Nama penerbit",
+      "issuer-icon": "URL ikon penerbit",
+      "issuer-description": "Deskripsi penerbit",
+      "currency-code": "Kode mata uang",
+      "token-name": "Nama token",
+      "token-icon": "URL ikon token",
+      "asset-class": "Kelas aset",
+      "asset-subclass": "Subkelas aset",
+      "display-decimals": "Desimal tampilan",
+      "currency-symbol": "Simbol mata uang",
+      "token-description": "Deskripsi token"
+    },
+    "hints": {
+      "attestation": "Dihasilkan oleh validator-keys set_domain. Jangan publikasikan token validator.",
+      "account-address-before": "Tambahkan akun ke file TOML, lalu",
+      "account-address-link": "verifikasi di halaman verifikasi domain"
+    },
+    "placeholders": {
+      "address": "r...",
+      "network": "main",
+      "account-desc": "Bagaimana akun ini digunakan",
+      "principal-name": "Nama perusahaan atau operator",
+      "email": "support@example.com",
+      "profile-image": "https://example.com/profile.png",
+      "website": "https://example.com",
+      "x-handle": "username",
+      "linkedin": "https://www.linkedin.com/company/example",
+      "telegram": "username",
+      "github": "username",
+      "validator-key": "nH...",
+      "attestation": "Attestation hex",
+      "network-asn": "24940",
+      "server-location": "HETZNER-AS, DE",
+      "server-desc": "Cluster server publik",
+      "issuer-name": "Ripple",
+      "issuer-desc": "Deskripsi singkat penerbit",
+      "token-name": "Ripple USD",
+      "token-desc": "Apa yang diwakili token ini",
+      "link-title": "Deskripsi tautan"
+    },
+    "generated-title": "{{tomlName}} yang dibuat",
+    "warnings": {
+      "account-address": "Alamat akun tidak terlihat seperti alamat klasik yang valid.",
+      "issuer-address": "Alamat penerbit tidak terlihat seperti alamat klasik yang valid.",
+      "rwa-subclass": "Metadata token RWA harus menyertakan subkelas aset.",
+      "display-decimals": "Desimal tampilan harus berupa bilangan bulat.",
+      "validator-key": "Kunci publik validator biasanya diawali dengan n.",
+      "network-asn": "ASN jaringan harus berupa bilangan bulat."
+    },
+    "asset-classes": {
+      "select": "Pilih kelas",
+      "rwa": "RWA",
+      "memes": "Meme",
+      "wrapped": "Wrapped",
+      "gaming": "Gaming",
+      "defi": "DeFi",
+      "other": "Lainnya"
+    },
+    "asset-subclasses": {
+      "select": "Pilih subkelas",
+      "stablecoin": "Stablecoin",
+      "commodity": "Komoditas",
+      "real_estate": "Real estat",
+      "private_credit": "Kredit privat",
+      "equity": "Ekuitas",
+      "treasury": "Treasury",
+      "other": "Lainnya"
+    },
+    "url-types": {
+      "select": "Pilih tipe",
+      "website": "Situs web",
+      "social": "Sosial",
+      "document": "Dokumen"
+    },
+    "networks": {
+      "main": "XRPL Mainnet",
+      "testnet": "XRPL Testnet",
+      "devnet": "XRPL Devnet",
+      "alphanet": "XRPL AlphaNet",
+      "xahau": "Xahau Mainnet",
+      "xahau-testnet": "Xahau Testnet",
+      "xahau-jshooks": "Xahau JS Hooks"
+    },
+    "boolean-options": {
+      "select": "Pilih",
+      "true": "Ya",
+      "false": "Tidak"
+    },
+    "validator-guide": {
+      "title": "Cara memverifikasi domain validator",
+      "intro": "Verifikasi domain validator membutuhkan tautan dua arah antara domain dan validator.",
+      "domain-title": "3. Domain mengklaim validator",
+      "domain-text": "Sajikan {{tomlName}} dari domain dan tambahkan entri [[VALIDATORS]] dengan public key validator dan attestation.",
+      "validator-title": "1. Validator mengklaim domain",
+      "validator-text": "Pada mesin yang bukan validator Anda, gunakan validator-keys tool dengan file validator-keys.json Anda:",
+      "after-command": "Salin attestation dari output ke formulir di bawah ini.",
+      "xrpld-title": "2. Perbarui xrpld.cfg",
+      "xrpld-text": "Perbarui xrpld.cfg dengan validator token yang dihasilkan dan mulai ulang xrpld.",
+      "warning": "Jangan publikasikan validator token. Hanya attestation yang masuk ke file TOML."
     }
   }
 }

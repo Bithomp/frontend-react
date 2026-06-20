@@ -74,7 +74,8 @@
       "view-all-services": "Lihat semua layanan",
       "nft-mint": "Mint NFT",
       "tax-reports": "Laporan pajak",
-      "username": "Pendaftaran Username"
+      "username": "Pendaftaran Username",
+      "toml-generator": "Generator TOML"
     },
     "business": {
       "advertise": "Iklankan",
@@ -164,6 +165,10 @@
       "ripple-usd": "Ripple USD",
       "nft-minting": "Cara mint NFT",
       "learn-page": "Lihat halaman belajar kami"
+    },
+    "identity": {
+      "title": "Identitas",
+      "domain-verification": "Verifikasi domain"
     }
   },
   "components": {

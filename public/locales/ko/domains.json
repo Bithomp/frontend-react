@@ -18,5 +18,6 @@
     "check-toml": "TOML 확인",
     "check-toml-for-domain": "{{domain}} TOML 확인",
     "addresses": "주소"
-  }
+  },
+  "create-toml": "Bithomp에서 <0>TOML 파일을 만들 수도 있습니다</0>."
 }

@@ -74,7 +74,8 @@
       "view-all-services": "Ver todos los servicios",
       "nft-mint": "Acuñar NFT",
       "tax-reports": "Informes fiscales",
-      "username": "Registro de nombre de usuario"
+      "username": "Registro de nombre de usuario",
+      "toml-generator": "Generador TOML"
     },
     "business": {
       "advertise": "Anúnciate",
@@ -164,6 +165,10 @@
       "ripple-usd": "Ripple USD",
       "nft-minting": "Cómo acuñar NFT",
       "learn-page": "Ver nuestra página de aprendizaje"
+    },
+    "identity": {
+      "title": "Identidad",
+      "domain-verification": "Verificación de dominio"
     }
   },
   "components": {

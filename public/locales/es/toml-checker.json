@@ -26,5 +26,6 @@
     "invalid-toml": "El archivo TOML se encontró, pero no se pudo analizar.",
     "invalid-toml-with-reason": "El archivo TOML se encontró, pero no se pudo analizar: {{reason}}",
     "failed": "No se puede verificar el dominio ahora mismo."
-  }
+  },
+  "generator-link": "¿Necesitas primero un archivo? <0>Crea {{tomlName}}</0>."
 }

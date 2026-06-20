@@ -5,7 +5,16 @@ import axios from 'axios'
 
 import { countriesTranslated } from '../../utils'
 
-export default function CountrySelect({ countryCode, setCountryCode, type, menuPortalTarget, menuPosition, styles }) {
+export default function CountrySelect({
+  countryCode,
+  setCountryCode,
+  type,
+  menuPortalTarget,
+  menuPosition,
+  styles,
+  disableAutoDetect,
+  instanceId = 'country-select'
+}) {
   const { i18n } = useTranslation()
   const [countries, setCountries] = useState(null)
 
@@ -56,6 +65,8 @@ export default function CountrySelect({ countryCode, setCountryCode, type, menuP
             label: countries.getNameTranslated(countryCode)
           })
           setCountryCode(countryCode)
+        } else if (disableAutoDetect) {
+          setSelectCountry({ value: '', label: '' })
         } else {
           fetchData()
         }
@@ -100,7 +111,7 @@ export default function CountrySelect({ countryCode, setCountryCode, type, menuP
       styles={styles}
       className="country-select"
       classNamePrefix="react-select"
-      instanceId="country-select"
+      instanceId={instanceId}
     />
   )
 }

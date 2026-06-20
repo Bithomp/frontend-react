@@ -74,7 +74,8 @@
       "view-all-services": "Все сервисы",
       "nft-mint": "Чеканка NFT",
       "tax-reports": "Налоговые отчеты",
-      "username": "Регистрация псевдонима"
+      "username": "Регистрация псевдонима",
+      "toml-generator": "Генератор TOML"
     },
     "business": {
       "advertise": "Размещение рекламы",
@@ -164,6 +165,10 @@
       "ripple-usd": "Ripple USD",
       "nft-minting": "Как создать NFT",
       "learn-page": "Перейти к обучающим материалам"
+    },
+    "identity": {
+      "title": "Идентификация",
+      "domain-verification": "Проверка домена"
     }
   },
   "components": {

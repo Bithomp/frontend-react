@@ -18,5 +18,6 @@
     "check-toml": "Проверить TOML",
     "check-toml-for-domain": "Проверить TOML для {{domain}}",
     "addresses": "Адреса"
-  }
+  },
+  "create-toml": "Вы также можете <0>создать TOML-файл</0> с помощью Bithomp."
 }

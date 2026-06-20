@@ -26,5 +26,6 @@
     "invalid-toml": "TOML ファイルは見つかりましたが、解析できませんでした。",
     "invalid-toml-with-reason": "TOML ファイルは見つかりましたが、解析できませんでした: {{reason}}",
     "failed": "現在このドメインを確認できません。"
-  }
+  },
+  "generator-link": "先にファイルが必要ですか？ <0>{{tomlName}} を作成</0>。"
 }

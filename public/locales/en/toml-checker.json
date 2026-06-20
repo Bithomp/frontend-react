@@ -26,5 +26,6 @@
     "invalid-toml": "The TOML file was found, but it could not be parsed.",
     "invalid-toml-with-reason": "The TOML file was found, but it could not be parsed: {{reason}}",
     "failed": "Unable to verify the domain right now."
-  }
+  },
+  "generator-link": "Need a file first? <0>Create {{tomlName}}</0>."
 }
