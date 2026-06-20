@@ -20,7 +20,7 @@
   min-width: 0;
   border: 1px solid var(--button-additional);
   border-radius: 12px;
-  background: var(--background-main);
+  background: var(--button-additional);
   box-shadow: 0 0 4px rgb(0 0 0 / 10%);
 }
 
@@ -93,7 +93,10 @@
   background: var(--background-input);
   line-height: 1.25;
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   input {
     position: absolute;
@@ -145,7 +148,9 @@
   border-radius: 6px;
   background: var(--background-main);
   box-sizing: border-box;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 
   &:after {
     content: '';
@@ -175,7 +180,7 @@
   padding: 0 12px 10px;
   border: 1px solid color-mix(in srgb, var(--button-additional) 70%, transparent);
   border-radius: 10px;
-  background: color-mix(in srgb, var(--background-input) 72%, var(--background-main));
+  background: var(--background-secondary);
   line-height: 1.45;
 
   summary {
@@ -286,7 +291,7 @@
   padding: 14px;
   border: 1px solid color-mix(in srgb, var(--button-additional) 75%, transparent);
   border-radius: 10px;
-  background: color-mix(in srgb, var(--background-input) 68%, var(--background-main));
+  background: var(--background-main);
 
   h4 {
     margin-top: 18px;
