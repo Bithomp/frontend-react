@@ -20,6 +20,9 @@ import {
   CurrencyWithIcon
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
+import AmmPoolsChart from '../components/Amm/AmmPoolsChart'
+
+const showPoolsOverview = false
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -28,6 +31,7 @@ export async function getServerSideProps(context) {
 
   let initialData = null
   let initialErrorMessage = null
+  let initialChartData = null
 
   let currencyPart = ''
   if (currency) {
@@ -55,11 +59,25 @@ export async function getServerSideProps(context) {
     console.error(error)
   }
 
+  if (showPoolsOverview) {
+    try {
+      const chartRes = await axiosServer({
+        method: 'get',
+        url: 'v2/amms/chart',
+        headers: passHeaders(req)
+      }).catch(() => {})
+      initialChartData = chartRes?.data?.chart || null
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   return {
     props: {
       initialData: initialData || null,
+      initialChartData: initialChartData || [],
       orderQuery: order || initialData?.order || 'currencyHigh',
       currencyQuery: currency || initialData?.currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
@@ -78,6 +96,7 @@ import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import TokenTabs from '../components/Tabs/TokenTabs'
+import styles from '../styles/pages/amms.module.scss'
 
 const AmountWithIcon = ({ amount, fiatRate, selectedCurrency }) => {
   const hasIssuer = !!amount?.issuer
@@ -146,6 +165,7 @@ const updateListForCsv = (list) => {
 
 export default function Amms({
   initialData,
+  initialChartData,
   initialErrorMessage,
   orderQuery,
   selectedCurrency: selectedCurrencyApp,
@@ -178,11 +198,11 @@ export default function Amms({
   const [rawData, setRawData] = useState(initialData || {})
   const [order, setOrder] = useState(orderQuery)
   const [loading, setLoading] = useState(false)
+  const [chartRows, setChartRows] = useState(initialChartData || [])
   const [errorMessage, setErrorMessage] = useState(
     t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
   )
   const [marker, setMarker] = useState(initialData?.marker)
-  const [filtersHide, setFiltersHide] = useState(false)
   const [token, setToken] = useState({
     currency: stripText(currencyQuery),
     issuer: stripText(currencyIssuerQuery)
@@ -200,6 +220,23 @@ export default function Amms({
     return () => {
       controller.abort()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!showPoolsOverview) return
+    if (chartRows?.length) return
+
+    axios
+      .get('v2/amms/chart', {
+        signal: controller.signal
+      })
+      .then((response) => {
+        if (Array.isArray(response?.data?.chart)) {
+          setChartRows(response.data.chart)
+        }
+      })
+      .catch(() => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -369,80 +406,150 @@ export default function Amms({
         hasMore={marker}
         data={data || []}
         csvHeaders={csvHeaders}
-        filtersHide={filtersHide}
-        setFiltersHide={setFiltersHide}
         selectedCurrency={selectedCurrency}
         setSelectedCurrency={setSelectedCurrency}
-      >
-        <>
+        withoutLeftFilters
+        showCsvInNav
+        navExtra={
           <TokenSelector
             value={token}
             onChange={setToken}
             allOrOne={order !== 'currencyHigh'}
             currencyQueryName="currency"
           />
-        </>
-        <InfiniteScrolling
-          dataLength={data.length}
-          loadMore={checkApi}
-          hasMore={marker}
-          errorMessage={errorMessage}
-          subscriptionExpired={subscriptionExpired}
-          sessionToken={sessionToken}
-          openEmailLogin={openEmailLogin}
-        >
-          {!windowWidth || windowWidth > 860 ? (
-            <table className="table-large expand clickable">
-              <thead>
-                <tr>
-                  <th className="center">{t('table.index')}</th>
-                  <th>LP Token</th>
-                  <th>Asset 1</th>
-                  <th>Asset 2</th>
-                  <th className="right">Holders</th>
-                  <th className="right">Created</th>
-                  <th className="right">Trading fee</th>
-                  <th className="center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <br />
-                      <span className="waiting"></span>
-                      <br />
-                      {t('general.loading')}
-                      <br />
-                      <br />
-                    </td>
+        }
+      >
+        <div className={styles.page}>
+          {showPoolsOverview && <AmmPoolsChart rows={chartRows} />}
+          <InfiniteScrolling
+            dataLength={data.length}
+            loadMore={checkApi}
+            hasMore={marker}
+            errorMessage={errorMessage}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
+            openEmailLogin={openEmailLogin}
+          >
+            {!windowWidth || windowWidth > 860 ? (
+              <table className="table-large expand clickable">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>LP Token</th>
+                    <th>Asset 1</th>
+                    <th>Asset 2</th>
+                    <th className="right">Holders</th>
+                    <th className="right">Created</th>
+                    <th className="right">Trading fee</th>
+                    <th className="center">Actions</th>
                   </tr>
-                ) : (
-                  <>
-                    {!errorMessage && data ? (
-                      <>
-                        {data.length > 0 &&
-                          data.map((a, i) => (
-                            <tr key={i} onClick={() => router.push('/amm/' + a.ammID)}>
-                              <td className="center">{i + 1}</td>
-                              <td>
-                                <LPToken a={a} />
-                              </td>
-                              <td>
-                                <AmountWithIcon
-                                  amount={a.amount}
-                                  fiatRate={fiatRate}
-                                  selectedCurrency={selectedCurrency}
-                                />
-                              </td>
-                              <td>
-                                <AmountWithIcon
-                                  amount={a.amount2}
-                                  fiatRate={fiatRate}
-                                  selectedCurrency={selectedCurrency}
-                                />
-                              </td>
-                              <td className="right">
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <br />
+                        <span className="waiting"></span>
+                        <br />
+                        {t('general.loading')}
+                        <br />
+                        <br />
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {!errorMessage && data ? (
+                        <>
+                          {data.length > 0 &&
+                            data.map((a, i) => (
+                              <tr key={i} onClick={() => router.push('/amm/' + a.ammID)}>
+                                <td className="center">{i + 1}</td>
+                                <td>
+                                  <LPToken a={a} />
+                                </td>
+                                <td>
+                                  <AmountWithIcon
+                                    amount={a.amount}
+                                    fiatRate={fiatRate}
+                                    selectedCurrency={selectedCurrency}
+                                  />
+                                </td>
+                                <td>
+                                  <AmountWithIcon
+                                    amount={a.amount2}
+                                    fiatRate={fiatRate}
+                                    selectedCurrency={selectedCurrency}
+                                  />
+                                </td>
+                                <td className="right">
+                                  <Link
+                                    href={
+                                      '/distribution?currency=' +
+                                      a.lpTokenBalance.currency +
+                                      '&currencyIssuer=' +
+                                      a.account
+                                    }
+                                  >
+                                    {a.holders}
+                                  </Link>
+                                </td>
+                                <td className="right">{timeFromNow(a.createdAt, i18n)}</td>
+                                <td className="right">{showAmmPercents(a.tradingFee)}</td>
+                                <td className="center" onClick={(e) => e.stopPropagation()}>
+                                  <button
+                                    type="button"
+                                    className="button-action thin narrow"
+                                    disabled={!setSignRequest}
+                                    onClick={() => openAmmDeposit(a)}
+                                  >
+                                    {t('menu.amm.deposit')}
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan="100" className="center orange bold">
+                            {errorMessage}
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <table className="table-mobile">
+                <thead></thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <br />
+                        <span className="waiting"></span>
+                        <br />
+                        {t('general.loading')}
+                        <br />
+                        <br />
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {!errorMessage ? (
+                        data?.map((a, i) => (
+                          <tr key={i}>
+                            <td style={{ padding: '5px' }} className="center">
+                              <b>{i + 1}</b>
+                            </td>
+                            <td>
+                              <br />
+                              <LPToken a={a} />
+                              <p>
+                                AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
+                              </p>
+                              <p>
+                                Holders:{' '}
                                 <Link
                                   href={
                                     '/distribution?currency=' +
@@ -453,129 +560,65 @@ export default function Amms({
                                 >
                                   {a.holders}
                                 </Link>
-                              </td>
-                              <td className="right">{timeFromNow(a.createdAt, i18n)}</td>
-                              <td className="right">{showAmmPercents(a.tradingFee)}</td>
-                              <td className="center" onClick={(e) => e.stopPropagation()}>
-                                <button
-                                  type="button"
-                                  className="button-action thin narrow"
-                                  disabled={!setSignRequest}
-                                  onClick={() => openAmmDeposit(a)}
-                                >
-                                  {t('menu.amm.deposit')}
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                      </>
-                    ) : (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            <table className="table-mobile">
-              <thead></thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <br />
-                      <span className="waiting"></span>
-                      <br />
-                      {t('general.loading')}
-                      <br />
-                      <br />
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {!errorMessage ? (
-                      data?.map((a, i) => (
-                        <tr key={i}>
-                          <td style={{ padding: '5px' }} className="center">
-                            <b>{i + 1}</b>
-                          </td>
-                          <td>
-                            <br />
-                            <LPToken a={a} />
-                            <p>
-                              AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
-                            </p>
-                            <p>
-                              Holders:{' '}
-                              <Link
-                                href={
-                                  '/distribution?currency=' + a.lpTokenBalance.currency + '&currencyIssuer=' + a.account
-                                }
+                              </p>
+                              Assets:
+                              <div style={{ height: 10 }} />
+                              <table>
+                                <thead></thead>
+                                <tbody>
+                                  <tr className="no-border">
+                                    <td>
+                                      <AmountWithIcon
+                                        amount={a.amount}
+                                        fiatRate={fiatRate}
+                                        selectedCurrency={selectedCurrency}
+                                      />
+                                    </td>
+                                    <td style={{ paddingLeft: 10 }}>
+                                      <AmountWithIcon
+                                        amount={a.amount2}
+                                        fiatRate={fiatRate}
+                                        selectedCurrency={selectedCurrency}
+                                      />
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
+                              <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
+                              <button
+                                type="button"
+                                className="button-action thin narrow"
+                                disabled={!setSignRequest}
+                                onClick={() => openAmmDeposit(a)}
                               >
-                                {a.holders}
-                              </Link>
-                            </p>
-                            Assets:
-                            <div style={{ height: 10 }} />
-                            <table>
-                              <thead></thead>
-                              <tbody>
-                                <tr className="no-border">
-                                  <td>
-                                    <AmountWithIcon
-                                      amount={a.amount}
-                                      fiatRate={fiatRate}
-                                      selectedCurrency={selectedCurrency}
-                                    />
-                                  </td>
-                                  <td style={{ paddingLeft: 10 }}>
-                                    <AmountWithIcon
-                                      amount={a.amount2}
-                                      fiatRate={fiatRate}
-                                      selectedCurrency={selectedCurrency}
-                                    />
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                            <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
-                            <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
-                            <button
-                              type="button"
-                              className="button-action thin narrow"
-                              disabled={!setSignRequest}
-                              onClick={() => openAmmDeposit(a)}
-                            >
-                              {t('menu.amm.deposit')}
-                            </button>{' '}
-                            <button
-                              className="button-action thin narrow"
-                              onClick={() => router.push('/amm/' + a.ammID)}
-                            >
-                              AMM Page
-                            </button>
-                            <br />
-                            <br />
+                                {t('menu.amm.deposit')}
+                              </button>{' '}
+                              <button
+                                className="button-action thin narrow"
+                                onClick={() => router.push('/amm/' + a.ammID)}
+                              >
+                                AMM Page
+                              </button>
+                              <br />
+                              <br />
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="100" className="center orange bold">
+                            {errorMessage}
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          )}
-        </InfiniteScrolling>
+                      )}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            )}
+          </InfiniteScrolling>
+        </div>
       </FiltersFrame>
     </>
   )

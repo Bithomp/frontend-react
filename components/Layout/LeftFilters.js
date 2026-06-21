@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { BsFilter } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
-import { CSVLink } from 'react-csv'
 import { useTranslation } from 'next-i18next'
 
-import DownloadIcon from '../../public/images/download.svg'
 import { useWidth } from '../../utils'
+import CsvExportButton from './CsvExportButton'
 
 export default function LeftFilters({
   children,
@@ -20,17 +19,6 @@ export default function LeftFilters({
 }) {
   const { t } = useTranslation()
   const width = useWidth()
-
-  const [rendered, setRendered] = useState(false)
-  const [dateAndTimeNow, setDateAndTimeNow] = useState('')
-
-  useEffect(() => {
-    const date = new Date(Date.now()).toLocaleDateString([], { year: 'numeric', month: 'short', day: '2-digit' })
-    const time = new Date(Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-    setDateAndTimeNow(date + ' at ' + time)
-    setRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   // Prevent body scroll when filters are open
   useEffect(() => {
@@ -52,17 +40,12 @@ export default function LeftFilters({
   }
 
   const CsvButton = () => {
-    if (!rendered) return ''
     return (
-      <CSVLink
+      <CsvExportButton
         data={data}
         headers={csvHeaders}
-        filename={'export ' + dateAndTimeNow + '.csv'}
-        className={'button-action narrow' + (!(data?.length > 0) ? ' disabled' : '')}
         style={{ height: 34, display: 'flex', alignItems: 'center', padding: '0 12px', gap: 5, marginTop: -2 }}
-      >
-        <DownloadIcon /> CSV
-      </CSVLink>
+      />
     )
   }
 

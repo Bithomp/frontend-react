@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { Children, useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 
@@ -13,6 +13,7 @@ import { setTabParams, useWidth } from '../../utils'
 import CurrencySelect from '../UI/CurrencySelect'
 import { TablePagination } from '@mui/material'
 import { capitalize, shortHash } from '../../utils/format'
+import CsvExportButton from './CsvExportButton'
 
 // Filter Indicator Component
 function FilterIndicator({ filters }) {
@@ -73,7 +74,9 @@ export default function FiltersFrame({
   setRowsPerPage,
   onlyCsv,
   filters,
-  navExtra
+  navExtra,
+  withoutLeftFilters,
+  showCsvInNav
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -117,7 +120,11 @@ export default function FiltersFrame({
     setPage(0)
   }
 
-  if (!children || children.length < 2) return null
+  const childList = Children.toArray(children)
+
+  if (!children || (!withoutLeftFilters && childList.length < 2) || (withoutLeftFilters && childList.length < 1)) {
+    return null
+  }
 
   let rowsPerPageOptions = [10, 25]
   const steps = [50, 100, 250, 500, 1000]
@@ -151,7 +158,11 @@ export default function FiltersFrame({
   }
 
   return (
-    <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
+    <div
+      className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}${
+        withoutLeftFilters ? ' is-without-left-filters' : ''
+      }`}
+    >
       {(orderList || activeView || page) && (
         <div className="filters-nav">
           <div className="filters-nav__wrap">
@@ -162,6 +173,10 @@ export default function FiltersFrame({
             )}
 
             {navExtra ? <div className="filters-nav__extra">{navExtra}</div> : null}
+
+            {showCsvInNav && csvHeaders ? (
+              <CsvExportButton data={data || []} headers={csvHeaders} className="filters-nav__csv" />
+            ) : null}
 
             {orderList && (
               <>
@@ -211,23 +226,25 @@ export default function FiltersFrame({
           </ul>
         </div>
       )}
-      <LeftFilters
-        filtersHide={filtersHide}
-        setFiltersHide={setFiltersHide}
-        count={count}
-        total={total}
-        hasMore={hasMore}
-        data={data || []}
-        csvHeaders={csvHeaders}
-        onlyCsv={onlyCsv}
-      >
-        {children[0]}
-      </LeftFilters>
+      {!withoutLeftFilters && (
+        <LeftFilters
+          filtersHide={filtersHide}
+          setFiltersHide={setFiltersHide}
+          count={count}
+          total={total}
+          hasMore={hasMore}
+          data={data || []}
+          csvHeaders={csvHeaders}
+          onlyCsv={onlyCsv}
+        >
+          {childList[0]}
+        </LeftFilters>
+      )}
 
       <div className="content-text" style={contentStyle}>
         {/* Filter Indicator */}
         {filters && (width > 1300 ? filtersHide : !filtersHide) && <FilterIndicator filters={filters} />}
-        {children[1]}
+        {withoutLeftFilters ? childList[0] : childList[1]}
         {rowsPerPage && width > 0 && width <= 800 && (
           <div className="filters-pagination-bottom">{renderPagination({ compact: true })}</div>
         )}
