@@ -423,11 +423,7 @@ export default function Amms({
       />
       <div className={amms}>
         <h1 className="center">{t('menu.amm.pools')}</h1>
-        {!xahauNetwork && (
-          <div className="pageTabs">
-            <TokenTabs tab="amms" />
-          </div>
-        )}
+        {!xahauNetwork && <TokenTabs tab="amms" />}
         <FiltersFrame
           order={order}
           setOrder={setOrder}

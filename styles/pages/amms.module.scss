@@ -1,24 +1,9 @@
 .amms :global {
-  .pageTabs,
   .page {
     width: 100%;
     max-width: 1680px;
     margin-left: auto;
     margin-right: auto;
-  }
-
-  .pageTabs {
-    padding-inline: 20px;
-    box-sizing: border-box;
-  }
-
-  .pageTabs .tabs {
-    padding-inline: 0;
-  }
-
-  .pageTabs .tabs-scroll,
-  .pageTabs .tabs-list {
-    width: 100%;
   }
 
   .page .table-large.expand,
