@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useMemo, useState, useEffect, useRef } from 'react'
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import RadioOptions from '../components/UI/RadioOptions'
 import FiltersFrame from '../components/Layout/FiltersFrame'
@@ -268,27 +268,33 @@ export default function Dapps({
     return sortDapps(byWallet, order)
   }, [rawData, order, excludeNoWallets, walletFilter])
 
-  const orderList = [
-    { value: 'performingHigh', label: 'Performing wallets: High to Low' },
-    { value: 'totalSentHigh', label: 'Volume: High to Low' },
-    { value: 'interactingHigh', label: 'Interacting wallets: High to Low' },
-    { value: 'txHigh', label: 'Transactions: High to Low' },
-    { value: 'successRateHigh', label: 'Success rate: High to Low' }
-  ]
+  const orderList = useMemo(
+    () => [
+      { value: 'performingHigh', label: 'Performing wallets: High to Low' },
+      { value: 'totalSentHigh', label: 'Volume: High to Low' },
+      { value: 'interactingHigh', label: 'Interacting wallets: High to Low' },
+      { value: 'txHigh', label: 'Transactions: High to Low' },
+      { value: 'successRateHigh', label: 'Success rate: High to Low' }
+    ],
+    []
+  )
 
   // CSV headers for export
-  const csvHeaders = [
-    { label: 'Dapp Name', key: 'dappName' },
-    { label: 'Performing wallets', key: 'uniqueSourceAddresses' },
-    { label: 'Interacting wallets', key: 'uniqueInteractedAddresses' },
-    { label: 'Transactions', key: 'totalTransactions' },
-    { label: 'Types', key: 'transactionTypes' },
-    { label: 'Success', key: 'successTransactions' },
-    { label: 'Success %', key: 'successRate' },
-    { label: 'Fees', key: 'totalFees' },
-    { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` },
-    { label: `Volume (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
-  ]
+  const csvHeaders = useMemo(
+    () => [
+      { label: 'Dapp Name', key: 'dappName' },
+      { label: 'Performing wallets', key: 'uniqueSourceAddresses' },
+      { label: 'Interacting wallets', key: 'uniqueInteractedAddresses' },
+      { label: 'Transactions', key: 'totalTransactions' },
+      { label: 'Types', key: 'transactionTypes' },
+      { label: 'Success', key: 'successTransactions' },
+      { label: 'Success %', key: 'successRate' },
+      { label: 'Fees', key: 'totalFees' },
+      { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` },
+      { label: `Volume (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
+    ],
+    [convertCurrency]
+  )
 
   const csvData = useMemo(() => {
     return (data || []).map((d) => {
@@ -340,38 +346,47 @@ export default function Dapps({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, excludeNoWallets, walletFilter, router.isReady])
 
-  const onToggleExclude = (v) => {
+  const onToggleExclude = useCallback((v) => {
     setExcludeNoWallets(v)
     if (!v) setWalletFilter('')
-  }
+  }, [])
 
-  const periodOptions = [
-    { value: 'day', label: t('tabs.day'), shortLabel: `24${t('units.hours-short')}` },
-    { value: 'week', label: t('tabs.week'), shortLabel: `7${t('units.days-short')}` },
-    { value: 'month', label: t('tabs.month'), shortLabel: `30${t('units.days-short')}` }
-  ]
+  const periodOptions = useMemo(
+    () => [
+      { value: 'day', label: t('tabs.day'), shortLabel: `24${t('units.hours-short')}` },
+      { value: 'week', label: t('tabs.week'), shortLabel: `7${t('units.days-short')}` },
+      { value: 'month', label: t('tabs.month'), shortLabel: `30${t('units.days-short')}` }
+    ],
+    [t]
+  )
 
-  const activeFilters = {
-    ...(!excludeNoWallets ? { [t('general.external-signing')]: t('general.optional') } : {}),
-    ...(walletFilter ? { [t('wallet.connected-wallets')]: walletFilter } : {})
-  }
+  const activeFilters = useMemo(
+    () => ({
+      ...(!excludeNoWallets ? { [t('general.external-signing')]: t('general.optional') } : {}),
+      ...(walletFilter ? { [t('wallet.connected-wallets')]: walletFilter } : {})
+    }),
+    [excludeNoWallets, t, walletFilter]
+  )
 
-  const periodSwitch = (
-    <div className="dapps-period-switch" aria-label={t('table.period')}>
-      {periodOptions.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          className={`dapps-period-switch__button${period === option.value ? ' is-active' : ''}`}
-          onClick={() => setPeriod(option.value)}
-          aria-pressed={period === option.value}
-          aria-label={option.label}
-          title={option.label}
-        >
-          {option.shortLabel}
-        </button>
-      ))}
-    </div>
+  const periodSwitch = useMemo(
+    () => (
+      <div className="dapps-period-switch" aria-label={t('table.period')}>
+        {periodOptions.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            className={`dapps-period-switch__button${period === option.value ? ' is-active' : ''}`}
+            onClick={() => setPeriod(option.value)}
+            aria-pressed={period === option.value}
+            aria-label={option.label}
+            title={option.label}
+          >
+            {option.shortLabel}
+          </button>
+        ))}
+      </div>
+    ),
+    [period, periodOptions, t]
   )
 
   return (

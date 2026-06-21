@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next'
 import { useWidth } from '../../utils'
 import CsvExportButton from './CsvExportButton'
 
+const csvButtonStyle = { height: 34, display: 'flex', alignItems: 'center', padding: '0 12px', gap: 5, marginTop: -2 }
+
 export default function LeftFilters({
   children,
   filtersHide,
@@ -39,21 +41,13 @@ export default function LeftFilters({
     }
   }
 
-  const CsvButton = () => {
-    return (
-      <CsvExportButton
-        data={data}
-        headers={csvHeaders}
-        style={{ height: 34, display: 'flex', alignItems: 'center', padding: '0 12px', gap: 5, marginTop: -2 }}
-      />
-    )
-  }
+  const csvButton = <CsvExportButton data={data} headers={csvHeaders} style={csvButtonStyle} />
 
   return (
     <>
       {onlyCsv ? (
         <div className="filters-onlyCsv">
-          <CsvButton />
+          {csvButton}
         </div>
       ) : (
         <div className="filters">
@@ -71,7 +65,7 @@ export default function LeftFilters({
                       (total ? ' ' + t('general.of') + ' ' + total : hasMore ? ' ' + t('general.of-many') : '')
                     : ''}
                 </span>
-                <CsvButton />
+                {csvButton}
                 <button className="filters__close" onClick={() => toggleFilters()}>
                   <IoMdClose />
                 </button>
