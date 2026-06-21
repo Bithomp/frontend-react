@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
@@ -22,7 +22,15 @@ import {
 import TokenSelector from '../components/UI/TokenSelector'
 import AmmPoolsChart from '../components/Amm/AmmPoolsChart'
 
-const showPoolsOverview = false
+const ammTokenChartUrl = (token) => {
+  const currency = stripText(token?.currency)
+  const issuer = stripText(token?.issuer)
+
+  if (!currency) return ''
+  if (issuer) return `v2/amms/token/${encodeURIComponent(issuer)}/${encodeURIComponent(currency)}/chart`
+
+  return `v2/amms/token/${encodeURIComponent(currency)}/chart`
+}
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -32,6 +40,10 @@ export async function getServerSideProps(context) {
   let initialData = null
   let initialErrorMessage = null
   let initialChartData = null
+  const initialChartUrl = ammTokenChartUrl({
+    currency: currency || nativeCurrency,
+    issuer: currencyIssuer || ''
+  })
 
   let currencyPart = ''
   if (currency) {
@@ -59,17 +71,15 @@ export async function getServerSideProps(context) {
     console.error(error)
   }
 
-  if (showPoolsOverview) {
-    try {
-      const chartRes = await axiosServer({
-        method: 'get',
-        url: 'v2/amms/chart',
-        headers: passHeaders(req)
-      }).catch(() => {})
-      initialChartData = chartRes?.data?.chart || null
-    } catch (error) {
-      console.error(error)
-    }
+  try {
+    const chartRes = await axiosServer({
+      method: 'get',
+      url: initialChartUrl,
+      headers: passHeaders(req)
+    }).catch(() => {})
+    initialChartData = chartRes?.data?.chart || null
+  } catch (error) {
+    console.error(error)
   }
 
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
@@ -78,6 +88,7 @@ export async function getServerSideProps(context) {
     props: {
       initialData: initialData || null,
       initialChartData: initialChartData || [],
+      initialChartUrl,
       orderQuery: order || initialData?.order || 'currencyHigh',
       currencyQuery: currency || initialData?.currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
@@ -166,6 +177,7 @@ const updateListForCsv = (list) => {
 export default function Amms({
   initialData,
   initialChartData,
+  initialChartUrl,
   initialErrorMessage,
   orderQuery,
   selectedCurrency: selectedCurrencyApp,
@@ -199,6 +211,7 @@ export default function Amms({
   const [order, setOrder] = useState(orderQuery)
   const [loading, setLoading] = useState(false)
   const [chartRows, setChartRows] = useState(initialChartData || [])
+  const loadedChartUrlRef = useRef(initialChartData?.length ? initialChartUrl : '')
   const [errorMessage, setErrorMessage] = useState(
     t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
   )
@@ -207,6 +220,12 @@ export default function Amms({
     currency: stripText(currencyQuery),
     issuer: stripText(currencyIssuerQuery)
   })
+  const tokenCurrency = token?.currency
+  const tokenIssuer = token?.issuer
+  const chartUrl = useMemo(
+    () => ammTokenChartUrl({ currency: tokenCurrency, issuer: tokenIssuer }),
+    [tokenCurrency, tokenIssuer]
+  )
 
   const controller = new AbortController()
 
@@ -224,21 +243,35 @@ export default function Amms({
   }, [])
 
   useEffect(() => {
-    if (!showPoolsOverview) return
-    if (chartRows?.length) return
+    if (!chartUrl) {
+      setChartRows([])
+      loadedChartUrlRef.current = ''
+      return
+    }
+
+    if (loadedChartUrlRef.current === chartUrl) return
+
+    const chartController = new AbortController()
 
     axios
-      .get('v2/amms/chart', {
-        signal: controller.signal
+      .get(chartUrl, {
+        signal: chartController.signal
       })
       .then((response) => {
         if (Array.isArray(response?.data?.chart)) {
           setChartRows(response.data.chart)
+          loadedChartUrlRef.current = chartUrl
         }
       })
-      .catch(() => {})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+      .catch((error) => {
+        if (error?.message !== 'canceled') {
+          setChartRows([])
+          loadedChartUrlRef.current = ''
+        }
+      })
+
+    return () => chartController.abort()
+  }, [chartUrl])
 
   const checkApi = async () => {
     const oldOrder = rawData?.order
@@ -420,7 +453,7 @@ export default function Amms({
         }
       >
         <div className={styles.page}>
-          {showPoolsOverview && <AmmPoolsChart rows={chartRows} />}
+          <AmmPoolsChart rows={chartRows} />
           <InfiniteScrolling
             dataLength={data.length}
             loadMore={checkApi}
