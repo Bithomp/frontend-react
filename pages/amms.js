@@ -514,7 +514,7 @@ export default function Amms({
                                     selectedCurrency={selectedCurrency}
                                   />
                                 </td>
-                                <td className="right">
+                                <td className="right" onClick={(e) => e.stopPropagation()}>
                                   <Link
                                     href={
                                       '/distribution?currency=' +
