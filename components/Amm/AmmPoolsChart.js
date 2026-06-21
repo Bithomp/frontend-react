@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic'
 
 import { useTheme } from '../Layout/ThemeContext'
 import { niceNumber, shortNiceNumber } from '../../utils/format'
-import styles from '../../styles/pages/amms.module.scss'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -157,26 +156,26 @@ export default function AmmPoolsChart({ rows }) {
   const totalDelta = metricDelta(latest, first, 'totalPools')
 
   return (
-    <section className={styles.chartPanel}>
-      <div className={styles.metricGrid}>
-        <div className={styles.metric}>
+    <section className="chartPanel">
+      <div className="metricGrid">
+        <div className="metric">
           <span>Total pools</span>
           <strong>{shortNiceNumber(latest.totalPools, 0)}</strong>
           <small>{formatSigned(totalDelta)} last 30 days</small>
         </div>
-        <div className={styles.metric}>
+        <div className="metric">
           <span>Active pools</span>
           <strong>{shortNiceNumber(latest.activePools, 0)}</strong>
           <small>{formatSigned(activeDelta)} since yesterday</small>
         </div>
-        <div className={styles.metric}>
+        <div className="metric">
           <span>New pools</span>
           <strong>{shortNiceNumber(totalCreated, 0)}</strong>
           <small>Last 30 days</small>
         </div>
       </div>
 
-      <div className={styles.chartWrap}>
+      <div className="chartWrap">
         <Chart type="line" series={series} options={options} height={165} />
       </div>
     </section>

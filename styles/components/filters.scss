@@ -91,13 +91,15 @@ $width: 340px;
     margin: 16px 20px 0;
 
     @media (max-width: 440px) {
-      margin-inline: 10px;
+      margin-inline: 20px;
     }
 
     &__wrap {
       position: relative !important;
       top: auto;
       width: min(100%, 1680px);
+      max-width: 100%;
+      box-sizing: border-box;
       justify-content: flex-end;
       align-items: center;
     }
@@ -123,9 +125,11 @@ $width: 340px;
       .token-selector {
         flex: 1 1 220px;
         min-width: 220px;
+        max-width: 100%;
       }
 
       .token-selector-dropdown {
+        box-sizing: border-box;
         min-width: 220px;
       }
     }
@@ -145,6 +149,17 @@ $width: 340px;
 
       &__extra {
         flex-basis: 100%;
+        min-width: 0;
+      }
+
+      .token-selector {
+        flex-basis: 100%;
+        min-width: 0;
+      }
+
+      .token-selector-dropdown {
+        width: 100%;
+        min-width: 0;
       }
     }
   }

@@ -107,7 +107,7 @@ import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import TokenTabs from '../components/Tabs/TokenTabs'
-import styles from '../styles/pages/amms.module.scss'
+import { amms } from '../styles/pages/amms.module.scss'
 
 const AmountWithIcon = ({ amount, fiatRate, selectedCurrency }) => {
   const hasIssuer = !!amount?.issuer
@@ -421,38 +421,43 @@ export default function Amms({
         }
         twitterImage={xahauNetwork ? null : { file: 'previews/630x630/amms.png' }}
       />
-      <h1 className="center">{t('menu.amm.pools')}</h1>
-      {!xahauNetwork && <TokenTabs tab="amms" />}
-      <FiltersFrame
-        order={order}
-        setOrder={setOrder}
-        orderList={[
-          { value: 'currencyHigh', label: 'Currency: High to Low' },
-          { value: 'createdOld', label: 'Creation: Earliest' },
-          { value: 'createdNew', label: 'Creation: Latest' },
-          { value: 'updatedNew', label: 'Updated: Recent' },
-          { value: 'updatedOld', label: 'Updated: Old' },
-          { value: 'tradingFeeLow', label: 'Trading fee: Low to High' },
-          { value: 'tradingFeeHigh', label: 'Trading fee: High to Low' }
-        ]}
-        count={data?.length}
-        hasMore={marker}
-        data={data || []}
-        csvHeaders={csvHeaders}
-        selectedCurrency={selectedCurrency}
-        setSelectedCurrency={setSelectedCurrency}
-        withoutLeftFilters
-        showCsvInNav
-        navExtra={
-          <TokenSelector
-            value={token}
-            onChange={setToken}
-            allOrOne={order !== 'currencyHigh'}
-            currencyQueryName="currency"
-          />
-        }
-      >
-        <div className={styles.page}>
+      <div className={amms}>
+        <h1 className="center">{t('menu.amm.pools')}</h1>
+        {!xahauNetwork && (
+          <div className="pageTabs">
+            <TokenTabs tab="amms" />
+          </div>
+        )}
+        <FiltersFrame
+          order={order}
+          setOrder={setOrder}
+          orderList={[
+            { value: 'currencyHigh', label: 'Currency: High to Low' },
+            { value: 'createdOld', label: 'Creation: Earliest' },
+            { value: 'createdNew', label: 'Creation: Latest' },
+            { value: 'updatedNew', label: 'Updated: Recent' },
+            { value: 'updatedOld', label: 'Updated: Old' },
+            { value: 'tradingFeeLow', label: 'Trading fee: Low to High' },
+            { value: 'tradingFeeHigh', label: 'Trading fee: High to Low' }
+          ]}
+          count={data?.length}
+          hasMore={marker}
+          data={data || []}
+          csvHeaders={csvHeaders}
+          selectedCurrency={selectedCurrency}
+          setSelectedCurrency={setSelectedCurrency}
+          withoutLeftFilters
+          showCsvInNav
+          navExtra={
+            <TokenSelector
+              value={token}
+              onChange={setToken}
+              allOrOne={order !== 'currencyHigh'}
+              currencyQueryName="currency"
+            />
+          }
+        >
+          <div className="page">
           <AmmPoolsChart rows={chartRows} />
           <InfiniteScrolling
             dataLength={data.length}
@@ -651,8 +656,9 @@ export default function Amms({
               </table>
             )}
           </InfiniteScrolling>
-        </div>
-      </FiltersFrame>
+          </div>
+        </FiltersFrame>
+      </div>
     </>
   )
 }
