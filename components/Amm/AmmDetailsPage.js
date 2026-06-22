@@ -562,7 +562,7 @@ const tokenAmmId = (token) =>
 const normalizeSwapAmount = (value, currency, options = {}) => {
   const number = Number(value || 0)
   if (!Number.isFinite(number)) return '-'
-  const displayNumber = options.unsigned ? Math.abs(number) : number
+  const displayNumber = options.unsigned ? Math.abs(number) : options.sign ? Math.abs(number) * options.sign : number
   return `${!options.unsigned && displayNumber > 0 ? '+' : ''}${shortNiceNumber(displayNumber, 6, 2)} ${currency}`
 }
 
@@ -600,6 +600,20 @@ const signedSwapAmount = (amount, signedValue) => {
   }
 
   return applySign(amount)
+}
+
+const dexSwapAmountSign = (row, amountIndex, displayAccount) => {
+  if (row?.type !== 'dex') return null
+
+  if (displayAccount && row.address1 === displayAccount) {
+    return amountIndex === 1 ? 1 : -1
+  }
+
+  if (displayAccount && row.address2 === displayAccount) {
+    return amountIndex === 1 ? -1 : 1
+  }
+
+  return row.address2 ? (amountIndex === 1 ? -1 : 1) : amountIndex === 1 ? 1 : -1
 }
 
 const assetDisplayAmount = (amount, value) => {
@@ -2371,20 +2385,22 @@ export default function AmmDetailsPage({
       const unsignedLiquidityAmount = row.type === 'deposit' || row.type === 'withdraw'
       const value1Positive = Number(row.value1) > 0
       const value2Positive = Number(row.value2) > 0
+      const amount1Sign = dexSwapAmountSign(row, 1, accountData.account)
+      const amount2Sign = dexSwapAmountSign(row, 2, accountData.account)
       const firstAmount = row.amount1
-        ? amountFormatNode(unsignedLiquidityAmount ? unsignedAmount(row.amount1) : signedSwapAmount(row.amount1, row.value1), {
+        ? amountFormatNode(unsignedLiquidityAmount ? unsignedAmount(row.amount1) : signedSwapAmount(row.amount1, amount1Sign || row.value1), {
             short: true,
             maxFractionDigits: 6,
-            showPlus: !unsignedLiquidityAmount && value1Positive
+            showPlus: !unsignedLiquidityAmount && (amount1Sign ? amount1Sign > 0 : value1Positive)
           })
-        : normalizeSwapAmount(row.value1, asset1Name, { unsigned: unsignedLiquidityAmount })
+        : normalizeSwapAmount(row.value1, asset1Name, { unsigned: unsignedLiquidityAmount, sign: amount1Sign })
       const secondAmount = row.amount2
-        ? amountFormatNode(unsignedLiquidityAmount ? unsignedAmount(row.amount2) : signedSwapAmount(row.amount2, row.value2), {
+        ? amountFormatNode(unsignedLiquidityAmount ? unsignedAmount(row.amount2) : signedSwapAmount(row.amount2, amount2Sign || row.value2), {
             short: true,
             maxFractionDigits: 6,
-            showPlus: !unsignedLiquidityAmount && value2Positive
+            showPlus: !unsignedLiquidityAmount && (amount2Sign ? amount2Sign > 0 : value2Positive)
           })
-        : normalizeSwapAmount(row.value2, asset2Name, { unsigned: unsignedLiquidityAmount })
+        : normalizeSwapAmount(row.value2, asset2Name, { unsigned: unsignedLiquidityAmount, sign: amount2Sign })
 
       return (
         <HomeTeaseRow
