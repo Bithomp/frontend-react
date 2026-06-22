@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 import dynamic from 'next/dynamic'
+import { useTranslation } from 'next-i18next'
 
 import { useTheme } from '../Layout/ThemeContext'
+import { normalizeLocale } from '../../utils'
 import { niceNumber, shortNiceNumber } from '../../utils/format'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
@@ -31,7 +33,9 @@ const formatSigned = (value) => {
 }
 
 export default function AmmPoolsChart({ rows }) {
+  const { i18n } = useTranslation()
   const { theme } = useTheme()
+  const dateLocale = normalizeLocale(i18n.language)
   const chartRows = useMemo(
     () =>
       Array.isArray(rows)
@@ -103,7 +107,7 @@ export default function AmmPoolsChart({ rows }) {
         theme,
         x: {
           formatter: (value) =>
-            new Date(value).toLocaleDateString(undefined, {
+            new Date(value).toLocaleDateString(dateLocale, {
               day: 'numeric',
               month: 'short',
               year: 'numeric'
@@ -143,7 +147,7 @@ export default function AmmPoolsChart({ rows }) {
         }
       ]
     }),
-    [gridColor, textColor, theme]
+    [dateLocale, gridColor, textColor, theme]
   )
 
   if (!chartRows.length) return null

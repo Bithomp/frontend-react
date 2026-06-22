@@ -269,14 +269,17 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
   const { seriesData, setInitialData } = useBucketedSeries(throttledLiveRate, chartPeriod)
 
   // “detailed” tooltip formatter for 1D/1W when available
-  const detailedFormatter = useCallback((val) => {
-    return new Date(val).toLocaleDateString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
-    })
-  }, [])
+  const detailedFormatter = useCallback(
+    (val) => {
+      return new Date(val).toLocaleDateString(chartLang, {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      })
+    },
+    [chartLang]
+  )
 
   // x-axis min/max depending on selected range
   const range = useMemo(() => {
@@ -359,7 +362,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
       tooltip: {
         x: {
           formatter: (val) =>
-            new Date(val).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+            new Date(val).toLocaleDateString(chartLang, { year: 'numeric', month: 'short', day: 'numeric' })
         },
         y: { formatter: (val) => String(val) },
         theme
@@ -462,7 +465,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
               formatter: range.detailed
                 ? (val) => detailedFormatter(val)
                 : (val) =>
-                    new Date(val).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+                    new Date(val).toLocaleDateString(chartLang, { year: 'numeric', month: 'short', day: 'numeric' })
             },
             y: { formatter: (val) => Number(val).toFixed(digitsAfterDot) + ' ' + currency.toUpperCase() },
             theme

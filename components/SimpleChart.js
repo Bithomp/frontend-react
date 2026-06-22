@@ -159,7 +159,7 @@ export default function PriceChart({ data, combined, currency }) {
       x: {
         formatter: (val) => {
           if (timeDifference <= oneHour) {
-            return new Date(val).toLocaleDateString(undefined, {
+            return new Date(val).toLocaleDateString(chartLang, {
               hour: 'numeric',
               minute: 'numeric'
             })
@@ -168,12 +168,12 @@ export default function PriceChart({ data, combined, currency }) {
             const start = new Date(val).setMinutes(0)
             const end = new Date(val).setMilliseconds(new Date(val).getMilliseconds() + 1)
             return (
-              new Date(start).toLocaleTimeString(undefined, {
+              new Date(start).toLocaleTimeString(chartLang, {
                 hour: 'numeric',
                 minute: '2-digit'
               }) +
               ' - ' +
-              new Date(end).toLocaleTimeString(undefined, {
+              new Date(end).toLocaleTimeString(chartLang, {
                 hour: 'numeric',
                 minute: '2-digit'
               })

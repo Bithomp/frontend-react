@@ -6,7 +6,7 @@ import { IoExpandOutline, IoInformationCircleOutline } from 'react-icons/io5'
 
 import Dialog from '../UI/Dialog'
 import { useTheme } from '../Layout/ThemeContext'
-import { nativeCurrency, xahauNetwork } from '../../utils'
+import { nativeCurrency, normalizeLocale, xahauNetwork } from '../../utils'
 import { niceCurrency, niceNumber, shortNiceNumber } from '../../utils/format'
 import {
   tokenChartDialog,
@@ -185,12 +185,12 @@ const integerTickAmount = (range, fallback) => {
   return Math.max(1, Math.min(fallback, Math.ceil(max - min)))
 }
 
-const chartDate = (value) => {
+const chartDate = (value, locale = 'en') => {
   const timestamp = Number(value)
   const date = Number.isFinite(timestamp) ? new Date(timestamp) : new Date(value)
   if (!Number.isFinite(date.getTime())) return ''
 
-  return date.toLocaleDateString(undefined, {
+  return date.toLocaleDateString(normalizeLocale(locale), {
     timeZone: 'UTC',
     month: 'short',
     day: 'numeric'
@@ -225,6 +225,7 @@ const tooltipRow = ({ color, label, value, bold = false, formatter }) =>
   </div>`
 
 function TokenChart({ group, expanded = false }) {
+  const { i18n } = useTranslation()
   const { theme } = useTheme()
   const textColor = theme === 'light' ? '#2f3337' : '#f4f4f4'
   const gridColor =
@@ -347,7 +348,7 @@ function TokenChart({ group, expanded = false }) {
             : { enabled: false },
           ...(group.tooltipCustom ? { custom: group.tooltipCustom } : {}),
           x: {
-            formatter: chartDate
+            formatter: (value) => chartDate(value, i18n.language)
           },
           y: {
             formatter: group.tooltipFormatter
@@ -362,7 +363,7 @@ function TokenChart({ group, expanded = false }) {
             datetimeUTC: true,
             style: { colors: labelColor },
             datetimeFormatter: { day: 'd MMM' },
-            formatter: (value, timestamp) => chartDate(timestamp ?? value)
+            formatter: (value, timestamp) => chartDate(timestamp ?? value, i18n.language)
           },
           axisBorder: { color: gridColor },
           axisTicks: { color: gridColor },
@@ -371,7 +372,7 @@ function TokenChart({ group, expanded = false }) {
         yaxis
       }
     },
-    [expanded, gridColor, group, labelColor, textColor]
+    [expanded, gridColor, group, i18n.language, labelColor, textColor]
   )
 
   return (

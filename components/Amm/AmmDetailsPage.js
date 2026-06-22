@@ -16,7 +16,7 @@ import AmmTabs from '../Tabs/AmmTabs'
 import HomeTeaser, { HomeTeaseRow } from '../Home/HomeTeaser'
 import TokenCharts from '../Token/TokenCharts'
 import { axiosServer, passHeaders } from '../../utils/axios'
-import { addQueryParams, isAddressValid, nativeCurrency, removeQueryParams, tokenImageSrc } from '../../utils'
+import { addQueryParams, isAddressValid, nativeCurrency, normalizeLocale, removeQueryParams, tokenImageSrc } from '../../utils'
 import { fetchHistoricalRate, fetchHistoricalTokenFiatRate } from '../../utils/common'
 import {
   AddressWithIconFilled,
@@ -639,10 +639,10 @@ const chartTimestamp = (value) => {
   return Number.isFinite(number) ? number : null
 }
 
-const chartDateText = (value, options = { month: 'short', day: 'numeric' }) => {
+const chartDateText = (value, options = { month: 'short', day: 'numeric' }, locale = 'en') => {
   const timestamp = chartTimestamp(value)
   if (!timestamp) return ''
-  return new Date(timestamp).toLocaleDateString([], options)
+  return new Date(timestamp).toLocaleDateString(normalizeLocale(locale), options)
 }
 
 const chartRowTimestamp = (row) => Number(row?.time || row?.timestamp || 0)
@@ -710,7 +710,8 @@ function AmmAssetPairIcons({ amount1, amount2 }) {
 }
 
 function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false }) {
-  const { t } = useTranslation('amm')
+  const { t, i18n } = useTranslation('amm')
+  const dateLocale = normalizeLocale(i18n.language)
   const chartRows = useMemo(() => (Array.isArray(rows) ? rows : []), [rows])
   const hasData = chartRows.length > 1 && series.some((item) => item.data.some((point) => chartValue(point) !== null))
 
@@ -763,7 +764,7 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
             hideOverlappingLabels: true,
             style: { fontSize: '10px' },
             formatter: (value, timestamp) => {
-              return chartDateText(timestamp ?? value)
+              return chartDateText(timestamp ?? value, undefined, dateLocale)
             }
           },
           axisTicks: { show: false },
@@ -786,12 +787,12 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
           intersect: false,
           x: {
             show: true,
-            formatter: (value) => chartDateText(value, { year: 'numeric', month: 'short', day: 'numeric' })
+            formatter: (value) => chartDateText(value, { year: 'numeric', month: 'short', day: 'numeric' }, dateLocale)
           }
         }
       }
     },
-    [dualYAxis, series, type]
+    [dateLocale, dualYAxis, series, type]
   )
 
   return (
