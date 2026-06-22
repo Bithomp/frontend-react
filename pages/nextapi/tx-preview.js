@@ -15,6 +15,44 @@ const clampText = (value, maxLength) => {
   return text.slice(0, Math.max(0, maxLength - 1)).trimEnd() + '…'
 }
 
+const previewSubtitleLines = (value, maxLength) => {
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (!text) return []
+
+  const fromPrefix = 'From '
+  const toSeparator = ' to '
+
+  if (text.startsWith(fromPrefix)) {
+    const toIndex = text.indexOf(toSeparator, fromPrefix.length)
+
+    if (toIndex !== -1) {
+      const source = text.slice(fromPrefix.length, toIndex).trim()
+      const destination = text.slice(toIndex + toSeparator.length).trim()
+
+      return [
+        clampText(`From ${source}`, maxLength),
+        clampText(`to ${destination}`, maxLength)
+      ].filter(Boolean)
+    }
+  }
+
+  return [clampText(text, maxLength)].filter(Boolean)
+}
+
+const renderSvgTextLines = ({ lines, x, y, fontSize, fontWeight, fill, lineHeight }) => {
+  if (!lines.length) return ''
+  const textStyle = `font-family="Arial, Helvetica, sans-serif" font-size="${fontSize}" font-weight="${fontWeight}" fill="${fill}"`
+
+  return lines
+    .map(
+      (line, index) =>
+        `<text x="${x}" y="${y + index * lineHeight}" ${textStyle}>${escapeSvg(line)}</text>`
+    )
+    .join('\n')
+}
+
 const txStyle = (type) => {
   if (type === 'Payment') return { accent: '#00bcd4', dark: '#003d47' }
   if (type === 'TrustSet') return { accent: '#8e44ad', dark: '#321243' }
@@ -91,11 +129,11 @@ export async function getServerSideProps({ query, res }) {
   const wideTextX = hasPreviewImage ? 338 : 86
   const rawTitle = clampText(query.title || getTransactionTypeLabel(type), square ? 30 : 42)
   const rawAmount = clampText(query.amount, square ? 38 : 66)
-  const rawSubtitle = clampText(query.subtitle, square ? 42 : 70)
+  const rawSubtitleLines = previewSubtitleLines(query.subtitle, square ? 42 : 70)
+  const longestSubtitleLength = rawSubtitleLines.reduce((length, line) => Math.max(length, line.length), 0)
   const rawDetail = clampText(query.detail || `${ledgerName} transaction`, square ? 48 : 92)
   const titleText = escapeSvg(rawTitle)
   const amountText = escapeSvg(rawAmount)
-  const subtitleText = escapeSvg(rawSubtitle)
   const detailText = escapeSvg(rawDetail)
   const style = txStyle(type)
   const statusText = status === 'failed' ? 'Failed' : status === 'pending' ? 'Pending' : 'Validated'
@@ -112,10 +150,12 @@ export async function getServerSideProps({ query, res }) {
         : '#66e3bb'
   const squareTitleSize = rawTitle.length > 24 ? 46 : 56
   const squareAmountSize = rawAmount.length > 28 ? 28 : 34
-  const squareSubtitleSize = rawSubtitle.length > 34 ? 26 : 30
+  const squareSubtitleSize = longestSubtitleLength > 34 ? 26 : 30
   const wideTitleSize = rawTitle.length > 32 ? 46 : rawTitle.length > 24 ? 54 : 64
   const wideAmountSize = rawAmount.length > 48 ? 30 : 38
-  const wideSubtitleSize = rawSubtitle.length > 54 ? 28 : 34
+  const wideSubtitleSize = longestSubtitleLength > 54 ? 28 : 34
+  const squareSubtitleY = amountText ? 456 : 404
+  const wideSubtitleY = amountText ? 368 : 308
   const theme = xahauNetwork
     ? { accent: '#ffcc53', dark: '#0E233F', background: '#061322', iconBackground: '#0E233F' }
     : { accent: style.accent, dark: style.dark, background: '#071416', iconBackground: '#0d2226' }
@@ -172,7 +212,15 @@ export async function getServerSideProps({ query, res }) {
       <text x="${squareTextX}" y="270" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
       <text x="${squareTextX}" y="344" font-family="Arial, Helvetica, sans-serif" font-size="${squareTitleSize}" font-weight="800" fill="#ffffff">${titleText}</text>
       ${amountText ? `<text x="${squareTextX}" y="400" font-family="Arial, Helvetica, sans-serif" font-size="${squareAmountSize}" font-weight="700" fill="#ffffff">${amountText}</text>` : ''}
-      ${subtitleText ? `<text x="${squareTextX}" y="${amountText ? '456' : '404'}" font-family="Arial, Helvetica, sans-serif" font-size="${squareSubtitleSize}" font-weight="700" fill="#d7e6e7">${subtitleText}</text>` : ''}
+      ${renderSvgTextLines({
+        lines: rawSubtitleLines,
+        x: squareTextX,
+        y: squareSubtitleY,
+        fontSize: squareSubtitleSize,
+        fontWeight: 700,
+        fill: '#d7e6e7',
+        lineHeight: squareSubtitleSize + 10
+      })}
       <text x="65" y="535" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#b7cacc">${detailText}</text>
       <rect x="65" y="568" width="500" height="2" fill="${theme.accent}" opacity="0.42"/>
     </svg>
@@ -192,7 +240,15 @@ export async function getServerSideProps({ query, res }) {
       <text x="${wideTextX}" y="142" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="${statusColor}">${escapeSvg(statusText)}</text>
       <text x="${wideTextX}" y="232" font-family="Arial, Helvetica, sans-serif" font-size="${wideTitleSize}" font-weight="800" fill="#ffffff">${titleText}</text>
       ${amountText ? `<text x="${wideTextX}" y="304" font-family="Arial, Helvetica, sans-serif" font-size="${wideAmountSize}" font-weight="700" fill="#ffffff">${amountText}</text>` : ''}
-      ${subtitleText ? `<text x="${wideTextX}" y="${amountText ? '368' : '308'}" font-family="Arial, Helvetica, sans-serif" font-size="${wideSubtitleSize}" font-weight="700" fill="#d7e6e7">${subtitleText}</text>` : ''}
+      ${renderSvgTextLines({
+        lines: rawSubtitleLines,
+        x: wideTextX,
+        y: wideSubtitleY,
+        fontSize: wideSubtitleSize,
+        fontWeight: 700,
+        fill: '#d7e6e7',
+        lineHeight: wideSubtitleSize + 12
+      })}
       <text x="86" y="520" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#b7cacc">${detailText}</text>
       <rect x="86" y="556" width="1028" height="2" fill="${theme.accent}" opacity="0.42"/>
     </svg>
