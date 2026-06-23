@@ -383,7 +383,9 @@
       "owned": "Dimiliki",
       "sold": "Terjual",
       "minted": "Dicetak",
-      "burned": "Dibakar"
+      "burned": "Dibakar",
+      "active": "Aktif",
+      "expired": "Kedaluwarsa"
     },
     "tooltips": {
       "login-required": "Hanya pengguna yang masuk yang dapat melakukannya",

@@ -383,7 +383,9 @@
       "owned": "Propios",
       "sold": "Vendidos",
       "minted": "Acuñados",
-      "burned": "Quemados"
+      "burned": "Quemados",
+      "active": "Activos",
+      "expired": "Expirados"
     },
     "tooltips": {
       "login-required": "Solo los usuarios conectados pueden hacerlo",

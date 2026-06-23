@@ -378,7 +378,9 @@
       "owned": "Owned",
       "sold": "Sold",
       "minted": "Minted",
-      "burned": "Burned"
+      "burned": "Burned",
+      "active": "Active",
+      "expired": "Expired"
     },
     "tooltips": {
       "login-required": "Only logged in users can do it",

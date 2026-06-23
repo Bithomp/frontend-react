@@ -383,7 +383,9 @@
       "owned": "已拥有",
       "sold": "已售出",
       "minted": "已铸造",
-      "burned": "已销毁"
+      "burned": "已销毁",
+      "active": "有效",
+      "expired": "已过期"
     },
     "tooltips": {
       "login-required": "只有已登录用户可以执行此操作",

@@ -10,10 +10,11 @@ import {
   niceNumber,
   niceCurrency,
   fullNiceNumber,
+  fullDateAndTime,
   amountFormat,
   addressUsernameOrServiceLink
 } from '../../../utils/format'
-import { avatarSrc, nativeCurrency, useWidth } from '../../../utils'
+import { avatarSrc, nativeCurrency, timestampExpired, useWidth } from '../../../utils'
 import { divide, multiply } from '../../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
 
@@ -148,6 +149,7 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
 
   const orderRows = displayedOffers.map((offer, i) => {
     const sell = offer.flags?.sell
+    const isExpired = offer.Expiration ? timestampExpired(offer.Expiration, 'ripple') : false
     return (
       <tr key={offer.index || i}>
         <td className="center" style={{ width: 30 }}>
@@ -162,6 +164,13 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
           <span className="bold">
             {amountFormat(sell ? offer.TakerPays : offer.TakerGets, { precise: 'nice', icon: true })}
           </span>
+          {offer.Expiration && (
+            <div>
+              <span className={isExpired ? 'red' : 'orange'}>
+                {isExpired ? 'Expired' : 'Expires'}: {fullDateAndTime(offer.Expiration, 'ripple')}
+              </span>
+            </div>
+          )}
         </td>
         {sell ? (
           <td className="right">

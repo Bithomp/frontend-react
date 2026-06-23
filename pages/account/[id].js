@@ -54,6 +54,7 @@ const AMM_ACCOUNT_OBJECTS_FETCH_LIMIT = 2
 const AMM_ACCOUNT_OBJECTS_MAX_PAGES = 1
 const OBJECT_PREVIEW_LIMIT = 5
 const OBJECT_LOAD_MORE_STEP = 5
+const DEX_ORDERS_LOAD_MORE_STEP = 10
 const DOMAIN_FAVICON_SIZE = 16
 const DOMAIN_FAVICON_CDN_SIZE = DOMAIN_FAVICON_SIZE * 2
 
@@ -587,13 +588,20 @@ const hookNames = {
 
 const hookNameText = (hookHash) => {
   if (!hookHash) return '-'
-  return hookNames[hookHash] || shortHash(hookHash, 16)
+  return hookNames[hookHash] || shortHash(hookHash)
 }
 
 const mptId = (node) => node?.MPTokenIssuanceID || node?.mpt_issuance_id || null
 
 const issuedTokenSpotPrice = (token) => Number(token?.priceNativeCurrencySpot || 0)
 const issuedTokenValueNative = (token) => Number(token?.supply || 0) * issuedTokenSpotPrice(token)
+const offerExpirationValue = (offer) => offer?.Expiration ?? null
+const offerSequenceValue = (offer) => offer?.Sequence ?? null
+const isCancelableOfferSequence = (sequence) => Number(sequence) > 0
+const isOfferExpired = (offer) => {
+  const expiration = offerExpirationValue(offer)
+  return expiration ? timestampExpired(expiration, 'ripple') : false
+}
 
 const RESERVE_OBJECT_LABEL_KEYS = {
   RippleState: 'reserve.trustlines',
@@ -862,6 +870,7 @@ export default function Account({
   const [checksTab, setChecksTab] = useState('received')
   const [escrowsTab, setEscrowsTab] = useState('received')
   const [paychannelsTab, setPaychannelsTab] = useState('incoming')
+  const [dexOrdersTab, setDexOrdersTab] = useState('active')
   const [dexOrdersDisplayLimit, setDexOrdersDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
   const [checksDisplayLimit, setChecksDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
   const [escrowsDisplayLimit, setEscrowsDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
@@ -1760,10 +1769,17 @@ export default function Account({
     : activePaychannelsTab === 'outgoing'
       ? ta('sections.outgoing-paychannels')
       : ta('sections.incoming-paychannels')
+  const activeDexOrders = dexOrders.filter((offer) => !isOfferExpired(offer))
+  const expiredDexOrders = dexOrders.filter(isOfferExpired)
+  const hasActiveDexOrders = activeDexOrders.length > 0
+  const hasExpiredDexOrders = expiredDexOrders.length > 0
+  const showDexOrdersTabs = hasActiveDexOrders && hasExpiredDexOrders
+  const activeDexOrdersTab = showDexOrdersTabs ? dexOrdersTab : hasActiveDexOrders ? 'active' : 'expired'
+  const activeDexOrdersList = activeDexOrdersTab === 'expired' ? expiredDexOrders : activeDexOrders
   const hasDexOrders = dexOrders.length > 0
-  const dexOrdersPreview = dexOrders.slice(0, dexOrdersDisplayLimit)
-  const dexOrdersShowMoreAvailable = dexOrders.length > dexOrdersPreview.length
-  const dexOrdersRemainingCount = Math.max(dexOrders.length - dexOrdersPreview.length, 0)
+  const dexOrdersPreview = activeDexOrdersList.slice(0, dexOrdersDisplayLimit)
+  const dexOrdersShowMoreAvailable = activeDexOrdersList.length > dexOrdersPreview.length
+  const dexOrdersRemainingCount = Math.max(activeDexOrdersList.length - dexOrdersPreview.length, 0)
   const showDexOrdersFewerButton = dexOrdersDisplayLimit > OBJECT_PREVIEW_LIMIT
   const showDexOrdersControlsVisible = dexOrdersShowMoreAvailable || showDexOrdersFewerButton
   const hasDepositPreauthAccounts = depositPreauthAccounts.length > 0
@@ -2329,6 +2345,7 @@ export default function Account({
     nftOffersTabTouchedRef.current = false
     setNftOffersTab('owned')
     setTokenTab('all')
+    setDexOrdersTab('active')
     setNftDisplayLimit(NFT_INITIAL_LIMIT)
     setNftMarkers({ owned: null, minted: null, burned: null, sold: null })
     setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
@@ -2471,7 +2488,15 @@ export default function Account({
   useEffect(() => {
     setExpandedDexOrderKey(null)
     setDexOrdersDisplayLimit(OBJECT_PREVIEW_LIMIT)
-  }, [data?.address, effectiveLedgerTimestamp])
+  }, [dexOrdersTab, data?.address, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    if (dexOrdersTab === 'expired' && !hasExpiredDexOrders && hasActiveDexOrders) {
+      setDexOrdersTab('active')
+    } else if (dexOrdersTab === 'active' && !hasActiveDexOrders && hasExpiredDexOrders) {
+      setDexOrdersTab('expired')
+    }
+  }, [dexOrdersTab, hasActiveDexOrders, hasExpiredDexOrders])
 
   useEffect(() => {
     setExpandedNftCardKey(null)
@@ -2630,7 +2655,7 @@ export default function Account({
     const accountObjectWithDexOrders =
       accountObjects
         .filter((node) => node.LedgerEntryType === 'Offer' && node.Account === data.address)
-        .sort((a, b) => Number(b.Sequence || 0) - Number(a.Sequence || 0)) || []
+        .sort((a, b) => Number(offerSequenceValue(b) || 0) - Number(offerSequenceValue(a) || 0)) || []
     setDexOrders(accountObjectWithDexOrders)
 
     const rippleStateList = isGateway
@@ -5545,11 +5570,7 @@ export default function Account({
                     )}`
                   : null
               const lpAmmId = isLpToken ? ammCurrencyDetailsId(token.Balance?.currencyDetails) : null
-              const canOpenAmmAction =
-                isLpToken &&
-                !!setSignRequest &&
-                !effectiveLedgerTimestamp &&
-                !!lpAmmId
+              const canOpenAmmAction = isLpToken && !!setSignRequest && !effectiveLedgerTimestamp && !!lpAmmId
               const ammDepositActionKey = `${tokenUniqueKey}-ammDeposit`
               const ammWithdrawActionKey = `${tokenUniqueKey}-ammWithdraw`
               const ammActionBusy = !!ammActionLoadingKey
@@ -5692,7 +5713,9 @@ export default function Account({
                                       <span className="amount-with-fiat" onClick={(event) => event.stopPropagation()}>
                                         <span className="no-brake">
                                           <TokenImage token={asset1} />
-                                          <span className="bold">{amountFormat(amount1Raw, { noCurrency: true, short: true })}</span>{' '}
+                                          <span className="bold">
+                                            {amountFormat(amount1Raw, { noCurrency: true, short: true })}
+                                          </span>{' '}
                                           <LinkToken token={asset1} />
                                         </span>
                                         {amount1FiatText ? (
@@ -5707,7 +5730,9 @@ export default function Account({
                                       <span className="amount-with-fiat" onClick={(event) => event.stopPropagation()}>
                                         <span className="no-brake">
                                           <TokenImage token={asset2} />
-                                          <span className="bold">{amountFormat(amount2Raw, { noCurrency: true, short: true })}</span>{' '}
+                                          <span className="bold">
+                                            {amountFormat(amount2Raw, { noCurrency: true, short: true })}
+                                          </span>{' '}
                                           <LinkToken token={asset2} />
                                         </span>
                                         {amount2FiatText ? (
@@ -9101,7 +9126,7 @@ export default function Account({
               <>
                 <div className="section-header-row object-section-header-row">
                   <div className="section-title object-section-title">
-                    {ta('sections.dex-orders')} <span className="object-title-count">{dexOrders.length}</span>
+                    {ta('sections.dex-orders')} <span className="object-title-count">{activeDexOrdersList.length}</span>
                   </div>
                   {data?.address && (
                     <Link className="section-link" href={`/account/${data.address}/dex`}>
@@ -9110,11 +9135,37 @@ export default function Account({
                   )}
                 </div>
 
+                {showDexOrdersTabs && (
+                  <div className="object-tab-row object-tab-row-outside">
+                    <div className="object-tab-switch">
+                      <button
+                        type="button"
+                        className={`object-tab-btn ${activeDexOrdersTab === 'active' ? 'active' : ''}`}
+                        onClick={() => setDexOrdersTab('active')}
+                      >
+                        {ta('tabs.active')} ({activeDexOrders.length})
+                      </button>
+                      <button
+                        type="button"
+                        className={`object-tab-btn ${activeDexOrdersTab === 'expired' ? 'active' : ''}`}
+                        onClick={() => setDexOrdersTab('expired')}
+                      >
+                        {ta('tabs.expired')} ({expiredDexOrders.length})
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="cards-list">
                   {dexOrdersPreview.map((offer, index) => {
-                    const orderKey = `${offer?.index || 'offer'}-${index}`
+                    const orderKey = `${activeDexOrdersTab}-${offer?.index || 'offer'}-${index}`
                     const isExpanded = expandedDexOrderKey === orderKey
                     const isSell = !!offer?.flags?.sell
+                    const offerSequence = offerSequenceValue(offer)
+                    const hasCancelableSequence = isCancelableOfferSequence(offerSequence)
+                    const expirationValue = offerExpirationValue(offer)
+                    const isExpired = isOfferExpired(offer)
+                    const collapsedOfferId = offer?.index ? shortHash(offer.index) : '-'
                     const baseAmount = isSell ? offer?.TakerGets : offer?.TakerPays
                     const quoteAmount = isSell ? offer?.TakerPays : offer?.TakerGets
                     const collapsedMainLabel = isSell ? ta('tabs.selling') : ta('tabs.buying')
@@ -9152,6 +9203,16 @@ export default function Account({
                       : offer?.PreviousTxnLgrSeq
                         ? `Lgr ${offer.PreviousTxnLgrSeq}`
                         : '-'
+                    const expirationRelativeText = expirationValue
+                      ? timeFromNow(expirationValue, i18n, 'ripple')
+                      : ta('states.does-not-expire')
+                    const expirationExactText = expirationValue ? fullDateAndTime(expirationValue, 'ripple') : null
+                    const offerStatusText = isExpired ? ta('tabs.expired') : offerDateText
+                    const canCancelDexOrder =
+                      !!setSignRequest &&
+                      !effectiveLedgerTimestamp &&
+                      hasCancelableSequence &&
+                      offer?.Account === account?.address
 
                     return (
                       <div
@@ -9165,7 +9226,7 @@ export default function Account({
                               <span className="escrow-type-main">
                                 {collapsedMainLabel} {collapsedPrimary}
                               </span>
-                              <span className="escrow-time-top">{offerDateText}</span>
+                              <span className={`escrow-time-top ${isExpired ? 'red' : ''}`}>{offerStatusText}</span>
                             </div>
                             <div className="tx-collapsed-meta">
                               <span className="tx-accountset-inline">
@@ -9174,7 +9235,9 @@ export default function Account({
                             </div>
                           </div>
                           <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
-                            <span className="tx-inline-change grey">#{offer?.Sequence || '-'}</span>
+                            <span className="tx-inline-change grey">
+                              {hasCancelableSequence ? `#${offerSequence}` : collapsedOfferId}
+                            </span>
                           </div>
                         </div>
 
@@ -9207,8 +9270,17 @@ export default function Account({
                               <span>{rateText}</span>
                             </div>
                             <div className="detail-row">
+                              <span>{ta('labels.expiration')}:</span>
+                              <span className={isExpired ? 'red' : ''}>
+                                {isExpired && <>{ta('tabs.expired')} (</>}
+                                {expirationRelativeText}
+                                {isExpired && ')'}
+                                {expirationExactText && <> ({expirationExactText})</>}
+                              </span>
+                            </div>
+                            <div className="detail-row">
                               <span>{ta('labels.sequence')}:</span>
-                              <span>{offer?.Sequence || '-'}</span>
+                              <span>{hasCancelableSequence ? offerSequence : ta('states.not-set')}</span>
                             </div>
                             <div className="detail-row">
                               <span>{ta('labels.offer-id')}:</span>
@@ -9232,46 +9304,49 @@ export default function Account({
                               </span>
                             </div>
 
-                            {!effectiveLedgerTimestamp && offer?.Sequence && (
-                              <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                {(() => {
-                                  const canCancel = !!setSignRequest && offer?.Account === account?.address
-                                  const disabledCancelDexOrderTooltip = (() => {
-                                    if (canCancel) return ''
-                                    if (!setSignRequest) return ta('tooltips.connect-cancel-dex-order')
-                                    if (!account?.address) return ta('tooltips.connect-cancel-dex-order')
-                                    if (!offer?.Account) return ta('tooltips.offer-owner-unknown')
-                                    if (offer.Account !== account.address) return ta('tooltips.only-offer-owner-cancel')
-                                    return ta('tooltips.dex-order-cannot-cancel')
-                                  })()
-                                  return (
-                                    <span className={disabledCancelDexOrderTooltip ? 'tooltip' : ''}>
-                                      <button
-                                        type="button"
-                                        className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
-                                        disabled={!canCancel}
-                                        onClick={() => {
-                                          if (!canCancel) return
-                                          setSignRequest({
-                                            request: {
-                                              Account: offer.Account,
-                                              TransactionType: 'OfferCancel',
-                                              OfferSequence: offer.Sequence
-                                            }
-                                          })
-                                        }}
-                                        title={ta('actions.cancel')}
-                                      >
-                                        <MdMoneyOff /> {ta('actions.cancel')}
-                                      </button>
-                                      {!!disabledCancelDexOrderTooltip && (
-                                        <span className="tooltiptext left">{disabledCancelDexOrderTooltip}</span>
-                                      )}
-                                    </span>
-                                  )
-                                })()}
-                              </div>
-                            )}
+                            {!effectiveLedgerTimestamp &&
+                              hasCancelableSequence &&
+                              (!isExpired || canCancelDexOrder) && (
+                                <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                  {(() => {
+                                    const canCancel = canCancelDexOrder
+                                    const disabledCancelDexOrderTooltip = (() => {
+                                      if (canCancel) return ''
+                                      if (!setSignRequest) return ta('tooltips.connect-cancel-dex-order')
+                                      if (!account?.address) return ta('tooltips.connect-cancel-dex-order')
+                                      if (!offer?.Account) return ta('tooltips.offer-owner-unknown')
+                                      if (offer.Account !== account.address)
+                                        return ta('tooltips.only-offer-owner-cancel')
+                                      return ta('tooltips.dex-order-cannot-cancel')
+                                    })()
+                                    return (
+                                      <span className={disabledCancelDexOrderTooltip ? 'tooltip' : ''}>
+                                        <button
+                                          type="button"
+                                          className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                          disabled={!canCancel}
+                                          onClick={() => {
+                                            if (!canCancel) return
+                                            setSignRequest({
+                                              request: {
+                                                Account: offer.Account,
+                                                TransactionType: 'OfferCancel',
+                                                OfferSequence: offerSequence
+                                              }
+                                            })
+                                          }}
+                                          title={ta('actions.cancel')}
+                                        >
+                                          <MdMoneyOff /> {ta('actions.cancel')}
+                                        </button>
+                                        {!!disabledCancelDexOrderTooltip && (
+                                          <span className="tooltiptext left">{disabledCancelDexOrderTooltip}</span>
+                                        )}
+                                      </span>
+                                    )
+                                  })()}
+                                </div>
+                              )}
                           </div>
                         )}
                       </div>
@@ -9286,12 +9361,12 @@ export default function Account({
                         className="asset-compact-toggle"
                         onClick={() =>
                           setDexOrdersDisplayLimit((currentLimit) =>
-                            Math.min(dexOrders.length, currentLimit + OBJECT_LOAD_MORE_STEP)
+                            Math.min(activeDexOrdersList.length, currentLimit + DEX_ORDERS_LOAD_MORE_STEP)
                           )
                         }
                       >
                         {ta('actions.show-more-dex-orders', {
-                          count: Math.min(OBJECT_LOAD_MORE_STEP, dexOrdersRemainingCount)
+                          count: Math.min(DEX_ORDERS_LOAD_MORE_STEP, dexOrdersRemainingCount)
                         })}
                       </button>
                     )}
@@ -9299,9 +9374,9 @@ export default function Account({
                       <button
                         type="button"
                         className="asset-compact-toggle"
-                        onClick={() => setDexOrdersDisplayLimit(dexOrders.length)}
+                        onClick={() => setDexOrdersDisplayLimit(activeDexOrdersList.length)}
                       >
-                        {ta('actions.show-all-dex-orders')}
+                        {ta('actions.show-all-dex-orders')} (+{dexOrdersRemainingCount})
                       </button>
                     )}
                     {showDexOrdersFewerButton && (

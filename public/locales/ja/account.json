@@ -383,7 +383,9 @@
       "owned": "所有中",
       "sold": "販売済み",
       "minted": "ミント済み",
-      "burned": "バーン済み"
+      "burned": "バーン済み",
+      "active": "有効",
+      "expired": "期限切れ"
     },
     "tooltips": {
       "login-required": "ログイン中のユーザーのみ実行できます",
