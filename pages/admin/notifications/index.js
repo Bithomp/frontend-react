@@ -321,12 +321,6 @@ const errorText = (error, fallback, t) => {
 }
 
 const listenerConnectionId = (listener) => listener?.channel?.id || listener?.partnerConnectionID || ''
-const isBalanceChangeEvent = (event) => normalizeNotificationEvent(event) === NOTIFICATION_EVENT_TYPES.BALANCE_CHANGE
-const channelSupportsEvent = (channel, event) => {
-  if (!channel) return false
-  if (isBalanceChangeEvent(event)) return channel.type === NOTIFICATION_CHANNEL_TYPES.EMAIL
-  return channel.type !== NOTIFICATION_CHANNEL_TYPES.EMAIL
-}
 
 const isFilled = (value) => value !== undefined && value !== null && String(value).trim() !== ''
 
@@ -584,13 +578,11 @@ export default function Notifications({
   const selectedGuide = useMemo(() => setupGuides.find((guide) => guide.type === channelType), [channelType])
   const ruleChannelOptions = useMemo(
     () =>
-      channels
-        .filter((channel) => channelSupportsEvent(channel, ruleFormData.event))
-        .map((channel) => ({
-          value: channel.id,
-          label: channel.name || notificationChannelLabel(channel.type, t)
-        })),
-    [channels, ruleFormData.event, t]
+      channels.map((channel) => ({
+        value: channel.id,
+        label: channel.name || notificationChannelLabel(channel.type, t)
+      })),
+    [channels, t]
   )
   const selectedRuleChannelOption = useMemo(
     () => ruleChannelOptions.find((option) => String(option.value) === String(ruleFormData.connectionId)) || null,
@@ -681,7 +673,7 @@ export default function Notifications({
     setFormMessage('')
   }
 
-  const firstChannelForEvent = (event) => channels.find((channel) => channelSupportsEvent(channel, event))?.id || ''
+  const firstChannelId = () => channels[0]?.id || ''
 
   const openAddRule = () => {
     if (notificationLimitsReady && ruleLimitReached) {
@@ -694,7 +686,7 @@ export default function Notifications({
     setEditingRule(null)
     setRuleFormData({
       ...initialRuleForm,
-      connectionId: firstChannelForEvent(event),
+      connectionId: firstChannelId(),
       event,
       name: defaultRuleName(t, rules.length + 1)
     })
@@ -813,12 +805,8 @@ export default function Notifications({
       message = `${t('notifications.rule-limit-reached')} ${alertPlanLimitText(alertPlan, t)}`
     }
     const selectedRuleChannel = channels.find((channel) => String(channel.id) === String(ruleFormData.connectionId))
-    if (!ruleFormData.connectionId) {
+    if (!ruleFormData.connectionId || !selectedRuleChannel) {
       errors.connectionId = t('notifications.errors.choose-channel')
-    } else if (!channelSupportsEvent(selectedRuleChannel, ruleFormData.event)) {
-      errors.connectionId = isBalanceChangeEvent(ruleFormData.event)
-        ? t('notifications.errors.balance-email-only')
-        : t('notifications.errors.email-balance-only')
     }
     if (!ruleFormData.name?.trim()) {
       errors.name = t('notifications.errors.rule-name-required')
@@ -1394,15 +1382,9 @@ export default function Notifications({
                     className={`notification-rule-event-button${active ? ' active' : ''}`}
                     key={option.value}
                     onClick={() => {
-                      const connectionId = channelSupportsEvent(
-                        channels.find((channel) => String(channel.id) === String(ruleFormData.connectionId)),
-                        option.value
-                      )
-                        ? ruleFormData.connectionId
-                        : firstChannelForEvent(option.value)
                       setRuleFormData((prev) => ({
                         ...prev,
-                        connectionId,
+                        connectionId: prev.connectionId || firstChannelId(),
                         event: option.value,
                         externalUrl: notificationEventSupports(option.value, 'externalUrl') ? prev.externalUrl : false,
                         filters: {},
@@ -1438,11 +1420,6 @@ export default function Notifications({
               placeholder={t('notifications.choose-channel')}
               value={selectedRuleChannelOption}
             />
-            <small>
-              {isBalanceChangeEvent(ruleFormData.event)
-                ? t('notifications.balance-email-note')
-                : t('notifications.email-balance-note')}
-            </small>
             {ruleFormErrors.connectionId && <strong>{ruleFormErrors.connectionId}</strong>}
           </label>
           <InputField
