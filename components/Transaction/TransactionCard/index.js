@@ -670,7 +670,7 @@ export const TransactionCard = ({
         }
         .tx-header {
           margin: 0;
-          color: var(--text-secondary);
+          color: var(--text-main);
           font-size: 13px;
           font-weight: 700;
           line-height: 1.2;
