@@ -846,6 +846,58 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
     //show sell button only for the NFT owner
     if (data.owner && accountAddress && accountAddress === data.owner) {
+      // if the buy offer destination is a partner marketplace (e.g. bidds),
+      // we can't accept it directly — create a counter sell offer via the broker instead
+      if (best.destination && partnerMarketplaces[best.destination]) {
+        const { fee, name, feeText } = partnerMarketplaces[best.destination]
+
+        // seller receives best.amount * (1 - fee) — floor ensures bidds gets at least fee%
+        let sellAmount
+        if (best.amount?.value) {
+          sellAmount = {
+            value: (parseFloat(best.amount.value) * (1 - fee)).toString(),
+            currency: best.amount.currency,
+            issuer: best.amount.issuer
+          }
+        } else {
+          sellAmount = Math.floor(parseInt(best.amount) * (1 - fee)).toString()
+        }
+
+        const request = {
+          TransactionType: 'NFTokenCreateOffer',
+          Account: data.owner,
+          NFTokenID: id,
+          Flags: 1, // sell offer
+          Destination: best.destination,
+          Amount: sellAmount
+        }
+
+        return (
+          <>
+            <button
+              className="button-action wide center"
+              onClick={() =>
+                setSignRequest({
+                  request,
+                  broker: {
+                    name,
+                    fee: Math.ceil(best.amount > 0 ? best.amount * fee : 1),
+                    nftPrice: best.amount,
+                    feeText
+                  }
+                })
+              }
+            >
+              {t('button.nft.sell-for-amount', {
+                amount: amountFormat(best.amount?.value ? sellAmount : parseInt(sellAmount))
+              })}
+            </button>
+            <br />
+            <br />
+          </>
+        )
+      }
+
       return (
         <>
           {acceptNftBuyOfferButton(t, setSignRequest, best, data.type)}
