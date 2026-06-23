@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { axiosAdmin } from '../utils/axios'
 import { isEmailValid, turnstileLanguage } from '../utils'
 import CheckBox from './UI/CheckBox'
+import { emailLoginPopup } from '../styles/components/emailLoginPopup.module.scss'
 
 const checkmark = '/images/checkmark.svg'
 
@@ -185,30 +186,26 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
 
   return (
     <div className="sign-in-form">
-      <div className="sign-in-body center loginform">
-        <div className="close-button" onClick={handleClose}></div>
+      <div className={`sign-in-body center loginform ${emailLoginPopup}`}>
+        <button type="button" className="email-login-close-button" onClick={handleClose} aria-label="Close" />
 
-        <div className="header">Bithomp Pro</div>
+        <div className="email-login-header">Bithomp Pro</div>
 
         {step === 0 && (
-          <div>
-            <br />
-            <center>
-              <b>Register</b> or <b>Sign In</b> to get started.
-            </center>
-          </div>
+          <p className="email-login-subtitle">
+            <b>Register</b> or <b>Sign In</b> to get started.
+          </p>
         )}
 
-        <br />
-        <div className="center" style={{ maxWidth: 300, margin: 'auto', padding: '0 20px' }}>
+        <div className="email-login-form">
           {(step === 0 || step === 1) && (
-            <div className="input-validation">
+            <div className="email-login-input-validation">
               <input
                 name="email"
                 placeholder="Email address"
                 value={email}
                 onChange={onEmailChange}
-                className="input-text"
+                className="input-text email-login-input"
                 ref={(node) => {
                   emailRef = node
                 }}
@@ -216,33 +213,31 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
                 disabled={step !== 0}
                 autoFocus={step === 0}
               />
-              {isEmailValid(email) && <img src={checkmark} className="validation-icon" alt="validated" />}
+              {isEmailValid(email) && <img src={checkmark} className="email-login-validation-icon" alt="validated" />}
             </div>
           )}
 
           {step === 1 && (
             <>
-              <br />
-              <div className="input-validation">
+              <div className="email-login-input-validation">
                 <input
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input-text"
+                  className="input-text email-login-input"
                   ref={(node) => {
                     passwordRef = node
                   }}
                   spellCheck="false"
                 />
-                {password?.length > 8 && <img src={checkmark} className="validation-icon" alt="validated" />}
+                {password?.length > 8 && <img src={checkmark} className="email-login-validation-icon" alt="validated" />}
               </div>
             </>
           )}
 
           {step === 0 && (
             <>
-              <br />
-              <div style={{ height: '65px' }}>
+              <div className="email-login-turnstile">
                 {siteKey && (
                   <Turnstile
                     siteKey={siteKey}
@@ -258,16 +253,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
                   />
                 )}
               </div>
-              <br />
-              <div
-                style={{
-                  display: 'inline-block',
-                  marginBottom: '20px',
-                  textAlign: 'left',
-                  width: '398px',
-                  margin: 'auto'
-                }}
-              >
+              <div className="email-login-options">
                 <CheckBox checked={rememberMe} setChecked={setRememberMe}>
                   Remember me
                 </CheckBox>
@@ -283,14 +269,11 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
           )}
         </div>
 
-        <br />
         {errorMessage ? (
-          <div className="center">
+          <div className="email-login-message">
             <span className="orange bold">{errorMessage}</span>
             {step === 1 && (
               <>
-                <br />
-                <br />
                 <span className="link" onClick={() => setStep(0)}>
                   Change email.
                 </span>
@@ -298,31 +281,20 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
             )}
           </div>
         ) : (
-          <>
-            {step === 1 && (
-              <>
-                <br />
-                <br />
-                <br />
-              </>
-            )}
-          </>
+          step === 1 && <div className="email-login-message-spacer" />
         )}
 
         {(step === 0 || step === 1) && (
-          <>
-            <br />
+          <div className="email-login-actions">
             <button
-              className="button-action"
+              className="button-action email-login-submit-button"
               onClick={onLogin}
               disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
             >
               Submit
             </button>
-          </>
+          </div>
         )}
-        <br />
-        <br />
       </div>
     </div>
   )

@@ -1,0 +1,188 @@
+.emailLoginPopup {
+  width: min(520px, calc(100vw - 32px)) !important;
+  height: auto !important;
+  max-height: calc(100dvh - 32px) !important;
+  padding: 34px 34px 30px;
+  gap: 18px;
+  overflow-y: auto;
+}
+
+.emailLoginPopup :global {
+  .email-login-header {
+    padding: 0 52px;
+    color: var(--text-main);
+    font-size: clamp(32px, 6vw, 46px);
+    font-weight: 700;
+    line-height: 1.05;
+    text-align: center;
+  }
+
+  .email-login-subtitle {
+    margin: 2px 0 10px;
+    color: var(--text-main);
+    font-size: 17px;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  .email-login-close-button {
+    appearance: none;
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: border-color 0.16s ease, color 0.16s ease, background-color 0.16s ease;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    &::before {
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      transform: rotate(-45deg);
+    }
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--accent-link);
+      background: var(--background-main);
+      color: var(--text-main);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 18%, transparent);
+    }
+  }
+
+  .email-login-form {
+    display: flex;
+    width: min(100%, 300px);
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    margin: 0 auto;
+  }
+
+  .email-login-input-validation {
+    position: relative;
+  }
+
+  .email-login-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 48px !important;
+  }
+
+  .email-login-validation-icon {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    display: block;
+    width: 22px !important;
+    height: 22px !important;
+    object-fit: contain;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  .email-login-turnstile {
+    display: flex;
+    min-height: 65px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .email-login-options {
+    display: flex;
+    width: min(100%, 300px);
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 0 auto;
+    text-align: left;
+
+    label {
+      margin-top: 0;
+    }
+  }
+
+  .email-login-message {
+    display: flex;
+    min-height: 42px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .email-login-message-spacer {
+    min-height: 42px;
+  }
+
+  .email-login-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .email-login-submit-button {
+    width: auto;
+    min-width: 132px;
+    height: 38px;
+    margin: 0 !important;
+    padding: 8px 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .emailLoginPopup {
+    width: min(100%, calc(100vw - 24px)) !important;
+    max-height: calc(100dvh - 24px) !important;
+    padding: 48px 18px 24px;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 10px !important;
+  }
+
+  .emailLoginPopup :global {
+    .email-login-header {
+      padding: 0 42px;
+      font-size: clamp(28px, 11vw, 38px);
+    }
+
+    .email-login-subtitle {
+      font-size: 16px;
+    }
+
+    .email-login-close-button {
+      top: 12px;
+      right: 12px;
+    }
+
+    .email-login-form,
+    .email-login-options {
+      width: min(100%, 300px);
+    }
+  }
+}
