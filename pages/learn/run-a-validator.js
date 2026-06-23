@@ -19,7 +19,7 @@ gpg --show-keys /etc/apt/keyrings/ripple.gpg
 echo "deb [signed-by=/etc/apt/keyrings/ripple.gpg] https://repos.ripple.com/repos/rippled-deb ${repoCodename} stable" | sudo tee /etc/apt/sources.list.d/ripple.list
 
 sudo apt -y update
-sudo apt -y install rippled
+sudo apt -y install xrpld
 `
 
 const INSTALL_TARGETS = [
@@ -32,7 +32,7 @@ const INSTALL_TARGETS = [
       'Highest support and testing level for Ubuntu 24.04 on x86_64.',
       'The repository codename is noble.',
       'After gpg --show-keys, check that the key belongs to Ripple TechOps Team.',
-      'The rippled service should start automatically after installation.'
+      'The xrpld service should start automatically after installation.'
     ],
     command: APT_INSTALL_TEMPLATE('noble')
   },
@@ -45,7 +45,7 @@ const INSTALL_TARGETS = [
       'Highest support and testing level for Ubuntu 22.04 on x86_64.',
       'The repository codename is jammy.',
       'After gpg --show-keys, check that the key belongs to Ripple TechOps Team.',
-      'The rippled service should start automatically after installation.'
+      'The xrpld service should start automatically after installation.'
     ],
     command: APT_INSTALL_TEMPLATE('jammy')
   },
@@ -53,12 +53,12 @@ const INSTALL_TARGETS = [
     key: 'debian-12',
     label: 'Debian 12',
     packageType: 'deb',
-    note: 'Debian 12 Bookworm has rippled packages available through the stable deb repository.',
+    note: 'Debian 12 Bookworm has xrpld packages available through the stable deb repository.',
     details: [
       'Use Debian 12 Bookworm on x86_64.',
       'The repository codename is bookworm.',
       'After gpg --show-keys, check that the key belongs to Ripple TechOps Team.',
-      'The rippled service should start automatically after installation.'
+      'The xrpld service should start automatically after installation.'
     ],
     command: APT_INSTALL_TEMPLATE('bookworm')
   },
@@ -70,7 +70,7 @@ const INSTALL_TARGETS = [
     details: [
       'Use Red Hat Enterprise Linux 9.6 on x86_64.',
       'The repository name is ripple-stable.',
-      'The commands reload systemd, enable rippled on boot, and start the service.',
+      'The commands reload systemd, enable xrpld on boot, and start the service.',
       'Use the stable repository for production validators.'
     ],
     command: `
@@ -85,10 +85,10 @@ gpgkey=https://repos.ripple.com/repos/rippled-rpm/stable/repodata/repomd.xml.key
 REPOFILE
 
 sudo yum -y update
-sudo yum install -y rippled
+sudo yum install -y xrpld
 sudo systemctl daemon-reload
-sudo systemctl enable rippled.service
-sudo systemctl start rippled.service
+sudo systemctl enable xrpld.service
+sudo systemctl start xrpld.service
 `
   }
 ]
@@ -165,7 +165,7 @@ export default function RunAValidator() {
     <>
       <SEO
         title="How to Run an XRP Ledger Validator"
-        description="A practical step-by-step guide to install rippled, configure validator keys, connect safely, and check an XRPL validator on Bithomp."
+        description="A practical step-by-step guide to install xrpld, configure validator keys, connect safely, and check an XRPL validator on Bithomp."
         noindex={network !== 'mainnet' || xahauNetwork}
         image={{ file: '/images/xrplexplorer/previews/1200x630/validators.png', width: 1200, height: 630 }}
       />
@@ -174,7 +174,7 @@ export default function RunAValidator() {
         <article className="prose sm:prose-lg dark:prose-invert mx-auto my-10">
           <h1>How to Run an XRP Ledger Validator</h1>
           <p>
-            This is a quick practical guide for running <code>rippled</code> in validator mode on the XRP Ledger. Keep the
+            This is a quick practical guide for running <code>xrpld</code> in validator mode on the XRP Ledger. Keep the
             validator dedicated, private, updated, and monitored.
           </p>
 
@@ -188,7 +188,7 @@ export default function RunAValidator() {
             <li>Gigabit network, stable latency, and accurate system time.</li>
           </ul>
           <p>
-            Enable NTP before installing <code>rippled</code> so the server clock stays in sync with the network:
+            Enable NTP before installing <code>xrpld</code> so the server clock stays in sync with the network:
           </p>
           <CodeBlock>
             {`
@@ -196,7 +196,7 @@ timedatectl status
 sudo timedatectl set-ntp true
             `}
           </CodeBlock>
-          <h2>2. Install rippled</h2>
+          <h2>2. Install xrpld</h2>
           <p>
             Choose your operating system and copy the matching command. Use the stable package repository for production
             validators.
@@ -229,8 +229,8 @@ sudo timedatectl set-ntp true
           <p>Check that the service started:</p>
           <CodeBlock>
             {`
-systemctl status rippled.service
-rippled server_info
+systemctl status xrpld.service
+xrpld server_info
             `}
           </CodeBlock>
           <p>
@@ -269,7 +269,7 @@ Validator keys stored in /home/validator-admin/.ripple/validator-keys.json
           </CodeBlock>
           <p>
             Set the domain in the validator key file before you configure the server. This updates the manifest and
-            prints both the domain attestation and the validator token that belongs in <code>rippled.cfg</code>.
+            prints both the domain attestation and the validator token that belongs in <code>xrpld.cfg</code>.
           </p>
           <CodeBlock>
             {`
@@ -288,10 +288,10 @@ attestation="A59AB577E14A7BEC053752FBFE78C3DED6DCEC81A7C41DF1931BC61742BB4FAEAA0
 You should include it in your xrp-ledger.toml file in the
 section for this validator.
 
-You also need to update the rippled.cfg file to add a new
-validator token and restart rippled:
+You also need to update the xrpld.cfg file to add a new
+validator token and restart xrpld:
 
-Update rippled.cfg file with these values:
+Update xrpld.cfg file with these values:
 
 # validator public key: nHUtNnLVx7odrz5dnfb2xpIgbEeJPbzJWfdicSkGyVw1eE5GpjQr
 [validator_token]
@@ -319,12 +319,12 @@ VUSmEydzBpMjFlcTNNWXl3TFZKWm5GT3I3QzBrdzJBaVR6U0NqSXpkaXRROD0ifQ==
 
           <h2>5. Configure the Validator</h2>
           <p>
-            Back up the config, then edit <code>/etc/opt/ripple/rippled.cfg</code>:
+            Back up the config, then edit <code>/etc/xrpld/xrpld.cfg</code>:
           </p>
           <CodeBlock>
             {`
-sudo cp /etc/opt/ripple/rippled.cfg /etc/opt/ripple/rippled.cfg.backup
-sudo nano /etc/opt/ripple/rippled.cfg
+sudo cp /etc/xrpld/xrpld.cfg /etc/xrpld/xrpld.cfg.backup
+sudo nano /etc/xrpld/xrpld.cfg
             `}
           </CodeBlock>
           <p>Add the token printed by <code>set_domain</code>:</p>
@@ -353,8 +353,8 @@ hub.xrpl-commons.org 51235
           <p>Restrict the config file and restart:</p>
           <CodeBlock>
             {`
-sudo chmod 600 /etc/opt/ripple/rippled.cfg
-sudo systemctl restart rippled.service
+sudo chmod 600 /etc/xrpld/xrpld.cfg
+sudo systemctl restart xrpld.service
             `}
           </CodeBlock>
 
@@ -365,15 +365,15 @@ sudo systemctl restart rippled.service
           </p>
           <CodeBlock>
             {`
-rippled server_info
-rippled peers
-rippled validators
+xrpld server_info
+xrpld peers
+xrpld validators
             `}
           </CodeBlock>
           <p>Useful live log command:</p>
           <CodeBlock>
             {`
-journalctl -u rippled.service -f
+journalctl -u xrpld.service -f
             `}
           </CodeBlock>
 
@@ -383,7 +383,7 @@ journalctl -u rippled.service -f
           </p>
           <CodeBlock>
             {`
-rippled server_info
+xrpld server_info
             `}
           </CodeBlock>
           <p>
@@ -400,7 +400,7 @@ rippled server_info
           <h2>7. Publish TOML Domain Verification</h2>
           <p>
             After the domain is set in the validator keys and the validator token is installed in{' '}
-            <code>rippled.cfg</code>, publish the matching <code>xrp-ledger.toml</code>. Serve it over HTTPS at:
+            <code>xrpld.cfg</code>, publish the matching <code>xrp-ledger.toml</code>. Serve it over HTTPS at:
           </p>
           <CodeBlock>
             {`
@@ -449,14 +449,14 @@ curl -fsSL https://example.com/.well-known/xrp-ledger.toml
               <strong>No peers:</strong> check firewall rules, outbound access, and the <code>[ips_fixed]</code> hosts.
             </li>
             <li>
-              <strong>Not proposing:</strong> wait for sync, check system time, check <code>rippled server_info</code>,
-              and read <code>journalctl -u rippled.service</code>.
+              <strong>Not proposing:</strong> wait for sync, check system time, check <code>xrpld server_info</code>,
+              and read <code>journalctl -u xrpld.service</code>.
             </li>
             <li>
               <strong>Validator list expired:</strong> check outbound HTTPS access and validator list configuration.
             </li>
             <li>
-              <strong>Public key mismatch:</strong> confirm that the token in <code>rippled.cfg</code> was generated
+              <strong>Public key mismatch:</strong> confirm that the token in <code>xrpld.cfg</code> was generated
               from the key file you backed up.
             </li>
           </ul>
