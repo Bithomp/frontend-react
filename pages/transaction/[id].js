@@ -25,6 +25,7 @@ import {
   TransactionURIToken,
   TransactionRemit,
   TransactionEnableAmendment,
+  TransactionUNLModify,
   TransactionDelegateSet,
   TransactionBatch,
   TransactionSignerListSet,
@@ -231,6 +232,8 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
     TransactionComponent = TransactionRemit
   } else if (txType === 'EnableAmendment') {
     TransactionComponent = TransactionEnableAmendment
+  } else if (txType === 'UNLModify') {
+    TransactionComponent = TransactionUNLModify
   } else if (txType === 'Batch') {
     TransactionComponent = TransactionBatch
   } else if (txType === 'SignerListSet') {

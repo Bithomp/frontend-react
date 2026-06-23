@@ -1,7 +1,13 @@
 import { nativeCurrency, tokenImageSrc } from '..'
 import { niceCurrency, shortHash, shortNiceNumber } from '../format'
 import { nftUrl } from '../nft'
-import { addressBalanceChanges, getTransactionTypeLabel, isConvertionTx, shortErrorCode } from './index'
+import {
+  addressBalanceChanges,
+  getTransactionTypeLabel,
+  getUNLModifyDetails,
+  isConvertionTx,
+  shortErrorCode
+} from './index'
 import { getTransactionNftPreview } from './nftPreview'
 
 const compactText = (value) =>
@@ -278,9 +284,22 @@ const genericSummary = (data) => {
   }
 }
 
+const unlModifySummary = (data) => {
+  const { validatorKey, action } = getUNLModifyDetails(data)
+  const validatorText = validatorKey ? `Validator ${shortHash(validatorKey, 6)}` : 'Validator'
+
+  return {
+    headline: 'UNL Modified',
+    description: `${validatorText} was ${action} the Negative UNL.`,
+    previewTitle: 'UNL Modified',
+    previewSubtitle: `${validatorText} ${action} nUNL`
+  }
+}
+
 const transactionSummary = (data, selectedCurrency) => {
   const txType = data?.tx?.TransactionType
 
+  if (txType === 'UNLModify') return unlModifySummary(data)
   if (txType === 'Payment') return paymentSummary(data, selectedCurrency)
   if (txType === 'TrustSet') return trustSetSummary(data)
   if (txType === 'OfferCreate' || txType === 'OfferCancel') return offerSummary(data, selectedCurrency)

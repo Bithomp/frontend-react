@@ -120,6 +120,13 @@ export const TransactionCard = ({
   const headerTxLink = headerTxId ? server + '/tx/' + headerTxId : null
 
   const filteredBalanceChanges = outcome?.balanceChanges?.filter((change) => !noBalanceChange(change))
+  const hasFilteredBalanceChanges = filteredBalanceChanges?.length > 0
+  const showAffectedAccounts =
+    tx?.TransactionType !== 'UNLReport' &&
+    hasFilteredBalanceChanges &&
+    (filteredBalanceChanges.length > 2 || notFullySupported || showBalanceChanges)
+  const showBalanceChangesAction =
+    hasFilteredBalanceChanges && !(filteredBalanceChanges.length > 2 || notFullySupported)
 
   const isInsufFee = outcome?.result === 'tecINSUFF_FEE'
   const actualBurnedFeeAmount = (() => {
@@ -397,78 +404,75 @@ export const TransactionCard = ({
                         </TData>
                       </tr>
                     ))}
-                  {tx?.TransactionType !== 'UNLReport' &&
-                    (filteredBalanceChanges?.length > 2 || notFullySupported || showBalanceChanges) && (
-                      <>
-                        <tr>
-                          <TData>Affected accounts</TData>
-                          <TData>
-                            {filteredBalanceChanges?.length > 1 && (
-                              <Trans
-                                i18nKey="messages.affectedAccounts.summary"
-                                ns="transaction"
-                                count={filteredBalanceChanges.length}
-                                components={{ bold: <span className="bold" /> }}
-                              />
-                            )}
-                          </TData>
-                        </tr>
-                        {filteredBalanceChanges?.map((change, index) => {
-                          let gateway = change?.balanceChanges?.every(
-                            (changeItem) => changeItem.issuer === change.address
-                          )
-                          return (
-                            <tr key={index}>
-                              <TData>
-                                {txT('labels.Account')} {index + 1}
-                                {change.address === tx.Account && (
-                                  <span className="bold tx-account-role">
-                                    {txT('labels.Initiator')}
-                                  </span>
-                                )}
-                                {gateway && (
-                                  <span className="bold tx-account-role">
-                                    {niceCurrency(change.balanceChanges[0].currency)} {txT('labels.issuer')}
-                                  </span>
-                                )}
-                              </TData>
-                              <TData>
-                                <div className="tx-affected-account">
-                                  <div className="tx-affected-address">
-                                    <AddressWithIconFilled data={change} name="address" />
-                                  </div>
-                                  <div className="tx-affected-balances">
-                                    {gateway
-                                      ? gatewayChanges(change.balanceChanges)
-                                      : change.balanceChanges?.map((c, i) => {
-                                          return (
-                                            <div key={i}>
-                                              {amountFormat(c, {
-                                                precise: 'nice',
-                                                withIssuer: true,
-                                                bold: true,
-                                                showPlus: true,
-                                                color: 'direction'
-                                              })}
-                                              <span suppressHydrationWarning>
-                                                {tokenToFiat({
-                                                  amount: c,
-                                                  selectedCurrency,
-                                                  fiatRate: pageFiatRate,
-                                                  asText: true
-                                                })}
-                                              </span>
-                                            </div>
-                                          )
-                                        })}
-                                  </div>
+                  {showAffectedAccounts && (
+                    <>
+                      <tr>
+                        <TData>Affected accounts</TData>
+                        <TData>
+                          {filteredBalanceChanges.length > 1 && (
+                            <Trans
+                              i18nKey="messages.affectedAccounts.summary"
+                              ns="transaction"
+                              count={filteredBalanceChanges.length}
+                              components={{ bold: <span className="bold" /> }}
+                            />
+                          )}
+                        </TData>
+                      </tr>
+                      {filteredBalanceChanges.map((change, index) => {
+                        let gateway = change?.balanceChanges?.every((changeItem) => changeItem.issuer === change.address)
+                        return (
+                          <tr key={index}>
+                            <TData>
+                              {txT('labels.Account')} {index + 1}
+                              {change.address === tx.Account && (
+                                <span className="bold tx-account-role">
+                                  {txT('labels.Initiator')}
+                                </span>
+                              )}
+                              {gateway && (
+                                <span className="bold tx-account-role">
+                                  {niceCurrency(change.balanceChanges[0].currency)} {txT('labels.issuer')}
+                                </span>
+                              )}
+                            </TData>
+                            <TData>
+                              <div className="tx-affected-account">
+                                <div className="tx-affected-address">
+                                  <AddressWithIconFilled data={change} name="address" />
                                 </div>
-                              </TData>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
+                                <div className="tx-affected-balances">
+                                  {gateway
+                                    ? gatewayChanges(change.balanceChanges)
+                                    : change.balanceChanges?.map((c, i) => {
+                                        return (
+                                          <div key={i}>
+                                            {amountFormat(c, {
+                                              precise: 'nice',
+                                              withIssuer: true,
+                                              bold: true,
+                                              showPlus: true,
+                                              color: 'direction'
+                                            })}
+                                            <span suppressHydrationWarning>
+                                              {tokenToFiat({
+                                                amount: c,
+                                                selectedCurrency,
+                                                fiatRate: pageFiatRate,
+                                                asText: true
+                                              })}
+                                            </span>
+                                          </div>
+                                        )
+                                      })}
+                                </div>
+                              </div>
+                            </TData>
+                          </tr>
+                        )
+                      })}
+                    </>
+                  )}
                   {!tx?.TransactionType.includes('AMM') && outcome?.exchanges?.length > 0 && (
                     <>
                       <tr>
@@ -502,7 +506,7 @@ export const TransactionCard = ({
                           {txT('actions.additionalData')}
                         </span>
                       </span>
-                      {!(filteredBalanceChanges?.length > 2 || notFullySupported) && (
+                      {showBalanceChangesAction && (
                         <>
                           <span className="tx-action-separator">|</span>
                           <span className="tx-action-list">

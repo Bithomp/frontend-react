@@ -11,6 +11,7 @@ export { TransactionRowSetRegularKey } from './TransactionRowSetRegularKey'
 export { TransactionRowSignerListSet } from './TransactionRowSignerListSet'
 export { TransactionRowTrustSet } from './TransactionRowTrustSet'
 export { TransactionRowEnableAmendment } from './TransactionRowEnableAmendment'
+export { TransactionRowUNLModify } from './TransactionRowUNLModify'
 
 //XRPL
 export { TransactionRowAMM } from './TransactionRowAMM'

@@ -44,6 +44,7 @@ import {
   TransactionRowURIToken,
   TransactionRowRemit,
   TransactionRowEnableAmendment,
+  TransactionRowUNLModify,
   TransactionRowDelegateSet
 } from '../../../components/Account/Transactions'
 import CheckBox from '../../../components/UI/CheckBox'
@@ -625,6 +626,8 @@ export default function AccountTransactions({
                       TransactionRowComponent = TransactionRowRemit
                     } else if (type === 'EnableAmendment') {
                       TransactionRowComponent = TransactionRowEnableAmendment
+                    } else if (type === 'UNLModify') {
+                      TransactionRowComponent = TransactionRowUNLModify
                     } else {
                       TransactionRowComponent = TransactionRowDetails
                     }

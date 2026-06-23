@@ -44,7 +44,7 @@ export const addressBalanceChanges = (data, address) => {
   const { outcome, specification } = data
   if (!outcome) return null
   let allSourceBalanceChanges = getBalanceChanges(outcome.balanceChanges, address)
-  if (specification.source.address !== address) {
+  if (specification?.source?.address !== address) {
     // if address we looking for is not an executor, return as it is
     return allSourceBalanceChanges
   }
@@ -135,6 +135,26 @@ const TRANSACTION_TYPE_LABELS = {
 export const getTransactionTypeLabel = (type) => {
   if (!type) return '-'
   return TRANSACTION_TYPE_LABELS[type] || type
+}
+
+export const getUNLModifyDetails = (data) => {
+  const isNegativeUNL = data?.specification?.nUNL
+  const added = typeof isNegativeUNL === 'boolean' ? isNegativeUNL : Number(data?.tx?.UNLModifyDisabling) === 1
+  const validatorKey =
+    data?.specification?.publicKey ||
+    data?.specification?.validatorDetails?.publicKey ||
+    data?.tx?.UNLModifyValidator ||
+    data?.specification?.PublicKey
+  const serverVersion =
+    data?.specification?.validatorDetails?.serverVersion || data?.specification?.validatorDetails?.server_version
+
+  return {
+    added,
+    action: added ? 'added to' : 'removed from',
+    actionText: `Validator was ${added ? 'added to' : 'removed from'} the Negative UNL (nUNL)`,
+    validatorKey,
+    serverVersion
+  }
 }
 
 export const getAccountTransactionTypeIcon = ({
@@ -252,6 +272,10 @@ export const getAccountTransactionTypeIcon = ({
 
   if (txType === 'EnableAmendment') {
     return <LuFileCheck2 style={{ ...iconStyle, color: '#2980ef' }} title="Enable Amendment" />
+  }
+
+  if (txType === 'UNLModify') {
+    return <FaUserShield style={{ ...iconStyle, color: '#2980ef' }} title="UNL Modified" />
   }
 
   return null
