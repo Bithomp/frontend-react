@@ -140,18 +140,19 @@ export const getTransactionTypeLabel = (type) => {
 export const getUNLModifyDetails = (data) => {
   const isNegativeUNL = data?.specification?.nUNL
   const added = typeof isNegativeUNL === 'boolean' ? isNegativeUNL : Number(data?.tx?.UNLModifyDisabling) === 1
+  const validatorDetails = data?.specification?.validatorDetails || data?.validatorDetails || null
   const validatorKey =
     data?.specification?.publicKey ||
-    data?.specification?.validatorDetails?.publicKey ||
+    validatorDetails?.publicKey ||
     data?.tx?.UNLModifyValidator ||
     data?.specification?.PublicKey
-  const serverVersion =
-    data?.specification?.validatorDetails?.serverVersion || data?.specification?.validatorDetails?.server_version
+  const serverVersion = validatorDetails?.serverVersion || validatorDetails?.server_version
 
   return {
     added,
     action: added ? 'added to' : 'removed from',
     actionText: `Validator was ${added ? 'added to' : 'removed from'} the Negative UNL (nUNL)`,
+    validatorDetails,
     validatorKey,
     serverVersion
   }
