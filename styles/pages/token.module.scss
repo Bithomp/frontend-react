@@ -43,6 +43,14 @@
     min-width: 0;
   }
 
+  .tokenOverviewTop2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tokenOverviewTop3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .tokenProfileCard,
   .tokenPanel {
     border: 1px solid var(--card-border);
@@ -108,6 +116,31 @@
     }
   }
 
+  .tokenProfileIssuerLine {
+    display: inline-flex;
+    gap: 4px;
+    justify-content: center;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .tokenProfileIssuerValue {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    a {
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: bottom;
+      white-space: nowrap;
+    }
+  }
+
   .tokenProfileActions {
     display: grid;
     gap: 8px;
@@ -159,6 +192,49 @@
     min-width: 0;
   }
 
+  .tokenProfileCopiedValue {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .tokenProfileLinkButton {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--link-color);
+    font: inherit;
+    font-weight: 600;
+    line-height: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .tokenProfileMetadataRow {
+    > span:last-child {
+      display: grid;
+      gap: 8px;
+    }
+  }
+
+  .tokenProfileMetadataPre {
+    max-height: 240px;
+    max-width: 100%;
+    margin: 0;
+    padding: 8px;
+    overflow: auto;
+    border: 1px solid color-mix(in srgb, var(--card-border) 70%, transparent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--background-secondary) 46%, transparent);
+    color: var(--text-main);
+    font-size: 12px;
+    line-height: 1.35;
+    white-space: pre-wrap;
+  }
+
   .tokenDashboardGrid {
     display: contents;
   }
@@ -189,10 +265,6 @@
   }
 
   .tokenStatsPanel {
-    grid-column: 1 / -1;
-  }
-
-  .tokenMetadataPanel {
     grid-column: 1 / -1;
   }
 
@@ -2679,6 +2751,14 @@
       align-items: stretch;
     }
 
+    .tokenOverviewTop2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tokenOverviewTop3 {
+      grid-template-columns: minmax(430px, 1.15fr) repeat(2, minmax(340px, 1fr));
+    }
+
     .tokenProfileCard {
       grid-template-columns: 140px minmax(0, 1fr);
       grid-template-rows: auto auto auto minmax(0, 1fr);
@@ -2711,6 +2791,10 @@
       grid-column: 2;
       gap: 4px;
       text-align: left;
+    }
+
+    .tokenProfileIssuerLine {
+      justify-content: flex-start;
     }
 
     .tokenProfileActions {
@@ -2869,6 +2953,14 @@
       grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
     }
 
+    .tokenOverviewTop2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tokenOverviewTop3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .tokenProfileCard,
     .tokenPricePanel {
       grid-column: span 1;
@@ -2880,8 +2972,7 @@
       grid-column: span 1;
     }
 
-    .tokenStatsPanel,
-    .tokenMetadataPanel {
+    .tokenStatsPanel {
       grid-column: 1 / -1;
     }
 
@@ -2961,8 +3052,7 @@
     .tokenPricePanel,
     .tokenSupplyPanel,
     .tokenClosedPanel,
-    .tokenStatsPanel,
-    .tokenMetadataPanel {
+    .tokenStatsPanel {
       grid-column: 1 / -1;
     }
 
@@ -3097,8 +3187,7 @@
     .tokenPricePanel,
     .tokenSupplyPanel,
     .tokenClosedPanel,
-    .tokenStatsPanel,
-    .tokenMetadataPanel {
+    .tokenStatsPanel {
       grid-column: 1 / -1;
     }
 

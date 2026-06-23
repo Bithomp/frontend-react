@@ -68,6 +68,31 @@ const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
   return tokens
 }
 
+const mptIssuanceId = (token) => token?.mptokenIssuanceID || token?.MPTokenIssuanceID || token?.mpt_issuance_id
+
+const hasTokenValue = (token) => !!(token?.currency || mptIssuanceId(token))
+
+const mptDisplayName = (token) =>
+  token?.metadata?.name || token?.metadata?.n || token?.metadata?.ticker || token?.metadata?.t || token?.currency || 'MPT'
+
+const tokenListUrl = (searchQuery, urlPart, onlyMPTokens) => {
+  const trimmedQuery = searchQuery.trim()
+
+  if (onlyMPTokens) {
+    const currencyParam = trimmedQuery ? `&currency=${encodeURIComponent(trimmedQuery)}` : ''
+    return `v2/mptokens?limit=${limit}${currencyParam}${urlPart}`
+  }
+
+  if (trimmedQuery) {
+    return `v2/trustlines/tokens/search/${encodeURIComponent(trimmedQuery)}?limit=${limit}${urlPart}`
+  }
+
+  return `v2/trustlines/tokens?limit=${limit}${urlPart}`
+}
+
+const tokensFromResponse = (response, onlyMPTokens) =>
+  onlyMPTokens ? response.data?.issuances || [] : response.data?.tokens || []
+
 export default function TokenSelector({
   value,
   onChange,
@@ -78,6 +103,7 @@ export default function TokenSelector({
   currencyQueryName,
   excludeLPtokens = false,
   onlyLPtokens = false,
+  onlyMPTokens = false,
   canLock = false
 }) {
   const { t } = useTranslation()
@@ -94,7 +120,7 @@ export default function TokenSelector({
   const [cachedSearchResults, setCachedSearchResults] = useState([])
 
   // control radio selection: 'all' | 'single'
-  const [filterMode, setFilterMode] = useState(() => (value?.currency ? 'single' : 'all'))
+  const [filterMode, setFilterMode] = useState(() => (hasTokenValue(value) ? 'single' : 'all'))
 
   useEffect(() => {
     if (!currencyQueryName) return
@@ -115,7 +141,7 @@ export default function TokenSelector({
     if (!allOrOne) return
     if (filterMode === 'all') {
       onChange({}) // clear any selected token
-    } else if (filterMode === 'single' && !value?.currency) {
+    } else if (filterMode === 'single' && !hasTokenValue(value)) {
       onChange({ currency: nativeCurrency }) // default to native currency if no token selected
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,7 +166,9 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
-      let urlPart = onlyLPtokens
+      let urlPart = onlyMPTokens
+        ? '&order=holdersHigh'
+        : onlyLPtokens
         ? '&lptokens=true&currencyDetails=true'
         : excludeLPtokens
           ? '&lptokens=false'
@@ -166,9 +194,9 @@ export default function TokenSelector({
           } else {
             // Fallback to original behavior if no destination address
             // &statistics=true - shall we get USD prices and show them?
-            const response = await axios('v2/trustlines/tokens?limit=' + limit + urlPart)
-            tokens = response.data?.tokens || []
-            if (!excludeNative) {
+            const response = await axios(tokenListUrl('', urlPart, onlyMPTokens))
+            tokens = tokensFromResponse(response, onlyMPTokens)
+            if (!excludeNative && !onlyMPTokens) {
               const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
               setSearchResults(defaultTokens)
               // Cache the default token list
@@ -224,9 +252,9 @@ export default function TokenSelector({
         } else {
           // Fallback to original search behavior
           // &statistics=true - shall we get USD prices and show them?
-          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}` + urlPart)
-          const tokens = response.data?.tokens || []
-          const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
+          const response = await axios(tokenListUrl(searchQuery, urlPart, onlyMPTokens))
+          const tokens = tokensFromResponse(response, onlyMPTokens)
+          const tokensWithNative = onlyMPTokens ? tokens : addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
           // Cache the results
           setLastSearchQuery(searchQuery)
@@ -258,6 +286,8 @@ export default function TokenSelector({
 
   // Helper to get token display name
   const getTokenDisplayName = (token) => {
+    const mptId = mptIssuanceId(token)
+    if (mptId) return mptDisplayName(token)
     if (!token || !token.currency) return t('token-selector.select-token')
     if (!token.issuer) return nativeCurrency
 
@@ -270,6 +300,14 @@ export default function TokenSelector({
       return token.currencyDetails.currency
     }
     return niceCurrency(token.currency)
+  }
+
+  const selectedValue = hasTokenValue(value)
+  const secondaryTokenText = (token) => {
+    const mptId = mptIssuanceId(token)
+    if (mptId) return shortAddress(mptId, width > 1100 ? 10 : 6)
+    if (!token?.issuer) return ''
+    return width > 1100 ? token.issuer : shortAddress(token.issuer)
   }
 
   return (
@@ -300,7 +338,7 @@ export default function TokenSelector({
             style={{ outline: 'none' }}
           >
             {/* Icon */}
-            {value && value.currency && (
+            {selectedValue && (
               <div className="token-selector-icon">
                 <CurrencyWithIcon token={value} options={{ iconOnly: true }} />
               </div>
@@ -308,7 +346,7 @@ export default function TokenSelector({
             {/* Text */}
             <div className="token-selector-label">
               <span className="token-selector-code">
-                {value && value.currency ? getTokenDisplayName(value) : t('token-selector.select-token')}
+                {selectedValue ? getTokenDisplayName(value) : t('token-selector.select-token')}
               </span>
             </div>
             {/* Chevron */}
@@ -359,42 +397,42 @@ export default function TokenSelector({
                         <div className="token-selector-modal-loading">{t('general.loading')}</div>
                       ) : searchResults.length > 0 ? (
                         <div className="token-selector-modal-items">
-                          {searchResults.map((token, index) => (
-                            <div
-                              key={`${token.currency}-${token.issuer}-${index}`}
-                              className="token-selector-modal-item"
-                              onClick={() => handleSelect(token)}
-                            >
-                              <div className="token-selector-modal-item-content">
-                                <div className="token-selector-modal-item-icon">
-                                  <CurrencyWithIcon token={token} options={{ iconOnly: true }} />
-                                </div>
-                                <div className="token-selector-modal-item-name">
-                                  <span>
-                                    {getTokenDisplayName(token)}
-                                    {token.holders !== undefined && (
-                                      <span
-                                        style={{
-                                          marginLeft: '8px',
-                                          fontSize: '0.85em',
-                                          color: 'var(--text-secondary)'
-                                        }}
-                                      >
-                                        {t('token-selector.holders', {
-                                          value: shortNiceNumber(token.holders, 0)
-                                        })}
-                                      </span>
-                                    )}
-                                  </span>
-                                  {width > 1100 ? (
-                                    <span>{token.issuer}</span>
-                                  ) : (
-                                    <span>{shortAddress(token.issuer)}</span>
-                                  )}
+                          {searchResults.map((token, index) => {
+                            const secondaryText = secondaryTokenText(token)
+
+                            return (
+                              <div
+                                key={`${mptIssuanceId(token) || token.currency}-${token.issuer || ''}-${index}`}
+                                className="token-selector-modal-item"
+                                onClick={() => handleSelect(token)}
+                              >
+                                <div className="token-selector-modal-item-content">
+                                  <div className="token-selector-modal-item-icon">
+                                    <CurrencyWithIcon token={token} options={{ iconOnly: true }} />
+                                  </div>
+                                  <div className="token-selector-modal-item-name">
+                                    <span>
+                                      {getTokenDisplayName(token)}
+                                      {token.holders !== undefined && (
+                                        <span
+                                          style={{
+                                            marginLeft: '8px',
+                                            fontSize: '0.85em',
+                                            color: 'var(--text-secondary)'
+                                          }}
+                                        >
+                                          {t('token-selector.holders', {
+                                            value: shortNiceNumber(token.holders, 0)
+                                          })}
+                                        </span>
+                                      )}
+                                    </span>
+                                    {secondaryText ? <span>{secondaryText}</span> : null}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            )
+                          })}
                           {searchResults.length >= limit && (
                             <p className="center orange">
                               {t('token-selector.more-results', { count: limit })}

@@ -14,9 +14,8 @@ import {
   shortNiceNumber,
   fullNiceNumber,
   AddressWithIconInline,
-  addressUsernameOrServiceLink,
   CurrencyWithIconInline,
-  shortHash,
+  addressUsernameOrServiceLink,
   niceCurrency,
   dateFormat,
   timeFormat,
@@ -52,6 +51,65 @@ const displayCurrencyCode = (currencyCode) => {
   if (!currencyCode) return ''
   const code = String(currencyCode)
   return code.replace(/0+$/, '') || code
+}
+
+const metadataHasValue = (value) => {
+  if (value === undefined || value === null || value === '') return false
+  if (typeof value === 'string') return !!value.trim()
+  if (Array.isArray(value)) return value.some(metadataHasValue)
+  if (typeof value === 'object') return Object.values(value).some(metadataHasValue)
+  return true
+}
+
+const mptMetadataValue = (metadata, ...keys) => {
+  if (!metadata || typeof metadata !== 'object') return null
+
+  for (const key of keys) {
+    const value = metadata[key]
+    if (!metadataHasValue(value)) continue
+    if (typeof value === 'string') {
+      const text = value.trim()
+      if (text) return text
+      continue
+    }
+    return value
+  }
+
+  return null
+}
+
+const metadataHttpHref = (value) => {
+  const text = String(value || '').trim()
+  if (!text) return ''
+  if (/^https?:\/\//i.test(text)) return text
+  if (/^[a-z][a-z0-9+.-]*:/i.test(text)) return ''
+  if (/^[^\s/]+\.[^\s]+/i.test(text)) return `https://${text}`
+  return ''
+}
+
+const metadataDisplayValue = (value) => {
+  if (value === undefined || value === null || value === '') return ''
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value)
+  return JSON.stringify(value)
+}
+
+const MPT_ASSET_CLASS_LABELS = {
+  rwa: 'Real world asset',
+  memes: 'Meme token',
+  wrapped: 'Wrapped asset',
+  gaming: 'Gaming token',
+  defi: 'DeFi token',
+  other: 'Other'
+}
+
+const MPT_ASSET_SUBCLASS_LABELS = {
+  stablecoin: 'Stablecoin',
+  commodity: 'Commodity',
+  real_estate: 'Real estate',
+  private_credit: 'Private credit',
+  equity: 'Equity',
+  treasury: 'Treasury',
+  other: 'Other'
 }
 
 // Server side initial data fetch
@@ -259,6 +317,7 @@ export default function TokenPage({
   const [transfersOrder, setTransfersOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const [mintsOrder, setMintsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const [burnsOrder, setBurnsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
+  const [showMptMetadata, setShowMptMetadata] = useState(false)
   const errorMessage = initialErrorMessage || ''
   const tokenErrorTranslations = {
     'Token not found': tt('errors.notFound'),
@@ -714,13 +773,22 @@ export default function TokenPage({
   const { statistics } = token
   const mptId = token?.mptokenIssuanceID
   const isMptToken = !!mptId
+  const mptMetadata = token?.metadata && typeof token.metadata === 'object' && !Array.isArray(token.metadata) ? token.metadata : {}
+  const mptMetadataTicker = mptMetadataValue(mptMetadata, 'ticker', 't')
+  const mptMetadataName = mptMetadataValue(mptMetadata, 'name', 'n')
+  const mptMetadataDescription = mptMetadataValue(mptMetadata, 'description', 'desc', 'd')
+  const mptMetadataAssetClass = mptMetadataValue(mptMetadata, 'asset_class', 'ac')
+  const mptMetadataAssetSubclass = mptMetadataValue(mptMetadata, 'asset_subclass', 'as')
+  const mptMetadataIssuerName = mptMetadataValue(mptMetadata, 'issuer_name', 'in')
+  const mptMetadataUris = mptMetadataValue(mptMetadata, 'uris', 'us')
   const isRoundTokenImage = !!token?.issuer || isMptToken || isNativeToken
   const tokenDisplayCurrency = isMptToken
-    ? token?.metadata?.name || token?.currency || 'MPT'
+    ? mptMetadataName || mptMetadataTicker || token?.currency || 'MPT'
     : token?.currencyDetails?.currency || token?.currency || nativeCurrency
   const tokenSupplyTitle = isMptToken
     ? tokenDisplayCurrency
     : token?.currencyDetails?.currency || niceCurrency(token?.currency) || tokenDisplayCurrency
+  const tokenIssuerLink = addressUsernameOrServiceLink(token, 'issuer')
   const currencyCodeText = token.currencyDetails?.currencyCode || token.currency
   const currencyCodeDisplay = displayCurrencyCode(currencyCodeText)
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
@@ -764,6 +832,7 @@ export default function TokenPage({
     changeItems.length > 0 ||
     statistics?.priceNativeCurrencySpot ||
     statistics?.marketcap
+  const overviewTopCardCount = 1 + (showPriceInformation ? 1 : 0) + 1 + (statistics ? 1 : 0)
 
   // Helper function to format supply for trustline
   const formatSupply = (supply) => {
@@ -1090,6 +1159,61 @@ export default function TokenPage({
         )
       })
 
+  const copiedProfileValue = (value, copyValue, copyText) => (
+    <span className="tokenProfileCopiedValue">
+      {value} <CopyButton text={copyValue} copyText={copyText} size={16} />
+    </span>
+  )
+
+  const renderMetadataLinks = (uris) => {
+    const uriItems = Array.isArray(uris) ? uris : [uris]
+    const links = uriItems
+      .map((item, index) => {
+        const uri = typeof item === 'object' ? mptMetadataValue(item, 'uri', 'u') : item
+        if (!uri) return null
+
+        const title = typeof item === 'object' ? mptMetadataValue(item, 'title', 't') : ''
+        const text = metadataDisplayValue(uri)
+
+        return {
+          key: `${text}-${index}`,
+          href: metadataHttpHref(text),
+          label: metadataDisplayValue(title || uri)
+        }
+      })
+      .filter(Boolean)
+
+    if (!links.length) return ''
+
+    return (
+      <span className="tokenProfileInlineValue">
+        {links.map((item) => (
+          <span key={item.key}>
+            {item.href ? (
+              <a href={item.href} target="_blank" rel="noreferrer">
+                {item.label}
+              </a>
+            ) : (
+              item.label
+            )}
+          </span>
+        ))}
+      </span>
+    )
+  }
+
+  const mptMetadataLinks = renderMetadataLinks(mptMetadataUris)
+  const mptMetadataCodeLabel = (group, fallbackMap, value) => {
+    const code = metadataDisplayValue(value).trim().toLowerCase()
+    if (!code) return ''
+    return tt(`metadataValues.${group}.${code}`, { defaultValue: fallbackMap[code] || metadataDisplayValue(value) })
+  }
+  const mptMetadataAssetClassLabel = mptMetadataCodeLabel('assetClasses', MPT_ASSET_CLASS_LABELS, mptMetadataAssetClass)
+  const mptMetadataAssetSubclassLabel = mptMetadataCodeLabel(
+    'assetSubclasses',
+    MPT_ASSET_SUBCLASS_LABELS,
+    mptMetadataAssetSubclass
+  )
   const renderPanel = ({ title, className = '', children }) => (
     <section className={`tokenPanel ${className}`.trim()}>
       <h2>{title}</h2>
@@ -1141,17 +1265,6 @@ export default function TokenPage({
 
   const tokenInfoItems = [
     {
-      key: 'mptId',
-      label: tt('fields.mptId'),
-      value: (
-        <>
-          {mptId} <CopyButton text={mptId} />
-        </>
-      ),
-      show: isMptToken,
-      wide: true
-    },
-    {
       key: 'ammPool',
       label: tt('fields.ammPool'),
       value: lpAmmId ? <Link href={`/amm/${lpAmmId}`}>{tt('actions.viewPool')}</Link> : '-',
@@ -1159,36 +1272,59 @@ export default function TokenPage({
     },
     { key: 'asset1', label: tt('fields.asset1'), value: renderLpAsset(lpAsset), show: isLpToken },
     { key: 'asset2', label: tt('fields.asset2'), value: renderLpAsset(lpAsset2), show: isLpToken },
-    { key: 'name', label: tt('fields.name'), value: token.name, show: !!token?.name, wide: true },
+    {
+      key: 'name',
+      label: tt('fields.name'),
+      value: token.name,
+      show: !!token?.name && token.name !== tokenDisplayCurrency
+    },
     {
       key: 'description',
       label: tt('fields.description'),
-      value: token.description,
-      show: !!token?.description,
-      wide: true
+      value: token.description || (isMptToken ? mptMetadataDescription : ''),
+      show: !!(token?.description || (isMptToken && mptMetadataDescription))
+    },
+    {
+      key: 'issuerName',
+      label: tt('fields.issuerName', { defaultValue: 'Issuer name' }),
+      value: mptMetadataIssuerName,
+      show: isMptToken && !!mptMetadataIssuerName
+    },
+    {
+      key: 'assetClass',
+      label: tt('fields.assetClass', { defaultValue: 'Asset class' }),
+      value: mptMetadataAssetClassLabel,
+      show: isMptToken && !!mptMetadataAssetClass
+    },
+    {
+      key: 'assetSubclass',
+      label: tt('fields.assetSubclass', { defaultValue: 'Asset subclass' }),
+      value: mptMetadataAssetSubclassLabel,
+      show: isMptToken && !!mptMetadataAssetSubclass
+    },
+    {
+      key: 'relatedLinks',
+      label: tt('fields.relatedLinks', { defaultValue: 'Related links' }),
+      value: mptMetadataLinks,
+      show: isMptToken && !!mptMetadataLinks
+    },
+    {
+      key: 'mptId',
+      label: tt('fields.mptId'),
+      value: copiedProfileValue(mptId, mptId),
+      show: isMptToken
     },
     {
       key: 'issuer',
       label: tt('fields.issuer'),
-      value: (
-        <span className="tokenProfileInlineValue">
-          <Link href={`/account/${token.issuer}`}>{shortHash(token.issuer)}</Link>
-          <CopyButton text={token.issuer} size={16} />
-        </span>
-      ),
-      show: !isNativeToken,
-      wide: true
+      value: copiedProfileValue(tokenIssuerLink, token.issuer),
+      show: !isNativeToken
     },
     {
       key: 'currencyCode',
       label: tt('fields.currencyCode'),
-      value: (
-        <>
-          {currencyCodeDisplay} <CopyButton text={currencyCodeText} copyText={tt('tooltips.copyCurrencyCode')} size={16} />
-        </>
-      ),
-      show: !isMptToken,
-      wide: true
+      value: copiedProfileValue(currencyCodeDisplay, currencyCodeText, tt('tooltips.copyCurrencyCode')),
+      show: !isMptToken
     },
     {
       key: 'tokenSequence',
@@ -1240,8 +1376,7 @@ export default function TokenPage({
             .filter((flag) => token.flags[flag])
             .join(', ') || tt('values.noneSet')
         : tt('values.none'),
-      show: isMptToken,
-      wide: true
+      show: isMptToken
     }
   ]
 
@@ -1401,28 +1536,6 @@ export default function TokenPage({
       ]
     : []
 
-  const metadataItems = [
-    { key: 'name', label: tt('fields.name'), value: token.metadata?.name, show: !!token.metadata?.name },
-    {
-      key: 'description',
-      label: tt('fields.description'),
-      value: token.metadata?.description || token.description,
-      show: !!(token.metadata?.description || token.description),
-      wide: true
-    },
-    {
-      key: 'rawMetadata',
-      label: tt('fields.rawMetadata'),
-      value: (
-        <pre>
-          <code>{JSON.stringify(token.metadata, null, 2)}</code>
-        </pre>
-      ),
-      show: !!token.metadata,
-      wide: true
-    }
-  ]
-
   return (
     <>
       <SEO
@@ -1446,10 +1559,11 @@ export default function TokenPage({
               onChange={setSelectedToken}
               excludeNative={false}
               excludeLPtokens={true}
+              onlyMPTokens={isMptToken}
             />
           </div>
 
-          <div className="tokenOverview">
+          <div className={`tokenOverview tokenOverviewTop${overviewTopCardCount}`}>
             <aside className="tokenProfileCard">
               <div className="tokenProfileImageWrap">
                 <img
@@ -1467,14 +1581,20 @@ export default function TokenPage({
               </div>
               <h1 className="tokenProfileTitle">{tokenDisplayCurrency}</h1>
               <div className="tokenProfileMeta">
+                {isMptToken && mptMetadataTicker && mptMetadataTicker !== tokenDisplayCurrency ? (
+                  <span>{mptMetadataTicker}</span>
+                ) : null}
                 {token?.name && token.name !== tokenDisplayCurrency ? <span>{token.name}</span> : null}
                 <span>
                   {isNativeToken ? (
                     tt('title.nativeCurrency')
                   ) : (
-                    <>
-                      {tt('title.issuedBy')} {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
-                    </>
+                    <span className="tokenProfileIssuerLine">
+                      <span>{tt('title.issuedBy')}</span>
+                      <span className="tokenProfileIssuerValue">
+                        {tokenIssuerLink}
+                      </span>
+                    </span>
                   )}
                 </span>
               </div>
@@ -1494,7 +1614,28 @@ export default function TokenPage({
                 </div>
               )}
 
-              <div className="tokenProfileInfo">{renderProfileRows(tokenInfoItems)}</div>
+              <div className="tokenProfileInfo">
+                {renderProfileRows(tokenInfoItems)}
+                {isMptToken && token.metadata && (
+                  <div className="tokenProfileInfoRow tokenProfileMetadataRow">
+                    <span>{tt('tables.mptMetadata')}</span>
+                    <span>
+                      <button
+                        type="button"
+                        className="tokenProfileLinkButton"
+                        onClick={() => setShowMptMetadata((value) => !value)}
+                      >
+                        {showMptMetadata ? tt('actions.hideMetadata') : tt('actions.showMetadata')}
+                      </button>
+                      {showMptMetadata && (
+                        <pre className="tokenProfileMetadataPre">
+                          <code>{JSON.stringify(token.metadata, null, 2)}</code>
+                        </pre>
+                      )}
+                    </span>
+                  </div>
+                )}
+              </div>
             </aside>
 
             <div className="tokenDashboardGrid">
@@ -1553,13 +1694,6 @@ export default function TokenPage({
                   )
                 })}
 
-              {isMptToken &&
-                token.metadata &&
-                renderPanel({
-                  title: tt('tables.mptMetadata'),
-                  className: 'tokenMetadataPanel',
-                  children: <div className="tokenMetricGrid">{renderMetricTiles(metadataItems)}</div>
-                })}
             </div>
           </div>
 
