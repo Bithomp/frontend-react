@@ -411,6 +411,14 @@
     border-radius: 10px;
     background: color-mix(in srgb, var(--accent-link) 6%, var(--background-main));
 
+    &.no-steps {
+      grid-template-columns: 1fr;
+    }
+
+    > div {
+      min-width: 0;
+    }
+
     strong {
       display: block;
       margin-bottom: 3px;
@@ -422,6 +430,10 @@
       color: var(--text-secondary);
       font-size: 13px;
       line-height: 1.4;
+    }
+
+    p + p {
+      margin-top: 6px;
     }
 
     ol {

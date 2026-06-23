@@ -459,6 +459,7 @@
       "twitter_api": "X / Twitter"
     },
     "detailed-setup-guide": "詳細なセットアップガイド",
+    "email-from-notice": "セキュリティのため、当社のアラートメールは必ず {{fromEmail}} からのみ送信されます。別のアドレスから届いた当社を名乗るメール内のリンクは絶対にクリックしないでください。",
     "channel-name": "チャンネル名",
     "channel-name-help": "このチャネルを認識するためのプライベート名。",
     "channel-name-placeholder-by-type": {
@@ -583,7 +584,7 @@
     "guides": {
       "email": {
         "title": "電子メール",
-        "description": "{{explorerName}}アラートを受信するメールボックスを使用します。 Webhook の設定は必要ありません。",
+        "description": "{{explorerName}}アラートを受信するメールボックスを使用します。",
         "steps": [
 
         ]

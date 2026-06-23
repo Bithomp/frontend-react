@@ -459,6 +459,7 @@
       "twitter_api": "X / Twitter"
     },
     "detailed-setup-guide": "Detaillierte Einrichtungsanleitung",
+    "email-from-notice": "Zur Sicherheit: Unsere Alert-E-Mails werden ausschließlich von {{fromEmail}} gesendet. Klicken Sie niemals auf Links in E-Mails, die angeblich von uns stammen, aber von einer anderen Adresse kommen.",
     "channel-name": "Kanalname",
     "channel-name-help": "Ein privater Name zur Erkennung dieses Kanals.",
     "channel-name-placeholder-by-type": {
@@ -583,7 +584,7 @@
     "guides": {
       "email": {
         "title": "E-Mail",
-        "description": "Verwenden Sie das Postfach, das {{explorerName}} Benachrichtigungen empfangen soll. Es ist keine Webhook-Einrichtung erforderlich.",
+        "description": "Verwenden Sie das Postfach, das {{explorerName}} Benachrichtigungen empfangen soll.",
         "steps": [
 
         ]

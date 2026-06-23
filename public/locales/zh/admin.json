@@ -459,6 +459,7 @@
       "twitter_api": "X / Twitter"
     },
     "detailed-setup-guide": "详细设置指南",
+    "email-from-notice": "安全提示：我们的提醒邮件只会从 {{fromEmail}} 发送。请勿点击来自其他地址、但声称来自我们的邮件中的链接。",
     "channel-name": "频道名称",
     "channel-name-help": "用于识别此频道的私密名称。",
     "channel-name-placeholder-by-type": {
@@ -583,7 +584,7 @@
     "guides": {
       "email": {
         "title": "Email",
-        "description": "使用接收 {{explorerName}} 提醒的邮箱，无需 webhook 设置。",
+        "description": "使用接收 {{explorerName}} 提醒的邮箱。",
         "steps": [
 
         ]

@@ -459,6 +459,7 @@
       "twitter_api": "X / Twitter"
     },
     "detailed-setup-guide": "Detailed setup guide",
+    "email-from-notice": "For security: our alert emails are only ever sent from {{fromEmail}}. Never click links in emails claiming to be from us that arrive from a different address.",
     "channel-name": "Channel name",
     "channel-name-help": "A private name to recognize this channel.",
     "channel-name-placeholder-by-type": {
@@ -583,7 +584,7 @@
     "guides": {
       "email": {
         "title": "Email",
-        "description": "Use the mailbox that should receive {{explorerName}} alerts. No webhook setup is required.",
+        "description": "Use the mailbox that should receive {{explorerName}} alerts.",
         "steps": [
 
         ]

@@ -459,6 +459,7 @@
       "twitter_api": "X / Twitter"
     },
     "detailed-setup-guide": "자세한 설정 가이드",
+    "email-from-notice": "보안을 위해 알림 이메일은 항상 {{fromEmail}}에서만 발송됩니다. 다른 주소에서 온 당사 사칭 이메일의 링크는 절대 클릭하지 마세요.",
     "channel-name": "채널 이름",
     "channel-name-help": "이 채널을 인식하기 위한 비공개 이름입니다.",
     "channel-name-placeholder-by-type": {
@@ -583,7 +584,7 @@
     "guides": {
       "email": {
         "title": "이메일",
-        "description": "{{explorerName}}경고를 수신해야 하는 사서함을 사용합니다. 웹훅 설정이 필요하지 않습니다.",
+        "description": "{{explorerName}}경고를 수신해야 하는 사서함을 사용합니다.",
         "steps": [
 
         ]

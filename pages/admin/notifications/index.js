@@ -32,7 +32,7 @@ import {
   useUpdateNotificationRule
 } from '@/hooks/useNotifications'
 import { getNotificationChannelLabel, NOTIFICATION_CHANNELS, NOTIFICATION_CHANNEL_TYPES } from '@/utils/notificationChannels'
-import { explorerName, isAddressValid, nativeCurrency, timestampExpired, xahauNetwork } from '@/utils'
+import { explorerName, isAddressValid, nativeCurrency, timestampExpired, webSiteName, xahauNetwork } from '@/utils'
 import {
   getNotificationFilterFields,
   getNotificationEventDescription,
@@ -271,8 +271,9 @@ const setupGuides = [
     type: NOTIFICATION_CHANNEL_TYPES.EMAIL,
     icon: FaEnvelope,
     title: 'Email',
-    description: `Use the mailbox that should receive ${explorerName} alerts. No webhook setup is required.`,
-    steps: []
+    description: `Use the mailbox that should receive ${explorerName} alerts.`,
+    steps: [],
+    fromEmail: `noreply@${webSiteName}`
   },
   {
     type: NOTIFICATION_CHANNEL_TYPES.DISCORD,
@@ -1068,15 +1069,30 @@ export default function Notifications({
   )
 
   const renderSelectedChannelGuide = ({ showWithoutSteps = false } = {}) => {
-    if (!selectedGuide || (!showWithoutSteps && selectedGuide.steps.length === 0)) return null
+    if (!selectedGuide) return null
+    const selectedGuideHasSteps = selectedGuide.steps.length > 0
+    if (!showWithoutSteps && !selectedGuideHasSteps && !selectedGuide.fromEmail) return null
 
     return (
-      <div className="notification-selected-guide">
+      <div className={`notification-selected-guide${selectedGuideHasSteps ? '' : ' no-steps'}`}>
         <div>
           <strong>{t(`notifications.guides.${selectedGuide.type}.title`, { defaultValue: selectedGuide.title })}</strong>
-          <p>{t(`notifications.guides.${selectedGuide.type}.description`, { defaultValue: selectedGuide.description })}</p>
+          <p>
+            {t(`notifications.guides.${selectedGuide.type}.description`, {
+              defaultValue: selectedGuide.description,
+              explorerName
+            })}
+          </p>
+          {selectedGuide.fromEmail && (
+            <p className="orange">
+              {t('notifications.email-from-notice', {
+                defaultValue: `For security: our alert emails are only ever sent from {{fromEmail}}. Never click links in emails claiming to be from us that arrive from a different address.`,
+                fromEmail: selectedGuide.fromEmail
+              })}
+            </p>
+          )}
         </div>
-        {selectedGuide.steps.length > 0 && (
+        {selectedGuideHasSteps && (
           <div>
             <ol>
               {selectedGuide.steps.map((step, index) => (

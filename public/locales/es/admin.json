@@ -459,6 +459,7 @@
       "twitter_api": "X / Twitter"
     },
     "detailed-setup-guide": "Guía de configuración detallada",
+    "email-from-notice": "Por seguridad: nuestros emails de alerta se envían únicamente desde {{fromEmail}}. Nunca hagas clic en enlaces de emails que dicen ser nuestros si llegan desde otra dirección.",
     "channel-name": "Nombre del canal",
     "channel-name-help": "Un nombre privado para reconocer este canal.",
     "channel-name-placeholder-by-type": {
@@ -583,7 +584,7 @@
     "guides": {
       "email": {
         "title": "Correo electrónico",
-        "description": "Utilice el buzón que debe recibir alertas de {{explorerName}}. No se requiere configurar un webhook.",
+        "description": "Utilice el buzón que debe recibir alertas de {{explorerName}}.",
         "steps": [
 
         ]

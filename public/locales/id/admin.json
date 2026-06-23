@@ -459,6 +459,7 @@
       "twitter_api": "X / Twitter"
     },
     "detailed-setup-guide": "Panduan pengaturan terperinci",
+    "email-from-notice": "Demi keamanan: email peringatan kami hanya pernah dikirim dari {{fromEmail}}. Jangan pernah klik tautan dalam email yang mengaku dari kami jika datang dari alamat lain.",
     "channel-name": "Nama saluran",
     "channel-name-help": "Nama pribadi untuk mengenali saluran ini.",
     "channel-name-placeholder-by-type": {
@@ -583,7 +584,7 @@
     "guides": {
       "email": {
         "title": "E-mail",
-        "description": "Gunakan kotak surat yang harus menerima peringatan {{explorerName}}. Tidak diperlukan pengaturan webhook.",
+        "description": "Gunakan kotak surat yang harus menerima peringatan {{explorerName}}.",
         "steps": [
 
         ]
