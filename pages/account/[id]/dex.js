@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
@@ -11,6 +12,7 @@ import {
   niceCurrency,
   fullNiceNumber,
   fullDateAndTime,
+  shortHash,
   amountFormat,
   addressUsernameOrServiceLink
 } from '../../../utils/format'
@@ -169,6 +171,16 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
               <span className={isExpired ? 'red' : 'orange'}>
                 {isExpired ? 'Expired' : 'Expires'}: {fullDateAndTime(offer.Expiration, 'ripple')}
               </span>
+            </div>
+          )}
+          {offer.index && (
+            <div className="grey">
+              Offer object: <Link href={`/object/${offer.index}`}>{shortHash(offer.index)}</Link>
+            </div>
+          )}
+          {offer.PreviousTxnID && (
+            <div className="grey">
+              TX: <Link href={`/tx/${offer.PreviousTxnID}`}>{shortHash(offer.PreviousTxnID)}</Link>
             </div>
           )}
         </td>

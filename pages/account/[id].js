@@ -9304,6 +9304,15 @@ export default function Account({
                               </span>
                             </div>
 
+                            {!!offer?.PreviousTxnID && (
+                              <div className="detail-row">
+                                <span>{ta('actions.view-transaction')}:</span>
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <Link href={`/tx/${offer.PreviousTxnID}`}>{shortHash(offer.PreviousTxnID)}</Link>
+                                </span>
+                              </div>
+                            )}
+
                             {!effectiveLedgerTimestamp &&
                               hasCancelableSequence &&
                               (!isExpired || canCancelDexOrder) && (
