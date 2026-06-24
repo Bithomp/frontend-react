@@ -55,7 +55,12 @@ const normalizeValidator = (metrics, meta) => ({
   validation_public_key: metrics?.validation_public_key || meta?.publicKey || meta?.validation_public_key,
   signing_key: metrics?.signing_key || meta?.signingKey || meta?.signing_key,
   master_key: metrics?.master_key || meta?.masterKey || meta?.master_key,
-  domain: metrics?.domain || meta?.domain || meta?.domainLegacy
+  domain: metrics?.domain || meta?.domain || meta?.domainLegacy,
+  base_fee: metrics?.base_fee || meta?.baseFee,
+  reserve_base: metrics?.reserve_base || meta?.reserveBase,
+  reserve_inc: metrics?.reserve_inc || meta?.reserveIncrement,
+  current_index: metrics?.current_index || meta?.ledgerIndex,
+  ledger_hash: metrics?.ledger_hash || meta?.ledgerHash
 })
 
 export async function getServerSideProps(context) {
@@ -72,12 +77,12 @@ export async function getServerSideProps(context) {
         method: 'get',
         url: 'v2/validator/' + encodeURIComponent(id) + '/metrics',
         headers: passHeaders(req)
-      }),
+      }).catch(() => null),
       axiosServer({
         method: 'get',
         url: 'v2/validator/' + encodeURIComponent(id) + '/reports',
         headers: passHeaders(req)
-      }),
+      }).catch(() => null),
       axiosServer({
         method: 'get',
         url: 'v2/validator/' + encodeURIComponent(id),
@@ -85,7 +90,7 @@ export async function getServerSideProps(context) {
       })
     ])
 
-    validator = normalizeValidator(metricsRes.data, validatorRes.data)
+    validator = normalizeValidator(metricsRes?.data, validatorRes.data)
     reportsPayload = reportsRes?.data || null
   } catch (error) {
     errorMessage = error?.message || 'Failed to load validator'
@@ -381,7 +386,7 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
             </div>
           </section>
 
-          <section className="validator-card bordered">
+          <section className={`validator-card bordered${recentReports.length === 0 ? ' validator-card-wide' : ''}`}>
             <h3>Voting</h3>
             <div className="validator-detail-list">
               <div className="validator-detail-row">
@@ -411,68 +416,72 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
             </div>
           </section>
 
-          <section className="validator-card bordered">
-            <h3>Reports</h3>
-            <div className="validator-detail-list">
-              <div className="validator-detail-row">
-                <span>Latest report</span>
-                <span>{reports[0]?.date ? fullDateAndTime(reports[0].date) : 'N/A'}</span>
+          {recentReports.length > 0 && (
+            <section className="validator-card bordered">
+              <h3>Reports</h3>
+              <div className="validator-detail-list">
+                <div className="validator-detail-row">
+                  <span>Latest report</span>
+                  <span>{reports[0]?.date ? fullDateAndTime(reports[0].date) : 'N/A'}</span>
+                </div>
+                <div className="validator-detail-row">
+                  <span>Average recent score</span>
+                  <span>{recentAverageScore ? scorePercent(recentAverageScore) : 'N/A'}</span>
+                </div>
+                <div className="validator-detail-row">
+                  <span>Missed in recent {recentReports.length}</span>
+                  <span>{totalMissedRecent.toLocaleString()}</span>
+                </div>
               </div>
-              <div className="validator-detail-row">
-                <span>Average recent score</span>
-                <span>{recentAverageScore ? scorePercent(recentAverageScore) : 'N/A'}</span>
-              </div>
-              <div className="validator-detail-row">
-                <span>Missed in recent {recentReports.length}</span>
-                <span>{totalMissedRecent.toLocaleString()}</span>
-              </div>
-            </div>
-          </section>
+            </section>
+          )}
         </div>
 
-        <section className="validator-card bordered">
-          <h3>Latest {recentReports.length} daily reports</h3>
+        {recentReports.length > 0 && (
+          <section className="validator-card bordered">
+            <h3>Latest {recentReports.length} daily reports</h3>
 
-          <div className="validator-reports-desktop">
-            <table className="validator-reports-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th className="right">Score</th>
-                  <th className="right">
-                    <span className="tooltip" tabIndex={0}>
-                      Missed
-                      <span className="tooltiptext left" style={{ width: '180px' }}>
-                        Ledgers this validator did not validate that day.
+            <div className="validator-reports-desktop">
+              <table className="validator-reports-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th className="right">Score</th>
+                    <th className="right">
+                      <span className="tooltip" tabIndex={0}>
+                        Missed
+                        <span className="tooltiptext left" style={{ width: '180px' }}>
+                          Ledgers this validator did not validate that day.
+                        </span>
                       </span>
-                    </span>
-                  </th>
-                  <th className="right">
-                    <span className="tooltip" tabIndex={0}>
-                      Total
-                      <span className="tooltiptext left" style={{ width: '160px' }}>
-                        Total ledgers closed that day.
+                    </th>
+                    <th className="right">
+                      <span className="tooltip" tabIndex={0}>
+                        Total
+                        <span className="tooltiptext left" style={{ width: '160px' }}>
+                          Total ledgers closed that day.
+                        </span>
                       </span>
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentReports.map((report) => {
-                  const missed = Number(report.missed || 0)
-                  return (
-                    <tr key={report.date} className={missed > 0 ? 'validator-report-missed' : ''}>
-                      <td>{dateFormat(report.date, undefined, { type: 'ISO' })}</td>
-                      <td className="right">{scorePercent(report.score)}</td>
-                      <td className="right">{missed.toLocaleString()}</td>
-                      <td className="right">{Number(report.total || 0).toLocaleString()}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </section>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentReports.map((report) => {
+                    const missed = Number(report.missed || 0)
+                    return (
+                      <tr key={report.date} className={missed > 0 ? 'validator-report-missed' : ''}>
+                        <td>{dateFormat(report.date, undefined, { type: 'ISO' })}</td>
+                        <td className="right">{scorePercent(report.score)}</td>
+                        <td className="right">{missed.toLocaleString()}</td>
+                        <td className="right">{Number(report.total || 0).toLocaleString()}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
       </div>
 
       <style jsx>{`
@@ -633,6 +642,10 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 20px;
+        }
+
+        .validator-card-wide {
+          grid-column: 1 / -1;
         }
 
         .validator-card h3 {
