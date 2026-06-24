@@ -342,8 +342,8 @@ export default function Tokens({
         const error = tokensResponse.reason
         if (error && error.message !== 'canceled') {
           setErrorMessage(t('error.' + error.message))
-          setLoading(false)
         }
+        setLoading(false)
         return
       }
 
@@ -394,6 +394,7 @@ export default function Tokens({
           }
         }
       } else {
+        setLoading(false)
         setErrorMessage(t('general.no-data'))
         if (!loadMoreRequest) {
           setMarker(null)

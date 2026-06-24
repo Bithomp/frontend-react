@@ -72,7 +72,9 @@ const configureAxiosDefaults = () => {
 
 const getRealtimeServerUrl = () => {
   if (process.env.NODE_ENV === 'development' || isLocalBrowserHost()) {
-    return server.replace('https://', 'wss://') + '/wss/?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
+    return (
+      server.replace('https://', 'wss://') + '/wss/?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
+    )
   }
 
   return wssServer
@@ -795,12 +797,6 @@ const MyApp = ({ Component, pageProps }) => {
     if (typeof document === 'undefined') return
     document.body.dataset.hideAds = !subscriptionExpired || hideAdsForCurrentPage ? 'true' : 'false'
   }, [hideAdsForCurrentPage, subscriptionExpired])
-
-  useEffect(() => {
-    if (sessionToken) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken?.replace(/['"]+/g, '')
-    }
-  }, [sessionToken])
 
   useEffect(() => {
     // Wait for localStorage hydration; null is the pre-hydration placeholder.

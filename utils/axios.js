@@ -24,6 +24,22 @@ axiosAdmin.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
+// Add session token to all default axios requests from localStorage directly,
+// so child component effects (e.g. subscriptionExpired) don't race against
+// the _app.js useEffect that sets axios.defaults.headers.common['Authorization'].
+if (typeof window !== 'undefined') {
+  axios.interceptors.request.use(
+    (config) => {
+      const sessionToken = localStorage.getItem('sessionToken')?.replace(/['"]+/g, '')
+      if (sessionToken && !config.headers['Authorization'] && !config.headers.common?.['Authorization']) {
+        config.headers['Authorization'] = `Bearer ${sessionToken}`
+      }
+      return config
+    },
+    (error) => Promise.reject(error)
+  )
+}
+
 export const passHeaders = (req) => {
   let headers = {}
   //we need to pass only some headers, otherwise axios error
