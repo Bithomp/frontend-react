@@ -2753,6 +2753,8 @@ export default function Account({
       return
     }
 
+    let canceled = false
+
     const fetchTokens = async () => {
       setObjectsLoading(true)
       setObjectsError(null)
@@ -2788,6 +2790,7 @@ export default function Account({
           objectsMarker = nextMarker
         }
 
+        if (canceled) return
         setAccountObjectsLoaded(accountObjects)
         setAccountObjectsMarker(isAmmAccount ? null : nextObjectsMarker)
         const { nftIds, sortedTokens } = applyLoadedAccountObjects(accountObjects)
@@ -2841,10 +2844,12 @@ export default function Account({
             const ownedNftsList = Array.isArray(nftResponse?.data?.[nftResource]) ? nftResponse.data[nftResource] : []
             const combinedOwnedNfts = uniqueNftsById([...bidNftsList, ...ownedNftsList])
 
-            setOwnedNfts(combinedOwnedNfts)
-            setNftMarkers((prev) => ({ ...prev, owned: nftResponse?.data?.marker || null }))
+            if (!canceled) {
+              setOwnedNfts(combinedOwnedNfts)
+              setNftMarkers((prev) => ({ ...prev, owned: nftResponse?.data?.marker || null }))
+            }
           } catch {
-            setOwnedNfts([])
+            if (!canceled) setOwnedNfts([])
           }
         } else {
           setOwnedNfts([])
@@ -2861,12 +2866,16 @@ export default function Account({
           const soldResponse = await axios.get(soldNftsUrl)
           const soldPayload = soldResponse?.data || {}
           const { soldList, soldTotalCount } = parseSoldNftsPayload(soldPayload, NFT_FETCH_LIMIT)
-          setSoldNfts(soldList)
-          setSoldNftsTotalCount(soldTotalCount)
-          setNftMarkers((prev) => ({ ...prev, sold: soldResponse?.data?.marker || null }))
+          if (!canceled) {
+            setSoldNfts(soldList)
+            setSoldNftsTotalCount(soldTotalCount)
+            setNftMarkers((prev) => ({ ...prev, sold: soldResponse?.data?.marker || null }))
+          }
         } catch {
-          setSoldNfts([])
-          setSoldNftsTotalCount(null)
+          if (!canceled) {
+            setSoldNfts([])
+            setSoldNftsTotalCount(null)
+          }
         } finally {
           setSoldNftsLoading(false)
         }
@@ -2888,12 +2897,14 @@ export default function Account({
             const mintedNftsList = Array.isArray(mintedResponse?.data?.[mintedNftResource])
               ? mintedResponse.data[mintedNftResource]
               : []
-            setMintedNfts(mintedNftsList.slice(0, NFT_FETCH_LIMIT))
-            setNftMarkers((prev) => ({ ...prev, minted: mintedResponse?.data?.marker || null }))
+            if (!canceled) {
+              setMintedNfts(mintedNftsList.slice(0, NFT_FETCH_LIMIT))
+              setNftMarkers((prev) => ({ ...prev, minted: mintedResponse?.data?.marker || null }))
+            }
           } catch {
-            setMintedNfts([])
+            if (!canceled) setMintedNfts([])
           } finally {
-            setMintedNftsLoading(false)
+            if (!canceled) setMintedNftsLoading(false)
           }
         } else {
           setMintedNfts([])
@@ -2913,29 +2924,35 @@ export default function Account({
             const burnedNftsList = Array.isArray(burnedResponse?.data?.[burnedNftResource])
               ? burnedResponse.data[burnedNftResource]
               : []
-            setBurnedNfts(burnedNftsList.slice(0, NFT_FETCH_LIMIT))
-            setNftMarkers((prev) => ({ ...prev, burned: burnedResponse?.data?.marker || null }))
+            if (!canceled) {
+              setBurnedNfts(burnedNftsList.slice(0, NFT_FETCH_LIMIT))
+              setNftMarkers((prev) => ({ ...prev, burned: burnedResponse?.data?.marker || null }))
+            }
           } catch {
-            setBurnedNfts([])
+            if (!canceled) setBurnedNfts([])
           } finally {
-            setBurnedNftsLoading(false)
+            if (!canceled) setBurnedNftsLoading(false)
           }
         } else {
           setBurnedNfts([])
           setBurnedNftsLoading(false)
         }
       } catch (error) {
+        if (canceled) return
         setObjectsError(error?.message || 'Failed to load account objects')
         resetAccountObjectCollections()
         setSoldNftsLoading(false)
         setMintedNftsLoading(false)
         setBurnedNftsLoading(false)
       } finally {
-        setObjectsLoading(false)
+        if (!canceled) setObjectsLoading(false)
       }
     }
 
     fetchTokens()
+    return () => {
+      canceled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     data?.address,
