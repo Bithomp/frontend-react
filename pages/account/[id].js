@@ -9465,7 +9465,7 @@ export default function Account({
                         const sentAtValue = check?.previousTxAt || check?.createdAt
                         const sentAtText = sentAtValue ? timeFromNow(sentAtValue, i18n) : '-'
                         const expirationValue = check?.Expiration
-                        const expirationText = expirationValue
+                        const expirationText = expirationValue ? timeFromNow(expirationValue, i18n, 'ripple') : null
                         const isExpired = Boolean(expirationValue && timestampExpired(expirationValue, 'ripple'))
                         const canRedeem =
                           !!setSignRequest &&
@@ -9514,11 +9514,13 @@ export default function Account({
                                 <div className={`asset-amount ${isReceivedCheck ? 'grey' : ''}`}>
                                   {collapsedSendMaxText}
                                 </div>
-                                {sendMaxFiatText && (
+                                {isExpired ? (
+                                  <div className="asset-fiat red">{ta('tabs.expired')}</div>
+                                ) : sendMaxFiatText ? (
                                   <div className="asset-fiat" suppressHydrationWarning>
                                     {sendMaxFiatText}
                                   </div>
-                                )}
+                                ) : null}
                               </div>
                             </div>
 
