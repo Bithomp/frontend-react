@@ -9464,11 +9464,9 @@ export default function Account({
                           : sendMaxAmountOnly
                         const sentAtValue = check?.previousTxAt || check?.createdAt
                         const sentAtText = sentAtValue ? timeFromNow(sentAtValue, i18n) : '-'
-                        const expirationValue = check?.expiration || check?.Expiration
+                        const expirationValue = check?.Expiration
                         const expirationText = expirationValue
-                          ? timeFromNow(expirationValue, i18n, 'ripple')
-                          : ta('states.does-not-expire')
-                        const isExpired = expirationValue ? timestampExpired(expirationValue, 'ripple') : false
+                        const isExpired = Boolean(expirationValue && timestampExpired(expirationValue, 'ripple'))
                         const canRedeem =
                           !!setSignRequest &&
                           !effectiveLedgerTimestamp &&
@@ -9585,10 +9583,12 @@ export default function Account({
                                     <span>{check.DestinationTag}</span>
                                   </div>
                                 )}
-                                <div className="detail-row">
-                                  <span>{ta('labels.expiration')}:</span>
-                                  <span className={isExpired ? 'red' : ''}>{expirationText}</span>
-                                </div>
+                                {expirationValue ? (
+                                  <div className="detail-row">
+                                    <span>{ta('labels.expiration')}:</span>
+                                    <span className={isExpired ? 'red' : ''}>{expirationText}</span>
+                                  </div>
+                                ) : null}
                                 <div className="detail-row">
                                   <span>{ta('labels.check-id')}:</span>
                                   <span className="copy-inline">
