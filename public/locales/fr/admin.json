@@ -348,8 +348,7 @@
     "alerts": {
       "why-title": "Bot d’alertes",
       "intro": "Les alertes {{explorerName}} vous avertissent des offres NFT, des ventes NFT et des changements de solde des comptes surveillés.",
-      "destinations": "Envoyez les alertes par e-mail, Slack, Discord ou X.",
-      "balance-before": "Les alertes de changement de solde utilisent les adresses de",
+      "destinations": "Envoyer les alertes à :",
       "subscribe": "Choisissez un forfait d’alertes et une période de facturation.",
       "alerts-day": "Alertes / jour",
       "alerts-week": "Alertes / semaine",

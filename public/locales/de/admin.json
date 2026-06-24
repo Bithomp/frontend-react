@@ -348,8 +348,7 @@
     "alerts": {
       "why-title": "Warnungs-Bot",
       "intro": "{{explorerName}}-Benachrichtigungen benachrichtigen Sie über NFT-Angebote, NFT-Verkäufe und Änderungen des beobachteten Kontostands.",
-      "destinations": "Senden Sie Benachrichtigungen an E-Mail, Slack, Discord oder X.",
-      "balance-before": "Für Benachrichtigungen zu Kontostandsänderungen werden Adressen von verwendet",
+      "destinations": "Benachrichtigungen senden an:",
       "subscribe": "Wählen Sie einen Benachrichtigungsplan und einen Abrechnungszeitraum.",
       "alerts-day": "Warnungen/Tag",
       "alerts-week": "Warnungen/Woche",

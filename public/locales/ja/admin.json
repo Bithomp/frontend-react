@@ -348,8 +348,7 @@
     "alerts": {
       "why-title": "アラートボット",
       "intro": "{{explorerName}}アラートは、NFT オファー、NFT 販売、監視されているアカウント残高の変更について通知します。",
-      "destinations": "アラートを電子メール、Slack、Discord、または X に送信します。",
-      "balance-before": "残高変更アラートは次のアドレスを使用します",
+      "destinations": "アラートの送信先：",
       "subscribe": "アラート プランと請求期間を選択します。",
       "alerts-day": "アラート/日",
       "alerts-week": "アラート/週",

@@ -348,8 +348,7 @@
     "alerts": {
       "why-title": "提醒机器人",
       "intro": "{{explorerName}} 提醒会通知你 NFT 报价、NFT 销售以及已关注账户的余额变化。",
-      "destinations": "通过 e-mail、Slack、Discord 或 X 发送提醒。",
-      "balance-before": "余额变化提醒使用来自以下页面的地址：",
+      "destinations": "发送提醒至：",
       "subscribe": "选择提醒套餐和计费周期。",
       "alerts-day": "提醒 / 天",
       "alerts-week": "提醒 / 周",

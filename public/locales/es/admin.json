@@ -348,8 +348,7 @@
     "alerts": {
       "why-title": "robot de alertas",
       "intro": "Las alertas de {{explorerName}} le notifican sobre ofertas de NFT, ventas de NFT y cambios en el saldo de cuentas observadas.",
-      "destinations": "Envíe alertas por correo electrónico, Slack, Discord o X.",
-      "balance-before": "Las alertas de cambio de saldo utilizan direcciones de",
+      "destinations": "Envía alertas a:",
       "subscribe": "Elija un plan de alertas y un período de facturación.",
       "alerts-day": "Alertas / día",
       "alerts-week": "Alertas / semana",

@@ -348,8 +348,7 @@
     "alerts": {
       "why-title": "Alerts bot",
       "intro": "{{explorerName}} alerts notify you about NFT offers, NFT sales, and watched account balance changes.",
-      "destinations": "Send alerts to email, Slack, Discord, or X.",
-      "balance-before": "Balance change alerts use addresses from",
+      "destinations": "Send alerts to:",
       "subscribe": "Choose an alerts plan and billing period.",
       "alerts-day": "Alerts / day",
       "alerts-week": "Alerts / week",
@@ -733,7 +732,7 @@
     },
     "guest": {
       "rules": "Create {{explorerName}} alert rules after signing in.",
-      "channels": "Send alerts to email, Slack, Discord, or X."
+      "channels": "Send alerts to email, Slack, Discord, Telegram, or X."
     },
     "slack-guide": {
       "seo-title": "Slack notification setup guide",

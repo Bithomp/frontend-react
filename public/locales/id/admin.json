@@ -348,8 +348,7 @@
     "alerts": {
       "why-title": "Bot peringatan",
       "intro": "Peringatan {{explorerName}} memberi tahu Anda tentang penawaran NFT, penjualan NFT, dan perubahan saldo akun yang dipantau.",
-      "destinations": "Kirim peringatan ke email, Slack, Discord, atau X.",
-      "balance-before": "Peringatan perubahan saldo menggunakan alamat dari",
+      "destinations": "Kirim peringatan ke:",
       "subscribe": "Pilih paket peringatan dan periode penagihan.",
       "alerts-day": "Peringatan / hari",
       "alerts-week": "Peringatan / minggu",

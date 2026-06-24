@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { FaDiscord, FaEnvelope, FaSlack } from 'react-icons/fa'
+import { FaTelegram, FaXTwitter } from 'react-icons/fa6'
 import Select from 'react-select'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { explorerName, useWidth } from '../../../utils'
 import {
@@ -30,9 +31,11 @@ const optionIndex = (val) => {
 const planLabel = (t, key, fallback) => t(`plans.${key}`, { defaultValue: fallback })
 const planDescription = (t, key, options) => t(`subscriptions.alerts.plan-description.${key}`, options)
 const periodLabel = (t, value) => t(`period.${value}`, value)
-const priceLabel = (t, value) => value === 'Free' ? t('plans.free') : value
+const priceLabel = (t, value) => (value === 'Free' ? t('plans.free') : value)
 const planPriceLabel = (t, value, plan) =>
-  value === 'Free' ? t('subscriptions.alerts.price-week-free', { defaultValue: `${t('plans.free')} / ${periodLabel(t, plan.period)}` }) : value
+  value === 'Free'
+    ? t('subscriptions.alerts.price-week-free', { defaultValue: `${t('plans.free')} / ${periodLabel(t, plan.period)}` })
+    : value
 
 const PlanTable = ({ t }) => (
   <div className="alerts-plan-table-wrap">
@@ -70,9 +73,7 @@ const PlanTable = ({ t }) => (
               <td className="right">{plan.listeners}</td>
               <td className="right">{plan.executionsDay}</td>
               <td className="right">{plan.executionsWeek}</td>
-              <td>
-                {planDescription(t, key, { explorerName, defaultValue: plan.description })}
-              </td>
+              <td>{planDescription(t, key, { explorerName, defaultValue: plan.description })}</td>
             </tr>
           )
         })}
@@ -85,7 +86,11 @@ const PlanTable = ({ t }) => (
           <div className="alerts-plan-card" key={key}>
             <div className="alerts-plan-card-header">
               <strong>{planLabel(t, key, plan.label)}</strong>
-              <span>{plan.prices ? t('subscriptions.alerts.price-month', { price: plan.prices.month.eur }) : planPriceLabel(t, plan.price, plan)}</span>
+              <span>
+                {plan.prices
+                  ? t('subscriptions.alerts.price-month', { price: plan.prices.month.eur })
+                  : planPriceLabel(t, plan.price, plan)}
+              </span>
             </div>
             {plan.prices && (
               <div className="alerts-plan-card-price">
@@ -212,8 +217,12 @@ export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
   const width = useWidth()
 
   const optionsList = translatedPlanOptions(innerTier)
-  const translatedTierOptions = alertTierOptions.map((option) => ({ ...option, label: planLabel(t, option.value, option.label) }))
-  const selectedTierOption = translatedTierOptions.find((option) => option.value === innerTier) || translatedTierOptions[0]
+  const translatedTierOptions = alertTierOptions.map((option) => ({
+    ...option,
+    label: planLabel(t, option.value, option.label)
+  }))
+  const selectedTierOption =
+    translatedTierOptions.find((option) => option.value === innerTier) || translatedTierOptions[0]
 
   useEffect(() => {
     const nextOptions = translatedPlanOptions(innerTier)
@@ -230,10 +239,23 @@ export default function NotificationsBot({ setPayPeriod, setTier, tier }) {
       <h4 className="center">{t('subscriptions.alerts.why-title')}</h4>
       <div style={{ textAlign: 'left' }}>
         <p>{t('subscriptions.alerts.intro', { explorerName })}</p>
-        <p>{t('subscriptions.alerts.destinations')}</p>
-        <p>
-          {t('subscriptions.alerts.balance-before')}{' '}
-          <Link href="/admin/pro">{t('tabs.my-addresses')}</Link>.
+        <p style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 12px', alignItems: 'center' }}>
+          <span>{t('subscriptions.alerts.destinations')}</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <FaEnvelope /> Email
+          </span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <FaSlack /> Slack
+          </span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <FaDiscord /> Discord
+          </span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <FaTelegram /> Telegram
+          </span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <FaXTwitter /> X
+          </span>
         </p>
         <PlanTable t={t} />
       </div>
