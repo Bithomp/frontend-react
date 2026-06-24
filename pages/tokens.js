@@ -874,9 +874,7 @@ export default function Tokens({
                                 {renderShortNumberWithTooltip(token.statistics?.activeAmmPools, 'green')}
                               </td>
                             )}
-                            <td className="right">
-                              {renderShortNumberWithTooltip(token.statistics?.dexes)}
-                            </td>
+                            <td className="right">{renderShortNumberWithTooltip(token.statistics?.dexes)}</td>
                             <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
                             <td className="center">
                               <div className="token-row-actions">
@@ -966,7 +964,8 @@ export default function Tokens({
                                   <br />
                                   {tt('mobile.change24h', {
                                     currency: selectedCurrency.toUpperCase()
-                                  })}:{' '}
+                                  })}
+                                  :{' '}
                                   {renderPercentCell({
                                     currentPrice: token.statistics?.priceFiats[selectedCurrency],
                                     pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
