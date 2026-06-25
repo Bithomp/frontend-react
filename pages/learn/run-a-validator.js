@@ -416,15 +416,15 @@ modified = 2026-05-20T00:00:00.000Z
 
 [[PRINCIPALS]]
 name = "Bithomp"
-email = "support@bithomp.com"
+email = "validator@example.com"
 x = "bithomp"
 
 [[VALIDATORS]]
 public_key = "nHB8QMKGt9VB4Vg71VszjBVQnDW3v3QudM4DwFaJfy96bj4Pv9fA"
 attestation = "9537FBEBC7A676E8748F9D18FF5BD48662B6D811033F34C807E58B99B91484D22B26F56FC7E6B9B8D2233DD5F0DCF9462C3B264411964A93F0173D512F19F002"
 network = "main"
-owner_country = "se"
-server_country = "FI"
+owner_country = "US"
+server_country = "DE"
 network_asn = 24940
 server_location = "HETZNER-AS, DE"
 server_cloud = true
