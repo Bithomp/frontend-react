@@ -223,9 +223,7 @@ sudo timedatectl set-ntp true
               <li key={detail}>{detail}</li>
             ))}
           </ul>
-          <CodeBlock>
-            {installTarget.command}
-          </CodeBlock>
+          <CodeBlock>{installTarget.command}</CodeBlock>
           <p>Check that the service started:</p>
           <CodeBlock>
             {`
@@ -327,7 +325,9 @@ sudo cp /etc/xrpld/xrpld.cfg /etc/xrpld/xrpld.cfg.backup
 sudo nano /etc/xrpld/xrpld.cfg
             `}
           </CodeBlock>
-          <p>Add the token printed by <code>set_domain</code>:</p>
+          <p>
+            Add the token printed by <code>set_domain</code>:
+          </p>
           <CodeBlock>
             {`
 # validator public key: nH...
@@ -335,9 +335,7 @@ sudo nano /etc/xrpld/xrpld.cfg
 PASTE_THE_TOKEN_HERE
             `}
           </CodeBlock>
-          <p>
-            For a practical first setup, connect through known public hubs and keep your validator private.
-          </p>
+          <p>For a practical first setup, connect through known public hubs and keep your validator private.</p>
           <CodeBlock>
             {`
 [ips_fixed]
@@ -360,8 +358,8 @@ sudo systemctl restart xrpld.service
 
           <h2>6. Check That It Is Live</h2>
           <p>
-            First check locally. The validator public key should match the key created by{' '}
-            <code>validator-keys</code>, and <code>server_state</code> should normally settle on <code>proposing</code>.
+            First check locally. The validator public key should match the key created by <code>validator-keys</code>,
+            and <code>server_state</code> should normally settle on <code>proposing</code>.
           </p>
           <CodeBlock>
             {`
@@ -399,8 +397,8 @@ xrpld server_info
 
           <h2>7. Publish TOML Domain Verification</h2>
           <p>
-            After the domain is set in the validator keys and the validator token is installed in{' '}
-            <code>xrpld.cfg</code>, publish the matching <code>xrp-ledger.toml</code>. Serve it over HTTPS at:
+            After the domain is set in the validator keys and the validator token is installed in <code>xrpld.cfg</code>
+            , publish the matching <code>xrp-ledger.toml</code>. Serve it over HTTPS at:
           </p>
           <CodeBlock>
             {`
@@ -430,7 +428,7 @@ server_country = "FI"
 network_asn = 24940
 server_location = "HETZNER-AS, DE"
 server_cloud = true
-unl = "https://vl.xrplf.org"
+unl = "https://unl.xrplf.org"
             `}
           </CodeBlock>
           <p>Check that the file is reachable and validate it on Bithomp:</p>
@@ -456,11 +454,10 @@ curl -fsSL https://example.com/.well-known/xrp-ledger.toml
               <strong>Validator list expired:</strong> check outbound HTTPS access and validator list configuration.
             </li>
             <li>
-              <strong>Public key mismatch:</strong> confirm that the token in <code>xrpld.cfg</code> was generated
-              from the key file you backed up.
+              <strong>Public key mismatch:</strong> confirm that the token in <code>xrpld.cfg</code> was generated from
+              the key file you backed up.
             </li>
           </ul>
-
         </article>
       </div>
     </>

@@ -523,7 +523,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
 
   /*
   {
-    "url": "https://vl.xrplf.org",
+    "url": "https://unl.xrplf.org",
     "version": 1,
     "sequence": 2022051601,
     "updatedAt": 1664888233,
@@ -931,9 +931,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
         <center>
           <div
             style={
-              isMobileView
-                ? { display: 'flex', justifyContent: 'center', width: '100%' }
-                : { display: 'inline-block' }
+              isMobileView ? { display: 'flex', justifyContent: 'center', width: '100%' } : { display: 'inline-block' }
             }
           >
             <CheckBox checked={developerMode} setChecked={setDeveloperMode} style={checkBoxStyles}>

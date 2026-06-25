@@ -45,7 +45,7 @@ const defaultTomlNetwork =
   }[network] || (xahauNetwork ? 'xahau' : 'main')
 
 const unlsByNetwork = {
-  main: ['https://vl.xrplf.org', 'https://vl.ripple.com'],
+  main: ['https://unl.xrplf.org', 'https://vl.ripple.com'],
   testnet: ['https://vl.altnet.rippletest.net'],
   devnet: ['http://vl.devnet.rippletest.net'],
   alphanet: [],
