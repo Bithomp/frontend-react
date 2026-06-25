@@ -405,7 +405,15 @@ export default function TomlGeneratorPage({ modifiedAt }) {
     () => buildToml({ accounts, principals, validators, servers, tokens, enabledSections, modifiedAt }),
     [accounts, principals, validators, servers, tokens, enabledSections, modifiedAt]
   )
-  const modeTabList = useMemo(() => modeOptions.map((value) => ({ value, label: tg(`modes.${value}`) })), [tg])
+  const modeTabList = useMemo(
+    () =>
+      modeOptions.map((value) => ({
+        value,
+        label: tg(`modes.${value}`),
+        description: tg(`mode-descriptions.${value}`)
+      })),
+    [tg]
+  )
   const assetClassOptions = useMemo(
     () => assetClasses.map((value) => ({ value, label: tg(`asset-classes.${value || 'select'}`) })),
     [tg]
@@ -503,7 +511,10 @@ export default function TomlGeneratorPage({ modifiedAt }) {
                       onChange={() => toggleSection(item.value)}
                     />
                     <span className={styles.checkMark} aria-hidden="true" />
-                    <span>{item.label}</span>
+                    <span className={styles.sectionCheckText}>
+                      <span className={styles.sectionCheckTitle}>{item.label}</span>
+                      <span className={styles.sectionCheckDescription}>{item.description}</span>
+                    </span>
                   </label>
                 ))}
               </div>

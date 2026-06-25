@@ -744,6 +744,13 @@
       "account": "Compte",
       "server": "Serveur"
     },
+    "mode-descriptions": {
+      "principal": "Entité ou personne qui exploite le domaine, le serveur, le validateur et les comptes ou tokens liés.",
+      "account": "Tout compte du ledger que vous possédez et souhaitez associer publiquement à ce domaine.",
+      "token": "Pour les émetteurs de tokens. Ajoute le compte émetteur et les métadonnées du token et de la devise.",
+      "server": "Utilisez ceci si vous exploitez un nœud xrpld.",
+      "validator": "Utilisez ceci si vous exploitez un validateur et voulez vérifier son domaine."
+    },
     "notice": {
       "before": "Le fichier doit être servi en HTTPS. Utilisez",
       "middle": "si possible et activez",

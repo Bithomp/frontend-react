@@ -269,7 +269,7 @@ export async function getServerSideProps(context) {
       issuer,
       currency,
       tokenId,
-      ...(await serverSideTranslations(locale, ['common', 'token', 'services']))
+      ...(await serverSideTranslations(locale, ['common', 'token', 'services', 'amm']))
     }
   }
 }

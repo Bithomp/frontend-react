@@ -744,6 +744,13 @@
       "account": "Konto",
       "server": "Server"
     },
+    "mode-descriptions": {
+      "principal": "Person oder Organisation, die Domain, Server, Validator und zugehörige Konten oder Token betreibt.",
+      "account": "Jedes Ledger-Konto, das Ihnen gehört und öffentlich mit dieser Domain verbunden werden soll.",
+      "token": "Für Token-Emittenten. Fügt Emittentenkonto, Token- und Währungsmetadaten hinzu.",
+      "server": "Verwenden Sie dies, wenn Sie einen xrpld-Knoten betreiben.",
+      "validator": "Verwenden Sie dies, wenn Sie einen Validator betreiben und seine Domain verifizieren möchten."
+    },
     "notice": {
       "before": "Die Datei muss über HTTPS bereitgestellt werden. Verwenden Sie",
       "middle": "wenn möglich und aktivieren Sie",

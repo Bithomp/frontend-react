@@ -744,6 +744,13 @@
       "account": "Cuenta",
       "server": "Servidor"
     },
+    "mode-descriptions": {
+      "principal": "Entidad o persona que opera el dominio, servidor, validador y las cuentas o tokens relacionados.",
+      "account": "Cualquier cuenta del ledger que poseas y quieras asociar públicamente con este dominio.",
+      "token": "Para emisores de tokens. Añade la cuenta emisora y metadatos del token y la moneda.",
+      "server": "Úsalo si operas un nodo xrpld.",
+      "validator": "Úsalo si ejecutas un validador y quieres verificar su dominio."
+    },
     "notice": {
       "before": "El archivo debe servirse por HTTPS. Usa",
       "middle": "cuando sea posible y habilita",

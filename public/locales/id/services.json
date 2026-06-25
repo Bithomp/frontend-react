@@ -744,6 +744,13 @@
       "account": "Akun",
       "server": "Server"
     },
+    "mode-descriptions": {
+      "principal": "Entitas atau individu yang mengoperasikan domain, server, validator, serta akun atau token terkait.",
+      "account": "Akun ledger milik Anda yang ingin dikaitkan secara publik dengan domain ini.",
+      "token": "Untuk penerbit token. Menambahkan akun penerbit serta metadata token dan mata uang.",
+      "server": "Gunakan ini jika Anda mengoperasikan node xrpld.",
+      "validator": "Gunakan ini jika Anda menjalankan validator dan ingin memverifikasi domainnya."
+    },
     "notice": {
       "before": "File harus disajikan melalui HTTPS. Gunakan",
       "middle": "jika memungkinkan dan aktifkan",

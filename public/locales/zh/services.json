@@ -744,6 +744,13 @@
       "account": "账户",
       "server": "服务器"
     },
+    "mode-descriptions": {
+      "principal": "运营域名、服务器、验证器以及相关账户或代币的实体或个人。",
+      "account": "你拥有并希望公开关联到此域名的任何 ledger 账户。",
+      "token": "适用于代币发行方。添加发行方账户、代币和货币元数据。",
+      "server": "如果你运营 xrpld 节点，请使用此项。",
+      "validator": "如果你运行验证器并希望验证其域名，请使用此项。"
+    },
     "notice": {
       "before": "文件必须通过 HTTPS 提供。尽可能使用",
       "middle": "并启用",
