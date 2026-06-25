@@ -609,7 +609,7 @@ export const isNftExplicit = (nft) => {
     title.includes('nude') ||
     name.includes('sexy') ||
     name.includes('naked') ||
-    collection.includes('Girls') ||
+    collection.includes('girls') ||
     collection.includes('18+') ||
     nft.metadata?.is_explicit
   ) {
