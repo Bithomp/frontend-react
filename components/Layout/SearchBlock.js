@@ -424,7 +424,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
                           <>
                             {' '}
                             [
-                            <b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}</b>
+                            <b>
+                              {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}
+                            </b>
                             ]
                           </>
                         )}
