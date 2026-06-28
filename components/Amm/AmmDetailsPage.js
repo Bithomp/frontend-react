@@ -269,8 +269,8 @@ const auctionWinnerDiscountedFee = (tradingFee) => {
   return Math.floor(fee / 10)
 }
 
-const auctionEstimates = (data) => {
-  if (!data?.lpTokenBalance?.value || !data?.amount || !data?.amount2 || !data?.tradingFee) return null
+const auctionEstimates = (data, lpTokenBalanceValue = data?.lpTokenBalance?.value) => {
+  if (!lpTokenBalanceValue || !data?.amount || !data?.amount2 || !data?.tradingFee) return null
   const expired = isTimestampExpired(data.auctionSlot?.expiration)
   const hasActiveSlot = data.auctionSlot && !expired
   if (hasActiveSlot && !data.auctionSlot?.price?.value) return null
@@ -280,14 +280,14 @@ const auctionEstimates = (data) => {
   try {
     const oldBid = hasActiveSlot ? data.auctionSlot.price.value : 0
     const timeInterval = hasActiveSlot ? data.auctionSlot.timeInterval : 20
-    const bid = auctionPrice(oldBid, timeInterval, data.tradingFee, data.lpTokenBalance.value)
-    const depositBid = auctionDeposit(oldBid, timeInterval, data.tradingFee, data.lpTokenBalance.value)
+    const bid = auctionPrice(oldBid, timeInterval, data.tradingFee, lpTokenBalanceValue)
+    const depositBid = auctionDeposit(oldBid, timeInterval, data.tradingFee, lpTokenBalanceValue)
     const feeSavingsRate = feeDecimal(data.tradingFee).minus(feeDecimal(discountedFee))
     const assetEstimates = [
       { key: 'asset1', amount: data.amount },
       { key: 'asset2', amount: data.amount2 }
     ].map((asset) => {
-      const cost = ammAssetIn(poolAmountUnits(asset.amount), data.lpTokenBalance.value, depositBid, data.tradingFee)
+      const cost = ammAssetIn(poolAmountUnits(asset.amount), lpTokenBalanceValue, depositBid, data.tradingFee)
       return {
         ...asset,
         cost,
@@ -305,6 +305,35 @@ const auctionEstimates = (data) => {
   } catch (_) {
     return null
   }
+}
+
+const auctionRequiredLpForSupply = (data, lpTokenBalanceValue) => {
+  const estimates = auctionEstimates(data, lpTokenBalanceValue)
+  return estimates?.bid ? estimates.bid.multipliedBy(AUCTION_BID_MAX_MULTIPLIER) : null
+}
+
+const auctionMintTargetForBalance = (data, lpBalance) => {
+  const lpSupply = new BigNumber(data?.lpTokenBalance?.value || 0)
+  if (!lpSupply.isFinite() || !lpSupply.gt(0)) return null
+
+  const balance = new BigNumber(lpBalance || 0)
+  let target = auctionRequiredLpForSupply(data, lpSupply)?.minus(balance)
+  if (!target?.isFinite()) return null
+  target = BigNumber.max(target, 0)
+
+  for (let i = 0; i < 8 && target.gt(0); i++) {
+    const nextRequired = auctionRequiredLpForSupply(data, lpSupply.plus(target))
+    if (!nextRequired?.isFinite()) break
+
+    const nextTarget = BigNumber.max(nextRequired.minus(balance), 0)
+    if (nextTarget.minus(target).abs().lte('0.000000000001')) {
+      target = nextTarget
+      break
+    }
+    target = nextTarget
+  }
+
+  return target.gt(0) ? target.multipliedBy('1.000001') : target
 }
 
 const initialSwapList = (initialSwapsData, key) => {
@@ -1282,7 +1311,9 @@ export default function AmmDetailsPage({
   const auctionHasEnoughLp = !!account?.address && auctionLpShortfall !== null && !auctionNeedsMoreLp
   const showAuctionBidAction = !auctionUserHasDiscount && (!account?.address || (auctionBalanceReady && auctionHasEnoughLp))
   const showAuctionMintAction = !auctionUserHasDiscount && (!account?.address || (auctionBalanceReady && auctionNeedsMoreLp))
-  const auctionMintLpTarget = auctionNeedsMoreLp ? auctionLpShortfall : auctionRequiredLp
+  const auctionMintLpTarget = showAuctionMintAction
+    ? auctionMintTargetForBalance(data, account?.address ? auctionUserLpBalance : 0) || auctionRequiredLp
+    : null
   const winningDiscountedFee = auctionWinnerDiscountedFee(data?.tradingFee)
   const tvlParts = [
     amountFiatValue(data?.amount, selectedCurrency, fiatRate),
