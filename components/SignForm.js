@@ -225,7 +225,10 @@ export default function SignForm({
   }, [signFormOpen])
 
   useEffect(() => {
-    if (!signRequest) return
+    if (!signRequest) {
+      setChoosenWallet(null)
+      return
+    }
 
     const connectAnotherWallet = !!signRequest?.connectAnotherWallet
 
@@ -354,6 +357,11 @@ export default function SignForm({
   }, [uuid])
 
   const txSend = async (options) => {
+    const selectedWallet = options?.wallet || choosenWallet
+    if (options?.wallet) {
+      setChoosenWallet(options.wallet)
+    }
+
     const infoScreen = getRequiredInfoScreen({ signRequest, agreedToRisks })
     if (infoScreen) {
       setScreen(infoScreen)
@@ -365,10 +373,10 @@ export default function SignForm({
     const connectAnotherWallet = !!signRequest?.connectAnotherWallet
     let wallet = forcedWallet
 
-    // If user explicitly clicked a wallet in choose-app, that must win.
-    if (!wallet && options?.wallet) {
-      wallet = options.wallet
-      setChoosenWallet(options.wallet)
+    // If user selected a wallet in choose-app before an info screen, keep that choice
+    // for the final Sign click instead of falling back to the active account wallet.
+    if (!wallet && selectedWallet) {
+      wallet = selectedWallet
     }
 
     if (!wallet && !connectAnotherWallet) {
@@ -1223,6 +1231,7 @@ export default function SignForm({
 
     setScreen('choose-app')
     setSignRequest(null)
+    setChoosenWallet(null)
     setAwaiting(false)
     setStatus('')
     transactionFetchTries = 0
