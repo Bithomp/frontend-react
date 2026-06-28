@@ -16,8 +16,9 @@
   },
   "status": {
     "successful": "успешно",
-    "failed": "не удалось",
-    "confirmed": "подтверждено"
+    "failed": "не прошла",
+    "confirmed": "подтверждено",
+    "final": "окончательно"
   },
   "actions": {
     "additionalData": "Дополнительные данные",
@@ -279,6 +280,7 @@
     "Validator domain": "Домен валидатора",
     "Domain verified": "Домен подтвержден",
     "Transaction hash": "Хэш транзакции",
+    "Transaction type": "Тип транзакции",
     "Transfer fee": "Комиссия перевода",
     "Transfer from": "Перевод от",
     "Transfer to": "Перевод к",

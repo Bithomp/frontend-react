@@ -17,7 +17,8 @@
   "status": {
     "successful": "berhasil",
     "failed": "GAGAL",
-    "confirmed": "dikonfirmasi"
+    "confirmed": "dikonfirmasi",
+    "final": "final"
   },
   "actions": {
     "additionalData": "Data tambahan",
@@ -279,6 +280,7 @@
     "Validator domain": "Domain validator",
     "Domain verified": "Domain terverifikasi",
     "Transaction hash": "Hash transaksi",
+    "Transaction type": "Tipe transaksi",
     "Transfer fee": "Biaya transfer",
     "Transfer from": "Transfer dari",
     "Transfer to": "Transfer ke",

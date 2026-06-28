@@ -17,7 +17,8 @@
   "status": {
     "successful": "成功",
     "failed": "失败",
-    "confirmed": "已确认"
+    "confirmed": "已确认",
+    "final": "最终"
   },
   "actions": {
     "additionalData": "附加数据",
@@ -279,6 +280,7 @@
     "Validator domain": "验证节点域名",
     "Domain verified": "已验证域名",
     "Transaction hash": "交易哈希",
+    "Transaction type": "交易类型",
     "Transfer fee": "转账费",
     "Transfer from": "转自",
     "Transfer to": "转至",

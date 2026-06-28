@@ -17,7 +17,13 @@ import {
   timeFromNow
 } from '../../../utils/format'
 import { decodeCTID, isValidCTID, localePath, nativeCurrency, networksIds, server, xahauNetwork } from '../../../utils'
-import { dappBySourceTag, errorCodeDescription, memoNode, shortErrorCode } from '../../../utils/transaction'
+import {
+  dappBySourceTag,
+  errorCodeDescription,
+  getTransactionTypeLabel,
+  memoNode,
+  shortErrorCode
+} from '../../../utils/transaction'
 import { add } from '../../../utils/calc'
 import { useIsMobile } from '../../../utils/mobile'
 import ExchangesTable from './ExchangeTable'
@@ -148,15 +154,18 @@ export const TransactionCard = ({
   const dapp = dappBySourceTag(tx?.SourceTag)
   const transactionTypeTitle = txTypeSpecial || tx?.TransactionType
   const transactionTypeLabel = transactionTypeTitle
-    ? txT(`labels.${transactionTypeTitle}`, { defaultValue: transactionTypeTitle })
+    ? txT(`labels.${transactionTypeTitle}`, { defaultValue: getTransactionTypeLabel(transactionTypeTitle) })
     : ''
   const transactionStatusTitle = outcome
     ? titleCaseStatus(isSuccessful ? txT('status.successful') : txT('status.failed'), i18n.language)
     : null
-  const transactionConfirmedTitle = validated ? titleCaseStatus(txT('status.confirmed'), i18n.language) : null
-  const hasStatusTypeTitle = !!(transactionStatusTitle && transactionTypeTitle)
+  const transactionFinalityTitle = validated
+    ? titleCaseStatus(
+        isSuccessful ? txT('status.confirmed') : txT('status.final', { defaultValue: 'final' }),
+        i18n.language
+      )
+    : null
   const transactionTitle = transactionTypeLabel || txT('details.title')
-  const showTypeRow = !hasStatusTypeTitle || specification?.domainID
   const txCopyButtonText = isMobile
     ? txT('actions.copyLinkMobile', {
         defaultValue: t('button.copy') + ' link'
@@ -185,8 +194,10 @@ export const TransactionCard = ({
                   {transactionStatusTitle}
                 </span>
               )}
-              {transactionConfirmedTitle && (
-                <span className="tx-status-badge confirmed">{transactionConfirmedTitle}</span>
+              {transactionFinalityTitle && (
+                <span className={'tx-status-badge ' + (isSuccessful ? 'confirmed' : 'final')}>
+                  {transactionFinalityTitle}
+                </span>
               )}
             </div>
             {showHeaderTxId && (
@@ -224,26 +235,19 @@ export const TransactionCard = ({
               )}
               <table className="tx-detail-table">
                 <tbody>
+                  {tx?.TransactionType && (
+                    <tr>
+                      <TData>{txT('labels.Transaction type', { defaultValue: 'Transaction type' })}</TData>
+                      <TData>
+                        <span className="bold">{tx.TransactionType}</span>
+                      </TData>
+                    </tr>
+                  )}
                   {specification?.flags?.innerBatchTxn && (
                     <tr>
                       <TData>Batch</TData>
                       <TData>
                         <span className="bold orange">{txT('labels.Inner transaction')}</span>
-                      </TData>
-                    </tr>
-                  )}
-                  {showTypeRow && (
-                    <tr>
-                      <TData>{t('table.type')}</TData>
-                      <TData>
-                        <span className="bold">
-                          {specification?.domainID && (
-                            <>
-                              <span className="orange bold">{txT('labels.Permissioned')}</span>{' '}
-                            </>
-                          )}
-                          {transactionTypeLabel}
-                        </span>
                       </TData>
                     </tr>
                   )}
@@ -276,7 +280,7 @@ export const TransactionCard = ({
                   {children}
                   {validated && (
                     <tr className="tx-confirmed-row">
-                      <TData>{isSuccessful ? transactionConfirmedTitle : txT('labels.Rejected')}</TData>
+                      <TData>{isSuccessful ? transactionFinalityTitle : txT('labels.Rejected')}</TData>
                       <TData>
                         {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
                         {outcome?.ledgerIndex && (
@@ -671,11 +675,11 @@ export const TransactionCard = ({
         .tx-header {
           margin: 0;
           color: var(--text-main);
-          font-size: 13px;
+          font-size: 18px;
           font-weight: 700;
           line-height: 1.2;
           text-align: left;
-          text-transform: uppercase;
+          overflow-wrap: anywhere;
         }
         .tx-status-badge {
           flex: 0 0 auto;
@@ -697,6 +701,10 @@ export const TransactionCard = ({
         .tx-status-badge.confirmed {
           background: color-mix(in srgb, var(--accent-link) 11%, transparent);
           color: var(--accent-link);
+        }
+        .tx-status-badge.final {
+          background: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+          color: var(--text-secondary);
         }
         .tx-id-row {
           display: flex;

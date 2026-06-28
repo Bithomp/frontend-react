@@ -17,7 +17,8 @@
   "status": {
     "successful": "成功",
     "failed": "失敗",
-    "confirmed": "確定済み"
+    "confirmed": "確定済み",
+    "final": "最終"
   },
   "actions": {
     "additionalData": "追加データ",
@@ -279,6 +280,7 @@
     "Validator domain": "バリデータードメイン",
     "Domain verified": "検証済みドメイン",
     "Transaction hash": "トランザクションハッシュ",
+    "Transaction type": "トランザクションタイプ",
     "Transfer fee": "転送手数料",
     "Transfer from": "転送元",
     "Transfer to": "転送先",

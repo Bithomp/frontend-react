@@ -17,7 +17,8 @@
   "status": {
     "successful": "성공",
     "failed": "실패",
-    "confirmed": "확정됨"
+    "confirmed": "확정됨",
+    "final": "최종"
   },
   "actions": {
     "additionalData": "추가 데이터",
@@ -279,6 +280,7 @@
     "Validator domain": "검증자 도메인",
     "Domain verified": "인증된 도메인",
     "Transaction hash": "트랜잭션 해시",
+    "Transaction type": "트랜잭션 유형",
     "Transfer fee": "전송 수수료",
     "Transfer from": "전송 출처",
     "Transfer to": "전송 대상",

@@ -17,7 +17,8 @@
   "status": {
     "successful": "réussie",
     "failed": "ÉCHOUÉE",
-    "confirmed": "confirmée"
+    "confirmed": "confirmée",
+    "final": "finale"
   },
   "actions": {
     "additionalData": "Données supplémentaires",
@@ -279,6 +280,7 @@
     "Validator domain": "Domaine du validateur",
     "Domain verified": "Domaine vérifié",
     "Transaction hash": "Hash de transaction",
+    "Transaction type": "Type de transaction",
     "Transfer fee": "Frais de transfert",
     "Transfer from": "Transférer depuis",
     "Transfer to": "Transférer vers",

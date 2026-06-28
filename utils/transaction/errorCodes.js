@@ -2,10 +2,20 @@ import { nativeCurrency } from '..'
 
 export const fallbackErrorCodeDescription = (code) => {
   const codes = {
+    tecAMM_ACCOUNT:
+      'The transaction failed because the operation is not allowed on Automated Market Maker (AMM) accounts.',
     tecAMM_DIRECT_PAYMENT:
       'The transaction tried to send money directly to an AccountRoot object that is part of an Automated Market Maker (AMM) . AMM AccountRoot entries cannot send or receive money directly except through AMMWithdraw and AMMDeposit transactions.',
     tecAMM_EXISTS:
       'The AMMCreate transaction  tried to create an Automated Market Maker (AMM) instance that already exists. There can only be at most one AMM per unique currency pair.',
+    tecAMM_UNFUNDED:
+      'The AMMCreate transaction failed because the sender does not have enough of the specified assets to fund it.',
+    tecAMM_BALANCE:
+      'The AMMDeposit or AMMWithdraw transaction failed because either the AMM or the user does not hold enough of one of the specified assets.',
+    tecAMM_EMPTY:
+      'The AMM-related transaction failed because the AMM has no assets in its pool. In this state, you can only delete the AMM or fund it with a new deposit.',
+    tecAMM_FAILED:
+      "The AMM-related transaction failed. For AMMDeposit or AMMWithdraw, this can mean insufficient assets or an impossible effective price. For AMMBid, it can mean the account does not have enough to win the bid or needs more than its maximum bid. For AMMVote, it can mean there are already too many votes from accounts with more of this AMM's LP Tokens.",
     tecAMM_FAILED_DEPOSIT:
       "The AMMDeposit transaction  failed, probably because the sender does not have enough of the specified assets, or because the deposit requested an effective price that isn't possible with the available amounts.",
     tecAMM_FAILED_WITHDRAW:
@@ -16,6 +26,8 @@ export const fallbackErrorCodeDescription = (code) => {
       "The AMMVote transaction  failed, probably because there are already too many votes from accounts that hold more LP Tokens for this AMM. (This can still recalculate the AMM's trading fee.)",
     tecAMM_INVALID_TOKENS:
       'The AMM-related transaction  failed due to insufficient LP Tokens or problems with rounding; for example, depositing a very small amount of assets could fail if the amount of LP Tokens to be returned rounds down to zero.',
+    tecAMM_NOT_EMPTY:
+      'The transaction was meant to operate on an AMM with empty asset pools, but the specified AMM currently holds assets.',
     tecCANT_ACCEPT_OWN_NFTOKEN_OFFER:
       'The transaction tried to accept an offer that was placed by the same account to buy or sell a non-fungible token.',
     tecCLAIM: 'Unspecified failure, with transaction cost destroyed.',
@@ -27,6 +39,7 @@ export const fallbackErrorCodeDescription = (code) => {
       'The transaction tried to create an object (such as a DepositPreauth authorization) that already exists.',
     tecDST_TAG_NEEDED:
       'The Payment transaction omitted a destination tag, but the destination account has the lsfRequireDestTag flag enabled.',
+    tecEMPTY_DID: 'The transaction tried to create a DID entry with no contents. A DID must not be empty.',
     tecEXPIRED:
       'The transaction tried to create an object (such as an Offer or a Check) whose provided Expiration time has already passed.',
     tecFAILED_PROCESSING: 'An unspecified error occurred when processing the transaction.',
@@ -53,6 +66,8 @@ export const fallbackErrorCodeDescription = (code) => {
       "The transaction would increase the reserve requirement higher than the sending account's balance.",
     tecINTERNAL:
       'Unspecified internal error, with transaction cost applied. This error code should not normally be returned. If you can reproduce this error, please report an issue .',
+    tecINVALID_UPDATE_TIME:
+      'The OracleSet transaction failed because LastUpdateTime is invalid. This can happen if the time is more than 300 seconds before or after the ledger close time, or when updating an oracle with a time that is not greater than the previous LastUpdateTime.',
     tecINVARIANT_FAILED:
       'An invariant check failed when trying to execute this transaction. Added by the EnforceInvariants amendment. If you can reproduce this error, please report an issue .',
     tecKILLED:
