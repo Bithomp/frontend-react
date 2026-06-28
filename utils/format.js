@@ -1622,18 +1622,29 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     return formattedValue + magnitudeSuffix
   }
 
+  const formatLargeNumber = (value) => {
+    const magnitudes = [
+      { value: 1000000000000000000, suffix: 'Qi' },
+      { value: 1000000000000000, suffix: 'Q' },
+      { value: 1000000000000, suffix: 'T' },
+      { value: 1000000000, suffix: 'B' },
+      { value: 1000000, suffix: 'M' },
+      { value: 1000, suffix: 'K' }
+    ]
+    const magnitude = magnitudes.find((item) => value >= item.value)
+
+    if (!magnitude) return niceNumber(Math.round(value), 0, currency)
+
+    return appendMagnitudeSuffix(
+      niceNumber(value / magnitude.value, largeNumberFractionDigits, currency),
+      magnitude.suffix,
+      currency
+    )
+  }
+
   let output = ''
-  if (n > 999999999999999) {
-    // For numbers > 999 trillion, use scientific notation to avoid huge strings
-    output = n.toExponential(2)
-  } else if (n > 999999999999) {
-    output = appendMagnitudeSuffix(niceNumber(n / 1000000000000, largeNumberFractionDigits, currency), 'T', currency)
-  } else if (n > 999999999) {
-    output = appendMagnitudeSuffix(niceNumber(n / 1000000000, largeNumberFractionDigits, currency), 'B', currency)
-  } else if (n > 999999) {
-    output = appendMagnitudeSuffix(niceNumber(n / 1000000, largeNumberFractionDigits, currency), 'M', currency)
-  } else if (n > 9999) {
-    output = appendMagnitudeSuffix(niceNumber(n / 1000, largeNumberFractionDigits, currency), 'K', currency)
+  if (n > 9999) {
+    output = formatLargeNumber(n)
   } else if (n > 999) {
     output = niceNumber(Math.round(n), 0, currency)
   } else if (n === 0) {
