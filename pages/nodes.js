@@ -4,6 +4,7 @@ import { useWidth, ledgerName } from '../utils'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { shortHash, duration, timeFromNow } from '../utils/format'
+import { shortServerVersion } from '../utils/serverVersion'
 
 export async function getServerSideProps(context) {
   const { locale, req } = context
@@ -36,15 +37,6 @@ import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 import CountryWithFlag from '../components/UI/CountryWithFlag'
-
-const shortVersion = (version) => {
-  version = version.replace('rippled-', '')
-  version = version.replace('xahaud-', '')
-  if (version.length > 26) {
-    return version.substring(0, 12) + '...' + version.substring(version.length - 9)
-  }
-  return version
-}
 
 export default function Nodes({ initialData, initialErrorMessage }) {
   const { t, i18n } = useTranslation()
@@ -106,7 +98,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                           {data.summary.versions.map((a, i) => (
                             <tr key={i}>
                               <td className="center">{i + 1}</td>
-                              <td>{shortVersion(a.version)}</td>
+                              <td>{shortServerVersion(a.version)}</td>
                               <td className="right">{a.count}</td>
                               <td className="right">{Math.ceil((a.count / data.summary.total) * 10000) / 100}%</td>
                             </tr>
@@ -223,7 +215,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                               <CopyButton text={a.node_public_key} />
                             </td>
                             <td className="right">{a.ip}</td>
-                            <td>{shortVersion(a.version)}</td>
+                            <td>{shortServerVersion(a.version)}</td>
                             <td className="right">{a.inbound_count}</td>
                             <td className="right">{a.outbound_count}</td>
                             <td className="right">{duration(t, a.uptime)}</td>
@@ -273,7 +265,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                             <CopyButton text={a.node_public_key} />
                           </p>
                           <p>IP: {a.ip}</p>
-                          <p>Version: {shortVersion(a.version)}</p>
+                          <p>Version: {shortServerVersion(a.version)}</p>
                           <p>Peers In: {a.inbound_count}</p>
                           <p>Peers Out: {a.outbound_count}</p>
                           <p>Uptime: {duration(t, a.uptime)}</p>

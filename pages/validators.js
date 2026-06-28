@@ -22,6 +22,7 @@ import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash 
 import { useWidth, xahauNetwork, countriesTranslated, avatarServer, normalizeLocale } from '../utils'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
+import { shortServerVersion } from '../utils/serverVersion'
 
 import CopyButton from '../components/UI/CopyButton'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
@@ -702,7 +703,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                     ? serverVersions.validators.map((v, i) => (
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
-                          <td>{v.version}</td>
+                          <td>{shortServerVersion(v.version)}</td>
                           <td className="right">{v.count}</td>
                           <td className="right">
                             {Math.ceil((v.count / serverVersions.count.validators) * 10000) / 100}%
@@ -736,7 +737,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                           className={v.count === maxCount ? 'green' : ''}
                         >
                           <td className="center">{i + 1}</td>
-                          <td>{v.version}</td>
+                          <td>{shortServerVersion(v.version)}</td>
                           <td className="right">{v.count}</td>
                           <td className="right">{Math.ceil((v.count / serverVersions.count.unl) * 10000) / 100}%</td>
                         </tr>
@@ -1055,7 +1056,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                           )}
 
                           <p>
-                            {t('table.version')}: {v.serverVersion ? v.serverVersion : 'N/A'}
+                            {t('table.version')}: {v.serverVersion ? shortServerVersion(v.serverVersion) : 'N/A'}
                           </p>
                           <p>
                             {t('table.last-seen', { ns: 'validators' })}:{' '}
@@ -1198,7 +1199,8 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                     </td>
                     {developerMode && <td className="center">{v.sequence}</td>}
                     <td className="left">
-                      {displayFlag(v.serverCountry, t('table.server-country', { ns: 'validators' }))} {v.serverVersion}
+                      {displayFlag(v.serverCountry, t('table.server-country', { ns: 'validators' }))}{' '}
+                      {shortServerVersion(v.serverVersion)}
                       {developerMode && (
                         <>
                           {v.serverLocation && (
