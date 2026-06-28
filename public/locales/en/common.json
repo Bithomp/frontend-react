@@ -243,7 +243,7 @@
       "failed-broker": "Failed to notify {{serviceName}} about the offer. You can cancel it."
     },
     "nft-offer": {
-      "counteroffer": "You're making a counteroffer, which should to be accepted automatically within 20 seconds. If it's not accepted you can cancel it at any time.",
+      "counteroffer": "You're making a counteroffer, which should be accepted automatically within 20 seconds. If it's not accepted you can cancel it at any time.",
       "nft-price": "NFT price",
       "fee": "{{serviceName}} fee ({{feeText}})",
       "total": "Total"
