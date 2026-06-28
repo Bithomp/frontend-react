@@ -103,6 +103,7 @@
     "poolIdentifiers": "Идентификаторы пула",
     "ammAddress": "AMM-адрес",
     "ammId": "AMM ID",
+    "lpTokenCode": "Код LP-токена",
     "created": "Создан",
     "lastUpdate": "Последнее обновление"
   },

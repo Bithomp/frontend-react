@@ -103,6 +103,7 @@
     "poolIdentifiers": "풀 식별자",
     "ammAddress": "AMM 주소",
     "ammId": "AMM ID",
+    "lpTokenCode": "LP 토큰 코드",
     "created": "생성됨",
     "lastUpdate": "마지막 업데이트"
   },

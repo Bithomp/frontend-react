@@ -103,6 +103,7 @@
     "poolIdentifiers": "Identifier pool",
     "ammAddress": "Alamat AMM",
     "ammId": "AMM ID",
+    "lpTokenCode": "Kode token LP",
     "created": "Dibuat",
     "lastUpdate": "Pembaruan terakhir"
   },

@@ -3006,6 +3006,15 @@ export default function AmmDetailsPage({
                           <span className="brake">{data.ammID}</span> <CopyButton text={data.ammID} />
                         </strong>
                       </div>
+                      {data?.lpTokenBalance?.currency ? (
+                        <div className="ammLedgerRow">
+                          <span>{ta('details.lpTokenCode')}</span>
+                          <strong>
+                            <span className="brake">{data.lpTokenBalance.currency}</span>{' '}
+                            <CopyButton text={data.lpTokenBalance.currency} />
+                          </strong>
+                        </div>
+                      ) : null}
                       <div className="ammLedgerRow">
                         <span>{ta('details.created')}</span>
                         <strong>

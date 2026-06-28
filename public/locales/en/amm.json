@@ -103,6 +103,7 @@
     "poolIdentifiers": "Pool identifiers",
     "ammAddress": "AMM address",
     "ammId": "AMM ID",
+    "lpTokenCode": "LP token code",
     "created": "Created",
     "lastUpdate": "Last update"
   },

@@ -103,6 +103,7 @@
     "poolIdentifiers": "Identifiants du pool",
     "ammAddress": "Adresse AMM",
     "ammId": "AMM ID",
+    "lpTokenCode": "Code du token LP",
     "created": "Cree",
     "lastUpdate": "Derniere mise a jour"
   },

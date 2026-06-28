@@ -103,6 +103,7 @@
     "poolIdentifiers": "プール識別子",
     "ammAddress": "AMM アドレス",
     "ammId": "AMM ID",
+    "lpTokenCode": "LP トークンコード",
     "created": "作成",
     "lastUpdate": "最終更新"
   },

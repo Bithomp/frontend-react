@@ -103,6 +103,7 @@
     "poolIdentifiers": "池标识",
     "ammAddress": "AMM 地址",
     "ammId": "AMM ID",
+    "lpTokenCode": "LP 代币代码",
     "created": "已创建",
     "lastUpdate": "最后更新"
   },
