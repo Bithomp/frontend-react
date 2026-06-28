@@ -1193,6 +1193,24 @@ body.dark {
   border-color: var(--card-bg) !important;
 }
 
+.apexcharts-text,
+.apexcharts-xaxis-label,
+.apexcharts-yaxis-label {
+  fill: color-mix(in srgb, var(--text-secondary) 84%, var(--text-main)) !important;
+}
+
+.apexcharts-legend-text {
+  color: color-mix(in srgb, var(--text-secondary) 84%, var(--text-main)) !important;
+}
+
+.apexcharts-datalabel-label {
+  fill: var(--text-secondary) !important;
+}
+
+.apexcharts-datalabel-value {
+  fill: var(--text-main) !important;
+}
+
 .apexcharts-xaxistooltip-bottom:before,
 .apexcharts-xaxistooltip-bottom:after {
   border-bottom-color: color-mix(in srgb, var(--card-border) 72%, var(--text-secondary)) !important;

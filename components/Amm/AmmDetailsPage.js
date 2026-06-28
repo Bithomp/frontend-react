@@ -15,9 +15,11 @@ import AddressInput from '../UI/AddressInput'
 import AmmTabs from '../Tabs/AmmTabs'
 import HomeTeaser, { HomeTeaseRow } from '../Home/HomeTeaser'
 import TokenCharts from '../Token/TokenCharts'
+import { useTheme } from '../Layout/ThemeContext'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { addQueryParams, isAddressValid, nativeCurrency, normalizeLocale, removeQueryParams, tokenImageSrc } from '../../utils'
 import { fetchHistoricalRate, fetchHistoricalTokenFiatRate } from '../../utils/common'
+import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
 import {
   AddressWithIconFilled,
   AddressWithIconInline,
@@ -725,28 +727,31 @@ function AmmAssetPairIcons({ amount1, amount2 }) {
 
 function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false }) {
   const { t, i18n } = useTranslation('amm')
+  const { theme } = useTheme()
   const dateLocale = normalizeLocale(i18n.language)
   const chartRows = useMemo(() => (Array.isArray(rows) ? rows : []), [rows])
   const hasData = chartRows.length > 1 && series.some((item) => item.data.some((point) => chartValue(point) !== null))
+  const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
 
   const options = useMemo(
     () => {
       const yaxisLabels = {
         minWidth: 34,
         formatter: (value) => shortNiceNumber(value, 2, 1),
-        style: { fontSize: '10px' }
+        style: apexAxisLabelStyle(theme, { fontSize: '10px' })
       }
 
       return {
         chart: {
           animations: { enabled: false },
+          foreColor: chartTheme.textColor,
           toolbar: { show: false },
           zoom: { enabled: false },
           sparkline: { enabled: false }
         },
         dataLabels: { enabled: false },
         grid: {
-          borderColor: 'rgba(128,128,128,0.18)',
+          borderColor: chartTheme.gridColor,
           strokeDashArray: 3,
           padding: { top: 2, right: dualYAxis ? 0 : 6, bottom: 0, left: 0 }
         },
@@ -755,6 +760,7 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
           position: 'top',
           horizontalAlign: 'left',
           fontSize: '10px',
+          labels: { colors: chartTheme.labelColor },
           markers: {
             width: 8,
             height: 8,
@@ -776,12 +782,13 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
             show: true,
             datetimeUTC: false,
             hideOverlappingLabels: true,
-            style: { fontSize: '10px' },
+            style: apexAxisLabelStyle(theme, { fontSize: '10px' }),
             formatter: (value, timestamp) => {
               return chartDateText(timestamp ?? value, undefined, dateLocale)
             }
           },
-          axisTicks: { show: false },
+          axisBorder: { color: chartTheme.gridColor },
+          axisTicks: { show: false, color: chartTheme.gridColor },
           tooltip: { enabled: false }
         },
         yaxis:
@@ -799,6 +806,7 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
         tooltip: {
           shared: true,
           intersect: false,
+          theme: chartTheme.tooltipTheme,
           x: {
             show: true,
             formatter: (value) => chartDateText(value, { year: 'numeric', month: 'short', day: 'numeric' }, dateLocale)
@@ -806,7 +814,7 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
         }
       }
     },
-    [dateLocale, dualYAxis, series, type]
+    [chartTheme, dateLocale, dualYAxis, series, theme, type]
   )
 
   return (
@@ -847,6 +855,8 @@ const contributorChartColors = (count) => Array.from({ length: count }, (_, inde
 
 function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnitFiat, selectedCurrency }) {
   const { t } = useTranslation('amm')
+  const { theme } = useTheme()
+  const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
   const [activeContributorIndex, setActiveContributorIndex] = useState(null)
   const [showAllContributors, setShowAllContributors] = useState(false)
   const totalCoins = rawData?.summary?.totalCoins || data?.lpTokenBalance?.value
@@ -886,6 +896,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
       chart: {
         type: 'donut',
         animations: { enabled: false },
+        foreColor: chartTheme.textColor,
         toolbar: { show: false }
       },
       labels: chartItems.map((item) => item.label),
@@ -896,6 +907,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
       legend: { show: false },
       stroke: { width: 1, colors: ['var(--card-bg)'] },
       tooltip: {
+        theme: chartTheme.tooltipTheme,
         y: {
           formatter: (value) => {
             const number = Number(value)
@@ -912,12 +924,14 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
               show: true,
               name: {
                 show: true,
-                fontSize: '12px'
+                fontSize: '12px',
+                color: chartTheme.labelColor
               },
               value: {
                 show: true,
                 fontSize: '16px',
                 fontWeight: 700,
+                color: chartTheme.textColor,
                 formatter: (value) => {
                   const number = Number(value)
                   return Number.isFinite(number) ? `${number.toFixed(2)}%` : '-'
@@ -927,6 +941,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
                 show: true,
                 showAlways: true,
                 label: activeContributor?.label || t('contributors.top100'),
+                color: chartTheme.labelColor,
                 formatter: () =>
                   activeContributor?.share !== undefined && activeContributor?.share !== null
                     ? `${activeContributor.share.toFixed(2)}%`
@@ -939,7 +954,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
         }
       }
     }),
-    [activeContributor, chartItems, t, topShare]
+    [activeContributor, chartItems, chartTheme, t, topShare]
   )
 
   return (

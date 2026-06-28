@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 import { useTheme } from '../Layout/ThemeContext'
 import { normalizeLocale } from '../../utils'
+import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
 import { niceNumber, shortNiceNumber } from '../../utils/format'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
@@ -48,8 +49,7 @@ export default function AmmPoolsChart({ rows }) {
     [rows]
   )
 
-  const textColor = theme === 'light' ? '#1c2430' : '#f7f8fb'
-  const gridColor = theme === 'light' ? '#d8dee6' : '#2c3442'
+  const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
 
   const series = useMemo(
     () => [
@@ -74,13 +74,13 @@ export default function AmmPoolsChart({ rows }) {
         animations: { enabled: false },
         parentHeightOffset: 0,
         toolbar: { show: false },
-        foreColor: textColor,
+        foreColor: chartTheme.textColor,
         stacked: false
       },
       colors: ['#2f80ed', '#00a676', '#f2994a'],
       dataLabels: { enabled: false },
       grid: {
-        borderColor: gridColor,
+        borderColor: chartTheme.gridColor,
         padding: { top: -8, right: 6, bottom: 4, left: 0 },
         strokeDashArray: 4
       },
@@ -89,6 +89,7 @@ export default function AmmPoolsChart({ rows }) {
         horizontalAlign: 'left',
         fontSize: '12px',
         offsetY: -4,
+        labels: { colors: chartTheme.labelColor },
         markers: { radius: 12 }
       },
       plotOptions: {
@@ -121,17 +122,19 @@ export default function AmmPoolsChart({ rows }) {
         type: 'datetime',
         labels: {
           datetimeUTC: true,
-          style: { fontSize: '11px' },
+          style: apexAxisLabelStyle(theme, { fontSize: '11px' }),
           datetimeFormatter: {
             day: 'd MMM'
           }
-        }
+        },
+        axisBorder: { color: chartTheme.gridColor },
+        axisTicks: { color: chartTheme.gridColor }
       },
       yaxis: [
         {
           seriesName: 'Active pools',
           labels: {
-            style: { fontSize: '11px' },
+            style: apexAxisLabelStyle(theme, { fontSize: '11px' }),
             formatter: (value) => shortNiceNumber(value, 0)
           },
           tickAmount: 3
@@ -140,14 +143,14 @@ export default function AmmPoolsChart({ rows }) {
           seriesName: 'Created pools',
           opposite: true,
           labels: {
-            style: { fontSize: '11px' },
+            style: apexAxisLabelStyle(theme, { fontSize: '11px' }),
             formatter: (value) => shortNiceNumber(value, 0)
           },
           tickAmount: 3
         }
       ]
     }),
-    [dateLocale, gridColor, textColor, theme]
+    [chartTheme, dateLocale, theme]
   )
 
   if (!chartRows.length) return null
