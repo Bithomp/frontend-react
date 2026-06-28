@@ -106,7 +106,7 @@ const AMMFlags = ({ flags, txType }) => {
             {/* Desktop version with tooltip */}
             <span className="tooltip no-brake desktop-only">
               <span className="flag">{flag.name}</span>
-              {flag.description && <span className="tooltiptext right no-brake">{flag.description}</span>}
+              {flag.description && <span className="tooltiptext amm-flag-tooltip">{flag.description}</span>}
             </span>
 
             {/* Mobile version with inline description */}
@@ -128,6 +128,13 @@ const AMMFlags = ({ flags, txType }) => {
           .desktop-only {
             display: none;
           }
+        }
+        .amm-flag-tooltip {
+          width: min(420px, calc(100vw - 32px));
+          max-width: min(420px, calc(100vw - 32px));
+          white-space: normal !important;
+          overflow-wrap: normal;
+          text-align: left;
         }
       `}</style>
     </>
