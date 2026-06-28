@@ -1164,7 +1164,6 @@ export default function AmmDetailsPage({
   initialContributorsData,
   initialErrorMessage,
   ledgerTimestampQuery,
-  isSsrMobile,
   fiatRate: fiatRateApp,
   selectedCurrency: selectedCurrencyApp,
   fiatRateServer,
@@ -1178,6 +1177,7 @@ export default function AmmDetailsPage({
   const { t, i18n } = useTranslation(['common', 'amm'])
   const ta = useCallback((key, options = {}) => t(key, { ns: 'amm', ...options }), [t])
   const router = useRouter()
+  const isMobile = useIsMobile(600)
 
   let fiatRate = fiatRateServer
   let selectedCurrency = selectedCurrencyServer
@@ -2297,7 +2297,7 @@ export default function AmmDetailsPage({
           <div className="ammVoteRow" key={`${slot.account}-${index}`}>
             <span className="ammVoteRank">{index + 1}</span>
             <div className="ammVoteAccount">
-              <AddressWithIconFilled data={slot} name="account" />
+              <AddressWithIconFilled data={slot} name="account" options={{ short: isMobile }} />
             </div>
             <div className="ammVoteStats">
               <span>
@@ -2336,7 +2336,7 @@ export default function AmmDetailsPage({
             <div className="ammLedgerRow ammLedgerRowInline">
               <span>{ta('historical.slotHolder')}</span>
               <strong>
-                <AddressWithIconFilled data={slot} name="account" />
+                <AddressWithIconFilled data={slot} name="account" options={{ short: isMobile }} />
               </strong>
             </div>
             <div className="ammLedgerRow">
@@ -2996,7 +2996,7 @@ export default function AmmDetailsPage({
                             data={data}
                             name="account"
                             copyButton={true}
-                            options={{ short: isSsrMobile }}
+                            options={{ short: isMobile }}
                           />
                         </strong>
                       </div>
@@ -3082,7 +3082,7 @@ export default function AmmDetailsPage({
                             <div className="ammAuctionInfoItem ammAuctionInfoItemWide">
                               <span>{ta('auction.currentSlotHolder')}</span>
                               <strong>
-                                <AddressWithIconFilled data={data.auctionSlot} name="account" />
+                                <AddressWithIconFilled data={data.auctionSlot} name="account" options={{ short: isMobile }} />
                               </strong>
                             </div>
                             {!auctionUserHasDiscount ? (
@@ -3383,7 +3383,7 @@ export default function AmmDetailsPage({
                               <div>
                                 <span className="ammAuctionHistoryLabel">{ta('auction.lastHolder')}</span>
                                 <span className="ammAuctionHistoryValue ammAuctionHistoryValueAddress">
-                                  <AddressWithIconFilled data={data.auctionSlot} name="account" />
+                                  <AddressWithIconFilled data={data.auctionSlot} name="account" options={{ short: isMobile }} />
                                 </span>
                               </div>
                               <div>

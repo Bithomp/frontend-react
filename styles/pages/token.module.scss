@@ -2186,13 +2186,12 @@
   }
 
   .ammAuctionInfoItemWide {
-    overflow-x: auto;
+    overflow: hidden;
 
     > strong {
-      overflow-x: auto;
-      overflow-y: hidden;
+      overflow: hidden;
       overflow-wrap: normal;
-      text-overflow: clip;
+      text-overflow: ellipsis;
       white-space: nowrap;
 
       table,
@@ -2441,17 +2440,25 @@
     justify-content: space-between;
     gap: 8px;
     min-width: 0;
+
+    > .tokenValueSecondary {
+      min-width: 0;
+    }
   }
 
-  .ammAuctionAuthToggle {
+  .ammAuctionActionPanel .ammAuctionAuthToggle {
+    flex: 0 1 180px;
+    max-width: 48%;
     min-height: 28px;
-    height: 28px;
+    height: auto;
     min-width: 0;
     margin: 0;
     padding: 5px 9px;
     font-size: 12px;
-    line-height: 1;
-    white-space: nowrap;
+    line-height: 1.1;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .ammAuctionAuthGrid {
@@ -2599,9 +2606,9 @@
 
   .ammLedgerRowInline {
     > strong {
-      overflow-x: auto;
-      overflow-y: hidden;
+      overflow: hidden;
       overflow-wrap: normal;
+      text-overflow: ellipsis;
       white-space: nowrap;
 
       table,
@@ -2664,9 +2671,9 @@
   }
 
   .ammAuctionHistoryValueAddress {
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: hidden;
     overflow-wrap: normal;
+    text-overflow: ellipsis;
     white-space: nowrap;
 
     table,
@@ -2753,7 +2760,8 @@
 
   .ammVoteAccount {
     min-width: 0;
-    overflow-x: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 
     * {
