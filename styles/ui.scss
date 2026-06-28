@@ -1176,6 +1176,26 @@ body.dark {
   color: var(--text-main) !important;
 }
 
+.apexcharts-tooltip.apexcharts-theme-dark,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-title {
+  background: #0f3f59 !important;
+  border-color: color-mix(in srgb, #7aa7bc 42%, #0f3f59) !important;
+  color: #f4f7fb !important;
+}
+
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-y-group,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-z-group,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-goals-group,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-y-label,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-y-value,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-goals-label,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-goals-value,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-z-label,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-z-value {
+  color: #f4f7fb !important;
+}
+
 .apexcharts-tooltip-text,
 .apexcharts-tooltip-y-group,
 .apexcharts-tooltip-z-group,
