@@ -539,7 +539,8 @@ export default function SignForm({
     } else if (wallet === 'xyra') {
       const isSignIn = !tx || tx.TransactionType === 'SignIn'
       const isLoggedInXyra = account?.wallet === 'xyra' && account?.address
-      const xyraConnectionPromise = isMobile && !isLoggedInXyra ? xyraConnect() : null
+      const shouldConnectXyra = connectAnotherWallet || !isLoggedInXyra
+      const xyraConnectionPromise = isMobile && shouldConnectXyra ? xyraConnect() : null
 
       setScreen('xyra')
       setXyraPreparedTx(null)
@@ -548,7 +549,7 @@ export default function SignForm({
       // ✅ SignIn: one click -> connect (if needed) -> close. No "Open Xyra".
       if (isSignIn) {
         try {
-          if (isLoggedInXyra) {
+          if (isLoggedInXyra && !connectAnotherWallet) {
             // already have address
             await onSignIn({ address: account.address, wallet: 'xyra', redirectName: signRequest?.redirect })
             closeSignInFormAndRefresh()
@@ -575,7 +576,7 @@ export default function SignForm({
         !signRequest?.data?.signOnly &&
         (!tx.Fee || !tx.Sequence || !tx.LastLedgerSequence)
 
-      if (!isLoggedInXyra) {
+      if (shouldConnectXyra) {
         try {
           setAwaiting(true)
           setStatus('Open Xyra and approve the connection...')
