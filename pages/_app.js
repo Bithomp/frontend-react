@@ -256,7 +256,7 @@ function useIsBot() {
   return isBot
 }
 
-// Helper to extract main route: "/en/account/xyz/123" -> "/account"
+// Helper to extract main route: "/account/xyz/123" -> "/account"
 const getMainPath = (url) => {
   const path = url.split('?')[0] // remove query
   const parts = path.split('/').filter(Boolean) // remove empty segments

@@ -1,8 +1,8 @@
 # XRP Ledger and XAHAU Explorer frontend
 
 Bithomp Frontend for XRP Explorer and XAHAU Explorer.\
-[https://bithomp.com](https://bithomp.com/en/)\
-[https://xahauexplorer.com](https://xahauexplorer.com/en/)
+[https://bithomp.com](https://bithomp.com)\
+[https://xahauexplorer.com](https://xahauexplorer.com)
 
 ## Available Scripts
 
