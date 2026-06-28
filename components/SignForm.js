@@ -640,7 +640,16 @@ export default function SignForm({
     }
   }
 
-  const onSignIn = async ({ address, addresses, wallet, walletMetaMap, usernameMap, redirectName, statusSetter }) => {
+  const onSignIn = async ({
+    address,
+    addresses,
+    wallet,
+    walletMetaMap,
+    usernameMap,
+    redirectName,
+    statusSetter,
+    suppressRedirect
+  }) => {
     const updateStatus = typeof statusSetter === 'function' ? statusSetter : setStatus
     const addressList = Array.isArray(addresses) ? addresses.filter(Boolean) : address ? [address] : []
 
@@ -664,7 +673,7 @@ export default function SignForm({
       }
 
       //if redirect
-      if (redirectName || deferCloseForXamanReturn) {
+      if (!suppressRedirect && (redirectName || deferCloseForXamanReturn)) {
         const targetRedirect = redirectName || 'account'
         if (!deferCloseForXamanReturn) {
           signInCancelAndClose()

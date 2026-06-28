@@ -31,7 +31,12 @@ export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, aft
       await afterSigning({ signRequestData, blob: data.response?.hex, address })
     } else {
       const redirectName = data.custom_meta?.blob?.redirect
-      await onSignIn({ address, wallet: 'xaman', redirectName })
+      await onSignIn({
+        address,
+        wallet: 'xaman',
+        redirectName,
+        suppressRedirect: xamanReturn && data.payload?.tx_type !== 'SignIn'
+      })
       await afterSubmitExe({
         redirectName,
         broker: data.custom_meta?.blob?.broker,
