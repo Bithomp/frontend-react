@@ -1,0 +1,81 @@
+{
+  "seo": {
+    "title": "Dapps"
+  },
+  "title": "Радар Dapps {{explorerName}}",
+  "lastUpdate": "Последнее обновление",
+  "periodComparison": {
+    "day": "% сравнивает последние 24 часа с предыдущим полным календарным днем",
+    "week": "% сравнивает последние 7 дней с предыдущей полной календарной неделей",
+    "month": "% сравнивает последние 30 дней с предыдущим полным календарным месяцем"
+  },
+  "sort": {
+    "performingHigh": "Подписывающие кошельки: по убыванию",
+    "totalSentHigh": "Объем: по убыванию",
+    "interactingHigh": "Взаимодействующие кошельки: по убыванию",
+    "txHigh": "Транзакции: по убыванию",
+    "successRateHigh": "Успешность: по убыванию"
+  },
+  "csv": {
+    "dappName": "Название Dapp",
+    "types": "Типы",
+    "successPercent": "Успешность %",
+    "fees": "Комиссии",
+    "feesCurrency": "Комиссии ({{currency}})",
+    "volumeCurrency": "Объем ({{currency}})"
+  },
+  "metrics": {
+    "performingAddresses": "Подписывающие адреса",
+    "interactingAddresses": "Взаимодействующие адреса",
+    "transactions": "Транзакции",
+    "totalSent": "Всего отправлено",
+    "volume": "Объем"
+  },
+  "filters": {
+    "excludeWithoutExternalSigning": "Исключить приложения без внешней подписи",
+    "walletFilter": "Фильтр кошельков",
+    "allWallets": "Все кошельки"
+  },
+  "columns": {
+    "dapp": "Dapp",
+    "wallets": "Кошельки",
+    "activity": "Активность"
+  },
+  "tooltips": {
+    "performingAddresses": "Уникальные адреса, которые подписывали транзакции.",
+    "interactingAddresses": {
+      "before": "Уникальные взаимодействующие адреса:",
+      "after": "фактический отправитель и фактический получатель."
+    },
+    "transactions": "Общее число транзакций. Включает успешные и неуспешные транзакции.",
+    "volumeTypes": "Платежи, свопы, платежные каналы, чеки, NFT-продажи, эскроу",
+    "volumeSum": "Это сумма всех {{nativeCurrency}} и выпущенных токенов."
+  },
+  "activity": {
+    "success": "Успешно",
+    "failed": "Ошибки",
+    "failedTransactions": "Неуспешные транзакции",
+    "hideDetails": "Скрыть детали",
+    "showDetails": "+ детали",
+    "failedByTxTypes": "Ошибки по типам транзакций",
+    "totalWithPercent": "{{count}} всего ({{percent}}%)",
+    "noFailedTransactions": "Нет неуспешных транзакций",
+    "groupSuccess": "{{group}} (успешно)",
+    "noTypes": "Нет типов",
+    "totalGroup": "Всего {{group}}: {{count}} ({{percent}}%)",
+    "failedSummary": "Ошибки: {{count}} ({{percent}}%)",
+    "more": "... +{{count}} еще",
+    "groups": {
+      "swaps": "Свопы",
+      "payments": "Платежи",
+      "trustlines": "Трастлайны",
+      "nft": "NFT",
+      "amm": "AMM",
+      "dex": "DEX",
+      "account": "Аккаунт",
+      "mptoken": "MPT",
+      "other": "Другое",
+      "failed": "Ошибки"
+    }
+  }
+}

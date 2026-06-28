@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'next-i18next'
 import Select from 'react-select'
 
 const WALLET_LOGOS = {
@@ -41,6 +42,7 @@ export default function WalletSelect({
   className,
   instanceId = 'wallet-filter'
 }) {
+  const { t } = useTranslation('dapps')
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => setRendered(true), [])
@@ -55,9 +57,8 @@ export default function WalletSelect({
       id
     }))
 
-    // "All wallets"
-    return [{ value: '', label: 'All wallets', id: '' }, ...list]
-  }, [walletsList])
+    return [{ value: '', label: t('filters.allWallets'), id: '' }, ...list]
+  }, [t, walletsList])
 
   const selectedOption = useMemo(() => {
     const v = (value || '').toLowerCase()

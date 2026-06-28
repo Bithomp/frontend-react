@@ -1,0 +1,81 @@
+{
+  "seo": {
+    "title": "Dapps"
+  },
+  "title": "{{explorerName}} Dapps Radar",
+  "lastUpdate": "Last update",
+  "periodComparison": {
+    "day": "% compares the last 24 hours with the previous full calendar day",
+    "week": "% compares the last 7 days with the previous full calendar week",
+    "month": "% compares the last 30 days with the previous full calendar month"
+  },
+  "sort": {
+    "performingHigh": "Performing wallets: High to Low",
+    "totalSentHigh": "Volume: High to Low",
+    "interactingHigh": "Interacting wallets: High to Low",
+    "txHigh": "Transactions: High to Low",
+    "successRateHigh": "Success rate: High to Low"
+  },
+  "csv": {
+    "dappName": "Dapp Name",
+    "types": "Types",
+    "successPercent": "Success %",
+    "fees": "Fees",
+    "feesCurrency": "Fees ({{currency}})",
+    "volumeCurrency": "Volume ({{currency}})"
+  },
+  "metrics": {
+    "performingAddresses": "Performing addresses",
+    "interactingAddresses": "Interacting addresses",
+    "transactions": "Transactions",
+    "totalSent": "Total sent",
+    "volume": "Volume"
+  },
+  "filters": {
+    "excludeWithoutExternalSigning": "Exclude apps without external signing",
+    "walletFilter": "Wallet filter",
+    "allWallets": "All wallets"
+  },
+  "columns": {
+    "dapp": "Dapp",
+    "wallets": "Wallets",
+    "activity": "Activity"
+  },
+  "tooltips": {
+    "performingAddresses": "Unique addresses that have signed transactions.",
+    "interactingAddresses": {
+      "before": "Unique Interacted Addresses:",
+      "after": "actual sender, and actual receiver."
+    },
+    "transactions": "Total transactions count. Includes successful and failed transactions.",
+    "volumeTypes": "Payments, Swaps, Payment channels, Checks, NFT sales, Escrows",
+    "volumeSum": "This is the sum of all {{nativeCurrency}} and issued tokens."
+  },
+  "activity": {
+    "success": "Success",
+    "failed": "Failed",
+    "failedTransactions": "Failed transactions",
+    "hideDetails": "Hide details",
+    "showDetails": "+ details",
+    "failedByTxTypes": "Failed by tx types",
+    "totalWithPercent": "{{count}} total ({{percent}}%)",
+    "noFailedTransactions": "No failed transactions",
+    "groupSuccess": "{{group}} (success)",
+    "noTypes": "No types",
+    "totalGroup": "Total {{group}}: {{count}} ({{percent}}%)",
+    "failedSummary": "Failed: {{count}} ({{percent}}%)",
+    "more": "... +{{count}} more",
+    "groups": {
+      "swaps": "Swaps",
+      "payments": "Payments",
+      "trustlines": "Trustlines",
+      "nft": "NFT",
+      "amm": "AMM",
+      "dex": "DEX",
+      "account": "Account",
+      "mptoken": "MPT",
+      "other": "Other",
+      "failed": "Failed"
+    }
+  }
+}

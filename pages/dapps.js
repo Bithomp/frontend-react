@@ -64,14 +64,14 @@ const dappsApiUrl = (convertCurrency, period) => {
   return apiUrl
 }
 
-const periodComparisonText = (period) => {
+const periodComparisonText = (t, period) => {
   if (period === 'week') {
-    return '% compares the last 7 days with the previous full calendar week'
+    return t('dapps:periodComparison.week')
   }
   if (period === 'month') {
-    return '% compares the last 30 days with the previous full calendar month'
+    return t('dapps:periodComparison.month')
   }
-  return '% compares the last 24 hours with the previous full calendar day'
+  return t('dapps:periodComparison.day')
 }
 
 export async function getServerSideProps(context) {
@@ -117,7 +117,7 @@ export async function getServerSideProps(context) {
       initialErrorMessage: initialErrorMessage || '',
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'dapps']))
     }
   }
 }
@@ -146,7 +146,7 @@ export default function Dapps({
   selectedCurrencyServer
 }) {
   const router = useRouter()
-  const { t, i18n } = useTranslation()
+  const { t, i18n } = useTranslation(['common', 'dapps'])
   const isMobile = useIsMobile(764)
   const hasCompactFilters = useIsMobile(1301)
 
@@ -214,7 +214,7 @@ export default function Dapps({
       })
       .catch((error) => {
         if (error?.message !== 'canceled') {
-          setErrorMessage(error?.message || 'Error')
+          setErrorMessage(error?.message || t('general.error'))
         }
         setLoading(false)
       })
@@ -270,30 +270,36 @@ export default function Dapps({
 
   const orderList = useMemo(
     () => [
-      { value: 'performingHigh', label: 'Performing wallets: High to Low' },
-      { value: 'totalSentHigh', label: 'Volume: High to Low' },
-      { value: 'interactingHigh', label: 'Interacting wallets: High to Low' },
-      { value: 'txHigh', label: 'Transactions: High to Low' },
-      { value: 'successRateHigh', label: 'Success rate: High to Low' }
+      { value: 'performingHigh', label: t('dapps:sort.performingHigh') },
+      { value: 'totalSentHigh', label: t('dapps:sort.totalSentHigh') },
+      { value: 'interactingHigh', label: t('dapps:sort.interactingHigh') },
+      { value: 'txHigh', label: t('dapps:sort.txHigh') },
+      { value: 'successRateHigh', label: t('dapps:sort.successRateHigh') }
     ],
-    []
+    [t]
   )
 
   // CSV headers for export
   const csvHeaders = useMemo(
     () => [
-      { label: 'Dapp Name', key: 'dappName' },
-      { label: 'Performing wallets', key: 'uniqueSourceAddresses' },
-      { label: 'Interacting wallets', key: 'uniqueInteractedAddresses' },
-      { label: 'Transactions', key: 'totalTransactions' },
-      { label: 'Types', key: 'transactionTypes' },
-      { label: 'Success', key: 'successTransactions' },
-      { label: 'Success %', key: 'successRate' },
-      { label: 'Fees', key: 'totalFees' },
-      { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` },
-      { label: `Volume (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
+      { label: t('dapps:csv.dappName'), key: 'dappName' },
+      { label: t('dapps:metrics.performingAddresses'), key: 'uniqueSourceAddresses' },
+      { label: t('dapps:metrics.interactingAddresses'), key: 'uniqueInteractedAddresses' },
+      { label: t('dapps:metrics.transactions'), key: 'totalTransactions' },
+      { label: t('dapps:csv.types'), key: 'transactionTypes' },
+      { label: t('dapps:activity.success'), key: 'successTransactions' },
+      { label: t('dapps:csv.successPercent'), key: 'successRate' },
+      { label: t('dapps:csv.fees'), key: 'totalFees' },
+      {
+        label: t('dapps:csv.feesCurrency', { currency: convertCurrency.toUpperCase() }),
+        key: `totalFeesInFiats.${convertCurrency}`
+      },
+      {
+        label: t('dapps:csv.volumeCurrency', { currency: convertCurrency.toUpperCase() }),
+        key: `totalSentInFiats.${convertCurrency}`
+      }
     ],
-    [convertCurrency]
+    [convertCurrency, t]
   )
 
   const csvData = useMemo(() => {
@@ -391,14 +397,14 @@ export default function Dapps({
 
   return (
     <div className={dappsPageClass}>
-      <SEO title="Dapps" />
+      <SEO title={t('dapps:seo.title')} />
 
-      <h1 className="center">{explorerName} Dapps Radar</h1>
+      <h1 className="center">{t('dapps:title', { explorerName })}</h1>
 
       <div className="center" style={{ marginBottom: 16, fontSize: 15, color: '#888' }}>
         {rawData?.updatedAt ? (
           <>
-            Last update: {timeOrDate(rawData.updatedAt)} ({timeFromNow(rawData.updatedAt, i18n)})
+            {t('dapps:lastUpdate')}: {timeOrDate(rawData.updatedAt)} ({timeFromNow(rawData.updatedAt, i18n)})
           </>
         ) : (
           <br />
@@ -423,17 +429,17 @@ export default function Dapps({
             {t('table.period')}
             <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
             <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
-              {periodComparisonText(period)}
+              {periodComparisonText(t, period)}
             </div>
           </div>
           <div>
             <CheckBox checked={excludeNoWallets} setChecked={onToggleExclude}>
-              Exclude apps without external signing
+              {t('dapps:filters.excludeWithoutExternalSigning')}
             </CheckBox>
           </div>
           {excludeNoWallets ? (
             <>
-              <div style={{ marginBottom: 10 }}>Wallet filter</div>
+              <div style={{ marginBottom: 10 }}>{t('dapps:filters.walletFilter')}</div>
               <WalletSelect value={walletFilter} setValue={setWalletFilter} walletsList={walletsOptionsList} />
             </>
           ) : null}
@@ -483,15 +489,15 @@ export default function Dapps({
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
-                  <th className="left pl-2.5">Dapp</th>
-                  <th className="left pl-2.5">Wallets</th>
+                  <th className="left pl-2.5">{t('dapps:columns.dapp')}</th>
+                  <th className="left pl-2.5">{t('dapps:columns.wallets')}</th>
                   <HeaderTooltip
                     label="PA"
                     tip={
                       <>
-                        <b>Performing addresses</b>
+                        <b>{t('dapps:metrics.performingAddresses')}</b>
                         <br />
-                        Unique addresses that have signed transactions.
+                        {t('dapps:tooltips.performingAddresses')}
                       </>
                     }
                   />
@@ -499,10 +505,10 @@ export default function Dapps({
                     label="IA"
                     tip={
                       <>
-                        <b>Interacting addresses</b>
+                        <b>{t('dapps:metrics.interactingAddresses')}</b>
                         <br />
-                        Unique Interacted Addresses: <code>tx.Address</code>, <code>tx.Destination</code>, actual
-                        sender, and actual receiver.
+                        {t('dapps:tooltips.interactingAddresses.before')} <code>tx.Address</code>,{' '}
+                        <code>tx.Destination</code>, {t('dapps:tooltips.interactingAddresses.after')}
                       </>
                     }
                   />
@@ -510,22 +516,22 @@ export default function Dapps({
                     label="TXs"
                     tip={
                       <>
-                        <b>Transactions</b>
+                        <b>{t('dapps:metrics.transactions')}</b>
                         <br />
-                        Total transactions count. Includes successful and failed transactions.
+                        {t('dapps:tooltips.transactions')}
                       </>
                     }
                   />
-                  <th className="left pl-2.5">Activity</th>
+                  <th className="left pl-2.5">{t('dapps:columns.activity')}</th>
                   <HeaderTooltip
-                    label="Volume"
+                    label={t('dapps:metrics.volume')}
                     tip={
                       <>
-                        <b>Volume</b>
+                        <b>{t('dapps:metrics.volume')}</b>
                         <br />
-                        Payments, Swaps, Payment channels, Checks, NFT sales, Escrows
+                        {t('dapps:tooltips.volumeTypes')}
                         <br />
-                        This is the sum of all {nativeCurrency} and issued tokens.
+                        {t('dapps:tooltips.volumeSum', { nativeCurrency })}
                       </>
                     }
                   />

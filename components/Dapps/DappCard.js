@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'next-i18next'
 import { shortNiceNumber, amountFormat } from '../../utils/format'
 import { dappBySourceTag } from '../../utils/transaction'
 import DappLogo from './DappLogo'
@@ -27,6 +28,7 @@ export default function DappCard({
   expandedRowKey,
   setExpandedRowKey
 }) {
+  const { t } = useTranslation('dapps')
   const sourceTag = dapp?.sourceTag
   const rowKey = sourceTag ?? index
   const isOpen = expandedRowKey === rowKey
@@ -76,7 +78,7 @@ export default function DappCard({
 
       <div className={styles.grid}>
         <div className={styles.metric}>
-          <div className={styles.k}>Performing addresses</div>
+          <div className={styles.k}>{t('metrics.performingAddresses')}</div>
           <div className={styles.v}>
             {shortNiceNumber(dapp?.uniqueSourceAddresses, 0)}
             <Delta cur={dapp?.uniqueSourceAddresses} prev={prevDapp?.uniqueSourceAddresses} />
@@ -84,7 +86,7 @@ export default function DappCard({
         </div>
 
         <div className={styles.metric}>
-          <div className={styles.k}>Interacting addresses</div>
+          <div className={styles.k}>{t('metrics.interactingAddresses')}</div>
           <div className={styles.v}>
             {shortNiceNumber(dapp?.uniqueInteractedAddresses, 0)}
             <Delta cur={dapp?.uniqueInteractedAddresses} prev={prevDapp?.uniqueInteractedAddresses} />
@@ -92,7 +94,7 @@ export default function DappCard({
         </div>
 
         <div className={styles.metric}>
-          <div className={styles.k}>Transactions</div>
+          <div className={styles.k}>{t('metrics.transactions')}</div>
           <div className={styles.v}>
             {shortNiceNumber(dapp?.totalTransactions, 0)}
             <Delta cur={dapp?.totalTransactions} prev={prevDapp?.totalTransactions} />
@@ -100,7 +102,7 @@ export default function DappCard({
         </div>
 
         <div className={styles.metric}>
-          <div className={styles.k}>Total sent</div>
+          <div className={styles.k}>{t('metrics.totalSent')}</div>
           <div className={styles.v} suppressHydrationWarning>
             {shortNiceNumber(dapp?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
             <div className={styles.sub}>

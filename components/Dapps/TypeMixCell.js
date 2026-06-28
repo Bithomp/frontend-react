@@ -1,22 +1,23 @@
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from 'react'
+import { useTranslation } from 'next-i18next'
 import { shortNiceNumber } from '../../utils/format'
 import { useIsMobile } from '../../utils/mobile'
 
 // Fixed order for summary segments (used for grouping + colors)
 const GROUP_ORDER = [
-  { key: 'swaps', label: 'Swaps', color: '#A259F7' },
-  { key: 'payments', label: 'Payments', color: '#3B82F6' },
-  { key: 'trustlines', label: 'Trustlines', color: '#60A5FA' },
-  { key: 'nft', label: 'NFT', color: '#F59E0B' },
-  { key: 'amm', label: 'AMM', color: '#EF4444' },
-  { key: 'dex', label: 'DEX', color: '#8B5CF6' },
-  { key: 'account', label: 'Account', color: '#14B8A6' },
-  { key: 'mptoken', label: 'MPT', color: '#06B6D4' },
-  { key: 'other', label: 'Other', color: '#64748B' }
+  { key: 'swaps', labelKey: 'swaps', color: '#A259F7' },
+  { key: 'payments', labelKey: 'payments', color: '#3B82F6' },
+  { key: 'trustlines', labelKey: 'trustlines', color: '#60A5FA' },
+  { key: 'nft', labelKey: 'nft', color: '#F59E0B' },
+  { key: 'amm', labelKey: 'amm', color: '#EF4444' },
+  { key: 'dex', labelKey: 'dex', color: '#8B5CF6' },
+  { key: 'account', labelKey: 'account', color: '#14B8A6' },
+  { key: 'mptoken', labelKey: 'mptoken', color: '#06B6D4' },
+  { key: 'other', labelKey: 'other', color: '#64748B' }
 ]
 
 // Failed must stay neutral grey, distinct from Other
-const FAILED_SEG = { key: 'failed', label: 'Failed', color: '#9CA3AF' }
+const FAILED_SEG = { key: 'failed', labelKey: 'failed', color: '#9CA3AF' }
 
 // Use layout effect only in browser (SSR-safe)
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
@@ -173,6 +174,7 @@ export default function TypeMixCell({
   onToggle,
   breakpoint = 600
 }) {
+  const { t } = useTranslation('dapps')
   const isMobile = useIsMobile(breakpoint)
   const { ref, w } = useWidth()
 
@@ -251,6 +253,8 @@ export default function TypeMixCell({
     return segments.find((s) => s.key === key) || segments[0] || null
   }, [segments, activeKey, defaultKey])
 
+  const groupLabel = (seg) => t(`activity.groups.${seg?.labelKey || seg?.key}`)
+
   const buildSuccessTooltipLines = (seg, globalTotal) => {
     const groupCount = Number(seg?.count || 0)
     if (!globalTotal || globalTotal <= 0 || groupCount <= 0) return []
@@ -271,7 +275,13 @@ export default function TypeMixCell({
     }
 
     // Multi-type => header + pct inside group
-    const lines = [`Total ${seg.label}: ${shortNiceNumber(groupCount, 0)} (${pctGlobal.toFixed(1)}%)`]
+    const lines = [
+      t('activity.totalGroup', {
+        group: groupLabel(seg),
+        count: shortNiceNumber(groupCount, 0),
+        percent: pctGlobal.toFixed(1)
+      })
+    ]
     for (const t of nonZero) {
       const pctInGroup = groupCount > 0 ? (t.count / groupCount) * 100 : 0
       const pct = t.count < groupCount && pctInGroup >= 99.95 ? 99.9 : pctInGroup
@@ -281,11 +291,18 @@ export default function TypeMixCell({
   }
 
   const buildFailedTooltipLines = () => {
-    const lines = [`Failed: ${shortNiceNumber(failed, 0)} (${clampPctForDisplay(failed, total).toFixed(1)}%)`]
+    const lines = [
+      t('activity.failedSummary', {
+        count: shortNiceNumber(failed, 0),
+        percent: clampPctForDisplay(failed, total).toFixed(1)
+      })
+    ]
     for (const [txType, c] of failedBreakdown.entries.slice(0, 12)) {
       lines.push(`${txType}: ${shortNiceNumber(c, 0)}`)
     }
-    if (failedBreakdown.entries.length > 12) lines.push(`… +${failedBreakdown.entries.length - 12} more`)
+    if (failedBreakdown.entries.length > 12) {
+      lines.push(t('activity.more', { count: failedBreakdown.entries.length - 12 }))
+    }
     return lines
   }
 
@@ -321,8 +338,9 @@ export default function TypeMixCell({
           const segLeft = left
           left += s.pctGeom
 
-          const labelDesktop = `${s.label} ${shortNiceNumber(s.count, 0)}`
-          const labelMobile = s.label
+          const label = groupLabel(s)
+          const labelDesktop = `${label} ${shortNiceNumber(s.count, 0)}`
+          const labelMobile = label
 
           const labelText = isMobile ? labelMobile : labelDesktop
           const showText = canFit(w, s.pctGeom, labelText, isMobile)
@@ -353,13 +371,13 @@ export default function TypeMixCell({
       <div className="dapps-activity__meta">
         <div className="dapps-activity__stats">
           <span className="dapps-activity__stat">
-            <span className="dapps-activity__statLabel">Success</span> <b>{shortNiceNumber(success, 0)}</b>
+            <span className="dapps-activity__statLabel">{t('activity.success')}</span> <b>{shortNiceNumber(success, 0)}</b>
             <span className="dapps-activity__muted">({successPct.toFixed(1)}%)</span>
           </span>
 
           {failed > 0 ? (
             <span className="dapps-activity__stat">
-              <span className="dapps-activity__statLabel">Failed</span> <b>{shortNiceNumber(failed, 0)}</b>
+              <span className="dapps-activity__statLabel">{t('activity.failed')}</span> <b>{shortNiceNumber(failed, 0)}</b>
               <span className={`dapps-activity__muted ${failedClass}`}>({failedPct.toFixed(1)}%)</span>
             </span>
           ) : null}
@@ -367,7 +385,7 @@ export default function TypeMixCell({
 
         {hasAnyDetails ? (
           <button type="button" className="dapps-activity__toggle" onClick={() => onToggle?.()}>
-            {isOpen ? 'Hide details' : '+ details'}
+            {isOpen ? t('activity.hideDetails') : t('activity.showDetails')}
           </button>
         ) : (
           <span />
@@ -391,13 +409,13 @@ export default function TypeMixCell({
                   >
                     <span className="dapps-activity__catName">
                       {s.key === 'failed' ? (
-                        <span className="dapps-activity__errorIcon" title="Failed transactions">
+                        <span className="dapps-activity__errorIcon" title={t('activity.failedTransactions')}>
                           ⚠️
                         </span>
                       ) : (
                         <span className="dapps-activity__dot" style={{ background: s.color }} />
                       )}
-                      <b className="dapps-activity__catLabel">{s.label}</b>
+                      <b className="dapps-activity__catLabel">{groupLabel(s)}</b>
                     </span>
                     <span className="dapps-activity__catPct">{s.pctAll.toFixed(1)}%</span>
                   </button>
@@ -410,9 +428,14 @@ export default function TypeMixCell({
               {active?.key === 'failed' ? (
                 <>
                   <div className="dapps-activity__typesHeader">
-                    <div>Failed by tx types</div>
+                    <div>{t('activity.failedByTxTypes')}</div>
                     <div className="dapps-activity__typesTotal">
-                      {failed ? `${shortNiceNumber(failed, 0)} total (${failedPct.toFixed(1)}%)` : '—'}
+                      {failed
+                        ? t('activity.totalWithPercent', {
+                            count: shortNiceNumber(failed, 0),
+                            percent: failedPct.toFixed(1)
+                          })
+                        : '—'}
                     </div>
                   </div>
 
@@ -424,7 +447,9 @@ export default function TypeMixCell({
                       return bb - aa
                     })
 
-                    if (!typeNames.length) return <div className="dapps-activity__empty">No failed transactions</div>
+                    if (!typeNames.length) {
+                      return <div className="dapps-activity__empty">{t('activity.noFailedTransactions')}</div>
+                    }
 
                     return (
                       <div className="dapps-activity__grid dapps-activity__grid--blocks">
@@ -446,7 +471,7 @@ export default function TypeMixCell({
               ) : (
                 <>
                   <div className="dapps-activity__typesHeader">
-                    <div>{active?.label} (success)</div>
+                    <div>{t('activity.groupSuccess', { group: groupLabel(active) })}</div>
                     <div className="dapps-activity__typesTotal">{shortNiceNumber(active?.count || 0, 0)}</div>
                   </div>
 
@@ -460,7 +485,7 @@ export default function TypeMixCell({
                       ))}
                     </div>
                   ) : (
-                    <div className="dapps-activity__empty">No types</div>
+                    <div className="dapps-activity__empty">{t('activity.noTypes')}</div>
                   )}
                 </>
               )}

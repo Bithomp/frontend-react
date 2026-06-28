@@ -1,0 +1,81 @@
+{
+  "seo": {
+    "title": "Dapps"
+  },
+  "title": "{{explorerName}} Dapps 雷达",
+  "lastUpdate": "最后更新",
+  "periodComparison": {
+    "day": "% 将最近 24 小时与上一个完整自然日比较",
+    "week": "% 将最近 7 天与上一个完整自然周比较",
+    "month": "% 将最近 30 天与上一个完整自然月比较"
+  },
+  "sort": {
+    "performingHigh": "签名钱包：从高到低",
+    "totalSentHigh": "交易量：从高到低",
+    "interactingHigh": "交互钱包：从高到低",
+    "txHigh": "交易：从高到低",
+    "successRateHigh": "成功率：从高到低"
+  },
+  "csv": {
+    "dappName": "Dapp 名称",
+    "types": "类型",
+    "successPercent": "成功 %",
+    "fees": "费用",
+    "feesCurrency": "费用 ({{currency}})",
+    "volumeCurrency": "交易量 ({{currency}})"
+  },
+  "metrics": {
+    "performingAddresses": "签名地址",
+    "interactingAddresses": "交互地址",
+    "transactions": "交易",
+    "totalSent": "发送总额",
+    "volume": "交易量"
+  },
+  "filters": {
+    "excludeWithoutExternalSigning": "排除没有外部签名的应用",
+    "walletFilter": "钱包筛选",
+    "allWallets": "所有钱包"
+  },
+  "columns": {
+    "dapp": "Dapp",
+    "wallets": "钱包",
+    "activity": "活动"
+  },
+  "tooltips": {
+    "performingAddresses": "已签署交易的唯一地址。",
+    "interactingAddresses": {
+      "before": "唯一交互地址：",
+      "after": "实际发送者和实际接收者。"
+    },
+    "transactions": "交易总数。包括成功和失败的交易。",
+    "volumeTypes": "付款、兑换、支付通道、支票、NFT 销售、托管",
+    "volumeSum": "这是所有 {{nativeCurrency}} 和已发行代币的总和。"
+  },
+  "activity": {
+    "success": "成功",
+    "failed": "失败",
+    "failedTransactions": "失败交易",
+    "hideDetails": "隐藏详情",
+    "showDetails": "+ 详情",
+    "failedByTxTypes": "按 tx 类型的失败",
+    "totalWithPercent": "共 {{count}} ({{percent}}%)",
+    "noFailedTransactions": "没有失败交易",
+    "groupSuccess": "{{group}} (成功)",
+    "noTypes": "无类型",
+    "totalGroup": "{{group}} 总计: {{count}} ({{percent}}%)",
+    "failedSummary": "失败: {{count}} ({{percent}}%)",
+    "more": "... 还有 {{count}} 个",
+    "groups": {
+      "swaps": "兑换",
+      "payments": "付款",
+      "trustlines": "信任线",
+      "nft": "NFT",
+      "amm": "AMM",
+      "dex": "DEX",
+      "account": "账户",
+      "mptoken": "MPT",
+      "other": "其他",
+      "failed": "失败"
+    }
+  }
+}

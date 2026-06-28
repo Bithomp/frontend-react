@@ -1,0 +1,81 @@
+{
+  "seo": {
+    "title": "Dapps"
+  },
+  "title": "{{explorerName}} Dapps Radar",
+  "lastUpdate": "Letzte Aktualisierung",
+  "periodComparison": {
+    "day": "% vergleicht die letzten 24 Stunden mit dem vorherigen vollständigen Kalendertag",
+    "week": "% vergleicht die letzten 7 Tage mit der vorherigen vollständigen Kalenderwoche",
+    "month": "% vergleicht die letzten 30 Tage mit dem vorherigen vollständigen Kalendermonat"
+  },
+  "sort": {
+    "performingHigh": "Signierende Wallets: absteigend",
+    "totalSentHigh": "Volumen: absteigend",
+    "interactingHigh": "Interagierende Wallets: absteigend",
+    "txHigh": "Transaktionen: absteigend",
+    "successRateHigh": "Erfolgsrate: absteigend"
+  },
+  "csv": {
+    "dappName": "Dapp-Name",
+    "types": "Typen",
+    "successPercent": "Erfolg %",
+    "fees": "Gebühren",
+    "feesCurrency": "Gebühren ({{currency}})",
+    "volumeCurrency": "Volumen ({{currency}})"
+  },
+  "metrics": {
+    "performingAddresses": "Signierende Adressen",
+    "interactingAddresses": "Interagierende Adressen",
+    "transactions": "Transaktionen",
+    "totalSent": "Gesendet gesamt",
+    "volume": "Volumen"
+  },
+  "filters": {
+    "excludeWithoutExternalSigning": "Apps ohne externe Signierung ausschließen",
+    "walletFilter": "Wallet-Filter",
+    "allWallets": "Alle Wallets"
+  },
+  "columns": {
+    "dapp": "Dapp",
+    "wallets": "Wallets",
+    "activity": "Aktivität"
+  },
+  "tooltips": {
+    "performingAddresses": "Eindeutige Adressen, die Transaktionen signiert haben.",
+    "interactingAddresses": {
+      "before": "Eindeutige interagierende Adressen:",
+      "after": "tatsächlicher Absender und tatsächlicher Empfänger."
+    },
+    "transactions": "Gesamtzahl der Transaktionen. Enthält erfolgreiche und fehlgeschlagene Transaktionen.",
+    "volumeTypes": "Zahlungen, Swaps, Zahlungskanäle, Checks, NFT-Verkäufe, Escrows",
+    "volumeSum": "Dies ist die Summe aller {{nativeCurrency}} und ausgegebenen Token."
+  },
+  "activity": {
+    "success": "Erfolgreich",
+    "failed": "Fehlgeschlagen",
+    "failedTransactions": "Fehlgeschlagene Transaktionen",
+    "hideDetails": "Details ausblenden",
+    "showDetails": "+ Details",
+    "failedByTxTypes": "Fehler nach Transaktionstypen",
+    "totalWithPercent": "{{count}} gesamt ({{percent}}%)",
+    "noFailedTransactions": "Keine fehlgeschlagenen Transaktionen",
+    "groupSuccess": "{{group}} (erfolgreich)",
+    "noTypes": "Keine Typen",
+    "totalGroup": "{{group}} gesamt: {{count}} ({{percent}}%)",
+    "failedSummary": "Fehlgeschlagen: {{count}} ({{percent}}%)",
+    "more": "... +{{count}} weitere",
+    "groups": {
+      "swaps": "Swaps",
+      "payments": "Zahlungen",
+      "trustlines": "Trustlines",
+      "nft": "NFT",
+      "amm": "AMM",
+      "dex": "DEX",
+      "account": "Account",
+      "mptoken": "MPT",
+      "other": "Andere",
+      "failed": "Fehlgeschlagen"
+    }
+  }
+}

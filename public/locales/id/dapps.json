@@ -1,0 +1,81 @@
+{
+  "seo": {
+    "title": "Dapps"
+  },
+  "title": "Radar Dapps {{explorerName}}",
+  "lastUpdate": "Pembaruan terakhir",
+  "periodComparison": {
+    "day": "% membandingkan 24 jam terakhir dengan hari kalender penuh sebelumnya",
+    "week": "% membandingkan 7 hari terakhir dengan minggu kalender penuh sebelumnya",
+    "month": "% membandingkan 30 hari terakhir dengan bulan kalender penuh sebelumnya"
+  },
+  "sort": {
+    "performingHigh": "Dompet penandatangan: tinggi ke rendah",
+    "totalSentHigh": "Volume: tinggi ke rendah",
+    "interactingHigh": "Dompet berinteraksi: tinggi ke rendah",
+    "txHigh": "Transaksi: tinggi ke rendah",
+    "successRateHigh": "Tingkat sukses: tinggi ke rendah"
+  },
+  "csv": {
+    "dappName": "Nama Dapp",
+    "types": "Jenis",
+    "successPercent": "Sukses %",
+    "fees": "Biaya",
+    "feesCurrency": "Biaya ({{currency}})",
+    "volumeCurrency": "Volume ({{currency}})"
+  },
+  "metrics": {
+    "performingAddresses": "Alamat penandatangan",
+    "interactingAddresses": "Alamat berinteraksi",
+    "transactions": "Transaksi",
+    "totalSent": "Total terkirim",
+    "volume": "Volume"
+  },
+  "filters": {
+    "excludeWithoutExternalSigning": "Kecualikan app tanpa penandatanganan eksternal",
+    "walletFilter": "Filter dompet",
+    "allWallets": "Semua dompet"
+  },
+  "columns": {
+    "dapp": "Dapp",
+    "wallets": "Dompet",
+    "activity": "Aktivitas"
+  },
+  "tooltips": {
+    "performingAddresses": "Alamat unik yang telah menandatangani transaksi.",
+    "interactingAddresses": {
+      "before": "Alamat unik yang berinteraksi:",
+      "after": "pengirim aktual dan penerima aktual."
+    },
+    "transactions": "Jumlah total transaksi. Termasuk transaksi sukses dan gagal.",
+    "volumeTypes": "Pembayaran, swap, kanal pembayaran, check, penjualan NFT, escrow",
+    "volumeSum": "Ini adalah jumlah semua {{nativeCurrency}} dan token yang diterbitkan."
+  },
+  "activity": {
+    "success": "Sukses",
+    "failed": "Gagal",
+    "failedTransactions": "Transaksi gagal",
+    "hideDetails": "Sembunyikan detail",
+    "showDetails": "+ detail",
+    "failedByTxTypes": "Gagal berdasarkan jenis tx",
+    "totalWithPercent": "{{count}} total ({{percent}}%)",
+    "noFailedTransactions": "Tidak ada transaksi gagal",
+    "groupSuccess": "{{group}} (sukses)",
+    "noTypes": "Tidak ada jenis",
+    "totalGroup": "Total {{group}}: {{count}} ({{percent}}%)",
+    "failedSummary": "Gagal: {{count}} ({{percent}}%)",
+    "more": "... +{{count}} lainnya",
+    "groups": {
+      "swaps": "Swap",
+      "payments": "Pembayaran",
+      "trustlines": "Trustline",
+      "nft": "NFT",
+      "amm": "AMM",
+      "dex": "DEX",
+      "account": "Akun",
+      "mptoken": "MPT",
+      "other": "Lainnya",
+      "failed": "Gagal"
+    }
+  }
+}

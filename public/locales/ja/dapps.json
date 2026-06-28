@@ -1,0 +1,81 @@
+{
+  "seo": {
+    "title": "Dapps"
+  },
+  "title": "{{explorerName}} Dapps レーダー",
+  "lastUpdate": "最終更新",
+  "periodComparison": {
+    "day": "% は直近24時間を前の完全な暦日と比較しています",
+    "week": "% は直近7日間を前の完全な暦週と比較しています",
+    "month": "% は直近30日間を前の完全な暦月と比較しています"
+  },
+  "sort": {
+    "performingHigh": "署名ウォレット: 多い順",
+    "totalSentHigh": "出来高: 多い順",
+    "interactingHigh": "連携ウォレット: 多い順",
+    "txHigh": "トランザクション: 多い順",
+    "successRateHigh": "成功率: 高い順"
+  },
+  "csv": {
+    "dappName": "Dapp名",
+    "types": "種類",
+    "successPercent": "成功 %",
+    "fees": "手数料",
+    "feesCurrency": "手数料 ({{currency}})",
+    "volumeCurrency": "出来高 ({{currency}})"
+  },
+  "metrics": {
+    "performingAddresses": "署名アドレス",
+    "interactingAddresses": "連携アドレス",
+    "transactions": "トランザクション",
+    "totalSent": "送信合計",
+    "volume": "出来高"
+  },
+  "filters": {
+    "excludeWithoutExternalSigning": "外部署名のないアプリを除外",
+    "walletFilter": "ウォレットフィルター",
+    "allWallets": "すべてのウォレット"
+  },
+  "columns": {
+    "dapp": "Dapp",
+    "wallets": "ウォレット",
+    "activity": "アクティビティ"
+  },
+  "tooltips": {
+    "performingAddresses": "トランザクションに署名した一意のアドレス。",
+    "interactingAddresses": {
+      "before": "一意の連携アドレス:",
+      "after": "実際の送信者と実際の受信者。"
+    },
+    "transactions": "トランザクションの総数。成功と失敗のトランザクションを含みます。",
+    "volumeTypes": "支払い、スワップ、ペイメントチャネル、チェック、NFT販売、エスクロー",
+    "volumeSum": "すべての {{nativeCurrency}} と発行済みトークンの合計です。"
+  },
+  "activity": {
+    "success": "成功",
+    "failed": "失敗",
+    "failedTransactions": "失敗したトランザクション",
+    "hideDetails": "詳細を非表示",
+    "showDetails": "+ 詳細",
+    "failedByTxTypes": "txタイプ別の失敗",
+    "totalWithPercent": "合計 {{count}} ({{percent}}%)",
+    "noFailedTransactions": "失敗したトランザクションはありません",
+    "groupSuccess": "{{group}} (成功)",
+    "noTypes": "種類なし",
+    "totalGroup": "{{group}} 合計: {{count}} ({{percent}}%)",
+    "failedSummary": "失敗: {{count}} ({{percent}}%)",
+    "more": "... さらに{{count}}件",
+    "groups": {
+      "swaps": "スワップ",
+      "payments": "支払い",
+      "trustlines": "トラストライン",
+      "nft": "NFT",
+      "amm": "AMM",
+      "dex": "DEX",
+      "account": "アカウント",
+      "mptoken": "MPT",
+      "other": "その他",
+      "failed": "失敗"
+    }
+  }
+}

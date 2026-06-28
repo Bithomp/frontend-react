@@ -1,0 +1,81 @@
+{
+  "seo": {
+    "title": "Dapps"
+  },
+  "title": "{{explorerName}} Dapps 레이더",
+  "lastUpdate": "마지막 업데이트",
+  "periodComparison": {
+    "day": "%는 최근 24시간을 이전 전체 달력일과 비교합니다",
+    "week": "%는 최근 7일을 이전 전체 달력주와 비교합니다",
+    "month": "%는 최근 30일을 이전 전체 달력월과 비교합니다"
+  },
+  "sort": {
+    "performingHigh": "서명 지갑: 높은 순",
+    "totalSentHigh": "거래량: 높은 순",
+    "interactingHigh": "상호작용 지갑: 높은 순",
+    "txHigh": "트랜잭션: 높은 순",
+    "successRateHigh": "성공률: 높은 순"
+  },
+  "csv": {
+    "dappName": "Dapp 이름",
+    "types": "유형",
+    "successPercent": "성공 %",
+    "fees": "수수료",
+    "feesCurrency": "수수료 ({{currency}})",
+    "volumeCurrency": "거래량 ({{currency}})"
+  },
+  "metrics": {
+    "performingAddresses": "서명 주소",
+    "interactingAddresses": "상호작용 주소",
+    "transactions": "트랜잭션",
+    "totalSent": "총 전송",
+    "volume": "거래량"
+  },
+  "filters": {
+    "excludeWithoutExternalSigning": "외부 서명이 없는 앱 제외",
+    "walletFilter": "지갑 필터",
+    "allWallets": "모든 지갑"
+  },
+  "columns": {
+    "dapp": "Dapp",
+    "wallets": "지갑",
+    "activity": "활동"
+  },
+  "tooltips": {
+    "performingAddresses": "트랜잭션에 서명한 고유 주소입니다.",
+    "interactingAddresses": {
+      "before": "고유 상호작용 주소:",
+      "after": "실제 발신자와 실제 수신자."
+    },
+    "transactions": "전체 트랜잭션 수입니다. 성공 및 실패 트랜잭션을 포함합니다.",
+    "volumeTypes": "결제, 스왑, 결제 채널, 체크, NFT 판매, 에스크로",
+    "volumeSum": "모든 {{nativeCurrency}} 및 발행 토큰의 합계입니다."
+  },
+  "activity": {
+    "success": "성공",
+    "failed": "실패",
+    "failedTransactions": "실패한 트랜잭션",
+    "hideDetails": "상세 숨기기",
+    "showDetails": "+ 상세",
+    "failedByTxTypes": "tx 유형별 실패",
+    "totalWithPercent": "총 {{count}} ({{percent}}%)",
+    "noFailedTransactions": "실패한 트랜잭션 없음",
+    "groupSuccess": "{{group}} (성공)",
+    "noTypes": "유형 없음",
+    "totalGroup": "총 {{group}}: {{count}} ({{percent}}%)",
+    "failedSummary": "실패: {{count}} ({{percent}}%)",
+    "more": "... +{{count}}개 더",
+    "groups": {
+      "swaps": "스왑",
+      "payments": "결제",
+      "trustlines": "트러스트라인",
+      "nft": "NFT",
+      "amm": "AMM",
+      "dex": "DEX",
+      "account": "계정",
+      "mptoken": "MPT",
+      "other": "기타",
+      "failed": "실패"
+    }
+  }
+}
