@@ -194,6 +194,35 @@ export default function SignForm({
 
   const [choosenWallet, setChoosenWallet] = useState(null)
   const processedXamanUuidRef = useRef(null)
+  const signFormOpen = !!screen
+
+  useEffect(() => {
+    if (!signFormOpen) return
+
+    const scrollY = window.scrollY || window.pageYOffset || 0
+    const previousBodyStyle = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow
+    }
+    const previousHtmlOverflow = document.documentElement.style.overflow
+
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow
+      document.body.style.position = previousBodyStyle.position
+      document.body.style.top = previousBodyStyle.top
+      document.body.style.width = previousBodyStyle.width
+      document.body.style.overflow = previousBodyStyle.overflow
+      window.scrollTo(0, scrollY)
+    }
+  }, [signFormOpen])
 
   useEffect(() => {
     if (!signRequest) return

@@ -11,6 +11,7 @@
   z-index: 50;
   box-sizing: border-box;
   padding: 16px;
+  overscroll-behavior: contain;
 
   @media only screen and (max-width: 480px) {
     padding: 0;
@@ -44,6 +45,8 @@
     border-radius: 10px;
     background-color: var(--background-main);
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 
     &.info-screen {
       overflow: hidden;
