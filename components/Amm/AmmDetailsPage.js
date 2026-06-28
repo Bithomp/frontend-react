@@ -735,8 +735,9 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
 
   const options = useMemo(
     () => {
+      const hasDualAxis = dualYAxis && series.length > 1
       const yaxisLabels = {
-        minWidth: 34,
+        minWidth: hasDualAxis ? 42 : 34,
         formatter: (value) => shortNiceNumber(value, 2, 1),
         style: apexAxisLabelStyle(theme, { fontSize: '10px' })
       }
@@ -753,7 +754,7 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
         grid: {
           borderColor: chartTheme.gridColor,
           strokeDashArray: 3,
-          padding: { top: 2, right: dualYAxis ? 0 : 6, bottom: 0, left: 0 }
+          padding: { top: 2, right: hasDualAxis ? 28 : 8, bottom: 0, left: 6 }
         },
         legend: {
           show: series.length > 1,
@@ -792,7 +793,7 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
           tooltip: { enabled: false }
         },
         yaxis:
-          dualYAxis && series.length > 1
+          hasDualAxis
             ? series.map((item, index) => ({
                 seriesName: item.name,
                 opposite: index % 2 === 1,
