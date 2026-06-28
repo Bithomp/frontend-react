@@ -2904,9 +2904,9 @@ export default function AmmDetailsPage({
                         <h3>{ta('details.historicalLookup')}</h3>
                         <span>{ta('details.historicalHint')}</span>
                       </div>
-                      {historicalData?.ledgerTimestamp ? (
+                      {historicalSnapshotText ? (
                         <span className="ammHistoricalBadge">
-                          {ta('details.snapshotBadge', { time: fullDateAndTime(historicalData.ledgerTimestamp) })}
+                          {ta('details.snapshotBadge', { time: historicalSnapshotText })}
                         </span>
                       ) : null}
                     </div>
