@@ -6,6 +6,7 @@ import axios from 'axios'
 import { appWithTranslation, useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
+import Cookies from 'universal-cookie'
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 const TX_ADDRESSES_WITHOUT_ADS = new Set(['rJ8hb4jMHgRNhEQ7BTGz6vt14kWn2z6H78'])
@@ -27,9 +28,10 @@ import {
   xahauNetwork,
   networkId,
   nativeCurrency,
+  currentLocales,
+  loadLocaleResources,
   normalizeFiatCurrency,
-  normalizeLocale,
-  localePath
+  normalizeLocale
 } from '@/utils'
 import { useEmailLogin } from '@/hooks/useEmailLogin'
 import LogoAnimated from '../components/Layout/LogoAnimated'
@@ -263,8 +265,6 @@ const getMainPath = (url) => {
   return parts.length > startIndex ? `/${parts[startIndex]}` : '/'
 }
 
-const queryLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr', 'zh']
-
 const getQueryValue = (value) => (Array.isArray(value) ? value[0] : value)
 
 const normalizeQueryLocale = (value) => {
@@ -273,7 +273,7 @@ const normalizeQueryLocale = (value) => {
     .toLowerCase()
     .split(/[-_]/)[0]
 
-  return queryLocales.includes(locale) ? locale : null
+  return currentLocales.includes(locale) ? locale : null
 }
 
 function useReferralCookie() {
@@ -442,11 +442,14 @@ const MyApp = ({ Component, pageProps }) => {
   }, [])
 
   const router = useRouter()
+  const { i18n } = useTranslation()
   const isBot = useIsBot()
   const pathname = router.pathname
   const queryFiatCurrency = normalizeFiatCurrency(getQueryValue(router.query.fiat))
   const effectiveSelectedCurrency = queryFiatCurrency || selectedCurrency
   const queryLocale = normalizeQueryLocale(getQueryValue(router.query.lang))
+  const cookieLocale = new Cookies().get('NEXT_LOCALE')
+  const preferredLocale = queryLocale || (currentLocales.includes(cookieLocale) ? cookieLocale : null)
   const transactionAccount = pageProps?.data?.tx?.Account
   const transactionDestination = pageProps?.data?.tx?.Destination
   const hideAdsForCurrentPage =
@@ -454,17 +457,21 @@ const MyApp = ({ Component, pageProps }) => {
     (TX_ADDRESSES_WITHOUT_ADS.has(transactionAccount) || TX_ADDRESSES_WITHOUT_ADS.has(transactionDestination))
 
   useEffect(() => {
-    if (!router.isReady || !queryLocale) return
-    if (normalizeLocale(router.locale) === queryLocale) return
+    if (!router.isReady || !preferredLocale) return
+    if (normalizeLocale(i18n.language) === preferredLocale) return
 
-    if (queryLocale === 'en') {
-      const englishPath = localePath(router.asPath, 'en')
-      router.replace(englishPath, englishPath, { locale: false, scroll: false })
-      return
+    let cancelled = false
+
+    loadLocaleResources(i18n, preferredLocale).then(() => {
+      if (!cancelled) {
+        i18n.changeLanguage(preferredLocale)
+      }
+    })
+
+    return () => {
+      cancelled = true
     }
-
-    router.replace(router.asPath, router.asPath, { locale: queryLocale, scroll: false })
-  }, [queryLocale, router])
+  }, [i18n, preferredLocale, router.isReady])
 
   // Universal tooltip positioning: on hover, switch every .tooltiptext to
   // position:fixed with viewport coordinates so it escapes any overflow:hidden

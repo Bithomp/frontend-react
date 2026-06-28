@@ -2,7 +2,12 @@ import { NextSeo } from 'next-seo'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import { server, explorerName, xahauNetwork, network } from '../utils'
+import { normalizeLocale, stripLeadingLocale, server, explorerName, xahauNetwork, network } from '../utils'
+
+const absolutePath = (path) => {
+  const cleanPath = stripLeadingLocale(path || '/')
+  return cleanPath === '/' ? '' : cleanPath
+}
 
 export default function SEO({
   title,
@@ -35,19 +40,16 @@ export default function SEO({
 
   const cleanPath = (router.asPath || '/').split('#')[0].split('?')[0]
   const cleanCanonicalPath = canonicalPath ? canonicalPath.split('#')[0].split('?')[0] : cleanPath
-  const normalizedPath = cleanPath === '/' ? '' : cleanPath
-  const normalizedCanonicalPath = cleanCanonicalPath === '/' ? '' : cleanCanonicalPath
-  const isEnglishLikeLocale = !router.locale || router.locale === 'default' || router.locale === 'en'
-  const canonical = isEnglishLikeLocale
-    ? server + normalizedCanonicalPath
-    : `${server}/${router.locale}${normalizedCanonicalPath}`
+  const normalizedPath = stripLeadingLocale(cleanPath)
+  const currentLocale = normalizeLocale(router.locale)
+  const canonical = server + absolutePath(cleanCanonicalPath)
 
   let openGraph = {
     type: 'website',
     url: canonical,
     title: seoTitle,
     description: seoDescription,
-    locale: isEnglishLikeLocale ? 'en' : router.locale,
+    locale: currentLocale,
     site_name: websiteName || explorerName + ' ' + (page ? page : 'Explorer')
   }
 
@@ -100,21 +102,6 @@ export default function SEO({
     twitter.site = '@XahauExplorer'
   }
 
-  // don't add the slash after language, otherwise redirects and it is bad for SEO
-  let path = cleanCanonicalPath !== '/' ? cleanCanonicalPath : ''
-
-  let languageAlternates = [
-    { hrefLang: 'x-default', href: server + path },
-    { hrefLang: 'en', href: server + path },
-    { hrefLang: 'ko', href: server + '/ko' + path },
-    { hrefLang: 'ru', href: server + '/ru' + path },
-    { hrefLang: 'de', href: server + '/de' + path },
-    { hrefLang: 'es', href: server + '/es' + path },
-    { hrefLang: 'id', href: server + '/id' + path },
-    { hrefLang: 'ja', href: server + '/ja' + path },
-    { hrefLang: 'fr', href: server + '/fr' + path }
-  ]
-
   const isPrimaryIndexableNetwork = ['mainnet', 'xahau'].includes(network)
   const isNonMainnetLandingPage = ['', '/', '/faucet', '/explorer'].includes(normalizedPath || '/')
   const shouldNoindex = noindex || (!isPrimaryIndexableNetwork && !isNonMainnetLandingPage)
@@ -126,7 +113,6 @@ export default function SEO({
         description={seoDescription}
         openGraph={openGraph}
         twitter={twitter}
-        languageAlternates={languageAlternates}
         canonical={canonical}
         noindex={shouldNoindex}
       />

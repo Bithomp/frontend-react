@@ -135,67 +135,20 @@ if (network === 'mainnet') {
 }
 
 function generateSiteMap(posts) {
-  const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr', 'zh']
-  const noTranslatedPages = [
-    'dapps',
-    'the-chain-of-blocks-summit',
-    'advertise',
-    'eaas',
-    'build-unl',
-    'privacy-policy',
-    'terms-and-conditions',
-    'disclaimer',
-    'xrp-xah-taxes',
-    'object',
-    'whales',
-    'whales/receivers',
-    'whales/senders',
-    'whales/submitters',
-    'learn/verified-domain',
-    'learn/ripple-usd',
-    'learn/the-bithomp-explorer-advantages',
-    'learn/xrpl-article',
-    'learn/amm',
-    'learn/run-a-validator',
-    'learn/issue-a-token',
-    'learn/guide-for-token-issuers',
-    'learn/image-services',
-    'learn/claim-reward',
-    'learn/create-escrow',
-    'learn/trustlines',
-    'learn/nft-explorer',
-    'learn/paystrings',
-    'learn/send-payments',
-    'learn/types-of-assets',
-    'learn/checks',
-    'xrp-wallets',
-    'xahau-wallets'
-  ]
-
-  const localeHref = (locale, loc) => {
+  const pageHref = (loc) => {
     const suffix = loc ? '/' + loc : ''
-    return locale === 'en' ? `${server}${suffix}` : `${server}/${locale}${suffix}`
+    return `${server}${suffix}`
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
      ${posts
        .map(({ loc, changefreq, priority }) => {
          return `
           <url>
-            <loc>${localeHref('en', loc)}</loc>
+            <loc>${pageHref(loc)}</loc>
             <changefreq>${changefreq}</changefreq>
             <priority>${priority}</priority>
-            <xhtml:link rel="alternate" hreflang="x-default" href="${localeHref('en', loc)}"/>
-            ${
-              !noTranslatedPages.includes(loc)
-                ? locales
-                    .map((locale) => {
-                      return `<xhtml:link rel="alternate" hreflang="${locale}" href="${localeHref(locale, loc)}"/>`
-                    })
-                    .join('')
-                : ''
-            }
           </url>
         `
        })

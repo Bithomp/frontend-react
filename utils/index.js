@@ -559,13 +559,13 @@ export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
 const webAddress = process.env.NEXT_PUBLIC_WEB_ADDRESS
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
 export const xahauNetwork = network.includes('xahau')
-export const normalizeLocale = (locale) => (!locale || locale === 'default' ? 'en' : locale)
-export const localePath = (path = '/', locale) => {
-  const normalizedLocale = normalizeLocale(locale)
-  const rawPath = path?.startsWith('/') ? path : `/${path || ''}`
-  const normalizedPath = rawPath.replace(/^\/(default|en|ko|ru|de|es|id|ja|fr|zh)(?=\/|$)/, '') || '/'
-  return normalizedLocale === 'en' ? normalizedPath : `/${normalizedLocale}${normalizedPath}`
-}
+const localeConfig = require('./locales')
+export const currentLocales = localeConfig.currentLocales
+export const rootLocale = localeConfig.rootLocale
+export const normalizeLocale = localeConfig.normalizeLocale
+export const localePath = localeConfig.localePath
+export const stripLeadingLocale = localeConfig.stripLeadingLocale
+export const loadLocaleResources = localeConfig.loadLocaleResources
 
 export const showXahauNewAmendment = (amendment, isXahauNetwork = xahauNetwork) => {
   if (!isXahauNetwork) return true

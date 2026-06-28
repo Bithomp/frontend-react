@@ -14,7 +14,8 @@ import {
   useWidth,
   avatarSrc,
   retinaImageSize,
-  server
+  server,
+  normalizeLocale
 } from '../../../utils'
 
 import Switch from './Switch'
@@ -348,7 +349,7 @@ export default function Header({
 
   const bithomp = server.includes('bithomp')
 
-  const lang = i18n.language === 'default' ? 'en' : i18n.language
+  const lang = normalizeLocale(i18n.language)
 
   const hideSearchInHeader =
     HIDE_SEARCH_HEADER.includes(router?.pathname) ||

@@ -9,7 +9,8 @@ module.exports = withBundleAnalyzer({
     styledComponents: true
   },
   experimental: {
-    strictNextHead: true
+    strictNextHead: true,
+    skipMiddlewareUrlNormalize: true
   },
   productionBrowserSourceMaps: false,
   i18n,
@@ -65,52 +66,62 @@ module.exports = withBundleAnalyzer({
       {
         source: '/go/:path*',
         destination: '/api/go/:path*',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/rich-list',
         destination: '/distribution',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/developer',
         destination: '/admin',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/blackholed-address',
         destination: '/learn/blackholed-address',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/blacklisted-address',
         destination: '/learn/blacklisted-address',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/verified-domains',
         destination: '/learn/verified-domain',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/rlusd',
         destination: '/learn/ripple-usd',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/xrp-xah-taxes',
         destination: '/learn/xrp-xah-taxes',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/xrpl-article',
         destination: '/learn/xrpl-article',
-        permanent: true
+        permanent: true,
+        locale: false
       },
       {
         source: '/services/amm',
         destination: '/services/amm/deposit',
-        permanent: true
+        permanent: true,
+        locale: false
       }
     ]
   },

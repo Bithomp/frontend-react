@@ -13,7 +13,7 @@ import 'dayjs/locale/zh' // 'zh'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
-import { cookieParams, localePath, normalizeLocale } from '../../../utils'
+import { cookieParams, loadLocaleResources, localePath, normalizeLocale } from '../../../utils'
 
 const cookies = new Cookies()
 
@@ -41,7 +41,7 @@ export default function LanguageSwitch({ close }) {
 
   if (!rendered) return null
 
-  const { pathname, asPath, query } = router
+  const { asPath } = router
 
   const langChange = (lang) => {
     if (lang === 'default' || lang === 'undefined' || !lang) return
@@ -49,18 +49,16 @@ export default function LanguageSwitch({ close }) {
     cookies.set('NEXT_LOCALE', lang, cookieParams)
   }
 
-  const handleLangChange = (lang) => {
+  const handleLangChange = async (lang) => {
     const currentLang = normalizeLocale(i18n.language)?.slice(0, 2)
     if (currentLang !== lang) {
       langChange(lang)
+      await loadLocaleResources(i18n, lang)
+      await i18n.changeLanguage(lang)
       const nextAsPath = replaceLangQuery(asPath, lang)
-      const nextQuery = query?.lang ? { ...query, lang } : query
-
-      if (lang === 'en') {
-        const englishPath = localePath(nextAsPath, 'en')
-        router.replace(englishPath, englishPath, { locale: false })
-      } else {
-        router.replace({ pathname, query: nextQuery }, nextAsPath, { locale: lang })
+      const localizedPath = localePath(nextAsPath, lang)
+      if (localizedPath !== asPath) {
+        router.replace(localizedPath, localizedPath, { locale: false })
       }
       //hard refresh to avoid the issue when in some cases the language is not saved when user returned from a third party site
       //window.location.replace(`/${lang}${asPath}`)
