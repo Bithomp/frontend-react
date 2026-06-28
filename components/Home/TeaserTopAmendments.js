@@ -23,6 +23,26 @@ const shortEnabledAge = (enabledAt, locale) => {
   return `${day} ${month} ${year}`
 }
 
+const shortActivationEta = (majorityAt, locale) => {
+  const ts = Number(majorityAt)
+  if (!Number.isFinite(ts) || ts <= 0) return ''
+
+  const activationDays = xahauNetwork ? 5 : 14
+  const activationAt = ts + activationDays * 86400 + 903
+  const diffSeconds = activationAt - Math.floor(Date.now() / 1000)
+  const days = Math.ceil(diffSeconds / 86400)
+
+  if (days <= 0) return 'soon'
+  if (days < 100) return `in ${days}d`
+
+  const date = new Date(activationAt * 1000)
+  const day = date.getDate()
+  const month = date.toLocaleDateString(locale || undefined, { month: 'short' })
+  const year = date.getFullYear()
+
+  return `${day} ${month} ${year}`
+}
+
 const amendmentVersion = (amendment) => {
   if (!amendment.introduced) return 'vN/A'
 
@@ -31,6 +51,10 @@ const amendmentVersion = (amendment) => {
 }
 
 const amendmentDetail = (amendment, locale) => {
+  if (amendment.teaserStatus === 'majority') {
+    return shortActivationEta(amendment.majority, locale) || '-'
+  }
+
   if (amendment.teaserStatus === 'enabled') {
     return amendment.enabledAt ? shortEnabledAge(amendment.enabledAt, locale) : '-'
   }
@@ -42,7 +66,17 @@ const amendmentDetail = (amendment, locale) => {
   return '-'
 }
 
-const amendmentStatus = (amendment) => (amendment.teaserStatus === 'enabled' ? 'Enabled' : 'Voting')
+const amendmentStatus = (amendment) => {
+  if (amendment.teaserStatus === 'majority') return 'Majority'
+  if (amendment.teaserStatus === 'enabled') return 'Enabled'
+  return 'Voting'
+}
+
+const amendmentStatusClass = (amendment) => {
+  if (amendment.teaserStatus === 'majority') return styles.amendmentStatusMajority
+  if (amendment.teaserStatus === 'enabled') return styles.amendmentStatusEnabled
+  return styles.amendmentStatusVoting
+}
 
 export default function TeaserTopAmendments({ data = [], isLoading = false }) {
   const { i18n } = useTranslation()
@@ -110,11 +144,7 @@ export default function TeaserTopAmendments({ data = [], isLoading = false }) {
             </span>
           </div>
           <div className={styles.metric}>
-            <span
-              className={`${styles.amendmentStatus} ${
-                amendment.teaserStatus === 'enabled' ? styles.amendmentStatusEnabled : styles.amendmentStatusVoting
-              }`}
-            >
+            <span className={`${styles.amendmentStatus} ${amendmentStatusClass(amendment)}`}>
               {amendmentStatus(amendment)}
             </span>
           </div>

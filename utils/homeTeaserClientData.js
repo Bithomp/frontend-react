@@ -3,7 +3,7 @@ import axios from 'axios'
 import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
 import { nativeCurrency, devNet, xahauNetwork } from './index'
 import { dappBySourceTag } from './transaction'
-import { compareAmendmentVersionDesc, mergeVotingAmendments } from './amendments'
+import { buildTeaserAmendments } from './amendments'
 
 export const emptyHomeTeasers = {
   dapps: [],
@@ -200,33 +200,8 @@ export const fetchTeaserAmendmentsClient = async () => {
 
     const data = Array.isArray(amendRes?.data) ? amendRes.data : []
     const features = featuresRes?.data?.result?.features || {}
-    const disabled = data.filter((amendment) => !amendment.enabled && !amendment.majority)
 
-    const newAmendments = mergeVotingAmendments(disabled, features, xahauNetwork, data)
-      .map((amendment) => ({
-        ...amendment,
-        teaserStatus: 'voting'
-      }))
-      .sort((a, b) => compareAmendmentVersionDesc(a, b) || (b.count ?? 0) - (a.count ?? 0))
-
-    const maxRows = 8
-    if (newAmendments.length >= maxRows) {
-      return newAmendments.slice(0, maxRows)
-    }
-
-    const enabledAmendments = data
-      .filter((amendment) => !!amendment.enabled)
-      .map((amendment) => ({ ...amendment, teaserStatus: 'enabled' }))
-      .sort((a, b) => {
-        const aTime = Number(a.enabledAt || 0)
-        const bTime = Number(b.enabledAt || 0)
-        if (bTime !== aTime) return bTime - aTime
-        const aLedger = Number(a.enabledLedgerIndex || 0)
-        const bLedger = Number(b.enabledLedgerIndex || 0)
-        return bLedger - aLedger
-      })
-
-    return [...newAmendments, ...enabledAmendments.slice(0, maxRows - newAmendments.length)]
+    return buildTeaserAmendments(data, features, xahauNetwork)
   } catch (error) {
     return []
   }

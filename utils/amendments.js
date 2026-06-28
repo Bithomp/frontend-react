@@ -41,6 +41,15 @@ export const mergeVotingAmendments = (disabled = [], features = {}, isXahauNetwo
   return newAmendments.filter((amendment) => showXahauNewAmendment(amendment, isXahauNetwork))
 }
 
+const withFeatureDetails = (amendment, features = {}) => ({
+  ...amendment,
+  name: features[amendment.amendment]?.name ?? amendment.name ?? null,
+  vetoed: features[amendment.amendment]?.vetoed ?? amendment.vetoed ?? null,
+  count: features[amendment.amendment]?.count ?? amendment.count ?? null,
+  threshold: features[amendment.amendment]?.threshold ?? amendment.threshold ?? null,
+  validations: features[amendment.amendment]?.validations ?? amendment.validations ?? null
+})
+
 export const compareAmendmentVersionDesc = (a, b) => {
   const parseVersion = (version) => {
     const parts = String(version || '').match(/\d+/g)
@@ -56,4 +65,49 @@ export const compareAmendmentVersionDesc = (a, b) => {
     if (da !== db) return db - da
   }
   return 0
+}
+
+export const buildTeaserAmendments = (data = [], features = {}, isXahauNetwork = false, maxRows = 8) => {
+  const amendments = Array.isArray(data) ? data : []
+  const disabled = amendments.filter((amendment) => !amendment.enabled && !amendment.majority)
+
+  const majorityAmendments = amendments
+    .filter((amendment) => !amendment.enabled && amendment.majority)
+    .map((amendment) => ({
+      ...withFeatureDetails(amendment, features),
+      teaserStatus: 'majority'
+    }))
+    .filter((amendment) => showXahauNewAmendment(amendment, isXahauNetwork))
+    .sort((a, b) => {
+      const aMajority = Number(a.majority || 0)
+      const bMajority = Number(b.majority || 0)
+      if (aMajority !== bMajority) return aMajority - bMajority
+      return compareAmendmentVersionDesc(a, b) || (b.count ?? 0) - (a.count ?? 0)
+    })
+
+  const newAmendments = mergeVotingAmendments(disabled, features, isXahauNetwork, amendments)
+    .map((amendment) => ({
+      ...amendment,
+      teaserStatus: 'voting'
+    }))
+    .sort((a, b) => compareAmendmentVersionDesc(a, b) || (b.count ?? 0) - (a.count ?? 0))
+
+  const activeAmendments = [...majorityAmendments, ...newAmendments]
+  if (activeAmendments.length >= maxRows) {
+    return activeAmendments.slice(0, maxRows)
+  }
+
+  const enabledAmendments = amendments
+    .filter((amendment) => !!amendment.enabled)
+    .map((amendment) => ({ ...amendment, teaserStatus: 'enabled' }))
+    .sort((a, b) => {
+      const aTime = Number(a.enabledAt || 0)
+      const bTime = Number(b.enabledAt || 0)
+      if (bTime !== aTime) return bTime - aTime
+      const aLedger = Number(a.enabledLedgerIndex || 0)
+      const bLedger = Number(b.enabledLedgerIndex || 0)
+      return bLedger - aLedger
+    })
+
+  return [...activeAmendments, ...enabledAmendments.slice(0, maxRows - activeAmendments.length)]
 }

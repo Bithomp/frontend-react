@@ -103,7 +103,27 @@ const fiatValue = (row, selectedCurrency, field = 'priceFiats') => {
 }
 
 const hasUsableData = (series) =>
-  series.some((item) => Array.isArray(item.data) && item.data.some((point) => point[1] !== null && point[1] !== undefined))
+  Array.isArray(series) &&
+  series.some(
+    (item) =>
+      Array.isArray(item?.data) &&
+      item.data.some((point) => Array.isArray(point) && point[1] !== null && point[1] !== undefined)
+  )
+
+const normalizeChartSeries = (series) =>
+  Array.isArray(series)
+    ? series
+        .map((item) => {
+          const chartItem = item || {}
+
+          return {
+            ...chartItem,
+            type: chartItem.type || 'line',
+            data: Array.isArray(chartItem.data) ? chartItem.data.filter((point) => Array.isArray(point) && point.length >= 2) : []
+          }
+        })
+        .filter((item) => item.data.length)
+    : []
 
 const fieldSeries = ({ rows, name, field, type = 'line', color, group }) => ({
   name,
@@ -224,7 +244,7 @@ const tooltipRow = ({ color, label, value, bold = false, formatter }) =>
     </div>
   </div>`
 
-function TokenChart({ group, expanded = false }) {
+function TokenChart({ group = {}, expanded = false }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
   const textColor = theme === 'light' ? '#2f3337' : '#f4f4f4'
@@ -232,9 +252,11 @@ function TokenChart({ group, expanded = false }) {
     theme === 'light' ? 'rgba(52, 59, 66, 0.16)' : 'rgba(255, 255, 255, 0.16)'
   const labelColor = theme === 'light' ? '#5f6670' : '#a7a7a7'
   const height = expanded ? 420 : 150
+  const series = useMemo(() => normalizeChartSeries(group.series), [group.series])
 
   const options = useMemo(
     () => {
+      const colors = Array.isArray(group.colors) ? group.colors : series.map((item) => item.color).filter(Boolean)
       const baseTickAmount = expanded ? 5 : 3
       const yAxisTickAmount = group.integerYAxis
         ? integerTickAmount(group.yRange, baseTickAmount)
@@ -278,7 +300,7 @@ function TokenChart({ group, expanded = false }) {
 
       return {
         chart: {
-          id: `token-${group.key}-${expanded ? 'expanded' : 'compact'}`,
+          id: `token-${group.key || 'chart'}-${expanded ? 'expanded' : 'compact'}`,
           animations: { enabled: false },
           foreColor: textColor,
           redrawOnParentResize: expanded,
@@ -302,10 +324,15 @@ function TokenChart({ group, expanded = false }) {
             autoScaleYaxis: true
           }
         },
-        colors: group.colors,
+        annotations: {
+          xaxis: [],
+          yaxis: [],
+          points: []
+        },
+        colors,
         dataLabels: { enabled: false },
         fill: {
-          opacity: group.series.map((series) => (series.type === 'column' ? 0.86 : series.type === 'area' ? 0.18 : 1))
+          opacity: series.map((item) => (item.type === 'column' ? 0.86 : item.type === 'area' ? 0.18 : 1))
         },
         grid: {
           borderColor: gridColor,
@@ -313,7 +340,7 @@ function TokenChart({ group, expanded = false }) {
           padding: expanded ? { left: 12, right: 16, top: 0, bottom: 0 } : { left: 0, right: 4, top: 0, bottom: 0 }
         },
         legend: {
-          show: expanded || group.series.length <= 3,
+          show: expanded || series.length <= 3,
           position: 'top',
           horizontalAlign: 'left',
           fontSize: expanded ? '12px' : '11px',
@@ -321,6 +348,7 @@ function TokenChart({ group, expanded = false }) {
           markers: { size: 5 }
         },
         markers: {
+          discrete: [],
           size: expanded ? 3 : 0,
           strokeWidth: 0,
           hover: { size: 5 }
@@ -333,7 +361,7 @@ function TokenChart({ group, expanded = false }) {
         },
         stroke: {
           curve: 'smooth',
-          width: group.series.map((series) => (series.type === 'column' ? 0 : expanded ? 3 : 2.5))
+          width: series.map((item) => (item.type === 'column' ? 0 : expanded ? 3 : 2.5))
         },
         tooltip: {
           shared: true,
@@ -372,13 +400,15 @@ function TokenChart({ group, expanded = false }) {
         yaxis
       }
     },
-    [expanded, gridColor, group, i18n.language, labelColor, textColor]
+    [expanded, gridColor, group, i18n.language, labelColor, series, textColor]
   )
+
+  if (!series.length) return null
 
   return (
     <Chart
       type={group.chartType || 'line'}
-      series={group.series}
+      series={series}
       options={options}
       height={height}
     />

@@ -7,7 +7,7 @@ import { axiosServer, passHeaders } from './axios'
 import { dappBySourceTag } from './transaction'
 import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
 import { nativeCurrency, devNet, xahauNetwork } from './index'
-import { compareAmendmentVersionDesc, mergeVotingAmendments } from './amendments'
+import { buildTeaserAmendments } from './amendments'
 
 /**
  * Helper function to ensure we always get an array from API response
@@ -248,40 +248,7 @@ export const fetchTeaserAmendments = async (req) => {
     const data = Array.isArray(amendRes?.data) ? amendRes.data : []
     const features = featuresRes?.data?.result?.features || {}
 
-    // Disabled amendments = not enabled, no majority
-    const disabled = data.filter((a) => !a.enabled && !a.majority)
-
-    // Merge name, vetoed, count from features; include Xahau feature-only voting rows.
-    const newAmendments = mergeVotingAmendments(disabled, features, xahauNetwork, data)
-      .map((a) => ({
-        ...a,
-        teaserStatus: 'voting'
-      }))
-
-    // New amendments: higher introduced version first (smaller versions go down)
-    newAmendments.sort((a, b) => compareAmendmentVersionDesc(a, b) || (b.count ?? 0) - (a.count ?? 0))
-
-    // If new amendments exceed max rows, show only the latest 7 new ones
-    const MAX_ROWS = 8
-    if (newAmendments.length >= MAX_ROWS) {
-      return newAmendments.slice(0, MAX_ROWS)
-    }
-
-    // Fill remaining rows with latest enabled amendments (most recent enabledAt first)
-    const enabledAmendments = data
-      .filter((a) => !!a.enabled)
-      .map((a) => ({ ...a, teaserStatus: 'enabled' }))
-      .sort((a, b) => {
-        const aTime = Number(a.enabledAt || 0)
-        const bTime = Number(b.enabledAt || 0)
-        if (bTime !== aTime) return bTime - aTime
-        const aLedger = Number(a.enabledLedgerIndex || 0)
-        const bLedger = Number(b.enabledLedgerIndex || 0)
-        return bLedger - aLedger
-      })
-
-    const need = MAX_ROWS - newAmendments.length
-    return [...newAmendments, ...enabledAmendments.slice(0, need)]
+    return buildTeaserAmendments(data, features, xahauNetwork)
   } catch (error) {
     console.error('Error fetching teaser amendments:', error.message)
     return []
