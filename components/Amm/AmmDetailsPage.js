@@ -16,6 +16,7 @@ import AmmTabs from '../Tabs/AmmTabs'
 import HomeTeaser, { HomeTeaseRow } from '../Home/HomeTeaser'
 import TokenCharts from '../Token/TokenCharts'
 import { useTheme } from '../Layout/ThemeContext'
+import { useIsMobile } from '../../utils/mobile'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { addQueryParams, isAddressValid, nativeCurrency, normalizeLocale, removeQueryParams, tokenImageSrc } from '../../utils'
 import { fetchHistoricalRate, fetchHistoricalTokenFiatRate } from '../../utils/common'
@@ -857,6 +858,7 @@ const contributorChartColors = (count) => Array.from({ length: count }, (_, inde
 function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnitFiat, selectedCurrency }) {
   const { t } = useTranslation('amm')
   const { theme } = useTheme()
+  const isMobile = useIsMobile(600)
   const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
   const [activeContributorIndex, setActiveContributorIndex] = useState(null)
   const [showAllContributors, setShowAllContributors] = useState(false)
@@ -876,7 +878,8 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
     .map((record) => ({
       label: contributorLabel(record),
       balance: Number(record.balance || 0),
-      share: contributorShare(record.balance, totalCoins)
+      share: contributorShare(record.balance, totalCoins),
+      record
     }))
     .filter((item) => item.share !== null && item.share > 0)
   const otherBalance = Number.isFinite(totalBalance) ? Math.max(totalBalance - topBalance, 0) : 0
@@ -884,7 +887,8 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
     chartItems.push({
       label: t('contributors.others'),
       balance: otherBalance,
-      share: contributorShare(otherBalance, totalCoins)
+      share: contributorShare(otherBalance, totalCoins),
+      record: null
     })
   }
 
@@ -898,7 +902,23 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
         type: 'donut',
         animations: { enabled: false },
         foreColor: chartTheme.textColor,
-        toolbar: { show: false }
+        toolbar: { show: false },
+        events: {
+          dataPointSelection: (_event, _chartContext, config) => {
+            const index = config?.dataPointIndex
+            if (index === undefined || index === null || index < 0) return
+            setActiveContributorIndex((current) => (current === index ? null : index))
+          },
+          dataPointMouseEnter: (_event, _chartContext, config) => {
+            if (isMobile) return
+            const index = config?.dataPointIndex
+            if (index === undefined || index === null || index < 0) return
+            setActiveContributorIndex(index)
+          },
+          dataPointMouseLeave: () => {
+            if (!isMobile) setActiveContributorIndex(null)
+          }
+        }
       },
       labels: chartItems.map((item) => item.label),
       colors: contributorChartColors(chartItems.length),
@@ -908,13 +928,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
       legend: { show: false },
       stroke: { width: 1, colors: ['var(--card-bg)'] },
       tooltip: {
-        theme: chartTheme.tooltipTheme,
-        y: {
-          formatter: (value) => {
-            const number = Number(value)
-            return Number.isFinite(number) ? t('contributors.shareTooltip', { value: number.toFixed(2) }) : '-'
-          }
-        }
+        enabled: false
       },
       plotOptions: {
         pie: {
@@ -941,12 +955,10 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
               total: {
                 show: true,
                 showAlways: true,
-                label: activeContributor?.label || t('contributors.top100'),
+                label: t('contributors.top100'),
                 color: chartTheme.labelColor,
                 formatter: () =>
-                  activeContributor?.share !== undefined && activeContributor?.share !== null
-                    ? `${activeContributor.share.toFixed(2)}%`
-                    : topShare !== null
+                  topShare !== null
                     ? `${topShare.toFixed(1)}%`
                     : '-'
               }
@@ -955,7 +967,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
         }
       }
     }),
-    [activeContributor, chartItems, chartTheme, t, topShare]
+    [chartItems, chartTheme, isMobile, t, topShare]
   )
 
   return (
@@ -982,7 +994,47 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
         <div className="ammContributorsBody">
           <div className="ammContributorsChart">
             {chartSeries.length ? (
-              <Chart type="donut" series={chartSeries} options={chartOptions} height={210} />
+              <>
+                <Chart type="donut" series={chartSeries} options={chartOptions} height={210} />
+                {activeContributor ? (
+                  <div
+                    className="ammContributorSelected"
+                    style={{ '--amm-contributor-color': contributorBaseColor(activeContributorIndex, chartItems.length) }}
+                  >
+                    <div className="ammContributorSelectedAddress">
+                      <span className="ammContributorSelectedMarker"></span>
+                      {activeContributor.record?.address ? (
+                        <Link href={`/account/${activeContributor.record.address}`} prefetch={false}>
+                          <AddressWithIconInline
+                            data={activeContributor.record}
+                            options={{
+                              noLink: true,
+                              className: 'ammContributorAddressInline',
+                              labelClassName: 'ammContributorAddressText'
+                            }}
+                          />
+                        </Link>
+                      ) : (
+                        <span>{activeContributor.label}</span>
+                      )}
+                    </div>
+                    <div className="ammContributorSelectedStats">
+                      <span>
+                        <span>{t('contributors.share')}</span>
+                        <strong>
+                          {activeContributor.share !== null && activeContributor.share !== undefined
+                            ? `${activeContributor.share.toFixed(2)}%`
+                            : '-'}
+                        </strong>
+                      </span>
+                      <span>
+                        <span>{t('contributors.lpTokens')}</span>
+                        <strong>{shortNiceNumber(activeContributor.balance, 2, 1)}</strong>
+                      </span>
+                    </div>
+                  </div>
+                ) : null}
+              </>
             ) : (
               <div className="tokenChartEmpty">{t('common.chartDataUnavailable')}</div>
             )}
@@ -1007,13 +1059,26 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
               return (
                 <Link
                   href={`/account/${record.address}`}
-                  className="ammContributorRow"
+                  className={`ammContributorRow${activeContributorIndex === index ? ' ammContributorRow-active' : ''}`}
                   key={record.trustlineID || record.address || index}
                   prefetch={false}
-                  onBlur={() => setActiveContributorIndex(null)}
+                  onBlur={() => {
+                    if (!isMobile) setActiveContributorIndex(null)
+                  }}
+                  onClick={(event) => {
+                    if (!isMobile) return
+                    if (activeContributorIndex !== index) {
+                      event.preventDefault()
+                      setActiveContributorIndex(index)
+                    }
+                  }}
                   onFocus={() => setActiveContributorIndex(index)}
-                  onMouseEnter={() => setActiveContributorIndex(index)}
-                  onMouseLeave={() => setActiveContributorIndex(null)}
+                  onMouseEnter={() => {
+                    if (!isMobile) setActiveContributorIndex(index)
+                  }}
+                  onMouseLeave={() => {
+                    if (!isMobile) setActiveContributorIndex(null)
+                  }}
                   style={{ '--amm-contributor-color': contributorBaseColor(index, chartItems.length) }}
                 >
                   <span className="ammVoteRank">{index + 1}</span>

@@ -1160,59 +1160,6 @@ body.dark {
 }
 /* tooltip ends */
 
-/* ApexCharts renders tooltips outside CSS modules, so keep the theme skin global. */
-.apexcharts-tooltip,
-.apexcharts-xaxistooltip,
-.apexcharts-yaxistooltip {
-  background: var(--card-bg) !important;
-  border: 1px solid color-mix(in srgb, var(--card-border) 72%, var(--text-secondary)) !important;
-  color: var(--text-main) !important;
-  box-shadow: 0 8px 22px color-mix(in srgb, #000 20%, transparent) !important;
-}
-
-.apexcharts-tooltip-title {
-  background: var(--background-secondary) !important;
-  border-bottom: 1px solid color-mix(in srgb, var(--card-border) 64%, var(--text-secondary)) !important;
-  color: var(--text-main) !important;
-}
-
-.apexcharts-tooltip.apexcharts-theme-dark,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-title {
-  background: #0f3f59 !important;
-  border-color: color-mix(in srgb, #7aa7bc 42%, #0f3f59) !important;
-  color: #f4f7fb !important;
-}
-
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-y-group,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-z-group,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-goals-group,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-y-label,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-y-value,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-goals-label,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-goals-value,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-z-label,
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-text-z-value {
-  color: #f4f7fb !important;
-}
-
-.apexcharts-tooltip-text,
-.apexcharts-tooltip-y-group,
-.apexcharts-tooltip-z-group,
-.apexcharts-tooltip-goals-group,
-.apexcharts-tooltip-text-y-label,
-.apexcharts-tooltip-text-y-value,
-.apexcharts-tooltip-text-goals-label,
-.apexcharts-tooltip-text-goals-value,
-.apexcharts-tooltip-text-z-label,
-.apexcharts-tooltip-text-z-value {
-  color: var(--text-main) !important;
-}
-
-.apexcharts-tooltip-marker {
-  border-color: var(--card-bg) !important;
-}
-
 .apexcharts-text,
 .apexcharts-xaxis-label,
 .apexcharts-yaxis-label {
@@ -1229,26 +1176,6 @@ body.dark {
 
 .apexcharts-datalabel-value {
   fill: var(--text-main) !important;
-}
-
-.apexcharts-xaxistooltip-bottom:before,
-.apexcharts-xaxistooltip-bottom:after {
-  border-bottom-color: color-mix(in srgb, var(--card-border) 72%, var(--text-secondary)) !important;
-}
-
-.apexcharts-xaxistooltip-top:before,
-.apexcharts-xaxistooltip-top:after {
-  border-top-color: color-mix(in srgb, var(--card-border) 72%, var(--text-secondary)) !important;
-}
-
-.apexcharts-yaxistooltip-left:before,
-.apexcharts-yaxistooltip-left:after {
-  border-left-color: color-mix(in srgb, var(--card-border) 72%, var(--text-secondary)) !important;
-}
-
-.apexcharts-yaxistooltip-right:before,
-.apexcharts-yaxistooltip-right:after {
-  border-right-color: color-mix(in srgb, var(--card-border) 72%, var(--text-secondary)) !important;
 }
 
 .social-icons {
