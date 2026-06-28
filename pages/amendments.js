@@ -4,7 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fullDateAndTime, shortHash, timeOrDate } from '../utils/format'
-import { shortName, useWidth, xahauNetwork, showXahauNewAmendment } from '../utils'
+import { shortName, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { axiosServer, passHeaders } from '../utils/axios'
 
@@ -13,6 +13,7 @@ import CopyButton from '../components/UI/CopyButton'
 import Link from 'next/link'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 import { LinkTx } from '../utils/links'
+import { mergeVotingAmendments, votingFeatureKeys } from '../utils/amendments'
 
 export const getServerSideProps = async (context) => {
   const { locale, req } = context
@@ -113,11 +114,10 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
       setLoadedFeatures(true)
       const features = newdata.result.features
 
-      let voting = [] // the list of amendments that are voting
+      const voting = votingFeatureKeys(features) // the list of amendments that are voting
 
-      Object.keys(features).forEach((key) => {
-        if (!features[key].enabled && features[key].vetoed !== 'Obsolete') {
-          voting.push(key)
+      voting.forEach((key) => {
+        if (features[key]) {
           setValidations(features[key].validations)
           setThreshold(features[key].threshold)
         }
@@ -148,23 +148,23 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
       }
 
       let obsoleteArray = []
-      let newArray = []
       let notAvailableArray = []
 
       //split disabled (without majourity) to new and obsolete
       for (let i = 0; i < disabled.length; i++) {
         if (disabled[i].vetoed === 'Obsolete') {
           obsoleteArray.push(disabled[i])
-        } else if (voting.includes(disabled[i].amendment)) {
-          newArray.push(disabled[i])
-        } else {
+        } else if (!voting.includes(disabled[i].amendment)) {
           notAvailableArray.push(disabled[i])
         }
       }
 
       //with more votes on top
-      newArray.sort((a, b) => (a.count > b.count ? -1 : 1))
-      newArray = newArray.filter((a) => showXahauNewAmendment(a, xahauNetwork))
+      const newArray = mergeVotingAmendments(disabled, features, xahauNetwork, data).sort((a, b) => {
+        const countDiff = Number(b.count || 0) - Number(a.count || 0)
+        if (countDiff) return countDiff
+        return String(a.name || a.amendment).localeCompare(String(b.name || b.amendment))
+      })
 
       setNotAvailableAmendments(notAvailableArray)
       setObsoleteAmendments(obsoleteArray)

@@ -9,9 +9,9 @@ module.exports = withBundleAnalyzer({
     styledComponents: true
   },
   experimental: {
-    strictNextHead: true,
-    skipMiddlewareUrlNormalize: true
+    strictNextHead: true
   },
+  skipMiddlewareUrlNormalize: true,
   productionBrowserSourceMaps: false,
   i18n,
   webpack(config) {

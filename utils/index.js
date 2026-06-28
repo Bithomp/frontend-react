@@ -570,10 +570,9 @@ export const loadLocaleResources = localeConfig.loadLocaleResources
 export const showXahauNewAmendment = (amendment, isXahauNetwork = xahauNetwork) => {
   if (!isXahauNetwork) return true
 
-  const votes = Number(amendment?.count) || 0
-  if (votes > 0) return true
-
   const version = String(amendment?.introduced || '').trim()
+  if (!version) return true
+
   const year = Number(version.match(/^(\d{4})/)?.[1])
   return Number.isInteger(year) && year >= 2026
 }

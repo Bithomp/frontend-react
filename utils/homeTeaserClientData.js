@@ -1,8 +1,9 @@
 import axios from 'axios'
 
 import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
-import { nativeCurrency, devNet, xahauNetwork, showXahauNewAmendment } from './index'
+import { nativeCurrency, devNet, xahauNetwork } from './index'
 import { dappBySourceTag } from './transaction'
+import { compareAmendmentVersionDesc, mergeVotingAmendments } from './amendments'
 
 export const emptyHomeTeasers = {
   dapps: [],
@@ -199,40 +200,14 @@ export const fetchTeaserAmendmentsClient = async () => {
 
     const data = Array.isArray(amendRes?.data) ? amendRes.data : []
     const features = featuresRes?.data?.result?.features || {}
-    const voting = new Set(
-      Object.keys(features).filter((key) => !features[key].enabled && features[key].vetoed !== 'Obsolete')
-    )
+    const disabled = data.filter((amendment) => !amendment.enabled && !amendment.majority)
 
-    const parseVersion = (version) => {
-      const parts = String(version || '').match(/\d+/g)
-      return parts ? parts.map((x) => Number(x) || 0) : [0]
-    }
-
-    const compareVersionDesc = (a, b) => {
-      const va = parseVersion(a?.introduced)
-      const vb = parseVersion(b?.introduced)
-      const maxLen = Math.max(va.length, vb.length)
-      for (let i = 0; i < maxLen; i++) {
-        const da = va[i] || 0
-        const db = vb[i] || 0
-        if (da !== db) return db - da
-      }
-      return 0
-    }
-
-    const newAmendments = data
-      .filter((amendment) => !amendment.enabled && !amendment.majority)
+    const newAmendments = mergeVotingAmendments(disabled, features, xahauNetwork, data)
       .map((amendment) => ({
         ...amendment,
-        teaserStatus: 'voting',
-        name: features[amendment.amendment]?.name ?? amendment.name ?? null,
-        vetoed: features[amendment.amendment]?.vetoed ?? amendment.vetoed ?? null,
-        count: features[amendment.amendment]?.count ?? null,
-        threshold: features[amendment.amendment]?.threshold ?? null
+        teaserStatus: 'voting'
       }))
-      .filter((amendment) => voting.has(amendment.amendment))
-      .filter((amendment) => showXahauNewAmendment(amendment, xahauNetwork))
-      .sort((a, b) => compareVersionDesc(a, b) || (b.count ?? 0) - (a.count ?? 0))
+      .sort((a, b) => compareAmendmentVersionDesc(a, b) || (b.count ?? 0) - (a.count ?? 0))
 
     const maxRows = 8
     if (newAmendments.length >= maxRows) {

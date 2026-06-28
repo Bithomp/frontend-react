@@ -6,7 +6,8 @@
 import { axiosServer, passHeaders } from './axios'
 import { dappBySourceTag } from './transaction'
 import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
-import { nativeCurrency, devNet, xahauNetwork, showXahauNewAmendment } from './index'
+import { nativeCurrency, devNet, xahauNetwork } from './index'
+import { compareAmendmentVersionDesc, mergeVotingAmendments } from './amendments'
 
 /**
  * Helper function to ensure we always get an array from API response
@@ -247,46 +248,18 @@ export const fetchTeaserAmendments = async (req) => {
     const data = Array.isArray(amendRes?.data) ? amendRes.data : []
     const features = featuresRes?.data?.result?.features || {}
 
-    // Build voting set: disabled features that aren't Obsolete
-    const voting = new Set(
-      Object.keys(features).filter((key) => !features[key].enabled && features[key].vetoed !== 'Obsolete')
-    )
-
     // Disabled amendments = not enabled, no majority
     const disabled = data.filter((a) => !a.enabled && !a.majority)
 
-    // Merge name, vetoed, count from features; filter to only voting ones
-    const newAmendments = disabled
+    // Merge name, vetoed, count from features; include Xahau feature-only voting rows.
+    const newAmendments = mergeVotingAmendments(disabled, features, xahauNetwork, data)
       .map((a) => ({
         ...a,
-        teaserStatus: 'voting',
-        name: features[a.amendment]?.name ?? a.name ?? null,
-        vetoed: features[a.amendment]?.vetoed ?? a.vetoed ?? null,
-        count: features[a.amendment]?.count ?? null,
-        threshold: features[a.amendment]?.threshold ?? null
+        teaserStatus: 'voting'
       }))
-      .filter((a) => voting.has(a.amendment))
-      .filter((a) => showXahauNewAmendment(a, xahauNetwork))
-
-    const parseVersion = (version) => {
-      const parts = String(version || '').match(/\d+/g)
-      return parts ? parts.map((x) => Number(x) || 0) : [0]
-    }
-
-    const compareVersionDesc = (a, b) => {
-      const va = parseVersion(a?.introduced)
-      const vb = parseVersion(b?.introduced)
-      const maxLen = Math.max(va.length, vb.length)
-      for (let i = 0; i < maxLen; i++) {
-        const da = va[i] || 0
-        const db = vb[i] || 0
-        if (da !== db) return db - da
-      }
-      return 0
-    }
 
     // New amendments: higher introduced version first (smaller versions go down)
-    newAmendments.sort((a, b) => compareVersionDesc(a, b) || (b.count ?? 0) - (a.count ?? 0))
+    newAmendments.sort((a, b) => compareAmendmentVersionDesc(a, b) || (b.count ?? 0) - (a.count ?? 0))
 
     // If new amendments exceed max rows, show only the latest 7 new ones
     const MAX_ROWS = 8
