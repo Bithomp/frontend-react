@@ -20,6 +20,7 @@
     "invalid-domain": "请输入有效的域名。",
     "captcha-required": "请完成验证码。",
     "domain-not-found": "我们无法访问该域或找到其 TOML 文件。请检查域名并重试。",
+    "fetch-failed": "我们无法从该域获取 {{tomlName}}。服务器关闭了连接或没有响应。请检查域名托管设置并重试。",
     "toml-not-found": "该域可以访问，但我们无法在预期的 .well-known 位置找到 {{tomlName}}。",
     "secure-connection-failed": "我们无法安全地获取 TOML 文件。检查域 HTTPS/TLS 证书。",
     "html-content": "预期的 {{tomlName}} URL 返回 HTML 而不是 TOML 文件。",

@@ -20,6 +20,7 @@
     "invalid-domain": "유효한 도메인을 입력하세요.",
     "captcha-required": "캡차를 완료해 주세요.",
     "domain-not-found": "해당 도메인이나 TOML 파일에 접근할 수 없습니다. 도메인을 확인한 뒤 다시 시도해 주세요.",
+    "fetch-failed": "해당 도메인에서 {{tomlName}}을 가져올 수 없습니다. 서버가 연결을 닫았거나 응답하지 않았습니다. 도메인 호스팅 설정을 확인한 뒤 다시 시도해 주세요.",
     "toml-not-found": "도메인에는 접근할 수 있지만 예상한 .well-known 위치에서 {{tomlName}}을 찾을 수 없습니다.",
     "secure-connection-failed": "TOML 파일을 안전하게 가져올 수 없습니다. 도메인의 HTTPS/TLS 인증서를 확인해 주세요.",
     "html-content": "예상한 {{tomlName}} URL이 TOML 파일 대신 HTML을 반환했습니다.",

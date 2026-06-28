@@ -49,6 +49,17 @@ const getParsedTomlError = (message, tt, tomlName) => {
     return tt('errors.domain-not-found')
   }
 
+  if (
+    lowerError.includes('socket hang up') ||
+    lowerError.includes('econnreset') ||
+    lowerError.includes('econnrefused') ||
+    lowerError.includes('econnaborted') ||
+    lowerError.includes('etimedout') ||
+    lowerError.includes('network socket disconnected')
+  ) {
+    return tt('errors.fetch-failed', { tomlName })
+  }
+
   if (lowerError.includes('status code 404') || lowerError.includes(' 404') || lowerError === '404') {
     return tt('errors.toml-not-found', { tomlName })
   }

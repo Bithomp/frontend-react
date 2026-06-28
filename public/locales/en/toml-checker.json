@@ -20,6 +20,7 @@
     "invalid-domain": "Please enter a valid domain.",
     "captcha-required": "Please complete the captcha.",
     "domain-not-found": "We could not reach that domain or find its TOML file. Please check the domain and try again.",
+    "fetch-failed": "We could not fetch {{tomlName}} from that domain. The server closed the connection or did not respond. Please check the domain hosting and try again.",
     "toml-not-found": "The domain is reachable, but we could not find {{tomlName}} at the expected .well-known location.",
     "secure-connection-failed": "We could not securely fetch the TOML file. Check the domain HTTPS/TLS certificate.",
     "html-content": "The expected {{tomlName}} URL returned HTML instead of a TOML file.",

@@ -20,6 +20,7 @@
     "invalid-domain": "Veuillez saisir un domaine valide.",
     "captcha-required": "Veuillez compléter le captcha.",
     "domain-not-found": "Nous n'avons pas pu joindre ce domaine ou trouver son fichier TOML. Vérifiez le domaine puis réessayez.",
+    "fetch-failed": "Impossible de récupérer {{tomlName}} depuis ce domaine. Le serveur a fermé la connexion ou n'a pas répondu. Vérifiez l'hébergement du domaine puis réessayez.",
     "toml-not-found": "Le domaine est joignable, mais {{tomlName}} est introuvable à l'emplacement .well-known attendu.",
     "secure-connection-failed": "Impossible de récupérer le fichier TOML de façon sécurisée. Vérifiez le certificat HTTPS/TLS du domaine.",
     "html-content": "L'URL {{tomlName}} attendue a renvoyé du HTML au lieu d'un fichier TOML.",
