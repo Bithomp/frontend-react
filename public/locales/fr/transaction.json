@@ -44,6 +44,13 @@
     "notValidatedAfterLedger": "Elle ne sera pas validée si le ledger a déjà dépassé le Ledger #{{ledger}}.",
     "validatedInLedger": "dans le ledger <ledgerLink></ledgerLink> (indice : {{index}})",
     "specifiedFee": "{{fee}} a été indiqué comme frais de transaction.",
+    "ammDepositEnoughReceiveExactlyPrefix": "Il a été demandé de déposer assez pour recevoir exactement",
+    "ammDepositUpToPrefix": "Il a été demandé de déposer jusqu'à",
+    "ammDepositUpToReceiveExactlySuffix": "pour recevoir exactement",
+    "ammWithdrawRedeemExactlyPrefix": "Il a été demandé d'échanger exactement",
+    "ammWithdrawRedeemExactlyWithdrawAtLeastSuffix": "pour retirer au moins",
+    "ammDepositMaximumPrefix": "Il a été demandé de déposer au maximum",
+    "ammWithdrawMinimumPrefix": "Il a été demandé de retirer au minimum",
     "memosThirdParty": {
       "prefix": "Les commentaires ont été ajoutés par le tiers",
       "suffix": "qui a terminé l’escrow."

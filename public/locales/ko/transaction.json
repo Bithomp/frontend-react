@@ -44,6 +44,13 @@
     "notValidatedAfterLedger": "레저가 이미 Ledger #{{ledger}} 를 지났다면 검증되지 않습니다.",
     "validatedInLedger": "레저 <ledgerLink></ledgerLink> (인덱스: {{index}})",
     "specifiedFee": "트랜잭션 수수료로 {{fee}} 사용이 지정되었습니다.",
+    "ammDepositEnoughReceiveExactlyPrefix": "정확히 다음을 받기 위해 충분한 금액을 예치하도록 지시되었습니다:",
+    "ammDepositUpToPrefix": "최대 다음까지 예치하도록 지시되었습니다:",
+    "ammDepositUpToReceiveExactlySuffix": "정확히 다음을 받기 위해:",
+    "ammWithdrawRedeemExactlyPrefix": "정확히 다음을 상환하도록 지시되었습니다:",
+    "ammWithdrawRedeemExactlyWithdrawAtLeastSuffix": "최소 다음을 인출하기 위해:",
+    "ammDepositMaximumPrefix": "최대 다음을 예치하도록 지시되었습니다:",
+    "ammWithdrawMinimumPrefix": "최소 다음을 인출하도록 지시되었습니다:",
     "memosThirdParty": {
       "prefix": "메시지는 Escrow를 완료한 제3자",
       "suffix": "Escrow를 완료했습니다."

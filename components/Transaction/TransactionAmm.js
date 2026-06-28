@@ -1,3 +1,5 @@
+import { useTranslation } from 'next-i18next'
+
 import { TData } from './TData'
 
 import { TransactionCard } from './TransactionCard'
@@ -231,6 +233,8 @@ function VoteSlotsChangesTable({ voteSlotsChanges = [] }) {
 }
 
 export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
+  const { t: txT } = useTranslation('transaction')
+
   if (!data) return null
   const { specification, tx, outcome } = data
 
@@ -241,8 +245,8 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const asset = specification?.asset
   const asset2 = specification?.asset2
   const ePrice = specification?.EPrice
-  const lpTokenOut = specification?.LPTokenOut
-  const lpTokenIn = specification?.LPTokenIn
+  const lpTokenOut = specification?.lpTokenOut
+  const lpTokenIn = specification?.lpTokenIn
   const bidMax = createAmountWithIssuer(specification, outcome, specification.source.address, 'bidMax')
   const bidMin = createAmountWithIssuer(specification, outcome, specification.source.address, 'bidMin')
   const holder = {
@@ -253,6 +257,12 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address) || []
   const depositedList = sourceBalanceChangesList.filter((c) => Number(c?.value) < 0)
   const receivedList = sourceBalanceChangesList.filter((c) => Number(c?.value) > 0)
+  const lpTokenOutAmount = lpTokenOut
+    ? receivedList.find((change) => change?.issuer === lpTokenOut?.issuer && change?.currencyDetails?.type === 'lp_token')
+    : null
+  const lpTokenInAmount = lpTokenIn
+    ? depositedList.find((change) => change?.issuer === lpTokenIn?.issuer && change?.currencyDetails?.type === 'lp_token')
+    : null
 
   // Helper function to render amount with issuer
   const renderAmountWithIssuer = (amountData, options) => (
@@ -272,6 +282,91 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
       )}
     </>
   )
+
+  const hasAmountValue = (amountData) => amountData?.currency && amountData?.value
+  const renderLpTokenAmount = (lpToken, balanceChange) => {
+    const amountData =
+      balanceChange && Number(balanceChange.value) < 0
+        ? { ...balanceChange, value: Math.abs(Number(balanceChange.value)).toString() }
+        : balanceChange || lpToken
+
+    return amountData?.currency && amountData?.value
+      ? amountFormat(amountData, { withIssuer: true, bold: true, precise: 'nice' })
+      : amountData
+  }
+  const renderAmmAmountList = () => (
+    <>
+      {hasAmountValue(amount) && (
+        <>
+          {renderAmountWithIssuer(amount)}
+          {hasAmountValue(amount2) && ' and '}
+        </>
+      )}
+      {hasAmountValue(amount2) && renderAmountWithIssuer(amount2)}
+    </>
+  )
+  const renderAmmInstruction = () => {
+    const hasAmount = hasAmountValue(amount)
+    const hasAmount2 = hasAmountValue(amount2)
+
+    if (txType === 'AMMDeposit' && lpTokenOut) {
+      const receiveAmount = renderLpTokenAmount(lpTokenOut, lpTokenOutAmount)
+
+      return (
+        <>
+          {hasAmount || hasAmount2 ? (
+            <>
+              {txT('messages.ammDepositUpToPrefix')} {renderAmmAmountList()}{' '}
+              {txT('messages.ammDepositUpToReceiveExactlySuffix')} {receiveAmount}.
+            </>
+          ) : (
+            <>
+              {txT('messages.ammDepositEnoughReceiveExactlyPrefix')} {receiveAmount}.
+            </>
+          )}
+        </>
+      )
+    }
+
+    if (txType === 'AMMWithdraw' && lpTokenIn) {
+      const redeemAmount = renderLpTokenAmount(lpTokenIn, lpTokenInAmount)
+
+      return (
+        <>
+          {txT('messages.ammWithdrawRedeemExactlyPrefix')} {redeemAmount}
+          {hasAmount || hasAmount2 ? (
+            <>
+              {' '}
+              {txT('messages.ammWithdrawRedeemExactlyWithdrawAtLeastSuffix')} {renderAmmAmountList()}
+            </>
+          ) : (
+            ''
+          )}
+          .
+        </>
+      )
+    }
+
+    if ((txType === 'AMMDeposit' || txType === 'AMMCreate') && (hasAmount || hasAmount2)) {
+      return (
+        <>
+          {txT('messages.ammDepositMaximumPrefix')} {renderAmmAmountList()}
+        </>
+      )
+    }
+
+    if (txType === 'AMMWithdraw' && (hasAmount || hasAmount2)) {
+      return (
+        <>
+          {txT('messages.ammWithdrawMinimumPrefix')} {renderAmmAmountList()}
+        </>
+      )
+    }
+
+    return null
+  }
+
+  const ammInstruction = renderAmmInstruction()
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -372,18 +467,6 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData className="bold">{ePrice}</TData>
         </tr>
       )}
-      {lpTokenIn && (
-        <tr>
-          <TData>LP Token In</TData>
-          <TData className="bold">{lpTokenIn}</TData>
-        </tr>
-      )}
-      {lpTokenOut && (
-        <tr>
-          <TData>LP Token Out</TData>
-          <TData className="bold">{lpTokenOut}</TData>
-        </tr>
-      )}
       {bidMax?.currency && bidMax?.value && bidMin?.currency && bidMin?.value && bidMax.value === bidMin.value ? (
         <tr>
           <TData>Bid</TData>
@@ -430,20 +513,12 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
       {txType === 'AMMDeposit' || txType === 'AMMCreate' || txType === 'AMMWithdraw' ? (
-        <tr>
-          <TData>Specification</TData>
-          <TData>
-            It was instructed to{' '}
-            {txType === 'AMMDeposit' || txType === 'AMMCreate' ? 'deposit maximum' : 'withdraw minimum'}{' '}
-            {amount?.currency && amount?.value && (
-              <>
-                {renderAmountWithIssuer(amount)}
-                {amount2?.currency && amount2?.value && ' and '}
-              </>
-            )}
-            {amount2?.currency && amount2?.value && renderAmountWithIssuer(amount2)}
-          </TData>
-        </tr>
+        ammInstruction && (
+          <tr>
+            <TData>Specification</TData>
+            <TData>{ammInstruction}</TData>
+          </tr>
+        )
       ) : (
         <>
           {amount?.currency && amount?.value && (

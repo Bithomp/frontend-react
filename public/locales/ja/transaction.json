@@ -44,6 +44,13 @@
     "notValidatedAfterLedger": "Ledger #{{ledger}} をすでに過ぎている場合、このトランザクションは検証されません。",
     "validatedInLedger": "レジャー <ledgerLink></ledgerLink>（インデックス: {{index}}）",
     "specifiedFee": "トランザクション手数料として {{fee}} を支払う指定でした。",
+    "ammDepositEnoughReceiveExactlyPrefix": "ちょうど次を受け取るために十分な額を入金するよう指定されました:",
+    "ammDepositUpToPrefix": "最大次まで入金するよう指定されました:",
+    "ammDepositUpToReceiveExactlySuffix": "ちょうど次を受け取るために:",
+    "ammWithdrawRedeemExactlyPrefix": "ちょうど次を償還するよう指定されました:",
+    "ammWithdrawRedeemExactlyWithdrawAtLeastSuffix": "少なくとも次を引き出すために:",
+    "ammDepositMaximumPrefix": "最大次を入金するよう指定されました:",
+    "ammWithdrawMinimumPrefix": "最低次を引き出すよう指定されました:",
     "memosThirdParty": {
       "prefix": "コメントは第三者",
       "suffix": "によって追加され、Escrow が完了されました。"

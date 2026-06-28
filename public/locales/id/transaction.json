@@ -44,6 +44,13 @@
     "notValidatedAfterLedger": "Transaksi tidak akan divalidasi jika ledger sudah melewati Ledger #{{ledger}}.",
     "validatedInLedger": "di ledger <ledgerLink></ledgerLink> (indeks: {{index}})",
     "specifiedFee": "{{fee}} ditentukan sebagai biaya transaksi.",
+    "ammDepositEnoughReceiveExactlyPrefix": "Diinstruksikan untuk menyetor secukupnya agar menerima tepat",
+    "ammDepositUpToPrefix": "Diinstruksikan untuk menyetor hingga",
+    "ammDepositUpToReceiveExactlySuffix": "agar menerima tepat",
+    "ammWithdrawRedeemExactlyPrefix": "Diinstruksikan untuk menebus tepat",
+    "ammWithdrawRedeemExactlyWithdrawAtLeastSuffix": "agar menarik setidaknya",
+    "ammDepositMaximumPrefix": "Diinstruksikan untuk menyetor maksimum",
+    "ammWithdrawMinimumPrefix": "Diinstruksikan untuk menarik minimum",
     "memosThirdParty": {
       "prefix": "Komentar ditambahkan oleh pihak ketiga",
       "suffix": "yang menyelesaikan escrow."

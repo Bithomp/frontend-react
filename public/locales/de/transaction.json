@@ -44,6 +44,13 @@
     "notValidatedAfterLedger": "Sie wird nicht validiert, wenn der Ledger bereits Ledger #{{ledger}} überschritten hat.",
     "validatedInLedger": "im Ledger <ledgerLink></ledgerLink> (Index: {{index}})",
     "specifiedFee": "Als Transaktionsgebühr wurden {{fee}} angegeben.",
+    "ammDepositEnoughReceiveExactlyPrefix": "Es wurde angewiesen, genug einzuzahlen, um genau Folgendes zu erhalten:",
+    "ammDepositUpToPrefix": "Es wurde angewiesen, bis zu folgendem Betrag einzuzahlen:",
+    "ammDepositUpToReceiveExactlySuffix": "um genau Folgendes zu erhalten:",
+    "ammWithdrawRedeemExactlyPrefix": "Es wurde angewiesen, genau Folgendes einzulösen:",
+    "ammWithdrawRedeemExactlyWithdrawAtLeastSuffix": "um mindestens Folgendes abzuheben:",
+    "ammDepositMaximumPrefix": "Es wurde angewiesen, maximal Folgendes einzuzahlen:",
+    "ammWithdrawMinimumPrefix": "Es wurde angewiesen, mindestens Folgendes abzuheben:",
     "memosThirdParty": {
       "prefix": "Kommentare wurden von der Drittpartei",
       "suffix": "hinzugefügt, die das Escrow abgeschlossen hat."

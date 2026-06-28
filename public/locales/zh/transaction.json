@@ -44,6 +44,13 @@
     "notValidatedAfterLedger": "如果 Ledger 已经通过了 Ledger #{{ledger}}，则不会进行验证。",
     "validatedInLedger": "在账本 <ledgerLink></ledgerLink>（索引: {{index}}）",
     "specifiedFee": "指定花费{{fee}}作为交易费用。",
+    "ammDepositEnoughReceiveExactlyPrefix": "已指示存入足够资产，以准确获得",
+    "ammDepositUpToPrefix": "已指示最多存入",
+    "ammDepositUpToReceiveExactlySuffix": "以准确获得",
+    "ammWithdrawRedeemExactlyPrefix": "已指示准确赎回",
+    "ammWithdrawRedeemExactlyWithdrawAtLeastSuffix": "以至少提取",
+    "ammDepositMaximumPrefix": "已指示最多存入",
+    "ammWithdrawMinimumPrefix": "已指示至少提取",
     "memosThirdParty": {
       "prefix": "备注由第三方添加",
       "suffix": "完成了Escrow。"

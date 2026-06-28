@@ -44,6 +44,13 @@
     "notValidatedAfterLedger": "Она не будет подтверждена, если леджер уже прошел Ledger #{{ledger}}.",
     "validatedInLedger": "в леджере <ledgerLink></ledgerLink> (индекс: {{index}})",
     "specifiedFee": "В транзакции было указано потратить {{fee}} как комиссию.",
+    "ammDepositEnoughReceiveExactlyPrefix": "Было указано внести достаточно средств, чтобы получить ровно",
+    "ammDepositUpToPrefix": "Было указано внести до",
+    "ammDepositUpToReceiveExactlySuffix": "чтобы получить ровно",
+    "ammWithdrawRedeemExactlyPrefix": "Было указано погасить ровно",
+    "ammWithdrawRedeemExactlyWithdrawAtLeastSuffix": "чтобы вывести минимум",
+    "ammDepositMaximumPrefix": "Было указано внести максимум",
+    "ammWithdrawMinimumPrefix": "Было указано вывести минимум",
     "memosThirdParty": {
       "prefix": "Комментарии добавлены третьей стороной",
       "suffix": "которая завершила escrow."
