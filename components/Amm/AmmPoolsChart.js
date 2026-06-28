@@ -33,6 +33,25 @@ const formatSigned = (value) => {
   return sign + shortNiceNumber(value, 0)
 }
 
+const escapeHtml = (value) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+
+const tooltipRow = ({ color, label, value }) =>
+  `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display:flex;align-items:center;gap:10px;padding:7px 12px;line-height:1.25;">
+    <span class="apexcharts-tooltip-marker" style="display:block;flex:0 0 18px;width:18px;height:18px;margin:0;border-radius:999px;background-color:${color};"></span>
+    <div class="apexcharts-tooltip-text" style="display:flex;flex:1 1 auto;min-width:0;font-family:Helvetica, Arial, sans-serif;font-size:12px;">
+      <div class="apexcharts-tooltip-y-group" style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;width:100%;">
+        <span class="apexcharts-tooltip-text-y-label" style="font-size:12px;white-space:normal;">${escapeHtml(label)}:</span>
+        <span class="apexcharts-tooltip-text-y-value" style="font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;">${escapeHtml(niceNumber(value, 0, 0))}</span>
+      </div>
+    </div>
+  </div>`
+
 export default function AmmPoolsChart({ rows }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
@@ -106,6 +125,28 @@ export default function AmmPoolsChart({ rows }) {
         shared: true,
         intersect: false,
         theme,
+        custom: ({ series: tooltipSeries, dataPointIndex, w }) => {
+          const timestamp = w?.globals?.seriesX?.[0]?.[dataPointIndex]
+          const date = timestamp
+            ? new Date(timestamp).toLocaleDateString(dateLocale, {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+              })
+            : ''
+          const rows = series
+            .map((item, index) => ({
+              color: w?.globals?.colors?.[index] || item.color || '#2f80ed',
+              label: item.name,
+              value: tooltipSeries?.[index]?.[dataPointIndex]
+            }))
+            .filter((item) => item.value !== null && item.value !== undefined)
+
+          return `<div style="min-width:214px;max-width:330px;color:var(--text-main);">
+            <div class="apexcharts-tooltip-title" style="font-family:Helvetica, Arial, sans-serif;font-size:12px;">${escapeHtml(date)}</div>
+            ${rows.map(tooltipRow).join('')}
+          </div>`
+        },
         x: {
           formatter: (value) =>
             new Date(value).toLocaleDateString(dateLocale, {
@@ -150,7 +191,7 @@ export default function AmmPoolsChart({ rows }) {
         }
       ]
     }),
-    [chartTheme, dateLocale, theme]
+    [chartTheme, dateLocale, series, theme]
   )
 
   if (!chartRows.length) return null
