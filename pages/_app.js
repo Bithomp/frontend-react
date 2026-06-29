@@ -52,6 +52,7 @@ import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
 import { isUsernameValid } from '../utils'
 import { wssServer } from '../utils'
+import nextI18NextConfig from '../next-i18next.config'
 
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
 const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
@@ -1136,4 +1137,4 @@ const MyApp = ({ Component, pageProps }) => {
   )
 }
 
-export default appWithTranslation(MyApp)
+export default appWithTranslation(MyApp, nextI18NextConfig)
