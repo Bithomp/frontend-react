@@ -60,7 +60,6 @@
   "charts": {
     "poolHistory": "プール履歴",
     "subtitle": "日次スワップ、リザーブ、入金 / 出金アクティビティ、LP コントリビューター。",
-    "lastReports": "直近 {{count}} 件の日次レポート",
     "swaps": "スワップ",
     "depositsWithdrawals": "入金 / 出金",
     "assetVolume": "{{asset}} 入金 / 出金ボリューム",

@@ -15,6 +15,16 @@
     "amms": "LP Tokens",
     "mpts": "MPT"
   },
+  "chart-period": {
+    "aria-label": "Période du graphique",
+    "day": "1J",
+    "month": "1M",
+    "week": "1S",
+    "six-months": "6M",
+    "year": "1A",
+    "ytd": "YTD",
+    "all": "Tout"
+  },
   "search-select": {
     "currency": "Devise",
     "issuer": "Émetteur",

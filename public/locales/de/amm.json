@@ -60,7 +60,6 @@
   "charts": {
     "poolHistory": "Pool-Verlauf",
     "subtitle": "Taegliche Swaps, Reserven, Einzahlungs- / Auszahlungsaktivitaet und LP Mitwirkende.",
-    "lastReports": "Letzte {{count}} Tagesberichte",
     "swaps": "Swaps",
     "depositsWithdrawals": "Einzahlungen / Auszahlungen",
     "assetVolume": "{{asset}} Einzahlungs- / Auszahlungsvolumen",

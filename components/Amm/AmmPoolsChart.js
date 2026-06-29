@@ -6,6 +6,7 @@ import { useTheme } from '../Layout/ThemeContext'
 import { normalizeLocale } from '../../utils'
 import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
 import { niceNumber, shortNiceNumber } from '../../utils/format'
+import ChartPeriodSwitch from '../UI/ChartPeriodSwitch'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -52,7 +53,14 @@ const tooltipRow = ({ color, label, value }) =>
     </div>
   </div>`
 
-export default function AmmPoolsChart({ rows }) {
+const PERIOD_TEXT = {
+  week: 'this week',
+  month: 'last 30 days',
+  year: 'this year',
+  all: 'all time'
+}
+
+export default function AmmPoolsChart({ rows, period = 'month', selectedPeriod = period, onPeriodChange }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
   const dateLocale = normalizeLocale(i18n.language)
@@ -63,7 +71,6 @@ export default function AmmPoolsChart({ rows }) {
             .map((row) => ({ ...row, timestamp: chartTime(row.time) }))
             .filter((row) => row.timestamp)
             .sort((a, b) => a.timestamp - b.timestamp)
-            .slice(-30)
         : [],
     [rows]
   )
@@ -107,7 +114,7 @@ export default function AmmPoolsChart({ rows }) {
         position: 'top',
         horizontalAlign: 'left',
         fontSize: '12px',
-        offsetY: -4,
+        offsetY: 5,
         labels: { colors: chartTheme.labelColor },
         markers: { radius: 12 }
       },
@@ -198,33 +205,30 @@ export default function AmmPoolsChart({ rows }) {
 
   const first = chartRows[0]
   const latest = chartRows[chartRows.length - 1]
-  const previous = chartRows[chartRows.length - 2]
   const totalCreated = chartRows.reduce((sum, row) => sum + (toNumber(row.createdPools) || 0), 0)
-  const activeDelta = metricDelta(latest, previous, 'activePools')
   const totalDelta = metricDelta(latest, first, 'totalPools')
+  const periodText = PERIOD_TEXT[period] || PERIOD_TEXT.month
 
   return (
     <section className="chartPanel">
       <div className="metricGrid">
+        {onPeriodChange && <ChartPeriodSwitch value={selectedPeriod} onChange={onPeriodChange} />}
         <div className="metric">
           <span>Total pools</span>
           <strong>{shortNiceNumber(latest.totalPools, 0)}</strong>
-          <small>{formatSigned(totalDelta)} last 30 days</small>
-        </div>
-        <div className="metric">
-          <span>Active pools</span>
-          <strong>{shortNiceNumber(latest.activePools, 0)}</strong>
-          <small>{formatSigned(activeDelta)} since yesterday</small>
+          <small>{formatSigned(totalDelta)} {periodText}</small>
         </div>
         <div className="metric">
           <span>New pools</span>
           <strong>{shortNiceNumber(totalCreated, 0)}</strong>
-          <small>Last 30 days</small>
+          <small>{periodText}</small>
         </div>
       </div>
 
-      <div className="chartWrap">
-        <Chart type="line" series={series} options={options} height={165} />
+      <div className="chartArea">
+        <div className="chartWrap">
+          <Chart type="line" series={series} options={options} height={165} />
+        </div>
       </div>
     </section>
   )

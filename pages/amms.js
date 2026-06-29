@@ -6,6 +6,7 @@ import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 import Link from 'next/link'
+import { DEFAULT_CHART_PERIOD, chartPeriodQuery, normalizeChartPeriod } from '../utils/chartPeriods'
 
 import {
   showAmmPercents,
@@ -22,14 +23,16 @@ import {
 import TokenSelector from '../components/UI/TokenSelector'
 import AmmPoolsChart from '../components/Amm/AmmPoolsChart'
 
-const ammTokenChartUrl = (token) => {
+const ammTokenChartUrl = (token, period = DEFAULT_CHART_PERIOD) => {
   const currency = stripText(token?.currency)
   const issuer = stripText(token?.issuer)
 
   if (!currency) return ''
-  if (issuer) return `v2/amms/token/${encodeURIComponent(issuer)}/${encodeURIComponent(currency)}/chart`
+  if (issuer) {
+    return `v2/amms/token/${encodeURIComponent(issuer)}/${encodeURIComponent(currency)}/chart?${chartPeriodQuery(period)}`
+  }
 
-  return `v2/amms/token/${encodeURIComponent(currency)}/chart`
+  return `v2/amms/token/${encodeURIComponent(currency)}/chart?${chartPeriodQuery(period)}`
 }
 
 export async function getServerSideProps(context) {
@@ -212,6 +215,8 @@ export default function Amms({
   const [loading, setLoading] = useState(false)
   const [chartRows, setChartRows] = useState(initialChartData || [])
   const loadedChartUrlRef = useRef(initialChartData?.length ? initialChartUrl : '')
+  const [chartPeriod, setChartPeriod] = useState(DEFAULT_CHART_PERIOD)
+  const [chartRowsPeriod, setChartRowsPeriod] = useState(DEFAULT_CHART_PERIOD)
   const [errorMessage, setErrorMessage] = useState(
     t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
   )
@@ -223,8 +228,8 @@ export default function Amms({
   const tokenCurrency = token?.currency
   const tokenIssuer = token?.issuer
   const chartUrl = useMemo(
-    () => ammTokenChartUrl({ currency: tokenCurrency, issuer: tokenIssuer }),
-    [tokenCurrency, tokenIssuer]
+    () => ammTokenChartUrl({ currency: tokenCurrency, issuer: tokenIssuer }, chartPeriod),
+    [chartPeriod, tokenCurrency, tokenIssuer]
   )
 
   const controller = new AbortController()
@@ -245,6 +250,7 @@ export default function Amms({
   useEffect(() => {
     if (!chartUrl) {
       setChartRows([])
+      setChartRowsPeriod(normalizeChartPeriod(chartPeriod))
       loadedChartUrlRef.current = ''
       return
     }
@@ -258,20 +264,20 @@ export default function Amms({
         signal: chartController.signal
       })
       .then((response) => {
-        if (Array.isArray(response?.data?.chart)) {
-          setChartRows(response.data.chart)
-          loadedChartUrlRef.current = chartUrl
-        }
+        setChartRows(Array.isArray(response?.data?.chart) ? response.data.chart : [])
+        setChartRowsPeriod(chartPeriod)
+        loadedChartUrlRef.current = chartUrl
       })
       .catch((error) => {
         if (error?.message !== 'canceled') {
           setChartRows([])
+          setChartRowsPeriod(chartPeriod)
           loadedChartUrlRef.current = ''
         }
       })
 
     return () => chartController.abort()
-  }, [chartUrl])
+  }, [chartPeriod, chartUrl])
 
   const checkApi = async () => {
     const oldOrder = rawData?.order
@@ -454,68 +460,141 @@ export default function Amms({
           }
         >
           <div className="page">
-          <AmmPoolsChart rows={chartRows} />
-          <InfiniteScrolling
-            dataLength={data.length}
-            loadMore={checkApi}
-            hasMore={marker}
-            errorMessage={errorMessage}
-            subscriptionExpired={subscriptionExpired}
-            sessionToken={sessionToken}
-            openEmailLogin={openEmailLogin}
-          >
-            {!windowWidth || windowWidth > 860 ? (
-              <table className="table-large expand clickable">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>LP Token</th>
-                    <th>Asset 1</th>
-                    <th>Asset 2</th>
-                    <th className="right">Holders</th>
-                    <th className="right">Created</th>
-                    <th className="right">Trading fee</th>
-                    <th className="center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <br />
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                        <br />
-                      </td>
+            <AmmPoolsChart
+              rows={chartRows}
+              period={chartRowsPeriod}
+              selectedPeriod={chartPeriod}
+              onPeriodChange={(nextPeriod) => setChartPeriod(normalizeChartPeriod(nextPeriod))}
+            />
+            <InfiniteScrolling
+              dataLength={data.length}
+              loadMore={checkApi}
+              hasMore={marker}
+              errorMessage={errorMessage}
+              subscriptionExpired={subscriptionExpired}
+              sessionToken={sessionToken}
+              openEmailLogin={openEmailLogin}
+            >
+              {!windowWidth || windowWidth > 860 ? (
+                <table className="table-large expand clickable">
+                  <thead>
+                    <tr>
+                      <th className="center">{t('table.index')}</th>
+                      <th>LP Token</th>
+                      <th>Asset 1</th>
+                      <th>Asset 2</th>
+                      <th className="right">Holders</th>
+                      <th className="right">Created</th>
+                      <th className="right">Trading fee</th>
+                      <th className="center">Actions</th>
                     </tr>
-                  ) : (
-                    <>
-                      {!errorMessage && data ? (
-                        <>
-                          {data.length > 0 &&
-                            data.map((a, i) => (
-                              <tr key={i} onClick={() => router.push('/amm/' + a.ammID)}>
-                                <td className="center">{i + 1}</td>
-                                <td>
-                                  <LPToken a={a} />
-                                </td>
-                                <td>
-                                  <AmountWithIcon
-                                    amount={a.amount}
-                                    fiatRate={fiatRate}
-                                    selectedCurrency={selectedCurrency}
-                                  />
-                                </td>
-                                <td>
-                                  <AmountWithIcon
-                                    amount={a.amount2}
-                                    fiatRate={fiatRate}
-                                    selectedCurrency={selectedCurrency}
-                                  />
-                                </td>
-                                <td className="right" onClick={(e) => e.stopPropagation()}>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr className="center">
+                        <td colSpan="100">
+                          <br />
+                          <span className="waiting"></span>
+                          <br />
+                          {t('general.loading')}
+                          <br />
+                          <br />
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {!errorMessage && data ? (
+                          <>
+                            {data.length > 0 &&
+                              data.map((a, i) => (
+                                <tr key={i} onClick={() => router.push('/amm/' + a.ammID)}>
+                                  <td className="center">{i + 1}</td>
+                                  <td>
+                                    <LPToken a={a} />
+                                  </td>
+                                  <td>
+                                    <AmountWithIcon
+                                      amount={a.amount}
+                                      fiatRate={fiatRate}
+                                      selectedCurrency={selectedCurrency}
+                                    />
+                                  </td>
+                                  <td>
+                                    <AmountWithIcon
+                                      amount={a.amount2}
+                                      fiatRate={fiatRate}
+                                      selectedCurrency={selectedCurrency}
+                                    />
+                                  </td>
+                                  <td className="right" onClick={(e) => e.stopPropagation()}>
+                                    <Link
+                                      href={
+                                        '/distribution?currency=' +
+                                        a.lpTokenBalance.currency +
+                                        '&currencyIssuer=' +
+                                        a.account
+                                      }
+                                    >
+                                      {a.holders}
+                                    </Link>
+                                  </td>
+                                  <td className="right">{timeFromNow(a.createdAt, i18n)}</td>
+                                  <td className="right">{showAmmPercents(a.tradingFee)}</td>
+                                  <td className="center" onClick={(e) => e.stopPropagation()}>
+                                    <button
+                                      type="button"
+                                      className="button-action thin narrow"
+                                      disabled={!setSignRequest}
+                                      onClick={() => openAmmDeposit(a)}
+                                    >
+                                      {t('menu.amm.deposit')}
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                          </>
+                        ) : (
+                          <tr>
+                            <td colSpan="100" className="center orange bold">
+                              {errorMessage}
+                            </td>
+                          </tr>
+                        )}
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                <table className="table-mobile">
+                  <thead></thead>
+                  <tbody>
+                    {loading ? (
+                      <tr className="center">
+                        <td colSpan="100">
+                          <br />
+                          <span className="waiting"></span>
+                          <br />
+                          {t('general.loading')}
+                          <br />
+                          <br />
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {!errorMessage ? (
+                          data?.map((a, i) => (
+                            <tr key={i}>
+                              <td style={{ padding: '5px' }} className="center">
+                                <b>{i + 1}</b>
+                              </td>
+                              <td>
+                                <br />
+                                <LPToken a={a} />
+                                <p>
+                                  AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
+                                </p>
+                                <p>
+                                  Holders:{' '}
                                   <Link
                                     href={
                                       '/distribution?currency=' +
@@ -526,132 +605,64 @@ export default function Amms({
                                   >
                                     {a.holders}
                                   </Link>
-                                </td>
-                                <td className="right">{timeFromNow(a.createdAt, i18n)}</td>
-                                <td className="right">{showAmmPercents(a.tradingFee)}</td>
-                                <td className="center" onClick={(e) => e.stopPropagation()}>
-                                  <button
-                                    type="button"
-                                    className="button-action thin narrow"
-                                    disabled={!setSignRequest}
-                                    onClick={() => openAmmDeposit(a)}
-                                  >
-                                    {t('menu.amm.deposit')}
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center orange bold">
-                            {errorMessage}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            ) : (
-              <table className="table-mobile">
-                <thead></thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <br />
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                        <br />
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {!errorMessage ? (
-                        data?.map((a, i) => (
-                          <tr key={i}>
-                            <td style={{ padding: '5px' }} className="center">
-                              <b>{i + 1}</b>
-                            </td>
-                            <td>
-                              <br />
-                              <LPToken a={a} />
-                              <p>
-                                AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
-                              </p>
-                              <p>
-                                Holders:{' '}
-                                <Link
-                                  href={
-                                    '/distribution?currency=' +
-                                    a.lpTokenBalance.currency +
-                                    '&currencyIssuer=' +
-                                    a.account
-                                  }
+                                </p>
+                                Assets:
+                                <div style={{ height: 10 }} />
+                                <table>
+                                  <thead></thead>
+                                  <tbody>
+                                    <tr className="no-border">
+                                      <td>
+                                        <AmountWithIcon
+                                          amount={a.amount}
+                                          fiatRate={fiatRate}
+                                          selectedCurrency={selectedCurrency}
+                                        />
+                                      </td>
+                                      <td style={{ paddingLeft: 10 }}>
+                                        <AmountWithIcon
+                                          amount={a.amount2}
+                                          fiatRate={fiatRate}
+                                          selectedCurrency={selectedCurrency}
+                                        />
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
+                                <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
+                                <button
+                                  type="button"
+                                  className="button-action thin narrow"
+                                  disabled={!setSignRequest}
+                                  onClick={() => openAmmDeposit(a)}
                                 >
-                                  {a.holders}
-                                </Link>
-                              </p>
-                              Assets:
-                              <div style={{ height: 10 }} />
-                              <table>
-                                <thead></thead>
-                                <tbody>
-                                  <tr className="no-border">
-                                    <td>
-                                      <AmountWithIcon
-                                        amount={a.amount}
-                                        fiatRate={fiatRate}
-                                        selectedCurrency={selectedCurrency}
-                                      />
-                                    </td>
-                                    <td style={{ paddingLeft: 10 }}>
-                                      <AmountWithIcon
-                                        amount={a.amount2}
-                                        fiatRate={fiatRate}
-                                        selectedCurrency={selectedCurrency}
-                                      />
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                              <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
-                              <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
-                              <button
-                                type="button"
-                                className="button-action thin narrow"
-                                disabled={!setSignRequest}
-                                onClick={() => openAmmDeposit(a)}
-                              >
-                                {t('menu.amm.deposit')}
-                              </button>{' '}
-                              <button
-                                className="button-action thin narrow"
-                                onClick={() => router.push('/amm/' + a.ammID)}
-                              >
-                                AMM Page
-                              </button>
-                              <br />
-                              <br />
+                                  {t('menu.amm.deposit')}
+                                </button>{' '}
+                                <button
+                                  className="button-action thin narrow"
+                                  onClick={() => router.push('/amm/' + a.ammID)}
+                                >
+                                  AMM Page
+                                </button>
+                                <br />
+                                <br />
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="100" className="center orange bold">
+                              {errorMessage}
                             </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center orange bold">
-                            {errorMessage}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            )}
-          </InfiniteScrolling>
+                        )}
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </InfiniteScrolling>
           </div>
         </FiltersFrame>
       </div>

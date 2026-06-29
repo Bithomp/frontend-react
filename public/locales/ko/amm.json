@@ -60,7 +60,6 @@
   "charts": {
     "poolHistory": "풀 기록",
     "subtitle": "일별 스왑, 준비금, 예치 / 출금 활동 및 LP 기여자.",
-    "lastReports": "최근 {{count}}개 일별 리포트",
     "swaps": "스왑",
     "depositsWithdrawals": "예치 / 출금",
     "assetVolume": "{{asset}} 예치 / 출금 거래량",

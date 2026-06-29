@@ -453,6 +453,14 @@
     text-align: right;
   }
 
+  .tokenChartsHeaderActions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .tokenChartsGrid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -3700,6 +3708,12 @@
 
     .tokenChartsMeta {
       text-align: left;
+    }
+
+    .tokenChartsHeaderActions {
+      width: 100%;
+      align-items: flex-start;
+      flex-direction: column;
     }
 
     .tokenChartCard {

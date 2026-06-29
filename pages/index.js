@@ -42,6 +42,16 @@ const initialTeaserLoading = {
   amendments: true
 }
 
+const PRICE_CHART_PERIODS = [
+  { value: 'one_day', label: 'day', fiatOnly: true },
+  { value: 'one_week', label: 'week' },
+  { value: 'one_month', label: 'month' },
+  { value: 'six_months', label: 'six-months' },
+  { value: 'one_year', label: 'year' },
+  { value: 'ytd', label: 'ytd' },
+  { value: 'all', label: 'all' }
+]
+
 const Converter = dynamic(() => import('../components/Home/Converter'), {
   ssr: false,
   loading: () => <div className="home-widget-placeholder home-widget-placeholder--converter" aria-hidden="true" />
@@ -448,57 +458,18 @@ export default function Home({
                   title={t('home.price.chartHeader', { nativeCurrency })}
                   headerActions={
                     <>
-                      {(selectedCurrency === 'eur' || selectedCurrency === 'usd') && (
+                      {PRICE_CHART_PERIODS.filter(
+                        (period) => !period.fiatOnly || selectedCurrency === 'eur' || selectedCurrency === 'usd'
+                      ).map((period) => (
                         <button
+                          key={period.value}
                           type="button"
-                          onClick={() => setChartPeriod('one_day')}
-                          className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_day' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                          onClick={() => setChartPeriod(period.value)}
+                          className={`${styles.cardHeaderActionButton} ${chartPeriod === period.value ? styles.cardHeaderActionButtonActive : ''}`.trim()}
                         >
-                          1D
+                          {t(`chart-period.${period.label}`)}
                         </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('one_week')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_week' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        1W
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('one_month')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_month' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        1M
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('six_months')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'six_months' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        6M
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('one_year')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_year' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        1Y
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('ytd')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'ytd' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        YTD
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('all')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'all' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        ALL
-                      </button>
+                      ))}
                     </>
                   }
                 >

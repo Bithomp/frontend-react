@@ -15,10 +15,12 @@ import AddressInput from '../UI/AddressInput'
 import AmmTabs from '../Tabs/AmmTabs'
 import HomeTeaser, { HomeTeaseRow } from '../Home/HomeTeaser'
 import TokenCharts from '../Token/TokenCharts'
+import ChartPeriodSwitch from '../UI/ChartPeriodSwitch'
 import { useTheme } from '../Layout/ThemeContext'
 import { useIsMobile } from '../../utils/mobile'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { addQueryParams, isAddressValid, nativeCurrency, normalizeLocale, removeQueryParams, tokenImageSrc } from '../../utils'
+import { DEFAULT_CHART_PERIOD, chartPeriodQuery, normalizeChartPeriod } from '../../utils/chartPeriods'
 import { fetchHistoricalRate, fetchHistoricalTokenFiatRate } from '../../utils/common'
 import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
 import {
@@ -79,11 +81,24 @@ const lpTokenDetailsUrl = (data) =>
     ? `v2/token/${encodeURIComponent(data.account)}/${encodeURIComponent(data.lpTokenBalance.currency)}?currencyDetails=true`
     : ''
 
-const lpTokenChartUrl = (data, selectedCurrency) =>
+const queryString = (params) => {
+  const pairs = Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
+  return pairs.length ? `?${pairs.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&')}` : ''
+}
+
+const ammChartUrl = (id, selectedCurrency, period = DEFAULT_CHART_PERIOD) =>
+  id
+    ? `v2/amm/${encodeURIComponent(id)}/chart${queryString({
+        convertCurrencies: selectedCurrency?.toLowerCase?.(),
+        period: normalizeChartPeriod(period)
+      })}`
+    : ''
+
+const lpTokenChartUrl = (data, selectedCurrency, period = DEFAULT_CHART_PERIOD) =>
   data?.account && data?.lpTokenBalance?.currency && selectedCurrency
     ? `v2/token/${encodeURIComponent(data.account)}/${encodeURIComponent(
         data.lpTokenBalance.currency
-      )}/chart?convertCurrencies=${encodeURIComponent(selectedCurrency.toLowerCase())}`
+      )}/chart?convertCurrencies=${encodeURIComponent(selectedCurrency.toLowerCase())}&${chartPeriodQuery(period)}`
     : ''
 
 const lpContributorsUrl = (data, selectedCurrency) =>
@@ -350,7 +365,12 @@ const hasInitialSwaps = (initialSwapsData) =>
     Array.isArray(initialSwapsData.liquiditySwaps) ||
     Array.isArray(initialSwapsData.swaps))
 
-export const fetchAmmPageData = async ({ id, req, ledgerTimestamp, selectedCurrencyServer }) => {
+export const fetchAmmPageData = async ({
+  id,
+  req,
+  ledgerTimestamp,
+  selectedCurrencyServer
+}) => {
   let initialData = null
   let initialSwapsData = null
   let initialChartData = null
@@ -400,7 +420,7 @@ export const fetchAmmPageData = async ({ id, req, ledgerTimestamp, selectedCurre
       : null,
     axiosServer({
       method: 'get',
-      url: `v2/amm/${id}/chart${selectedCurrencyServer ? `?convertCurrencies=${selectedCurrencyServer}` : ''}`,
+      url: ammChartUrl(id, selectedCurrencyServer),
       headers
     }).catch(() => null),
     lpTokenDetailsUrl(initialData)
@@ -755,7 +775,7 @@ function AmmAssetPairIcons({ amount1, amount2 }) {
   )
 }
 
-function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false }) {
+function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false, loading = false }) {
   const { t, i18n } = useTranslation('amm')
   const { theme } = useTheme()
   const dateLocale = normalizeLocale(i18n.language)
@@ -853,6 +873,10 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false })
       <h3>{title}</h3>
       {hasData ? (
         <Chart type={type} series={series} options={options} height={190} />
+      ) : loading ? (
+        <div className="tokenChartEmpty">
+          <span className="waiting"></span>
+        </div>
       ) : (
         <div className="tokenChartEmpty">{t('common.chartDataUnavailable')}</div>
       )}
@@ -1205,6 +1229,7 @@ export default function AmmDetailsPage({
   const [contributorsDataKey, setContributorsDataKey] = useState(
     initialContributorsData ? lpContributorsKey(initialData, selectedCurrency) : ''
   )
+  const [chartPeriod, setChartPeriod] = useState(DEFAULT_CHART_PERIOD)
   const [chartRows, setChartRows] = useState(sortChartRows(initialChartData?.chart))
   const [lpChartRows, setLpChartRows] = useState(Array.isArray(initialLpChartData?.chart) ? initialLpChartData.chart : [])
   const [dexSwapsLoading, setDexSwapsLoading] = useState(!hasInitialSwaps(initialSwapsData) && !!id)
@@ -1226,6 +1251,21 @@ export default function AmmDetailsPage({
   const [voteFeeError, setVoteFeeError] = useState('')
   const [voteFeeResult, setVoteFeeResult] = useState(null)
   const contributorsKeyRef = useRef(contributorsDataKey)
+  const chartUrl = useMemo(() => ammChartUrl(id, selectedCurrency, chartPeriod), [chartPeriod, id, selectedCurrency])
+  const initialChartUrl = useMemo(
+    () => (initialChartData ? ammChartUrl(id, selectedCurrencyServer) : ''),
+    [id, initialChartData, selectedCurrencyServer]
+  )
+  const loadedChartUrlRef = useRef(initialChartUrl)
+  const lpChartUrl = useMemo(
+    () => lpTokenChartUrl(data, selectedCurrency, chartPeriod),
+    [chartPeriod, data, selectedCurrency]
+  )
+  const initialLpChartUrl = useMemo(
+    () => (initialLpChartData ? lpTokenChartUrl(initialData, selectedCurrencyServer) : ''),
+    [initialData, initialLpChartData, selectedCurrencyServer]
+  )
+  const loadedLpChartUrlRef = useRef(initialLpChartUrl)
 
   useEffect(() => {
     setData(initialData)
@@ -1255,11 +1295,14 @@ export default function AmmDetailsPage({
   useEffect(() => {
     setChartRows(sortChartRows(initialChartData?.chart))
     setChartLoading(!initialChartData && !!id)
-  }, [id, initialChartData])
+    setChartPeriod(DEFAULT_CHART_PERIOD)
+    loadedChartUrlRef.current = initialChartUrl
+  }, [id, initialChartData, initialChartUrl])
 
   useEffect(() => {
     setLpChartRows(Array.isArray(initialLpChartData?.chart) ? initialLpChartData.chart : [])
-  }, [id, initialLpChartData])
+    loadedLpChartUrlRef.current = initialLpChartUrl
+  }, [id, initialLpChartData, initialLpChartUrl])
 
   useEffect(() => {
     setContributorsData(initialContributorsData || null)
@@ -1831,12 +1874,14 @@ export default function AmmDetailsPage({
   }, [data, selectedCurrency])
 
   const fetchChart = useCallback(async () => {
-    if (!id) return
+    if (!chartUrl) return
     setChartLoading(true)
-    const response = await axios(`v2/amm/${id}/chart`).catch(() => null)
+    setChartRows([])
+    const response = await axios(chartUrl).catch(() => null)
     setChartRows(sortChartRows(response?.data?.chart))
+    loadedChartUrlRef.current = chartUrl
     setChartLoading(false)
-  }, [id])
+  }, [chartUrl])
 
   useEffect(() => {
     if (initialData || !id) return
@@ -1991,9 +2036,9 @@ export default function AmmDetailsPage({
   }, [contributorsData, contributorsDataKey, currentContributorsKey, fetchContributors])
 
   useEffect(() => {
-    if (initialChartData || !id) return
+    if (!chartUrl || loadedChartUrlRef.current === chartUrl) return
     fetchChart()
-  }, [fetchChart, id, initialChartData])
+  }, [chartUrl, fetchChart])
 
   useEffect(() => {
     if (lpTokenDetails || !lpTokenDetailsUrl(data)) return
@@ -2009,17 +2054,21 @@ export default function AmmDetailsPage({
   }, [data, lpTokenDetails])
 
   useEffect(() => {
-    if (lpChartRows.length || !lpTokenChartUrl(data, selectedCurrency)) return
+    if (!lpChartUrl || loadedLpChartUrlRef.current === lpChartUrl) return
     let ignore = false
-    axios(lpTokenChartUrl(data, selectedCurrency))
+    setLpChartRows([])
+    axios(lpChartUrl)
       .then((response) => {
-        if (!ignore) setLpChartRows(Array.isArray(response?.data?.chart) ? response.data.chart : [])
+        if (!ignore) {
+          setLpChartRows(Array.isArray(response?.data?.chart) ? response.data.chart : [])
+          loadedLpChartUrlRef.current = lpChartUrl
+        }
       })
       .catch(() => null)
     return () => {
       ignore = true
     }
-  }, [data, lpChartRows.length, selectedCurrency])
+  }, [lpChartUrl])
 
   useEffect(() => {
     if (!refreshHidden) return undefined
@@ -2856,41 +2905,46 @@ export default function AmmDetailsPage({
                 {dailyActivitySection}
               </section>
 
-              {chartLoading ? (
-                <div className="tokenPanel center">
-                  <span className="waiting"></span>
+              <section className="ammChartsSection">
+                <div className="tokenChartsHeader">
+                  <div>
+                    <h2>{ta('charts.poolHistory')}</h2>
+                    <span>{ta('charts.subtitle')}</span>
+                  </div>
+                  <div className="tokenChartsHeaderActions">
+                    <ChartPeriodSwitch
+                      value={chartPeriod}
+                      onChange={(nextPeriod) => setChartPeriod(normalizeChartPeriod(nextPeriod))}
+                    />
+                  </div>
                 </div>
-              ) : (
-                <section className="ammChartsSection">
-                  <div className="tokenChartsHeader">
-                    <div>
-                      <h2>{ta('charts.poolHistory')}</h2>
-                      <span>{ta('charts.subtitle')}</span>
-                    </div>
-                    <span className="tokenChartsMeta">
-                      {ta('charts.lastReports', { count: Math.max(chartRows.length || 0, lpChartRows.length || 0) })}
-                    </span>
-                  </div>
-                  <div className="ammChartsGrid">
-                    <AmmChartCard title={ta('charts.swaps')} rows={chartRows} series={chartSeries.activity} type="bar" />
-                    <AmmChartCard title={ta('overview.reserves')} rows={chartRows} series={chartSeries.reserves} dualYAxis />
-                    <AmmChartCard title={ta('contributors.title')} rows={lpChartRows} series={chartSeries.lpHolders} />
-                    <AmmChartCard title={ta('charts.depositsWithdrawals')} rows={chartRows} series={chartSeries.liquidityCounts} type="bar" />
-                    <AmmChartCard
-                      title={ta('charts.assetVolume', { asset: asset1Name })}
-                      rows={chartRows}
-                      series={chartSeries.liquidityVolume1}
-                      type="bar"
-                    />
-                    <AmmChartCard
-                      title={ta('charts.assetVolume', { asset: asset2Name })}
-                      rows={chartRows}
-                      series={chartSeries.liquidityVolume2}
-                      type="bar"
-                    />
-                  </div>
-                </section>
-              )}
+                <div className="ammChartsGrid">
+                  <AmmChartCard title={ta('charts.swaps')} rows={chartRows} series={chartSeries.activity} type="bar" loading={chartLoading} />
+                  <AmmChartCard title={ta('overview.reserves')} rows={chartRows} series={chartSeries.reserves} dualYAxis loading={chartLoading} />
+                  <AmmChartCard title={ta('contributors.title')} rows={lpChartRows} series={chartSeries.lpHolders} loading={chartLoading} />
+                  <AmmChartCard
+                    title={ta('charts.depositsWithdrawals')}
+                    rows={chartRows}
+                    series={chartSeries.liquidityCounts}
+                    type="bar"
+                    loading={chartLoading}
+                  />
+                  <AmmChartCard
+                    title={ta('charts.assetVolume', { asset: asset1Name })}
+                    rows={chartRows}
+                    series={chartSeries.liquidityVolume1}
+                    type="bar"
+                    loading={chartLoading}
+                  />
+                  <AmmChartCard
+                    title={ta('charts.assetVolume', { asset: asset2Name })}
+                    rows={chartRows}
+                    series={chartSeries.liquidityVolume2}
+                    type="bar"
+                    loading={chartLoading}
+                  />
+                </div>
+              </section>
 
               <section className="tokenActivitySection ammActivitySection">
                 <div className="tokenActivityGrid">

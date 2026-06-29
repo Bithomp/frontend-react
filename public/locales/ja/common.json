@@ -15,6 +15,16 @@
     "amms": "LPトークン",
     "mpts": "MPT"
   },
+  "chart-period": {
+    "aria-label": "チャート期間",
+    "day": "1日",
+    "month": "1か月",
+    "week": "1週",
+    "six-months": "6か月",
+    "year": "1年",
+    "ytd": "年初来",
+    "all": "すべて"
+  },
   "search-select": {
     "currency": "通貨",
     "issuer": "発行者",

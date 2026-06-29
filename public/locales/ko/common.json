@@ -15,6 +15,16 @@
     "amms": "LP 토큰",
     "mpts": "MPT"
   },
+  "chart-period": {
+    "aria-label": "차트 기간",
+    "day": "1일",
+    "month": "1개월",
+    "week": "1주",
+    "six-months": "6개월",
+    "year": "1년",
+    "ytd": "YTD",
+    "all": "전체"
+  },
   "search-select": {
     "currency": "통화",
     "issuer": "발행자",

@@ -60,7 +60,6 @@
   "charts": {
     "poolHistory": "池历史",
     "subtitle": "每日交换、储备、存入 / 取出活动和 LP 贡献者。",
-    "lastReports": "最近 {{count}} 个日报",
     "swaps": "交换",
     "depositsWithdrawals": "存入 / 取出",
     "assetVolume": "{{asset}} 存入 / 取出数量",

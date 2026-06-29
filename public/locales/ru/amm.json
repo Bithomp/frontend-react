@@ -60,7 +60,6 @@
   "charts": {
     "poolHistory": "История пула",
     "subtitle": "Свопы, резервы, депозиты / выводы и LP-участники по дням.",
-    "lastReports": "Последние {{count}} дневных отчётов",
     "swaps": "Свопы",
     "depositsWithdrawals": "Депозиты / выводы",
     "assetVolume": "Объём депозитов / выводов {{asset}}",

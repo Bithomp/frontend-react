@@ -5,8 +5,10 @@ import { useTranslation } from 'next-i18next'
 import { IoExpandOutline, IoInformationCircleOutline } from 'react-icons/io5'
 
 import Dialog from '../UI/Dialog'
+import ChartPeriodSwitch from '../UI/ChartPeriodSwitch'
 import { useTheme } from '../Layout/ThemeContext'
 import { nativeCurrency, normalizeLocale, xahauNetwork } from '../../utils'
+import { DEFAULT_CHART_PERIOD, TOKEN_CHART_PERIODS, chartPeriodQuery, normalizeChartPeriod } from '../../utils/chartPeriods'
 import { niceCurrency, niceNumber, shortNiceNumber } from '../../utils/format'
 import {
   tokenChartDialog,
@@ -79,7 +81,7 @@ const toReportTimestamp = (time) => {
   return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12)
 }
 
-const chartDataUrl = (token, selectedCurrency) => {
+const chartDataUrl = (token, selectedCurrency, period = DEFAULT_CHART_PERIOD) => {
   if (!token || !selectedCurrency) return ''
 
   const tokenPath = token?.mptokenIssuanceID
@@ -88,7 +90,9 @@ const chartDataUrl = (token, selectedCurrency) => {
       ? `${encodeURIComponent(token.issuer)}/${encodeURIComponent(token.currency)}`
       : encodeURIComponent(token?.currency || nativeCurrency)
 
-  return `v2/token/${tokenPath}/chart?convertCurrencies=${encodeURIComponent(selectedCurrency.toLowerCase())}`
+  return `v2/token/${tokenPath}/chart?convertCurrencies=${encodeURIComponent(
+    selectedCurrency.toLowerCase()
+  )}&${chartPeriodQuery(period)}`
 }
 
 const tokenLabel = (token) => {
@@ -425,7 +429,8 @@ export default function TokenCharts({ token, selectedCurrency }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [expandedKey, setExpandedKey] = useState('')
-  const url = chartDataUrl(token, selectedCurrency)
+  const [period, setPeriod] = useState(DEFAULT_CHART_PERIOD)
+  const url = chartDataUrl(token, selectedCurrency, period)
   const tokenUnit = tokenLabel(token)
   const selectedFiat = selectedCurrency?.toLowerCase()
   const isNativeToken = !token?.issuer && token?.currency === nativeCurrency
@@ -442,6 +447,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
 
     setLoading(true)
     setError('')
+    setChartRows([])
 
     axios
       .get(url, { signal: controller.signal })
@@ -1148,7 +1154,13 @@ export default function TokenCharts({ token, selectedCurrency }) {
           <h2>{t('charts.title')}</h2>
           <span>{t('charts.subtitle')}</span>
         </div>
-        <span className="tokenChartsMeta">{t('charts.reportsCount')}</span>
+        <div className="tokenChartsHeaderActions">
+          <ChartPeriodSwitch
+            value={period}
+            periods={TOKEN_CHART_PERIODS}
+            onChange={(nextPeriod) => setPeriod(normalizeChartPeriod(nextPeriod))}
+          />
+        </div>
       </div>
 
       {loading && !groups.length ? (

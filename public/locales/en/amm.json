@@ -60,7 +60,6 @@
   "charts": {
     "poolHistory": "Pool history",
     "subtitle": "Daily swaps, reserves, deposit / withdrawal activity and LP contributors.",
-    "lastReports": "Last {{count}} daily reports",
     "swaps": "Swaps",
     "depositsWithdrawals": "Deposits / withdrawals",
     "assetVolume": "{{asset}} deposit / withdrawal volume",

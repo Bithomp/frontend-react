@@ -60,7 +60,6 @@
   "charts": {
     "poolHistory": "Riwayat pool",
     "subtitle": "Swap harian, cadangan, aktivitas deposit / penarikan, dan kontributor LP.",
-    "lastReports": "{{count}} laporan harian terakhir",
     "swaps": "Swap",
     "depositsWithdrawals": "Deposit / penarikan",
     "assetVolume": "Volume deposit / penarikan {{asset}}",
