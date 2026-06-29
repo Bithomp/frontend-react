@@ -4,6 +4,29 @@
   }
 }
 
+@mixin token-chart-tooltip {
+  .apexcharts-tooltip {
+    border: 1px solid var(--card-border) !important;
+    background: color-mix(in srgb, var(--card-bg) 96%, var(--background-main)) !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.26) !important;
+    color: var(--text-main) !important;
+  }
+
+  .apexcharts-tooltip-title {
+    border-bottom: 1px solid var(--card-border) !important;
+    background: color-mix(in srgb, var(--card-bg) 90%, var(--background-main)) !important;
+    color: var(--text-main) !important;
+  }
+
+  .apexcharts-tooltip-series-group,
+  .apexcharts-tooltip-text,
+  .apexcharts-tooltip-y-group,
+  .apexcharts-tooltip-text-y-label,
+  .apexcharts-tooltip-text-y-value {
+    color: var(--text-main) !important;
+  }
+}
+
 .tokenPage :global {
   .tokenActivityCard {
     --home-teaser-min-height: 0;
@@ -614,6 +637,8 @@
       max-width: min(360px, calc(100vw - 24px));
       pointer-events: none;
     }
+
+    @include token-chart-tooltip;
 
     &:focus-visible {
       border-radius: 6px;
@@ -3728,6 +3753,10 @@
   display: grid;
   gap: 14px;
   min-width: 0;
+
+  :global {
+    @include token-chart-tooltip;
+  }
 }
 
 .tokenChartDialogDescription {
