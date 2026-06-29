@@ -1,6 +1,6 @@
 export const CHART_PERIODS = ['week', 'month', 'year', 'all']
 export const DEFAULT_CHART_PERIOD = 'month'
-export const TOKEN_CHART_PERIODS = ['month', 'week']
+export const TOKEN_CHART_PERIODS = ['week', 'month']
 
 export const normalizeChartPeriod = (period) => {
   const value = Array.isArray(period) ? period[0] : period
