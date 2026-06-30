@@ -1459,7 +1459,12 @@ export default function TokenPage({
           details: [
             { key: 'uniqueAccounts', label: tt('fields.uniqueAccounts'), value: fullNiceNumber(statistics?.uniqueAccounts || 0) },
             { key: 'dexTxs', label: tt('fields.dexTxs'), value: fullNiceNumber(statistics?.dexTxs || 0) },
-            { key: 'ripplingTxs', label: tt('fields.ripplingTxs'), value: fullNiceNumber(statistics?.ripplingTxs || 0) }
+            {
+              key: 'ripplingTxs',
+              label: tt('fields.ripplingTxs'),
+              value: fullNiceNumber(statistics?.ripplingTxs || 0),
+              show: !isNativeToken
+            }
           ]
         },
         {
