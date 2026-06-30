@@ -45,6 +45,9 @@ const CHART_COLORS = {
   supply: '#b68cff',
   holders: '#00bcd4',
   trustlines: '#7e8cff',
+  totalAccounts: '#7e8cff',
+  activations: '#21c978',
+  deletedAccounts: '#ff7a59',
   ammTxs: '#00bcd4',
   offerTxs: '#7e8cff',
   ammDexes: '#5bc0eb',
@@ -269,11 +272,13 @@ function TokenChart({ group = {}, expanded = false }) {
         minWidth: expanded ? 56 : 32,
         style: { colors: labelColor }
       }
+      const primarySeriesName = group.primarySeriesNames || group.primarySeriesName
+      const secondarySeriesName = group.secondarySeriesNames || group.secondarySeriesName
       const yaxis = group.secondaryAxisFormatter
         ? [
             {
               ...(group.yRange ? group.yRange : {}),
-              seriesName: group.primarySeriesName,
+              seriesName: primarySeriesName,
               tickAmount: yAxisTickAmount,
               ...(group.integerYAxis ? { decimalsInFloat: 0, forceNiceScale: false } : {}),
               labels: {
@@ -282,7 +287,8 @@ function TokenChart({ group = {}, expanded = false }) {
               }
             },
             {
-              seriesName: group.secondarySeriesName,
+              ...(group.secondaryYRange ? group.secondaryYRange : {}),
+              seriesName: secondarySeriesName,
               opposite: true,
               tickAmount: expanded ? 5 : 3,
               labels: {
@@ -634,14 +640,46 @@ export default function TokenCharts({ token, selectedCurrency }) {
         type: 'line',
         color: CHART_COLORS.holders
       }),
-      fieldSeries({
-        rows: chartRows,
-        name: t('charts.series.trustlines'),
-        field: 'trustlines',
-        type: 'line',
-        color: CHART_COLORS.trustlines
-      })
+      ...(isNativeToken
+        ? [
+            fieldSeries({
+              rows: chartRows,
+              name: t('charts.series.totalAccounts'),
+              field: 'total',
+              type: 'line',
+              color: CHART_COLORS.totalAccounts
+            })
+          ]
+        : [
+            fieldSeries({
+              rows: chartRows,
+              name: t('charts.series.trustlines'),
+              field: 'trustlines',
+              type: 'line',
+              color: CHART_COLORS.trustlines
+            })
+          ])
     ].filter((series) => hasUsableData([series]))
+
+    const nativeAccountActivitySeries = isNativeToken
+      ? [
+          fieldSeries({
+            rows: chartRows,
+            name: t('charts.series.activations'),
+            field: 'activations',
+            type: 'column',
+            color: CHART_COLORS.activations
+          }),
+          fieldSeries({
+            rows: chartRows,
+            name: t('charts.series.deletedAccounts'),
+            field: 'deleted',
+            type: 'column',
+            color: CHART_COLORS.deletedAccounts
+          })
+        ].filter((series) => hasUsableData([series]))
+      : []
+    const accountSeries = isNativeToken ? [...holderSeries, ...nativeAccountActivitySeries] : holderSeries
 
     const supplySeries = [
       {
@@ -1129,19 +1167,23 @@ export default function TokenCharts({ token, selectedCurrency }) {
       },
       {
         key: 'holders',
-        title: t('charts.holders.title'),
-        description: t('charts.holders.description'),
-        summaryLabel: t('charts.holders.summary'),
+        title: isNativeToken ? t('charts.nativeAccounts.title') : t('charts.holders.title'),
+        description: isNativeToken ? t('charts.nativeAccounts.description') : t('charts.holders.description'),
+        summaryLabel: isNativeToken ? t('charts.nativeAccounts.summary') : t('charts.holders.summary'),
         summaryValue: compactNumber(toNumber(latest?.holders)),
         chartType: 'line',
-        colors: holderSeries.map((series) => series.color),
-        series: holderSeries,
+        colors: accountSeries.map((series) => series.color),
+        series: accountSeries,
         yRange: seriesRange(holderSeries),
+        secondaryYRange: integerSeriesRange(nativeAccountActivitySeries, { startAtZero: true }),
+        primarySeriesNames: isNativeToken ? holderSeries.map((series) => series.name) : null,
+        secondarySeriesNames: isNativeToken ? nativeAccountActivitySeries.map((series) => series.name) : null,
         axisFormatter: (value) => compactNumber(value),
+        secondaryAxisFormatter: isNativeToken && nativeAccountActivitySeries.length ? compactInteger : null,
         tooltipFormatter: (value) => niceNumber(value, 0)
       }
     ].filter((group) => hasUsableData(group.series))
-  }, [chartRows, selectedCurrency, selectedFiat, showMintData, t, tokenUnit])
+  }, [chartRows, isNativeToken, selectedCurrency, selectedFiat, showMintData, t, tokenUnit])
 
   const expandedGroup = groups.find((group) => group.key === expandedKey)
 
