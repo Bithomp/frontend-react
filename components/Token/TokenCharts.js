@@ -429,7 +429,7 @@ const MemoizedTokenChart = memo(TokenChart, (previous, next) =>
   previous.group === next.group && previous.expanded === next.expanded
 )
 
-export default function TokenCharts({ token, selectedCurrency }) {
+export default function TokenCharts({ token, selectedCurrency, onChartRowsChange }) {
   const { t } = useTranslation('token')
   const [chartRows, setChartRows] = useState([])
   const [loading, setLoading] = useState(false)
@@ -445,6 +445,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
   useEffect(() => {
     if (!url) {
       setChartRows([])
+      onChartRowsChange?.([])
       return
     }
 
@@ -454,22 +455,24 @@ export default function TokenCharts({ token, selectedCurrency }) {
     setLoading(true)
     setError('')
     setChartRows([])
+    onChartRowsChange?.([])
 
     axios
       .get(url, { signal: controller.signal })
       .then((response) => {
         if (ignore) return
         const rows = Array.isArray(response?.data?.chart) ? response.data.chart : []
-        setChartRows(
-          rows
-            .map((row) => ({ ...row, timestamp: toReportTimestamp(row.time) }))
-            .filter((row) => row.timestamp)
-            .sort((a, b) => a.timestamp - b.timestamp)
-        )
+        const normalizedRows = rows
+          .map((row) => ({ ...row, timestamp: toReportTimestamp(row.time) }))
+          .filter((row) => row.timestamp)
+          .sort((a, b) => a.timestamp - b.timestamp)
+        setChartRows(normalizedRows)
+        onChartRowsChange?.(normalizedRows)
       })
       .catch((requestError) => {
         if (ignore || axios.isCancel(requestError)) return
         setChartRows([])
+        onChartRowsChange?.([])
         setError(t('charts.errors.failed'))
       })
       .finally(() => {
@@ -480,7 +483,7 @@ export default function TokenCharts({ token, selectedCurrency }) {
       ignore = true
       controller.abort()
     }
-  }, [t, url])
+  }, [onChartRowsChange, t, url])
 
   const groups = useMemo(() => {
     if (!chartRows.length) return []

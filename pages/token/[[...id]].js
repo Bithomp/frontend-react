@@ -318,6 +318,7 @@ export default function TokenPage({
   const [mintsOrder, setMintsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const [burnsOrder, setBurnsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const [showMptMetadata, setShowMptMetadata] = useState(false)
+  const [tokenChartRows, setTokenChartRows] = useState([])
   const errorMessage = initialErrorMessage || ''
   const tokenErrorTranslations = {
     'Token not found': tt('errors.notFound'),
@@ -341,6 +342,9 @@ export default function TokenPage({
   const transfersRefreshIntervalRef = useRef(null)
   const mintsRefreshIntervalRef = useRef(null)
   const burnsRefreshIntervalRef = useRef(null)
+  const handleTokenChartRows = useCallback((rows) => {
+    setTokenChartRows(Array.isArray(rows) ? rows : [])
+  }, [])
 
   let selectedCurrency = selectedCurrencyServer
   let fiatRate = fiatRateServer
@@ -724,13 +728,13 @@ export default function TokenPage({
   const renderPercentCell = ({ currentPrice, pastPrice }) => {
     const current = Number(currentPrice || 0)
     const past = Number(pastPrice || 0)
-    if (!current || !past) return <span className="grey">--%</span>
+    if (!current || !past) return <span className="ammMetricDelta ammMetricDelta-flat">--%</span>
     const change = current / past - 1
-    const colorClass = change >= 0 ? 'green' : 'red'
+    const direction = change > 0 ? 'up' : change < 0 ? 'down' : 'flat'
     const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
 
     return (
-      <span className={`tooltip ${colorClass}`} suppressHydrationWarning>
+      <span className={`ammMetricDelta ammMetricDelta-${direction} tooltip`} suppressHydrationWarning>
         {change >= 0 ? '+' : '-'}
         {percentText}
         <span className="tooltiptext right no-brake" suppressHydrationWarning>
@@ -740,6 +744,93 @@ export default function TokenPage({
         </span>
       </span>
     )
+  }
+
+  const chartNumber = (value) => {
+    if (value === undefined || value === null || value === '') return null
+    const number = Number(value)
+    return Number.isFinite(number) ? number : null
+  }
+  const chartIntegerValue = (value) => {
+    const number = chartNumber(value)
+    return number === null ? null : fullNiceNumber(number)
+  }
+
+  const latestTokenChartRow = tokenChartRows[tokenChartRows.length - 1] || {}
+  const previousTokenChartRow = tokenChartRows[tokenChartRows.length - 2] || {}
+  const hasNativeAccountChartStats =
+    isNativeToken && ['holders', 'total', 'activations', 'deleted'].some((field) => chartNumber(latestTokenChartRow[field]) !== null)
+  const hasIssuedTokenHolderChartStats =
+    !isNativeToken && ['holders', 'trustlines'].some((field) => chartNumber(latestTokenChartRow[field]) !== null)
+  const chartFiatValue = (row, field = 'priceFiats') => chartNumber(row?.[field]?.[selectedCurrency?.toLowerCase()])
+  const chartSplitOrTotal = (row, totalField, splitFields = []) => {
+    const splitValues = splitFields.map((field) => chartNumber(row?.[field])).filter((value) => value !== null)
+    if (splitValues.length) return splitValues.reduce((sum, value) => sum + value, 0)
+    return chartNumber(row?.[totalField])
+  }
+  const chartDexes = (row) => chartSplitOrTotal(row, 'dexes', ['ammDexes', 'offerDexes'])
+  const chartDexTxs = (row) => chartSplitOrTotal(row, 'dexTxs', ['ammTxs', 'offerTxs'])
+  const chartBuyVolume = (row) => chartSplitOrTotal(row, 'buyVolume', ['ammBuyVolume', 'offerBuyVolume'])
+  const chartSellVolume = (row) => chartSplitOrTotal(row, 'sellVolume', ['ammSellVolume', 'offerSellVolume'])
+  const chartTotalVolume = (row) => {
+    const buy = chartBuyVolume(row)
+    const sell = chartSellVolume(row)
+    if (buy === null && sell === null) return null
+    return (buy || 0) + (sell || 0)
+  }
+  const chartVolumeFiatValue = (row, amount) => {
+    const volume = chartNumber(amount)
+    if (volume === null) return null
+    const price = chartFiatValue(row)
+    return price === null ? null : volume * price
+  }
+  const currentVolumeAmount = (type) => {
+    if (!type || type === 'total') return Number(statistics?.buyVolume || 0) + Number(statistics?.sellVolume || 0)
+    return chartNumber(statistics?.[type + 'Volume']) || 0
+  }
+  const currentVolumeFiatValue = (type) => {
+    if (!fiatRate) return null
+    const priceInNative = statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1)
+    return currentVolumeAmount(type) * priceInNative * fiatRate || null
+  }
+
+  const metricDeltaPct = (cur, prev) => {
+    const current = chartNumber(cur)
+    const previous = chartNumber(prev)
+    if (current === null || previous === null) return null
+    if (previous === 0) return current === 0 ? 0 : null
+    if (previous < 0) return null
+    return ((current - previous) / previous) * 100
+  }
+
+  const formatMetricDelta = (pct) => {
+    if (!Number.isFinite(pct)) return null
+    if (pct === 0) return '0%'
+
+    const abs = Math.abs(pct)
+    const sign = pct > 0 ? '+' : '-'
+    const displayAbs =
+      abs < 0.001
+        ? '0.001'
+        : abs < 0.01
+          ? abs.toFixed(3)
+          : abs < 1
+            ? abs.toFixed(2)
+            : abs < 100
+              ? abs.toFixed(1)
+              : shortNiceNumber(abs, 1, 0)
+
+    return `${sign}${displayAbs.replace(/\.?0+$/, '')}%`
+  }
+
+  const renderMetricDelta = (cur, prev, options = {}) => {
+    const pct = metricDeltaPct(cur, prev)
+    const text = formatMetricDelta(pct)
+    if (!text) return null
+
+    const colorPct = options.invertColor ? -pct : pct
+    const direction = colorPct > 0 ? 'up' : colorPct < 0 ? 'down' : 'flat'
+    return <span className={`ammMetricDelta ammMetricDelta-${direction}`}>{text}</span>
   }
 
   if (errorMessage) {
@@ -1121,26 +1212,41 @@ export default function TokenPage({
   const renderMetricTiles = (items) =>
     items
       .filter((item) => item.show !== false)
-      .map(({ key, label, value, details = [], wide = false }) => {
+      .map(({ key, label, value, details = [], wide = false, delta = null, compactHeader = false }) => {
         const valueNode = value === undefined || value === null || value === '' ? '-' : value
         const visibleDetails = details.filter((detail) => detail.show !== false)
 
         return (
           <div key={key} className={wide ? 'tokenMetricWide' : undefined}>
-            <span>{label}</span>
-            <span>
-              {valueNode}
-              {visibleDetails.length ? (
-                <span className="tokenMetricDetails">
-                  {visibleDetails.map((detail) => (
+            <span className={compactHeader ? 'tokenMetricDetail tokenMetricPrimaryDetail' : 'tokenMetricHeader'}>
+              <span>{label}</span>
+              {compactHeader ? (
+                <span className="tokenMetricDetailValue">
+                  <span>{valueNode}</span>
+                  {delta}
+                </span>
+              ) : (
+                delta
+              )}
+            </span>
+            {!compactHeader ? <span className="tokenMetricValue">{valueNode}</span> : null}
+            {visibleDetails.length ? (
+              <span className="tokenMetricDetails">
+                {visibleDetails.map((detail) => {
+                  const detailValueNode =
+                    detail.value === undefined || detail.value === null || detail.value === '' ? '-' : detail.value
+                  return (
                     <span key={detail.key} className="tokenMetricDetail">
                       <span>{detail.label}</span>
-                      <span>{detail.value}</span>
+                      <span className="tokenMetricDetailValue">
+                        <span>{detailValueNode}</span>
+                        {detail.delta}
+                      </span>
                     </span>
-                  ))}
-                </span>
-              ) : null}
-            </span>
+                  )
+                })}
+              </span>
+            ) : null}
           </div>
         )
       })
@@ -1421,8 +1527,17 @@ export default function TokenPage({
           ),
           wide: true
         },
-        { key: 'holders', label: tt('fields.holders'), value: holdersLink },
-        { key: 'trustlines', label: tt('fields.trustlines'), value: fullNiceNumber(token.trustlines), show: !isNativeToken },
+        {
+          key: 'holders',
+          label: tt('fields.holders'),
+          value: holdersLink
+        },
+        {
+          key: 'trustlines',
+          label: tt('fields.trustlines'),
+          value: fullNiceNumber(token.trustlines),
+          show: !isNativeToken
+        },
         {
           key: 'ammPools',
           label: tt('fields.ammPools'),
@@ -1440,6 +1555,7 @@ export default function TokenPage({
         priceNative: statistics?.priceNativeCurrencySpot,
         priceFiat: statistics?.priceFiatsSpot?.[selectedCurrency]
       }),
+      delta: renderMetricDelta(statistics?.priceFiatsSpot?.[selectedCurrency], chartFiatValue(latestTokenChartRow)),
       show: !!statistics?.priceNativeCurrencySpot
     },
     {
@@ -1456,13 +1572,26 @@ export default function TokenPage({
           key: 'activityCounts',
           label: tt('fields.trades'),
           value: fullNiceNumber(statistics?.dexes || 0),
+          delta: renderMetricDelta(statistics?.dexes, chartDexes(latestTokenChartRow)),
+          compactHeader: true,
           details: [
-            { key: 'uniqueAccounts', label: tt('fields.uniqueAccounts'), value: fullNiceNumber(statistics?.uniqueAccounts || 0) },
-            { key: 'dexTxs', label: tt('fields.dexTxs'), value: fullNiceNumber(statistics?.dexTxs || 0) },
+            {
+              key: 'uniqueAccounts',
+              label: tt('fields.uniqueAccounts'),
+              value: fullNiceNumber(statistics?.uniqueAccounts || 0),
+              delta: renderMetricDelta(statistics?.uniqueAccounts, latestTokenChartRow.uniqueAccounts)
+            },
+            {
+              key: 'dexTxs',
+              label: tt('fields.dexTxs'),
+              value: fullNiceNumber(statistics?.dexTxs || 0),
+              delta: renderMetricDelta(statistics?.dexTxs, chartDexTxs(latestTokenChartRow))
+            },
             {
               key: 'ripplingTxs',
               label: tt('fields.ripplingTxs'),
               value: fullNiceNumber(statistics?.ripplingTxs || 0),
+              delta: renderMetricDelta(statistics?.ripplingTxs, latestTokenChartRow.ripplingTxs),
               show: !isNativeToken
             }
           ]
@@ -1471,31 +1600,67 @@ export default function TokenPage({
           key: 'volumeTotal',
           label: tt('fields.volumeTotal'),
           value: volumeLine({ token, type: 'total' }),
+          delta: renderMetricDelta(
+            currentVolumeFiatValue('total'),
+            chartVolumeFiatValue(latestTokenChartRow, chartTotalVolume(latestTokenChartRow))
+          ),
           details: [
-            { key: 'traders', label: tt('fields.traders'), value: fullNiceNumber(statistics?.uniqueDexAccounts || 0) }
+            {
+              key: 'traders',
+              label: tt('fields.traders'),
+              value: fullNiceNumber(statistics?.uniqueDexAccounts || 0),
+              delta: renderMetricDelta(statistics?.uniqueDexAccounts, latestTokenChartRow.uniqueDexAccounts)
+            }
           ]
         },
         {
           key: 'volumeBuy',
           label: tt('fields.volumeBuy'),
           value: volumeLine({ token, type: 'buy' }),
-          details: [{ key: 'buyers', label: tt('fields.buyers'), value: fullNiceNumber(statistics?.uniqueBuyers || 0) }]
+          delta: renderMetricDelta(
+            currentVolumeFiatValue('buy'),
+            chartVolumeFiatValue(latestTokenChartRow, chartBuyVolume(latestTokenChartRow))
+          ),
+          details: [
+            {
+              key: 'buyers',
+              label: tt('fields.buyers'),
+              value: fullNiceNumber(statistics?.uniqueBuyers || 0),
+              delta: renderMetricDelta(statistics?.uniqueBuyers, latestTokenChartRow.uniqueBuyers)
+            }
+          ]
         },
         {
           key: 'volumeSell',
           label: tt('fields.volumeSell'),
           value: volumeLine({ token, type: 'sell' }),
-          details: [{ key: 'sellers', label: tt('fields.sellers'), value: fullNiceNumber(statistics?.uniqueSellers || 0) }]
+          delta: renderMetricDelta(
+            currentVolumeFiatValue('sell'),
+            chartVolumeFiatValue(latestTokenChartRow, chartSellVolume(latestTokenChartRow))
+          ),
+          details: [
+            {
+              key: 'sellers',
+              label: tt('fields.sellers'),
+              value: fullNiceNumber(statistics?.uniqueSellers || 0),
+              delta: renderMetricDelta(statistics?.uniqueSellers, latestTokenChartRow.uniqueSellers)
+            }
+          ]
         },
         {
           key: 'transferVolume',
           label: tt('fields.transferVolume'),
           value: volumeLine({ token, type: 'transfer' }),
+          delta: renderMetricDelta(
+            currentVolumeFiatValue('transfer'),
+            chartVolumeFiatValue(latestTokenChartRow, latestTokenChartRow.transferVolume)
+          ),
           details: [
             {
               key: 'transferTransactions',
               label: tt('fields.transferTransactions'),
-              value: niceNumber(statistics?.transferTxs || 0)
+              value: niceNumber(statistics?.transferTxs || 0),
+              delta: renderMetricDelta(statistics?.transferTxs, latestTokenChartRow.transferTxs)
             }
           ]
         },
@@ -1503,12 +1668,17 @@ export default function TokenPage({
           key: 'mintVolume',
           label: tt('fields.mintVolume'),
           value: volumeLine({ token, type: 'mint' }),
+          delta: renderMetricDelta(
+            currentVolumeFiatValue('mint'),
+            chartVolumeFiatValue(latestTokenChartRow, latestTokenChartRow.mintVolume)
+          ),
           show: showMintActivity,
           details: [
             {
               key: 'mintTransactions',
               label: tt('fields.mintTransactions'),
-              value: shortNiceNumber(statistics?.mintTxs || 0, 0, 1)
+              value: shortNiceNumber(statistics?.mintTxs || 0, 0, 1),
+              delta: renderMetricDelta(statistics?.mintTxs, latestTokenChartRow.mintTxs)
             }
           ]
         },
@@ -1516,22 +1686,95 @@ export default function TokenPage({
           key: 'burnVolume',
           label: tt('fields.burnVolume'),
           value: volumeLine({ token, type: 'burn' }),
+          delta: renderMetricDelta(
+            currentVolumeFiatValue('burn'),
+            chartVolumeFiatValue(latestTokenChartRow, latestTokenChartRow.burnVolume)
+          ),
           details: [
             {
               key: 'burnTransactions',
               label: tt('fields.burnTransactions'),
-              value: shortNiceNumber(statistics?.burnTxs || 0, 0, 1)
+              value: shortNiceNumber(statistics?.burnTxs || 0, 0, 1),
+              delta: renderMetricDelta(statistics?.burnTxs, latestTokenChartRow.burnTxs)
             }
           ]
+        },
+        {
+          key: 'nativeAccounts',
+          label: tt('fields.holders'),
+          value: chartIntegerValue(latestTokenChartRow.holders),
+          delta: renderMetricDelta(latestTokenChartRow.holders, previousTokenChartRow.holders),
+          show: hasNativeAccountChartStats,
+          compactHeader: true,
+          details: [
+            {
+              key: 'totalAccounts',
+              label: tt('charts.series.totalAccounts'),
+              value: chartIntegerValue(latestTokenChartRow.total),
+              delta: renderMetricDelta(latestTokenChartRow.total, previousTokenChartRow.total)
+            },
+            {
+              key: 'activations',
+              label: tt('charts.nativeAccountStats.activated'),
+              value: chartIntegerValue(latestTokenChartRow.activations),
+              delta: renderMetricDelta(latestTokenChartRow.activations, previousTokenChartRow.activations)
+            },
+            {
+              key: 'deletedAccounts',
+              label: tt('charts.nativeAccountStats.deleted'),
+              value: chartIntegerValue(latestTokenChartRow.deleted),
+              delta: renderMetricDelta(latestTokenChartRow.deleted, previousTokenChartRow.deleted, { invertColor: true })
+            }
+          ]
+        },
+        {
+          key: 'issuedTokenHolders',
+          label: tt('fields.holders'),
+          value: chartIntegerValue(latestTokenChartRow.holders),
+          delta: renderMetricDelta(latestTokenChartRow.holders, previousTokenChartRow.holders),
+          show: hasIssuedTokenHolderChartStats,
+          compactHeader: true,
+          details: [
+            {
+              key: 'trustlines',
+              label: tt('fields.trustlines'),
+              value: chartIntegerValue(latestTokenChartRow.trustlines),
+              delta: renderMetricDelta(latestTokenChartRow.trustlines, previousTokenChartRow.trustlines)
+            }
+          ]
+        },
+        {
+          key: 'nativeSupply',
+          label: tt('fields.supply'),
+          value:
+            chartNumber(latestTokenChartRow.supply) === null ? null : (
+              <>
+                {fullNiceNumber(latestTokenChartRow.supply)} {tokenDisplayCurrency}
+              </>
+            ),
+          delta: renderMetricDelta(latestTokenChartRow.supply, previousTokenChartRow.supply),
+          show: isNativeToken && chartNumber(latestTokenChartRow.supply) !== null
         }
       ]
     : []
 
   const closedDayItems = statistics
     ? [
-        { key: 'tradingPairs', label: tt('fields.tradingPairs'), value: fullNiceNumber(statistics?.activeCounters || 0) },
-        { key: 'activeHolders', label: tt('fields.activeHolders'), value: fullNiceNumber(statistics?.activeHolders || 0) },
-        { key: 'activeOffers', label: tt('fields.activeOffers'), value: fullNiceNumber(statistics?.activeOffers || 0) },
+        {
+          key: 'tradingPairs',
+          label: tt('fields.tradingPairs'),
+          value: fullNiceNumber(statistics?.activeCounters || 0)
+        },
+        {
+          key: 'activeHolders',
+          label: tt('fields.activeHolders'),
+          value: fullNiceNumber(statistics?.activeHolders || 0)
+        },
+        {
+          key: 'activeOffers',
+          label: tt('fields.activeOffers'),
+          value: fullNiceNumber(statistics?.activeOffers || 0)
+        },
         {
           key: 'activeAmmPools',
           label: tt('fields.activeAmmPools'),
@@ -1693,7 +1936,7 @@ export default function TokenPage({
                   title: tt('tables.stats24h'),
                   className: 'tokenStatsPanel',
                   children: (
-                    <div className="tokenMetricGrid tokenMetricGridDense">
+                    <div className="tokenMetricGrid tokenMetricGridStats">
                       {renderMetricTiles(stats24hItems)}
                     </div>
                   )
@@ -1702,7 +1945,7 @@ export default function TokenPage({
             </div>
           </div>
 
-          <TokenCharts token={token} selectedCurrency={selectedCurrency} />
+          <TokenCharts token={token} selectedCurrency={selectedCurrency} onChartRowsChange={handleTokenChartRows} />
 
           <section className="tokenActivitySection">
             <div className="tokenActivityGrid">

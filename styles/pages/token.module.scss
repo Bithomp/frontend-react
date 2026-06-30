@@ -337,7 +337,8 @@
 
     > div {
       display: grid;
-      gap: 5px;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 8px;
       min-width: 0;
       padding: 10px;
       border: 1px solid color-mix(in srgb, var(--card-border) 74%, transparent);
@@ -346,13 +347,7 @@
       align-self: stretch;
     }
 
-    > div > span:first-child {
-      color: var(--text-secondary);
-      font-size: 12px;
-      line-height: 1.2;
-    }
-
-    > div > span:last-child {
+    .tokenMetricValue {
       min-width: 0;
       color: var(--text-main);
       font-size: 15px;
@@ -368,6 +363,22 @@
     }
   }
 
+  .tokenMetricHeader {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+
+    > span:first-child {
+      min-width: 0;
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+  }
+
   .tokenMetricGridDense {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
     gap: 8px;
@@ -376,8 +387,17 @@
       padding: 8px;
     }
 
-    > div > span:last-child {
+    .tokenMetricValue {
       font-size: 14px;
+    }
+  }
+
+  .tokenMetricGridStats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+
+    > div {
+      padding: 10px;
     }
   }
 
@@ -387,13 +407,26 @@
 
   .tokenMetricDetails {
     display: grid;
+    flex: 0 0 100%;
     gap: 4px;
-    margin-top: 8px;
+    margin-top: 0;
     padding-top: 8px;
     border-top: 1px solid color-mix(in srgb, var(--card-border) 56%, transparent);
     color: var(--text-secondary);
     font-size: 13px;
     line-height: 1.2;
+  }
+
+  .tokenMetricValue {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 7px;
+    align-items: center;
+    align-self: end;
+  }
+
+  .tokenMetricValue > .tokenValueStack {
+    min-width: 0;
   }
 
   .tokenMetricDetail {
@@ -413,6 +446,23 @@
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
+  }
+
+  .tokenMetricPrimaryDetail {
+    align-self: start;
+
+    > span:first-child {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+  }
+
+  .tokenMetricDetailValue {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
   }
 
   .tokenActivitySection {
@@ -673,46 +723,31 @@
   }
 
   .tokenChangeList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 8px;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 14px;
     min-width: 0;
   }
 
   .tokenChangeItem {
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
     align-items: center;
-    gap: 4px;
     min-width: 0;
     max-width: 100%;
-    white-space: nowrap;
   }
 
   .tokenChangePeriod {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 22px;
-    padding: 2px 4px;
-    border: 1px solid var(--chip-border);
-    border-radius: 999px;
-    background: var(--chip-bg);
-    box-shadow: var(--chip-shadow);
+    min-width: 0;
     color: var(--text-secondary);
-    font-size: 10.5px;
+    font-size: 12px;
     font-weight: 600;
-    line-height: 1.05;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
   }
 
   .tokenChangeValue {
-    flex: 0 0 auto;
-    min-width: max-content;
-    font-size: 12.5px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-
     .tooltip {
       display: inline-flex;
       white-space: nowrap;
@@ -2975,9 +3010,7 @@
     }
 
     .tokenPricePanel .tokenChangeList {
-      flex-wrap: nowrap;
-      justify-content: space-between;
-      gap: 5px;
+      gap: 6px 10px;
     }
 
     .tokenPricePanel .tokenMetricGrid {
@@ -3000,7 +3033,8 @@
     }
 
     .tokenChangeList {
-      gap: 6px 8px;
+      grid-template-columns: 1fr;
+      gap: 6px;
     }
 
     .tokenChangeBlock {
@@ -3085,6 +3119,10 @@
 
     .tokenStatsPanel {
       grid-column: 1 / -1;
+    }
+
+    .tokenMetricGridStats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .tokenChartsGrid {
@@ -3300,6 +3338,10 @@
     .tokenClosedPanel,
     .tokenStatsPanel {
       grid-column: 1 / -1;
+    }
+
+    .tokenMetricGridStats {
+      grid-template-columns: 1fr;
     }
 
     .ammMetricGrid {
