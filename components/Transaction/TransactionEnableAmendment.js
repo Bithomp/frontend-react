@@ -5,6 +5,7 @@ import { AddressWithIconFilled, capitalize } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import { xahauNetwork } from '../../utils'
 import Link from 'next/link'
+import { amendmentDetailsUrl } from '../../utils/amendments'
 
 export const TransactionEnableAmendment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -23,20 +24,18 @@ export const TransactionEnableAmendment = ({ data, pageFiatRate, selectedCurrenc
           <TData>Amendment</TData>
           <TData className="bold">
             {specification.amendmentDetails.name} <CopyButton text={specification.amendmentDetails.name} />
-            {!xahauNetwork && (
-              <span>
-                {' '}
-                (
-                <a
-                  href={`https://xrpl.org/resources/known-amendments#${specification.amendmentDetails.name.toLowerCase()}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  read more
-                </a>
-                )
-              </span>
-            )}
+            <span>
+              {' '}
+              (
+              <a
+                href={amendmentDetailsUrl(specification.amendmentDetails.name, xahauNetwork)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                read more
+              </a>
+              )
+            </span>
           </TData>
         </tr>
       )}

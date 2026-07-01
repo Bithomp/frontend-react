@@ -1,4 +1,13 @@
-import { showXahauNewAmendment } from './index'
+import { showXahauNewAmendment, xahauNetwork } from './index'
+
+export const amendmentDetailsUrl = (amendmentName, isXahauNetwork = xahauNetwork) => {
+  const anchor = String(amendmentName || '').trim().toLowerCase()
+  const baseUrl = isXahauNetwork
+    ? 'https://xahau.network/docs/features/amendments/'
+    : 'https://xrpl.org/resources/known-amendments'
+
+  return `${baseUrl}#${encodeURIComponent(anchor)}`
+}
 
 export const votingFeatureKeys = (features = {}) =>
   Object.keys(features).filter((key) => !features[key]?.enabled && features[key]?.vetoed !== 'Obsolete')

@@ -13,6 +13,7 @@ import { useTheme } from '../../components/Layout/ThemeContext'
 import VerifiedIcon from '../../public/images/verified.svg'
 import NetworkPagesTab from '../../components/Tabs/NetworkPagesTabs'
 import { LinkTx } from '../../utils/links'
+import { amendmentDetailsUrl } from '../../utils/amendments'
 
 export async function getServerSideProps(context) {
   const { params, locale, req } = context
@@ -131,7 +132,7 @@ export default function AmendmentSummary({
   if (featureData && typeof featureData.threshold !== 'undefined' && typeof featureData.validations !== 'undefined') {
     threshold = `${featureData.threshold} / ${featureData.validations} votes`
   }
-  const detailsUrl = `https://xrpl.org/known-amendments.html#${amendmentName.toLowerCase()}`
+  const detailsUrl = amendmentDetailsUrl(amendmentData?.name || amendmentName, xahauNetwork)
   const status = amendmentData?.enabled ? 'ENABLED' : 'NOT ENABLED'
   const activationDays = xahauNetwork ? 5 : 14
   const eta = amendmentData?.majority
