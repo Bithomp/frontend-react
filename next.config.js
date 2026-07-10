@@ -40,6 +40,11 @@ module.exports = withBundleAnalyzer({
       },
       {
         protocol: 'https',
+        hostname: 'cdn.bithomp.ru',
+        port: ''
+      },
+      {
+        protocol: 'https',
         hostname: 'pbs.twimg.com',
         port: ''
       },
