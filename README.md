@@ -52,7 +52,7 @@ Runs the app in production
 
 `npm install -g yarn`
 
-`git clone --single-branch https://github.com/Bithomp/frontend-react.git`
+`git clone --single-branch https://github.com/Bithomp/frontend-react.git frontend-react`
 
 `cd frontend-react`
 
