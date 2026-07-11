@@ -35,7 +35,7 @@ import {
   acceptNftSellOfferButton,
   acceptNftBuyOfferButton
 } from '../../utils/format'
-import { axiosServer, passHeaders } from '../../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../../utils/axios'
 
 import SocialShare from '../../components/SocialShare'
 import { nftClass } from '../../styles/pages/nft.module.scss'
@@ -57,7 +57,7 @@ export async function getServerSideProps(context) {
       })
       pageMeta = res?.data
     } catch (error) {
-      console.error(error)
+      logServerSideError(error, req, 'nft')
     }
   }
 

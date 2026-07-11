@@ -20,7 +20,7 @@ import Avatar from '../components/UI/Avatar'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
 import { useWidth, xahauNetwork, countriesTranslated, avatarServer, normalizeLocale } from '../utils'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { shortServerVersion } from '../utils/serverVersion'
 
@@ -74,7 +74,7 @@ export async function getServerSideProps(context) {
     }
     initialData.validators = res2?.data
   } catch (error) {
-    console.error(error)
+    logServerSideError(error, req, 'validators')
   }
 
   if (initialData) {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
-import { axiosServer, passHeaders } from '../../../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
@@ -46,7 +46,7 @@ export async function getServerSideProps(context) {
       })
       initialData = res?.data
     } catch (error) {
-      console.error(error)
+      logServerSideError(error, req, 'account dex')
     }
   }
 

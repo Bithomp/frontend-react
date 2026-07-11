@@ -4,7 +4,7 @@ import axios from 'axios'
 import RadioOptions from '../components/UI/RadioOptions'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import CheckBox from '../components/UI/CheckBox'
-import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
+import { axiosServer, passHeaders, currencyServer, logServerSideError } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { explorerName, nativeCurrency } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -104,7 +104,7 @@ export async function getServerSideProps(context) {
       initialErrorMessage = 'Dapps info not found'
     }
   } catch (error) {
-    console.error(error)
+    logServerSideError(error, req, 'dapps')
   }
 
   return {

@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { axiosServer, passHeaders } from '../../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../../utils/axios'
 import {
   codeHighlight,
   AddressWithIconFilled,
@@ -89,7 +89,7 @@ export async function getServerSideProps(context) {
       data = null
     }
   } catch (e) {
-    console.error(e)
+    logServerSideError(e, req, 'object')
   }
 
   return {

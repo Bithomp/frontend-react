@@ -55,6 +55,40 @@ export const passHeaders = (req) => {
   return headers
 }
 
+export const requestIp = (req) => {
+  const headers = req?.headers || {}
+  const forwardedFor = headers['x-forwarded-for']
+  const forwardedIp = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor?.split(',')?.[0]?.trim()
+  const realIp = Array.isArray(headers['x-real-ip']) ? headers['x-real-ip'][0] : headers['x-real-ip']
+
+  return forwardedIp || realIp || req?.socket?.remoteAddress || 'unknown-ip'
+}
+
+const responseMessage = (data) => {
+  if (!data) return ''
+  if (typeof data === 'string') return data
+  return data.error || data.message || ''
+}
+
+export const serverSideErrorText = (error) => {
+  const method = error?.config?.method?.toUpperCase()
+  const url = error?.config?.url
+  const status = error?.response?.status
+  const statusText = error?.response?.statusText
+  const code = error?.code
+  const message = responseMessage(error?.response?.data) || error?.message || String(error)
+  const requestPart = [method, url].filter(Boolean).join(' ')
+  const statusPart = status ? ` -> ${status}${statusText ? ` ${statusText}` : ''}` : ''
+  const codePart = code ? ` (${code})` : ''
+
+  return `${requestPart}${statusPart}${codePart}${message ? `: ${message}` : ''}`.trim()
+}
+
+export const logServerSideError = (error, req, label = 'SSR') => {
+  if (process.env.NODE_ENV !== 'development') return
+  console.warn(`${requestIp(req)}: ${label} ${serverSideErrorText(error)}`)
+}
+
 export const currencyServer = (req) => {
   try {
     const queryFiat = new URL(req?.url || '/', 'http://localhost').searchParams.get('fiat')
@@ -83,7 +117,7 @@ export const getFiatRateServer = async (req) => {
       fiatRateServer = rateServer?.data[selectedCurrencyServer] || null
     }
   } catch (e) {
-    console.error(e)
+    logServerSideError(e, req, 'getFiatRateServer')
   }
   return { fiatRateServer, selectedCurrencyServer }
 }

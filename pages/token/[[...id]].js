@@ -21,7 +21,7 @@ import {
   timeFormat,
   amountParced
 } from '../../utils/format'
-import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
+import { axiosServer, getFiatRateServer, logServerSideError, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
@@ -168,7 +168,7 @@ export async function getServerSideProps(context) {
           initialErrorMessage = 'Token not found'
         }
       } catch (e) {
-        console.error(e)
+        logServerSideError(e, req, 'token')
         initialErrorMessage = 'Failed to fetch token data'
       }
     } else if (tokenId) {
@@ -191,7 +191,7 @@ export async function getServerSideProps(context) {
           initialErrorMessage = 'Token not found'
         }
       } catch (e) {
-        console.error(e)
+        logServerSideError(e, req, 'token')
         initialErrorMessage = 'Failed to fetch token data'
       }
     } else if (issuer) {
@@ -227,7 +227,7 @@ export async function getServerSideProps(context) {
             initialErrorMessage = 'Token not found'
           }
         } catch (e) {
-          console.error(e)
+          logServerSideError(e, req, 'token')
           initialErrorMessage = 'Failed to fetch token data'
         }
       }

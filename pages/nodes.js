@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useWidth, ledgerName } from '../utils'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { shortHash, duration, timeFromNow } from '../utils/format'
 import { shortServerVersion } from '../utils/serverVersion'
@@ -20,7 +20,7 @@ export async function getServerSideProps(context) {
     })
     initialData = res?.data
   } catch (error) {
-    console.error(error)
+    logServerSideError(error, req, 'nodes')
   }
 
   return {

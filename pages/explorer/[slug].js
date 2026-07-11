@@ -1,5 +1,5 @@
 import { isAddressOrUsername, isIdValid, isLedgerIndexValid, isValidCTID } from '../../utils'
-import { axiosServer, passHeaders } from '../../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../../utils/axios'
 import SEO from '../../components/SEO'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
@@ -50,7 +50,7 @@ async function resolveLegacyExplorerDestination(slug, req) {
 
     return routePrefix + slug
   } catch (error) {
-    console.error(error)
+    logServerSideError(error, req, 'legacy explorer')
     return null
   }
 }

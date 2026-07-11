@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
+import { axiosServer, getFiatRateServer, logServerSideError, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -71,7 +71,7 @@ export async function getServerSideProps(context) {
     })
     initialData = res?.data
   } catch (error) {
-    console.error(error)
+    logServerSideError(error, req, 'amms')
   }
 
   try {
@@ -82,7 +82,7 @@ export async function getServerSideProps(context) {
     }).catch(() => {})
     initialChartData = chartRes?.data?.chart || null
   } catch (error) {
-    console.error(error)
+    logServerSideError(error, req, 'amms chart')
   }
 
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)

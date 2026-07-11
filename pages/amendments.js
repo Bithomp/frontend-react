@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fullDateAndTime, shortHash, timeOrDate } from '../utils/format'
 import { shortName, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../utils/axios'
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
@@ -47,7 +47,7 @@ export const getServerSideProps = async (context) => {
       initialErrorMessage = initialErrorMessage || 'Amendments not found'
     }
   } catch (error) {
-    console.error(error)
+    logServerSideError(error, req, 'amendments')
   }
 
   return {

@@ -16,7 +16,7 @@ import {
   timeFromNow,
   CurrencyWithIcon
 } from '../utils/format'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isAddressOrUsername, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
 import { useRouter } from 'next/router'
@@ -114,7 +114,7 @@ export async function getServerSideProps(context) {
     })
     initialData = res?.data
   } catch (e) {
-    console.error(e)
+    logServerSideError(e, req, 'mpts')
   }
 
   return {

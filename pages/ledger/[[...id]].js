@@ -9,7 +9,7 @@ import { network, ledgerName, minLedger, isIdValid } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, AddressWithIconInline, shortHash } from '../../utils/format'
 import { LedgerLink, LinkTx } from '../../utils/links'
-import { axiosServer, passHeaders } from '../../utils/axios'
+import { axiosServer, logServerSideError, passHeaders } from '../../utils/axios'
 import CopyButton from '../../components/UI/CopyButton'
 
 export async function getServerSideProps(context) {
@@ -32,7 +32,7 @@ export async function getServerSideProps(context) {
       }
     }
   } catch (error) {
-    console.error(error)
+    logServerSideError(error, req, 'ledger')
   }
 
   return {

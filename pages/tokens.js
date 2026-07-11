@@ -12,7 +12,7 @@ import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import SortingArrow from '../components/Tables/SortingArrow'
 import CheckBox from '../components/UI/CheckBox'
 import { fullNiceNumber, niceCurrency, niceNumber, shortNiceNumber, CurrencyWithIcon } from '../utils/format'
-import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
+import { axiosServer, getFiatRateServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import {
   explorerName,
@@ -178,7 +178,7 @@ export async function getServerSideProps(context) {
       }
     }
   } catch (e) {
-    console.error(e)
+    logServerSideError(e, req, 'tokens')
   }
 
   return {
