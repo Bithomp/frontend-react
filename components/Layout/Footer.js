@@ -45,7 +45,10 @@ export default function Footer(
             <span style={{ textDecoration: 'underline' }}>{t('footer.affiliate-program')}</span> <GrMoney />
           </FooterLink>
           <FooterLink href="/customer-support">{t('menu.customer-support')}</FooterLink>
-          <FooterLink href="/donate" style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
+          <FooterLink
+            href="/donate"
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}
+          >
             <span style={{ textDecoration: 'underline' }}>{t('menu.donate')}</span>{' '}
             <FaHeart style={{ color: '#e74c3c' }} />
           </FooterLink>
@@ -115,7 +118,7 @@ export default function Footer(
         <div className="footer-brand-text" suppressHydrationWarning>
           Copyright © {new Date().getFullYear()} <b>Bithomp AB</b>
           <br />
-          Kivra: 559342-2867
+          Kivra 559342-2867
           <br />
           106 31, Stockholm, Sweden
           <br />
