@@ -272,6 +272,10 @@ export const DAPPS_META = [
       url: 'luckyhash.win',
       x: 'LuckyHashWin',
       logo: 'luckyhash.png'
+    },
+    122131125: {
+      name: 'XRP Toolbox',
+      url: 'xrptoolbox.com'
     }
   }
 ]
