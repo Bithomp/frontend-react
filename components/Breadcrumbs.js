@@ -28,9 +28,9 @@ export default function Breadcrumbs() {
           <Link 
             href="/"
             className="flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-            aria-label="Home"
+            aria-label="XRP Explorer"
           >
-            <span className="sm:inline">Home</span>
+            <span className="sm:inline">XRP Explorer</span>
           </Link>
         </li>
         

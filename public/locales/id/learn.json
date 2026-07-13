@@ -36,7 +36,8 @@
     "nft-explorer": "NFT Explorer",
     "send-payments": "Kirim pembayaran dengan Bithomp: manfaat utama",
     "types-of-assets": "Jenis aset di {{explorerName}}",
-    "checks": "Penjelasan checks"
+    "checks": "Penjelasan checks",
+    "account-page": "Cara Menganalisis Akun XRP Ledger dengan Bithomp"
   },
   "readMore": "Baca selengkapnya ->",
   "readMoreAria": "Baca selengkapnya tentang {{title}}"

@@ -106,7 +106,8 @@ if (network === 'mainnet') {
       { loc: 'learn/xrpl-article', changefreq: 'monthly', priority: '0.6' },
       { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.7' },
       { loc: 'learn/amm', changefreq: 'monthly', priority: '0.8' },
-      { loc: 'learn/run-a-validator', changefreq: 'monthly', priority: '0.8' }
+      { loc: 'learn/run-a-validator', changefreq: 'monthly', priority: '0.8' },
+      { loc: 'learn/account-page', changefreq: 'monthly', priority: '0.5' }
     )
   }
   pages.push(
