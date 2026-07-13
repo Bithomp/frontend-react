@@ -131,8 +131,7 @@ if (network === 'mainnet') {
     { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' },
     { loc: 'learn/send-payments', changefreq: 'monthly', priority: '0.5' },
     { loc: 'learn/types-of-assets', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/checks', changefreq: 'monthly', priority: '0.5' },
-    
+    { loc: 'learn/checks', changefreq: 'monthly', priority: '0.5' }
   )
 }
 

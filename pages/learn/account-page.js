@@ -21,7 +21,7 @@ export default function AccountPage() {
   return (
     <>
       <SEO
-        title={'How to Analyze Any XRP Account with Bithomp'}
+        title="How to Analyze Any XRP Account with Bithomp"
         description="Complete guide to analyzing XRP accounts using Bithomp, including balances, NFTs, trust lines, account settings, and transaction history."
         noindex={network !== 'mainnet'}
       />
