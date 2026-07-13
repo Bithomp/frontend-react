@@ -1,7 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network,} from '../../utils'
+import { network } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '../../components/Breadcrumbs'
