@@ -36,7 +36,8 @@
     "nft-explorer": "NFT Explorer",
     "send-payments": "使用 Bithomp 发送付款：主要优势",
     "types-of-assets": "{{explorerName}} 上的资产类型",
-    "checks": "Checks 说明"
+    "checks": "Checks 说明",
+    "account-page": "如何使用Bithomp分析XRP账本账户"
   },
   "readMore": "继续阅读 ->",
   "readMoreAria": "继续阅读 {{title}}"

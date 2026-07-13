@@ -36,7 +36,8 @@
     "nft-explorer": "NFT Explorer",
     "send-payments": "Bithomp で支払いを送信: 主なメリット",
     "types-of-assets": "{{explorerName}} 上の資産タイプ",
-    "checks": "Checks の解説"
+    "checks": "Checks の解説",
+    "account-page": "BithompでXRP Ledgerアカウントを分析する方法"
   },
   "readMore": "続きを読む ->",
   "readMoreAria": "{{title}} について続きを読む"

@@ -36,7 +36,8 @@
     "nft-explorer": "NFT Explorer",
     "send-payments": "Bithomp로 결제 보내기: 주요 장점",
     "types-of-assets": "{{explorerName}}의 자산 유형",
-    "checks": "Checks 설명"
+    "checks": "Checks 설명",
+    "account-page": "Bithomp으로 XRP Ledger 계정 분석하기"
   },
   "readMore": "더 읽기 ->",
   "readMoreAria": "{{title}} 더 읽기"

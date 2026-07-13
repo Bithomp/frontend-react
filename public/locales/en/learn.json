@@ -36,7 +36,8 @@
     "nft-explorer": "NFT Explorer",
     "send-payments": "Send Payments with us: Key Benefits",
     "types-of-assets": "Types of assets on {{explorerName}}",
-    "checks": "Checks explained"
+    "checks": "Checks explained",
+    "account-page": "How to Analyze Any XRP Ledger Account with Bithomp"
   },
   "readMore": "Read more ->",
   "readMoreAria": "Read more about {{title}}"

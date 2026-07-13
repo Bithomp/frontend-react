@@ -36,7 +36,8 @@
     "nft-explorer": "NFT Explorer",
     "send-payments": "Envoyer des paiements avec Bithomp : principaux avantages",
     "types-of-assets": "Types d'actifs sur {{explorerName}}",
-    "checks": "Checks expliqués"
+    "checks": "Checks expliqués",
+    "account-page": "Comment analyser un compte XRP Ledger avec Bithomp"
   },
   "readMore": "Lire la suite ->",
   "readMoreAria": "Lire la suite sur {{title}}"
