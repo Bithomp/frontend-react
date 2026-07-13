@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { appendImageParams, retinaImageSize } from '../../utils'
 
 export default function Avatar({ src, alt = 'avatar', size = 35, style = {}, className = '' }) {
@@ -24,7 +23,7 @@ export default function Avatar({ src, alt = 'avatar', size = 35, style = {}, cla
         ...customStyle
       }}
     >
-      <Image
+      <img
         alt={alt}
         src={imageSrc}
         width={size}
