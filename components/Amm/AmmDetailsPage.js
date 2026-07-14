@@ -23,6 +23,7 @@ import { addQueryParams, isAddressValid, nativeCurrency, normalizeLocale, remove
 import { DEFAULT_CHART_PERIOD, chartPeriodQuery, normalizeChartPeriod } from '../../utils/chartPeriods'
 import { fetchHistoricalRate, fetchHistoricalTokenFiatRate } from '../../utils/common'
 import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
+import { ammChartTooltip } from './chartTooltip'
 import {
   AddressWithIconFilled,
   AddressWithIconInline,
@@ -858,6 +859,23 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false, l
           shared: true,
           intersect: false,
           theme: chartTheme.tooltipTheme,
+          custom: ({ series: tooltipSeries, dataPointIndex, w }) => {
+            const timestamp = w?.globals?.seriesX?.[0]?.[dataPointIndex]
+            const date = chartDateText(timestamp, { year: 'numeric', month: 'short', day: 'numeric' }, dateLocale)
+            const tooltipRows = series
+              .map((item, index) => ({
+                color: w?.globals?.colors?.[index] || item.color || '#00bcd4',
+                label: item.name,
+                value: tooltipSeries?.[index]?.[dataPointIndex]
+              }))
+              .filter((item) => item.value !== null && item.value !== undefined)
+
+            return ammChartTooltip({
+              date,
+              rows: tooltipRows,
+              valueFormatter: (value) => shortNiceNumber(value, 2, 1)
+            })
+          },
           x: {
             show: true,
             formatter: (value) => chartDateText(value, { year: 'numeric', month: 'short', day: 'numeric' }, dateLocale)
