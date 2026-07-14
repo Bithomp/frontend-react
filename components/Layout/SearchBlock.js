@@ -91,6 +91,13 @@ const normalizeSearchErrorMessage = (message) => {
   return String(message)
 }
 
+const normalizeSearchInputValue = (value) => {
+  if (Array.isArray(value)) return value[0] || ''
+  if (typeof value === 'string') return value
+  if (value == null) return ''
+  return String(value)
+}
+
 export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMobile, compact = false, type = '' }) {
   const { t, i18n } = useTranslation()
   const searchParams = useSearchParams()
@@ -100,7 +107,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
 
   const { id } = router.query
 
-  const [searchItem, setSearchItem] = useState(id || '')
+  const [searchItem, setSearchItem] = useState(() => normalizeSearchInputValue(id))
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
@@ -329,7 +336,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
 
   const searchOnInputChange = (inputValue, meta) => {
     if (meta.action === 'input-change') {
-      setSearchItem(inputValue)
+      setSearchItem(normalizeSearchInputValue(inputValue))
       if (inputValue === '') setSearchSuggestions([])
     }
     return inputValue

@@ -24,7 +24,8 @@ CustomErrorComponent.getInitialProps = async (contextData) => {
         statusCode,
         path,
         method: contextData?.req?.method
-      }
+      },
+      ignoreKnownClientErrors: true
     })
   }
 

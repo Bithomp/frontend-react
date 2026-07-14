@@ -16,7 +16,10 @@ export const knownClientErrorMessages = [
   "Cannot read properties of null (reading 'createImageData')",
   'Cannot convert undefined or null to object',
   "Failed to execute 'createScriptURL' on 'TrustedTypePolicy': The provided callback is no longer runnable.",
-  `can't access property "resetSeries", this.series is null`
+  `can't access property "resetSeries", this.series is null`,
+  `can't access dead object`,
+  'out of memory',
+  'Content-Length header of network response exceeds response Body.'
 ]
 
 const trimMessage = (value, maxLength = MAX_MESSAGE_LENGTH) => {
@@ -106,4 +109,3 @@ export const reportErrorNotification = async ({
     // Ignore notification failures so they never mask the original error.
   }
 }
-
