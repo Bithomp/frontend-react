@@ -162,10 +162,10 @@ const compactInteger = (value) => {
   return shortNiceNumber(Math.round(number), 0, 0)
 }
 
-const fullNumber = (value, currency) => {
+const fullNumber = (value, currency, decimalsOverride) => {
   if (value === null || value === undefined) return '-'
   const abs = Math.abs(Number(value))
-  const decimals = abs && abs < 1 ? 6 : 2
+  const decimals = decimalsOverride ?? (abs && abs < 1 ? 6 : 2)
   return niceNumber(value, decimals, currency)
 }
 
@@ -179,7 +179,7 @@ const seriesRange = (series, options = {}) => {
   const min = Math.min(...values)
   const max = Math.max(...values)
   const magnitude = Math.max(Math.abs(min), Math.abs(max), 1)
-  const minSpread = magnitude * (options.minRelativeSpread || 0)
+  const minSpread = Math.max(magnitude * (options.minRelativeSpread || 0), options.minAbsoluteSpread || 0)
   const spread = Math.max(max - min, minSpread)
   const center = (min + max) / 2
   const rangeMin = max - min < spread ? center - spread / 2 : min
@@ -187,7 +187,7 @@ const seriesRange = (series, options = {}) => {
   const padding = spread ? spread * 0.14 : Math.max(Math.abs(rangeMax) * 0.05, 1)
 
   return {
-    min: Math.max(0, rangeMin - padding),
+    min: options.clampMinToZero === false ? rangeMin - padding : Math.max(0, rangeMin - padding),
     max: rangeMax + padding
   }
 }
@@ -684,12 +684,21 @@ export default function TokenCharts({ token, selectedCurrency, onChartRowsChange
       : []
     const accountSeries = isNativeToken ? [...holderSeries, ...nativeAccountActivitySeries] : holderSeries
 
+    const supplyValues = chartRows.map((row) => toNumber(row.supply)).filter((value) => value !== null)
+    const supplyBase = supplyValues[0] || 0
+    const supplyRange = supplyValues.length ? Math.max(...supplyValues) - Math.min(...supplyValues) : 0
+    const supplyVisibleSpread = Math.min(1, Math.max(Math.abs(supplyBase) * 0.00000001, 0.000001))
+    const supplyValue = (value) => supplyBase + (toNumber(value) || 0)
+    const supplyTooltipFormatter = (value) => `${fullNumber(supplyValue(value), null, supplyRange < 1 ? 6 : undefined)} ${tokenUnit}`
     const supplySeries = [
       {
         name: t('charts.series.supply'),
         type: 'line',
         color: CHART_COLORS.supply,
-        data: chartRows.map((row) => [row.timestamp, toNumber(row.supply)])
+        data: chartRows.map((row) => {
+          const supply = toNumber(row.supply)
+          return [row.timestamp, supply === null ? null : supply - supplyBase]
+        })
       }
     ].filter((series) => hasUsableData([series]))
 
@@ -1164,9 +1173,9 @@ export default function TokenCharts({ token, selectedCurrency, onChartRowsChange
         chartType: 'line',
         colors: supplySeries.map((series) => series.color),
         series: supplySeries,
-        yRange: seriesRange(supplySeries),
-        axisFormatter: (value) => compactNumber(value),
-        tooltipFormatter: (value) => `${fullNumber(value)} ${tokenUnit}`
+        yRange: seriesRange(supplySeries, { clampMinToZero: false, minAbsoluteSpread: supplyVisibleSpread }),
+        axisFormatter: (value) => compactNumber(supplyValue(value)),
+        tooltipFormatter: supplyTooltipFormatter
       },
       {
         key: 'holders',
