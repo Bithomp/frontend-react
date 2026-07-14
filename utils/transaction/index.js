@@ -315,6 +315,7 @@ export const dappBySourceTag = (sourceTag) => {
     24289778: 'ChatXRP',
     24546893: 'DeXfi',
     25853696: 'Grand Retail Chain (GRAIL)',
+    2606170005: 'XRP Toolbox',
     27116776: 'Crossmark',
     27802770: 'XRPL AI Signals by Liisa',
     28041992: 'Crypto Shop',
