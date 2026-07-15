@@ -500,19 +500,25 @@ export default function Tokens({
     })
   }
 
+  const selectedFiatValue = (values) => values?.[selectedCurrency]
+
   const priceToFiat = ({ price, mobile, priceFiats }) => {
     if (!fiatRate) return null
+    const priceFiat = selectedFiatValue(priceFiats)
+    const hasPriceFiat = priceFiat !== undefined && priceFiat !== null && priceFiat !== ''
     price = price || 0
     if (mobile) {
-      return <span suppressHydrationWarning>{fullNiceNumber(priceFiats[selectedCurrency], selectedCurrency)}</span>
+      return <span suppressHydrationWarning>{hasPriceFiat ? fullNiceNumber(priceFiat, selectedCurrency) : '--'}</span>
     }
     return (
       <>
         <span className="tooltip" suppressHydrationWarning>
-          {shortNiceNumber(priceFiats[selectedCurrency], 4, 1, selectedCurrency)}
-          <span className="tooltiptext right no-brake">
-            {fullNiceNumber(priceFiats[selectedCurrency], selectedCurrency)}
-          </span>
+          {hasPriceFiat ? shortNiceNumber(priceFiat, 4, 1, selectedCurrency) : '--'}
+          {hasPriceFiat && (
+            <span className="tooltiptext right no-brake">
+              {fullNiceNumber(priceFiat, selectedCurrency)}
+            </span>
+          )}
         </span>
         <br />
         <span className="tooltip grey" suppressHydrationWarning>
@@ -840,13 +846,13 @@ export default function Tokens({
                             <td className="right">
                               {priceToFiat({
                                 price: token.statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1),
-                                priceFiats: token.statistics.priceFiats
+                                priceFiats: token.statistics?.priceFiats
                               })}
                             </td>
                             <td className="right">
                               {renderPercentCell({
-                                currentPrice: token.statistics?.priceFiats[selectedCurrency],
-                                pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
+                                currentPrice: selectedFiatValue(token.statistics?.priceFiats),
+                                pastPrice: selectedFiatValue(token.statistics?.priceFiats24h)
                               })}
                             </td>
                             <td className="right">{volumeToFiat({ token })}</td>
@@ -959,7 +965,7 @@ export default function Tokens({
                                   {priceToFiat({
                                     price: token.statistics?.priceNativeCurrency ?? (token?.issuer ? 0 : 1),
                                     mobile: true,
-                                    priceFiats: token.statistics.priceFiats
+                                    priceFiats: token.statistics?.priceFiats
                                   })}
                                   <br />
                                   {tt('mobile.change24h', {
@@ -967,8 +973,8 @@ export default function Tokens({
                                   })}
                                   :{' '}
                                   {renderPercentCell({
-                                    currentPrice: token.statistics?.priceFiats[selectedCurrency],
-                                    pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
+                                    currentPrice: selectedFiatValue(token.statistics?.priceFiats),
+                                    pastPrice: selectedFiatValue(token.statistics?.priceFiats24h)
                                   })}
                                   <br />
                                   {tt('mobile.totalVolume24h')}: {volumeToFiat({ token, mobile: true })}
