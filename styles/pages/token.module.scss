@@ -648,6 +648,13 @@
     }
   }
 
+  .tokenChartCard:nth-child(5n + 1) .tokenChartInfo .tooltiptext.left {
+    --tooltip-arrow-left: var(--tooltip-arrow-offset);
+    --tooltip-arrow-right: auto;
+    left: 0;
+    right: auto;
+  }
+
   .tokenChartExpandButton {
     display: inline-flex;
     align-items: center;
@@ -3129,6 +3136,20 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .tokenChartCard:nth-child(5n + 1) .tokenChartInfo .tooltiptext.left {
+      --tooltip-arrow-left: auto;
+      --tooltip-arrow-right: var(--tooltip-arrow-offset);
+      left: auto;
+      right: 0;
+    }
+
+    .tokenChartCard:nth-child(3n + 1) .tokenChartInfo .tooltiptext.left {
+      --tooltip-arrow-left: var(--tooltip-arrow-offset);
+      --tooltip-arrow-right: auto;
+      left: 0;
+      right: auto;
+    }
+
     .ammHero {
       grid-template-columns: minmax(0, 1fr) minmax(210px, 260px) minmax(130px, 160px);
     }
@@ -3239,6 +3260,20 @@
 
     .tokenChartsGrid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tokenChartCard:nth-child(3n + 1) .tokenChartInfo .tooltiptext.left {
+      --tooltip-arrow-left: auto;
+      --tooltip-arrow-right: var(--tooltip-arrow-offset);
+      left: auto;
+      right: 0;
+    }
+
+    .tokenChartCard:nth-child(2n + 1) .tokenChartInfo .tooltiptext.left {
+      --tooltip-arrow-left: var(--tooltip-arrow-offset);
+      --tooltip-arrow-right: auto;
+      left: 0;
+      right: auto;
     }
 
     .tokenActivityCard {
@@ -3801,6 +3836,13 @@
 
     .tokenChartsGrid {
       grid-template-columns: 1fr;
+    }
+
+    .tokenChartCard:nth-child(2n + 1) .tokenChartInfo .tooltiptext.left {
+      --tooltip-arrow-left: auto;
+      --tooltip-arrow-right: var(--tooltip-arrow-offset);
+      left: auto;
+      right: 0;
     }
   }
 }
