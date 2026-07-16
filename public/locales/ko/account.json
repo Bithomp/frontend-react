@@ -273,6 +273,7 @@
       "update": "업데이트",
       "reset": "재설정",
       "send": "보내기",
+      "token-page": "토큰 페이지",
       "pools": "풀",
       "pool-page": "풀 페이지",
       "get-first-native": "첫 {{nativeCurrency}} 받기",

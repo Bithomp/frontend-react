@@ -20,6 +20,8 @@
     "transaction-successful": "Транзакция успешно выполнена",
     "source-tag-result": "Source Tag",
     "transaction-type": "Тип транзакции",
+    "max": "Макс.",
+    "remaining": "Остаток",
     "issuer-fee": "Комиссия эмитента: {{fee}}",
     "to-receive": "К получению ≈ {{amount}}",
     "errors": {
@@ -35,6 +37,7 @@
       "acknowledge-non-active": "Подтвердите, что понимаете риски отправки на неактивированный аккаунт",
       "fraud-blocked": "Этот аккаунт отмечен как FRAUD. Отправка запрещена.",
       "valid-token": "Выберите корректный токен (валюта + эмитент).",
+      "destination-cannot-accept": "Получатель не может принять {{currency}}.",
       "copy-link": "Не удалось скопировать ссылку"
     }
   },

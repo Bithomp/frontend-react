@@ -20,6 +20,8 @@
     "transaction-successful": "Transaksi berhasil",
     "source-tag-result": "Source Tag",
     "transaction-type": "Jenis transaksi",
+    "max": "Maks.",
+    "remaining": "Sisa",
     "issuer-fee": "Biaya penerbit: {{fee}}",
     "to-receive": "Akan diterima ≈ {{amount}}",
     "errors": {
@@ -35,6 +37,7 @@
       "acknowledge-non-active": "Harap konfirmasi bahwa Anda memahami risiko mengirim ke akun yang belum diaktifkan",
       "fraud-blocked": "Akun ini ditandai sebagai FRAUD. Pengiriman tidak diizinkan.",
       "valid-token": "Pilih token yang valid (mata uang + penerbit).",
+      "destination-cannot-accept": "Tujuan tidak dapat menerima {{currency}}.",
       "copy-link": "Gagal menyalin tautan"
     }
   },

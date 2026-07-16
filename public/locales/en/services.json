@@ -20,6 +20,8 @@
     "transaction-successful": "Transaction Successful",
     "source-tag-result": "Source Tag",
     "transaction-type": "Transaction Type",
+    "max": "Max",
+    "remaining": "Remaining",
     "issuer-fee": "Issuer fee: {{fee}}",
     "to-receive": "To receive ≈ {{amount}}",
     "errors": {
@@ -35,6 +37,7 @@
       "acknowledge-non-active": "Please acknowledge that you understand the risks of sending to a non-activated account",
       "fraud-blocked": "This account has been flagged as FRAUD. Sending is not allowed.",
       "valid-token": "Please select a valid token (currency + issuer).",
+      "destination-cannot-accept": "Destination cannot accept {{currency}}.",
       "copy-link": "Failed to copy the link"
     }
   },

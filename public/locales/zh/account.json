@@ -273,6 +273,7 @@
       "update": "更新",
       "reset": "重置",
       "send": "发送",
+      "token-page": "代币页面",
       "pools": "资金池",
       "pool-page": "资金池页面",
       "get-first-native": "获取你的第一笔 {{nativeCurrency}}",

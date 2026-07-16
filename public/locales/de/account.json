@@ -273,6 +273,7 @@
       "update": "Aktualisieren",
       "reset": "Zurücksetzen",
       "send": "Senden",
+      "token-page": "Token-Seite",
       "pools": "Pools",
       "pool-page": "Pool-Seite",
       "get-first-native": "Erste {{nativeCurrency}} erhalten",

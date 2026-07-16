@@ -20,6 +20,8 @@
     "transaction-successful": "Transacción realizada correctamente",
     "source-tag-result": "Source Tag",
     "transaction-type": "Tipo de transacción",
+    "max": "Máx.",
+    "remaining": "Restante",
     "issuer-fee": "Comisión del emisor: {{fee}}",
     "to-receive": "A recibir ≈ {{amount}}",
     "errors": {
@@ -35,6 +37,7 @@
       "acknowledge-non-active": "Confirma que entiendes los riesgos de enviar a una cuenta no activada",
       "fraud-blocked": "Esta cuenta ha sido marcada como FRAUD. No se permite enviar.",
       "valid-token": "Selecciona un token válido (moneda + emisor).",
+      "destination-cannot-accept": "El destino no puede aceptar {{currency}}.",
       "copy-link": "No se pudo copiar el enlace"
     }
   },

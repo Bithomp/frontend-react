@@ -273,6 +273,7 @@
       "update": "更新",
       "reset": "リセット",
       "send": "送信",
+      "token-page": "トークンページ",
       "pools": "プール",
       "pool-page": "プールページ",
       "get-first-native": "最初の{{nativeCurrency}}を取得",

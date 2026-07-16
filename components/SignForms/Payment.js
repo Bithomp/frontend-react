@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 
 import AddressInput from '../UI/AddressInput'
 import { encode, isAddressValid, isNativeCurrency, isTagValid, nativeCurrency } from '../../utils'
 import { multiply, subtract } from '../../utils/calc'
-import { niceCurrency } from '../../utils/format'
+import { formatXDigits, niceCurrency, transferRateToPercent } from '../../utils/format'
 
 const toInitialAmount = (amountValue) => {
   if (!amountValue) return ''
@@ -23,7 +23,8 @@ const toInitialAmount = (amountValue) => {
 }
 
 export default function Payment({ setSignRequest, signRequest, setStatus, setFormError }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'services'])
+  const ts = useCallback((key, options) => t(key, { ns: 'services', ...options }), [t])
   const initialRequest = signRequest?.request || {}
   const currencyCode = useMemo(() => {
     if (signRequest?.data?.currencyCode) return signRequest.data.currencyCode
@@ -58,6 +59,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   )
   const [requireDestTag, setRequireDestTag] = useState(false)
   const [destinationTokenError, setDestinationTokenError] = useState('')
+  const [destinationTokenTransferFee, setDestinationTokenTransferFee] = useState(signRequest?.data?.transferFee || null)
 
   const remainingAmount = useMemo(() => {
     const amountValue = String(amount).trim()
@@ -79,6 +81,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       if (!destinationValue || !isAddressValid(destinationValue)) {
         setRequireDestTag(false)
         setDestinationTokenError('')
+        setDestinationTokenTransferFee(null)
         return
       }
 
@@ -91,6 +94,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
 
       if (!isTokenPayment) {
         setDestinationTokenError('')
+        setDestinationTokenTransferFee(null)
         return
       }
 
@@ -102,18 +106,23 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
 
         const response = await axios(url)
         const acceptedTokens = response?.data?.tokens || []
-        const canAcceptToken = acceptedTokens.some(
+        const acceptedToken = acceptedTokens.find(
           (token) => token?.currency === currencyCode && token?.issuer === issuer
         )
+        const canAcceptToken = !!acceptedToken
 
-        setDestinationTokenError(canAcceptToken ? '' : `Destination cannot accept ${currencyLabel}.`)
+        setDestinationTokenError(
+          canAcceptToken ? '' : ts('shared.errors.destination-cannot-accept', { currency: currencyLabel })
+        )
+        setDestinationTokenTransferFee(acceptedToken?.transferFee || null)
       } catch (error) {
         setDestinationTokenError('')
+        setDestinationTokenTransferFee(null)
       }
     }
 
     checkDestinationRequirements()
-  }, [currencyCode, currencyLabel, destination, isTokenPayment, issuer, signRequest?.request?.Account])
+  }, [currencyCode, currencyLabel, destination, isTokenPayment, issuer, signRequest?.request?.Account, ts])
 
   const applyMaxAmount = (event) => {
     event.preventDefault()
@@ -121,6 +130,12 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     if (!balance) return
     setAmount(balance)
   }
+
+  const amountNumber = Number(String(amount).trim())
+  const hasValidAmount = Number.isFinite(amountNumber) && amountNumber > 0
+  const transferFeeNumber = Number(destinationTokenTransferFee)
+  const hasIssuerFee = isTokenPayment && Number.isFinite(transferFeeNumber) && transferFeeNumber > 0
+  const receiveAmountText = hasIssuerFee && hasValidAmount ? formatXDigits(amountNumber / transferFeeNumber, 11) : ''
 
   useEffect(() => {
     const destinationValue = destination.trim()
@@ -185,7 +200,8 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     nextSignRequest.data = {
       ...nextSignRequest?.data,
       currencyCode,
-      issuer
+      issuer,
+      transferFee: destinationTokenTransferFee || undefined
     }
 
     setSignRequest(nextSignRequest)
@@ -199,6 +215,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     memo,
     requireDestTag,
     destinationTokenError,
+    destinationTokenTransferFee,
     signRequest,
     setFormError,
     setSignRequest,
@@ -210,8 +227,8 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       <br />
       <span className="halv">
         <AddressInput
-          title="Destination"
-          placeholder="Destination address"
+          title={t('table.destination')}
+          placeholder={ts('shared.destination-address')}
           hideButton={true}
           setValue={setDestination}
           setInnerValue={setDestination}
@@ -223,13 +240,13 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       <br />
       <span className="halv">
         <span className="input-title">
-          Destination tag{' '}
+          {t('table.destination-tag')}{' '}
           {requireDestTag ? (
             <>
-              (<span className="orange bold">required</span>)
+              (<span className="orange bold">{ts('shared.required')}</span>)
             </>
           ) : (
-            '(optional)'
+            `(${t('general.optional')})`
           )}
         </span>
         <input
@@ -250,12 +267,12 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       <br />
       <span className="halv">
         <span className="input-title">
-          Amount
+          {t('table.amount')}
           {balance ? (
             <>
               {' '}
               <span className="grey">
-                (Max{' '}
+                ({ts('shared.max')}{' '}
                 <span
                   role="button"
                   tabIndex={0}
@@ -295,8 +312,18 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
             className={isRemainingNegative ? 'red' : 'grey'}
             style={{ visibility: remainingAmount ? 'visible' : 'hidden' }}
           >
-            Remaining: {remainingAmount || '0'} {currencyLabel}
+            {ts('shared.remaining')}: {remainingAmount || '0'} {currencyLabel}
           </span>
+          {receiveAmountText ? (
+            <span className="grey" style={{ display: 'block' }}>
+              {ts('shared.to-receive', { amount: receiveAmountText })}
+            </span>
+          ) : null}
+          {hasIssuerFee ? (
+            <span className="orange" style={{ display: 'block' }}>
+              {ts('shared.issuer-fee', { fee: transferRateToPercent(destinationTokenTransferFee) })}
+            </span>
+          ) : null}
         </div>
       </span>
 

@@ -20,6 +20,8 @@
     "transaction-successful": "交易成功",
     "source-tag-result": "源标签",
     "transaction-type": "交易类型",
+    "max": "最大",
+    "remaining": "剩余",
     "issuer-fee": "发行人费用：{{fee}}",
     "to-receive": "将收到 ≈ {{amount}}",
     "errors": {
@@ -35,6 +37,7 @@
       "acknowledge-non-active": "请确认您了解发送至未激活账户的风险",
       "fraud-blocked": "该账户已被标记为欺诈。不允许发送。",
       "valid-token": "请选择一个有效的代币（货币+发行人）。",
+      "destination-cannot-accept": "目标地址无法接收 {{currency}}。",
       "copy-link": "复制链接失败"
     }
   },

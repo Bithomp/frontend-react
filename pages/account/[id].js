@@ -5586,6 +5586,10 @@ export default function Account({
                       issuer.issuer
                     )}`
                   : null
+              const tokenPageUrl =
+                !isLpToken && trustlineCurrencyCode && issuer?.issuer
+                  ? `/token/${issuer.issuer}/${trustlineCurrencyCode}`
+                  : null
               const lpAmmId = isLpToken ? ammCurrencyDetailsId(token.Balance?.currencyDetails) : null
               const canOpenAmmAction = isLpToken && !!setSignRequest && !effectiveLedgerTimestamp && !!lpAmmId
               const ammDepositActionKey = `${tokenUniqueKey}-ammDeposit`
@@ -5771,14 +5775,6 @@ export default function Account({
                             <span>{ta('labels.currency')}:</span>
                             <span className="copy-inline">
                               <span>{trustlineCurrencyCodeDisplay}</span>
-                              <Link
-                                href={`/token/${issuer?.issuer}/${token.Balance?.currency}`}
-                                className="inline-link-icon tooltip"
-                                onClick={(event) => event.stopPropagation()}
-                              >
-                                <LinkIcon />
-                                <span className="tooltiptext no-brake">{ta('tooltips.token-page')}</span>
-                              </Link>
                               <span onClick={(event) => event.stopPropagation()}>
                                 <CopyButton text={trustlineCurrencyCode} />
                               </span>
@@ -5937,6 +5933,24 @@ export default function Account({
                       )}
                       {!isLpToken && (
                         <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                          {tokenPageUrl && (
+                            <button
+                              type="button"
+                              className="card-action-btn token-page"
+                              onClick={() => router.push(tokenPageUrl)}
+                            >
+                              <MdOpenInNew style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.token-page')}
+                            </button>
+                          )}
+                          {tokenPoolsUrl && (
+                            <button
+                              type="button"
+                              className="card-action-btn pools"
+                              onClick={() => router.push(tokenPoolsUrl)}
+                            >
+                              <TbBinaryTree style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.pools')}
+                            </button>
+                          )}
                           <span className={disabledSendTokenTooltip ? 'tooltip' : ''}>
                             <button
                               type="button"
@@ -5979,15 +5993,6 @@ export default function Account({
                             >
                               <MdSouth style={{ fontSize: 16, marginBottom: -2 }} />{' '}
                               {ta('actions.get-more-token', { amount: 1, token: 'RLUSD' })}
-                            </button>
-                          )}
-                          {tokenPoolsUrl && (
-                            <button
-                              type="button"
-                              className="card-action-btn pools"
-                              onClick={() => router.push(tokenPoolsUrl)}
-                            >
-                              <TbBinaryTree style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.pools')}
                             </button>
                           )}
                           <span className={disabledRemoveTrustlineTooltip ? 'tooltip' : ''}>
@@ -13585,6 +13590,29 @@ export default function Account({
         .card-action-btn.pools:hover {
           border-color: color-mix(in srgb, #7c3aed 68%, var(--border-color));
           background: color-mix(in srgb, #7c3aed 20%, var(--background-input));
+        }
+
+        .card-action-btn.token-page {
+          color: #0b72d9;
+          border-color: color-mix(in srgb, #0b72d9 46%, var(--border-color));
+          background: color-mix(in srgb, #0b72d9 12%, var(--background-input));
+        }
+
+        .card-action-btn.token-page:hover {
+          border-color: color-mix(in srgb, #0b72d9 68%, var(--border-color));
+          background: color-mix(in srgb, #0b72d9 20%, var(--background-input));
+        }
+
+        :global(body.dark) .card-action-btn.token-page {
+          color: #93c5fd;
+          border-color: color-mix(in srgb, #3b82f6 72%, var(--border-color));
+          background: color-mix(in srgb, #0b72d9 30%, var(--background-input));
+        }
+
+        :global(body.dark) .card-action-btn.token-page:hover {
+          color: #dbeafe;
+          border-color: color-mix(in srgb, #60a5fa 86%, var(--border-color));
+          background: color-mix(in srgb, #0b72d9 42%, var(--background-input));
         }
 
         :global(body.dark) .card-action-btn.pools {
