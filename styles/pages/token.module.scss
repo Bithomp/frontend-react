@@ -471,6 +471,24 @@
     min-width: 0;
   }
 
+  .tokenPreviewGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-auto-rows: 470px;
+    gap: 12px;
+    align-items: stretch;
+    min-width: 0;
+
+    > .tokenActivityCard {
+      height: auto !important;
+    }
+  }
+
+  .tokenHoldersPreview {
+    scroll-margin-top: 132px;
+    min-height: 470px;
+  }
+
   .tokenChartsSection {
     display: grid;
     gap: 10px;
@@ -1992,6 +2010,119 @@
     }
   }
 
+  .tokenTopAmmsCard {
+    scroll-margin-top: 132px;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 12px;
+    align-self: stretch;
+    min-width: 0;
+    min-height: 0;
+    padding: 14px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+    box-shadow: var(--card-shadow);
+  }
+
+  .tokenTopAmmList {
+    display: grid;
+    align-content: start;
+    gap: 0;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+  }
+
+  .tokenTopAmmHeader,
+  .tokenTopAmmRow {
+    display: grid;
+    grid-template-columns:
+      30px minmax(116px, 0.72fr) minmax(142px, 0.72fr) minmax(96px, 0.52fr) minmax(62px, 0.28fr)
+      minmax(52px, 0.24fr);
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .tokenTopAmmHeader {
+    padding: 0 0 7px;
+    border-bottom: 1px solid color-mix(in srgb, var(--card-border) 70%, transparent);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .tokenTopAmmRow {
+    padding: 8px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--card-border) 55%, transparent);
+    color: var(--text-main);
+    font-size: 13px;
+    text-decoration: none;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      color: var(--text-main);
+      background: color-mix(in srgb, var(--background-secondary) 36%, transparent);
+    }
+  }
+
+  .tokenTopAmmPool {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .tokenTopAmmPool .currency-with-icon {
+    min-width: 0;
+  }
+
+  .tokenTopAmmAssets {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.15;
+
+    .amount-with-icon {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .tokenTopAmmTvlCell,
+  .tokenTopAmmHolders,
+  .tokenTopAmmFee {
+    justify-self: end;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .tokenTopAmmHeader > span:nth-child(4),
+  .tokenTopAmmTvlCell {
+    justify-self: start;
+  }
+
+  .tokenTopAmmTvl {
+    color: var(--text-main);
+    font-weight: 700;
+  }
+
+  .tokenTopAmmMobileLabel {
+    display: none;
+  }
+
   .ammDetailsGrid {
     display: grid;
     grid-template-columns: minmax(340px, 0.88fr) minmax(0, 1.12fr);
@@ -3132,6 +3263,10 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .tokenPreviewGrid {
+      grid-template-columns: 1fr;
+    }
+
     .tokenChartsGrid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -3204,6 +3339,16 @@
 
     .ammChartsGrid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media only screen and (min-width: 801px) {
+    .ammActivitySection .ammContributorsCard {
+      min-height: 520px;
+    }
+
+    .ammActivitySection .ammContributorsBody {
+      min-height: 360px;
     }
   }
 
@@ -3367,6 +3512,84 @@
     }
   }
 
+  @media only screen and (max-width: 800px) {
+    .tokenPreviewGrid {
+      grid-auto-rows: auto;
+    }
+
+    .ammContributorsCard {
+      grid-template-rows: auto;
+      height: auto !important;
+      min-height: 0;
+      max-height: none;
+      overflow: visible;
+    }
+
+    .ammContributorsBody {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: start;
+      min-height: 0;
+      height: auto;
+    }
+
+    .ammContributorSelected {
+      display: none;
+    }
+
+    .ammContributorsList {
+      contain: none;
+      height: auto;
+      overflow: visible;
+      padding-right: 0;
+    }
+
+    .ammContributorsList-collapsed .ammContributorRow:nth-of-type(n + 11) {
+      display: none;
+    }
+
+    .ammContributorsList-expanded {
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .ammContributorsToggle {
+      display: inline-flex;
+      justify-self: stretch;
+      width: 100%;
+    }
+
+    .ammContributorListHeader {
+      display: none;
+    }
+
+    .ammContributorRow {
+      grid-template-columns: 26px minmax(0, 1fr) 62px 96px;
+      gap: 6px;
+      padding: 5px 0;
+    }
+
+    .ammContributorShare,
+    .ammContributorLp {
+      grid-column: auto;
+      text-align: right;
+    }
+
+    .ammContributorAddress {
+      font-size: 12px;
+    }
+
+    .ammContributorShare {
+      font-size: 12px;
+    }
+
+    .ammContributorLp,
+    .ammContributorFiat {
+      font-size: 11px;
+    }
+  }
+
   @media only screen and (max-width: 700px) {
     .tokenPricePanel,
     .tokenSupplyPanel,
@@ -3402,6 +3625,78 @@
     .tokenLayout {
       width: calc(100% - 20px);
       margin: 10px auto;
+    }
+
+    .tokenTopAmmsCard .ammContributorsHeader > div > span {
+      font-size: 11px;
+      line-height: 1.22;
+    }
+
+    .tokenTopAmmHeader {
+      display: none;
+    }
+
+    .tokenTopAmmRow {
+      grid-template-columns: 28px minmax(0, 1fr) minmax(84px, auto);
+      grid-template-areas:
+        "rank pool fee"
+        "rank assets holders"
+        "rank tvl tvl";
+      gap: 5px 10px;
+      padding: 10px 0;
+      font-size: 12px;
+    }
+
+    .tokenTopAmmRow > .ammVoteRank {
+      grid-area: rank;
+      align-self: center;
+    }
+
+    .tokenTopAmmPool {
+      grid-area: pool;
+      align-self: end;
+    }
+
+    .tokenTopAmmAssets {
+      grid-area: assets;
+      gap: 3px;
+      font-size: 11px;
+    }
+
+    .tokenTopAmmTvlCell {
+      grid-area: tvl;
+      justify-self: start;
+      padding-top: 2px;
+    }
+
+    .tokenTopAmmHolders {
+      grid-area: holders;
+      display: grid;
+      justify-items: end;
+      gap: 2px;
+      color: var(--text-main);
+      font-size: 12px;
+      line-height: 1.1;
+    }
+
+    .tokenTopAmmFee {
+      grid-area: fee;
+      display: grid;
+      justify-items: end;
+      gap: 2px;
+      align-self: end;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .tokenTopAmmMobileLabel {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1;
+      text-transform: uppercase;
     }
 
     .tokenProfileCard {
@@ -3615,8 +3910,6 @@
     .ammAuctionBreakEvenRows,
     .ammAuctionDepositOptions,
     .ammAuctionHistoryRows,
-    .ammContributorsBody,
-    .ammContributorRow,
     .ammLedgerRows,
     .ammLedgerRow,
     .ammVoteStats {
@@ -3646,9 +3939,7 @@
       }
     }
 
-    .ammActivitySection .tokenActivityCard,
-    .ammContributorsCard {
-      grid-template-rows: auto;
+    .ammActivitySection .tokenActivityCard {
       height: auto !important;
       max-height: none;
       overflow: visible;
@@ -3656,65 +3947,6 @@
 
     .ammActivityCard > div:last-child {
       overflow-y: visible;
-    }
-
-    .ammContributorsBody {
-      gap: 12px;
-      align-items: start;
-      height: auto;
-    }
-
-    .ammContributorsList {
-      contain: none;
-      height: auto;
-      max-height: none;
-      overflow: visible;
-      padding-right: 0;
-    }
-
-    .ammContributorsList-collapsed .ammContributorRow:nth-of-type(n + 11) {
-      display: none;
-    }
-
-    .ammContributorsList-expanded {
-      max-height: 420px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .ammContributorsToggle {
-      display: inline-flex;
-      justify-self: stretch;
-      width: 100%;
-    }
-
-    .ammContributorListHeader {
-      display: none;
-    }
-
-    .ammContributorRow {
-      grid-template-columns: 26px minmax(0, 1fr) 62px 96px;
-      gap: 6px;
-      padding: 5px 0;
-    }
-
-    .ammContributorShare,
-    .ammContributorLp {
-      grid-column: auto;
-      text-align: right;
-    }
-
-    .ammContributorAddress {
-      font-size: 12px;
-    }
-
-    .ammContributorShare {
-      font-size: 12px;
-    }
-
-    .ammContributorLp,
-    .ammContributorFiat {
-      font-size: 11px;
     }
 
     .ammVoteHeader {

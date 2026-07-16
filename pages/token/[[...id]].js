@@ -1,6 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaHandshake } from 'react-icons/fa'
@@ -14,15 +15,20 @@ import {
   shortNiceNumber,
   fullNiceNumber,
   AddressWithIconInline,
+  AmountWithIcon,
+  CurrencyWithIcon,
   CurrencyWithIconInline,
   addressUsernameOrServiceLink,
+  shortHash,
   niceCurrency,
   dateFormat,
+  showAmmPercents,
+  tokenToFiat,
   timeFormat,
   amountParced
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, logServerSideError, passHeaders } from '../../utils/axios'
-import { getIsSsrMobile } from '../../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenTabs from '../../components/Tabs/TokenTabs'
@@ -30,6 +36,16 @@ import HomeTeaser, { HomeTeaseRow } from '../../components/Home/HomeTeaser'
 import homeTeaserStyles from '@/styles/components/home-teaser.module.scss'
 import TokenCharts from '../../components/Token/TokenCharts'
 import AmmDetailsPage, { fetchAmmPageData } from '../../components/Amm/AmmDetailsPage'
+import { useTheme } from '../../components/Layout/ThemeContext'
+import {
+  apexChartTheme,
+  apexDonutSliceColor,
+  apexDonutSliceColors,
+  apexSafeChartId,
+  syncApexDonutSelection
+} from '../../utils/apexCharts'
+
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const tokenSwapsUrl = (token, type, limit = 5) => {
   if (!token) return ''
@@ -47,6 +63,69 @@ const TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH = 'amountHigh'
 const TOKEN_ACTIVITY_ORDER_LATEST = 'latest'
 const DEX_SWAPS_LIMIT = 7
 const REFRESH_COOLDOWN_MS = 30000
+const TOKEN_HOLDERS_PREVIEW_LIMIT = 100
+const TOKEN_AMMS_PREVIEW_LIMIT = 20
+
+const tokenSupportsPreviews = (token) =>
+  !!token?.issuer && !!token?.currency && !token?.mptokenIssuanceID && token?.currencyDetails?.type !== 'lp_token'
+
+const tokenHoldersPreviewUrl = (token, selectedCurrency) => {
+  if (!tokenSupportsPreviews(token)) return ''
+  return `v2/trustlines/token/richlist/${encodeURIComponent(token.issuer)}/${encodeURIComponent(
+    token.currency
+  )}?summary=true&limit=${TOKEN_HOLDERS_PREVIEW_LIMIT}&convertCurrencies=${encodeURIComponent(
+    selectedCurrency || 'usd'
+  )}`
+}
+
+const tokenAmmsPreviewUrl = (token) => {
+  if (!tokenSupportsPreviews(token)) return ''
+  return `v2/amms?order=currencyHigh&limit=${TOKEN_AMMS_PREVIEW_LIMIT}&voteSlots=false&auctionSlot=false&holders=true&priceNativeCurrencySpot=true&currency=${encodeURIComponent(
+    token.currency
+  )}&currencyIssuer=${encodeURIComponent(token.issuer)}`
+}
+
+const tokenPreviewDataKey = (token, selectedCurrency) =>
+  tokenSupportsPreviews(token) ? `${token.issuer}:${token.currency}:${selectedCurrency || 'usd'}` : ''
+
+const holderShare = (balance, total) => {
+  const amount = Number(balance)
+  const totalAmount = Number(total)
+  if (!Number.isFinite(amount) || !Number.isFinite(totalAmount) || totalAmount <= 0) return null
+  return (amount / totalAmount) * 100
+}
+
+const holderLabel = (record) => {
+  const details = record?.addressDetails || record?.accountDetails || {}
+  return details.service || details.username || shortHash(record?.address || record?.account || '')
+}
+
+const holderBaseColor = apexDonutSliceColor
+const holderChartColors = apexDonutSliceColors
+
+const tokenPreviewAmountFiatValue = (amount, selectedCurrency, fiatRate) => {
+  if (!amount || !selectedCurrency) return null
+
+  const nativeFiatRate = Number(fiatRate)
+  let value = null
+
+  if (!amount?.currency) {
+    value = (Number(amount) / 1000000) * nativeFiatRate
+  } else if (!amount.issuer && !amount.mpt_issuance_id) {
+    value = Number(amount.value) * nativeFiatRate
+  } else {
+    const tokenValue = Number(amount.value)
+    const priceInNative = Number(amount.priceNativeCurrencySpot)
+    const embedded = amount.valueInConvertCurrencies?.[selectedCurrency.toLowerCase()]
+    if (embedded !== undefined) {
+      value = Number(embedded)
+    } else if (Number.isFinite(tokenValue) && Number.isFinite(priceInNative)) {
+      value = tokenValue * priceInNative * nativeFiatRate
+    }
+  }
+
+  return Number.isFinite(value) ? Math.abs(value) : null
+}
 const displayCurrencyCode = (currencyCode) => {
   if (!currencyCode) return ''
   const code = String(currencyCode)
@@ -130,6 +209,8 @@ export async function getServerSideProps(context) {
   let initialAmmLpChartData = null
   let initialAmmContributorsData = null
   let initialAmmErrorMessage = null
+  let initialHoldersPreviewData = null
+  let initialAmmsPreviewData = null
 
   // Parse the dynamic route parameters
   if (id && Array.isArray(id) && id.length >= 2) {
@@ -252,6 +333,29 @@ export async function getServerSideProps(context) {
     initialAmmErrorMessage = ammPageData.initialErrorMessage
   }
 
+  if (tokenSupportsPreviews(initialData)) {
+    const [holdersPreviewResult, ammsPreviewResult] = await Promise.allSettled([
+      axiosServer({
+        method: 'get',
+        url: tokenHoldersPreviewUrl(initialData, selectedCurrencyServer),
+        headers: passHeaders(req)
+      }),
+      axiosServer({
+        method: 'get',
+        url: tokenAmmsPreviewUrl(initialData),
+        headers: passHeaders(req)
+      })
+    ])
+
+    if (holdersPreviewResult.status === 'fulfilled') {
+      initialHoldersPreviewData = holdersPreviewResult.value?.data || null
+    }
+
+    if (ammsPreviewResult.status === 'fulfilled') {
+      initialAmmsPreviewData = ammsPreviewResult.value?.data || null
+    }
+  }
+
   return {
     props: {
       initialData: initialData || null,
@@ -266,12 +370,391 @@ export async function getServerSideProps(context) {
       initialAmmLpChartData,
       initialAmmContributorsData,
       initialAmmErrorMessage,
+      initialHoldersPreviewData,
+      initialAmmsPreviewData,
       issuer,
       currency,
       tokenId,
       ...(await serverSideTranslations(locale, ['common', 'token', 'services', 'amm']))
     }
   }
+}
+
+function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
+  const { t } = useTranslation('token')
+  const { t: tAmm } = useTranslation('amm')
+  const { theme } = useTheme()
+  const isMobile = useIsMobile(600)
+  const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
+  const [activeHolderIndex, setActiveHolderIndex] = useState(null)
+  const [showAllHolders, setShowAllHolders] = useState(false)
+  const activeHolderIndexRef = useRef(null)
+  const holderChartIdRef = useRef(apexSafeChartId(`token-holders-${token?.issuer || 'token'}-${token?.currency || 'current'}`))
+  const updateActiveHolderIndex = useCallback((nextIndex, syncChart = false) => {
+    const normalizedIndex = nextIndex ?? null
+    if (syncChart) {
+      syncApexDonutSelection(holderChartIdRef.current, activeHolderIndexRef.current, normalizedIndex)
+    }
+    activeHolderIndexRef.current = normalizedIndex
+    setActiveHolderIndex(normalizedIndex)
+  }, [])
+  const totalCoins = data?.summary?.totalCoins || token?.supply
+  const tokenFiatRate = data?.summary?.convertCurrencies?.[selectedCurrency?.toLowerCase?.() || selectedCurrency]
+  const rows = useMemo(
+    () =>
+      (Array.isArray(data?.trustlines) ? data.trustlines : [])
+        .filter((record) => Number(record.balance) > 0)
+        .sort((a, b) => Number(b.balance) - Number(a.balance)),
+    [data]
+  )
+  const chartRows = rows.slice(0, TOKEN_HOLDERS_PREVIEW_LIMIT)
+  const listRows = rows.slice(0, TOKEN_HOLDERS_PREVIEW_LIMIT)
+  const topBalance = chartRows.reduce((sum, record) => sum + Number(record.balance || 0), 0)
+  const totalBalance = Number(totalCoins || 0)
+  const chartItems = chartRows
+    .map((record) => ({
+      label: holderLabel(record),
+      balance: Number(record.balance || 0),
+      share: holderShare(record.balance, totalCoins),
+      record
+    }))
+    .filter((item) => item.share !== null && item.share > 0)
+  const otherBalance = Number.isFinite(totalBalance) ? Math.max(totalBalance - topBalance, 0) : 0
+
+  if (otherBalance > 0) {
+    chartItems.push({
+      label: t('previews.others'),
+      balance: otherBalance,
+      share: holderShare(otherBalance, totalCoins),
+      record: null
+    })
+  }
+
+  const chartSeries = chartItems.map((item) => item.share)
+  const topShare = holderShare(topBalance, totalCoins)
+  const activeHolder =
+    activeHolderIndex !== null && activeHolderIndex !== undefined ? chartItems[activeHolderIndex] : null
+  const distributionUrl = `/distribution?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(
+    token.issuer
+  )}`
+  const chartOptions = useMemo(
+    () => ({
+      chart: {
+        id: holderChartIdRef.current,
+        type: 'donut',
+        animations: { enabled: false },
+        foreColor: chartTheme.textColor,
+        toolbar: { show: false },
+        events: {
+          dataPointSelection: (_event, _chartContext, config) => {
+            const index = config?.dataPointIndex
+            if (index === undefined || index === null || index < 0) return
+            updateActiveHolderIndex(activeHolderIndexRef.current === index ? null : index)
+          },
+          dataPointMouseEnter: (_event, _chartContext, config) => {
+            if (isMobile) return
+            const index = config?.dataPointIndex
+            if (index === undefined || index === null || index < 0) return
+            updateActiveHolderIndex(index)
+          },
+          dataPointMouseLeave: () => {
+            if (!isMobile) updateActiveHolderIndex(null)
+          }
+        }
+      },
+      labels: chartItems.map((item) => item.label),
+      colors: holderChartColors(chartItems.length),
+      dataLabels: { enabled: false },
+      legend: { show: false },
+      stroke: { width: 1, colors: ['var(--card-bg)'] },
+      tooltip: { enabled: false },
+      plotOptions: {
+        pie: {
+          expandOnClick: false,
+          donut: {
+            size: '68%',
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: '12px',
+                color: chartTheme.labelColor
+              },
+              value: {
+                show: true,
+                fontSize: '16px',
+                fontWeight: 700,
+                color: chartTheme.textColor,
+                formatter: (value) => {
+                  const number = Number(value)
+                  return Number.isFinite(number) ? `${number.toFixed(2)}%` : '-'
+                }
+              },
+              total: {
+                show: true,
+                showAlways: true,
+                label: t('previews.top100'),
+                color: chartTheme.labelColor,
+                formatter: () => (topShare !== null ? `${topShare.toFixed(1)}%` : '-')
+              }
+            }
+          }
+        }
+      }
+    }),
+    [chartItems, chartTheme, isMobile, t, topShare, updateActiveHolderIndex]
+  )
+
+  return (
+    <section className="ammContributorsCard tokenActivityCard tokenHoldersPreview" id="token-holders">
+      <div className="ammContributorsHeader">
+        <div>
+          <h2>
+            {t('previews.holdersTitle')}
+            {data?.summary?.holders !== undefined && data?.summary?.holders !== null ? (
+              <span className="ammContributorsCount">{niceNumber(data.summary.holders)}</span>
+            ) : null}
+          </h2>
+          <span>{t('previews.holdersSubtitle')}</span>
+        </div>
+        <Link href={distributionUrl} prefetch={false}>
+          {t('previews.viewAllHolders')}
+        </Link>
+      </div>
+      {loading ? (
+        <div className="tokenChartEmpty">
+          <span className="waiting"></span>
+        </div>
+      ) : rows.length ? (
+        <div className="ammContributorsBody">
+          <div className="ammContributorsChart">
+            {chartSeries.length ? (
+              <>
+                <Chart type="donut" series={chartSeries} options={chartOptions} height={210} />
+                {activeHolder ? (
+                  <div
+                    className="ammContributorSelected"
+                    style={{ '--amm-contributor-color': holderBaseColor(activeHolderIndex, chartItems.length) }}
+                  >
+                    <div className="ammContributorSelectedAddress">
+                      <span className="ammContributorSelectedMarker"></span>
+                      {activeHolder.record?.address ? (
+                        <Link href={`/account/${activeHolder.record.address}`} prefetch={false}>
+                          <AddressWithIconInline
+                            data={activeHolder.record}
+                            options={{
+                              noLink: true,
+                              className: 'ammContributorAddressInline',
+                              labelClassName: 'ammContributorAddressText'
+                            }}
+                          />
+                        </Link>
+                      ) : (
+                        <span>{activeHolder.label}</span>
+                      )}
+                    </div>
+                    <div className="ammContributorSelectedStats">
+                      <span>
+                        <span>{t('previews.share')}</span>
+                        <strong>
+                          {activeHolder.share !== null && activeHolder.share !== undefined
+                            ? `${activeHolder.share.toFixed(2)}%`
+                            : '-'}
+                        </strong>
+                      </span>
+                      <span>
+                        <span>{t('previews.balance')}</span>
+                        <strong>{shortNiceNumber(activeHolder.balance, 2, 1)}</strong>
+                      </span>
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              <div className="tokenChartEmpty">{t('previews.unavailable')}</div>
+            )}
+          </div>
+          <div
+            className={`ammContributorsList ${
+              showAllHolders ? 'ammContributorsList-expanded' : 'ammContributorsList-collapsed'
+            }`.trim()}
+          >
+            <div className="ammContributorListHeader">
+              <span></span>
+              <span>{t('previews.wallet')}</span>
+              <span>{t('previews.share')}</span>
+              <span>{t('previews.balance')}</span>
+            </div>
+            {listRows.map((record, index) => {
+              const share = holderShare(record.balance, totalCoins)
+              return (
+                <Link
+                  href={`/account/${record.address}`}
+                  className={`ammContributorRow${activeHolderIndex === index ? ' ammContributorRow-active' : ''}`}
+                  key={record.trustlineID || record.address || index}
+                  prefetch={false}
+                  onBlur={() => {
+                    if (!isMobile) updateActiveHolderIndex(null, true)
+                  }}
+                  onClick={(event) => {
+                    if (!isMobile) return
+                    if (activeHolderIndex !== index) {
+                      event.preventDefault()
+                      updateActiveHolderIndex(index, true)
+                    }
+                  }}
+                  onFocus={() => updateActiveHolderIndex(index, true)}
+                  onMouseEnter={() => {
+                    if (!isMobile) updateActiveHolderIndex(index, true)
+                  }}
+                  onMouseLeave={() => {
+                    if (!isMobile) updateActiveHolderIndex(null, true)
+                  }}
+                  style={{ '--amm-contributor-color': holderBaseColor(index, chartItems.length) }}
+                >
+                  <span className="ammVoteRank">{index + 1}</span>
+                  <span className="ammContributorAddress">
+                    <AddressWithIconInline
+                      data={record}
+                      options={{
+                        noLink: true,
+                        className: 'ammContributorAddressInline',
+                        labelClassName: 'ammContributorAddressText'
+                      }}
+                    />
+                  </span>
+                  <strong className="ammContributorShare">{share !== null ? `${share.toFixed(2)}%` : '-'}</strong>
+                  <span className="ammContributorLp" title={fullNiceNumber(record.balance)}>
+                    <span>{shortNiceNumber(record.balance, 2, 1)}</span>
+                    {tokenFiatRate ? (
+                      <span className="ammContributorFiat">
+                        {tokenToFiat({
+                          amount: { value: record.balance, currency: record.currency, issuer: record.counterparty },
+                          selectedCurrency,
+                          tokenFiatRate
+                        })}
+                      </span>
+                    ) : null}
+                  </span>
+                </Link>
+              )
+            })}
+            {listRows.length > 10 ? (
+              <button
+                type="button"
+                className="button-action thin narrow ammContributorsToggle"
+                onClick={() => {
+                  updateActiveHolderIndex(null, true)
+                  setShowAllHolders((current) => !current)
+                }}
+              >
+                {showAllHolders ? tAmm('contributors.showTop10') : tAmm('contributors.showTopCount', { count: listRows.length })}
+              </button>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <div className="tokenChartEmpty">{t('previews.unavailable')}</div>
+      )}
+    </section>
+  )
+}
+
+function TokenAmmsPreview({ token, data, loading, selectedCurrency, fiatRate }) {
+  const { t } = useTranslation('token')
+  const rows = Array.isArray(data?.amms) ? data.amms.slice(0, TOKEN_AMMS_PREVIEW_LIMIT) : []
+  const totalPools = token?.statistics?.ammPools ?? data?.summary?.ammPools ?? data?.summary?.total ?? data?.total
+  const ammsUrl = `/amms?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(token.issuer)}`
+  const renderAssets = (amm) => (
+    <span className="tokenTopAmmAssets">
+      <AmountWithIcon amount={amm.amount} options={{ short: true, maxFractionDigits: 6 }} />
+      <AmountWithIcon amount={amm.amount2} options={{ short: true, maxFractionDigits: 6 }} />
+    </span>
+  )
+  const renderTvl = (amm) => {
+    const values = [
+      tokenPreviewAmountFiatValue(amm.amount, selectedCurrency, fiatRate),
+      tokenPreviewAmountFiatValue(amm.amount2, selectedCurrency, fiatRate)
+    ]
+    if (values.some((value) => value === null)) return '-'
+    const tvl = values[0] + values[1]
+    return (
+      <span className="tokenTopAmmTvl tooltip" suppressHydrationWarning>
+        ≈ {shortNiceNumber(tvl, 2, 1, selectedCurrency)}
+        <span className="tooltiptext no-brake">{fullNiceNumber(tvl, selectedCurrency)}</span>
+      </span>
+    )
+  }
+
+  return (
+    <section className="tokenTopAmmsCard tokenActivityCard" id="token-amms">
+      <div className="ammContributorsHeader">
+        <div>
+          <h2>
+            {t('previews.ammsTitle')}
+            {totalPools !== undefined && totalPools !== null ? (
+              <span className="ammContributorsCount">{niceNumber(totalPools)}</span>
+            ) : null}
+          </h2>
+          <span>{t('previews.ammsSubtitle')}</span>
+        </div>
+        <Link href={ammsUrl} prefetch={false}>
+          {t('previews.viewAllAmms')}
+        </Link>
+      </div>
+      {loading ? (
+        <div className="tokenChartEmpty">
+          <span className="waiting"></span>
+        </div>
+      ) : rows.length ? (
+        <div className="tokenTopAmmList">
+          <div className="tokenTopAmmHeader">
+            <span></span>
+            <span>{t('previews.pool')}</span>
+            <span>{t('previews.assets')}</span>
+            <span>{t('previews.tvl')}</span>
+            <span>{t('previews.holders')}</span>
+            <span>{t('previews.tradingFee')}</span>
+          </div>
+          {rows.map((amm, index) => (
+            <Link href={`/amm/${amm.ammID}`} className="tokenTopAmmRow" key={amm.ammID || index} prefetch={false}>
+              <span className="ammVoteRank">{index + 1}</span>
+              <span className="tokenTopAmmPool">
+                <CurrencyWithIcon
+                  options={{ disableTokenLink: true }}
+                  token={{
+                    ...amm.lpTokenBalance,
+                    currencyDetails: {
+                      type: 'lp_token',
+                      ammID: amm.ammID,
+                      asset: amm.amount,
+                      asset2: amm.amount2,
+                      currency:
+                        niceCurrency(amm.amount?.currency || nativeCurrency) +
+                        '/' +
+                        niceCurrency(amm.amount2?.currency || nativeCurrency)
+                    }
+                  }}
+                />
+              </span>
+              {renderAssets(amm)}
+              <span className="tokenTopAmmTvlCell">{renderTvl(amm)}</span>
+              <span className="tokenTopAmmHolders">
+                <span className="tokenTopAmmMobileLabel">{t('previews.holders')}</span>
+                {niceNumber(amm.holders || 0)}
+              </span>
+              <span className="tokenTopAmmFee">
+                <span className="tokenTopAmmMobileLabel">{t('previews.tradingFee')}</span>
+                {showAmmPercents(amm.tradingFee)}
+              </span>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="tokenChartEmpty">{t('previews.unavailable')}</div>
+      )}
+    </section>
+  )
 }
 
 export default function TokenPage({
@@ -290,7 +773,9 @@ export default function TokenPage({
   initialAmmLpTokenData,
   initialAmmLpChartData,
   initialAmmContributorsData,
-  initialAmmErrorMessage
+  initialAmmErrorMessage,
+  initialHoldersPreviewData,
+  initialAmmsPreviewData
 }) {
   const router = useRouter()
   const { t: tt } = useTranslation('token')
@@ -319,6 +804,12 @@ export default function TokenPage({
   const [burnsOrder, setBurnsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const [showMptMetadata, setShowMptMetadata] = useState(false)
   const [tokenChartRows, setTokenChartRows] = useState([])
+  const [holdersPreviewData, setHoldersPreviewData] = useState(initialHoldersPreviewData || null)
+  const [ammsPreviewData, setAmmsPreviewData] = useState(initialAmmsPreviewData || null)
+  const [tokenPreviewsLoading, setTokenPreviewsLoading] = useState(false)
+  const [tokenPreviewsDataKey, setTokenPreviewsDataKey] = useState(
+    tokenPreviewDataKey(initialData, selectedCurrencyServer)
+  )
   const errorMessage = initialErrorMessage || ''
   const tokenErrorTranslations = {
     'Token not found': tt('errors.notFound'),
@@ -342,6 +833,7 @@ export default function TokenPage({
   const transfersRefreshIntervalRef = useRef(null)
   const mintsRefreshIntervalRef = useRef(null)
   const burnsRefreshIntervalRef = useRef(null)
+  const tokenPreviewsRequestRef = useRef(0)
   const handleTokenChartRows = useCallback((rows) => {
     setTokenChartRows(Array.isArray(rows) ? rows : [])
   }, [])
@@ -354,6 +846,7 @@ export default function TokenPage({
     selectedCurrency = selectedCurrencyApp
   }
   const isNativeToken = !!token && !token.issuer && token.currency === nativeCurrency
+  const showTokenPreviews = tokenSupportsPreviews(token)
   const showMintActivity = !isNativeToken || xahauNetwork
 
   // Redirect if no token data
@@ -392,6 +885,41 @@ export default function TokenPage({
     getData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, selectedToken])
+
+  const fetchTokenPreviews = useCallback(
+    async (currentToken, currentCurrency) => {
+      const key = tokenPreviewDataKey(currentToken, currentCurrency)
+      if (!key) {
+        setHoldersPreviewData(null)
+        setAmmsPreviewData(null)
+        setTokenPreviewsDataKey('')
+        setTokenPreviewsLoading(false)
+        return
+      }
+      if (key === tokenPreviewsDataKey) return
+
+      const requestId = tokenPreviewsRequestRef.current + 1
+      tokenPreviewsRequestRef.current = requestId
+      setTokenPreviewsLoading(true)
+
+      const [holdersResult, ammsResult] = await Promise.allSettled([
+        axios(tokenHoldersPreviewUrl(currentToken, currentCurrency)),
+        axios(tokenAmmsPreviewUrl(currentToken))
+      ])
+
+      if (tokenPreviewsRequestRef.current !== requestId) return
+
+      setHoldersPreviewData(holdersResult.status === 'fulfilled' ? holdersResult.value?.data || null : null)
+      setAmmsPreviewData(ammsResult.status === 'fulfilled' ? ammsResult.value?.data || null : null)
+      setTokenPreviewsDataKey(key)
+      setTokenPreviewsLoading(false)
+    },
+    [tokenPreviewsDataKey]
+  )
+
+  useEffect(() => {
+    fetchTokenPreviews(token, selectedCurrency)
+  }, [fetchTokenPreviews, selectedCurrency, token])
 
   const fetchDexSwaps = useCallback(
     async ({ clear = false } = {}) => {
@@ -1346,6 +1874,10 @@ export default function TokenPage({
     <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
   ) : isMptToken ? (
     fullNiceNumber(token.holders || 0)
+  ) : showTokenPreviews ? (
+    <a href="#token-holders" className="ammMetricQuietLink">
+      {fullNiceNumber(token.holders)}
+    </a>
   ) : (
     <Link
       href={
@@ -1356,17 +1888,23 @@ export default function TokenPage({
     </Link>
   )
   const ammPoolsLink = (
-    <Link
-      href={
-        isNativeToken
-          ? '/amms'
-          : token?.issuer
-            ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
-            : `/amms?currency=${token.currency}`
-      }
-    >
-      {fullNiceNumber(statistics?.ammPools || 0)}
-    </Link>
+    showTokenPreviews ? (
+      <a href="#token-amms" className="ammMetricQuietLink">
+        {fullNiceNumber(statistics?.ammPools || 0)}
+      </a>
+    ) : (
+      <Link
+        href={
+          isNativeToken
+            ? '/amms'
+            : token?.issuer
+              ? `/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`
+              : `/amms?currency=${token.currency}`
+        }
+      >
+        {fullNiceNumber(statistics?.ammPools || 0)}
+      </Link>
+    )
   )
 
   const tokenInfoItems = [
@@ -1946,6 +2484,24 @@ export default function TokenPage({
           </div>
 
           <TokenCharts token={token} selectedCurrency={selectedCurrency} onChartRowsChange={handleTokenChartRows} />
+
+          {showTokenPreviews && (
+            <section className="tokenPreviewGrid">
+              <TokenHoldersPreview
+                token={token}
+                data={holdersPreviewData}
+                loading={tokenPreviewsLoading}
+                selectedCurrency={selectedCurrency}
+              />
+              <TokenAmmsPreview
+                token={token}
+                data={ammsPreviewData}
+                loading={tokenPreviewsLoading}
+                selectedCurrency={selectedCurrency}
+                fiatRate={fiatRate}
+              />
+            </section>
+          )}
 
           <section className="tokenActivitySection">
             <div className="tokenActivityGrid">

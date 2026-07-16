@@ -22,7 +22,14 @@ import { axiosServer, passHeaders } from '../../utils/axios'
 import { addQueryParams, isAddressValid, nativeCurrency, normalizeLocale, removeQueryParams, tokenImageSrc } from '../../utils'
 import { DEFAULT_CHART_PERIOD, chartPeriodQuery, normalizeChartPeriod } from '../../utils/chartPeriods'
 import { fetchHistoricalRate, fetchHistoricalTokenFiatRate } from '../../utils/common'
-import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
+import {
+  apexAxisLabelStyle,
+  apexChartTheme,
+  apexDonutSliceColor,
+  apexDonutSliceColors,
+  apexSafeChartId,
+  syncApexDonutSelection
+} from '../../utils/apexCharts'
 import { ammChartTooltip } from './chartTooltip'
 import {
   AddressWithIconFilled,
@@ -914,17 +921,8 @@ const contributorShare = (balance, total) => {
   return (amount / totalAmount) * 100
 }
 
-const contributorBaseColor = (index, count) => {
-  if (index === count - 1) return '#CBD5E1'
-  const maxIndex = Math.max(count - 2, 1)
-  const step = index / maxIndex
-  const tonalStep = Math.pow(step, 0.58)
-  const saturation = 98 - tonalStep * 18
-  const lightness = 84 - tonalStep * 62
-  return `hsl(214 ${saturation.toFixed(1)}% ${lightness.toFixed(1)}%)`
-}
-
-const contributorChartColors = (count) => Array.from({ length: count }, (_, index) => contributorBaseColor(index, count))
+const contributorBaseColor = apexDonutSliceColor
+const contributorChartColors = apexDonutSliceColors
 
 function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnitFiat, selectedCurrency }) {
   const { t } = useTranslation('amm')
@@ -932,7 +930,17 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
   const isMobile = useIsMobile(600)
   const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
   const [activeContributorIndex, setActiveContributorIndex] = useState(null)
+  const activeContributorIndexRef = useRef(null)
+  const contributorChartIdRef = useRef(apexSafeChartId(`amm-contributors-${data?.ammID || data?.account || 'current'}`))
   const [showAllContributors, setShowAllContributors] = useState(false)
+  const updateActiveContributorIndex = useCallback((nextIndex, syncChart = false) => {
+    const normalizedIndex = nextIndex ?? null
+    if (syncChart) {
+      syncApexDonutSelection(contributorChartIdRef.current, activeContributorIndexRef.current, normalizedIndex)
+    }
+    activeContributorIndexRef.current = normalizedIndex
+    setActiveContributorIndex(normalizedIndex)
+  }, [])
   const totalCoins = rawData?.summary?.totalCoins || data?.lpTokenBalance?.value
   const rows = useMemo(
     () =>
@@ -970,6 +978,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
   const chartOptions = useMemo(
     () => ({
       chart: {
+        id: contributorChartIdRef.current,
         type: 'donut',
         animations: { enabled: false },
         foreColor: chartTheme.textColor,
@@ -978,16 +987,16 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
           dataPointSelection: (_event, _chartContext, config) => {
             const index = config?.dataPointIndex
             if (index === undefined || index === null || index < 0) return
-            setActiveContributorIndex((current) => (current === index ? null : index))
+            updateActiveContributorIndex(activeContributorIndexRef.current === index ? null : index)
           },
           dataPointMouseEnter: (_event, _chartContext, config) => {
             if (isMobile) return
             const index = config?.dataPointIndex
             if (index === undefined || index === null || index < 0) return
-            setActiveContributorIndex(index)
+            updateActiveContributorIndex(index)
           },
           dataPointMouseLeave: () => {
-            if (!isMobile) setActiveContributorIndex(null)
+            if (!isMobile) updateActiveContributorIndex(null)
           }
         }
       },
@@ -1038,7 +1047,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
         }
       }
     }),
-    [chartItems, chartTheme, isMobile, t, topShare]
+    [chartItems, chartTheme, isMobile, t, topShare, updateActiveContributorIndex]
   )
 
   return (
@@ -1134,21 +1143,21 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
                   key={record.trustlineID || record.address || index}
                   prefetch={false}
                   onBlur={() => {
-                    if (!isMobile) setActiveContributorIndex(null)
+                    if (!isMobile) updateActiveContributorIndex(null, true)
                   }}
                   onClick={(event) => {
                     if (!isMobile) return
                     if (activeContributorIndex !== index) {
                       event.preventDefault()
-                      setActiveContributorIndex(index)
+                      updateActiveContributorIndex(index, true)
                     }
                   }}
-                  onFocus={() => setActiveContributorIndex(index)}
+                  onFocus={() => updateActiveContributorIndex(index, true)}
                   onMouseEnter={() => {
-                    if (!isMobile) setActiveContributorIndex(index)
+                    if (!isMobile) updateActiveContributorIndex(index, true)
                   }}
                   onMouseLeave={() => {
-                    if (!isMobile) setActiveContributorIndex(null)
+                    if (!isMobile) updateActiveContributorIndex(null, true)
                   }}
                   style={{ '--amm-contributor-color': contributorBaseColor(index, chartItems.length) }}
                 >
@@ -1180,7 +1189,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
                 type="button"
                 className="button-action thin narrow ammContributorsToggle"
                 onClick={() => {
-                  setActiveContributorIndex(null)
+                  updateActiveContributorIndex(null, true)
                   setShowAllContributors((current) => !current)
                 }}
               >
