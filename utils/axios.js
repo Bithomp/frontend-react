@@ -42,15 +42,16 @@ if (typeof window !== 'undefined') {
 
 export const passHeaders = (req) => {
   let headers = {}
+  const reqHeaders = req?.headers || {}
   //we need to pass only some headers, otherwise axios error
-  if (req.headers['x-real-ip']) {
-    headers['x-real-ip'] = req.headers['x-real-ip']
+  if (reqHeaders['x-real-ip']) {
+    headers['x-real-ip'] = reqHeaders['x-real-ip']
   }
-  if (req.headers['x-forwarded-for']) {
-    headers['x-forwarded-for'] = req.headers['x-forwarded-for']
+  if (reqHeaders['x-forwarded-for']) {
+    headers['x-forwarded-for'] = reqHeaders['x-forwarded-for']
   }
-  if (req.headers['user-agent']) {
-    headers['user-agent'] = req.headers['user-agent']
+  if (reqHeaders['user-agent']) {
+    headers['user-agent'] = reqHeaders['user-agent']
   }
   return headers
 }
