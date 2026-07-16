@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
 
 import { AddressWithIconInline, shortNiceNumber } from '../../utils/format'
@@ -12,18 +12,27 @@ const formatTxTime = (tx) => {
   return new Date(ts * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
+const normalizeWhaleTransactions = (data) => {
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data?.transactions)) return data.transactions
+  if (Array.isArray(data?.data)) return data.data
+  if (Array.isArray(data?.items)) return data.items
+  return []
+}
+
 export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
   const [difference, setDifference] = useState(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const showRefresh = isRefreshing || !data?.length
+  const whaleTransactions = useMemo(() => normalizeWhaleTransactions(data), [data])
+  const showRefresh = isRefreshing || !whaleTransactions.length
   const checkStatApi = async () => {
     setIsRefreshing(true)
     try {
       const response = await axios('v2/transactions/whale?limit=8')
-      const data = response.data
-      if (data) {
-        setData(data)
+      const nextData = normalizeWhaleTransactions(response.data)
+      if (nextData) {
+        setData(nextData)
       }
     } catch (error) {
       // Keep the current list visible if the refresh request fails.
@@ -33,13 +42,13 @@ export default function Whales({ currency, data, setData }) {
   }
 
   useEffect(() => {
-    if (oldData && data) {
-      const change = data.filter(({ hash: id1 }) => !oldData.some(({ hash: id2 }) => id2 === id1))
+    if (oldData && whaleTransactions.length) {
+      const change = whaleTransactions.filter(({ hash: id1 }) => !oldData.some(({ hash: id2 }) => id2 === id1))
       setDifference(change)
     }
-    setOldData(data)
+    setOldData(whaleTransactions)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+  }, [data, whaleTransactions])
 
   useEffect(() => {
     checkStatApi()
@@ -57,10 +66,10 @@ export default function Whales({ currency, data, setData }) {
       isLoading={!data}
       isRefreshing={isRefreshing || !data}
       onRefresh={showRefresh ? checkStatApi : null}
-      isEmpty={!data?.length}
+      isEmpty={!whaleTransactions.length}
       className={styles.whaleCard}
     >
-      {data?.slice(0, 8).map((tx) => (
+      {whaleTransactions.slice(0, 8).map((tx) => (
         <HomeTeaseRow
           key={tx.hash}
           href={`/tx/${tx.hash}`}
