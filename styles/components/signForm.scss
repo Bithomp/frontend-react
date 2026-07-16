@@ -600,6 +600,79 @@
       }
     }
 
+    .paymentAmountHeader {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 22px;
+    }
+
+    .paymentAmountTitle,
+    .paymentAmountRemaining,
+    .paymentAmountReceive,
+    .paymentAmountFee {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .paymentAmountTitle {
+      flex: 1 1 auto;
+    }
+
+    .paymentAmountMax {
+      color: var(--accent-link);
+      cursor: pointer;
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    .paymentAmountRemaining {
+      flex: 0 1 46%;
+      font-size: 13px;
+      line-height: 1.2;
+      text-align: right;
+    }
+
+    .paymentAmountFooter {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 22px;
+      padding-top: 5px;
+      text-align: left;
+      line-height: 18px;
+    }
+
+    .paymentAmountReceive {
+      flex: 1 1 auto;
+    }
+
+    .paymentAmountFee {
+      flex: 0 1 auto;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    @media only screen and (max-width: 460px) {
+      .paymentAmountHeader,
+      .paymentAmountFooter {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .paymentAmountRemaining,
+      .paymentAmountFee {
+        flex-basis: auto;
+        margin-left: 0;
+        text-align: left;
+      }
+    }
+
     .ammLpEstimate {
       min-height: 24px;
       color: var(--text-secondary);

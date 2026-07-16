@@ -266,38 +266,42 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
 
       <br />
       <span className="halv">
-        <span className="input-title">
-          {t('table.amount')}
-          {balance ? (
-            <>
-              {' '}
-              <span className="grey">
-                ({ts('shared.max')}{' '}
-                <span
-                  role="button"
-                  tabIndex={0}
-                  onMouseDown={applyMaxAmount}
-                  onClick={applyMaxAmount}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      applyMaxAmount(event)
-                    }
-                  }}
-                  style={{
-                    color: 'var(--accent-link)',
-                    cursor: 'pointer',
-                    fontSize: 'inherit',
-                    fontWeight: 'inherit'
-                  }}
-                >
-                  {balance} {currencyLabel}
+        <span className="input-title paymentAmountHeader">
+          <span className="paymentAmountTitle">
+            {t('table.amount')}
+            {balance ? (
+              <>
+                {' '}
+                <span className="grey">
+                  ({ts('shared.max')}{' '}
+                  <span
+                    className="paymentAmountMax"
+                    role="button"
+                    tabIndex={0}
+                    onMouseDown={applyMaxAmount}
+                    onClick={applyMaxAmount}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        applyMaxAmount(event)
+                      }
+                    }}
+                  >
+                    {balance} {currencyLabel}
+                  </span>
+                  )
                 </span>
-                )
-              </span>
-            </>
-          ) : (
-            <> ({currencyLabel})</>
-          )}
+              </>
+            ) : (
+              <> ({currencyLabel})</>
+            )}
+          </span>
+          <span
+            className={`paymentAmountRemaining ${isRemainingNegative ? 'red' : 'grey'}`}
+            style={{ visibility: remainingAmount ? 'visible' : 'hidden' }}
+            title={remainingAmount ? `${ts('shared.remaining')}: ${remainingAmount} ${currencyLabel}` : undefined}
+          >
+            {ts('shared.remaining')}: {remainingAmount || '0'} {currencyLabel}
+          </span>
         </span>
         <input
           placeholder="0"
@@ -307,20 +311,14 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
           value={amount}
           inputMode="decimal"
         />
-        <div style={{ marginTop: 6, textAlign: 'left', minHeight: 18, lineHeight: '18px' }}>
-          <span
-            className={isRemainingNegative ? 'red' : 'grey'}
-            style={{ visibility: remainingAmount ? 'visible' : 'hidden' }}
-          >
-            {ts('shared.remaining')}: {remainingAmount || '0'} {currencyLabel}
-          </span>
+        <div className="paymentAmountFooter">
           {receiveAmountText ? (
-            <span className="grey" style={{ display: 'block' }}>
+            <span className="grey paymentAmountReceive">
               {ts('shared.to-receive', { amount: receiveAmountText })}
             </span>
           ) : null}
           {hasIssuerFee ? (
-            <span className="orange" style={{ display: 'block' }}>
+            <span className="orange paymentAmountFee">
               {ts('shared.issuer-fee', { fee: transferRateToPercent(destinationTokenTransferFee) })}
             </span>
           ) : null}
