@@ -22,6 +22,16 @@ export const knownClientErrorMessages = [
   'Content-Length header of network response exceeds response Body.'
 ]
 
+const knownClientErrorPatterns = [
+  (message) =>
+    message.includes('Converting circular structure to JSON') &&
+    message.includes('HTMLAnchorElement') &&
+    message.includes('__reactFiber$')
+]
+
+const isKnownClientError = (message) =>
+  knownClientErrorMessages.includes(message) || knownClientErrorPatterns.some((matches) => matches(message))
+
 const trimMessage = (value, maxLength = MAX_MESSAGE_LENGTH) => {
   const normalized = String(value || '').trim()
   if (!normalized) return ''
@@ -88,7 +98,7 @@ export const reportErrorNotification = async ({
   if (process.env.NODE_ENV === 'development') return
 
   const message = typeof error === 'string' ? error : error?.message || ''
-  if (ignoreKnownClientErrors && knownClientErrorMessages.includes(message)) return
+  if (ignoreKnownClientErrors && isKnownClientError(message)) return
 
   const targetUrl = getNotificationUrl(req)
   if (!targetUrl) return
