@@ -131,8 +131,9 @@ export default function NftPreview({ nft }) {
   }
 
   let imageStyle = { maxWidth: '100%', maxHeight: '420px', width: 'auto', height: 'auto', objectFit: 'contain' }
-  if (imageUrl) {
-    if (imageUrl.slice(0, 10) === 'data:image') {
+  if (displayImageUrl) {
+    if (displayImageUrl.slice(0, 10) === 'data:image') {
+      imageStyle.width = '100%'
       imageStyle.imageRendering = 'pixelated'
     }
     if (nft.deletedAt) {
