@@ -202,7 +202,11 @@ export const nftThumbnail = (nft) => {
         src={imageSrc || placeholder}
         width="32px"
         height="32px"
-        style={{ borderRadius: '50% 20% / 10% 40%', verticalAlign: 'middle' }}
+        style={{
+          borderRadius: 6,
+          verticalAlign: 'middle',
+          ...(imageSrc?.startsWith('data:image') && { imageRendering: 'pixelated' })
+        }}
         alt={nftName(nft) || 'NFT thumbnail'}
         onError={(e) => {
           e.target.onerror = null
@@ -243,7 +247,7 @@ export const collectionThumbnail = (data, options = {}) => {
         height: 32,
         flexShrink: 0,
         overflow: 'hidden',
-        borderRadius: options.round ? '50%' : '50% 20% / 10% 40%',
+        borderRadius: options.round ? '50%' : 6,
         verticalAlign: 'middle',
         background: '#fff',
         boxSizing: 'border-box'
