@@ -518,7 +518,7 @@ import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
-import { NftImage, bestNftOffer, isNftExplicit, nftName, nftUrl } from '../../utils/nft'
+import { NftImage, bestNftOffer, isNftExplicit, nftName, nftUrl, partnerMarketplaces } from '../../utils/nft'
 import {
   AddressWithIconFilled,
   AddressWithIconInline,
@@ -10251,6 +10251,48 @@ export default function Account({
                             !!account?.address &&
                             account.address === data?.address &&
                             (!ownerAddress || ownerAddress !== account.address)
+                          const partnerMarketplace = destinationAddress ? partnerMarketplaces[destinationAddress] : null
+                          const partnerSellOfferSignRequest =
+                            isOwnedNftOfferTab &&
+                            partnerMarketplace &&
+                            canAcceptOwnedNftOffer &&
+                            offer.amount &&
+                            !isZeroAmountValue(offer.amount)
+                              ? (() => {
+                                  const { fee, name, feeText } = partnerMarketplace
+                                  let sellAmount
+
+                                  if (offer.amount?.value) {
+                                    sellAmount = {
+                                      value: (parseFloat(offer.amount.value) * (1 - fee)).toString(),
+                                      currency: offer.amount.currency,
+                                      issuer: offer.amount.issuer
+                                    }
+                                  } else {
+                                    sellAmount = Math.floor(parseInt(offer.amount) * (1 - fee)).toString()
+                                  }
+
+                                  return {
+                                    offerAmount: offer.amount,
+                                    offerType: 'buy',
+                                    displayAmount: offer.amount?.value ? sellAmount : parseInt(sellAmount),
+                                    request: {
+                                      TransactionType: 'NFTokenCreateOffer',
+                                      Account: account.address,
+                                      NFTokenID: nftId,
+                                      Flags: 1,
+                                      Destination: destinationAddress,
+                                      Amount: sellAmount
+                                    },
+                                    broker: {
+                                      name,
+                                      fee: Math.ceil(offer.amount > 0 ? offer.amount * fee : 1),
+                                      nftPrice: offer.amount,
+                                      feeText
+                                    }
+                                  }
+                                })()
+                              : null
                           const disabledAcceptOwnedNftOfferTooltip = (() => {
                             if (!isOwnedNftOfferTab || canAcceptOwnedNftOffer) return ''
                             if (!account?.address) return ta('tooltips.connect-sell-nft')
@@ -10546,6 +10588,10 @@ export default function Account({
                                             disabled={!canAcceptOwnedNftOffer}
                                             onClick={() => {
                                               if (!canAcceptOwnedNftOffer) return
+                                              if (partnerSellOfferSignRequest) {
+                                                setSignRequest(partnerSellOfferSignRequest)
+                                                return
+                                              }
                                               setSignRequest({
                                                 offerAmount: offer.amount,
                                                 offerType: 'buy',
@@ -10559,7 +10605,13 @@ export default function Account({
                                             {offer.amount === '0' || !offer.amount ? (
                                               ta('actions.accept-nft-transfer')
                                             ) : (
-                                              <>{ta('actions.sell-nft-for', { amount: amountFormat(offer.amount) })}</>
+                                              <>
+                                                {ta('actions.sell-nft-for', {
+                                                  amount: amountFormat(
+                                                    partnerSellOfferSignRequest?.displayAmount || offer.amount
+                                                  )
+                                                })}
+                                              </>
                                             )}
                                           </button>
                                           {!!disabledAcceptOwnedNftOfferTooltip && (
