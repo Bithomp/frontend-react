@@ -428,7 +428,7 @@ export const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => 
       return cdnVariant
     }
     return `https://cdn.${webSiteName}/${type}?url=${encodeURIComponent(stripText(uri))}`
-  } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
+  } else if ((type === 'image' || type === 'thumbnail' || type === 'preview') && uri.slice(0, 10) === 'data:image') {
     return stripText(uri)
   } else {
     return null
@@ -537,7 +537,7 @@ const isCorrectFileType = (url, nftType = 'image') => {
   let type4 = url.slice(-5).toUpperCase()
   if (nftType === 'thumbnail') {
     return true
-  } else if (nftType === 'image') {
+  } else if (nftType === 'image' || nftType === 'preview') {
     if (type === '.JPG' || type === '.PNG' || type === '.GIF' || type === '.PDF') {
       return true
     }
@@ -677,6 +677,7 @@ export const nftPriceData = (t, nftOffers, loggedInAddress, offerType = 'sell', 
 
 export const NftImage = ({ nft, style }) => {
   const size = style?.width && typeof style.width !== 'string' && style.width > 0 ? style.width : 70
+  const imageSrc = nftUrl(nft?.nftoken || nft, size < 32 ? 'thumbnail' : 'preview')
   let text = size < 50 ? ';(' : 'No image'
   const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
@@ -691,9 +692,9 @@ export const NftImage = ({ nft, style }) => {
   }
   return (
     <img
-      src={nftUrl(nft?.nftoken || nft, size < 32 ? 'thumbnail' : 'preview') || placeholder}
+      src={imageSrc || placeholder}
       alt={nftName(nft?.nftoken || nft) || 'NFT thumbnail'}
-      style={{ marginRight: '5px', ...style }}
+      style={{ marginRight: '5px', ...(imageSrc?.startsWith('data:image') && { imageRendering: 'pixelated' }), ...style }}
       onError={(e) => {
         e.target.onerror = null
         e.target.src = placeholder
