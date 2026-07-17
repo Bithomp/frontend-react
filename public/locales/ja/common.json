@@ -200,6 +200,8 @@
     "signin": "サインイン",
     "signout": "サインアウト",
     "choose-app": "サインインするアプリを選択",
+    "open-app-to-sign": "{{appName}}を開いて署名",
+    "sign-in-with-another-wallet": "別のウォレットでログイン",
     "login-with": "{{appName}}でログイン",
     "sign-with": "{{appName}}で署名",
     "amount": {

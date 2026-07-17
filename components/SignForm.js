@@ -1828,8 +1828,30 @@ export default function SignForm({
               <>
                 {screen === 'choose-app' ? (
                   <>
-                    <div className="header">{t('signin.choose-app')}</div>
+                    <div className="header">
+                      {limitMobileWalletChoice
+                        ? t('signin.sign-with', { appName: walletNames[account.wallet] })
+                        : t('signin.choose-app')}
+                    </div>
 
+                    {limitMobileWalletChoice ? (
+                      <div className="mobile-wallet-sign-actions">
+                        <button
+                          type="button"
+                          className="button-action"
+                          onClick={() => txSend({ wallet: account.wallet })}
+                        >
+                          {t('signin.open-app-to-sign', { appName: walletNames[account.wallet] })}
+                        </button>
+                        <button
+                          type="button"
+                          className="mobile-wallet-switch"
+                          onClick={() => setSignRequest({ connectAnotherWallet: true })}
+                        >
+                          {t('signin.sign-in-with-another-wallet')}
+                        </button>
+                      </div>
+                    ) : (
                     <div className="signin-apps">
                       {showMobileWallet('xaman') && (
                         <WalletTile
@@ -1928,6 +1950,7 @@ export default function SignForm({
                         />
                       )}
                     </div>
+                    )}
                   </>
                 ) : screen === 'ledgerwallet-addresses' ? (
                   <AddressSelectionPanel

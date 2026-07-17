@@ -361,6 +361,35 @@
           white-space: normal;
         }
       }
+
+      .mobile-wallet-sign-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        margin-top: 28px;
+        padding: 0 24px 32px;
+
+        .button-action {
+          width: min(100%, 320px);
+          min-height: 48px;
+        }
+
+        .mobile-wallet-switch {
+          padding: 6px;
+          border: 0;
+          background: transparent;
+          color: var(--accent-link);
+          cursor: pointer;
+          font: inherit;
+          font-weight: 600;
+
+          &:hover,
+          &:focus-visible {
+            text-decoration: underline;
+          }
+        }
+      }
     }
 
     @media only screen and (max-width: 480px) {

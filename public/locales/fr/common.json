@@ -200,6 +200,8 @@
     "signin": "Se connecter",
     "signout": "Se déconnecter",
     "choose-app": "Choisir une app de signature",
+    "open-app-to-sign": "Ouvrir {{appName}} pour signer",
+    "sign-in-with-another-wallet": "Se connecter avec un autre portefeuille",
     "login-with": "Connexion avec {{appName}}",
     "sign-with": "Signer avec {{appName}}",
     "amount": {

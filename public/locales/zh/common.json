@@ -200,6 +200,8 @@
     "signin": "登录",
     "signout": "退出",
     "choose-app": "选择签名应用程序",
+    "open-app-to-sign": "打开 {{appName}} 进行签名",
+    "sign-in-with-another-wallet": "使用其他钱包登录",
     "login-with": "使用 {{appName}} 登录",
     "sign-with": "使用 {{appName}} 签名",
     "amount": {

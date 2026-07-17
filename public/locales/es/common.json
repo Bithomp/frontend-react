@@ -200,6 +200,8 @@
     "signin": "Conectar",
     "signout": "Desconectar",
     "choose-app": "Elige una app para conectarte.",
+    "open-app-to-sign": "Abrir {{appName}} para firmar",
+    "sign-in-with-another-wallet": "Iniciar sesión con otra billetera",
     "login-with": "Conectarse con {{appName}}",
     "sign-with": "Firmar con {{appName}}",
     "amount": {

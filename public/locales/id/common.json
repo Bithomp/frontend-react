@@ -200,6 +200,8 @@
     "signin": "Masuk",
     "signout": "Keluar",
     "choose-app": "Pilih aplikasi masuk",
+    "open-app-to-sign": "Buka {{appName}} untuk menandatangani",
+    "sign-in-with-another-wallet": "Masuk dengan wallet lain",
     "login-with": "Masuk dengan {{appName}}",
     "sign-with": "Tanda tangan via {{appName}}",
     "amount": {

@@ -200,6 +200,8 @@
     "signin": "Войти",
     "signout": "Выйти",
     "choose-app": "Выберите ваше приложение",
+    "open-app-to-sign": "Открыть {{appName}} для подписи",
+    "sign-in-with-another-wallet": "Войти с другим кошельком",
     "login-with": "Вход с {{appName}}",
     "sign-with": "Подписать с {{appName}}",
     "amount": {
