@@ -104,6 +104,8 @@ const wcWalletIcons = [
   { id: 'girin', name: 'Girin', src: '/images/wallets/square-logos/girin.png' }
 ]
 
+const mobileWallets = ['xaman', 'walletconnect', 'xyra']
+
 const WalletTile = memo(function WalletTile({
   name,
   alt,
@@ -195,6 +197,13 @@ export default function SignForm({
   const [choosenWallet, setChoosenWallet] = useState(null)
   const processedXamanUuidRef = useRef(null)
   const signFormOpen = !!screen
+  const limitMobileWalletChoice =
+    isMobile &&
+    !!account?.address &&
+    mobileWallets.includes(account?.wallet) &&
+    !signRequest?.connectAnotherWallet &&
+    signRequest?.request?.TransactionType !== 'SignIn'
+  const showMobileWallet = (wallet) => !limitMobileWalletChoice || account.wallet === wallet
 
   useEffect(() => {
     if (!signFormOpen) return
@@ -1822,15 +1831,17 @@ export default function SignForm({
                     <div className="header">{t('signin.choose-app')}</div>
 
                     <div className="signin-apps">
-                      <WalletTile
-                        name="Xaman (Mobile app)"
-                        alt="xaman"
-                        src="/images/wallets/xaman-large.svg"
-                        width={110}
-                        height={48}
-                        onClick={() => txSend({ wallet: 'xaman' })}
-                        disabled={false}
-                      />
+                      {showMobileWallet('xaman') && (
+                        <WalletTile
+                          name="Xaman (Mobile app)"
+                          alt="xaman"
+                          src="/images/wallets/xaman-large.svg"
+                          width={110}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'xaman' })}
+                          disabled={false}
+                        />
+                      )}
 
                       {!isMobile && (
                         <WalletTile
@@ -1845,7 +1856,7 @@ export default function SignForm({
                       )}
 
                       {/* available only for mainnet and testnet */}
-                      {(networkId === 0 || networkId === 1) && (
+                      {(networkId === 0 || networkId === 1) && showMobileWallet('walletconnect') && (
                         <WalletTile
                           name={isMobile ? 'WalletConnect' : 'Joey, Bifrost, Girin'}
                           alt="WalletConnect"
@@ -1905,15 +1916,17 @@ export default function SignForm({
                         />
                       )}
 
-                      <WalletTile
-                        name="Xyra (Popup wallet)"
-                        alt="Xyra"
-                        src="/images/wallets/xyra.svg"
-                        width={48}
-                        height={48}
-                        onClick={() => txSend({ wallet: 'xyra' })}
-                        disabled={false}
-                      />
+                      {showMobileWallet('xyra') && (
+                        <WalletTile
+                          name="Xyra (Popup wallet)"
+                          alt="Xyra"
+                          src="/images/wallets/xyra.svg"
+                          width={48}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'xyra' })}
+                          disabled={false}
+                        />
+                      )}
                     </div>
                   </>
                 ) : screen === 'ledgerwallet-addresses' ? (
