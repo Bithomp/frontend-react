@@ -195,8 +195,10 @@ export default function SignForm({
   const [rewardDelay, setRewardDelay] = useState()
 
   const [choosenWallet, setChoosenWallet] = useState(null)
+  const [xamanReturnTxType, setXamanReturnTxType] = useState(null)
   const processedXamanUuidRef = useRef(null)
   const signFormOpen = !!screen
+  const returnedXamanTxType = router.query.xamanTxType || xamanReturnTxType
   const limitMobileWalletChoice =
     isMobile &&
     !!account?.address &&
@@ -361,7 +363,14 @@ export default function SignForm({
     setScreen('xaman')
     setShowXamanQr(false)
     setStatus(t('signin.xaman.statuses.wait'))
-    xamanProcessSignedData({ uuid, afterSigning, onSignIn, afterSubmitExe, xamanReturn: true })
+    xamanProcessSignedData({
+      uuid,
+      afterSigning,
+      onSignIn,
+      afterSubmitExe,
+      onPayload: (data) => setXamanReturnTxType(data?.payload?.tx_type || null),
+      xamanReturn: true
+    })
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
 
@@ -876,7 +885,11 @@ export default function SignForm({
       setStatus(t('signin.xaman.statuses.redirecting'))
       //return to the same page
       signInPayload.options.return_url = {
-        app: server + router.asPath + (router.asPath.includes('?') ? '&' : '?') + 'uuid={id}'
+        app:
+          server +
+          router.asPath +
+          (router.asPath.includes('?') ? '&' : '?') +
+          `uuid={id}&xamanTxType=${encodeURIComponent(tx.TransactionType)}`
       }
 
       if (tx.TransactionType === 'Payment' || signRequest?.receipt) {
@@ -1220,12 +1233,12 @@ export default function SignForm({
     }
   }
 
-  const closeSignInFormAndRefresh = () => {
-    signInCancelAndClose()
+  const closeSignInFormAndRefresh = async () => {
+    await signInCancelAndClose()
     setRefreshPage(Date.now())
   }
 
-  const signInCancelAndClose = () => {
+  const signInCancelAndClose = async () => {
     if (screen === 'xaman') {
       setXamanQrSrc(qr)
       xamanCancel(xamanUuid)
@@ -1234,16 +1247,17 @@ export default function SignForm({
       setXyraNeedsClick(false)
     }
 
-    if (uuid) {
-      removeQueryParams(router, ['uuid'])
-    }
+    const removeUuid = uuid ? removeQueryParams(router, ['uuid', 'xamanTxType']) : null
 
     setScreen('choose-app')
     setSignRequest(null)
     setChoosenWallet(null)
     setAwaiting(false)
     setStatus('')
+    setXamanReturnTxType(null)
     transactionFetchTries = 0
+
+    await removeUuid
   }
 
   const buttonStyle = {
@@ -1971,7 +1985,7 @@ export default function SignForm({
                 ) : (
                   <>
                     <div className="header">
-                      {signRequest?.request
+                      {signRequest?.request || (returnedXamanTxType && returnedXamanTxType !== 'SignIn')
                         ? t('signin.sign-with', { appName: walletNames[screen] })
                         : t('signin.login-with', { appName: walletNames[screen] })}
                     </div>

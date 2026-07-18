@@ -2,10 +2,18 @@ import axios from 'axios'
 
 let xamanWs
 
-export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, afterSubmitExe, xamanReturn = false }) => {
+export const xamanProcessSignedData = async ({
+  uuid,
+  afterSigning,
+  onSignIn,
+  afterSubmitExe,
+  onPayload,
+  xamanReturn = false
+}) => {
   const response = await axios('app/xaman/payload/' + uuid)
   const data = response.data
   if (data) {
+    onPayload?.(data)
     /*
       {
         "application": {

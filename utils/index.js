@@ -391,7 +391,7 @@ export const removeQueryParams = (router, removeList) => {
   for (let i = 0; i < removeList.length; i++) {
     params.delete(removeList[i])
   }
-  router.replace({ pathname, query: params.toString() }, null, { shallow: true })
+  return router.replace({ pathname, query: params.toString() }, null, { shallow: true })
 }
 
 export const addQueryParams = (router, addList = []) => {
