@@ -735,14 +735,14 @@
 
     .paymentAmountHeader {
       display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
+      align-items: stretch;
+      flex-direction: column;
+      gap: 4px;
       min-height: 22px;
+      text-align: left;
     }
 
     .paymentAmountTitle,
-    .paymentAmountRemaining,
     .paymentAmountReceive,
     .paymentAmountFee {
       min-width: 0;
@@ -752,7 +752,22 @@
     }
 
     .paymentAmountTitle {
-      flex: 1 1 auto;
+      display: block;
+    }
+
+    .paymentAmountMeta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.35;
+    }
+
+    .paymentAmountMaxRow,
+    .paymentAmountRemaining {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .paymentAmountMax {
@@ -763,10 +778,7 @@
     }
 
     .paymentAmountRemaining {
-      flex: 0 1 46%;
-      font-size: 13px;
-      line-height: 1.2;
-      text-align: right;
+      text-align: left;
     }
 
     .paymentAmountFooter {

@@ -5,9 +5,11 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_UP // Standard rounding mode
 })
 
+export const toPlainDecimal = (value) => new BigNumber(value).toFixed()
+
 export const add = (a, b) => new BigNumber(a).plus(new BigNumber(b)).toFixed().toString()
 
-export const subtract = (a, b) => new BigNumber(a).minus(new BigNumber(b)).toString()
+export const subtract = (a, b) => new BigNumber(a).minus(new BigNumber(b)).toFixed()
 
 export const multiply = (a, b) => new BigNumber(a).times(new BigNumber(b)).toString()
 

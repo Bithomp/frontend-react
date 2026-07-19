@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 import AddressInput from '../UI/AddressInput'
 import { encode, isAddressValid, isNativeCurrency, isTagValid, nativeCurrency } from '../../utils'
-import { multiply, subtract } from '../../utils/calc'
+import { multiply, subtract, toPlainDecimal } from '../../utils/calc'
 import { formatXDigits, niceCurrency, transferRateToPercent } from '../../utils/format'
 
 const toInitialAmount = (amountValue) => {
@@ -46,7 +46,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   )
   const balance = useMemo(() => {
     if (signRequest?.data?.balance === undefined || signRequest?.data?.balance === null) return ''
-    return String(signRequest.data.balance)
+    return toPlainDecimal(signRequest.data.balance)
   }, [signRequest?.data?.balance])
 
   const [destination, setDestination] = useState(initialRequest.Destination || '')
@@ -269,39 +269,36 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
         <span className="input-title paymentAmountHeader">
           <span className="paymentAmountTitle">
             {t('table.amount')}
-            {balance ? (
-              <>
-                {' '}
-                <span className="grey">
-                  ({ts('shared.max')}{' '}
-                  <span
-                    className="paymentAmountMax"
-                    role="button"
-                    tabIndex={0}
-                    onMouseDown={applyMaxAmount}
-                    onClick={applyMaxAmount}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        applyMaxAmount(event)
-                      }
-                    }}
-                  >
-                    {balance} {currencyLabel}
-                  </span>
-                  )
+            {!balance ? <> ({currencyLabel})</> : null}
+          </span>
+          {balance ? (
+            <span className="paymentAmountMeta">
+              <span className="paymentAmountMaxRow grey">
+                {ts('shared.max')}:{' '}
+                <span
+                  className="paymentAmountMax"
+                  role="button"
+                  tabIndex={0}
+                  onMouseDown={applyMaxAmount}
+                  onClick={applyMaxAmount}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      applyMaxAmount(event)
+                    }
+                  }}
+                >
+                  {balance} {currencyLabel}
                 </span>
-              </>
-            ) : (
-              <> ({currencyLabel})</>
-            )}
-          </span>
-          <span
-            className={`paymentAmountRemaining ${isRemainingNegative ? 'red' : 'grey'}`}
-            style={{ visibility: remainingAmount ? 'visible' : 'hidden' }}
-            title={remainingAmount ? `${ts('shared.remaining')}: ${remainingAmount} ${currencyLabel}` : undefined}
-          >
-            {ts('shared.remaining')}: {remainingAmount || '0'} {currencyLabel}
-          </span>
+              </span>
+              <span
+                className={`paymentAmountRemaining ${isRemainingNegative ? 'red' : 'grey'}`}
+                style={{ visibility: remainingAmount ? 'visible' : 'hidden' }}
+                title={remainingAmount ? `${ts('shared.remaining')}: ${remainingAmount} ${currencyLabel}` : undefined}
+              >
+                {ts('shared.remaining')}: {remainingAmount || '0'} {currencyLabel}
+              </span>
+            </span>
+          ) : null}
         </span>
         <input
           placeholder="0"
