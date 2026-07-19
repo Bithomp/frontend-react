@@ -85,7 +85,8 @@
       "nft-mint": "Mint NFT",
       "tax-reports": "Laporan pajak",
       "username": "Pendaftaran Username",
-      "toml-generator": "Generator TOML"
+      "toml-generator": "Generator TOML",
+      "mpt-metadata-generator": "Generator Metadata MPToken"
     },
     "business": {
       "advertise": "Iklankan",

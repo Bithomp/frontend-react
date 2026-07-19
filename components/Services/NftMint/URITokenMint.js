@@ -361,7 +361,7 @@ export default function URITokenMint({
 
   return (
     <>
-      <div className="page-services-nft-mint content-center">
+      <div className="page-services-nft-mint">
         {!minted && (
           <>
             <p>{ts('nft-mint.uriLabel')}</p>

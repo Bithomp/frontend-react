@@ -8,6 +8,7 @@ import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import URITokenMint from '../../components/Services/NftMint/URITokenMint'
 import NFTokenMint from '../../components/Services/NftMint/NFTokenMint'
 import Link from 'next/link'
+import styles from '../../styles/pages/nft-mint.module.scss'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -78,10 +79,10 @@ export default function NftMint({
   return (
     <>
       <SEO title={t('nft-mint.title', { ns: 'services' })} description={t('nft-mint.description', { ns: 'services' })} />
-      <div className="page-services-nft-mint content-center">
-        <ServicesTabs category="nft" tab="nft-mint" />
+      <div className={styles.page}>
+        <ServicesTabs category="issuance" tab="nft-mint" />
         <h1 className="center">{t('nft-mint.heading', { ns: 'services' })}</h1>
-        <p>
+        <p className={styles.intro}>
           {t('nft-mint.intro', { ns: 'services' })} {t('nft-mint.viewGuide', { ns: 'services' })}{' '}
           <Link href="/learn/nft-minting" target="_blank" rel="noreferrer">
             {t('nft-mint.guideLink', { ns: 'services' })}
@@ -91,7 +92,7 @@ export default function NftMint({
 
         <NetworkTabs />
 
-        <div className="form-container">
+        <div className={`form-container ${styles.form}`}>
           {xahauNetwork ? (
             <URITokenMint
               setSignRequest={setSignRequest}

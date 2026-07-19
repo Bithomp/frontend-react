@@ -131,7 +131,22 @@ export default function ServicesPage() {
       items: [
         { href: '/learn/issue-a-token', title: 'How to Issue a Token', icon: RiBookOpenLine },
         { href: '/learn/guide-for-token-issuers', title: 'Guide for Token Issuers', icon: IoLayersOutline },
-        { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline }
+        { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline },
+        {
+          href: '/services/mpt-metadata-generator',
+          title: t('menu.services.mpt-metadata-generator'),
+          icon: IoCodeOutline
+        },
+        {
+          href: '/services/toml-generator?category=issuance',
+          title: t('menu.services.toml-generator'),
+          icon: IoDocumentTextOutline
+        },
+        {
+          href: '/services/toml-checker?category=issuance',
+          title: t('menu.services.toml-checker'),
+          icon: IoCodeOutline
+        }
       ]
     }
 

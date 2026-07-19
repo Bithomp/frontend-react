@@ -85,7 +85,8 @@
       "nft-mint": "NFTのミント",
       "tax-reports": "税務レポート",
       "username": "ユーザネームの登録",
-      "toml-generator": "TOMLジェネレーター"
+      "toml-generator": "TOMLジェネレーター",
+      "mpt-metadata-generator": "MPTokenメタデータジェネレーター"
     },
     "business": {
       "advertise": "広告掲載",

@@ -85,7 +85,8 @@
       "nft-mint": "Чеканка NFT",
       "tax-reports": "Налоговые отчеты",
       "username": "Регистрация псевдонима",
-      "toml-generator": "Генератор TOML"
+      "toml-generator": "Генератор TOML",
+      "mpt-metadata-generator": "Генератор метаданных MPToken"
     },
     "business": {
       "advertise": "Размещение рекламы",

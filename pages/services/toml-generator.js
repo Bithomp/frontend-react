@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { LuCopy, LuDownload } from 'react-icons/lu'
 
@@ -358,6 +359,7 @@ const FormSelect = ({ value, options, onChange, instanceId }) => (
 )
 
 export default function TomlGeneratorPage({ modifiedAt }) {
+  const router = useRouter()
   const { t } = useTranslation(['common', 'services'])
   const title = t('menu.services.toml-generator')
   const tg = useCallback((key, options) => t(`toml-generator.${key}`, { ns: 'services', ...options }), [t])
@@ -491,7 +493,7 @@ export default function TomlGeneratorPage({ modifiedAt }) {
       <SEO title={`${title} | ${explorerName}`} description={tg('seo-description', { tomlName, ledgerName })} />
 
       <div className={`content-text ${styles.page}`}>
-        <ServicesTabs category="identity" tab="toml-generator" />
+        <ServicesTabs category={router.query.category === 'issuance' ? 'issuance' : 'identity'} tab="toml-generator" />
 
         <h1 className="center">{title}</h1>
         <p className="center">

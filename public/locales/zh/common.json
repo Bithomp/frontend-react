@@ -85,7 +85,8 @@
       "nft-mint": "铸造 NFT",
       "tax-reports": "税务报告",
       "username": "用户名注册",
-      "toml-generator": "TOML 生成器"
+      "toml-generator": "TOML 生成器",
+      "mpt-metadata-generator": "MPToken 元数据生成器"
     },
     "business": {
       "advertise": "投放广告",

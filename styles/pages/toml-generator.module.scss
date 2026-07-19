@@ -254,11 +254,38 @@
   }
 
   input,
+  textarea,
   select {
     box-sizing: border-box;
     width: 100%;
     max-width: none;
   }
+}
+
+.byteMeter {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.byteMeterOver {
+  color: var(--red);
+}
+
+.preview.metadataPreview {
+  min-height: 360px;
+  margin-bottom: 18px;
+}
+
+.preview.hexPreview {
+  min-height: 180px;
+  max-height: 360px;
+  overflow: auto;
+  word-break: break-all;
 }
 
 .wideField {
@@ -418,6 +445,14 @@
   .grid,
   .repeatRow {
     grid-template-columns: 1fr;
+  }
+
+  .preview.metadataPreview {
+    min-height: 300px;
+  }
+
+  .preview.hexPreview {
+    min-height: 150px;
   }
 
   .repeatHeader,

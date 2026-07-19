@@ -1,0 +1,28 @@
+.page {
+  z-index: 1;
+  position: relative;
+  box-sizing: border-box;
+  width: calc(100% - 40px);
+  max-width: 1480px;
+  margin: 20px auto;
+  padding-bottom: 36px;
+}
+
+.intro,
+.form {
+  width: min(100%, 760px);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.intro {
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .page {
+    width: auto;
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+}

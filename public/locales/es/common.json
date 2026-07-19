@@ -85,7 +85,8 @@
       "nft-mint": "Acuñar NFT",
       "tax-reports": "Informes fiscales",
       "username": "Registro de nombre de usuario",
-      "toml-generator": "Generador TOML"
+      "toml-generator": "Generador TOML",
+      "mpt-metadata-generator": "Generador de metadatos MPToken"
     },
     "business": {
       "advertise": "Anúnciate",

@@ -30,9 +30,26 @@ export default function ServicesTabs({ category, tab }) {
       ]
     },
     {
-      value: 'nft',
-      label: ts('services-nav.nft'),
-      items: [{ value: 'nft-mint', label: ts('services-nav.nft-mint'), href: '/services/nft-mint' }]
+      value: 'issuance',
+      label: ts('services-nav.issuance'),
+      items: [
+        { value: 'nft-mint', label: ts('services-nav.nft-mint'), href: '/services/nft-mint' },
+        {
+          value: 'mpt-metadata-generator',
+          label: t('menu.services.mpt-metadata-generator'),
+          href: '/services/mpt-metadata-generator'
+        },
+        {
+          value: 'toml-generator',
+          label: t('menu.services.toml-generator'),
+          href: '/services/toml-generator?category=issuance'
+        },
+        {
+          value: 'toml-checker',
+          label: t('menu.services.toml-checker'),
+          href: '/services/toml-checker?category=issuance'
+        }
+      ]
     },
     {
       value: 'account',

@@ -85,7 +85,8 @@
       "nft-mint": "Mint NFT",
       "tax-reports": "Tax reports",
       "username": "Username registration",
-      "toml-generator": "TOML Generator"
+      "toml-generator": "TOML Generator",
+      "mpt-metadata-generator": "MPToken Metadata Generator"
     },
     "business": {
       "advertise": "Advertise",

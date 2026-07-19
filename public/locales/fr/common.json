@@ -85,7 +85,8 @@
       "nft-mint": "Frappé NFT",
       "tax-reports": "Rapports fiscaux",
       "username": "Enregistrement de nom d'utilisateur",
-      "toml-generator": "Générateur TOML"
+      "toml-generator": "Générateur TOML",
+      "mpt-metadata-generator": "Générateur de métadonnées MPToken"
     },
     "business": {
       "advertise": "Annoncer",

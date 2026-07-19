@@ -592,6 +592,7 @@
     "payments": "Payments",
     "amm": "AMM",
     "nft": "NFT",
+    "issuance": "Issuance",
     "account": "Account",
     "trustline": "Trustline",
     "send": "Send",
@@ -734,6 +735,88 @@
       "transferRateSet": "TransferRate set successfully.",
       "transferRateClear": "TransferRate cleared successfully.",
       "settings": "Settings updated successfully."
+    }
+  },
+  "mpt-metadata-generator": {
+    "seo-description": "Create XLS-0089 compliant metadata for Multi-Purpose Tokens on the XRP Ledger.",
+    "intro": "Create MPToken metadata according to the current",
+    "generated-title": "Generated metadata JSON",
+    "hex-title": "On-ledger hexadecimal metadata",
+    "byte-count": "{{count}} / {{max}} bytes",
+    "sections": {
+      "uris": "Related links",
+      "additional-info": "Additional information"
+    },
+    "fields": {
+      "ticker": "Ticker",
+      "name": "Token name",
+      "description": "Description",
+      "icon": "Icon URI",
+      "asset-class": "Asset class",
+      "asset-subclass": "Asset subclass",
+      "issuer-name": "Issuer name",
+      "additional-info": "Information",
+      "additional-info-type": "Type"
+    },
+    "hints": {
+      "ticker": "Uppercase letters and digits only, up to 6 characters.",
+      "uri": "Use a hostname/path, HTTPS URL, or another complete URI such as ipfs://."
+    },
+    "placeholders": {
+      "name": "T-Bill Yield Token",
+      "issuer-name": "Example Yield Co.",
+      "description": "What the token represents",
+      "link-title": "Product page",
+      "additional-text": "Key details about the token"
+    },
+    "actions": {
+      "add-link": "Add link",
+      "remove": "Remove",
+      "copy-json": "Copy JSON",
+      "copy-hex": "Copy hex",
+      "copied": "Copied",
+      "download": "Download"
+    },
+    "warnings": {
+      "ticker": "Ticker is required and must contain 1–6 uppercase letters or digits.",
+      "name": "Token name is required.",
+      "icon": "Icon URI is required.",
+      "asset-class": "Asset class is required.",
+      "asset-subclass": "Asset subclass is required for RWA tokens.",
+      "issuer-name": "Issuer name is required.",
+      "uri": "Each related link needs both a URI and a title.",
+      "additional-json": "Additional information must be valid JSON.",
+      "additional-object": "Additional information JSON must be an object.",
+      "size": "Metadata is {{count}} bytes and exceeds the {{max}}-byte on-ledger limit."
+    },
+    "asset-classes": {
+      "select": "Select class",
+      "rwa": "RWA",
+      "memes": "Memes",
+      "wrapped": "Wrapped",
+      "gaming": "Gaming",
+      "defi": "DeFi",
+      "other": "Other"
+    },
+    "asset-subclasses": {
+      "select": "Select subclass",
+      "stablecoin": "Stablecoin",
+      "commodity": "Commodity",
+      "real_estate": "Real estate",
+      "private_credit": "Private credit",
+      "equity": "Equity",
+      "treasury": "Treasury",
+      "other": "Other"
+    },
+    "uri-categories": {
+      "website": "Website",
+      "social": "Social",
+      "docs": "Documentation",
+      "other": "Other"
+    },
+    "additional-info-types": {
+      "object": "JSON object",
+      "text": "Text"
     }
   },
   "toml-generator": {

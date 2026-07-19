@@ -221,7 +221,7 @@ export default function TomlCheckerPage() {
         description={tt('description', { explorerName, ledgerName, tomlName })}
       />
       <div className="content-text">
-        <ServicesTabs category="identity" tab="toml-checker" />
+        <ServicesTabs category={router.query.category === 'issuance' ? 'issuance' : 'identity'} tab="toml-checker" />
         <h1 className="center">{tt('title', { explorerName })}</h1>
         <p className="center">{tt('description', { explorerName, ledgerName, tomlName })}</p>
         <p className="center">
