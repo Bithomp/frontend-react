@@ -20,13 +20,20 @@ import {
 } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
-import { network } from '../../utils'
+import { isUrlValid, isValidJson, network } from '../../utils'
+import { ipfsUrl } from '../../utils/nft'
 import CopyButton from '../../components/UI/CopyButton'
 
 const errorNotFoundMessage =
   'Such Object is not found on the current Ledger of the ' +
   network.toUpperCase() +
   " network, try to use a Time Machine to change the date or change the network if it's wrong."
+
+const remarkLink = (value) => {
+  if (typeof value !== 'string') return ''
+  if (/^ipfs:\/\//i.test(value)) return ipfsUrl(value, 'viewer', 'cl') || ''
+  return isUrlValid(value) ? value : ''
+}
 
 function stripKeys(obj) {
   if (Array.isArray(obj)) {
@@ -125,6 +132,9 @@ export default function LedgerObject({
   const [showMetadata, setShowMetadata] = useState(false)
   const [showRaw, setShowRaw] = useState(false)
 
+  const jsonUrl = typeof data?.node?.url === 'string' && isValidJson(data.node.url) ? data.node.url : null
+  const metadata = data?.metadata || (jsonUrl ? JSON.parse(jsonUrl) : null)
+
   // time-machine states
   const qsDate = dateQuery ? new Date(dateQuery) : null
   const [ledgerDate, setLedgerDate] = useState(qsDate)
@@ -166,7 +176,7 @@ export default function LedgerObject({
     const cleanData = stripKeys(data.node)
 
     const rows = Object.entries(cleanData)
-      .filter(([key]) => key !== 'LedgerEntryType') // Exclude LedgerEntryType from regular rows
+      .filter(([key]) => !['LedgerEntryType', 'Remarks', 'remarks'].includes(key) && !(key === 'url' && jsonUrl))
       .map(([key, value]) => {
         const isTransactionHashField = txIdFields.includes(key) || /TxnID$|TransactionID$/i.test(key)
         const isLongHashLikeString =
@@ -306,6 +316,49 @@ export default function LedgerObject({
           </tbody>
         </table>
       </>
+    )
+  }
+
+  const remarksTable = () => {
+    const remarks = data?.node?.remarks
+    if (!remarks?.length) return null
+
+    return (
+      <table className="table-details remarks-table">
+        <thead>
+          <tr>
+            <th colSpan="2">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {remarks.map((remark, index) => {
+            const href = remarkLink(remark.value)
+            return (
+              <tr key={`${remark.name || 'remark'}-${index}`}>
+                <td className="brake">
+                  {remark.name || 'Unspecified'}
+                  {remark.flags?.immutable && (
+                    <>
+                      <br />
+                      <span className="grey">Immutable</span>
+                    </>
+                  )}
+                </td>
+                <td className="brake">
+                  {href ? (
+                    <a href={href} target="_blank" rel="noreferrer">
+                      {remark.value}
+                    </a>
+                  ) : (
+                    String(remark.value ?? '')
+                  )}{' '}
+                  {remark.value != null && <CopyButton text={String(remark.value)} />}
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     )
   }
 
@@ -528,8 +581,9 @@ export default function LedgerObject({
                 ) : (
                   <>
                     {detailsTable()}
+                    {remarksTable()}
 
-                    {data?.metadata && (
+                    {metadata && (
                       <table className="table-details">
                         <tbody>
                           <tr>
@@ -545,7 +599,7 @@ export default function LedgerObject({
                     )}
 
                     <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
-                      {showMetadata && codeHighlight(data.metadata)}
+                      {showMetadata && codeHighlight(metadata)}
                     </div>
 
                     <table className="table-details">

@@ -2,7 +2,8 @@
   .column-left {
     display: inline-block;
     position: relative;
-    width: calc(30% - 30px);
+    box-sizing: border-box;
+    width: 30%;
     padding: 0 15px;
     table.table-details {
       border-collapse: separate;
@@ -34,13 +35,20 @@
   }
   .column-right {
     display: inline-block;
-    width: calc(70% - 32px);
+    box-sizing: border-box;
+    width: 70%;
+    min-width: 0;
     padding: 0 15px;
     vertical-align: top;
     table.table-details {
+      table-layout: fixed;
       tbody tr {
         td:first-child {
           width: 23%;
+        }
+        td:last-child {
+          overflow-wrap: anywhere;
+          word-break: break-word;
         }
       }
     }
