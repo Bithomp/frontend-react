@@ -1517,7 +1517,9 @@ export default function SignForm({
               ammTxs.includes(screen) ? ' amm-sign-form' : ''
             }${screen === 'ammVoteFee' ? ' amm-vote-fee-form' : ''}${
               askInfoScreens.includes(screen) ? ' info-screen' : ''
-            }${isWalletSignScreen ? ' wallet-sign-screen' : ''}${screen === 'xaman' ? ' xaman-sign-screen' : ''}`}
+            }${isWalletSignScreen ? ' wallet-sign-screen' : ''}${screen === 'xaman' ? ' xaman-sign-screen' : ''}${
+              screen === 'ledgerwallet-addresses' || screen === 'dcent-addresses' ? ' address-selection-screen' : ''
+            }`}
           >
             <button
               type="button"

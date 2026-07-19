@@ -236,14 +236,12 @@ export default function AddressSelectionPanel({
   const list = useMemo(() => {
     return (
       <div
+        className="address-selection-list"
         style={{
-          maxHeight: 280,
-          overflowY: 'auto',
           border: '1px solid var(--card-border)',
           borderRadius: 12,
           padding: 8,
-          textAlign: 'left',
-          margin: '0 52px'
+          textAlign: 'left'
         }}
       >
         {accounts.map((entry) => {
@@ -297,46 +295,51 @@ export default function AddressSelectionPanel({
 
   return (
     <>
-      <div className="header">{title}</div>
-
-      <div className="orange bold center" style={{ margin: '30px', whiteSpace: 'pre-line' }}>
-        {awaiting ? (
-          <>
-            <span className="waiting"></span>
-            <br />
-            <br />
-          </>
-        ) : null}
-        {status}
+      <div className="address-selection-header">
+        <div className="header">{title}</div>
       </div>
 
-      {showScanMore ? (
-        <div className="center text-small grey" style={{ margin: '-12px 30px 18px', lineHeight: 1.5 }}>
-          Scanned first {accounts.length} address{accounts.length === 1 ? '' : 'es'}.{' '}
-          <button
-            type="button"
-            onClick={() => (isLedger ? loadLedgerAddresses({ append: true }) : loadDcentAddresses({ append: true }))}
-            disabled={awaiting}
-            style={{
-              border: 0,
-              padding: 0,
-              margin: 0,
-              background: 'transparent',
-              color: 'var(--accent-icon)',
-              cursor: awaiting ? 'default' : 'pointer',
-              font: 'inherit',
-              textDecoration: 'underline'
-            }}
-          >
-            Scan next {scanMoreCount}
-          </button>
+      <div className={`address-selection-content${accounts.length ? '' : ' status-only'}`}>
+        <div className="address-selection-status orange bold center" style={{ whiteSpace: 'pre-line' }}>
+          {awaiting ? (
+            <>
+              <span className="waiting"></span>
+              <br />
+              <br />
+            </>
+          ) : null}
+          {status}
         </div>
-      ) : null}
 
-      {!!accounts.length ? (
-        <>
-          {list}
-          <div style={{ marginTop: 14 }}>
+        {showScanMore ? (
+          <div className="address-selection-scan center text-small grey">
+            Scanned first {accounts.length} address{accounts.length === 1 ? '' : 'es'}.{' '}
+            <button
+              type="button"
+              onClick={() => (isLedger ? loadLedgerAddresses({ append: true }) : loadDcentAddresses({ append: true }))}
+              disabled={awaiting}
+              style={{
+                border: 0,
+                padding: 0,
+                margin: 0,
+                background: 'transparent',
+                color: 'var(--accent-icon)',
+                cursor: awaiting ? 'default' : 'pointer',
+                font: 'inherit',
+                textDecoration: 'underline'
+              }}
+            >
+              Scan next {scanMoreCount}
+            </button>
+          </div>
+        ) : null}
+
+        {!!accounts.length ? list : null}
+      </div>
+
+      {!!accounts.length || (!awaiting && (!accounts.length || (isLedger && ledgerNeedsRetry))) ? (
+        <div className="address-selection-actions">
+          {!!accounts.length ? (
             <button
               type="button"
               className="button-action"
@@ -344,23 +347,19 @@ export default function AddressSelectionPanel({
               style={buttonStyle}
               disabled={awaiting || !selectedAddresses.length}
             >
-              {isLedger ? 'Connect selected' : 'Connect selected'}
+              Connect selected
             </button>
-          </div>
-        </>
-      ) : null}
-
-      {!awaiting && (!accounts.length || (isLedger && ledgerNeedsRetry)) ? (
-        <div style={{ marginTop: 14 }}>
-          <button
-            type="button"
-            className="button-action"
-            onClick={isLedger ? () => loadLedgerAddresses() : loadDcentAddresses}
-            style={buttonStyle}
-            disabled={awaiting}
-          >
-            {isLedger ? ledgerRetryLabel : 'Retry'}
-          </button>
+          ) : (
+            <button
+              type="button"
+              className="button-action"
+              onClick={isLedger ? () => loadLedgerAddresses() : loadDcentAddresses}
+              style={buttonStyle}
+              disabled={awaiting}
+            >
+              {isLedger ? ledgerRetryLabel : 'Retry'}
+            </button>
+          )}
         </div>
       ) : null}
     </>

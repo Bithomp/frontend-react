@@ -178,6 +178,74 @@
       width: min(560px, calc(100vw - 32px));
     }
 
+    &.address-selection-screen {
+      width: min(560px, calc(100vw - 32px));
+      overflow: hidden;
+
+      .address-selection-header {
+        flex: 0 0 auto;
+        padding: 34px 68px 20px;
+        border-bottom: 1px solid var(--card-border);
+        background: color-mix(in srgb, var(--background-main) 94%, var(--background-secondary));
+      }
+
+      .address-selection-content {
+        display: flex;
+        min-height: 0;
+        flex: 1 1 auto;
+        flex-direction: column;
+        gap: 18px;
+        overflow: hidden;
+        padding: 24px 34px 6px;
+
+        &.status-only {
+          min-height: 240px;
+          justify-content: center;
+          padding-top: 34px;
+          padding-bottom: 34px;
+        }
+      }
+
+      .address-selection-status {
+        margin: 0;
+        line-height: 1.4;
+        text-wrap: balance;
+      }
+
+      .address-selection-scan {
+        margin: -4px 0 0;
+        line-height: 1.5;
+      }
+
+      .address-selection-list {
+        min-height: 0;
+        max-height: min(280px, 38dvh);
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+
+        .checkbox__label {
+          display: flex;
+          min-width: 0;
+          flex: 1 1 auto;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 16px;
+        }
+      }
+
+      .address-selection-actions {
+        display: flex;
+        flex: 0 0 auto;
+        justify-content: center;
+        padding: 18px 34px 28px;
+
+        .button-action {
+          min-height: 44px;
+          margin: 0 !important;
+        }
+      }
+    }
+
     &.wallet-sign-screen:not(.xaman-sign-screen) {
       width: min(560px, calc(100vw - 32px));
       min-height: 300px;
@@ -444,6 +512,42 @@
 
       &.amm-vote-fee-form {
         height: 100%;
+      }
+
+      &.address-selection-screen {
+        height: 100%;
+        max-height: none;
+
+        .address-selection-header {
+          padding: 28px 60px 18px;
+        }
+
+        .address-selection-content {
+          padding: 22px 18px 8px;
+
+          &.status-only {
+            min-height: 0;
+            justify-content: center;
+            padding-top: 32px;
+            padding-bottom: 32px;
+          }
+        }
+
+        .address-selection-list {
+          max-height: none;
+
+          .checkbox__label {
+            gap: 12px;
+          }
+        }
+
+        .address-selection-actions {
+          padding: 16px 18px calc(22px + env(safe-area-inset-bottom));
+
+          .button-action {
+            width: min(100%, 320px);
+          }
+        }
       }
 
       &.xaman-sign-screen {
