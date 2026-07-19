@@ -172,6 +172,27 @@ const metadataDisplayValue = (value) => {
   return JSON.stringify(value)
 }
 
+const normalizedTomlCurrency = (value) => String(value || '').trim().toUpperCase()
+
+const tokenTomlEntry = (token) => {
+  const tomlTokens = token?.toml?.TOKENS
+  if (!Array.isArray(tomlTokens) || !tomlTokens.length) return null
+
+  const currencies = new Set(
+    [token?.currency, token?.currencyDetails?.currency, token?.currencyDetails?.currencyCode]
+      .map(normalizedTomlCurrency)
+      .filter(Boolean)
+  )
+
+  return (
+    tomlTokens.find(
+      (item) =>
+        item?.issuer === token?.issuer &&
+        (!currencies.size || currencies.has(normalizedTomlCurrency(item?.currency)))
+    ) || null
+  )
+}
+
 const MPT_ASSET_CLASS_LABELS = {
   rwa: 'Real world asset',
   memes: 'Meme token',
@@ -290,7 +311,7 @@ export async function getServerSideProps(context) {
       if (!initialErrorMessage) {
         try {
           // Fetch token data
-          const url = `v2/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}`
+          const url = `v2/token/${encodeURIComponent(issuer)}/${encodeURIComponent(currencyCode)}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}&toml=true`
           const res = await axiosServer({
             method: 'get',
             url,
@@ -803,6 +824,7 @@ export default function TokenPage({
   const [mintsOrder, setMintsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const [burnsOrder, setBurnsOrder] = useState(TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH)
   const [showMptMetadata, setShowMptMetadata] = useState(false)
+  const [showToml, setShowToml] = useState(false)
   const [tokenChartRows, setTokenChartRows] = useState([])
   const [holdersPreviewData, setHoldersPreviewData] = useState(initialHoldersPreviewData || null)
   const [ammsPreviewData, setAmmsPreviewData] = useState(initialAmmsPreviewData || null)
@@ -864,7 +886,7 @@ export default function TokenPage({
     const url = selectedMptId
       ? `v2/token/${encodeURIComponent(selectedMptId)}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
       : selectedToken?.issuer
-        ? `v2/token/${selectedToken.issuer}/${selectedToken.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+        ? `v2/token/${encodeURIComponent(selectedToken.issuer)}/${encodeURIComponent(selectedToken.currency)}?statistics=true&currencyDetails=true&convertCurrencies=${cur}&toml=true`
         : `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${cur}`
     const res = await axiosServer({
       method: 'get',
@@ -1400,6 +1422,14 @@ export default function TokenPage({
   const mptMetadataAssetSubclass = mptMetadataValue(mptMetadata, 'asset_subclass', 'as')
   const mptMetadataIssuerName = mptMetadataValue(mptMetadata, 'issuer_name', 'in')
   const mptMetadataUris = mptMetadataValue(mptMetadata, 'uris', 'us')
+  const hasTomlData = !!token?.rawtoml
+  const tomlToken = tokenTomlEntry(token)
+  const tomlTokenAssetClass = mptMetadataValue(tomlToken, 'asset_class')
+  const tomlTokenAssetSubclass = mptMetadataValue(tomlToken, 'asset_subclass')
+  const tomlTokenLinks = [
+    ...(Array.isArray(tomlToken?.URLS) ? tomlToken.URLS : []),
+    ...(Array.isArray(tomlToken?.WEBLINKS) ? tomlToken.WEBLINKS : [])
+  ]
   const isRoundTokenImage = !!token?.issuer || isMptToken || isNativeToken
   const tokenDisplayCurrency = isMptToken
     ? mptMetadataName || mptMetadataTicker || token?.currency || 'MPT'
@@ -1799,14 +1829,14 @@ export default function TokenPage({
     </span>
   )
 
-  const renderMetadataLinks = (uris) => {
+  const renderMetadataLinks = (uris, { uriKeys = ['uri', 'u'], titleKeys = ['title', 't'] } = {}) => {
     const uriItems = Array.isArray(uris) ? uris : [uris]
     const links = uriItems
       .map((item, index) => {
-        const uri = typeof item === 'object' ? mptMetadataValue(item, 'uri', 'u') : item
+        const uri = typeof item === 'object' ? mptMetadataValue(item, ...uriKeys) : item
         if (!uri) return null
 
-        const title = typeof item === 'object' ? mptMetadataValue(item, 'title', 't') : ''
+        const title = typeof item === 'object' ? mptMetadataValue(item, ...titleKeys) : ''
         const text = metadataDisplayValue(uri)
 
         return {
@@ -1837,6 +1867,10 @@ export default function TokenPage({
   }
 
   const mptMetadataLinks = renderMetadataLinks(mptMetadataUris)
+  const tomlLinks = renderMetadataLinks(tomlTokenLinks, {
+    uriKeys: ['url', 'uri', 'link'],
+    titleKeys: ['title', 'type']
+  })
   const mptMetadataCodeLabel = (group, fallbackMap, value) => {
     const code = metadataDisplayValue(value).trim().toLowerCase()
     if (!code) return ''
@@ -1847,6 +1881,12 @@ export default function TokenPage({
     'assetSubclasses',
     MPT_ASSET_SUBCLASS_LABELS,
     mptMetadataAssetSubclass
+  )
+  const tomlTokenAssetClassLabel = mptMetadataCodeLabel('assetClasses', MPT_ASSET_CLASS_LABELS, tomlTokenAssetClass)
+  const tomlTokenAssetSubclassLabel = mptMetadataCodeLabel(
+    'assetSubclasses',
+    MPT_ASSET_SUBCLASS_LABELS,
+    tomlTokenAssetSubclass
   )
   const renderPanel = ({ title, className = '', children }) => (
     <section className={`tokenPanel ${className}`.trim()}>
@@ -1919,14 +1959,14 @@ export default function TokenPage({
     {
       key: 'name',
       label: tt('fields.name'),
-      value: token.name,
-      show: !!token?.name && token.name !== tokenDisplayCurrency
+      value: token.name || tomlToken?.name,
+      show: !!(token?.name || tomlToken?.name) && (token.name || tomlToken?.name) !== tokenDisplayCurrency
     },
     {
       key: 'description',
       label: tt('fields.description'),
-      value: token.description || (isMptToken ? mptMetadataDescription : ''),
-      show: !!(token?.description || (isMptToken && mptMetadataDescription))
+      value: token.description || tomlToken?.desc || tomlToken?.description || (isMptToken ? mptMetadataDescription : ''),
+      show: !!(token?.description || tomlToken?.desc || tomlToken?.description || (isMptToken && mptMetadataDescription))
     },
     {
       key: 'issuerName',
@@ -1937,20 +1977,20 @@ export default function TokenPage({
     {
       key: 'assetClass',
       label: tt('fields.assetClass', { defaultValue: 'Asset class' }),
-      value: mptMetadataAssetClassLabel,
-      show: isMptToken && !!mptMetadataAssetClass
+      value: isMptToken ? mptMetadataAssetClassLabel : tomlTokenAssetClassLabel,
+      show: isMptToken ? !!mptMetadataAssetClass : !!tomlTokenAssetClass
     },
     {
       key: 'assetSubclass',
       label: tt('fields.assetSubclass', { defaultValue: 'Asset subclass' }),
-      value: mptMetadataAssetSubclassLabel,
-      show: isMptToken && !!mptMetadataAssetSubclass
+      value: isMptToken ? mptMetadataAssetSubclassLabel : tomlTokenAssetSubclassLabel,
+      show: isMptToken ? !!mptMetadataAssetSubclass : !!tomlTokenAssetSubclass
     },
     {
       key: 'relatedLinks',
       label: tt('fields.relatedLinks', { defaultValue: 'Related links' }),
-      value: mptMetadataLinks,
-      show: isMptToken && !!mptMetadataLinks
+      value: isMptToken ? mptMetadataLinks : tomlLinks,
+      show: isMptToken ? !!mptMetadataLinks : !!tomlLinks
     },
     {
       key: 'mptId',
@@ -2421,6 +2461,21 @@ export default function TokenPage({
                     </span>
                   </div>
                 )}
+                {hasTomlData && (
+                  <div className="tokenProfileInfoRow">
+                    <span>TOML</span>
+                    <span>
+                      <button
+                        type="button"
+                        className="tokenProfileLinkButton"
+                        onClick={() => setShowToml((value) => !value)}
+                        aria-expanded={showToml}
+                      >
+                        {showToml ? tt('actions.hideMetadata') : tt('actions.showMetadata')}
+                      </button>
+                    </span>
+                  </div>
+                )}
               </div>
             </aside>
 
@@ -2468,6 +2523,14 @@ export default function TokenPage({
                   className: 'tokenClosedPanel',
                   children: <div className="tokenMetricGrid">{renderMetricTiles(closedDayItems)}</div>
                 })}
+
+              {hasTomlData && showToml && (
+                <section className="tokenPanel tokenTomlPanel">
+                  <pre className="tokenProfileMetadataPre tokenTomlPre">
+                    <code>{token.rawtoml}</code>
+                  </pre>
+                </section>
+              )}
 
               {statistics &&
                 renderPanel({
