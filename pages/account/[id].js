@@ -6575,7 +6575,7 @@ export default function Account({
                                               })
                                             }}
                                           >
-                                            Make a buy offer
+                                            {ta('actions.make-buy-offer')}
                                           </button>
                                           {!!disabledBuyOfferTooltip && (
                                             <span className="tooltiptext left">{disabledBuyOfferTooltip}</span>
@@ -6595,7 +6595,7 @@ export default function Account({
                                             })
                                           }}
                                         >
-                                          Burn
+                                          {ta('actions.burn')}
                                         </button>
                                       </div>
                                     )}
@@ -6619,7 +6619,7 @@ export default function Account({
                                               })
                                             }}
                                           >
-                                            List for sale
+                                            {ta('actions.list-for-sale')}
                                           </button>
                                           {!!disabledOwnerNftActionTooltip && (
                                             <span className="tooltiptext left">{disabledOwnerNftActionTooltip}</span>
@@ -6644,7 +6644,7 @@ export default function Account({
                                               })
                                             }}
                                           >
-                                            Transfer
+                                            {ta('actions.transfer')}
                                           </button>
                                           {!!disabledOwnerNftActionTooltip && (
                                             <span className="tooltiptext left">{disabledOwnerNftActionTooltip}</span>
@@ -6686,7 +6686,7 @@ export default function Account({
                                               })
                                             }}
                                           >
-                                            Set as avatar
+                                            {ta('actions.set-as-avatar')}
                                           </button>
                                           {!canSetNftAsAvatar && (
                                             <span className="tooltiptext left">

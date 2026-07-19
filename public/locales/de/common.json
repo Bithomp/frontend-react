@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "Domain",
-      "enter-domain": "Domain eingeben"
+      "enter-domain": "Domain eingeben",
+      "avatar-url": "Avatar-URL",
+      "enter-avatar-url": "Avatar-URL eingeben",
+      "invalid-url": "Ungültige URL"
+    },
+    "connection": {
+      "select-address": "Bitte wählen Sie mindestens eine Adresse zum Verbinden aus.",
+      "connecting": "Verbindung wird hergestellt...",
+      "connecting-ledger-addresses": "Ausgewählte Ledger-Adressen werden verbunden...",
+      "connecting-ledger-progress": "Ausgewählte Ledger-Adressen werden verbunden... {{current}}/{{total}}",
+      "walletconnect-loading": "Das WalletConnect-Fenster wird geladen...",
+      "walletconnect-cache-reset": "Der WalletConnect-Cache wurde wegen einer veralteten Kopplung zurückgesetzt. Bitte versuchen Sie es erneut.",
+      "walletconnect-testnet": "Stellen Sie sicher, dass Ihre Wallet mit dem Testnetzwerk verbunden ist, und versuchen Sie es erneut.",
+      "walletconnect-error": "Fehler beim Verbinden über WalletConnect",
+      "walletconnect-no-session": "Es wurde keine WalletConnect-Sitzung erstellt.",
+      "walletconnect-relay-error": "Der WalletConnect-Relay antwortet nicht. Bitte versuchen Sie es erneut."
     },
     "status": {
       "awaiting-crawler": "Warten auf den Crawler zur Aktualisierung der Daten",

@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "Домен",
-      "enter-domain": "Введите домен"
+      "enter-domain": "Введите домен",
+      "avatar-url": "URL аватара",
+      "enter-avatar-url": "Введите URL аватара",
+      "invalid-url": "Некорректный URL"
+    },
+    "connection": {
+      "select-address": "Выберите хотя бы один адрес для подключения.",
+      "connecting": "Подключение...",
+      "connecting-ledger-addresses": "Подключение выбранных адресов Ledger...",
+      "connecting-ledger-progress": "Подключение выбранных адресов Ledger... {{current}}/{{total}}",
+      "walletconnect-loading": "Загрузка окна WalletConnect...",
+      "walletconnect-cache-reset": "Кэш WalletConnect сброшен из-за устаревшего сопряжения. Попробуйте подключиться снова.",
+      "walletconnect-testnet": "Убедитесь, что кошелёк подключён к тестовой сети, и повторите попытку.",
+      "walletconnect-error": "Ошибка подключения через WalletConnect",
+      "walletconnect-no-session": "Сессия WalletConnect не была создана.",
+      "walletconnect-relay-error": "Ретранслятор WalletConnect не отвечает. Повторите попытку."
     },
     "status": {
       "awaiting-crawler": "Ожидаем NFT сканер для обновления данных",

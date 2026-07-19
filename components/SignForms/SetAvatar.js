@@ -1,6 +1,9 @@
 import { encode, isUrlValid } from '../../utils'
+import { useTranslation } from 'next-i18next'
 
 export default function SetAvatar({ setSignRequest, signRequest, setStatus, setAgreedToRisks }) {
+  const { t } = useTranslation('common')
+
   const onAvatarChange = (e) => {
     let avatarUrl = e.target.value
     avatarUrl = avatarUrl.trim()
@@ -8,7 +11,7 @@ export default function SetAvatar({ setSignRequest, signRequest, setStatus, setA
     if (isUrlValid(avatarUrl)) {
       setStatus('')
     } else {
-      setStatus('Invalid URL')
+      setStatus(t('signin.set-account.invalid-url'))
       return
     }
 
@@ -42,8 +45,13 @@ export default function SetAvatar({ setSignRequest, signRequest, setStatus, setA
     <div className="center">
       <br />
       <span className="halv">
-        <span className="input-title">Avatar's URL</span>
-        <input placeholder="Enter Avatar's URL" onChange={onAvatarChange} className="input-text" spellCheck="false" />
+        <span className="input-title">{t('signin.set-account.avatar-url')}</span>
+        <input
+          placeholder={t('signin.set-account.enter-avatar-url')}
+          onChange={onAvatarChange}
+          className="input-text"
+          spellCheck="false"
+        />
       </span>
     </div>
   )

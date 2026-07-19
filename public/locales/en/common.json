@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "Domain",
-      "enter-domain": "Enter domain"
+      "enter-domain": "Enter domain",
+      "avatar-url": "Avatar URL",
+      "enter-avatar-url": "Enter avatar URL",
+      "invalid-url": "Invalid URL"
+    },
+    "connection": {
+      "select-address": "Please select at least one address to connect.",
+      "connecting": "Connecting...",
+      "connecting-ledger-addresses": "Connecting selected Ledger addresses...",
+      "connecting-ledger-progress": "Connecting selected Ledger addresses... {{current}}/{{total}}",
+      "walletconnect-loading": "WalletConnect modal is loading...",
+      "walletconnect-cache-reset": "WalletConnect cache was reset because a stale pairing was found. Please try connecting again.",
+      "walletconnect-testnet": "Make sure your wallet is connected to the Test network and try again.",
+      "walletconnect-error": "Error connecting through WalletConnect",
+      "walletconnect-no-session": "WalletConnect session was not created.",
+      "walletconnect-relay-error": "WalletConnect relay is not responding. Please try again."
     },
     "status": {
       "awaiting-crawler": "Awaiting for crawler to update the data",

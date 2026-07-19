@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "도메인",
-      "enter-domain": "도메인을 입력하세요."
+      "enter-domain": "도메인을 입력하세요.",
+      "avatar-url": "아바타 URL",
+      "enter-avatar-url": "아바타 URL을 입력하세요",
+      "invalid-url": "유효하지 않은 URL"
+    },
+    "connection": {
+      "select-address": "연결할 주소를 하나 이상 선택하세요.",
+      "connecting": "연결 중...",
+      "connecting-ledger-addresses": "선택한 Ledger 주소를 연결하는 중...",
+      "connecting-ledger-progress": "선택한 Ledger 주소를 연결하는 중... {{current}}/{{total}}",
+      "walletconnect-loading": "WalletConnect 창을 불러오는 중...",
+      "walletconnect-cache-reset": "오래된 페어링이 발견되어 WalletConnect 캐시를 초기화했습니다. 다시 연결해 주세요.",
+      "walletconnect-testnet": "지갑이 테스트 네트워크에 연결되어 있는지 확인한 후 다시 시도하세요.",
+      "walletconnect-error": "WalletConnect 연결 중 오류가 발생했습니다",
+      "walletconnect-no-session": "WalletConnect 세션이 생성되지 않았습니다.",
+      "walletconnect-relay-error": "WalletConnect 릴레이가 응답하지 않습니다. 다시 시도하세요."
     },
     "status": {
       "awaiting-crawler": "크롤러가 데이터를 업데이트할 때까지 기다리는 중",

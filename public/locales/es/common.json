@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "Dominio",
-      "enter-domain": "Introduce un dominio"
+      "enter-domain": "Introduce un dominio",
+      "avatar-url": "URL del avatar",
+      "enter-avatar-url": "Introduce la URL del avatar",
+      "invalid-url": "URL no válida"
+    },
+    "connection": {
+      "select-address": "Selecciona al menos una dirección para conectar.",
+      "connecting": "Conectando...",
+      "connecting-ledger-addresses": "Conectando las direcciones de Ledger seleccionadas...",
+      "connecting-ledger-progress": "Conectando las direcciones de Ledger seleccionadas... {{current}}/{{total}}",
+      "walletconnect-loading": "Cargando la ventana de WalletConnect...",
+      "walletconnect-cache-reset": "La caché de WalletConnect se restableció por un emparejamiento obsoleto. Intenta conectarte de nuevo.",
+      "walletconnect-testnet": "Asegúrate de que tu monedero esté conectado a la red de prueba e inténtalo de nuevo.",
+      "walletconnect-error": "Error al conectar mediante WalletConnect",
+      "walletconnect-no-session": "No se creó la sesión de WalletConnect.",
+      "walletconnect-relay-error": "El relay de WalletConnect no responde. Inténtalo de nuevo."
     },
     "status": {
       "awaiting-crawler": "Esperando a que el rastreador actualice los datos",

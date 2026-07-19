@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "域名",
-      "enter-domain": "输入域名"
+      "enter-domain": "输入域名",
+      "avatar-url": "头像 URL",
+      "enter-avatar-url": "输入头像 URL",
+      "invalid-url": "无效的 URL"
+    },
+    "connection": {
+      "select-address": "请至少选择一个要连接的地址。",
+      "connecting": "正在连接...",
+      "connecting-ledger-addresses": "正在连接选中的 Ledger 地址...",
+      "connecting-ledger-progress": "正在连接选中的 Ledger 地址... {{current}}/{{total}}",
+      "walletconnect-loading": "正在加载 WalletConnect 窗口...",
+      "walletconnect-cache-reset": "发现过期配对，WalletConnect 缓存已重置。请重新连接。",
+      "walletconnect-testnet": "请确保您的钱包已连接到测试网络，然后重试。",
+      "walletconnect-error": "通过 WalletConnect 连接时出错",
+      "walletconnect-no-session": "未能创建 WalletConnect 会话。",
+      "walletconnect-relay-error": "WalletConnect 中继无响应，请重试。"
     },
     "status": {
       "awaiting-crawler": "等待爬虫更新数据",

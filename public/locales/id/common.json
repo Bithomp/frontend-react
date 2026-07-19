@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "Domain",
-      "enter-domain": "Masukkan domain"
+      "enter-domain": "Masukkan domain",
+      "avatar-url": "URL avatar",
+      "enter-avatar-url": "Masukkan URL avatar",
+      "invalid-url": "URL tidak valid"
+    },
+    "connection": {
+      "select-address": "Pilih setidaknya satu alamat untuk dihubungkan.",
+      "connecting": "Menghubungkan...",
+      "connecting-ledger-addresses": "Menghubungkan alamat Ledger yang dipilih...",
+      "connecting-ledger-progress": "Menghubungkan alamat Ledger yang dipilih... {{current}}/{{total}}",
+      "walletconnect-loading": "Jendela WalletConnect sedang dimuat...",
+      "walletconnect-cache-reset": "Cache WalletConnect direset karena ditemukan pasangan lama. Silakan coba hubungkan lagi.",
+      "walletconnect-testnet": "Pastikan dompet Anda terhubung ke jaringan Test lalu coba lagi.",
+      "walletconnect-error": "Terjadi kesalahan saat menghubungkan melalui WalletConnect",
+      "walletconnect-no-session": "Sesi WalletConnect tidak dibuat.",
+      "walletconnect-relay-error": "Relay WalletConnect tidak merespons. Silakan coba lagi."
     },
     "status": {
       "awaiting-crawler": "Menunggu sistem pemantau untuk meng-update informasi",

@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "Domaine",
-      "enter-domain": "Entrer le domaine"
+      "enter-domain": "Entrer le domaine",
+      "avatar-url": "URL de l’avatar",
+      "enter-avatar-url": "Saisissez l’URL de l’avatar",
+      "invalid-url": "URL non valide"
+    },
+    "connection": {
+      "select-address": "Sélectionnez au moins une adresse à connecter.",
+      "connecting": "Connexion en cours...",
+      "connecting-ledger-addresses": "Connexion des adresses Ledger sélectionnées...",
+      "connecting-ledger-progress": "Connexion des adresses Ledger sélectionnées... {{current}}/{{total}}",
+      "walletconnect-loading": "Chargement de la fenêtre WalletConnect...",
+      "walletconnect-cache-reset": "Le cache WalletConnect a été réinitialisé en raison d’un appairage obsolète. Réessayez de vous connecter.",
+      "walletconnect-testnet": "Vérifiez que votre portefeuille est connecté au réseau de test, puis réessayez.",
+      "walletconnect-error": "Erreur de connexion via WalletConnect",
+      "walletconnect-no-session": "La session WalletConnect n’a pas été créée.",
+      "walletconnect-relay-error": "Le relais WalletConnect ne répond pas. Réessayez."
     },
     "status": {
       "awaiting-crawler": "Attente de la mise à jour des données par le crawler",

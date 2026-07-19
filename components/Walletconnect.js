@@ -223,6 +223,7 @@ export function WalletConnect({
   setSessions,
   activeAddress
 }) {
+  const { t } = useTranslation('common')
   const [sendNow, setSendNow] = useState(false)
   const [activeSession, setActiveSession] = useState(null)
 
@@ -234,7 +235,7 @@ export function WalletConnect({
     setSessions({})
     setActiveSession(null)
     setAwaiting(false)
-    setStatus('WalletConnect cache was reset because a stale pairing was found. Please try connecting again.')
+    setStatus(t('signin.connection.walletconnect-cache-reset'))
   }
 
   const { connect } = useConnect({
@@ -272,16 +273,16 @@ export function WalletConnect({
         }
         setAwaiting(false)
         if (errMessage === 'Requested chains reside on testnet') {
-          setStatus('Make sure your Wallet is connected to the Test network and then try again.')
+          setStatus(t('signin.connection.walletconnect-testnet'))
         } else {
-          setStatus(errMessage || 'Error connecting through WalletConnect')
+          setStatus(errMessage || t('signin.connection.walletconnect-error'))
         }
       }
     }
 
     if (!sessionNew) {
       setAwaiting(false)
-      setStatus('WalletConnect session was not created.')
+      setStatus(t('signin.connection.walletconnect-no-session'))
       return
     }
 
@@ -370,7 +371,7 @@ export function WalletConnect({
         event.preventDefault()
         console.warn('WalletConnect relay connection failed:', getErrorMessage(event?.reason))
         setAwaiting(false)
-        setStatus('WalletConnect relay is not responding. Please try again.')
+        setStatus(t('signin.connection.walletconnect-relay-error'))
         return
       }
       if (!isNoMatchingKeyError(event?.reason)) return
@@ -384,7 +385,7 @@ export function WalletConnect({
         event.preventDefault()
         console.warn('WalletConnect relay connection failed:', getErrorMessage(error))
         setAwaiting(false)
-        setStatus('WalletConnect relay is not responding. Please try again.')
+        setStatus(t('signin.connection.walletconnect-relay-error'))
         return true
       }
       if (!isNoMatchingKeyError(event?.error) && !isNoMatchingKeyError(event?.message)) return

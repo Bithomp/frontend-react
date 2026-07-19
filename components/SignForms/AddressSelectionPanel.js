@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'next-i18next'
 import CheckBox from '../UI/CheckBox'
 import { shortAddress } from '../../utils/format'
 import {
@@ -20,6 +21,7 @@ export default function AddressSelectionPanel({
   nativeCurrencyValue,
   onConnectSelection
 }) {
+  const { t } = useTranslation('common')
   const [status, setStatus] = useState('')
   const [awaiting, setAwaiting] = useState(false)
   const [accounts, setAccounts] = useState([])
@@ -214,12 +216,12 @@ export default function AddressSelectionPanel({
         })
 
     if (!selection) {
-      setStatus('Please select at least one address to connect.')
+      setStatus(t('signin.connection.select-address'))
       return
     }
 
     setAwaiting(true)
-    setStatus(isLedger ? 'Connecting selected Ledger addresses...' : 'Connecting...')
+    setStatus(isLedger ? t('signin.connection.connecting-ledger-addresses') : t('signin.connection.connecting'))
     try {
       await onConnectSelection?.({
         wallet: isLedger ? 'ledgerwallet' : 'dcent',

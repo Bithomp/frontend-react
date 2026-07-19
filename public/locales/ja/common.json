@@ -247,7 +247,22 @@
     },
     "set-account": {
       "domain": "ドメイン",
-      "enter-domain": "ドメインを入力"
+      "enter-domain": "ドメインを入力",
+      "avatar-url": "アバターURL",
+      "enter-avatar-url": "アバターURLを入力",
+      "invalid-url": "無効なURL"
+    },
+    "connection": {
+      "select-address": "接続するアドレスを1つ以上選択してください。",
+      "connecting": "接続中...",
+      "connecting-ledger-addresses": "選択したLedgerアドレスに接続中...",
+      "connecting-ledger-progress": "選択したLedgerアドレスに接続中... {{current}}/{{total}}",
+      "walletconnect-loading": "WalletConnectウィンドウを読み込んでいます...",
+      "walletconnect-cache-reset": "古いペアリングが見つかったため、WalletConnectのキャッシュをリセットしました。もう一度接続してください。",
+      "walletconnect-testnet": "ウォレットがテストネットワークに接続されていることを確認して、もう一度お試しください。",
+      "walletconnect-error": "WalletConnectでの接続中にエラーが発生しました",
+      "walletconnect-no-session": "WalletConnectセッションを作成できませんでした。",
+      "walletconnect-relay-error": "WalletConnectリレーが応答していません。もう一度お試しください。"
     },
     "status": {
       "awaiting-crawler": "クローラーによるデータ更新を行なっています。",

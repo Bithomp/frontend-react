@@ -688,7 +688,9 @@ export default function SignForm({
 
       for (const [index, itemAddress] of toPersist.entries()) {
         if (wallet === 'ledgerwallet' && toPersist.length > 1) {
-          updateStatus(`Connecting selected Ledger addresses... ${index + 1}/${toPersist.length}`)
+          updateStatus(
+            t('signin.connection.connecting-ledger-progress', { current: index + 1, total: toPersist.length })
+          )
         }
 
         await saveAddressData({
@@ -842,7 +844,7 @@ export default function SignForm({
   const walletconnectTxSending = async (tx) => {
     setScreen('walletconnect')
     setPreparedTx(tx)
-    setStatus('WalletConnect modal is loading...')
+    setStatus(t('signin.connection.walletconnect-loading'))
   }
 
   const xamanTxSending = (tx) => {
