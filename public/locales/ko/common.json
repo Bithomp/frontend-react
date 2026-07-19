@@ -13,7 +13,8 @@
   "token-tabs": {
     "tokens": "토큰",
     "amms": "LP 토큰",
-    "mpts": "MPT"
+    "mpts": "MPT",
+    "generate-mpt-metadata": "MPT 메타데이터 생성"
   },
   "chart-period": {
     "aria-label": "차트 기간",

@@ -13,7 +13,8 @@
   "token-tabs": {
     "tokens": "Токены",
     "amms": "LP токены",
-    "mpts": "МПТ"
+    "mpts": "МПТ",
+    "generate-mpt-metadata": "Создать метаданные MPT"
   },
   "chart-period": {
     "aria-label": "Период графика",

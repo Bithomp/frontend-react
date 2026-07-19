@@ -115,6 +115,33 @@
   }
 }
 
+.tabs-with-centered-action {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px 12px;
+  margin-bottom: 20px;
+
+  > :first-child {
+    grid-column: 2;
+  }
+
+  .tabs-inline-action {
+    grid-column: 3;
+    justify-self: start;
+  }
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+
+    > :first-child,
+    .tabs-inline-action {
+      grid-column: 1;
+      justify-self: center;
+    }
+  }
+}
+
 .services-tabs {
   margin: 8px 0 18px;
 

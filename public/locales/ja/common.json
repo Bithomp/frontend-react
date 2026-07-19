@@ -13,7 +13,8 @@
   "token-tabs": {
     "tokens": "トークン",
     "amms": "LPトークン",
-    "mpts": "MPT"
+    "mpts": "MPT",
+    "generate-mpt-metadata": "MPTメタデータを生成"
   },
   "chart-period": {
     "aria-label": "チャート期間",

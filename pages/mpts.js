@@ -20,6 +20,7 @@ import { axiosServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isAddressOrUsername, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import SortingArrow from '../components/Tables/SortingArrow'
 import CopyButton from '../components/UI/CopyButton'
 import { scaleAmount } from '../utils/calc'
@@ -412,7 +413,14 @@ export default function Mpts({
       <SEO title="Multi-Purpose Tokens" />
       <h1 className="center">Multi-Purpose Tokens</h1>
 
-      {!xahauNetwork && <TokenTabs tab="mpts" />}
+      {!xahauNetwork && (
+        <div className="tabs-inline tabs-with-centered-action">
+          <TokenTabs tab="mpts" />
+          <Link href="/services/mpt-metadata-generator" className="button-action thin narrow secondary tabs-inline-action">
+            {t('token-tabs.generate-mpt-metadata')}
+          </Link>
+        </div>
+      )}
 
       <FiltersFrame
         count={data?.length}
