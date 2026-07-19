@@ -56,24 +56,6 @@
         color: var(--text-main);
       }
     }
-    .react-select__menu {
-      border-radius: 10px;
-      margin-top: 4px;
-      z-index: 2;
-      overflow: hidden;
-    }
-    .react-select__menu-list {
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-    .react-select__option {
-      background-color: var(--background-secondary);
-      color: var(--text-main);
-      display: inline-block;
-      &:hover {
-        background-color: var(--background-main);
-      }
-    }
     .react-select__dropdown-indicator {
       padding: 0;
       color: var(--accent-icon);

@@ -254,6 +254,38 @@ input, textarea {
   border-radius: 0 !important;
 }
 
+// Menus rendered through menuPortalTarget live outside their component wrapper,
+// so keep their theme states available globally.
+.react-select__menu-portal .react-select__menu {
+  overflow: hidden !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 10px !important;
+  margin-top: 4px !important;
+  background-color: var(--background-secondary) !important;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--text-main) 14%, transparent) !important;
+}
+
+.react-select__menu-portal .react-select__menu-list {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  background-color: var(--background-secondary) !important;
+}
+
+.react-select__menu-portal .react-select__option {
+  background-color: var(--background-secondary) !important;
+  color: var(--text-main) !important;
+  cursor: pointer !important;
+}
+
+.react-select__menu-portal .react-select__option--is-focused {
+  background-color: var(--background-main) !important;
+}
+
+.react-select__menu-portal .react-select__option--is-selected {
+  background-color: var(--accent-icon) !important;
+  color: var(--background-main) !important;
+}
+
 textarea {
   &.input-text {
     height: 200px;
