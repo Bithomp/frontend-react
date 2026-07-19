@@ -258,12 +258,12 @@
     white-space: pre-wrap;
   }
 
-  .tokenTomlPanel {
+  .tokenExpandedDataPanel {
     grid-column: 1 / -1;
     width: 100%;
   }
 
-  .tokenTomlPre {
+  .tokenExpandedDataPre {
     max-height: min(65vh, 720px);
     padding: 14px;
     font-size: 13px;

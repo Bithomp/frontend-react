@@ -30,6 +30,7 @@ import {
 import { axiosServer, getFiatRateServer, logServerSideError, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
+import { ipfsUrl } from '../../utils/nft'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenTabs from '../../components/Tabs/TokenTabs'
 import HomeTeaser, { HomeTeaseRow } from '../../components/Home/HomeTeaser'
@@ -160,6 +161,7 @@ const mptMetadataValue = (metadata, ...keys) => {
 const metadataHttpHref = (value) => {
   const text = String(value || '').trim()
   if (!text) return ''
+  if (/^(?:ipfs|cid|hash):/i.test(text)) return ipfsUrl(text, 'viewer', 'cl') || ''
   if (/^https?:\/\//i.test(text)) return text
   if (/^[a-z][a-z0-9+.-]*:/i.test(text)) return ''
   if (/^[^\s/]+\.[^\s]+/i.test(text)) return `https://${text}`
@@ -2450,14 +2452,10 @@ export default function TokenPage({
                         type="button"
                         className="tokenProfileLinkButton"
                         onClick={() => setShowMptMetadata((value) => !value)}
+                        aria-expanded={showMptMetadata}
                       >
                         {showMptMetadata ? tt('actions.hideMetadata') : tt('actions.showMetadata')}
                       </button>
-                      {showMptMetadata && (
-                        <pre className="tokenProfileMetadataPre">
-                          <code>{JSON.stringify(token.metadata, null, 2)}</code>
-                        </pre>
-                      )}
                     </span>
                   </div>
                 )}
@@ -2524,9 +2522,17 @@ export default function TokenPage({
                   children: <div className="tokenMetricGrid">{renderMetricTiles(closedDayItems)}</div>
                 })}
 
+              {isMptToken && token.metadata && showMptMetadata && (
+                <section className="tokenPanel tokenExpandedDataPanel">
+                  <pre className="tokenProfileMetadataPre tokenExpandedDataPre">
+                    <code>{JSON.stringify(token.metadata, null, 2)}</code>
+                  </pre>
+                </section>
+              )}
+
               {hasTomlData && showToml && (
-                <section className="tokenPanel tokenTomlPanel">
-                  <pre className="tokenProfileMetadataPre tokenTomlPre">
+                <section className="tokenPanel tokenExpandedDataPanel">
+                  <pre className="tokenProfileMetadataPre tokenExpandedDataPre">
                     <code>{token.rawtoml}</code>
                   </pre>
                 </section>
