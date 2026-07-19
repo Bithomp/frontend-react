@@ -5,5 +5,6 @@
   "obsolete": "Obsolete amendments",
   "enabled": "Enabled amendments",
   "majority": "Majority",
-  "eta": "Estimated activation time"
+  "eta": "Estimated activation time",
+  "votes-threshold": "Votes (threshold {{threshold}} / {{validations}})"
 }

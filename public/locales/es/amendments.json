@@ -5,5 +5,6 @@
   "obsolete": "Enmiendas obsoletas",
   "enabled": "Enmiendas activadas",
   "majority": "Mayoría",
-  "eta": "Estimación de tiempo en ser activada"
+  "eta": "Estimación de tiempo en ser activada",
+  "votes-threshold": "Votos (umbral {{threshold}} / {{validations}})"
 }

@@ -14,6 +14,7 @@ import Link from 'next/link'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 import { LinkTx } from '../utils/links'
 import { mergeVotingAmendments, votingFeatureKeys } from '../utils/amendments'
+import { amendmentsClass } from '../styles/pages/amendments.module.scss'
 
 export const getServerSideProps = async (context) => {
   const { locale, req } = context
@@ -65,8 +66,72 @@ const amendmentLink = (a, options) => {
   return <Link href={'amendment/' + (name || a.amendment)}>{name || shortHash(a.amendment)}</Link>
 }
 
+const AmendmentMobileTable = ({ items, type, threshold, validations, activationDays, t }) => {
+  const showVotes = type === 'majority' || type === 'new'
+
+  return (
+    <table className="table-mobile amendments-mobile-table">
+      <tbody>
+        {items.map((a, i) => (
+          <tr key={a.amendment}>
+            <td className="center amendments-mobile-index">{i + 1}</td>
+            <td className="amendments-mobile-details">
+              <div className="amendments-mobile-name">{amendmentLink(a)}</div>
+
+              {type === 'majority' ? (
+                <>
+                  <div className="amendments-mobile-row">
+                    <span>{t('majority', { ns: 'amendments' })}</span>
+                    <span>{fullDateAndTime(a.majority)}</span>
+                  </div>
+                  <div className="amendments-mobile-row">
+                    <span>{t('eta', { ns: 'amendments' })}</span>
+                    <span>{fullDateAndTime(a.majority + activationDays * 86400 + 903)}</span>
+                  </div>
+                </>
+              ) : null}
+
+              {type === 'enabled' ? (
+                <div className="amendments-mobile-row">
+                  <span>Enabled</span>
+                  <span>
+                    {timeOrDate(a.enabledAt)} <LinkTx tx={a.txHash} icon={true} />
+                  </span>
+                </div>
+              ) : null}
+
+              {showVotes ? (
+                <div className="amendments-mobile-row">
+                  <span>{t('votes-threshold', { ns: 'amendments', threshold, validations })}</span>
+                  <span>{a.count > threshold ? <b className="green">{a.count}</b> : a.count}</span>
+                </div>
+              ) : null}
+
+              {type !== 'not-available' ? (
+                <div className="amendments-mobile-row">
+                  <span>{t('table.version')}</span>
+                  <span>{a.introduced || '—'}</span>
+                </div>
+              ) : null}
+
+              <div className="amendments-mobile-row">
+                <span>{t('table.hash')}</span>
+                <span className="amendments-hash-copy">
+                  <span>{shortHash(a.amendment)}</span>
+                  <CopyButton text={a.amendment} />
+                </span>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
 export default function Amendment({ initialData, initialErrorMessage, isSsrMobile }) {
   const windowWidth = useWidth()
+  const isMobileView = windowWidth ? windowWidth <= 800 : isSsrMobile
   const { t } = useTranslation()
   const [majorityAmendments, setMajorityAmendments] = useState(null)
   const [enabledAmendments, setEnabledAmendments] = useState(null)
@@ -211,7 +276,7 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
 
   const showHash = (hash) => {
     const width = windowWidth || (isSsrMobile ? 600 : 1200)
-    return width > 1140 ? <>{hash} </> : width > 800 ? <>{shortHash(hash)} </> : ''
+    return width > 1140 ? hash : width > 800 ? shortHash(hash) : ''
   }
 
   const activationDays = xahauNetwork ? 5 : 14
@@ -227,7 +292,7 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
         }}
         twitterImage={{ file: 'previews/630x630/amendments.png' }}
       />
-      <div className="content-text">
+      <div className={`content-text ${amendmentsClass}`}>
         <h1 className="center">{t('menu.network.amendments')}</h1>
         <NetworkPagesTab tab="amendments" />
         {errorMessage ? (
@@ -238,6 +303,16 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
         {majorityAmendments?.length > 0 && (
           <>
             <h2 className="center">{t('soon', { ns: 'amendments' })}</h2>
+            {isMobileView ? (
+              <AmendmentMobileTable
+                items={majorityAmendments}
+                type="majority"
+                threshold={threshold}
+                validations={validations}
+                activationDays={activationDays}
+                t={t}
+              />
+            ) : (
             <table className="table-large">
               <thead>
                 <tr>
@@ -246,7 +321,7 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
                   <th>{t('majority', { ns: 'amendments' })}</th>
                   <th>{t('eta', { ns: 'amendments' })}</th>
                   <th className="right">
-                    {threshold} / {validations}
+                    {t('votes-threshold', { ns: 'amendments', threshold, validations })}
                   </th>
                   <th className="right">{t('table.version')}</th>
                   <th className="right">{t('table.hash')}</th>
@@ -262,25 +337,38 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
                     <td className="right">{a.count > threshold ? <b className="green">{a.count}</b> : a.count}</td>
                     <td className="right">{a.introduced}</td>
                     <td className="right">
-                      {showHash(a.amendment)}
-                      <CopyButton text={a.amendment} />
+                      <span className="amendments-hash-copy">
+                        {showHash(a.amendment)}
+                        <CopyButton text={a.amendment} />
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            )}
           </>
         )}
         {loadedFeatures && newAmendments?.length > 0 && (
           <>
             <h2 className="center">{t('new', { ns: 'amendments' })}</h2>
+            {isMobileView ? (
+              <AmendmentMobileTable
+                items={newAmendments}
+                type="new"
+                threshold={threshold}
+                validations={validations}
+                activationDays={activationDays}
+                t={t}
+              />
+            ) : (
             <table className="table-large">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
                   <th>{t('table.name')}</th>
                   <th className="right">
-                    {threshold} / {validations}
+                    {t('votes-threshold', { ns: 'amendments', threshold, validations })}
                   </th>
                   <th className="right">{t('table.version')}</th>
                   <th className="right">{t('table.hash')}</th>
@@ -294,18 +382,31 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
                     <td className="right">{a.count > threshold ? <b className="green">{a.count}</b> : a.count}</td>
                     <td className="right">{a.introduced}</td>
                     <td className="right">
-                      {showHash(a.amendment)}
-                      <CopyButton text={a.amendment} />
+                      <span className="amendments-hash-copy">
+                        {showHash(a.amendment)}
+                        <CopyButton text={a.amendment} />
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            )}
           </>
         )}
         {enabledAmendments?.length > 0 && (
           <>
             <h2 className="center">{t('enabled', { ns: 'amendments' })}</h2>
+            {isMobileView ? (
+              <AmendmentMobileTable
+                items={enabledAmendments}
+                type="enabled"
+                threshold={threshold}
+                validations={validations}
+                activationDays={activationDays}
+                t={t}
+              />
+            ) : (
             <table className="table-large">
               <thead>
                 <tr>
@@ -326,19 +427,32 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
                     <td>{amendmentLink(a, { short: windowWidth < 1140 })}</td>
                     <td className="right">{a.introduced}</td>
                     <td className="right">
-                      {showHash(a.amendment)}
-                      <CopyButton text={a.amendment} />
+                      <span className="amendments-hash-copy">
+                        {showHash(a.amendment)}
+                        <CopyButton text={a.amendment} />
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            )}
           </>
         )}
 
         {obsoleteAmendments?.length > 0 && (
           <>
             <h2 className="center">{t('obsolete', { ns: 'amendments' })}</h2>
+            {isMobileView ? (
+              <AmendmentMobileTable
+                items={obsoleteAmendments}
+                type="obsolete"
+                threshold={threshold}
+                validations={validations}
+                activationDays={activationDays}
+                t={t}
+              />
+            ) : (
             <table className="table-large">
               <thead>
                 <tr>
@@ -355,19 +469,32 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
                     <td>{amendmentLink(a)}</td>
                     <td className="right">{a.introduced}</td>
                     <td className="right">
-                      {showHash(a.amendment)}
-                      <CopyButton text={a.amendment} />
+                      <span className="amendments-hash-copy">
+                        {showHash(a.amendment)}
+                        <CopyButton text={a.amendment} />
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            )}
           </>
         )}
 
         {loadedFeatures && notAvailableAmendments?.length > 0 && (
           <>
             <h2 className="center">{t('not-available', { ns: 'amendments' })}</h2>
+            {isMobileView ? (
+              <AmendmentMobileTable
+                items={notAvailableAmendments}
+                type="not-available"
+                threshold={threshold}
+                validations={validations}
+                activationDays={activationDays}
+                t={t}
+              />
+            ) : (
             <table className="table-large">
               <thead>
                 <tr>
@@ -382,13 +509,16 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
                     <td className="center">{i + 1}</td>
                     <td className="brake">{amendmentLink(a)}</td>
                     <td className="right">
-                      {showHash(a.amendment)}
-                      <CopyButton text={a.amendment} />
+                      <span className="amendments-hash-copy">
+                        {showHash(a.amendment)}
+                        <CopyButton text={a.amendment} />
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            )}
           </>
         )}
       </div>

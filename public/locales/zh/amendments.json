@@ -5,5 +5,6 @@
   "obsolete": "过时的修订",
   "enabled": "启用修正",
   "majority": "多数",
-  "eta": "预计启动时间"
+  "eta": "预计启动时间",
+  "votes-threshold": "投票（阈值 {{threshold}} / {{validations}}）"
 }

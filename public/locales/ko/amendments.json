@@ -5,5 +5,6 @@
   "obsolete": "폐기된 수정안",
   "enabled": "활성화된 수정사항",
   "majority": "다수",
-  "eta": "예상되는 활성화 시간"
+  "eta": "예상되는 활성화 시간",
+  "votes-threshold": "투표 (기준 {{threshold}} / {{validations}})"
 }
