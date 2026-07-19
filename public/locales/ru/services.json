@@ -762,7 +762,7 @@
   "mpt-metadata-generator": {
     "seo-description": "Создавайте метаданные Multi-Purpose Token по стандарту XLS-0089 для XRP Ledger.",
     "intro": "Создайте метаданные MPToken согласно актуальной версии",
-    "generated-title": "Сгенерированные метаданные JSON", "hex-title": "Шестнадцатеричные метаданные для реестра",
+    "generated-title": "Сгенерированные метаданные JSON", "hex-title": "Шестнадцатеричные метаданные для XRP Ledger",
     "byte-count": "{{count}} / {{max}} байт",
     "sections": { "uris": "Связанные ссылки", "additional-info": "Дополнительная информация" },
     "fields": {

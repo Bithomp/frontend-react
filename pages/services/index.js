@@ -146,11 +146,13 @@ export default function ServicesPage() {
           icon: IoLayersOutline
         },
         { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline },
-        {
-          href: '/services/mpt-metadata-generator',
-          title: t('menu.services.mpt-metadata-generator'),
-          icon: IoCodeOutline
-        },
+        !xahauNetwork
+          ? {
+              href: '/services/mpt-metadata-generator',
+              title: t('menu.services.mpt-metadata-generator'),
+              icon: IoCodeOutline
+            }
+          : null,
         {
           href: '/services/toml-generator?category=issuance',
           title: t('menu.services.toml-generator'),
@@ -161,7 +163,7 @@ export default function ServicesPage() {
           title: t('menu.services.toml-checker'),
           icon: IoCodeOutline
         }
-      ]
+      ].filter(Boolean)
     }
 
     const identity = {
