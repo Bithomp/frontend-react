@@ -9880,9 +9880,7 @@ export default function Account({
                             <div className="asset-main tx-asset-main">
                               <div className="asset-logo tx-asset-logo">
                                 <div className="tx-collapsed-top">
-                                  <span className="tx-type-main">
-                                    {isSelfEscrow ? 'Escrow' : `Escrow ${collapsedDirectionLabel}`}
-                                  </span>
+                                  <span className="tx-type-main">Escrow</span>
                                   <span
                                     className={`tx-time tx-time-top ${isCanceled ? 'red' : isUnlockable ? 'green' : ''}`}
                                   >
@@ -9891,6 +9889,7 @@ export default function Account({
                                 </div>
 
                                 <div className="tx-collapsed-meta">
+                                  {!isSelfEscrow && <span className="escrow-direction-label">{collapsedDirectionLabel}</span>}
                                   {counterpartAddress ? (
                                     <span className="tx-counterparty-inline">
                                       <AddressWithIconInline
@@ -13582,6 +13581,22 @@ export default function Account({
           min-width: 0;
           white-space: nowrap;
           overflow: hidden;
+        }
+
+        .escrow-card .tx-asset-logo {
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .escrow-card .tx-collapsed-meta {
+          flex-wrap: nowrap;
+          gap: 4px;
+          max-width: 100%;
+        }
+
+        .escrow-direction-label {
+          flex: 0 0 auto;
+          color: var(--text-secondary);
         }
 
         .card-actions {
