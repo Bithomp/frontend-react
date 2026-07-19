@@ -598,6 +598,20 @@ const issuedTokenValueNative = (token) => Number(token?.supply || 0) * issuedTok
 const offerExpirationValue = (offer) => offer?.Expiration ?? null
 const offerSequenceValue = (offer) => offer?.Sequence ?? null
 const isCancelableOfferSequence = (sequence) => Number(sequence) > 0
+const offerCancelFields = (offer) => {
+  const sequence = offerSequenceValue(offer)
+  if (isCancelableOfferSequence(sequence)) return { OfferSequence: sequence }
+
+  const offerId = offer?.OfferID || offer?.index
+  return xahauNetwork && offerId ? { OfferID: offerId } : null
+}
+const escrowCancelFields = (escrow) => {
+  const sequence = escrow?.escrowSequence
+  if (Number(sequence) > 0) return { Owner: escrow?.Account, OfferSequence: sequence }
+
+  const escrowId = escrow?.EscrowID || escrow?.index
+  return xahauNetwork && escrowId ? { EscrowID: escrowId } : null
+}
 const isOfferExpired = (offer) => {
   const expiration = offerExpirationValue(offer)
   return expiration ? timestampExpired(expiration, 'ripple') : false
@@ -9185,6 +9199,7 @@ export default function Account({
                     const isSell = !!offer?.flags?.sell
                     const offerSequence = offerSequenceValue(offer)
                     const hasCancelableSequence = isCancelableOfferSequence(offerSequence)
+                    const cancelOfferFields = offerCancelFields(offer)
                     const expirationValue = offerExpirationValue(offer)
                     const isExpired = isOfferExpired(offer)
                     const collapsedOfferId = offer?.index ? shortHash(offer.index) : '-'
@@ -9233,7 +9248,7 @@ export default function Account({
                     const canCancelDexOrder =
                       !!setSignRequest &&
                       !effectiveLedgerTimestamp &&
-                      hasCancelableSequence &&
+                      !!cancelOfferFields &&
                       offer?.Account === account?.address
 
                     return (
@@ -9336,7 +9351,7 @@ export default function Account({
                             )}
 
                             {!effectiveLedgerTimestamp &&
-                              hasCancelableSequence &&
+                              cancelOfferFields &&
                               (!isExpired || canCancelDexOrder) && (
                                 <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                   {(() => {
@@ -9362,7 +9377,7 @@ export default function Account({
                                               request: {
                                                 Account: offer.Account,
                                                 TransactionType: 'OfferCancel',
-                                                OfferSequence: offerSequence
+                                                ...cancelOfferFields
                                               }
                                             })
                                           }}
@@ -9789,6 +9804,7 @@ export default function Account({
                           ? timestampExpired(escrow.FinishAfter, 'ripple')
                           : false
                         const escrowSequence = escrow?.escrowSequence
+                        const cancelEscrowFields = escrowCancelFields(escrow)
                         const canExecute =
                           !!setSignRequest &&
                           !effectiveLedgerTimestamp &&
@@ -9799,7 +9815,7 @@ export default function Account({
                         const canCancel =
                           !!setSignRequest &&
                           !effectiveLedgerTimestamp &&
-                          !!escrowSequence &&
+                          !!cancelEscrowFields &&
                           !!escrow?.CancelAfter &&
                           timestampExpired(escrow.CancelAfter, 'ripple')
                         const disabledExecuteEscrowTooltip = (() => {
@@ -10014,8 +10030,7 @@ export default function Account({
                                           setSignRequest({
                                             request: {
                                               TransactionType: 'EscrowCancel',
-                                              Owner: escrow?.Account,
-                                              OfferSequence: escrowSequence
+                                              ...cancelEscrowFields
                                             }
                                           })
                                         }}

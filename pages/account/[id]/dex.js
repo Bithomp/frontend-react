@@ -16,9 +16,16 @@ import {
   amountFormat,
   addressUsernameOrServiceLink
 } from '../../../utils/format'
-import { avatarSrc, nativeCurrency, timestampExpired, useWidth } from '../../../utils'
+import { avatarSrc, nativeCurrency, timestampExpired, useWidth, xahauNetwork } from '../../../utils'
 import { divide, multiply } from '../../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
+
+const offerCancelFields = (offer) => {
+  if (Number(offer?.Sequence) > 0) return { OfferSequence: offer.Sequence }
+
+  const offerId = offer?.OfferID || offer?.index
+  return xahauNetwork && offerId ? { OfferID: offerId } : null
+}
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -152,6 +159,8 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
   const orderRows = displayedOffers.map((offer, i) => {
     const sell = offer.flags?.sell
     const isExpired = offer.Expiration ? timestampExpired(offer.Expiration, 'ripple') : false
+    const cancelFields = offerCancelFields(offer)
+    const canCancel = offer.Account === account?.address && !!cancelFields
     return (
       <tr key={offer.index || i}>
         <td className="center" style={{ width: 30 }}>
@@ -241,18 +250,19 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
           </td>
         )}
         <td className="center">
-          {offer.Account === account?.address ? (
+          {canCancel ? (
             <a
               href="#"
-              onClick={() =>
+              onClick={(event) => {
+                event.preventDefault()
                 setSignRequest({
                   request: {
                     Account: offer.Account,
                     TransactionType: 'OfferCancel',
-                    OfferSequence: offer.Sequence
+                    ...cancelFields
                   }
                 })
-              }
+              }}
               className="red tooltip"
             >
               <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
