@@ -233,9 +233,32 @@
     }
   },
   "services-page": {
+    "title": "{{explorerName}} Services",
+    "seo-title": "{{explorerName}} Services",
+    "seo-description": "Services on {{explorerName}}.",
     "search-placeholder": "Search by service name...",
+    "search-label": "Search services",
     "try-tax-reports": "Try tax reports",
-    "identity": "Identity"
+    "sections": {
+      "bithomp": "Bithomp Services",
+      "identity": "Identity",
+      "payments": "Payments",
+      "amm": "AMM",
+      "issuance": "Issuance",
+      "account": "Account",
+      "developers": "Developers"
+    },
+    "items": {
+      "explorer": "{{explorerName}} Explorer",
+      "watchlist": "Watchlist",
+      "issue-token": "How to Issue a Token",
+      "issuer-guide": "Guide for Token Issuers",
+      "reward-auto-claim": "Reward Auto Claim",
+      "token-issuer-settings": "Token Issuer Settings",
+      "account-control": "Account Control",
+      "account-delete": "Account Delete",
+      "image-services": "Token / NFT / Address Images"
+    }
   },
   "amm": {
     "create-title": "Create an AMM Pool",
@@ -760,6 +783,7 @@
     },
     "hints": {
       "ticker": "Uppercase letters and digits only, up to 6 characters.",
+      "icon-uri": "Use a valid HTTPS URL or IPFS URI.",
       "uri": "Use a hostname/path, HTTPS URL, or another complete URI such as ipfs://."
     },
     "placeholders": {
@@ -781,6 +805,7 @@
       "ticker": "Ticker is required and must contain 1–6 uppercase letters or digits.",
       "name": "Token name is required.",
       "icon": "Icon URI is required.",
+      "icon-uri": "Icon URI must be a valid HTTPS URL or IPFS URI.",
       "asset-class": "Asset class is required.",
       "asset-subclass": "Asset subclass is required for RWA tokens.",
       "issuer-name": "Issuer name is required.",

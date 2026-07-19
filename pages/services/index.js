@@ -78,9 +78,13 @@ export default function ServicesPage() {
   const sections = useMemo(() => {
     const bithompServices = {
       id: 'bithomp-services',
-      title: '🦩 Bithomp Services',
+      title: `🦩 ${t('services-page.sections.bithomp', { ns: 'services' })}`,
       items: [
-        { href: '/explorer', title: `${explorerName} Explorer`, icon: RiCompassDiscoverLine },
+        {
+          href: '/explorer',
+          title: t('services-page.items.explorer', { ns: 'services', explorerName }),
+          icon: RiCompassDiscoverLine
+        },
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: LuFileCheck2 },
         {
           href: '/admin/pro/history',
@@ -88,14 +92,16 @@ export default function ServicesPage() {
           icon: LuFileCheck2
         },
         !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbBell } : null,
-        !devNet ? { href: '/admin/watchlist', title: 'Watchlist', icon: MdVerified } : null
+        !devNet
+          ? { href: '/admin/watchlist', title: t('services-page.items.watchlist', { ns: 'services' }), icon: MdVerified }
+          : null
       ].filter(Boolean)
     }
 
     // Payments should be the second section
     const payments = {
       id: 'payments',
-      title: '💸 Payments',
+      title: `💸 ${t('services-page.sections.payments', { ns: 'services' })}`,
       items: [
         { href: '/services/trustline', title: t('menu.services.add-token'), icon: TbShieldCheck },
         { href: '/services/send', title: t('menu.services.send'), icon: TbSend },
@@ -107,7 +113,7 @@ export default function ServicesPage() {
     // AMM: fully hidden on Xahau
     const amm = {
       id: 'amm',
-      title: '🌊 AMM',
+      title: `🌊 ${t('services-page.sections.amm', { ns: 'services' })}`,
       items: [
         {
           href: '/services/amm/deposit',
@@ -127,10 +133,18 @@ export default function ServicesPage() {
     // Renamed from Creators -> Issuance, and removed /tokens link
     const issuance = {
       id: 'issuance',
-      title: '🏗️ Issuance',
+      title: `🏗️ ${t('services-page.sections.issuance', { ns: 'services' })}`,
       items: [
-        { href: '/learn/issue-a-token', title: 'How to Issue a Token', icon: RiBookOpenLine },
-        { href: '/learn/guide-for-token-issuers', title: 'Guide for Token Issuers', icon: IoLayersOutline },
+        {
+          href: '/learn/issue-a-token',
+          title: t('services-page.items.issue-token', { ns: 'services' }),
+          icon: RiBookOpenLine
+        },
+        {
+          href: '/learn/guide-for-token-issuers',
+          title: t('services-page.items.issuer-guide', { ns: 'services' }),
+          icon: IoLayersOutline
+        },
         { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline },
         {
           href: '/services/mpt-metadata-generator',
@@ -152,7 +166,7 @@ export default function ServicesPage() {
 
     const identity = {
       id: 'identity',
-      title: `🪪 ${t('services-page.identity', { ns: 'services' })}`,
+      title: `🪪 ${t('services-page.sections.identity', { ns: 'services' })}`,
       items: [
         { href: '/username', title: t('menu.services.username'), icon: IoPersonOutline },
         { href: '/submit-account-information', title: t('menu.project-registration'), icon: IoDocumentTextOutline },
@@ -165,20 +179,40 @@ export default function ServicesPage() {
     // Account: on Xahau add Reward Auto Claim here (no separate Xahau section)
     const account = {
       id: 'account',
-      title: '⚙️ Account',
+      title: `⚙️ ${t('services-page.sections.account', { ns: 'services' })}`,
       items: [
-        ...(xahauNetwork ? [{ href: '/services/reward-auto-claim', title: 'Reward Auto Claim', icon: LuCoins }] : []),
+        ...(xahauNetwork
+          ? [
+              {
+                href: '/services/reward-auto-claim',
+                title: t('services-page.items.reward-auto-claim', { ns: 'services' }),
+                icon: LuCoins
+              }
+            ]
+          : []),
         { href: '/services/account-settings/', title: t('menu.services.account-settings'), icon: IoWalletOutline },
-        { href: '/services/token-issuer-settings', title: 'Token Issuer Settings', icon: RiPriceTag3Line },
-        { href: '/services/account-control', title: 'Account Control', icon: IoKeyOutline },
-        { href: '/services/account-delete', title: 'Account Delete', icon: RiDeleteBin6Line }
+        {
+          href: '/services/token-issuer-settings',
+          title: t('services-page.items.token-issuer-settings', { ns: 'services' }),
+          icon: RiPriceTag3Line
+        },
+        {
+          href: '/services/account-control',
+          title: t('services-page.items.account-control', { ns: 'services' }),
+          icon: IoKeyOutline
+        },
+        {
+          href: '/services/account-delete',
+          title: t('services-page.items.account-delete', { ns: 'services' }),
+          icon: RiDeleteBin6Line
+        }
       ]
     }
 
     // Developers: removed API Key Registration
     const developers = {
       id: 'developers',
-      title: '🧪 Developers',
+      title: `🧪 ${t('services-page.sections.developers', { ns: 'services' })}`,
       items: [
         { href: '/learn/the-bithomp-api', title: t('menu.developers.api'), icon: MdOutlineApi },
         {
@@ -186,7 +220,11 @@ export default function ServicesPage() {
           title: t('menu.developers.faucet'),
           icon: IoIosRocket
         },
-        { href: '/learn/image-services', title: 'Token / NFT / Address Images', icon: MdOutlineImage },
+        {
+          href: '/learn/image-services',
+          title: t('services-page.items.image-services', { ns: 'services' }),
+          icon: MdOutlineImage
+        },
         { href: '/submit/', title: t('menu.submit-offline-tx'), icon: RiFilePaper2Line, external: true }
       ]
     }
@@ -214,12 +252,15 @@ export default function ServicesPage() {
 
   return (
     <>
-      <SEO title={`${explorerName} Services`} description={`Services on ${explorerName}.`} />
+      <SEO
+        title={t('services-page.seo-title', { ns: 'services', explorerName })}
+        description={t('services-page.seo-description', { ns: 'services', explorerName })}
+      />
 
       <div className={styles.pageWrap}>
         <div className={`content-text ${styles.page}`}>
           <div className={styles.topRow}>
-            <h1 className={styles.h1}>{explorerName} Services</h1>
+            <h1 className={styles.h1}>{t('services-page.title', { ns: 'services', explorerName })}</h1>
 
             <input
               className={'input-text ' + styles.search}
@@ -227,7 +268,7 @@ export default function ServicesPage() {
               placeholder={t('services-page.search-placeholder', { ns: 'services' })}
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              aria-label="Search services"
+              aria-label={t('services-page.search-label', { ns: 'services' })}
             />
           </div>
 

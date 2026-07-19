@@ -233,9 +233,32 @@
     }
   },
   "services-page": {
+    "title": "{{explorerName}} 服务",
+    "seo-title": "{{explorerName}} 服务",
+    "seo-description": "{{explorerName}} 上的服务。",
     "search-placeholder": "按服务名称搜索...",
+    "search-label": "搜索服务",
     "try-tax-reports": "尝试税务报告",
-    "identity": "身份"
+    "sections": {
+      "bithomp": "Bithomp 服务",
+      "identity": "身份",
+      "payments": "支付",
+      "amm": "AMM",
+      "issuance": "发行",
+      "account": "账户",
+      "developers": "开发者"
+    },
+    "items": {
+      "explorer": "{{explorerName}} 浏览器",
+      "watchlist": "关注列表",
+      "issue-token": "如何发行代币",
+      "issuer-guide": "代币发行者指南",
+      "reward-auto-claim": "自动领取奖励",
+      "token-issuer-settings": "代币发行者设置",
+      "account-control": "账户控制",
+      "account-delete": "删除账户",
+      "image-services": "代币 / NFT / 地址图片"
+    }
   },
   "amm": {
     "create-title": "创建AMM池",
@@ -735,6 +758,42 @@
       "transferRateClear": "TransferRate 已成功清除。",
       "settings": "设置已成功更新。"
     }
+  },
+  "mpt-metadata-generator": {
+    "seo-description": "为 XRP Ledger 上的多用途代币创建符合 XLS-0089 的元数据。",
+    "intro": "根据当前规范创建 MPToken 元数据：",
+    "generated-title": "生成的元数据 JSON", "hex-title": "链上十六进制元数据",
+    "byte-count": "{{count}} / {{max}} 字节",
+    "sections": { "uris": "相关链接", "additional-info": "附加信息" },
+    "fields": {
+      "ticker": "代币代码", "name": "代币名称", "description": "描述", "icon": "图标 URI",
+      "asset-class": "资产类别", "asset-subclass": "资产子类别", "issuer-name": "发行方名称",
+      "additional-info": "信息", "additional-info-type": "类型"
+    },
+    "hints": {
+      "ticker": "只能使用大写字母和数字，最多 6 个字符。",
+      "icon-uri": "请使用有效的 HTTPS URL 或 IPFS URI。",
+      "uri": "请使用主机名/路径、HTTPS URL 或 ipfs:// 等完整 URI。"
+    },
+    "placeholders": {
+      "name": "国库券收益代币", "issuer-name": "示例收益公司", "description": "代币所代表的内容",
+      "link-title": "产品页面", "additional-text": "代币的重要信息"
+    },
+    "actions": { "add-link": "添加链接", "remove": "删除", "copy-json": "复制 JSON", "copy-hex": "复制十六进制", "copied": "已复制", "download": "下载" },
+    "warnings": {
+      "ticker": "代币代码为必填项，且必须包含 1–6 个大写字母或数字。",
+      "name": "代币名称为必填项。", "icon": "图标 URI 为必填项。",
+      "icon-uri": "图标 URI 必须是有效的 HTTPS URL 或 IPFS URI。",
+      "asset-class": "资产类别为必填项。", "asset-subclass": "RWA 代币必须选择资产子类别。",
+      "issuer-name": "发行方名称为必填项。", "uri": "每个相关链接都需要 URI 和标题。",
+      "additional-json": "附加信息必须是有效的 JSON。",
+      "additional-object": "附加信息 JSON 必须是对象。",
+      "size": "元数据为 {{count}} 字节，超过 {{max}} 字节的链上限制。"
+    },
+    "asset-classes": { "select": "选择类别", "rwa": "RWA", "memes": "迷因", "wrapped": "封装资产", "gaming": "游戏", "defi": "DeFi", "other": "其他" },
+    "asset-subclasses": { "select": "选择子类别", "stablecoin": "稳定币", "commodity": "大宗商品", "real_estate": "房地产", "private_credit": "私人信贷", "equity": "股权", "treasury": "国债", "other": "其他" },
+    "uri-categories": { "website": "网站", "social": "社交媒体", "docs": "文档", "other": "其他" },
+    "additional-info-types": { "object": "JSON 对象", "text": "文本" }
   },
   "toml-generator": {
     "seo-description": "为 {{ledgerName}} 账户、验证器、服务器和代币创建 {{tomlName}} 条目。",

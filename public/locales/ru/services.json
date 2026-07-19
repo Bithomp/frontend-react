@@ -233,9 +233,32 @@
     }
   },
   "services-page": {
+    "title": "Сервисы {{explorerName}}",
+    "seo-title": "Сервисы {{explorerName}}",
+    "seo-description": "Сервисы {{explorerName}}.",
     "search-placeholder": "Поиск по названию сервиса...",
+    "search-label": "Поиск сервисов",
     "try-tax-reports": "Попробовать налоговые отчеты",
-    "identity": "Идентификация"
+    "sections": {
+      "bithomp": "Сервисы Bithomp",
+      "identity": "Идентификация",
+      "payments": "Платежи",
+      "amm": "AMM",
+      "issuance": "Выпуск активов",
+      "account": "Аккаунт",
+      "developers": "Разработчикам"
+    },
+    "items": {
+      "explorer": "Обозреватель {{explorerName}}",
+      "watchlist": "Список наблюдения",
+      "issue-token": "Как выпустить токен",
+      "issuer-guide": "Руководство для эмитентов токенов",
+      "reward-auto-claim": "Автоматическое получение наград",
+      "token-issuer-settings": "Настройки эмитента токена",
+      "account-control": "Управление аккаунтом",
+      "account-delete": "Удаление аккаунта",
+      "image-services": "Изображения токенов / NFT / адресов"
+    }
   },
   "amm": {
     "create-title": "Создать AMM Pool",
@@ -735,6 +758,42 @@
       "transferRateClear": "TransferRate успешно очищен.",
       "settings": "Настройки успешно обновлены."
     }
+  },
+  "mpt-metadata-generator": {
+    "seo-description": "Создавайте метаданные Multi-Purpose Token по стандарту XLS-0089 для XRP Ledger.",
+    "intro": "Создайте метаданные MPToken согласно актуальной версии",
+    "generated-title": "Сгенерированные метаданные JSON", "hex-title": "Шестнадцатеричные метаданные для реестра",
+    "byte-count": "{{count}} / {{max}} байт",
+    "sections": { "uris": "Связанные ссылки", "additional-info": "Дополнительная информация" },
+    "fields": {
+      "ticker": "Тикер", "name": "Название токена", "description": "Описание", "icon": "URI иконки",
+      "asset-class": "Класс актива", "asset-subclass": "Подкласс актива", "issuer-name": "Название эмитента",
+      "additional-info": "Информация", "additional-info-type": "Тип"
+    },
+    "hints": {
+      "ticker": "Только заглавные латинские буквы и цифры, не более 6 символов.",
+      "icon-uri": "Используйте корректную HTTPS-ссылку или IPFS URI.",
+      "uri": "Укажите домен/путь, HTTPS-ссылку или полный URI, например ipfs://."
+    },
+    "placeholders": {
+      "name": "Токен доходности казначейских облигаций", "issuer-name": "Пример Эмитент", "description": "Что представляет токен",
+      "link-title": "Страница продукта", "additional-text": "Основные сведения о токене"
+    },
+    "actions": { "add-link": "Добавить ссылку", "remove": "Удалить", "copy-json": "Копировать JSON", "copy-hex": "Копировать HEX", "copied": "Скопировано", "download": "Скачать" },
+    "warnings": {
+      "ticker": "Тикер обязателен и должен содержать от 1 до 6 заглавных латинских букв или цифр.",
+      "name": "Название токена обязательно.", "icon": "URI иконки обязателен.",
+      "icon-uri": "URI иконки должен быть корректной HTTPS-ссылкой или IPFS URI.",
+      "asset-class": "Класс актива обязателен.", "asset-subclass": "Для RWA-токенов обязателен подкласс актива.",
+      "issuer-name": "Название эмитента обязательно.", "uri": "Для каждой ссылки нужны URI и название.",
+      "additional-json": "Дополнительная информация должна быть корректным JSON.",
+      "additional-object": "Дополнительная информация JSON должна быть объектом.",
+      "size": "Размер метаданных — {{count}} байт, что превышает лимит реестра {{max}} байт."
+    },
+    "asset-classes": { "select": "Выберите класс", "rwa": "RWA", "memes": "Мемы", "wrapped": "Обёрнутый актив", "gaming": "Игры", "defi": "DeFi", "other": "Другое" },
+    "asset-subclasses": { "select": "Выберите подкласс", "stablecoin": "Стейблкоин", "commodity": "Сырьё", "real_estate": "Недвижимость", "private_credit": "Частный кредит", "equity": "Акции", "treasury": "Государственный долг", "other": "Другое" },
+    "uri-categories": { "website": "Веб-сайт", "social": "Социальная сеть", "docs": "Документация", "other": "Другое" },
+    "additional-info-types": { "object": "Объект JSON", "text": "Текст" }
   },
   "toml-generator": {
     "seo-description": "Создавайте записи {{tomlName}} для аккаунтов, валидаторов, серверов и токенов {{ledgerName}}.",

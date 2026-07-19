@@ -233,9 +233,32 @@
     }
   },
   "services-page": {
+    "title": "Servicios de {{explorerName}}",
+    "seo-title": "Servicios de {{explorerName}}",
+    "seo-description": "Servicios en {{explorerName}}.",
     "search-placeholder": "Buscar por nombre de servicio...",
+    "search-label": "Buscar servicios",
     "try-tax-reports": "Probar informes fiscales",
-    "identity": "Identidad"
+    "sections": {
+      "bithomp": "Servicios de Bithomp",
+      "identity": "Identidad",
+      "payments": "Pagos",
+      "amm": "AMM",
+      "issuance": "Emisión",
+      "account": "Cuenta",
+      "developers": "Desarrolladores"
+    },
+    "items": {
+      "explorer": "Explorador de {{explorerName}}",
+      "watchlist": "Lista de seguimiento",
+      "issue-token": "Cómo emitir un token",
+      "issuer-guide": "Guía para emisores de tokens",
+      "reward-auto-claim": "Reclamo automático de recompensas",
+      "token-issuer-settings": "Ajustes del emisor de tokens",
+      "account-control": "Control de cuenta",
+      "account-delete": "Eliminar cuenta",
+      "image-services": "Imágenes de tokens / NFT / direcciones"
+    }
   },
   "amm": {
     "create-title": "Crear un AMM Pool",
@@ -735,6 +758,42 @@
       "transferRateClear": "TransferRate borrada correctamente.",
       "settings": "Ajustes actualizados correctamente."
     }
+  },
+  "mpt-metadata-generator": {
+    "seo-description": "Crea metadatos compatibles con XLS-0089 para Multi-Purpose Tokens en XRP Ledger.",
+    "intro": "Crea metadatos de MPToken según la versión actual de",
+    "generated-title": "JSON de metadatos generado", "hex-title": "Metadatos hexadecimales en el ledger",
+    "byte-count": "{{count}} / {{max}} bytes",
+    "sections": { "uris": "Enlaces relacionados", "additional-info": "Información adicional" },
+    "fields": {
+      "ticker": "Símbolo", "name": "Nombre del token", "description": "Descripción", "icon": "URI del icono",
+      "asset-class": "Clase de activo", "asset-subclass": "Subclase de activo", "issuer-name": "Nombre del emisor",
+      "additional-info": "Información", "additional-info-type": "Tipo"
+    },
+    "hints": {
+      "ticker": "Solo letras mayúsculas y dígitos, hasta 6 caracteres.",
+      "icon-uri": "Usa una URL HTTPS o URI de IPFS válida.",
+      "uri": "Usa un host/ruta, una URL HTTPS o una URI completa como ipfs://."
+    },
+    "placeholders": {
+      "name": "Token de rendimiento de letras del Tesoro", "issuer-name": "Ejemplo Yield Co.",
+      "description": "Qué representa el token", "link-title": "Página del producto", "additional-text": "Datos clave del token"
+    },
+    "actions": { "add-link": "Añadir enlace", "remove": "Eliminar", "copy-json": "Copiar JSON", "copy-hex": "Copiar hexadecimal", "copied": "Copiado", "download": "Descargar" },
+    "warnings": {
+      "ticker": "El símbolo es obligatorio y debe contener entre 1 y 6 letras mayúsculas o dígitos.",
+      "name": "El nombre del token es obligatorio.", "icon": "La URI del icono es obligatoria.",
+      "icon-uri": "La URI del icono debe ser una URL HTTPS o URI de IPFS válida.",
+      "asset-class": "La clase de activo es obligatoria.", "asset-subclass": "La subclase de activo es obligatoria para tokens RWA.",
+      "issuer-name": "El nombre del emisor es obligatorio.", "uri": "Cada enlace relacionado necesita una URI y un título.",
+      "additional-json": "La información adicional debe ser JSON válido.",
+      "additional-object": "La información adicional JSON debe ser un objeto.",
+      "size": "Los metadatos ocupan {{count}} bytes y superan el límite de {{max}} bytes del ledger."
+    },
+    "asset-classes": { "select": "Seleccionar clase", "rwa": "RWA", "memes": "Memes", "wrapped": "Envuelto", "gaming": "Videojuegos", "defi": "DeFi", "other": "Otro" },
+    "asset-subclasses": { "select": "Seleccionar subclase", "stablecoin": "Stablecoin", "commodity": "Materia prima", "real_estate": "Bienes inmuebles", "private_credit": "Crédito privado", "equity": "Capital", "treasury": "Deuda pública", "other": "Otro" },
+    "uri-categories": { "website": "Sitio web", "social": "Red social", "docs": "Documentación", "other": "Otro" },
+    "additional-info-types": { "object": "Objeto JSON", "text": "Texto" }
   },
   "toml-generator": {
     "seo-description": "Crea entradas de {{tomlName}} para cuentas, validadores, servidores y tokens de {{ledgerName}}.",

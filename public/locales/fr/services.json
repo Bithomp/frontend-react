@@ -233,9 +233,32 @@
     }
   },
   "services-page": {
+    "title": "Services {{explorerName}}",
+    "seo-title": "Services {{explorerName}}",
+    "seo-description": "Services sur {{explorerName}}.",
     "search-placeholder": "Rechercher par nom de service...",
+    "search-label": "Rechercher des services",
     "try-tax-reports": "Essayer les rapports fiscaux",
-    "identity": "Identité"
+    "sections": {
+      "bithomp": "Services Bithomp",
+      "identity": "Identité",
+      "payments": "Paiements",
+      "amm": "AMM",
+      "issuance": "Émission",
+      "account": "Compte",
+      "developers": "Développeurs"
+    },
+    "items": {
+      "explorer": "Explorateur {{explorerName}}",
+      "watchlist": "Liste de suivi",
+      "issue-token": "Comment émettre un token",
+      "issuer-guide": "Guide pour les émetteurs de tokens",
+      "reward-auto-claim": "Réclamation automatique des récompenses",
+      "token-issuer-settings": "Paramètres de l’émetteur de tokens",
+      "account-control": "Contrôle du compte",
+      "account-delete": "Supprimer le compte",
+      "image-services": "Images de tokens / NFT / adresses"
+    }
   },
   "amm": {
     "create-title": "Créer un AMM Pool",
@@ -735,6 +758,42 @@
       "transferRateClear": "TransferRate effacé avec succès.",
       "settings": "Paramètres mis à jour avec succès."
     }
+  },
+  "mpt-metadata-generator": {
+    "seo-description": "Créez des métadonnées conformes à XLS-0089 pour les Multi-Purpose Tokens sur le XRP Ledger.",
+    "intro": "Créez des métadonnées MPToken selon la version actuelle de",
+    "generated-title": "Métadonnées JSON générées", "hex-title": "Métadonnées hexadécimales on-ledger",
+    "byte-count": "{{count}} / {{max}} octets",
+    "sections": { "uris": "Liens associés", "additional-info": "Informations supplémentaires" },
+    "fields": {
+      "ticker": "Symbole", "name": "Nom du token", "description": "Description", "icon": "URI de l’icône",
+      "asset-class": "Classe d’actif", "asset-subclass": "Sous-classe d’actif", "issuer-name": "Nom de l’émetteur",
+      "additional-info": "Informations", "additional-info-type": "Type"
+    },
+    "hints": {
+      "ticker": "Lettres majuscules et chiffres uniquement, 6 caractères maximum.",
+      "icon-uri": "Utilisez une URL HTTPS ou une URI IPFS valide.",
+      "uri": "Utilisez un hôte/chemin, une URL HTTPS ou une URI complète comme ipfs://."
+    },
+    "placeholders": {
+      "name": "Token de rendement obligataire", "issuer-name": "Exemple Yield SA", "description": "Ce que représente le token",
+      "link-title": "Page du produit", "additional-text": "Informations clés sur le token"
+    },
+    "actions": { "add-link": "Ajouter un lien", "remove": "Supprimer", "copy-json": "Copier le JSON", "copy-hex": "Copier l’hexadécimal", "copied": "Copié", "download": "Télécharger" },
+    "warnings": {
+      "ticker": "Le symbole est obligatoire et doit contenir 1 à 6 lettres majuscules ou chiffres.",
+      "name": "Le nom du token est obligatoire.", "icon": "L’URI de l’icône est obligatoire.",
+      "icon-uri": "L’URI de l’icône doit être une URL HTTPS ou une URI IPFS valide.",
+      "asset-class": "La classe d’actif est obligatoire.", "asset-subclass": "La sous-classe d’actif est obligatoire pour les tokens RWA.",
+      "issuer-name": "Le nom de l’émetteur est obligatoire.", "uri": "Chaque lien associé nécessite une URI et un titre.",
+      "additional-json": "Les informations supplémentaires doivent être un JSON valide.",
+      "additional-object": "Les informations JSON supplémentaires doivent être un objet.",
+      "size": "Les métadonnées font {{count}} octets et dépassent la limite on-ledger de {{max}} octets."
+    },
+    "asset-classes": { "select": "Sélectionner une classe", "rwa": "RWA", "memes": "Mèmes", "wrapped": "Actif enveloppé", "gaming": "Jeux", "defi": "DeFi", "other": "Autre" },
+    "asset-subclasses": { "select": "Sélectionner une sous-classe", "stablecoin": "Stablecoin", "commodity": "Matière première", "real_estate": "Immobilier", "private_credit": "Crédit privé", "equity": "Actions", "treasury": "Dette publique", "other": "Autre" },
+    "uri-categories": { "website": "Site web", "social": "Réseau social", "docs": "Documentation", "other": "Autre" },
+    "additional-info-types": { "object": "Objet JSON", "text": "Texte" }
   },
   "toml-generator": {
     "seo-description": "Créez des entrées {{tomlName}} pour les comptes, validateurs, serveurs et tokens {{ledgerName}}.",

@@ -233,9 +233,32 @@
     }
   },
   "services-page": {
+    "title": "Layanan {{explorerName}}",
+    "seo-title": "Layanan {{explorerName}}",
+    "seo-description": "Layanan di {{explorerName}}.",
     "search-placeholder": "Cari berdasarkan nama layanan...",
+    "search-label": "Cari layanan",
     "try-tax-reports": "Coba laporan pajak",
-    "identity": "Identitas"
+    "sections": {
+      "bithomp": "Layanan Bithomp",
+      "identity": "Identitas",
+      "payments": "Pembayaran",
+      "amm": "AMM",
+      "issuance": "Penerbitan",
+      "account": "Akun",
+      "developers": "Pengembang"
+    },
+    "items": {
+      "explorer": "Penjelajah {{explorerName}}",
+      "watchlist": "Daftar pantauan",
+      "issue-token": "Cara menerbitkan token",
+      "issuer-guide": "Panduan untuk penerbit token",
+      "reward-auto-claim": "Klaim hadiah otomatis",
+      "token-issuer-settings": "Pengaturan penerbit token",
+      "account-control": "Kontrol akun",
+      "account-delete": "Hapus akun",
+      "image-services": "Gambar token / NFT / alamat"
+    }
   },
   "amm": {
     "create-title": "Buat AMM Pool",
@@ -735,6 +758,42 @@
       "transferRateClear": "TransferRate berhasil dihapus.",
       "settings": "Pengaturan berhasil diperbarui."
     }
+  },
+  "mpt-metadata-generator": {
+    "seo-description": "Buat metadata yang sesuai XLS-0089 untuk Multi-Purpose Token di XRP Ledger.",
+    "intro": "Buat metadata MPToken sesuai versi terkini",
+    "generated-title": "JSON metadata yang dibuat", "hex-title": "Metadata heksadesimal on-ledger",
+    "byte-count": "{{count}} / {{max}} byte",
+    "sections": { "uris": "Tautan terkait", "additional-info": "Informasi tambahan" },
+    "fields": {
+      "ticker": "Ticker", "name": "Nama token", "description": "Deskripsi", "icon": "URI ikon",
+      "asset-class": "Kelas aset", "asset-subclass": "Subkelas aset", "issuer-name": "Nama penerbit",
+      "additional-info": "Informasi", "additional-info-type": "Tipe"
+    },
+    "hints": {
+      "ticker": "Hanya huruf kapital dan angka, maksimal 6 karakter.",
+      "icon-uri": "Gunakan URL HTTPS atau URI IPFS yang valid.",
+      "uri": "Gunakan hostname/path, URL HTTPS, atau URI lengkap seperti ipfs://."
+    },
+    "placeholders": {
+      "name": "Token Imbal Hasil T-Bill", "issuer-name": "Contoh Yield Co.", "description": "Apa yang direpresentasikan token",
+      "link-title": "Halaman produk", "additional-text": "Detail penting tentang token"
+    },
+    "actions": { "add-link": "Tambah tautan", "remove": "Hapus", "copy-json": "Salin JSON", "copy-hex": "Salin heksadesimal", "copied": "Disalin", "download": "Unduh" },
+    "warnings": {
+      "ticker": "Ticker wajib diisi dan harus berisi 1–6 huruf kapital atau angka.",
+      "name": "Nama token wajib diisi.", "icon": "URI ikon wajib diisi.",
+      "icon-uri": "URI ikon harus berupa URL HTTPS atau URI IPFS yang valid.",
+      "asset-class": "Kelas aset wajib dipilih.", "asset-subclass": "Subkelas aset wajib untuk token RWA.",
+      "issuer-name": "Nama penerbit wajib diisi.", "uri": "Setiap tautan terkait memerlukan URI dan judul.",
+      "additional-json": "Informasi tambahan harus berupa JSON yang valid.",
+      "additional-object": "JSON informasi tambahan harus berupa objek.",
+      "size": "Metadata berukuran {{count}} byte dan melebihi batas on-ledger {{max}} byte."
+    },
+    "asset-classes": { "select": "Pilih kelas", "rwa": "RWA", "memes": "Meme", "wrapped": "Wrapped", "gaming": "Gaming", "defi": "DeFi", "other": "Lainnya" },
+    "asset-subclasses": { "select": "Pilih subkelas", "stablecoin": "Stablecoin", "commodity": "Komoditas", "real_estate": "Real estat", "private_credit": "Kredit privat", "equity": "Ekuitas", "treasury": "Surat utang negara", "other": "Lainnya" },
+    "uri-categories": { "website": "Situs web", "social": "Media sosial", "docs": "Dokumentasi", "other": "Lainnya" },
+    "additional-info-types": { "object": "Objek JSON", "text": "Teks" }
   },
   "toml-generator": {
     "seo-description": "Buat entri {{tomlName}} untuk akun, validator, server, dan token {{ledgerName}}.",

@@ -233,9 +233,32 @@
     }
   },
   "services-page": {
+    "title": "{{explorerName}}サービス",
+    "seo-title": "{{explorerName}}サービス",
+    "seo-description": "{{explorerName}}のサービス。",
     "search-placeholder": "サービス名で検索...",
+    "search-label": "サービスを検索",
     "try-tax-reports": "税務レポートを試す",
-    "identity": "アイデンティティ"
+    "sections": {
+      "bithomp": "Bithompサービス",
+      "identity": "アイデンティティ",
+      "payments": "支払い",
+      "amm": "AMM",
+      "issuance": "発行",
+      "account": "アカウント",
+      "developers": "開発者"
+    },
+    "items": {
+      "explorer": "{{explorerName}}エクスプローラー",
+      "watchlist": "ウォッチリスト",
+      "issue-token": "トークンの発行方法",
+      "issuer-guide": "トークン発行者向けガイド",
+      "reward-auto-claim": "報酬の自動請求",
+      "token-issuer-settings": "トークン発行者設定",
+      "account-control": "アカウント管理",
+      "account-delete": "アカウント削除",
+      "image-services": "トークン / NFT / アドレス画像"
+    }
   },
   "amm": {
     "create-title": "AMM Poolを作成",
@@ -735,6 +758,42 @@
       "transferRateClear": "TransferRateをクリアしました。",
       "settings": "設定を更新しました。"
     }
+  },
+  "mpt-metadata-generator": {
+    "seo-description": "XRP LedgerのMulti-Purpose Token向けにXLS-0089準拠のメタデータを作成します。",
+    "intro": "最新の仕様に従ってMPTokenメタデータを作成します：",
+    "generated-title": "生成されたメタデータJSON", "hex-title": "オンレジャー用16進メタデータ",
+    "byte-count": "{{count}} / {{max}} バイト",
+    "sections": { "uris": "関連リンク", "additional-info": "追加情報" },
+    "fields": {
+      "ticker": "ティッカー", "name": "トークン名", "description": "説明", "icon": "アイコンURI",
+      "asset-class": "資産クラス", "asset-subclass": "資産サブクラス", "issuer-name": "発行者名",
+      "additional-info": "情報", "additional-info-type": "タイプ"
+    },
+    "hints": {
+      "ticker": "大文字の英字と数字のみ、最大6文字です。",
+      "icon-uri": "有効なHTTPS URLまたはIPFS URIを使用してください。",
+      "uri": "ホスト名/パス、HTTPS URL、またはipfs://などの完全なURIを使用してください。"
+    },
+    "placeholders": {
+      "name": "T-Bill Yield Token", "issuer-name": "Example Yield Co.", "description": "トークンが表すもの",
+      "link-title": "製品ページ", "additional-text": "トークンに関する主要情報"
+    },
+    "actions": { "add-link": "リンクを追加", "remove": "削除", "copy-json": "JSONをコピー", "copy-hex": "16進数をコピー", "copied": "コピーしました", "download": "ダウンロード" },
+    "warnings": {
+      "ticker": "ティッカーは必須で、1～6文字の大文字英字または数字で指定してください。",
+      "name": "トークン名は必須です。", "icon": "アイコンURIは必須です。",
+      "icon-uri": "アイコンURIは有効なHTTPS URLまたはIPFS URIである必要があります。",
+      "asset-class": "資産クラスは必須です。", "asset-subclass": "RWAトークンには資産サブクラスが必要です。",
+      "issuer-name": "発行者名は必須です。", "uri": "各関連リンクにはURIとタイトルが必要です。",
+      "additional-json": "追加情報は有効なJSONである必要があります。",
+      "additional-object": "追加情報のJSONはオブジェクトである必要があります。",
+      "size": "メタデータは{{count}}バイトで、オンレジャー上限の{{max}}バイトを超えています。"
+    },
+    "asset-classes": { "select": "クラスを選択", "rwa": "RWA", "memes": "ミーム", "wrapped": "ラップド", "gaming": "ゲーム", "defi": "DeFi", "other": "その他" },
+    "asset-subclasses": { "select": "サブクラスを選択", "stablecoin": "ステーブルコイン", "commodity": "商品", "real_estate": "不動産", "private_credit": "プライベートクレジット", "equity": "株式", "treasury": "国債", "other": "その他" },
+    "uri-categories": { "website": "ウェブサイト", "social": "ソーシャル", "docs": "ドキュメント", "other": "その他" },
+    "additional-info-types": { "object": "JSONオブジェクト", "text": "テキスト" }
   },
   "toml-generator": {
     "seo-description": "{{ledgerName}} のアカウント、バリデータ、サーバー、トークン用の {{tomlName}} エントリを作成します。",

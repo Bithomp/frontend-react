@@ -6,7 +6,8 @@ import { LuCopy, LuDownload } from 'react-icons/lu'
 import SEO from '../../components/SEO'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import SimpleSelect from '../../components/UI/SimpleSelect'
-import { explorerName } from '../../utils'
+import { explorerName, isUrlValid } from '../../utils'
+import { ipfsUrl } from '../../utils/nft'
 import styles from '../../styles/pages/toml-generator.module.scss'
 
 const SPEC_URL = 'https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0089-multi-purpose-token-metadata-schema'
@@ -18,6 +19,12 @@ const additionalInfoTypes = ['object', 'text']
 
 const createUri = () => ({ uri: '', category: 'website', title: '' })
 const clean = (value) => String(value || '').trim()
+const isValidIconUri = (value) => {
+  const uri = clean(value)
+  if (/^https:\/\//i.test(uri)) return isUrlValid(uri)
+  if (/^ipfs:\/\//i.test(uri)) return !!ipfsUrl(uri, 'viewer', 'cl')
+  return false
+}
 const replaceItem = (items, index, update) =>
   items.map((item, itemIndex) => (itemIndex === index ? { ...item, ...update } : item))
 
@@ -149,6 +156,7 @@ export default function MptMetadataGeneratorPage() {
     if (!/^[A-Z0-9]{1,6}$/.test(clean(form.ticker))) items.push(tg('warnings.ticker'))
     if (!clean(form.name)) items.push(tg('warnings.name'))
     if (!clean(form.icon)) items.push(tg('warnings.icon'))
+    else if (!isValidIconUri(form.icon)) items.push(tg('warnings.icon-uri'))
     if (!form.assetClass) items.push(tg('warnings.asset-class'))
     if (form.assetClass === 'rwa' && !form.assetSubclass) items.push(tg('warnings.asset-subclass'))
     if (!clean(form.issuerName)) items.push(tg('warnings.issuer-name'))
@@ -214,7 +222,7 @@ export default function MptMetadataGeneratorPage() {
                   placeholder={tg('placeholders.name')}
                 />
               </Field>
-              <Field label={tg('fields.icon')} required hint={tg('hints.uri')}>
+              <Field label={tg('fields.icon')} required hint={tg('hints.icon-uri')}>
                 <input
                   className="input-text"
                   value={form.icon}
