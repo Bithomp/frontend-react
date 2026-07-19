@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
-import { stripText, decode, network, isValidJson, xahauNetwork, devNet, encode } from '../../utils'
+import { stripText, decode, network, isValidJson, isUrlValid, xahauNetwork, devNet, encode } from '../../utils'
 import { AddressWithIconFilled, convertedAmount, tokenToFiat, timeFromNow, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
@@ -51,7 +51,11 @@ export async function getServerSideProps(context) {
       //const selectedCurrency = req.cookies['selectedCurrency']
       const res = await axiosServer({
         method: 'get',
-        url: 'v2/nft/' + nftId + '?uri=true&metadata=true&collectionDetails=true', //&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true&convertCurrencies=' +
+        url:
+          'v2/nft/' +
+          nftId +
+          '?uri=true&metadata=true&collectionDetails=true' +
+          (xahauNetwork ? '&remarks=true' : ''), //&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true&convertCurrencies=' +
         //selectedCurrency?.toLowerCase(),
         headers: passHeaders(req)
       })
@@ -84,6 +88,12 @@ const EvernodeRegistartion = dynamic(() => import('../../components/Nft/Evernode
 
 const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
+}
+
+const remarkLink = (value) => {
+  if (typeof value !== 'string') return ''
+  if (/^ipfs:\/\//i.test(value)) return ipfsUrl(value, 'viewer', 'cl') || ''
+  return isUrlValid(value) ? value : ''
 }
 
 // Show more/less for long descriptions
@@ -155,6 +165,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       '/v2/nft/' +
         id +
         '?uri=true&metadata=true&collectionDetails=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' +
+        (xahauNetwork ? '&remarks=true' : '') +
         noCache +
         '&convertCurrencies=' +
         selectedCurrency?.toLowerCase() +
@@ -1364,6 +1375,43 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           <div className={'slide ' + (showRawMetadata ? 'opened' : 'closed')}>
                             {showRawMetadata && codeHighlight(data.metadata)}
                           </div>
+                          {xahauNetwork && data.remarks?.length > 0 && (
+                            <table className="table-details">
+                              <thead>
+                                <tr>
+                                  <th colSpan="100">{t('table.remarks', { ns: 'nft' })}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {data.remarks.map((remark, index) => {
+                                  const href = remarkLink(remark.value)
+                                  return (
+                                    <tr key={`${remark.name || 'remark'}-${index}`}>
+                                      <td className="brake">
+                                        {remark.name || t('table.text.unspecified')}
+                                        {remark.flags?.immutable && (
+                                          <>
+                                            <br />
+                                            <span className="grey">{t('table.immutable', { ns: 'nft' })}</span>
+                                          </>
+                                        )}
+                                      </td>
+                                      <td className="brake">
+                                        {href ? (
+                                          <a href={href} target="_blank" rel="noreferrer">
+                                            {remark.value}
+                                          </a>
+                                        ) : (
+                                          String(remark.value ?? '')
+                                        )}{' '}
+                                        {remark.value != null && <CopyButton text={String(remark.value)} />}
+                                      </td>
+                                    </tr>
+                                  )
+                                })}
+                              </tbody>
+                            </table>
+                          )}
                           {data.collectionDetails && (
                             <table className="table-details">
                               <thead>

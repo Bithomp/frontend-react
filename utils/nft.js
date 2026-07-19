@@ -316,7 +316,7 @@ export const isValidTaxon = (taxon) => {
 }
 
 const isValidCid = (hash) => {
-  return /^Qm[a-zA-Z0-9]{44}$|^baf[a-zA-Z0-9]{56}$/.test(hash)
+  return /^Qm[a-zA-Z0-9]{44}$|^baf[a-zA-Z0-9]{56}$|^[fF]01(?:[a-fA-F0-9]{2})+$/.test(hash)
 }
 
 export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {

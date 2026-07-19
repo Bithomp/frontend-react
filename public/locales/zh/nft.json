@@ -5,6 +5,8 @@
   "nft-id-decoded-data": "NFT ID解码数据",
   "nft-not-found-on-that-network": "在<1>{{network}}</1>网络上找不到此NFT。",
   "table": {
+    "remarks": "备注",
+    "immutable": "不可更改",
     "digest": "摘要",
     "attention": "注意",
     "attention-texts": {

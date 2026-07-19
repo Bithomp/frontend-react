@@ -5,6 +5,8 @@
   "nft-id-decoded-data": "NFT ID 디코딩 데이터",
   "nft-not-found-on-that-network": "이 NFT는 <1>{{network}}</1> 네트워크에서 찾을 수 없습니다.",
   "table": {
+    "remarks": "비고",
+    "immutable": "변경 불가",
     "digest": "다이제스트",
     "attention": "주의",
     "attention-texts": {

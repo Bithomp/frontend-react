@@ -5,6 +5,8 @@
   "nft-id-decoded-data": "NFT IDからの解析データ",
   "nft-not-found-on-that-network": "このNFTは<1>{{network}}</1>では見つかりませんでした。",
   "table": {
+    "remarks": "備考",
+    "immutable": "変更不可",
     "digest": "ダイジェスト",
     "attention": "注意",
     "attention-texts": {

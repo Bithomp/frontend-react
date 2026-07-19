@@ -5,6 +5,8 @@
   "nft-id-decoded-data": "NFT ID Información Decodificada",
   "nft-not-found-on-that-network": "Este NFT no se ha encontrado en la red <1>{{network}}</1>.",
   "table": {
+    "remarks": "Observaciones",
+    "immutable": "Inmutable",
     "digest": "Resumen (Digest)",
     "attention": "Atención",
     "attention-texts": {
