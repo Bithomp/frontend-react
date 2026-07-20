@@ -410,6 +410,7 @@
       "trustline-incomplete": "Trustline 데이터가 완전하지 않습니다",
       "lp-trustline-remove-unavailable": "LP Trustline은 여기서 삭제할 수 없습니다",
       "remove-trustline-zero-balance": "Trustline은 잔액이 0일 때만 삭제할 수 있습니다",
+      "remove-mpt-zero-balance": "MPT는 잔액이 0일 때만 삭제할 수 있습니다",
       "remove-trustline-unavailable": "Trustline을 삭제할 수 없습니다",
       "not-available-devnet": "Devnet에서는 사용할 수 없습니다",
       "explicit-nft-avatar": "노골적인 NFT는 아바타로 사용할 수 없습니다",

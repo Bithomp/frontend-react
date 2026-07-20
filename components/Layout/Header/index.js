@@ -492,6 +492,13 @@ export default function Header({
               <IoBookOutline className="menu-item-icon" />
               {t('menu.token-menu.issuer-guide')}
             </Link>
+            {!xahauNetwork && (
+              <Link href="/services/issue-mpt">
+                <IoLayersOutline className="menu-item-icon" />
+                {t('menu.services.issue-mpt')}
+                <span className="menu-item-badge">{t('menu.badges.new')}</span>
+              </Link>
+            )}
           </MenuDropDown>
 
           {/* Hide AMM for XAHAU */}

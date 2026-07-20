@@ -88,7 +88,8 @@
       "tax-reports": "세금 보고서",
       "username": "사용자명을 등록하세요",
       "toml-generator": "TOML 생성기",
-      "mpt-metadata-generator": "MPToken 메타데이터 생성기"
+      "mpt-metadata-generator": "MPToken 메타데이터 생성기",
+      "issue-mpt": "Multi-Purpose Token 발행"
     },
     "business": {
       "advertise": "광고",

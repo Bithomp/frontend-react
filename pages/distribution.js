@@ -108,7 +108,7 @@ export async function getServerSideProps(context) {
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 
-import { nativeCurrency, devNet } from '../utils'
+import { nativeCurrency, devNet, server } from '../utils'
 import {
   amountFormat,
   niceNumber,
@@ -527,6 +527,27 @@ export default function Distribution({
     !isAssetToken && escrowMode !== 'none'
       ? data.map((record) => ({ ...record, balance: calculateTotalBalance(record, escrowMode) }))
       : data
+  const distributionPreviewParams = new URLSearchParams({ currency, v: '1' })
+  const distributionPreviewImage = isAssetToken
+    ? {
+        width: 1200,
+        height: 630,
+        file: `${server}/nextapi/distribution-preview?${distributionPreviewParams.toString()}`
+      }
+    : {
+        width: 1200,
+        height: 630,
+        file: 'previews/1200x630/distribution.png'
+      }
+  const distributionTwitterImage = isAssetToken
+    ? {
+        file: `${server}/nextapi/distribution-preview?${new URLSearchParams({
+          currency,
+          shape: 'square',
+          v: '1'
+        }).toString()}`
+      }
+    : { file: 'previews/630x630/distribution.png' }
   const distributionActions = (
     <div className="distribution-chart-actions">
       <Link href={tokenPageUrl} className="button-action">
@@ -552,14 +573,8 @@ export default function Distribution({
     <div className={distributionClass}>
       <SEO
         title={t('menu.network.distribution', { currency })}
-        image={{
-          width: 1200,
-          height: 630,
-          file: 'previews/1200x630/distribution.png'
-        }}
-        twitterImage={{
-          file: 'previews/630x630/distribution.png'
-        }}
+        image={distributionPreviewImage}
+        twitterImage={distributionTwitterImage}
       />
       <div className="content-center">
         <h1 className="center">{t('menu.network.distribution', { currency })}</h1>

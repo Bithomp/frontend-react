@@ -38,6 +38,7 @@
       "fraud-blocked": "Ce compte a été marqué comme FRAUD. L'envoi n'est pas autorisé.",
       "valid-token": "Veuillez choisir un token valide (devise + émetteur).",
       "destination-cannot-accept": "La destination ne peut pas accepter {{currency}}.",
+      "mpt-decimal-places": "Ce MPT accepte au maximum {{count}} décimales.",
       "copy-link": "Impossible de copier le lien"
     }
   },
@@ -620,6 +621,7 @@
     "send": "Envoyer",
     "check": "Check",
     "escrow": "Escrow",
+    "issue-mpt": "Émettre un MPT",
     "nft-mint": "Minter NFT",
     "account-settings": "Paramètres",
     "account-control": "Gestion du compte",
@@ -758,6 +760,14 @@
       "transferRateClear": "TransferRate effacé avec succès.",
       "settings": "Paramètres mis à jour avec succès."
     }
+  },
+  "issue-mpt": {
+    "title": "Émettre un MPT", "seoDescription": "Créez et signez une émission de Multi-Purpose Token sur le XRP Ledger.", "intro": "Définissez l’offre, la précision, les métadonnées et les autorisations permanentes du nouveau MPT.",
+    "fields": { "scale": "Décimales", "maximum": "Offre maximale", "transferFee": "Frais de transfert (%)", "domain": "ID de domaine autorisé" },
+    "hints": { "scale": "De 0 à 255 ; non modifiable après l’émission.", "maximum": "Facultatif ; la limite du protocole s’applique si omis.", "baseUnits": "Stocké comme {{amount}} unités de base.", "transferFee": "Facultatif, de 0 à 50 avec 3 décimales maximum.", "domain": "ID hexadécimal facultatif de 64 caractères ; autorisation requise." }, "placeholders": { "optional": "Facultatif" },
+    "permissions": { "title": "Autorisations du token", "warning": "Choisissez avec soin : ces capacités ne pourront pas être activées plus tard.", "canLock": { "title": "Verrouillable", "description": "L’émetteur peut verrouiller un solde ou tous les soldes." }, "requireAuth": { "title": "Autorisation requise", "description": "L’émetteur doit approuver chaque détenteur." }, "canEscrow": { "title": "Séquestre autorisé", "description": "Les détenteurs peuvent placer leurs soldes en séquestre." }, "canTrade": { "title": "Négociable", "description": "Négociation via le DEX ou l’AMM." }, "canTransfer": { "title": "Transférable", "description": "Les détenteurs peuvent envoyer des tokens à d’autres comptes." }, "canClawback": { "title": "Récupérable", "description": "L’émetteur peut récupérer les tokens des détenteurs." } },
+    "metadata": { "title": "JSON des métadonnées", "generator": "Ouvrir le générateur", "placeholder": "Collez le JSON de métadonnées généré", "bytes": "{{count}} / {{max}} octets" },
+    "errors": { "scale": "Les décimales doivent être un entier de 0 à 255.", "maximumPrecision": "L’offre maximale accepte au plus {{scale}} décimales.", "maximumRange": "L’offre doit représenter 1 à 9 223 372 036 854 775 807 unités de base.", "fee": "Les frais doivent être de 0 à 50 avec 3 décimales maximum.", "feeTransfer": "Activez les transferts pour définir des frais.", "metadataJson": "Les métadonnées doivent être un JSON valide.", "metadataSize": "Métadonnées : {{count}} octets ; limite 1024.", "domain": "L’ID du domaine doit contenir exactement 64 caractères hexadécimaux.", "domainAuth": "Activez l’autorisation pour utiliser un domaine autorisé." }, "preview": "Aperçu de la transaction", "issue": "Émettre le MPT"
   },
   "mpt-metadata-generator": {
     "seo-description": "Créez des métadonnées conformes à XLS-0089 pour les Multi-Purpose Tokens sur le XRP Ledger.",

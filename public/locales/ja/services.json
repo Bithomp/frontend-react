@@ -38,6 +38,7 @@
       "fraud-blocked": "このアカウントはFRAUDとしてマークされています。送信は許可されていません。",
       "valid-token": "有効なトークン（通貨 + 発行者）を選択してください。",
       "destination-cannot-accept": "送信先は{{currency}}を受け取れません。",
+      "mpt-decimal-places": "このMPTは小数点以下{{count}}桁まで対応しています。",
       "copy-link": "リンクをコピーできませんでした"
     }
   },
@@ -620,6 +621,7 @@
     "send": "送信",
     "check": "Check",
     "escrow": "Escrow",
+    "issue-mpt": "MPTを発行",
     "nft-mint": "NFTをミント",
     "account-settings": "設定",
     "account-control": "アカウント管理",
@@ -758,6 +760,14 @@
       "transferRateClear": "TransferRateをクリアしました。",
       "settings": "設定を更新しました。"
     }
+  },
+  "issue-mpt": {
+    "title": "MPTを発行", "seoDescription": "XRP LedgerでMulti-Purpose Tokenの発行を作成して署名します。", "intro": "新しいMPTの供給量、精度、メタデータ、恒久的な権限を設定します。",
+    "fields": { "scale": "小数桁数", "maximum": "最大供給量", "transferFee": "送金手数料（%）", "domain": "許可ドメインID" },
+    "hints": { "scale": "0～255。発行後は変更できません。", "maximum": "任意。省略時はプロトコルの上限が適用されます。", "baseUnits": "Ledgerには{{amount}}基本単位として保存されます。", "transferFee": "任意。0～50、小数点以下3桁まで。", "domain": "任意の64文字の16進ID。認可が必要です。" }, "placeholders": { "optional": "任意" },
+    "permissions": { "title": "トークン権限", "warning": "慎重に選択してください。これらの機能は後から有効にできません。", "canLock": { "title": "ロック可能", "description": "発行者は個別または全残高をロックできます。" }, "requireAuth": { "title": "認可が必要", "description": "発行者が各保有者を承認します。" }, "canEscrow": { "title": "Escrow可能", "description": "保有者は残高をEscrowに預けられます。" }, "canTrade": { "title": "取引可能", "description": "DEXまたはAMMで取引できます。" }, "canTransfer": { "title": "送金可能", "description": "保有者は他のアカウントへ送金できます。" }, "canClawback": { "title": "回収可能", "description": "発行者は保有者からトークンを回収できます。" } },
+    "metadata": { "title": "メタデータJSON", "generator": "メタデータ生成を開く", "placeholder": "生成したメタデータJSONを貼り付け", "bytes": "{{count}} / {{max}}バイト" },
+    "errors": { "scale": "小数桁数は0～255の整数にしてください。", "maximumPrecision": "最大供給量の小数は{{scale}}桁までです。", "maximumRange": "供給量は1～9,223,372,036,854,775,807基本単位にしてください。", "fee": "手数料は0～50、小数点以下3桁までです。", "feeTransfer": "手数料を設定するには送金可能を有効にしてください。", "metadataJson": "メタデータは有効なJSONである必要があります。", "metadataSize": "メタデータは{{count}}バイトです。上限は1024です。", "domain": "ドメインIDは64文字の16進数である必要があります。", "domainAuth": "許可ドメインには認可を有効にしてください。" }, "preview": "トランザクションプレビュー", "issue": "MPTを発行"
   },
   "mpt-metadata-generator": {
     "seo-description": "XRP LedgerのMulti-Purpose Token向けにXLS-0089準拠のメタデータを作成します。",

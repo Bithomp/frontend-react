@@ -410,6 +410,7 @@
       "trustline-incomplete": "Данные trustline неполные",
       "lp-trustline-remove-unavailable": "LP trustline нельзя удалить здесь",
       "remove-trustline-zero-balance": "Trustline можно удалить только при балансе 0",
+      "remove-mpt-zero-balance": "MPT можно удалить только при балансе 0",
       "remove-trustline-unavailable": "Trustline нельзя удалить",
       "not-available-devnet": "Недоступно в devnet",
       "explicit-nft-avatar": "Explicit NFT нельзя использовать как аватар",

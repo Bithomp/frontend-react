@@ -38,6 +38,7 @@
       "fraud-blocked": "This account has been flagged as FRAUD. Sending is not allowed.",
       "valid-token": "Please select a valid token (currency + issuer).",
       "destination-cannot-accept": "Destination cannot accept {{currency}}.",
+      "mpt-decimal-places": "This MPT supports up to {{count}} decimal places.",
       "copy-link": "Failed to copy the link"
     }
   },
@@ -621,6 +622,7 @@
     "send": "Send",
     "check": "Check",
     "escrow": "Escrow",
+    "issue-mpt": "Issue MPT",
     "nft-mint": "Mint NFT",
     "account-settings": "Settings",
     "account-control": "Account Management",
@@ -759,6 +761,28 @@
       "transferRateClear": "TransferRate cleared successfully.",
       "settings": "Settings updated successfully."
     }
+  },
+  "issue-mpt": {
+    "title": "Issue an MPT",
+    "seoDescription": "Create and sign a Multi-Purpose Token issuance on the XRP Ledger.",
+    "intro": "Define the supply, precision, metadata, and permanent permissions of a new Multi-Purpose Token.",
+    "fields": { "scale": "Decimal places", "maximum": "Maximum supply", "transferFee": "Transfer fee (%)", "domain": "Permissioned Domain ID" },
+    "hints": { "scale": "From 0 to 255. This cannot be changed after issuance.", "maximum": "Optional. If omitted, the protocol default applies.", "baseUnits": "Stored on ledger as {{amount}} base units.", "transferFee": "Optional, from 0 to 50 with up to 3 decimals.", "domain": "Optional 64-character hexadecimal ID; requires authorization." },
+    "placeholders": { "optional": "Optional" },
+    "permissions": {
+      "title": "Token permissions",
+      "warning": "Choose carefully: these capabilities cannot be enabled later.",
+      "canLock": { "title": "Can lock", "description": "Issuer can lock individual or all balances." },
+      "requireAuth": { "title": "Require authorization", "description": "Issuer must approve each holder." },
+      "canEscrow": { "title": "Can escrow", "description": "Holders can place balances in escrow." },
+      "canTrade": { "title": "Can trade", "description": "Holders can trade on the DEX or AMM." },
+      "canTransfer": { "title": "Can transfer", "description": "Holders can transfer tokens to other accounts." },
+      "canClawback": { "title": "Can claw back", "description": "Issuer can reclaim tokens from holders." }
+    },
+    "metadata": { "title": "Metadata JSON", "generator": "Open metadata generator", "placeholder": "Paste the generated metadata JSON here", "bytes": "{{count}} / {{max}} bytes" },
+    "errors": { "scale": "Decimal places must be a whole number from 0 to 255.", "maximumPrecision": "Maximum supply can have at most {{scale}} decimal places.", "maximumRange": "Maximum supply must resolve to 1–9,223,372,036,854,775,807 base units.", "fee": "Transfer fee must be from 0 to 50 with up to 3 decimals.", "feeTransfer": "Enable Can transfer to set a transfer fee.", "metadataJson": "Metadata must be valid JSON.", "metadataSize": "Metadata is {{count}} bytes; the limit is 1024.", "domain": "Domain ID must contain exactly 64 hexadecimal characters.", "domainAuth": "Enable Require authorization to use a permissioned domain." },
+    "preview": "Transaction preview",
+    "issue": "Issue MPT"
   },
   "mpt-metadata-generator": {
     "seo-description": "Create XLS-0089 compliant metadata for Multi-Purpose Tokens on the XRP Ledger.",

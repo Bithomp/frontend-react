@@ -37,21 +37,7 @@ import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
 import { buildTransactionSeo } from '../../utils/transaction/seo'
 import { server } from '../../utils'
-
-const collectMptIssuanceIds = (txData) => {
-  const ids = new Set()
-
-  const addId = (value) => {
-    if (value && typeof value === 'string') {
-      ids.add(value)
-    }
-  }
-
-  addId(txData?.specification?.mptIssuanceID)
-  Object.keys(txData?.outcome?.mptokenChanges || {}).forEach(addId)
-
-  return Array.from(ids)
-}
+import { collectMptIssuanceIds } from '../../utils/transaction/mpt'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context

@@ -410,6 +410,7 @@
       "trustline-incomplete": "Trustline 数据不完整",
       "lp-trustline-remove-unavailable": "LP Trustline 不能在这里移除",
       "remove-trustline-zero-balance": "只有余额为 0 时才能移除 Trustline",
+      "remove-mpt-zero-balance": "只有余额为 0 时才能移除 MPT",
       "remove-trustline-unavailable": "无法移除 Trustline",
       "not-available-devnet": "Devnet 不可用",
       "explicit-nft-avatar": "露骨内容 NFT 不能用作头像",

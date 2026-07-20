@@ -6112,10 +6112,34 @@ export default function Account({
                   {heldMpts.map((mptNode, index) => {
                     const rowKey = `${mptNode?.index || mptId(mptNode) || 'mpt'}-${index}`
                     const isExpanded = expandedHeldMptKey === rowKey
+                    const issuanceId = mptId(mptNode)
+                    const tokenPageUrl = issuanceId ? `/token/${issuanceId}` : null
                     const balanceValue = scaleAmount(
                       mptNode?.MPTAmount || 0,
                       mptNode?.mptokenCurrencyDetails?.scale || null
                     )
+                    const canManageMpt =
+                      !!setSignRequest && !!account?.address && isOwnAccount && !effectiveLedgerTimestamp && !!issuanceId
+                    const canSendMpt = canManageMpt && Number(balanceValue) > 0
+                    const canRemoveMpt = canManageMpt && Number(balanceValue) === 0
+                    const disabledSendMptTooltip = canSendMpt
+                      ? ''
+                      : !setSignRequest || !account?.address
+                        ? ta('tooltips.login-required')
+                        : !isOwnAccount
+                          ? ta('tooltips.viewed-account-only')
+                          : effectiveLedgerTimestamp
+                            ? ta('tooltips.historical-unavailable')
+                            : ta('tooltips.send-positive-token-balance')
+                    const disabledRemoveMptTooltip = canRemoveMpt
+                      ? ''
+                      : Number(balanceValue) !== 0
+                        ? ta('tooltips.remove-mpt-zero-balance')
+                        : !setSignRequest || !account?.address
+                          ? ta('tooltips.login-required')
+                          : !isOwnAccount
+                            ? ta('tooltips.viewed-account-only')
+                            : ta('tooltips.historical-unavailable')
 
                     return (
                       <div
@@ -6163,6 +6187,76 @@ export default function Account({
                                 </span>
                               </div>
                             )}
+                            <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                              {tokenPageUrl && (
+                                <button
+                                  type="button"
+                                  className="card-action-btn token-page"
+                                  onClick={() => router.push(tokenPageUrl)}
+                                >
+                                  <MdOpenInNew style={{ fontSize: 15, marginBottom: -2 }} />{' '}
+                                  {ta('actions.token-page')}
+                                </button>
+                              )}
+                              <span className={disabledSendMptTooltip ? 'tooltip' : ''}>
+                                <button
+                                  type="button"
+                                  className={`card-action-btn ${canSendMpt ? 'redeem' : 'disabled'}`}
+                                  disabled={!canSendMpt}
+                                  onClick={() => {
+                                    if (!canSendMpt) return
+                                    setSignRequest({
+                                      action: 'payment',
+                                      redirect: 'account',
+                                      request: {
+                                        TransactionType: 'Payment',
+                                        Account: data?.address,
+                                        Amount: { mpt_issuance_id: issuanceId, value: '0' },
+                                        Flags: 131072
+                                      },
+                                      data: {
+                                        mptokenIssuanceID: issuanceId,
+                                        mptAssetScale: mptNode?.mptokenCurrencyDetails?.scale || 0,
+                                        currencyCode:
+                                          mptNode?.mptokenCurrencyDetails?.metadata?.t ||
+                                          mptNode?.mptokenCurrencyDetails?.metadata?.ticker ||
+                                          'MPT',
+                                        balance: String(balanceValue)
+                                      }
+                                    })
+                                  }}
+                                >
+                                  <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.send')}
+                                </button>
+                                {!!disabledSendMptTooltip && (
+                                  <span className="tooltiptext left">{disabledSendMptTooltip}</span>
+                                )}
+                              </span>
+                              <span className={disabledRemoveMptTooltip ? 'tooltip' : ''}>
+                                <button
+                                  type="button"
+                                  className={`card-action-btn ${canRemoveMpt ? 'cancel' : 'disabled'}`}
+                                  disabled={!canRemoveMpt}
+                                  onClick={() => {
+                                    if (!canRemoveMpt) return
+                                    setSignRequest({
+                                      redirect: 'account',
+                                      request: {
+                                        TransactionType: 'MPTokenAuthorize',
+                                        Account: data?.address,
+                                        MPTokenIssuanceID: issuanceId,
+                                        Flags: 1
+                                      }
+                                    })
+                                  }}
+                                >
+                                  <MdDeleteForever /> {ta('actions.remove')}
+                                </button>
+                                {!!disabledRemoveMptTooltip && (
+                                  <span className="tooltiptext left">{disabledRemoveMptTooltip}</span>
+                                )}
+                              </span>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -9111,6 +9205,17 @@ export default function Account({
                     const maxSupply = mptNode?.MaximumAmount
                       ? scaleAmount(mptNode.MaximumAmount, mptNode?.AssetScale || null)
                       : null
+                    const issuanceId = mptId(mptNode)
+                    const remainingSupply = maxSupply === null ? null : subtract(maxSupply, outstanding)
+                    const canSendIssuedMpt =
+                      !!setSignRequest && !!account?.address && isOwnAccount && !effectiveLedgerTimestamp && !!issuanceId
+                    const disabledSendIssuedMptTooltip = canSendIssuedMpt
+                      ? ''
+                      : !setSignRequest || !account?.address
+                        ? ta('tooltips.login-required')
+                        : !isOwnAccount
+                          ? ta('tooltips.viewed-account-only')
+                          : ta('tooltips.historical-unavailable')
 
                     return (
                       <div
@@ -9149,6 +9254,54 @@ export default function Account({
                               <span>{ta('labels.max-supply')}:</span>
                               <span>{maxSupply === null ? ta('states.not-set') : fullNiceNumber(maxSupply)}</span>
                             </div>
+                            {!!issuanceId && (
+                              <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                <button
+                                  type="button"
+                                  className="card-action-btn token-page"
+                                  onClick={() => router.push(`/token/${issuanceId}`)}
+                                >
+                                  <MdOpenInNew style={{ fontSize: 15, marginBottom: -2 }} />{' '}
+                                  {ta('actions.token-page')}
+                                </button>
+                                <span className={disabledSendIssuedMptTooltip ? 'tooltip' : ''}>
+                                  <button
+                                    type="button"
+                                    className={`card-action-btn ${canSendIssuedMpt ? 'redeem' : 'disabled'}`}
+                                    disabled={!canSendIssuedMpt}
+                                    onClick={() => {
+                                      if (!canSendIssuedMpt) return
+                                      setSignRequest({
+                                        action: 'payment',
+                                        redirect: 'account',
+                                        request: {
+                                          TransactionType: 'Payment',
+                                          Account: data?.address,
+                                          Amount: { mpt_issuance_id: issuanceId, value: '0' },
+                                          Flags: 131072
+                                        },
+                                        data: {
+                                          mptokenIssuanceID: issuanceId,
+                                          mptAssetScale: mptNode?.AssetScale || 0,
+                                          currencyCode:
+                                            mptNode?.metadata?.t ||
+                                            mptNode?.metadata?.ticker ||
+                                            mptNode?.mptokenCurrencyDetails?.metadata?.t ||
+                                            mptNode?.mptokenCurrencyDetails?.metadata?.ticker ||
+                                            'MPT',
+                                          ...(remainingSupply !== null ? { balance: String(remainingSupply) } : {})
+                                        }
+                                      })
+                                    }}
+                                  >
+                                    <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> {ta('actions.send')}
+                                  </button>
+                                  {!!disabledSendIssuedMptTooltip && (
+                                    <span className="tooltiptext left">{disabledSendIssuedMptTooltip}</span>
+                                  )}
+                                </span>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>

@@ -4,21 +4,7 @@ import { TData } from './TData'
 import { TransactionCard } from './TransactionCard'
 import CopyButton from '../UI/CopyButton'
 import { AddressWithIconFilled, CurrencyWithIcon, shortHash } from '../../utils/format'
-
-const collectMptIssuanceIds = (data) => {
-  const ids = new Set()
-
-  const addId = (value) => {
-    if (value && typeof value === 'string') {
-      ids.add(value)
-    }
-  }
-
-  addId(data?.specification?.mptIssuanceID)
-  Object.keys(data?.outcome?.mptokenChanges || {}).forEach(addId)
-
-  return Array.from(ids)
-}
+import { collectMptIssuanceIds } from '../../utils/transaction/mpt'
 
 const getMpTokenActionLabel = (txType, flags) => {
   if (txType === 'MPTokenAuthorize') {
@@ -37,7 +23,7 @@ const getMpTokenActionLabel = (txType, flags) => {
 }
 
 const MptList = ({ mptIssuanceIds, mptokensDetails }) => {
-  if (!mptIssuanceIds?.length) return <span className="orange">No MPT issuance ID found in transaction payload.</span>
+  if (!mptIssuanceIds?.length) return <span className="orange">No MPT issuance ID found in transaction.</span>
 
   return (
     <div>

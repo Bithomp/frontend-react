@@ -88,7 +88,8 @@
       "tax-reports": "税務レポート",
       "username": "ユーザネームの登録",
       "toml-generator": "TOMLジェネレーター",
-      "mpt-metadata-generator": "MPTokenメタデータジェネレーター"
+      "mpt-metadata-generator": "MPTokenメタデータジェネレーター",
+      "issue-mpt": "Multi-Purpose Tokenを発行"
     },
     "business": {
       "advertise": "広告掲載",

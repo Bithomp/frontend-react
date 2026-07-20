@@ -88,7 +88,8 @@
       "tax-reports": "Tax reports",
       "username": "Username registration",
       "toml-generator": "TOML Generator",
-      "mpt-metadata-generator": "MPToken Metadata Generator"
+      "mpt-metadata-generator": "MPToken Metadata Generator",
+      "issue-mpt": "Issue Multi-Purpose Token"
     },
     "business": {
       "advertise": "Advertise",

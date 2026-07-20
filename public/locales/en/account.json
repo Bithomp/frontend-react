@@ -405,6 +405,7 @@
       "trustline-incomplete": "Trustline data is incomplete",
       "lp-trustline-remove-unavailable": "LP trustlines cannot be removed here",
       "remove-trustline-zero-balance": "Trustline can be removed only when balance is 0",
+      "remove-mpt-zero-balance": "MPT can be removed only when balance is 0",
       "remove-trustline-unavailable": "Trustline cannot be removed",
       "not-available-devnet": "Not available on devnet",
       "explicit-nft-avatar": "Explicit NFT cannot be used as avatar",

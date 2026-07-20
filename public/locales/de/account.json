@@ -410,6 +410,7 @@
       "trustline-incomplete": "Trustline-Daten sind unvollständig",
       "lp-trustline-remove-unavailable": "LP-Trustlines können hier nicht entfernt werden",
       "remove-trustline-zero-balance": "Trustline kann nur entfernt werden, wenn das Guthaben 0 ist",
+      "remove-mpt-zero-balance": "Das MPT kann nur entfernt werden, wenn das Guthaben 0 ist",
       "remove-trustline-unavailable": "Trustline kann nicht entfernt werden",
       "not-available-devnet": "Auf Devnet nicht verfügbar",
       "explicit-nft-avatar": "Ein explizites NFT kann nicht als Avatar verwendet werden",

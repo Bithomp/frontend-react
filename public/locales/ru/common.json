@@ -88,7 +88,8 @@
       "tax-reports": "Налоговые отчеты",
       "username": "Регистрация псевдонима",
       "toml-generator": "Генератор TOML",
-      "mpt-metadata-generator": "Генератор метаданных MPToken"
+      "mpt-metadata-generator": "Генератор метаданных MPToken",
+      "issue-mpt": "Выпустить Multi-Purpose Token"
     },
     "business": {
       "advertise": "Размещение рекламы",

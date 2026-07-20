@@ -410,6 +410,7 @@
       "trustline-incomplete": "Data trustline belum lengkap",
       "lp-trustline-remove-unavailable": "Trustline LP tidak dapat dihapus di sini",
       "remove-trustline-zero-balance": "Trustline hanya dapat dihapus jika saldo 0",
+      "remove-mpt-zero-balance": "MPT hanya dapat dihapus jika saldo 0",
       "remove-trustline-unavailable": "Trustline tidak dapat dihapus",
       "not-available-devnet": "Tidak tersedia di devnet",
       "explicit-nft-avatar": "NFT eksplisit tidak dapat digunakan sebagai avatar",

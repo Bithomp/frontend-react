@@ -147,6 +147,9 @@ export default function ServicesPage() {
         },
         { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline },
         !xahauNetwork
+          ? { href: '/services/issue-mpt', title: t('menu.services.issue-mpt'), icon: LuCoins }
+          : null,
+        !xahauNetwork
           ? {
               href: '/services/mpt-metadata-generator',
               title: t('menu.services.mpt-metadata-generator'),

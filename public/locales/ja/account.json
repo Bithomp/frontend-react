@@ -410,6 +410,7 @@
       "trustline-incomplete": "Trustlineデータが不完全です",
       "lp-trustline-remove-unavailable": "LP Trustlineはここでは削除できません",
       "remove-trustline-zero-balance": "Trustlineは残高が0の場合のみ削除できます",
+      "remove-mpt-zero-balance": "MPTは残高が0の場合のみ削除できます",
       "remove-trustline-unavailable": "Trustlineを削除できません",
       "not-available-devnet": "devnetでは利用できません",
       "explicit-nft-avatar": "Explicit NFTはアバターに使用できません",

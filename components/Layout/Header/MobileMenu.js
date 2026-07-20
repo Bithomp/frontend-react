@@ -389,6 +389,13 @@ export default function MobileMenu({
             <IoBookOutline style={itemIconStyle} />
             {t('menu.token-menu.issuer-guide')}
           </Link>
+          {!xahauNetwork && (
+            <Link href="/services/issue-mpt" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <IoLayersOutline style={itemIconStyle} />
+              {t('menu.services.issue-mpt')}
+              <span className="menu-item-badge">{t('menu.badges.new')}</span>
+            </Link>
+          )}
         </div>
 
         {/* Hide AMM for XAHAU */}

@@ -26,6 +26,12 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   const { t } = useTranslation(['common', 'services'])
   const ts = useCallback((key, options) => t(key, { ns: 'services', ...options }), [t])
   const initialRequest = signRequest?.request || {}
+  const mptokenIssuanceID =
+    signRequest?.data?.mptokenIssuanceID ||
+    (typeof initialRequest.Amount === 'object' ? initialRequest.Amount?.mpt_issuance_id : '')
+  const isMptPayment = !!mptokenIssuanceID
+  const mptAssetScale = Math.min(255, Math.max(0, Math.floor(Number(signRequest?.data?.mptAssetScale) || 0)))
+  const mptScaleMultiplier = `1${'0'.repeat(mptAssetScale)}`
   const currencyCode = useMemo(() => {
     if (signRequest?.data?.currencyCode) return signRequest.data.currencyCode
     if (typeof initialRequest.Amount === 'object' && initialRequest.Amount?.currency)
@@ -39,7 +45,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     return ''
   }, [initialRequest.Amount, signRequest?.data?.issuer])
 
-  const isTokenPayment = !isNativeCurrency({ currency: currencyCode })
+  const isTokenPayment = isMptPayment || !isNativeCurrency({ currency: currencyCode })
   const currencyLabel = useMemo(
     () => (isTokenPayment ? niceCurrency(currencyCode) : currencyCode),
     [currencyCode, isTokenPayment]
@@ -98,6 +104,13 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
         return
       }
 
+      // MPT acceptance is not available from the backend yet. Keep address and destination-tag checks above.
+      if (isMptPayment) {
+        setDestinationTokenError('')
+        setDestinationTokenTransferFee(null)
+        return
+      }
+
       try {
         let url = `v2/address/${destinationValue}/acceptedTokens?limit=100`
         if (signRequest?.request?.Account) {
@@ -122,7 +135,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     }
 
     checkDestinationRequirements()
-  }, [currencyCode, currencyLabel, destination, isTokenPayment, issuer, signRequest?.request?.Account, ts])
+  }, [currencyCode, currencyLabel, destination, isMptPayment, isTokenPayment, issuer, mptokenIssuanceID, signRequest?.request?.Account, ts])
 
   const applyMaxAmount = (event) => {
     event.preventDefault()
@@ -133,6 +146,8 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
 
   const amountNumber = Number(String(amount).trim())
   const hasValidAmount = Number.isFinite(amountNumber) && amountNumber > 0
+  const mptAmountValue = isMptPayment ? multiply(String(amount).trim(), mptScaleMultiplier) : ''
+  const hasMptPrecisionError = isMptPayment && hasValidAmount && !/^\d+$/.test(mptAmountValue)
   const transferFeeNumber = Number(destinationTokenTransferFee)
   const hasIssuerFee = isTokenPayment && Number.isFinite(transferFeeNumber) && transferFeeNumber > 0
   const receiveAmountText = hasIssuerFee && hasValidAmount ? formatXDigits(amountNumber / transferFeeNumber, 11) : ''
@@ -146,24 +161,33 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     const isDestinationValid = isAddressValid(destinationValue)
     const numericAmount = Number(amountValue)
     const isAmountValid = Number.isFinite(numericAmount) && numericAmount > 0
+    const scaledMptAmount = isMptPayment ? multiply(amountValue, mptScaleMultiplier) : ''
+    const isMptAmountValid = !isMptPayment || /^\d+$/.test(scaledMptAmount)
     const isDestinationTagValid =
       (!destinationTagValue || isTagValid(destinationTagValue)) && (!requireDestTag || !!destinationTagValue)
     const canDestinationAcceptCurrency = !destinationTokenError
 
-    const isValid = isDestinationValid && isAmountValid && isDestinationTagValid && canDestinationAcceptCurrency
+    const isValid =
+      isDestinationValid &&
+      isAmountValid &&
+      isMptAmountValid &&
+      isDestinationTagValid &&
+      canDestinationAcceptCurrency
 
     setStatus('')
     setFormError(!isValid)
 
     if (!isValid) return
 
-    const nextAmount = isTokenPayment
-      ? {
+    const nextAmount = isMptPayment
+      ? { mpt_issuance_id: mptokenIssuanceID, value: scaledMptAmount }
+      : isTokenPayment
+        ? {
           currency: currencyCode,
           issuer,
           value: amountValue
-        }
-      : multiply(amountValue, 1000000)
+          }
+        : multiply(amountValue, 1000000)
 
     const nextSignRequest = signRequest
     nextSignRequest.request = {
@@ -211,8 +235,11 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     destination,
     destinationTag,
     isTokenPayment,
+    isMptPayment,
     issuer,
     memo,
+    mptScaleMultiplier,
+    mptokenIssuanceID,
     requireDestTag,
     destinationTokenError,
     destinationTokenTransferFee,
@@ -308,6 +335,11 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
           value={amount}
           inputMode="decimal"
         />
+        {hasMptPrecisionError && (
+          <div style={{ marginTop: 6, textAlign: 'left' }}>
+            <span className="red">{ts('shared.errors.mpt-decimal-places', { count: mptAssetScale })}</span>
+          </div>
+        )}
         <div className="paymentAmountFooter">
           {receiveAmountText ? (
             <span className="grey paymentAmountReceive">
