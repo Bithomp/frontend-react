@@ -37,7 +37,12 @@ const sortDapps = (list, order) => {
 
   switch (order) {
     case 'performingHigh':
-      return arr.sort((a, b) => Number(b?.uniqueSourceAddresses ?? 0) - Number(a?.uniqueSourceAddresses ?? 0))
+      return arr.sort(
+        (a, b) =>
+          Number(b?.uniqueSourceAddresses ?? 0) - Number(a?.uniqueSourceAddresses ?? 0) ||
+          Number(b?.uniqueInteractedAddresses ?? 0) - Number(a?.uniqueInteractedAddresses ?? 0) ||
+          Number(b?.totalTransactions ?? 0) - Number(a?.totalTransactions ?? 0)
+      )
     case 'totalSentHigh':
       return arr.sort((a, b) => Number(b?.totalSent ?? 0) - Number(a?.totalSent ?? 0))
     case 'interactingHigh':
