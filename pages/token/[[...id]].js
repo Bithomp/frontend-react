@@ -29,7 +29,7 @@ import {
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, logServerSideError, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
-import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
+import { isAddressOrUsername, nativeCurrency, server, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import { ipfsUrl } from '../../utils/nft'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenTabs from '../../components/Tabs/TokenTabs'
@@ -1472,6 +1472,36 @@ export default function TokenPage({
   const tokenDisplayCurrency = isMptToken
     ? mptMetadataName || mptMetadataTicker || token?.currency || 'MPT'
     : token?.currencyDetails?.currency || token?.currency || nativeCurrency
+  const tokenPreviewName = isMptToken
+    ? mptMetadataName || mptMetadataTicker || tokenDisplayCurrency
+    : token?.name || tomlToken?.name || tokenDisplayCurrency
+  const tokenPreviewTicker = isMptToken
+    ? mptMetadataTicker || token?.currency || ''
+    : token?.currencyDetails?.currency || displayCurrencyCode(token?.currency) || tokenDisplayCurrency
+  const tokenPreviewPrice =
+    statistics?.priceFiatsSpot?.[selectedCurrency] ??
+    statistics?.priceFiatsSpot?.[selectedCurrency?.toLowerCase?.()] ??
+    statistics?.priceFiats?.[selectedCurrency] ??
+    statistics?.priceFiats?.[selectedCurrency?.toLowerCase?.()] ??
+    (isNativeToken ? fiatRate : null)
+  const rawTokenPreviewImage = tokenImageSrc(token, 400)
+  const tokenPreviewIcon = rawTokenPreviewImage?.startsWith('/') ? `${server}${rawTokenPreviewImage}` : rawTokenPreviewImage
+  const tokenPreviewParams = {
+    name: tokenPreviewName,
+    ticker: tokenPreviewTicker,
+    image: tokenPreviewIcon,
+    fiat: selectedCurrency || 'usd',
+    v: '1',
+    ...(tokenPreviewPrice ? { price: String(tokenPreviewPrice) } : {})
+  }
+  const tokenPreviewImage = {
+    width: 1200,
+    height: 630,
+    file: `${server}/nextapi/token-preview?${new URLSearchParams(tokenPreviewParams).toString()}`
+  }
+  const tokenTwitterImage = {
+    file: `${server}/nextapi/token-preview?${new URLSearchParams({ ...tokenPreviewParams, shape: 'square' }).toString()}`
+  }
   const tokenSupplyTitle = isMptToken
     ? tokenDisplayCurrency
     : token?.currencyDetails?.currency || niceCurrency(token?.currency) || tokenDisplayCurrency
@@ -2410,6 +2440,8 @@ export default function TokenPage({
               ' ' +
               (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
         }
+        image={tokenPreviewImage}
+        twitterImage={tokenTwitterImage}
       />
       <div className={tokenPage}>
         {!xahauNetwork && <TokenTabs />}
