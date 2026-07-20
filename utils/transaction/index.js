@@ -312,6 +312,7 @@ export const dappBySourceTag = (sourceTag) => {
     20120513: 'BPM Wallet',
     20220613: 'DalliPay',
     20221212: 'XPMarket',
+    20260530: 'XRPL Agent Wallet',
     22222222: 'EQLX',
     24289778: 'ChatXRP',
     24546893: 'DeXfi',
