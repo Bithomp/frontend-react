@@ -45,6 +45,14 @@
   max-width: 78vw;
 }
 
+.sourceTag {
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
 .wallets {
   margin-top: 6px;
   opacity: 0.95;

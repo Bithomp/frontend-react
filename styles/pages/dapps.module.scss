@@ -91,6 +91,20 @@
     min-width: 0;
   }
 
+  .dapp-name-stack {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.2;
+  }
+
+  .dapp-source-tag {
+    margin-top: 3px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
   .dapps-activity {
     width: 100%;
     min-width: 0;

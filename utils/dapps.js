@@ -338,3 +338,34 @@ export const buildPrevMapBySourceTag = (prevList) => {
   }
   return m
 }
+
+const AGENT_SOURCE_TAG_START = Date.UTC(2026, 4, 30)
+const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+export const generatedAgentNameBySourceTag = (sourceTag) => {
+  const value = String(sourceTag ?? '')
+  const match = value.match(/^(\d{2})(\d{2})(\d{2})(\d{4})$/)
+  if (!match) return null
+
+  const [, shortYear, monthText, dayText, agentText] = match
+  const year = 2000 + Number(shortYear)
+  const month = Number(monthText)
+  const day = Number(dayText)
+  const agent = Number(agentText)
+  const date = Date.UTC(year, month - 1, day)
+  const parsedDate = new Date(date)
+  const now = new Date()
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+
+  if (
+    date <= AGENT_SOURCE_TAG_START ||
+    date > today ||
+    parsedDate.getUTCFullYear() !== year ||
+    parsedDate.getUTCMonth() !== month - 1 ||
+    parsedDate.getUTCDate() !== day
+  ) {
+    return null
+  }
+
+  return `${SHORT_MONTHS[month - 1]} ${day}, AI Agent ${agent}`
+}

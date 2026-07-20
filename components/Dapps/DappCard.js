@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'next-i18next'
 import { shortNiceNumber, amountFormat } from '../../utils/format'
 import { dappBySourceTag } from '../../utils/transaction'
+import { generatedAgentNameBySourceTag } from '../../utils/dapps'
 import DappLogo from './DappLogo'
 import WalletsCell from './WalletsCell'
 import TypeMixCell from './TypeMixCell'
@@ -53,7 +54,9 @@ export default function DappCard({
     return map
   }, [dapp?.transactionTypesResults, dapp?.swaps])
 
-  const name = dappBySourceTag(sourceTag) || sourceTag
+  const knownName = dappBySourceTag(sourceTag) || entry?.name
+  const generatedName = knownName ? null : generatedAgentNameBySourceTag(sourceTag)
+  const name = knownName || generatedName || sourceTag
 
   const wallets = entry?.wallets || []
   const walletconnect = entry?.walletconnect || []
@@ -68,6 +71,7 @@ export default function DappCard({
           {logo ? <DappLogo src={logo} /> : null}
           <div className={styles.titleWrap}>
             <div className={styles.title}>{name}</div>
+            {generatedName && <div className={styles.sourceTag}>{sourceTag}</div>}
 
             <div className={styles.wallets}>
               {hasExternalSigning ? <WalletsCell wallets={wallets} walletconnect={walletconnect} /> : null}

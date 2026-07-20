@@ -14,7 +14,7 @@ import { setTabParams } from '../utils'
 import SEO from '../components/SEO'
 import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow, niceNumber } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
-import { DAPPS_META } from '../utils/dapps'
+import { DAPPS_META, buildPrevMapBySourceTag, generatedAgentNameBySourceTag } from '../utils/dapps'
 import DappLogo from '../components/Dapps/DappLogo'
 import WalletsCell from '../components/Dapps/WalletsCell'
 import TypeMixCell from '../components/Dapps/TypeMixCell'
@@ -23,7 +23,6 @@ import { HeaderTooltip } from '../components/UI/HeaderTooltip'
 import { useIsMobile } from '../utils/mobile'
 import DappCard from '../components/Dapps/DappCard'
 import WalletSelect from '../components/Dapps/WalletSelect'
-import { buildPrevMapBySourceTag } from '../utils/dapps'
 import Delta from '../components/UI/Delta'
 
 const calcSuccessRate = (total, success) => {
@@ -230,17 +229,19 @@ export default function Dapps({
 
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
+    const metaObj = DAPPS_META[0] || {}
     // Exclude these sourceTags
     const excludeSourceTags = [0, 222, 777, 4004, 555002, 604802567, 446588767]
     const filtered = list.filter((d) => {
       const sourceTag = Number(d?.sourceTag)
       if (sourceTag < 100 || excludeSourceTags.includes(sourceTag)) return false
-      const hasName = dappBySourceTag(d?.sourceTag)
+      const hasName =
+        dappBySourceTag(d?.sourceTag) ||
+        metaObj[String(d?.sourceTag)]?.name ||
+        generatedAgentNameBySourceTag(d?.sourceTag)
       if (hasName) return true
       return Number(d?.uniqueSourceAddresses) > 3
     })
-    const metaObj = DAPPS_META[0] || {}
-
     const hasAnyExternalSigning = (entry) => {
       const hasWallets = Array.isArray(entry?.wallets) && entry.wallets.length > 0
       const hasWC = Array.isArray(entry?.walletconnect) && entry.walletconnect.length > 0
@@ -303,6 +304,7 @@ export default function Dapps({
   )
 
   const csvData = useMemo(() => {
+    const metaObj = DAPPS_META[0] || {}
     return (data || []).map((d) => {
       const successByType = getSuccessByType(d?.transactionTypesResults)
       const typesText = Object.entries(successByType)
@@ -313,7 +315,11 @@ export default function Dapps({
 
       return {
         ...d,
-        dappName: dappBySourceTag(d?.sourceTag) || String(d?.sourceTag || ''),
+        dappName:
+          dappBySourceTag(d?.sourceTag) ||
+          metaObj[String(d?.sourceTag)]?.name ||
+          generatedAgentNameBySourceTag(d?.sourceTag) ||
+          String(d?.sourceTag || ''),
         transactionTypes: typesText,
         successRate: Number(calcSuccessRate(d?.totalTransactions, d?.successTransactions).toFixed(1))
       }
@@ -561,6 +567,8 @@ export default function Dapps({
                     const metaObj = DAPPS_META[0] || {}
                     const entry = metaObj && metaObj[String(d?.sourceTag)]
                     const logo = entry?.logo ? `/images/dapps/${entry.logo}` : null
+                    const knownName = dappBySourceTag(d?.sourceTag) || entry?.name
+                    const generatedName = knownName ? null : generatedAgentNameBySourceTag(d?.sourceTag)
 
                     return (
                       <tr key={d?.sourceTag ?? idx}>
@@ -571,7 +579,10 @@ export default function Dapps({
                         <td>
                           <span style={{ display: 'flex', alignItems: 'center' }}>
                             {logo ? <DappLogo src={logo} /> : null}
-                            {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
+                            <span className="dapp-name-stack">
+                              <span>{knownName || generatedName || d?.sourceTag}</span>
+                              {generatedName && <span className="dapp-source-tag">{d?.sourceTag}</span>}
+                            </span>
                           </span>
                         </td>
 
