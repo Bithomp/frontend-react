@@ -764,6 +764,7 @@
     "intro": "最新の仕様に従ってMPTokenメタデータを作成します：",
     "generated-title": "生成されたメタデータJSON", "hex-title": "オンレジャー用16進メタデータ",
     "byte-count": "{{count}} / {{max}} バイト",
+    "full-keys": { "title": "完全なメタデータキーを使用", "not-recommended": "非推奨" },
     "sections": { "uris": "関連リンク", "additional-info": "追加情報" },
     "fields": {
       "ticker": "ティッカー", "name": "トークン名", "description": "説明", "icon": "アイコンURI",
@@ -791,7 +792,24 @@
       "size": "メタデータは{{count}}バイトで、オンレジャー上限の{{max}}バイトを超えています。"
     },
     "asset-classes": { "select": "クラスを選択", "rwa": "RWA", "memes": "ミーム", "wrapped": "ラップド", "gaming": "ゲーム", "defi": "DeFi", "other": "その他" },
+    "asset-class-descriptions": {
+      "rwa": "物理資産またはオフチェーン金融資産に対する法的請求権に裏付けられた現実資産です。",
+      "memes": "本質的な裏付けや効用を持たない、コミュニティやインターネット文化に基づくトークンです。",
+      "wrapped": "他のブロックチェーンの資産を表し、通常はブリッジやカストディアンが1:1で裏付けます。",
+      "gaming": "ゲームや仮想世界で通貨、資産、報酬として使用されるトークンです。",
+      "defi": "ガバナンス、DEX、レンディングなどDeFiプロトコルで使用されるトークンです。",
+      "other": "他のクラスに該当しない実験的または独自のトークンです。"
+    },
     "asset-subclasses": { "select": "サブクラスを選択", "stablecoin": "ステーブルコイン", "commodity": "商品", "real_estate": "不動産", "private_credit": "プライベートクレジット", "equity": "株式", "treasury": "国債", "other": "その他" },
+    "asset-subclass-descriptions": {
+      "stablecoin": "安定した価値に連動し、現金、国債、暗号資産などで裏付けられたトークンです。",
+      "commodity": "金、銀、石油などの現物商品に対する請求権です。",
+      "real_estate": "不動産の所有権または請求権で、部分所有も含みます。",
+      "private_credit": "ローン、請求書、売掛金など民間主体の債務です。",
+      "equity": "従来の株式に相当する企業の所有持分です。",
+      "treasury": "政府の短期証券や債券に裏付けられた、または連動するトークンです。",
+      "other": "実験的、複合的、または新しい現実資産タイプです。"
+    },
     "uri-categories": { "website": "ウェブサイト", "social": "ソーシャル", "docs": "ドキュメント", "other": "その他" },
     "additional-info-types": { "object": "JSONオブジェクト", "text": "テキスト" }
   },

@@ -764,6 +764,7 @@
     "intro": "Créez des métadonnées MPToken selon la version actuelle de",
     "generated-title": "Métadonnées JSON générées", "hex-title": "Métadonnées hexadécimales on-ledger",
     "byte-count": "{{count}} / {{max}} octets",
+    "full-keys": { "title": "Utiliser les clés de métadonnées complètes", "not-recommended": "non recommandé" },
     "sections": { "uris": "Liens associés", "additional-info": "Informations supplémentaires" },
     "fields": {
       "ticker": "Symbole", "name": "Nom du token", "description": "Description", "icon": "URI de l’icône",
@@ -791,7 +792,24 @@
       "size": "Les métadonnées font {{count}} octets et dépassent la limite on-ledger de {{max}} octets."
     },
     "asset-classes": { "select": "Sélectionner une classe", "rwa": "RWA", "memes": "Mèmes", "wrapped": "Actif enveloppé", "gaming": "Jeux", "defi": "DeFi", "other": "Autre" },
+    "asset-class-descriptions": {
+      "rwa": "Actifs réels fondés sur des droits juridiquement opposables sur des actifs physiques ou financiers hors chaîne.",
+      "memes": "Tokens communautaires et culture internet sans garantie intrinsèque ni utilité revendiquée.",
+      "wrapped": "Actifs d’autres blockchains, généralement garantis 1:1 par un bridge ou un dépositaire.",
+      "gaming": "Tokens servant de monnaie, d’actif ou de récompense dans les jeux et mondes virtuels.",
+      "defi": "Tokens de protocoles DeFi, notamment gouvernance, DEX et prêt.",
+      "other": "Tokens expérimentaux ou uniques ne correspondant à aucune autre classe."
+    },
     "asset-subclasses": { "select": "Sélectionner une sous-classe", "stablecoin": "Stablecoin", "commodity": "Matière première", "real_estate": "Immobilier", "private_credit": "Crédit privé", "equity": "Actions", "treasury": "Dette publique", "other": "Autre" },
+    "asset-subclass-descriptions": {
+      "stablecoin": "Tokens indexés sur une valeur stable et garantis par des liquidités, obligations d’État ou cryptoactifs.",
+      "commodity": "Droits sur des matières premières physiques comme l’or, l’argent ou le pétrole.",
+      "real_estate": "Propriété ou droits immobiliers, y compris des participations fractionnées.",
+      "private_credit": "Dettes privées telles que prêts, factures ou créances.",
+      "equity": "Parts de propriété d’une entreprise, comparables aux actions traditionnelles.",
+      "treasury": "Tokens garantis par ou liés à des bons ou obligations d’État.",
+      "other": "Types d’actifs réels expérimentaux, hybrides ou émergents."
+    },
     "uri-categories": { "website": "Site web", "social": "Réseau social", "docs": "Documentation", "other": "Autre" },
     "additional-info-types": { "object": "Objet JSON", "text": "Texte" }
   },

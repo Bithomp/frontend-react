@@ -764,6 +764,7 @@
     "intro": "Crea metadatos de MPToken según la versión actual de",
     "generated-title": "JSON de metadatos generado", "hex-title": "Metadatos hexadecimales en el ledger",
     "byte-count": "{{count}} / {{max}} bytes",
+    "full-keys": { "title": "Usar claves de metadatos completas", "not-recommended": "no recomendado" },
     "sections": { "uris": "Enlaces relacionados", "additional-info": "Información adicional" },
     "fields": {
       "ticker": "Símbolo", "name": "Nombre del token", "description": "Descripción", "icon": "URI del icono",
@@ -791,7 +792,24 @@
       "size": "Los metadatos ocupan {{count}} bytes y superan el límite de {{max}} bytes del ledger."
     },
     "asset-classes": { "select": "Seleccionar clase", "rwa": "RWA", "memes": "Memes", "wrapped": "Envuelto", "gaming": "Videojuegos", "defi": "DeFi", "other": "Otro" },
+    "asset-class-descriptions": {
+      "rwa": "Activos reales respaldados por derechos legalmente exigibles sobre activos físicos o financieros fuera de cadena.",
+      "memes": "Tokens de comunidad y cultura de internet sin respaldo intrínseco ni utilidad declarada.",
+      "wrapped": "Activos de otras cadenas, normalmente respaldados 1:1 por un puente o custodio.",
+      "gaming": "Tokens usados como moneda, activos o recompensas en juegos y mundos virtuales.",
+      "defi": "Tokens de protocolos DeFi, incluidos gobernanza, DEX y préstamos.",
+      "other": "Tokens experimentales o únicos que no encajan en otra clase."
+    },
     "asset-subclasses": { "select": "Seleccionar subclase", "stablecoin": "Stablecoin", "commodity": "Materia prima", "real_estate": "Bienes inmuebles", "private_credit": "Crédito privado", "equity": "Capital", "treasury": "Deuda pública", "other": "Otro" },
+    "asset-subclass-descriptions": {
+      "stablecoin": "Tokens vinculados a un valor estable y respaldados por efectivo, deuda pública o criptoactivos.",
+      "commodity": "Derechos sobre materias primas físicas como oro, plata o petróleo.",
+      "real_estate": "Propiedad o derechos sobre inmuebles, incluidas participaciones fraccionadas.",
+      "private_credit": "Obligaciones de deuda privada como préstamos, facturas o cuentas por cobrar.",
+      "equity": "Participaciones de propiedad en una empresa, similares a acciones tradicionales.",
+      "treasury": "Tokens respaldados por o vinculados a letras o bonos del Estado.",
+      "other": "Tipos de activos reales experimentales, híbridos o emergentes."
+    },
     "uri-categories": { "website": "Sitio web", "social": "Red social", "docs": "Documentación", "other": "Otro" },
     "additional-info-types": { "object": "Objeto JSON", "text": "Texto" }
   },

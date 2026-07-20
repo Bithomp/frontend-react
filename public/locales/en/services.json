@@ -766,6 +766,10 @@
     "generated-title": "Generated metadata JSON",
     "hex-title": "On-ledger hexadecimal metadata",
     "byte-count": "{{count}} / {{max}} bytes",
+    "full-keys": {
+      "title": "Use full metadata keys",
+      "not-recommended": "not recommended"
+    },
     "sections": {
       "uris": "Related links",
       "additional-info": "Additional information"
@@ -823,6 +827,14 @@
       "defi": "DeFi",
       "other": "Other"
     },
+    "asset-class-descriptions": {
+      "rwa": "Real-world assets backed by legally enforceable claims on physical or off-chain financial assets.",
+      "memes": "Community and internet-culture tokens without intrinsic backing or utility claims.",
+      "wrapped": "Assets from other blockchains, typically backed 1:1 by a bridge or custodian.",
+      "gaming": "Tokens used as currency, assets, or rewards in games and virtual worlds.",
+      "defi": "Tokens used by DeFi protocols, including governance, DEX, and lending assets.",
+      "other": "Experimental or unique tokens that do not fit another class."
+    },
     "asset-subclasses": {
       "select": "Select subclass",
       "stablecoin": "Stablecoin",
@@ -832,6 +844,15 @@
       "equity": "Equity",
       "treasury": "Treasury",
       "other": "Other"
+    },
+    "asset-subclass-descriptions": {
+      "stablecoin": "Tokens pegged to a stable value and backed by cash, treasuries, or crypto collateral.",
+      "commodity": "Claims on physical commodities such as gold, silver, or oil.",
+      "real_estate": "Ownership of or claims on real estate, including fractional property interests.",
+      "private_credit": "Private debt obligations such as loans, invoices, or receivables.",
+      "equity": "Ownership shares in a company, similar to traditional stock.",
+      "treasury": "Tokens backed by or referencing government bills or bonds.",
+      "other": "Experimental, hybrid, or emerging real-world asset types."
     },
     "uri-categories": {
       "website": "Website",

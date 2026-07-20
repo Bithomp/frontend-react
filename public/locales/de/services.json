@@ -765,6 +765,7 @@
     "generated-title": "Generierte Metadaten (JSON)",
     "hex-title": "Hexadezimale On-Ledger-Metadaten",
     "byte-count": "{{count}} / {{max}} Bytes",
+    "full-keys": { "title": "Vollständige Metadaten-Schlüssel verwenden", "not-recommended": "nicht empfohlen" },
     "sections": { "uris": "Zugehörige Links", "additional-info": "Zusätzliche Informationen" },
     "fields": {
       "ticker": "Ticker", "name": "Tokenname", "description": "Beschreibung", "icon": "Icon-URI",
@@ -795,7 +796,24 @@
       "size": "Die Metadaten umfassen {{count}} Bytes und überschreiten das On-Ledger-Limit von {{max}} Bytes."
     },
     "asset-classes": { "select": "Klasse auswählen", "rwa": "RWA", "memes": "Memes", "wrapped": "Wrapped", "gaming": "Gaming", "defi": "DeFi", "other": "Andere" },
+    "asset-class-descriptions": {
+      "rwa": "Reale Vermögenswerte mit rechtlich durchsetzbaren Ansprüchen auf physische oder außerbörsliche Finanzwerte.",
+      "memes": "Community- und Internetkultur-Token ohne innere Deckung oder Nutzungsanspruch.",
+      "wrapped": "Vermögenswerte anderer Blockchains, meist 1:1 durch eine Bridge oder einen Verwahrer gedeckt.",
+      "gaming": "Token als Währung, Vermögenswert oder Belohnung in Spielen und virtuellen Welten.",
+      "defi": "Token für DeFi-Protokolle, einschließlich Governance, DEX und Kreditvergabe.",
+      "other": "Experimentelle oder einzigartige Token, die keiner anderen Klasse entsprechen."
+    },
     "asset-subclasses": { "select": "Unterklasse auswählen", "stablecoin": "Stablecoin", "commodity": "Rohstoff", "real_estate": "Immobilien", "private_credit": "Private Kredite", "equity": "Eigenkapital", "treasury": "Staatsanleihen", "other": "Andere" },
+    "asset-subclass-descriptions": {
+      "stablecoin": "An einen stabilen Wert gekoppelte Token mit Bargeld-, Anleihen- oder Krypto-Deckung.",
+      "commodity": "Ansprüche auf physische Rohstoffe wie Gold, Silber oder Öl.",
+      "real_estate": "Eigentum oder Ansprüche an Immobilien, einschließlich Bruchteilseigentum.",
+      "private_credit": "Private Schuldtitel wie Darlehen, Rechnungen oder Forderungen.",
+      "equity": "Eigentumsanteile an einem Unternehmen, ähnlich traditionellen Aktien.",
+      "treasury": "Durch staatliche Schuldverschreibungen gedeckte oder darauf bezogene Token.",
+      "other": "Experimentelle, hybride oder neue Arten realer Vermögenswerte."
+    },
     "uri-categories": { "website": "Website", "social": "Soziale Medien", "docs": "Dokumentation", "other": "Andere" },
     "additional-info-types": { "object": "JSON-Objekt", "text": "Text" }
   },

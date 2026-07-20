@@ -764,6 +764,7 @@
     "intro": "根据当前规范创建 MPToken 元数据：",
     "generated-title": "生成的元数据 JSON", "hex-title": "链上十六进制元数据",
     "byte-count": "{{count}} / {{max}} 字节",
+    "full-keys": { "title": "使用完整元数据键", "not-recommended": "不推荐" },
     "sections": { "uris": "相关链接", "additional-info": "附加信息" },
     "fields": {
       "ticker": "代币代码", "name": "代币名称", "description": "描述", "icon": "图标 URI",
@@ -791,7 +792,24 @@
       "size": "元数据为 {{count}} 字节，超过 {{max}} 字节的链上限制。"
     },
     "asset-classes": { "select": "选择类别", "rwa": "RWA", "memes": "迷因", "wrapped": "封装资产", "gaming": "游戏", "defi": "DeFi", "other": "其他" },
+    "asset-class-descriptions": {
+      "rwa": "由对实物资产或链下金融资产的可依法执行权利所支持的现实世界资产。",
+      "memes": "由社区和网络文化推动、没有内在支持或效用主张的代币。",
+      "wrapped": "代表其他区块链资产，通常由跨链桥或托管方按 1:1 支持。",
+      "gaming": "在游戏和虚拟世界中用作货币、资产或奖励的代币。",
+      "defi": "用于 DeFi 协议的代币，包括治理、DEX 和借贷资产。",
+      "other": "不属于其他类别的实验性或独特代币。"
+    },
     "asset-subclasses": { "select": "选择子类别", "stablecoin": "稳定币", "commodity": "大宗商品", "real_estate": "房地产", "private_credit": "私人信贷", "equity": "股权", "treasury": "国债", "other": "其他" },
+    "asset-subclass-descriptions": {
+      "stablecoin": "锚定稳定价值并由现金、国债或加密资产支持的代币。",
+      "commodity": "对黄金、白银或石油等实物大宗商品的权利。",
+      "real_estate": "房地产所有权或权利，包括部分产权。",
+      "private_credit": "贷款、发票或应收账款等私人债务义务。",
+      "equity": "类似传统股票的公司所有权份额。",
+      "treasury": "由政府票据或债券支持或与其挂钩的代币。",
+      "other": "实验性、混合型或新兴的现实世界资产类型。"
+    },
     "uri-categories": { "website": "网站", "social": "社交媒体", "docs": "文档", "other": "其他" },
     "additional-info-types": { "object": "JSON 对象", "text": "文本" }
   },

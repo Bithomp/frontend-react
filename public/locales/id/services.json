@@ -764,6 +764,7 @@
     "intro": "Buat metadata MPToken sesuai versi terkini",
     "generated-title": "JSON metadata yang dibuat", "hex-title": "Metadata heksadesimal on-ledger",
     "byte-count": "{{count}} / {{max}} byte",
+    "full-keys": { "title": "Gunakan kunci metadata lengkap", "not-recommended": "tidak disarankan" },
     "sections": { "uris": "Tautan terkait", "additional-info": "Informasi tambahan" },
     "fields": {
       "ticker": "Ticker", "name": "Nama token", "description": "Deskripsi", "icon": "URI ikon",
@@ -791,7 +792,24 @@
       "size": "Metadata berukuran {{count}} byte dan melebihi batas on-ledger {{max}} byte."
     },
     "asset-classes": { "select": "Pilih kelas", "rwa": "RWA", "memes": "Meme", "wrapped": "Wrapped", "gaming": "Gaming", "defi": "DeFi", "other": "Lainnya" },
+    "asset-class-descriptions": {
+      "rwa": "Aset dunia nyata yang didukung klaim hukum atas aset fisik atau keuangan di luar chain.",
+      "memes": "Token komunitas dan budaya internet tanpa dukungan intrinsik atau klaim utilitas.",
+      "wrapped": "Aset dari blockchain lain, biasanya didukung 1:1 oleh bridge atau kustodian.",
+      "gaming": "Token sebagai mata uang, aset, atau hadiah dalam game dan dunia virtual.",
+      "defi": "Token untuk protokol DeFi, termasuk tata kelola, DEX, dan pinjaman.",
+      "other": "Token eksperimental atau unik yang tidak termasuk kelas lain."
+    },
     "asset-subclasses": { "select": "Pilih subkelas", "stablecoin": "Stablecoin", "commodity": "Komoditas", "real_estate": "Real estat", "private_credit": "Kredit privat", "equity": "Ekuitas", "treasury": "Surat utang negara", "other": "Lainnya" },
+    "asset-subclass-descriptions": {
+      "stablecoin": "Token yang dipatok pada nilai stabil dan didukung uang tunai, surat utang negara, atau aset kripto.",
+      "commodity": "Klaim atas komoditas fisik seperti emas, perak, atau minyak.",
+      "real_estate": "Kepemilikan atau klaim atas real estat, termasuk kepemilikan fraksional.",
+      "private_credit": "Kewajiban utang swasta seperti pinjaman, faktur, atau piutang.",
+      "equity": "Saham kepemilikan dalam perusahaan, serupa dengan saham tradisional.",
+      "treasury": "Token yang didukung atau mengacu pada surat utang atau obligasi pemerintah.",
+      "other": "Jenis aset dunia nyata eksperimental, hibrida, atau baru."
+    },
     "uri-categories": { "website": "Situs web", "social": "Media sosial", "docs": "Dokumentasi", "other": "Lainnya" },
     "additional-info-types": { "object": "Objek JSON", "text": "Teks" }
   },

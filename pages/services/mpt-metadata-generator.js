@@ -45,25 +45,53 @@ const parseAdditionalInfo = (value, type) => {
   }
 }
 
-const buildMetadata = ({ form, uris, additionalInfo }) => {
+const buildMetadata = ({ form, uris, additionalInfo, useFullKeys }) => {
   const metadata = {}
+  const keys = useFullKeys
+    ? {
+        ticker: 'ticker',
+        name: 'name',
+        description: 'desc',
+        icon: 'icon',
+        assetClass: 'asset_class',
+        assetSubclass: 'asset_subclass',
+        issuerName: 'issuer_name',
+        uris: 'uris',
+        additionalInfo: 'additional_info'
+      }
+    : {
+        ticker: 't',
+        name: 'n',
+        description: 'd',
+        icon: 'i',
+        assetClass: 'ac',
+        assetSubclass: 'as',
+        issuerName: 'in',
+        uris: 'us',
+        additionalInfo: 'ai'
+      }
+  const uriKeys = useFullKeys ? { uri: 'uri', category: 'category', title: 'title' } : { uri: 'u', category: 'c', title: 't' }
   const add = (key, value) => {
     if (value !== undefined && value !== null && value !== '') metadata[key] = value
   }
 
-  add('t', clean(form.ticker))
-  add('n', clean(form.name))
-  add('d', clean(form.description))
-  add('i', clean(form.icon))
-  add('ac', form.assetClass)
-  add('as', form.assetClass === 'rwa' ? form.assetSubclass : '')
-  add('in', clean(form.issuerName))
+  add(keys.ticker, clean(form.ticker))
+  add(keys.name, clean(form.name))
+  add(keys.description, clean(form.description))
+  add(keys.icon, clean(form.icon))
+  add(keys.assetClass, form.assetClass)
+  add(keys.assetSubclass, form.assetClass === 'rwa' ? form.assetSubclass : '')
+  add(keys.issuerName, clean(form.issuerName))
 
   const validUris = uris
     .filter((item) => clean(item.uri) || clean(item.title))
-    .map((item) => ({ u: clean(item.uri), c: item.category, t: clean(item.title) }))
-  add('us', validUris.length ? validUris : null)
-  add('ai', additionalInfo)
+    .map((item) => ({
+      [uriKeys.uri]: clean(item.uri),
+      [uriKeys.category]: item.category,
+      [uriKeys.title]: clean(item.title)
+    }))
+  add(keys.uris, validUris.length ? validUris : null)
+  add(keys.additionalInfo, additionalInfo)
 
   return metadata
 }
@@ -79,13 +107,26 @@ const Field = ({ label, hint, required, className, children }) => (
   </label>
 )
 
-const FormSelect = ({ value, options, onChange, instanceId }) => (
+const FormSelect = ({ value, options, onChange, instanceId, showDescriptions = false }) => (
   <SimpleSelect
     value={value}
     setValue={onChange}
     optionsList={options}
     className={styles.formDropdown}
     instanceId={instanceId}
+    formatOptionLabel={
+      showDescriptions
+        ? (option, { context }) =>
+            context === 'menu' && option.description ? (
+              <span className={styles.describedOption}>
+                <strong>{option.label}</strong>
+                <small>{option.description}</small>
+              </span>
+            ) : (
+              option.label
+            )
+        : undefined
+    }
   />
 )
 
@@ -109,6 +150,7 @@ export default function MptMetadataGeneratorPage() {
   })
   const [uris, setUris] = useState([createUri()])
   const [additionalInfoType, setAdditionalInfoType] = useState('object')
+  const [useFullKeys, setUseFullKeys] = useState(false)
   const [copied, setCopied] = useState('')
 
   const updateForm = (key, value) => {
@@ -121,11 +163,21 @@ export default function MptMetadataGeneratorPage() {
   const updateUri = (index, key, value) => setUris((previous) => replaceItem(previous, index, { [key]: value }))
 
   const assetClassOptions = useMemo(
-    () => assetClasses.map((value) => ({ value, label: tg(`asset-classes.${value || 'select'}`) })),
+    () =>
+      assetClasses.map((value) => ({
+        value,
+        label: tg(`asset-classes.${value || 'select'}`),
+        description: value ? tg(`asset-class-descriptions.${value}`) : ''
+      })),
     [tg]
   )
   const assetSubclassOptions = useMemo(
-    () => assetSubclasses.map((value) => ({ value, label: tg(`asset-subclasses.${value || 'select'}`) })),
+    () =>
+      assetSubclasses.map((value) => ({
+        value,
+        label: tg(`asset-subclasses.${value || 'select'}`),
+        description: value ? tg(`asset-subclass-descriptions.${value}`) : ''
+      })),
     [tg]
   )
   const uriCategoryOptions = useMemo(
@@ -142,8 +194,8 @@ export default function MptMetadataGeneratorPage() {
     [additionalInfoType, form.additionalInfo]
   )
   const metadata = useMemo(
-    () => buildMetadata({ form, uris, additionalInfo: additionalInfo.value }),
-    [additionalInfo.value, form, uris]
+    () => buildMetadata({ form, uris, additionalInfo: additionalInfo.value, useFullKeys }),
+    [additionalInfo.value, form, uris, useFullKeys]
   )
   const encodedJson = useMemo(() => JSON.stringify(metadata), [metadata])
   const output = useMemo(() => JSON.stringify(metadata, null, 2), [metadata])
@@ -238,21 +290,31 @@ export default function MptMetadataGeneratorPage() {
                   placeholder={tg('placeholders.issuer-name')}
                 />
               </Field>
-              <Field label={tg('fields.asset-class')} required>
+              <Field
+                label={tg('fields.asset-class')}
+                required
+                hint={form.assetClass ? tg(`asset-class-descriptions.${form.assetClass}`) : null}
+              >
                 <FormSelect
                   value={form.assetClass}
                   options={assetClassOptions}
                   onChange={(value) => updateForm('assetClass', value)}
                   instanceId="mpt-metadata-asset-class"
+                  showDescriptions
                 />
               </Field>
               {form.assetClass === 'rwa' && (
-                <Field label={tg('fields.asset-subclass')} required>
+                <Field
+                  label={tg('fields.asset-subclass')}
+                  required
+                  hint={form.assetSubclass ? tg(`asset-subclass-descriptions.${form.assetSubclass}`) : null}
+                >
                   <FormSelect
                     value={form.assetSubclass}
                     options={assetSubclassOptions}
                     onChange={(value) => updateForm('assetSubclass', value)}
                     instanceId="mpt-metadata-asset-subclass"
+                    showDescriptions
                   />
                 </Field>
               )}
@@ -335,6 +397,19 @@ export default function MptMetadataGeneratorPage() {
                   <LuDownload aria-hidden="true" /> {tg('actions.download')}
                 </button>
               </div>
+            </div>
+
+            <div className={styles.sectionChecks}>
+              <label className={`${styles.sectionCheck} ${styles.keyFormatOption}`}>
+                <input type="checkbox" checked={useFullKeys} onChange={(event) => setUseFullKeys(event.target.checked)} />
+                <span className={styles.checkMark} aria-hidden="true" />
+                <span className={styles.sectionCheckText}>
+                  <span className={`${styles.sectionCheckTitle} ${styles.keyFormatTitle}`}>
+                    {tg('full-keys.title')}{' '}
+                    <span className={`orange ${styles.recommendation}`}>({tg('full-keys.not-recommended')})</span>
+                  </span>
+                </span>
+              </label>
             </div>
 
             <div className={`${styles.byteMeter} ${overLimit ? styles.byteMeterOver : ''}`}>
