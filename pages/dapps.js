@@ -32,6 +32,9 @@ const calcSuccessRate = (total, success) => {
   return (s / t) * 100
 }
 
+const DAPP_ORDER_VALUES = ['performingHigh', 'totalSentHigh', 'interactingHigh', 'txHigh', 'successRateHigh']
+const DEFAULT_DAPP_ORDER = 'performingHigh'
+
 const sortDapps = (list, order) => {
   const arr = Array.isArray(list) ? [...list] : []
 
@@ -114,7 +117,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       initialData: initialData || null,
-      orderQuery: order || 'performingHigh',
+      orderQuery: DAPP_ORDER_VALUES.includes(order) ? order : DEFAULT_DAPP_ORDER,
       periodQuery: period || 'day',
       includeAppsWithoutExternalSigningQuery: includeAppsWithoutExternalSigning === 'true',
       walletQuery: typeof wallet === 'string' ? wallet.toLowerCase() : '',
@@ -160,7 +163,7 @@ export default function Dapps({
   }
 
   const convertCurrency = (selectedCurrency || 'usd').toLowerCase()
-  const [order, setOrder] = useState(orderQuery || 'performingHigh')
+  const [order, setOrder] = useState(orderQuery || DEFAULT_DAPP_ORDER)
   const [period, setPeriod] = useState(periodQuery)
   const [errorMessage, setErrorMessage] = useState(
     t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
@@ -337,6 +340,13 @@ export default function Dapps({
     const add = []
     const remove = []
 
+    // order
+    if (order === DEFAULT_DAPP_ORDER) {
+      remove.push('order')
+    } else {
+      add.push({ name: 'order', value: order })
+    }
+
     // period
     if (period === 'day') {
       remove.push('period')
@@ -361,7 +371,7 @@ export default function Dapps({
 
     setTabParams(router, [], add, remove)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, excludeNoWallets, walletFilter, router.isReady])
+  }, [order, period, excludeNoWallets, walletFilter, router.isReady])
 
   const onToggleExclude = useCallback((v) => {
     setExcludeNoWallets(v)
