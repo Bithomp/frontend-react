@@ -7,10 +7,8 @@ import { FaExternalLinkAlt, FaHandshake } from 'react-icons/fa'
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
-import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
-import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import SortingArrow from '../components/Tables/SortingArrow'
-import CheckBox from '../components/UI/CheckBox'
+import TokenSelector from '../components/UI/TokenSelector'
 import { fullNiceNumber, niceCurrency, niceNumber, shortNiceNumber, CurrencyWithIcon } from '../utils/format'
 import { axiosServer, getFiatRateServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -25,6 +23,7 @@ import {
 import { useRouter } from 'next/router'
 import TokenTabs from '../components/Tabs/TokenTabs'
 import Link from 'next/link'
+import { tokensClass } from '../styles/pages/tokens.module.scss'
 
 const mergeNativeTokenOnTop = (tokens, nativeToken) => {
   const list = Array.isArray(tokens) ? tokens : []
@@ -171,7 +170,9 @@ export async function getServerSideProps(context) {
       }
     }
 
-    if (initialData?.tokens && !issuer && !currency) {
+    if (currency === nativeCurrency && !issuer && nativeTokenData) {
+      initialData = { tokens: [nativeTokenData], marker: null }
+    } else if (initialData?.tokens && !issuer && !currency) {
       initialData = {
         ...initialData,
         tokens: mergeNativeTokenOnTop(initialData.tokens, nativeTokenData)
@@ -215,7 +216,6 @@ export default function Tokens({
   setSignRequest,
   selectedCurrency: selectedCurrencyApp,
   selectedCurrencyServer,
-  setSelectedCurrency,
   fiatRate: fiatRateApp,
   fiatRateServer,
   openEmailLogin,
@@ -250,11 +250,9 @@ export default function Tokens({
     }) || ''
   )
   const [order, setOrder] = useState(orderQuery || 'rating')
-  const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
   const [canEscrow, setCanEscrow] = useState(canEscrowQuery || false)
-  const [rendered, setRendered] = useState(false)
   const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
 
   const controller = new AbortController()
@@ -326,7 +324,22 @@ export default function Tokens({
       }
 
       const shouldShowNativeFirst = !issuer && !currency
+      const nativeOnly = !issuer && currency === nativeCurrency
       const nativeTokenUrl = `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${selectedCurrency}`
+
+      if (nativeOnly) {
+        const nativeResponse = await axios.get(nativeTokenUrl, { signal: controller.signal }).catch((error) => {
+          if (error?.message !== 'canceled') setErrorMessage(t('error.' + error.message))
+          return null
+        })
+        const nativeToken = nativeResponse?.data && !nativeResponse.data?.error ? nativeResponse.data : null
+        setLoading(false)
+        setMarker(null)
+        setData(nativeToken ? [nativeToken] : [])
+        setErrorMessage(nativeToken ? '' : t('general.no-data'))
+        return
+      }
+
       const [tokensResponse, nativeResponse] = await Promise.allSettled([
         axios.get(apiUrl, {
           signal: controller.signal
@@ -463,7 +476,6 @@ export default function Tokens({
 
   // Cleanup on unmount
   useEffect(() => {
-    setRendered(true)
     return () => {
       controller.abort()
     }
@@ -666,8 +678,41 @@ export default function Tokens({
     }
   }
 
-  return (
+  const tokenFilter = currency && (issuer || currency === nativeCurrency) ? { issuer, currency } : {}
+  const setTokenFilter = (nextToken) => {
+    if (!nextToken?.issuer && nextToken?.currency === nativeCurrency) {
+      setIssuer(null)
+      setCurrency(nativeCurrency)
+      return
+    }
+    if (nextToken?.issuer && nextToken?.currency) {
+      setIssuer(nextToken.issuer)
+      setCurrency(nextToken.currency)
+      return
+    }
+    setIssuer(null)
+    setCurrency(null)
+  }
+
+  const toolbarControls = (
     <>
+      <TokenSelector value={tokenFilter} onChange={setTokenFilter} excludeLPtokens canLock={canEscrow} />
+      {!xahauNetwork && (
+        <button
+          type="button"
+          className={`tokens-escrow-toggle${canEscrow ? ' is-active' : ''}`}
+          onClick={() => setCanEscrow(!canEscrow)}
+          aria-pressed={canEscrow}
+        >
+          <span>{tt('filters.canEscrow')}</span>
+          <span className="tokens-escrow-toggle__state">{canEscrow ? 'On' : 'Off'}</span>
+        </button>
+      )}
+    </>
+  )
+
+  return (
+    <div className={tokensClass}>
       <SEO
         title={tt('title')}
         image={{
@@ -686,44 +731,25 @@ export default function Tokens({
         hasMore={marker}
         data={data || []}
         csvHeaders={csvHeaders}
-        filtersHide={filtersHide}
-        setFiltersHide={setFiltersHide}
-        setSelectedCurrency={setSelectedCurrency}
-        selectedCurrency={selectedCurrency}
-        filters={{
-          issuer: issuer || '',
-          currency: currency || ''
-        }}
         order={order}
         setOrder={setOrder}
         orderList={orderList}
+        navExtra={toolbarControls}
+        withoutLeftFilters
+        showCsvInNav
       >
-        {/* Left filters */}
-        <>
-          {rendered && (
-            <div className="flex flex-col sm:gap-4 md:h-[400px]">
-              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
-              <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
-              {!xahauNetwork && (
-                <CheckBox checked={canEscrow} setChecked={setCanEscrow} name="can-escrow">
-                  {tt('filters.canEscrow')}
-                </CheckBox>
-              )}
-            </div>
-          )}
-        </>
-        {/* Main content */}
-        <InfiniteScrolling
-          dataLength={data.length}
-          loadMore={() => checkApi({ loadMoreRequest: true })}
-          hasMore={marker}
-          errorMessage={errorMessage}
-          subscriptionExpired={subscriptionExpired}
-          sessionToken={sessionToken}
-          openEmailLogin={openEmailLogin}
-        >
+        <div className="page">
+          <InfiniteScrolling
+            dataLength={data.length}
+            loadMore={() => checkApi({ loadMoreRequest: true })}
+            hasMore={marker}
+            errorMessage={errorMessage}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
+            openEmailLogin={openEmailLogin}
+          >
           {/* Desktop table */}
-          <table className="table-large clickable expand hide-on-small-w800">
+          <table className="table-large clickable expand tokens-desktop-table">
             <thead>
               <tr>
                 <th className="center">
@@ -926,7 +952,7 @@ export default function Tokens({
           </table>
 
           {/* Mobile table */}
-          <div className="show-on-small-w800">
+          <div className="tokens-mobile-table">
             <table className="table-mobile">
               <thead></thead>
               <tbody>
@@ -1034,7 +1060,8 @@ export default function Tokens({
               </tbody>
             </table>
           </div>
-        </InfiniteScrolling>
+          </InfiniteScrolling>
+        </div>
       </FiltersFrame>
 
       <style jsx>{`
@@ -1091,6 +1118,6 @@ export default function Tokens({
           }
         }
       `}</style>
-    </>
+    </div>
   )
 }

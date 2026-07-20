@@ -1,4 +1,6 @@
 {
   "desc": "Ici, vous pouvez trouver les 100 MEILLEURES comptes par solde de {{currency}}.",
-  "summary": "Il y a <1>{{activeAccounts}}</1> comptes actifs, total disponible : <3>{{totalCoins}}</3>"
+  "summary": "Il y a <1>{{activeAccounts}}</1> comptes actifs, total disponible : <3>{{totalCoins}}</3>",
+  "chart": { "holders": "Concentration des détenteurs", "top100": "Top 100", "other": "Autres" },
+  "actions": { "token-page": "Page du token", "add-token": "Ajouter le token", "authorize": "Autoriser" }
 }

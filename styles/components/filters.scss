@@ -397,6 +397,28 @@ $width: 340px;
 }
 
 .filters-nav {
+  --filters-nav-control-height: 38px;
+
+  .dropdown .react-select__control,
+  .currency-select .react-select__control {
+    min-height: var(--filters-nav-control-height);
+    height: var(--filters-nav-control-height);
+  }
+
+  .dropdown .react-select__value-container,
+  .dropdown .react-select__indicators,
+  .currency-select .react-select__value-container,
+  .currency-select .react-select__indicators {
+    height: calc(var(--filters-nav-control-height) - 2px);
+  }
+
+  .token-selector-dropdown,
+  .dropdown-btn {
+    box-sizing: border-box;
+    min-height: var(--filters-nav-control-height);
+    height: var(--filters-nav-control-height);
+  }
+
   &__extra {
     display: flex;
     align-items: center;
@@ -408,10 +430,18 @@ $width: 340px;
     align-items: center;
     justify-content: center;
     gap: 5px;
-    min-height: 38px;
+    box-sizing: border-box;
+    min-height: var(--filters-nav-control-height);
+    height: var(--filters-nav-control-height);
     margin: 0;
     padding-inline: 12px;
     white-space: nowrap;
+  }
+
+  &__wrap > &__csv {
+    box-sizing: border-box;
+    min-height: var(--filters-nav-control-height);
+    height: var(--filters-nav-control-height);
   }
 
   & ~ .content-text {

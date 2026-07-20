@@ -496,6 +496,10 @@
     }
   }
 
+  .tokenPreviewGrid-single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .tokenHoldersPreview {
     scroll-margin-top: 132px;
     min-height: 470px;

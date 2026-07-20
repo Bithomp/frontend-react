@@ -67,11 +67,21 @@ const REFRESH_COOLDOWN_MS = 30000
 const TOKEN_HOLDERS_PREVIEW_LIMIT = 100
 const TOKEN_AMMS_PREVIEW_LIMIT = 20
 
-const tokenSupportsPreviews = (token) =>
+const tokenSupportsAmmsPreview = (token) =>
   !!token?.issuer && !!token?.currency && !token?.mptokenIssuanceID && token?.currencyDetails?.type !== 'lp_token'
 
+const tokenSupportsHoldersPreview = (token) =>
+  !!token?.mptokenIssuanceID || tokenSupportsAmmsPreview(token)
+
+const tokenSupportsPreviews = tokenSupportsHoldersPreview
+
 const tokenHoldersPreviewUrl = (token, selectedCurrency) => {
-  if (!tokenSupportsPreviews(token)) return ''
+  if (!tokenSupportsHoldersPreview(token)) return ''
+  if (token.mptokenIssuanceID) {
+    return `v2/mptokens/richlist/${encodeURIComponent(
+      token.mptokenIssuanceID
+    )}?summary=true&limit=${TOKEN_HOLDERS_PREVIEW_LIMIT}`
+  }
   return `v2/trustlines/token/richlist/${encodeURIComponent(token.issuer)}/${encodeURIComponent(
     token.currency
   )}?summary=true&limit=${TOKEN_HOLDERS_PREVIEW_LIMIT}&convertCurrencies=${encodeURIComponent(
@@ -80,14 +90,16 @@ const tokenHoldersPreviewUrl = (token, selectedCurrency) => {
 }
 
 const tokenAmmsPreviewUrl = (token) => {
-  if (!tokenSupportsPreviews(token)) return ''
+  if (!tokenSupportsAmmsPreview(token)) return ''
   return `v2/amms?order=currencyHigh&limit=${TOKEN_AMMS_PREVIEW_LIMIT}&voteSlots=false&auctionSlot=false&holders=true&priceNativeCurrencySpot=true&currency=${encodeURIComponent(
     token.currency
   )}&currencyIssuer=${encodeURIComponent(token.issuer)}`
 }
 
 const tokenPreviewDataKey = (token, selectedCurrency) =>
-  tokenSupportsPreviews(token) ? `${token.issuer}:${token.currency}:${selectedCurrency || 'usd'}` : ''
+  tokenSupportsPreviews(token)
+    ? `${token.mptokenIssuanceID || `${token.issuer}:${token.currency}`}:${selectedCurrency || 'usd'}`
+    : ''
 
 const holderShare = (balance, total) => {
   const amount = Number(balance)
@@ -363,11 +375,13 @@ export async function getServerSideProps(context) {
         url: tokenHoldersPreviewUrl(initialData, selectedCurrencyServer),
         headers: passHeaders(req)
       }),
-      axiosServer({
-        method: 'get',
-        url: tokenAmmsPreviewUrl(initialData),
-        headers: passHeaders(req)
-      })
+      tokenSupportsAmmsPreview(initialData)
+        ? axiosServer({
+            method: 'get',
+            url: tokenAmmsPreviewUrl(initialData),
+            headers: passHeaders(req)
+          })
+        : Promise.resolve(null)
     ])
 
     if (holdersPreviewResult.status === 'fulfilled') {
@@ -412,7 +426,11 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
   const [activeHolderIndex, setActiveHolderIndex] = useState(null)
   const [showAllHolders, setShowAllHolders] = useState(false)
   const activeHolderIndexRef = useRef(null)
-  const holderChartIdRef = useRef(apexSafeChartId(`token-holders-${token?.issuer || 'token'}-${token?.currency || 'current'}`))
+  const holderChartIdRef = useRef(
+    apexSafeChartId(
+      `token-holders-${token?.mptokenIssuanceID || token?.issuer || 'token'}-${token?.currency || 'current'}`
+    )
+  )
   const updateActiveHolderIndex = useCallback((nextIndex, syncChart = false) => {
     const normalizedIndex = nextIndex ?? null
     if (syncChart) {
@@ -421,14 +439,28 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
     activeHolderIndexRef.current = normalizedIndex
     setActiveHolderIndex(normalizedIndex)
   }, [])
-  const totalCoins = data?.summary?.totalCoins || token?.supply
+  const mptScale = Number(data?.summary?.scale ?? token?.scale)
+  const mptDivisor = token?.mptokenIssuanceID && Number.isFinite(mptScale) ? 10 ** mptScale : 1
+  const totalCoins = data?.summary?.totalCoins
+    ? Number(data.summary.totalCoins) / mptDivisor
+    : token?.supply
   const tokenFiatRate = data?.summary?.convertCurrencies?.[selectedCurrency?.toLowerCase?.() || selectedCurrency]
   const rows = useMemo(
-    () =>
-      (Array.isArray(data?.trustlines) ? data.trustlines : [])
+    () => {
+      const holderRows = Array.isArray(data?.trustlines)
+        ? data.trustlines
+        : Array.isArray(data?.mptokens)
+          ? data.mptokens.map((record) => ({
+              ...record,
+              balance: Number(record.amount || 0) / mptDivisor
+            }))
+          : []
+
+      return holderRows
         .filter((record) => Number(record.balance) > 0)
-        .sort((a, b) => Number(b.balance) - Number(a.balance)),
-    [data]
+        .sort((a, b) => Number(b.balance) - Number(a.balance))
+    },
+    [data, mptDivisor]
   )
   const chartRows = rows.slice(0, TOKEN_HOLDERS_PREVIEW_LIMIT)
   const listRows = rows.slice(0, TOKEN_HOLDERS_PREVIEW_LIMIT)
@@ -457,9 +489,9 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
   const topShare = holderShare(topBalance, totalCoins)
   const activeHolder =
     activeHolderIndex !== null && activeHolderIndex !== undefined ? chartItems[activeHolderIndex] : null
-  const distributionUrl = `/distribution?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(
-    token.issuer
-  )}`
+  const distributionUrl = token?.mptokenIssuanceID
+    ? `/distribution?mptokenIssuanceID=${encodeURIComponent(token.mptokenIssuanceID)}`
+    : `/distribution?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(token.issuer)}`
   const chartOptions = useMemo(
     () => ({
       chart: {
@@ -540,9 +572,11 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
           </h2>
           <span>{t('previews.holdersSubtitle')}</span>
         </div>
-        <Link href={distributionUrl} prefetch={false}>
-          {t('previews.viewAllHolders')}
-        </Link>
+        {distributionUrl ? (
+          <Link href={distributionUrl} prefetch={false}>
+            {t('previews.viewAllHolders')}
+          </Link>
+        ) : null}
       </div>
       {loading ? (
         <div className="tokenChartEmpty">
@@ -871,6 +905,8 @@ export default function TokenPage({
   }
   const isNativeToken = !!token && !token.issuer && token.currency === nativeCurrency
   const showTokenPreviews = tokenSupportsPreviews(token)
+  const showHoldersPreview = tokenSupportsHoldersPreview(token)
+  const showAmmsPreview = tokenSupportsAmmsPreview(token)
   const showMintActivity = !isNativeToken || xahauNetwork
 
   // Redirect if no token data
@@ -928,7 +964,7 @@ export default function TokenPage({
 
       const [holdersResult, ammsResult] = await Promise.allSettled([
         axios(tokenHoldersPreviewUrl(currentToken, currentCurrency)),
-        axios(tokenAmmsPreviewUrl(currentToken))
+        tokenSupportsAmmsPreview(currentToken) ? axios(tokenAmmsPreviewUrl(currentToken)) : Promise.resolve(null)
       ])
 
       if (tokenPreviewsRequestRef.current !== requestId) return
@@ -1914,9 +1950,7 @@ export default function TokenPage({
 
   const holdersLink = isNativeToken ? (
     <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
-  ) : isMptToken ? (
-    fullNiceNumber(token.holders || 0)
-  ) : showTokenPreviews ? (
+  ) : showHoldersPreview ? (
     <a href="#token-holders" className="ammMetricQuietLink">
       {fullNiceNumber(token.holders)}
     </a>
@@ -1930,7 +1964,7 @@ export default function TokenPage({
     </Link>
   )
   const ammPoolsLink = (
-    showTokenPreviews ? (
+    showAmmsPreview ? (
       <a href="#token-amms" className="ammMetricQuietLink">
         {fullNiceNumber(statistics?.ammPools || 0)}
       </a>
@@ -2555,20 +2589,24 @@ export default function TokenPage({
           <TokenCharts token={token} selectedCurrency={selectedCurrency} onChartRowsChange={handleTokenChartRows} />
 
           {showTokenPreviews && (
-            <section className="tokenPreviewGrid">
-              <TokenHoldersPreview
-                token={token}
-                data={holdersPreviewData}
-                loading={tokenPreviewsLoading}
-                selectedCurrency={selectedCurrency}
-              />
-              <TokenAmmsPreview
-                token={token}
-                data={ammsPreviewData}
-                loading={tokenPreviewsLoading}
-                selectedCurrency={selectedCurrency}
-                fiatRate={fiatRate}
-              />
+            <section className={`tokenPreviewGrid${showAmmsPreview ? '' : ' tokenPreviewGrid-single'}`}>
+              {showHoldersPreview && (
+                <TokenHoldersPreview
+                  token={token}
+                  data={holdersPreviewData}
+                  loading={tokenPreviewsLoading}
+                  selectedCurrency={selectedCurrency}
+                />
+              )}
+              {showAmmsPreview && (
+                <TokenAmmsPreview
+                  token={token}
+                  data={ammsPreviewData}
+                  loading={tokenPreviewsLoading}
+                  selectedCurrency={selectedCurrency}
+                  fiatRate={fiatRate}
+                />
+              )}
             </section>
           )}
 

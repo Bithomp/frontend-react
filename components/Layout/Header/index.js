@@ -482,14 +482,7 @@ export default function Header({
                 {t('menu.token-menu.multi-purpose')}
               </Link>
             )}
-            <Link
-              href={
-                '/distribution' +
-                (xahauNetwork
-                  ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
-                  : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
-              }
-            >
+            <Link href="/distribution">
               <IoTrophyOutline className="menu-item-icon" />
               {t('menu.token-menu.top-holders')}
             </Link>

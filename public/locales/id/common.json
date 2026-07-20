@@ -43,6 +43,7 @@
   "token-selector": {
     "select-token": "Pilih token",
     "select-token-destination": "Pilih token (alamat tujuan dapat menyimpannya)",
+    "search-in": "Cari di",
     "search-placeholder": "Cari berdasarkan mata uang, penerbit, atau username",
     "holders": "{{value}} pemegang",
     "more-results": "Ditemukan lebih dari {{count}} hasil. Tentukan penerbit untuk mempersempit pencarian.",

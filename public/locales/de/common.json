@@ -43,6 +43,7 @@
   "token-selector": {
     "select-token": "Token auswählen",
     "select-token-destination": "Token auswählen (Zieladresse kann ihn halten)",
+    "search-in": "Suchen in",
     "search-placeholder": "Nach Währung, Issuer oder Username suchen",
     "holders": "{{value}} Inhaber",
     "more-results": "Mehr als {{count}} Ergebnisse gefunden. Bitte geben Sie einen Issuer an, um die Suche einzugrenzen.",

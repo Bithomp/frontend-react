@@ -43,6 +43,7 @@
   "token-selector": {
     "select-token": "选择代币",
     "select-token-destination": "选择代币（目的地可以持有）",
+    "search-in": "搜索范围",
     "search-placeholder": "按货币、发行人或用户名搜索",
     "holders": "{{value}} 持有者",
     "more-results": "找到超过 {{count}} 个结果。请指定发行人以缩小搜索范围。",

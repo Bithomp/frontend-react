@@ -1,4 +1,6 @@
 {
   "desc": "{{currency}}残高の上位100アカウントを見ることができます。",
-  "summary": "<1>{{activeAccounts}}</1> のアクティブアカウント、合計 <3>{{totalCoins}}</3>です。"
+  "summary": "<1>{{activeAccounts}}</1> のアクティブアカウント、合計 <3>{{totalCoins}}</3>です。",
+  "chart": { "holders": "保有者の集中度", "top100": "上位100", "other": "その他" },
+  "actions": { "token-page": "トークンページ", "add-token": "トークンを追加", "authorize": "承認" }
 }

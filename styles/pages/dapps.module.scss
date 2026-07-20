@@ -1,4 +1,8 @@
 .dappsPageClass {:global {
+  .filters-nav {
+    --filters-nav-control-height: 32px;
+  }
+
   .dapps-period-switch {
     display: inline-flex;
     align-items: center;

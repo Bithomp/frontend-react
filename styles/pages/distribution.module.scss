@@ -1,0 +1,147 @@
+.distributionClass :global {
+  .page {
+    width: 100%;
+    max-width: 1680px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .page .table-large,
+  .page .table-mobile {
+    width: 100%;
+  }
+
+  .distribution-escrow-select {
+    min-width: 260px;
+  }
+
+  .distribution-overview {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(340px, 0.75fr) minmax(320px, 1fr);
+    gap: 8px;
+    align-items: stretch;
+    height: 250px;
+    margin-bottom: 12px;
+    padding: 4px 12px 4px 6px;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+  }
+
+  .distribution-summary-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 8px 12px 8px 8px;
+    line-height: 1.4;
+  }
+
+  .distribution-summary-item + .distribution-summary-item {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--card-border);
+  }
+
+  .distribution-summary-details {
+    display: grid;
+    gap: 3px;
+    margin-top: 7px;
+  }
+
+  .distribution-chart-actions {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+
+    .button-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 34px;
+      margin: 0;
+      padding: 7px 14px;
+      font-size: 13px;
+
+      svg {
+        flex: 0 0 auto;
+        font-size: 16px;
+      }
+    }
+  }
+
+  .distribution-chart-copy {
+    min-width: 0;
+  }
+
+  .distribution-chart-card {
+    display: grid;
+    grid-template-columns: minmax(140px, 190px) minmax(170px, 240px);
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    margin: 0;
+    padding: 0;
+
+    h2 {
+      margin: 0 0 4px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .content-cols.is-without-left-filters .filters-nav ~ .content-text {
+      margin-top: 6px;
+    }
+
+    .distribution-overview {
+      grid-template-columns: 1fr;
+      height: auto;
+      gap: 14px;
+      margin-bottom: 6px;
+      padding: 16px 20px 20px;
+    }
+
+  }
+
+  @media (max-width: 760px) {
+    .distribution-escrow-select {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .distribution-chart-card {
+      grid-template-columns: minmax(130px, 1fr) minmax(170px, 1fr);
+      min-height: 170px;
+      text-align: center;
+    }
+
+    .distribution-summary-card {
+      padding: 0 0 4px;
+      text-align: left;
+    }
+  }
+
+  @media (max-width: 460px) {
+    .distribution-chart-card {
+      grid-template-columns: 1fr;
+      gap: 8px;
+
+      h2 {
+        margin-bottom: 0;
+      }
+    }
+
+    .distribution-chart-actions {
+      display: flex;
+
+      .button-action {
+        flex: 1 1 0;
+      }
+    }
+  }
+}

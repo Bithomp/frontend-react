@@ -43,6 +43,7 @@
   "token-selector": {
     "select-token": "トークンを選択",
     "select-token-destination": "トークンを選択（宛先が保有可能）",
+    "search-in": "検索対象",
     "search-placeholder": "通貨、発行者、またはユーザー名で検索",
     "holders": "{{value}} ホルダー",
     "more-results": "{{count}}件を超える結果が見つかりました。検索を絞り込むには発行者を指定してください。",

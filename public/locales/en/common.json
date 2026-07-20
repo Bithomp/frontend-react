@@ -43,6 +43,7 @@
   "token-selector": {
     "select-token": "Select token",
     "select-token-destination": "Select token (destination can hold)",
+    "search-in": "Search in",
     "search-placeholder": "Search by currency, issuer, or username",
     "holders": "{{value}} holders",
     "more-results": "More than {{count}} results found. Please specify an issuer to narrow down the search.",

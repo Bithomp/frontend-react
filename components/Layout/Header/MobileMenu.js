@@ -379,16 +379,7 @@ export default function MobileMenu({
               {t('menu.token-menu.multi-purpose')}
             </Link>
           )}
-          <Link
-            href={
-              '/distribution' +
-              (xahauNetwork
-                ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
-                : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
-            }
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
+          <Link href="/distribution" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoTrophyOutline style={itemIconStyle} />
             {t('menu.token-menu.top-holders')}
           </Link>

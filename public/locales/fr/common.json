@@ -43,6 +43,7 @@
   "token-selector": {
     "select-token": "Sélectionner un token",
     "select-token-destination": "Sélectionner un token (le destinataire peut le détenir)",
+    "search-in": "Rechercher dans",
     "search-placeholder": "Rechercher par devise, émetteur ou username",
     "holders": "{{value}} détenteurs",
     "more-results": "Plus de {{count}} résultats trouvés. Veuillez préciser un émetteur pour affiner la recherche.",

@@ -1,6 +1,41 @@
 @use "select.scss";
 
 .token-selector {
+  &-type-switch {
+    box-sizing: border-box;
+    display: inline-grid;
+    grid-template-columns: repeat(2, minmax(100px, 1fr));
+    gap: 2px;
+    width: fit-content;
+    margin: 0 0 10px;
+    padding: 2px;
+    border: 1px solid var(--unaccent-icon);
+    border-radius: 10px;
+    background: var(--background-input);
+
+    button {
+      min-height: 32px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text-secondary);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+
+      &.active {
+        background: color-mix(in srgb, var(--accent-link) 16%, transparent);
+        color: var(--accent-link);
+      }
+    }
+
+    @media (max-width: 600px) {
+      width: 100%;
+    }
+  }
+
   &-dropdown {
     display: flex;
     align-items: center;
@@ -94,7 +129,7 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 0 1rem;
+      padding: 12px;
     }
 
     &-backdrop {
@@ -110,7 +145,7 @@
       border-radius: 0.5rem;
       max-width: 28rem;
       width: 100%;
-      padding: 1.5rem;
+      padding: 20px;
       height: 32rem;
       display: flex;
       flex-direction: column;
@@ -125,11 +160,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 12px;
       flex-shrink: 0;
     }
 
     &-title {
+      margin: 0;
       font-size: 1.125rem;
       font-weight: 500;
     }
@@ -147,7 +183,7 @@
     &-list {
       height: 24rem;
       overflow-y: auto;
-      margin-top: 1rem;
+      margin-top: 8px;
       flex: 1;
     }
 
@@ -208,6 +244,32 @@
         font-size: 0.875rem;
         max-width: 20rem;
         margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 600px) {
+      &-content {
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 0;
+      }
+
+      &-container {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: none;
+        height: 100vh;
+        height: 100dvh;
+        padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+        border-radius: 0;
+      }
+
+      &-header {
+        margin-bottom: 10px;
+      }
+
+      &-list {
+        margin-top: 5px;
       }
     }
   }

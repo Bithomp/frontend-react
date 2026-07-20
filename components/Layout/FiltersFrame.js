@@ -163,7 +163,7 @@ export default function FiltersFrame({
         withoutLeftFilters ? ' is-without-left-filters' : ''
       }`}
     >
-      {(orderList || activeView || page) && (
+      {(orderList || activeView || page || navExtra || (showCsvInNav && csvHeaders)) && (
         <div className="filters-nav">
           <div className="filters-nav__wrap">
             {rowsPerPage && (width >= 920 || width <= 440) ? (

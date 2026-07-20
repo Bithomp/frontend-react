@@ -43,6 +43,7 @@
   "token-selector": {
     "select-token": "Выберите токен",
     "select-token-destination": "Выберите токен (доступен получателю)",
+    "search-in": "Искать среди",
     "search-placeholder": "Поиск по валюте, эмитенту или username",
     "holders": "{{value}} держателей",
     "more-results": "Найдено более {{count}} результатов. Укажите эмитента, чтобы сузить поиск.",

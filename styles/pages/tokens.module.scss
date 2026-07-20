@@ -1,0 +1,87 @@
+.tokensClass :global {
+  .page {
+    width: 100%;
+    max-width: 1680px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .page .table-large.expand,
+  .page .table-mobile {
+    width: 100%;
+  }
+
+  .tokens-mobile-table {
+    display: none;
+  }
+
+  @media (max-width: 950px) {
+    .tokens-desktop-table {
+      display: none;
+    }
+
+    .tokens-mobile-table {
+      display: block;
+    }
+  }
+
+  .filters-nav .tokens-escrow-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    box-sizing: border-box;
+    min-height: var(--filters-nav-control-height);
+    height: var(--filters-nav-control-height);
+    padding: 0 10px;
+    border: 1px solid var(--unaccent-icon);
+    border-radius: 10px;
+    background: var(--background-input);
+    color: var(--text-main);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .tokens-escrow-toggle__state {
+    min-width: 28px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: var(--unaccent-icon);
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .tokens-escrow-toggle.is-active {
+    border-color: var(--accent-link);
+    color: var(--accent-link);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
+  }
+
+  .tokens-escrow-toggle.is-active .tokens-escrow-toggle__state {
+    background: var(--accent-link);
+    color: var(--background-main);
+  }
+
+  @media (max-width: 440px) {
+    .content-cols.is-without-left-filters .filters-nav__csv {
+      width: 86px;
+      min-width: 0;
+      padding: 0 10px;
+      font-size: 13px;
+    }
+
+    .content-cols.is-without-left-filters .filters-nav__csv svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .content-cols.is-without-left-filters .filters-nav .dropdown-btn {
+      width: 52px;
+      flex-basis: 52px;
+      font-size: 20px;
+    }
+
+  }
+}

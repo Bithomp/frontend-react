@@ -1,4 +1,6 @@
 {
   "desc": "Di sini Anda dapat menemukan 100 akun TERATAS berdasarkan saldo {{currency}}.",
-  "summary": "Terdapat <1>{{activeAccounts}}</1> akun aktif, total yang tersedia: <3>{{totalCoins}}</3>"
+  "summary": "Terdapat <1>{{activeAccounts}}</1> akun aktif, total yang tersedia: <3>{{totalCoins}}</3>",
+  "chart": { "holders": "Konsentrasi pemegang", "top100": "100 teratas", "other": "Lainnya" },
+  "actions": { "token-page": "Halaman token", "add-token": "Tambahkan token", "authorize": "Otorisasi" }
 }

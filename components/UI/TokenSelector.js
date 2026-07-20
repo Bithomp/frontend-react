@@ -104,6 +104,7 @@ export default function TokenSelector({
   excludeLPtokens = false,
   onlyLPtokens = false,
   onlyMPTokens = false,
+  includeMPTokens = false,
   canLock = false
 }) {
   const { t } = useTranslation()
@@ -114,10 +115,14 @@ export default function TokenSelector({
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState(null)
+  const [tokenType, setTokenType] = useState(() => (mptIssuanceId(value) ? 'mpts' : 'tokens'))
+  const searchMPTokens = onlyMPTokens || (includeMPTokens && tokenType === 'mpts')
+  const searchScope = `${searchMPTokens ? 'mpts' : 'tokens'}:${canLock ? 'canLock' : 'all'}`
 
   // Cache for search results to prevent unnecessary reloads
   const [lastSearchQuery, setLastSearchQuery] = useState('')
   const [cachedSearchResults, setCachedSearchResults] = useState([])
+  const [cachedSearchScope, setCachedSearchScope] = useState('')
 
   // control radio selection: 'all' | 'single'
   const [filterMode, setFilterMode] = useState(() => (hasTokenValue(value) ? 'single' : 'all'))
@@ -153,7 +158,16 @@ export default function TokenSelector({
     setSearchQuery('')
     setLastSearchQuery('')
     setCachedSearchResults([])
+    setCachedSearchScope('')
   }, [destinationAddress])
+
+  useEffect(() => {
+    setSearchQuery('')
+    setSearchResults([])
+    setLastSearchQuery('')
+    setCachedSearchResults([])
+    setCachedSearchScope('')
+  }, [canLock])
 
   // Handle search with debounce
   useEffect(() => {
@@ -166,7 +180,7 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
-      let urlPart = onlyMPTokens
+      let urlPart = searchMPTokens
         ? '&order=holdersHigh'
         : onlyLPtokens
         ? '&lptokens=true&currencyDetails=true'
@@ -179,7 +193,7 @@ export default function TokenSelector({
 
       if (!searchQuery.trim()) {
         // Check if we have cached results for empty search query
-        if (lastSearchQuery === '' && cachedSearchResults.length > 0) {
+        if (lastSearchQuery === '' && cachedSearchScope === searchScope && cachedSearchResults.length > 0) {
           setSearchResults(cachedSearchResults)
           return
         }
@@ -194,19 +208,21 @@ export default function TokenSelector({
           } else {
             // Fallback to original behavior if no destination address
             // &statistics=true - shall we get USD prices and show them?
-            const response = await axios(tokenListUrl('', urlPart, onlyMPTokens))
-            tokens = tokensFromResponse(response, onlyMPTokens)
-            if (!excludeNative && !onlyMPTokens) {
+            const response = await axios(tokenListUrl('', urlPart, searchMPTokens))
+            tokens = tokensFromResponse(response, searchMPTokens)
+            if (!excludeNative && !searchMPTokens) {
               const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
               setSearchResults(defaultTokens)
               // Cache the default token list
               setLastSearchQuery('')
               setCachedSearchResults(defaultTokens)
+              setCachedSearchScope(searchScope)
             } else {
               setSearchResults(tokens)
               // Cache the default token list
               setLastSearchQuery('')
               setCachedSearchResults(tokens)
+              setCachedSearchScope(searchScope)
             }
             setIsLoading(false)
             return
@@ -216,6 +232,7 @@ export default function TokenSelector({
           // Cache the default token list for destination address case
           setLastSearchQuery('')
           setCachedSearchResults(tokens)
+          setCachedSearchScope(searchScope)
         } catch (error) {
           console.error('Error loading tokens:', error)
           if (excludeNative) {
@@ -234,7 +251,7 @@ export default function TokenSelector({
       }
 
       // Check if we have cached results for this search query
-      if (lastSearchQuery === searchQuery) {
+      if (lastSearchQuery === searchQuery && cachedSearchScope === searchScope) {
         setSearchResults(cachedSearchResults)
         return
       }
@@ -249,16 +266,20 @@ export default function TokenSelector({
           // Cache the results
           setLastSearchQuery(searchQuery)
           setCachedSearchResults(tokensWithNative)
+          setCachedSearchScope(searchScope)
         } else {
           // Fallback to original search behavior
           // &statistics=true - shall we get USD prices and show them?
-          const response = await axios(tokenListUrl(searchQuery, urlPart, onlyMPTokens))
-          const tokens = tokensFromResponse(response, onlyMPTokens)
-          const tokensWithNative = onlyMPTokens ? tokens : addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
+          const response = await axios(tokenListUrl(searchQuery, urlPart, searchMPTokens))
+          const tokens = tokensFromResponse(response, searchMPTokens)
+          const tokensWithNative = searchMPTokens
+            ? tokens
+            : addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
           // Cache the results
           setLastSearchQuery(searchQuery)
           setCachedSearchResults(tokensWithNative)
+          setCachedSearchScope(searchScope)
         }
       } catch (error) {
         console.error('Error searching tokens:', error)
@@ -277,11 +298,21 @@ export default function TokenSelector({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, isOpen, destinationAddress])
+  }, [searchQuery, isOpen, destinationAddress, searchMPTokens, canLock])
 
   const handleSelect = (token) => {
     onChange(token)
     setIsOpen(false)
+  }
+
+  const changeTokenType = (nextType) => {
+    if (nextType === tokenType) return
+    setSearchQuery('')
+    setSearchResults([])
+    setLastSearchQuery('')
+    setCachedSearchResults([])
+    setCachedSearchScope('')
+    setTokenType(nextType)
   }
 
   // Helper to get token display name
@@ -373,6 +404,25 @@ export default function TokenSelector({
                       </h3>
                       <IoMdClose className="token-selector-modal-close" onClick={() => setIsOpen(false)} />
                     </div>
+
+                    {includeMPTokens && (
+                      <div className="token-selector-type-switch" role="group" aria-label={t('token-selector.search-in')}>
+                        <button
+                          type="button"
+                          className={tokenType === 'tokens' ? 'active' : ''}
+                          onClick={() => changeTokenType('tokens')}
+                        >
+                          {t('token-tabs.tokens')}
+                        </button>
+                        <button
+                          type="button"
+                          className={tokenType === 'mpts' ? 'active' : ''}
+                          onClick={() => changeTokenType('mpts')}
+                        >
+                          {t('token-tabs.mpts')}
+                        </button>
+                      </div>
+                    )}
 
                     <div className="form-input">
                       <div className="form-input__wrap">

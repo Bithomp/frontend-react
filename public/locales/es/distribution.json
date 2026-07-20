@@ -1,4 +1,6 @@
 {
   "desc": "Aquí puedes encontrar el TOP 100 de cuentas por balance {{currency}}.",
-  "summary": "Hay <1>{{activeAccounts}}</1> cuentas activas, total disponible: <3>{{totalCoins}}</3>"
+  "summary": "Hay <1>{{activeAccounts}}</1> cuentas activas, total disponible: <3>{{totalCoins}}</3>",
+  "chart": { "holders": "Concentración de titulares", "top100": "Top 100", "other": "Otros" },
+  "actions": { "token-page": "Página del token", "add-token": "Añadir token", "authorize": "Autorizar" }
 }

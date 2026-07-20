@@ -1,42 +1,96 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import axios from 'axios'
+import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { FaHandshake } from 'react-icons/fa'
+import { MdOpenInNew } from 'react-icons/md'
 import { axiosServer, currencyServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { getIsSsrMobile } from '../utils/mobile'
 
+const mptIssuanceId = (token) => token?.mptokenIssuanceID || token?.MPTokenIssuanceID || token?.mpt_issuance_id
+
+const normalizeMptRichlist = (richlist, token) => {
+  const scale = Number(richlist?.summary?.scale ?? token?.scale)
+  const divisor = Number.isFinite(scale) ? 10 ** scale : 1
+  const totalCoins = Number(richlist?.summary?.totalCoins || 0) / divisor
+  const mptokens = Array.isArray(richlist?.mptokens)
+    ? richlist.mptokens.map((record) => ({
+        ...record,
+        balance: Number(record.amount || 0) / divisor
+      }))
+    : []
+
+  return {
+    ...richlist,
+    summary: { ...richlist?.summary, totalCoins },
+    mptokens
+  }
+}
+
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
-  const { escrow, currency, currencyIssuer } = query
+  const { escrow, currency, currencyIssuer, mptokenIssuanceID } = query
+  const isMptMode = !!mptokenIssuanceID
   const initialEscrowMode = ['short', 'locked'].includes(escrow) ? escrow : 'none'
 
   let data = null
 
   const serverCurrency = currencyServer(req) || 'usd'
 
-  let url = ''
-  if (currency && currencyIssuer) {
-    url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}?summary=true&convertCurrencies=${serverCurrency}&currencyDetails=true`
+  let token = isMptMode ? {} : null
+
+  if (isMptMode) {
+    try {
+      const selectedMpt = { mptokenIssuanceID }
+
+      const selectedMptId = mptIssuanceId(selectedMpt)
+      if (selectedMptId) {
+        token = selectedMpt
+        const [tokenResponse, richlistResponse] = await Promise.all([
+          axiosServer({
+            method: 'get',
+            url: `v2/token/${encodeURIComponent(selectedMptId)}?currencyDetails=true`,
+            headers: passHeaders(req)
+          }),
+          axiosServer({
+            method: 'get',
+            url: `v2/mptokens/richlist/${encodeURIComponent(selectedMptId)}?summary=true`,
+            headers: passHeaders(req)
+          })
+        ])
+        token = tokenResponse?.data || selectedMpt
+        data = normalizeMptRichlist(richlistResponse?.data, token)
+      }
+    } catch (error) {
+      data = error?.response?.data || null
+    }
   } else {
-    url = 'v2/addresses/richlist' + (initialEscrowMode !== 'none' ? `?escrow=${initialEscrowMode}` : '')
-  }
+    let url = ''
+    if (currency && currencyIssuer) {
+      url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}?summary=true&convertCurrencies=${serverCurrency}&currencyDetails=true`
+    } else {
+      url = 'v2/addresses/richlist' + (initialEscrowMode !== 'none' ? `?escrow=${initialEscrowMode}` : '')
+    }
 
-  try {
-    const res = await axiosServer({
-      method: 'get',
-      url,
-      headers: passHeaders(req)
-    })
-    data = res?.data
-  } catch (r) {
-    data = r?.response?.data
-  }
+    try {
+      const res = await axiosServer({
+        method: 'get',
+        url,
+        headers: passHeaders(req)
+      })
+      data = res?.data
+    } catch (error) {
+      data = error?.response?.data
+    }
 
-  const token = {
-    currency: currency || nativeCurrency,
-    issuer: currencyIssuer || null,
-    currencyDetails: data?.currencyDetails || null
+    token = {
+      currency: currency || nativeCurrency,
+      issuer: currencyIssuer || null,
+      currencyDetails: data?.currencyDetails || null
+    }
   }
 
   return {
@@ -44,7 +98,7 @@ export async function getServerSideProps(context) {
       queryToken: token || null,
       initialEscrowMode,
       initialRawData: data || null,
-      initialData: data?.addresses || data?.trustlines || [],
+      initialData: data?.addresses || data?.trustlines || data?.mptokens || [],
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'distribution']))
     }
@@ -67,18 +121,103 @@ import {
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
 import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/router'
+import SimpleSelect from '../components/UI/SimpleSelect'
+import { distributionClass } from '../styles/pages/distribution.module.scss'
+import { useTheme } from '../components/Layout/ThemeContext'
+import { apexChartTheme, apexDonutSliceColors } from '../utils/apexCharts'
 
-export default function Distribution({ selectedCurrency, fiatRate, initialRawData, initialData, queryToken, initialEscrowMode }) {
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
+
+function DistributionDonut({ rows, totalCoins, actions }) {
+  const { t } = useTranslation('distribution')
+  const { theme } = useTheme()
+  const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
+  const total = Number(totalCoins || 0)
+  const topRows = (Array.isArray(rows) ? rows : [])
+    .filter((record) => Number(record.balance) > 0)
+    .slice(0, 100)
+  const topTotal = topRows.reduce((sum, record) => sum + Number(record.balance || 0), 0)
+  const other = Number.isFinite(total) ? Math.max(total - topTotal, 0) : 0
+  const otherLabel = t('chart.other')
+  const chartRows = other > 0 ? [...topRows, { address: otherLabel, balance: other }] : topRows
+  const series = chartRows.map((record) => (Number(record.balance) / total) * 100).filter(Number.isFinite)
+  const labels = chartRows.map(
+    (record) => record?.addressDetails?.service || record?.addressDetails?.username || record.address || otherLabel
+  )
+  const options = useMemo(
+    () => ({
+      chart: { type: 'donut', animations: { enabled: false }, foreColor: chartTheme.textColor },
+      labels,
+      colors: apexDonutSliceColors(series.length),
+      dataLabels: { enabled: false },
+      legend: { show: false },
+      stroke: { width: 1, colors: ['var(--card-bg)'] },
+      tooltip: { y: { formatter: (value) => `${Number(value).toFixed(2)}%` } },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '68%',
+            labels: {
+              show: true,
+              total: {
+                show: true,
+                showAlways: true,
+                label: t('chart.top100'),
+                color: chartTheme.labelColor,
+                formatter: () => (total > 0 ? `${((topTotal / total) * 100).toFixed(1)}%` : '-')
+              }
+            }
+          }
+        }
+      }
+    }),
+    [chartTheme, labels, series.length, t, topTotal, total]
+  )
+
+  if (!series.length || !(total > 0)) return null
+
+  return (
+    <section className="distribution-chart-card">
+      <div className="distribution-chart-copy">
+        <h2>{t('chart.holders')}</h2>
+        {actions}
+      </div>
+      <Chart type="donut" series={series} options={options} height={170} />
+    </section>
+  )
+}
+
+export default function Distribution({
+  selectedCurrency,
+  fiatRate,
+  initialRawData,
+  initialData,
+  queryToken,
+  initialEscrowMode,
+  setSignRequest
+}) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const mptokenIssuanceIDQuery = searchParams.get('mptokenIssuanceID') || ''
+  const isMptMode = !!mptokenIssuanceIDQuery
 
   const currencyQuery = searchParams.get('currency') || ''
   const currencyIssuerQuery = searchParams.get('currencyIssuer') || ''
   const normalizedCurrencyQuery = currencyQuery || nativeCurrency
   const normalizedIssuerQuery = currencyIssuerQuery || null
 
+  const [data, setData] = useState(initialData || [])
+  const [rawData, setRawData] = useState(initialRawData || {})
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [escrowMode, setEscrowMode] = useState(initialEscrowMode || 'none') // 'none', 'short', 'locked'
+  const [token, setToken] = useState(queryToken)
+
   useEffect(() => {
+    if (isMptMode) return
     if (token?.currency === normalizedCurrencyQuery && (token?.issuer || null) === normalizedIssuerQuery) {
       return
     }
@@ -88,15 +227,26 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
       currencyDetails: null
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [normalizedCurrencyQuery, normalizedIssuerQuery])
+  }, [isMptMode, normalizedCurrencyQuery, normalizedIssuerQuery])
 
-  const [data, setData] = useState(initialData || [])
-  const [rawData, setRawData] = useState(initialRawData || {})
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [escrowMode, setEscrowMode] = useState(initialEscrowMode || 'none') // 'none', 'short', 'locked'
-  const [filtersHide, setFiltersHide] = useState(false)
-  const [token, setToken] = useState(queryToken)
+  const changeToken = (nextToken) => {
+    setToken(nextToken)
+    const nextMptId = mptIssuanceId(nextToken)
+    const query = nextMptId
+      ? { mptokenIssuanceID: nextMptId }
+      : nextToken?.issuer && nextToken?.currency
+        ? { currency: nextToken.currency, currencyIssuer: nextToken.issuer }
+        : {}
+    if (escrowMode !== 'none' && !nextMptId && !nextToken?.issuer) query.escrow = escrowMode
+    router.replace(
+      {
+        pathname: '/distribution',
+        query
+      },
+      undefined,
+      { shallow: true }
+    )
+  }
 
   const controller = new AbortController()
 
@@ -186,7 +336,10 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
       apiUrl += `?escrow=${escrowMode}`
     }
 
-    if (token.currency !== nativeCurrency && token.issuer) {
+    const selectedMptId = mptIssuanceId(token)
+    if (selectedMptId) {
+      apiUrl = `v2/mptokens/richlist/${encodeURIComponent(selectedMptId)}?summary=true`
+    } else if (token.currency !== nativeCurrency && token.issuer) {
       apiUrl =
         'v2/trustlines/token/richlist/' +
         token.issuer +
@@ -210,12 +363,12 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
           setLoading(false) //keep here for fast tab clickers
         }
       })
-    const newdata = response?.data
+    const newdata = selectedMptId ? normalizeMptRichlist(response?.data, token) : response?.data
     if (newdata) {
       setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
-      if (newdata.addresses || newdata.trustlines) {
-        let list = newdata.addresses || newdata.trustlines
+      if (newdata.addresses || newdata.trustlines || newdata.mptokens) {
+        let list = newdata.addresses || newdata.trustlines || newdata.mptokens
         if (list.length > 0) {
           setErrorMessage('')
           setData(list)
@@ -292,12 +445,111 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [escrowMode, token, selectedCurrency])
 
-  const currency = niceCurrency(token.currency)
+  const selectedMptId = mptIssuanceId(token)
+  const isMptToken = !!selectedMptId
+  const isIssuedToken = !!token?.issuer && !isMptToken
+  const isAssetToken = isIssuedToken || isMptToken
+  const currency = isMptToken
+    ? token?.metadata?.name || token?.metadata?.n || token?.metadata?.ticker || token?.metadata?.t || 'MPT'
+    : niceCurrency(token?.currency || nativeCurrency)
 
   const priceFiat = rawData?.summary?.convertCurrencies?.[selectedCurrency]
+  const distributionTotalCoins = rawData?.summary?.totalCoins || rawData?.summary?.maxCoins
+  const tokenPageUrl = isMptToken
+    ? `/token/${encodeURIComponent(mptIssuanceId(token))}`
+    : token?.issuer
+      ? `/token/${encodeURIComponent(token.issuer)}/${encodeURIComponent(token.currency)}`
+      : `/token/${encodeURIComponent(nativeCurrency)}`
+
+  const addToken = () => {
+    if (!setSignRequest || !token?.issuer || isMptToken) return
+    const supply = Number(distributionTotalCoins)
+    setSignRequest({
+      request: {
+        TransactionType: 'TrustSet',
+        LimitAmount: {
+          currency: token.currency,
+          issuer: token.issuer,
+          value: Number.isFinite(supply) && supply > 0 ? supply.toFixed(6) : '1000000000'
+        },
+        Flags: 131072
+      }
+    })
+  }
+
+  const authorizeMpt = () => {
+    const issuanceId = mptIssuanceId(token)
+    if (!setSignRequest || !issuanceId) return
+    setSignRequest({ request: { TransactionType: 'MPTokenAuthorize', MPTokenIssuanceID: issuanceId } })
+  }
+  const renderAssetBalance = (record) =>
+    isMptToken
+      ? niceNumber(record.balance, null, null, 18)
+      : amountFormat({ value: record.balance, currency: record.currency, issuer: record.counterparty })
+
+  const setEscrowFilter = (nextMode) => {
+    setEscrowMode(nextMode)
+    router.replace(
+      {
+        pathname: '/distribution',
+        query: nextMode === 'none' ? {} : { escrow: nextMode }
+      },
+      undefined,
+      { shallow: true }
+    )
+  }
+
+  const toolbarControls = (
+    <>
+      <TokenSelector value={token} onChange={changeToken} includeMPTokens excludeLPtokens />
+      {!isAssetToken && (
+        <SimpleSelect
+          value={escrowMode}
+          setValue={setEscrowFilter}
+          optionsList={escrowModeList}
+          className="distribution-escrow-select"
+          instanceId="distribution-escrow"
+          formatOptionLabel={(option, { context }) =>
+            context === 'menu' ? (
+              <div>
+                <div>{option.label}</div>
+                <small className="grey">{option.description}</small>
+              </div>
+            ) : (
+              option.label
+            )
+          }
+        />
+      )}
+    </>
+  )
+  const distributionChartRows =
+    !isAssetToken && escrowMode !== 'none'
+      ? data.map((record) => ({ ...record, balance: calculateTotalBalance(record, escrowMode) }))
+      : data
+  const distributionActions = (
+    <div className="distribution-chart-actions">
+      <Link href={tokenPageUrl} className="button-action">
+        <MdOpenInNew aria-hidden="true" />
+        {t('actions.token-page', { ns: 'distribution' })}
+      </Link>
+      {isIssuedToken && (
+        <button type="button" className="button-action" onClick={addToken}>
+          <FaHandshake aria-hidden="true" />
+          {t('actions.add-token', { ns: 'distribution' })}
+        </button>
+      )}
+      {isMptToken && (
+        <button type="button" className="button-action" onClick={authorizeMpt}>
+          <FaHandshake aria-hidden="true" />
+          {t('actions.authorize', { ns: 'distribution' })}
+        </button>
+      )}
+    </div>
+  )
 
   return (
-    <>
+    <div className={distributionClass}>
       <SEO
         title={t('menu.network.distribution', { currency })}
         image={{
@@ -311,76 +563,68 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
       />
       <div className="content-center">
         <h1 className="center">{t('menu.network.distribution', { currency })}</h1>
-        <div className="flex-container">
-          <div className="grey-box">
-            {t('desc', { ns: 'distribution', currency })}
-            {token?.issuer && !loading && (
-              <>
-                <br />
-                <br />
-                <br />1 {currency} = {niceNumber(priceFiat, null, null, 18)} {selectedCurrency.toUpperCase()}
-                <br />1 {currency} = {rawData?.summary?.priceNativeCurrencySpot} {nativeCurrency}
-              </>
-            )}
-          </div>
-          <div className="grey-box">
-            {loading ? (
-              t('general.loading')
-            ) : token?.issuer ? (
-              <>
-                <CurrencyWithIcon token={rawData} />
-                <br />
-                Total supply: {niceNumber(rawData?.summary?.totalCoins || 0)} {currency}
-                <br />
-                Holders: {niceNumber(rawData?.summary?.holders || 0)}
-                <br />
-                Trustlines: {niceNumber(rawData?.summary?.trustlines || 0)}
-              </>
-            ) : (
-              <Trans i18nKey="summary" ns="distribution">
-                There are <b>{{ activeAccounts: niceNumber(rawData?.summary?.activeAccounts) }}</b> active accounts,
-                total available: <b>{{ totalCoins: amountFormat(rawData?.summary?.totalCoins) }}</b>
-              </Trans>
-            )}
-          </div>
-        </div>
       </div>
-      <FiltersFrame filtersHide={filtersHide} setFiltersHide={setFiltersHide} data={data || []}>
-        <>
-          <TokenSelector value={token} onChange={setToken} currencyQueryName="currency" />
-          {token.currency === nativeCurrency && (
-            <div
-              className="radio-options radio-options--large"
-              style={{ flexDirection: 'column', alignItems: 'flex-start' }}
-            >
-              {escrowModeList.map((tabItem) => (
-                <div className="radio-input" key={tabItem.value}>
-                  <input
-                    type="radio"
-                    name="escrowMode"
-                    value={tabItem.value}
-                    checked={tabItem.value === escrowMode}
-                    onChange={() => setEscrowMode(tabItem.value)}
-                    id={tabItem.value}
-                  />
-                  <label htmlFor={tabItem.value}>
-                    {tabItem.label}
-                    <br />
-                    <span className="grey">{tabItem.description}</span>
-                  </label>
-                </div>
-              ))}
+      <FiltersFrame data={data || []} navExtra={toolbarControls} withoutLeftFilters>
+        <div className="page">
+          <section className="distribution-overview">
+            {!loading && !errorMessage ? (
+              <DistributionDonut
+                rows={distributionChartRows}
+                totalCoins={distributionTotalCoins}
+                actions={distributionActions}
+              />
+            ) : (
+              <div className="distribution-chart-card"></div>
+            )}
+            <div className="distribution-summary-card">
+              <div className="distribution-summary-item">
+                {t('desc', { ns: 'distribution', currency })}
+                {isIssuedToken && !loading && (
+                  <div className="distribution-summary-details">
+                    <div>
+                      1 {currency} = {niceNumber(priceFiat, null, null, 18)} {selectedCurrency.toUpperCase()}
+                    </div>
+                    <div>
+                      1 {currency} = {rawData?.summary?.priceNativeCurrencySpot} {nativeCurrency}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="distribution-summary-item">
+                {loading ? (
+                  t('general.loading')
+                ) : isAssetToken ? (
+                  <>
+                    <CurrencyWithIcon token={isMptToken ? token : rawData} />
+                    <div className="distribution-summary-details">
+                      <div>
+                        Total supply: {niceNumber(distributionTotalCoins || 0)} {currency}
+                      </div>
+                      <div>Holders: {niceNumber(rawData?.summary?.holders || 0)}</div>
+                      <div>
+                        {isMptToken ? 'MPTokens' : 'Trustlines'}:{' '}
+                        {niceNumber(
+                          isMptToken ? rawData?.summary?.mptokens || 0 : rawData?.summary?.trustlines || 0
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <Trans i18nKey="summary" ns="distribution">
+                    There are <b>{{ activeAccounts: niceNumber(rawData?.summary?.activeAccounts) }}</b> active accounts,
+                    total available: <b>{{ totalCoins: amountFormat(distributionTotalCoins) }}</b>
+                  </Trans>
+                )}
+              </div>
             </div>
-          )}
-        </>
-        <>
+          </section>
           <table className="table-large hide-on-small-w800">
             <thead>
               <tr>
                 <th className="center">{t('table.index')}</th>
                 <th>{t('table.address')}</th>
                 <th className="right">{t('table.balance')}</th>
-                {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
+                {!isAssetToken && (escrowMode === 'short' || escrowMode === 'locked') && (
                   <>
                     <th className="right">Escrow {capitalize(escrowMode)}</th>
                     <th className="right">Total</th>
@@ -403,33 +647,34 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                               {renderAddressCell(r)}
                             </td>
                             <td className="right">
-                              {token?.issuer ? (
+                              {isAssetToken ? (
                                 <HydrationValue>
-                                  {amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })}{' '}
-                                  {percentFormat(r.balance, rawData.summary?.totalCoins)}
+                                  {renderAssetBalance(r)}{' '}
+                                  {percentFormat(r.balance, distributionTotalCoins)}
                                   <br />
-                                  {tokenToFiat({
-                                    amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
-                                    selectedCurrency,
-                                    fiatRate: priceFiat
-                                  })}
+                                  {isIssuedToken &&
+                                    tokenToFiat({
+                                      amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
+                                      selectedCurrency,
+                                      fiatRate: priceFiat
+                                    })}
                                 </HydrationValue>
                               ) : (
-                                renderBalance(r.balance, rawData.summary?.totalCoins)
+                                renderBalance(r.balance, distributionTotalCoins)
                               )}
                             </td>
-                            {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
+                            {!isAssetToken && (escrowMode === 'short' || escrowMode === 'locked') && (
                               <>
                                 <td className="right">
                                   {escrowMode === 'short' &&
                                     r.escrowShortBalance &&
-                                    renderBalance(getEscrowAmount(r, 'short'), rawData.summary?.totalCoins, true)}
+                                    renderBalance(getEscrowAmount(r, 'short'), distributionTotalCoins, true)}
                                   {escrowMode === 'locked' &&
                                     r.escrowLockedBalance &&
-                                    renderBalance(getEscrowAmount(r, 'locked'), rawData.summary?.totalCoins, true)}
+                                    renderBalance(getEscrowAmount(r, 'locked'), distributionTotalCoins, true)}
                                 </td>
                                 <td className="right">
-                                  {renderBalance(calculateTotalBalance(r), rawData.summary?.totalCoins, true)}
+                                  {renderBalance(calculateTotalBalance(r), distributionTotalCoins, true)}
                                 </td>
                               </>
                             )}
@@ -463,11 +708,9 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                               <p>
                                 {t('table.balance')}:{' '}
                                 <HydrationValue>
-                                  {token?.issuer
-                                    ? amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })
-                                    : amountFormat(r.balance)}{' '}
-                                  {percentFormat(r.balance, rawData.summary?.totalCoins)}{' '}
-                                  {token?.issuer ? (
+                                  {isAssetToken ? renderAssetBalance(r) : amountFormat(r.balance)}{' '}
+                                  {percentFormat(r.balance, distributionTotalCoins)}{' '}
+                                  {isIssuedToken ? (
                                     <>
                                       {tokenToFiat({
                                         amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
@@ -490,12 +733,12 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                   )}
                                 </HydrationValue>
                               </p>
-                              {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
+                              {!isAssetToken && (escrowMode === 'short' || escrowMode === 'locked') && (
                                 <>
                                   {escrowMode === 'short' && r.escrowShortBalance && (
                                     <p>
                                       Escrow Short: {amountFormat(getEscrowAmount(r, 'short'))}{' '}
-                                      {percentFormat(getEscrowAmount(r, 'short'), rawData.summary?.totalCoins)}{' '}
+                                      {percentFormat(getEscrowAmount(r, 'short'), distributionTotalCoins)}{' '}
                                       {devNet
                                         ? t('table.no-value')
                                         : fiatRate > 0 &&
@@ -509,7 +752,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                   {escrowMode === 'locked' && r.escrowLockedBalance && (
                                     <p>
                                       Escrow Locked: {amountFormat(getEscrowAmount(r, 'locked'))}{' '}
-                                      {percentFormat(getEscrowAmount(r, 'locked'), rawData.summary?.totalCoins)}
+                                      {percentFormat(getEscrowAmount(r, 'locked'), distributionTotalCoins)}
                                       <br />
                                       {devNet
                                         ? t('table.no-value')
@@ -523,7 +766,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                   )}
                                   <p>
                                     Total: {amountFormat(calculateTotalBalance(r))}{' '}
-                                    {percentFormat(calculateTotalBalance(r), rawData.summary?.totalCoins)}
+                                    {percentFormat(calculateTotalBalance(r), distributionTotalCoins)}
                                   </p>
                                 </>
                               )}
@@ -536,7 +779,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
               </tbody>
             </table>
           </div>
-        </>
+        </div>
       </FiltersFrame>
       <style jsx global>{`
         .distribution-address-cell {
@@ -560,6 +803,6 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
           line-height: 1;
         }
       `}</style>
-    </>
+    </div>
   )
 }

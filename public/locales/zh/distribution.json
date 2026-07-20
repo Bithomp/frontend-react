@@ -1,4 +1,6 @@
 {
   "desc": "在这里您可以按{{currency}}余额找到前100个账户。",
-  "summary": "有 <1>{{activeAccounts}}</1> 个活跃账户，可用总数：<3>{{totalCoins}}</3>"
+  "summary": "有 <1>{{activeAccounts}}</1> 个活跃账户，可用总数：<3>{{totalCoins}}</3>",
+  "chart": { "holders": "持有者集中度", "top100": "前 100", "other": "其他" },
+  "actions": { "token-page": "代币页面", "add-token": "添加代币", "authorize": "授权" }
 }
