@@ -388,6 +388,7 @@ export const dappBySourceTag = (sourceTag) => {
     719719719: 'Wallery.me',
     732946831: 'Lightsource Games (XRPL4GD)',
     744925538: 'Phi Wallet',
+    804681468: 'T54 x402 XRPL facilitator',
     902978157: 'Poof XRPL Payments',
     936618804: 'RandX',
     999999007: 'MetaCarbon',

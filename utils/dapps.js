@@ -289,6 +289,12 @@ export const DAPPS_META = [
       url: 'xrpl.to',
       x: 'xrplto',
       logo: 'xrplto.png'
+    },
+    804681468: {
+      name: 'T54 x402 XRPL facilitator',
+      url: 'xrpl-x402.t54.ai',
+      x: 't54ai',
+      logo: 't54.jpg'
     }
   }
 ]
