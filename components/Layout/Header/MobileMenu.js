@@ -373,12 +373,6 @@ export default function MobileMenu({
             <IoCashOutline style={itemIconStyle} />
             {t('menu.tokens')}
           </Link>
-          {!xahauNetwork && (
-            <Link href="/mpts" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              <IoLayersOutline style={itemIconStyle} />
-              {t('menu.token-menu.multi-purpose')}
-            </Link>
-          )}
           <Link href="/distribution" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoTrophyOutline style={itemIconStyle} />
             {t('menu.token-menu.top-holders')}

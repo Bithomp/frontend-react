@@ -13,7 +13,7 @@
   "token-tabs": {
     "tokens": "代币",
     "amms": "LP代币",
-    "mpts": "MPT",
+    "mpts": "MPTs",
     "generate-mpt-metadata": "生成 MPT 元数据"
   },
   "chart-period": {

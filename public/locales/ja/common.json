@@ -13,7 +13,7 @@
   "token-tabs": {
     "tokens": "トークン",
     "amms": "LPトークン",
-    "mpts": "MPT",
+    "mpts": "MPTs",
     "generate-mpt-metadata": "MPTメタデータを生成"
   },
   "chart-period": {

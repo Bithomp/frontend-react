@@ -476,12 +476,6 @@ export default function Header({
               <IoCashOutline className="menu-item-icon" />
               {t('menu.tokens')}
             </Link>
-            {!xahauNetwork && (
-              <Link href="/mpts">
-                <IoLayersOutline className="menu-item-icon" />
-                {t('menu.token-menu.multi-purpose')}
-              </Link>
-            )}
             <Link href="/distribution">
               <IoTrophyOutline className="menu-item-icon" />
               {t('menu.token-menu.top-holders')}
