@@ -1,8 +1,78 @@
 .dappsPageClass {:global {
   .dapps-period-switch {
-    display: none;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
+  }
+
+  .dapps-toolbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .dapps-signing-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 32px;
+    padding: 0 9px;
+    border: 1px solid var(--unaccent-icon);
+    border-radius: 10px;
+    background: var(--background-input);
+    color: var(--text-main);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .dapps-signing-toggle__state {
+    min-width: 28px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: var(--unaccent-icon);
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .dapps-signing-toggle.is-active {
+    border-color: var(--accent-link);
+    color: var(--accent-link);
+  }
+
+  .dapps-signing-toggle.is-active .dapps-signing-toggle__state {
+    background: var(--accent-link);
+    color: var(--background-main);
+  }
+
+  .dapps-wallet-filter {
+    min-width: 160px;
+    margin-left: 0 !important;
+
+    .react-select__control {
+      min-height: 32px;
+      height: 32px;
+    }
+
+    .react-select__value-container,
+    .react-select__indicators {
+      height: 30px;
+    }
+  }
+
+  .dapps-wallet-slot {
+    display: contents;
+  }
+
+  .content-cols.is-without-left-filters .filters-nav__wrap {
+    row-gap: 10px;
+  }
+
+  .content-cols.is-without-left-filters .filters-nav__extra {
+    flex: 0 1 auto;
+    min-width: 0;
   }
 
   .dapps-period-switch__button {
@@ -38,8 +108,11 @@
       right: 30px;
     }
 
-    .dapps-period-switch {
-      display: inline-flex;
+  }
+
+  @media (max-width: 760px) {
+    .dapps-toolbar-controls {
+      flex-wrap: wrap;
     }
   }
 
@@ -47,9 +120,66 @@
     .filters-nav {
       right: 15px;
     }
+
+    .content-cols.is-without-left-filters .filters-nav__extra {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+
+    .dapps-toolbar-controls {
+      display: grid;
+      grid-template-columns: max-content minmax(145px, 1fr);
+      gap: 6px;
+      width: 100%;
+      align-items: center;
+    }
+
+    .dapps-period-switch {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    .dapps-signing-toggle {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .dapps-wallet-slot {
+      display: block;
+      grid-column: 2;
+      grid-row: 2;
+      flex: 0 0 145px;
+      width: 100%;
+      height: 32px;
+    }
+
+    .dapps-wallet-filter {
+      width: 100%;
+      min-width: 145px;
+    }
+
+    .filters-nav__wrap:has(.dapps-wallet-slot) {
+      position: relative !important;
+    }
+
+    .filters-nav__wrap:has(.dapps-wallet-slot) .dropdown-btn {
+      position: absolute;
+      right: 0;
+      left: auto;
+      top: 0;
+      bottom: auto;
+    }
+
+    .content-cols.is-without-left-filters .filters-nav ~ .content-text {
+      margin-top: 6px;
+    }
   }
 
   /* Prevent row-jump */
+  .content-cols.is-without-left-filters .table-large.expand {
+    width: 100%;
+  }
+
   .table-large.expand td,
   .table-large.expand th {
     vertical-align: top;

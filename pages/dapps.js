@@ -1,9 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import RadioOptions from '../components/UI/RadioOptions'
 import FiltersFrame from '../components/Layout/FiltersFrame'
-import CheckBox from '../components/UI/CheckBox'
 import { axiosServer, passHeaders, currencyServer, logServerSideError } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { explorerName, nativeCurrency } from '../utils'
@@ -69,16 +67,6 @@ const dappsApiUrl = (convertCurrency, period) => {
     apiUrl += `&period=${encodeURIComponent(period)}`
   }
   return apiUrl
-}
-
-const periodComparisonText = (t, period) => {
-  if (period === 'week') {
-    return t('dapps:periodComparison.week')
-  }
-  if (period === 'month') {
-    return t('dapps:periodComparison.month')
-  }
-  return t('dapps:periodComparison.day')
 }
 
 export async function getServerSideProps(context) {
@@ -148,14 +136,12 @@ export default function Dapps({
   includeAppsWithoutExternalSigningQuery,
   walletQuery,
   selectedCurrency: selectedCurrencyApp,
-  setSelectedCurrency,
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
   const router = useRouter()
   const { t, i18n } = useTranslation(['common', 'dapps'])
   const isMobile = useIsMobile(764)
-  const hasCompactFilters = useIsMobile(1301)
 
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
@@ -168,7 +154,6 @@ export default function Dapps({
   const [errorMessage, setErrorMessage] = useState(
     t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
   )
-  const [filtersHide, setFiltersHide] = useState(false)
   const [rawData, setRawData] = useState(initialData || {})
   const [loading, setLoading] = useState(false)
   const [expandedRowKey, setExpandedRowKey] = useState(null)
@@ -288,52 +273,6 @@ export default function Dapps({
     [t]
   )
 
-  // CSV headers for export
-  const csvHeaders = useMemo(
-    () => [
-      { label: t('dapps:csv.dappName'), key: 'dappName' },
-      { label: t('dapps:metrics.performingAddresses'), key: 'uniqueSourceAddresses' },
-      { label: t('dapps:metrics.interactingAddresses'), key: 'uniqueInteractedAddresses' },
-      { label: t('dapps:metrics.transactions'), key: 'totalTransactions' },
-      { label: t('dapps:csv.types'), key: 'transactionTypes' },
-      { label: t('dapps:activity.success'), key: 'successTransactions' },
-      { label: t('dapps:csv.successPercent'), key: 'successRate' },
-      { label: t('dapps:csv.fees'), key: 'totalFees' },
-      {
-        label: t('dapps:csv.feesCurrency', { currency: convertCurrency.toUpperCase() }),
-        key: `totalFeesInFiats.${convertCurrency}`
-      },
-      {
-        label: t('dapps:csv.volumeCurrency', { currency: convertCurrency.toUpperCase() }),
-        key: `totalSentInFiats.${convertCurrency}`
-      }
-    ],
-    [convertCurrency, t]
-  )
-
-  const csvData = useMemo(() => {
-    const metaObj = DAPPS_META[0] || {}
-    return (data || []).map((d) => {
-      const successByType = getSuccessByType(d?.transactionTypesResults)
-      const typesText = Object.entries(successByType)
-        .filter(([, count]) => Number(count) > 0)
-        .sort((a, b) => Number(b[1]) - Number(a[1]))
-        .map(([type, count]) => `${type}: ${shortNiceNumber(count, 0)}`)
-        .join(', ')
-
-      return {
-        ...d,
-        dappName:
-          dappBySourceTag(d?.sourceTag) ||
-          metaObj[String(d?.sourceTag)]?.name ||
-          generatedAgentNameBySourceTag(d?.sourceTag) ||
-          String(d?.sourceTag || ''),
-        transactionTypes: typesText,
-        successRate: Number(calcSuccessRate(d?.totalTransactions, d?.successTransactions).toFixed(1))
-      }
-    })
-  }, [data])
-
   useEffect(() => {
     if (!router.isReady) return
 
@@ -387,14 +326,6 @@ export default function Dapps({
     [t]
   )
 
-  const activeFilters = useMemo(
-    () => ({
-      ...(!excludeNoWallets ? { [t('general.external-signing')]: t('general.optional') } : {}),
-      ...(walletFilter ? { [t('wallet.connected-wallets')]: walletFilter } : {})
-    }),
-    [excludeNoWallets, t, walletFilter]
-  )
-
   const periodSwitch = useMemo(
     () => (
       <div className="dapps-period-switch" aria-label={t('table.period')}>
@@ -414,6 +345,35 @@ export default function Dapps({
       </div>
     ),
     [period, periodOptions, t]
+  )
+
+  const toolbarControls = useMemo(
+    () => (
+      <div className="dapps-toolbar-controls">
+        {periodSwitch}
+        <button
+          type="button"
+          className={`dapps-signing-toggle${excludeNoWallets ? ' is-active' : ''}`}
+          onClick={() => onToggleExclude(!excludeNoWallets)}
+          aria-pressed={excludeNoWallets}
+          title={t('dapps:filters.excludeWithoutExternalSigning')}
+        >
+          <span>{t('general.external-signing')}</span>
+          <span className="dapps-signing-toggle__state">{excludeNoWallets ? 'On' : 'Off'}</span>
+        </button>
+        <div className={`dapps-wallet-slot${excludeNoWallets ? '' : ' is-empty'}`}>
+          {excludeNoWallets && (
+            <WalletSelect
+              value={walletFilter}
+              setValue={setWalletFilter}
+              walletsList={walletsOptionsList}
+              className="dapps-wallet-filter"
+            />
+          )}
+        </div>
+      </div>
+    ),
+    [excludeNoWallets, onToggleExclude, periodSwitch, t, walletFilter, walletsOptionsList]
   )
 
   return (
@@ -436,35 +396,9 @@ export default function Dapps({
         order={order}
         setOrder={setOrder}
         orderList={orderList}
-        data={csvData}
-        filtersHide={filtersHide}
-        setFiltersHide={setFiltersHide}
-        csvHeaders={csvHeaders}
-        selectedCurrency={selectedCurrency}
-        setSelectedCurrency={setSelectedCurrency}
-        filters={activeFilters}
-        navExtra={hasCompactFilters ? periodSwitch : null}
+        navExtra={toolbarControls}
+        withoutLeftFilters
       >
-        <>
-          <div>
-            {t('table.period')}
-            <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
-            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
-              {periodComparisonText(t, period)}
-            </div>
-          </div>
-          <div>
-            <CheckBox checked={excludeNoWallets} setChecked={onToggleExclude}>
-              {t('dapps:filters.excludeWithoutExternalSigning')}
-            </CheckBox>
-          </div>
-          {excludeNoWallets ? (
-            <>
-              <div style={{ marginBottom: 10 }}>{t('dapps:filters.walletFilter')}</div>
-              <WalletSelect value={walletFilter} setValue={setWalletFilter} walletsList={walletsOptionsList} />
-            </>
-          ) : null}
-        </>
         {loading ? (
           <table className={isMobile ? 'table-mobile' : 'table-large expand'}>
             <tbody>
@@ -482,7 +416,7 @@ export default function Dapps({
           </table>
         ) : !errorMessage ? (
           isMobile ? (
-            <div style={{ width: 'calc(100% - 30px)', margin: '0 auto' }}>
+            <div style={{ width: '100%' }}>
               {(() => {
                 const metaObj = DAPPS_META[0] || {}
                 return data?.length ? (
