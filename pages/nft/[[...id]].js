@@ -6,8 +6,19 @@ import Select from 'react-select'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import { Buffer } from 'buffer'
 
-import { stripText, decode, network, isValidJson, isUrlValid, xahauNetwork, devNet, encode } from '../../utils'
+import {
+  stripText,
+  decode,
+  network,
+  isHexString,
+  isValidJson,
+  isUrlValid,
+  xahauNetwork,
+  devNet,
+  encode
+} from '../../utils'
 import { AddressWithIconFilled, convertedAmount, tokenToFiat, timeFromNow, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
@@ -94,6 +105,91 @@ const remarkLink = (value) => {
   if (typeof value !== 'string') return ''
   if (/^ipfs:\/\//i.test(value)) return ipfsUrl(value, 'viewer', 'cl') || ''
   return isUrlValid(value) ? value : ''
+}
+
+const combineRemarkParts = (remarks = []) => {
+  const groups = new Map()
+
+  remarks.forEach((remark) => {
+    const match = typeof remark?.name === 'string' && remark.name.match(/^(.*)\.(\d+)$/)
+    if (!match) return
+
+    const [, name, part] = match
+    if (!groups.has(name)) groups.set(name, [])
+    groups.get(name).push({ remark, part: Number(part) })
+  })
+
+  const combinedGroups = new Map()
+  groups.forEach((parts, name) => {
+    parts.sort((a, b) => a.part - b.part)
+    if (parts.length < 2 || !parts.every(({ part }, index) => part === index)) return
+
+    combinedGroups.set(name, {
+      name,
+      value: parts.map(({ remark }) => String(remark.value ?? '')).join(''),
+      flags: { immutable: parts.every(({ remark }) => remark.flags?.immutable) }
+    })
+  })
+
+  const renderedGroups = new Set()
+  return remarks.reduce((result, remark) => {
+    const match = typeof remark?.name === 'string' && remark.name.match(/^(.*)\.(\d+)$/)
+    const name = match?.[1]
+    const combined = name && combinedGroups.get(name)
+
+    if (!combined) result.push(remark)
+    else if (!renderedGroups.has(name)) {
+      result.push(combined)
+      renderedGroups.add(name)
+    }
+
+    return result
+  }, [])
+}
+
+const remarkValue = (value) => {
+  if (typeof value !== 'string' || !value || value.length % 2 || !isHexString(value)) {
+    return { display: value, copy: value }
+  }
+
+  const decoded = decode(value)
+  if (decoded !== value) return { display: decoded, copy: decoded }
+
+  const bytes = Buffer.from(value, 'hex')
+  const isWebp = bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP'
+  if (isWebp) {
+    return {
+      display: `${bytes.length} byte WebP image`,
+      copy: value,
+      image: `data:image/webp;base64,${bytes.toString('base64')}`
+    }
+  }
+
+  return {
+    display: `${value.length / 2} bytes of binary data`,
+    copy: value,
+    binary: true
+  }
+}
+
+function JsonRemarkValue({ value }) {
+  const { t } = useTranslation()
+  const [expanded, setExpanded] = useState(false)
+  const bytes = Buffer.byteLength(value, 'utf8')
+  const size = bytes < 1024 ? `${bytes} B` : `${(bytes / 1024).toFixed(bytes < 10240 ? 1 : 0)} KB`
+
+  return (
+    <div className="remark-json">
+      <div className="remark-json-summary">
+        <span className="grey">JSON · {size}</span>
+        <button type="button" className="link remark-json-toggle" onClick={() => setExpanded(!expanded)}>
+          {expanded ? t('table.text.hide') : t('table.text.show')}
+        </button>
+        <CopyButton text={value} />
+      </div>
+      {expanded && <div className="remark-json-code">{codeHighlight(value)}</div>}
+    </div>
+  )
 }
 
 // Show more/less for long descriptions
@@ -336,8 +432,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   }
 
   const nftDescription = (meta) => {
-    if (meta.description) {
-      return stripText(meta.description)
+    if (meta.description || meta.desc) {
+      return stripText(meta.description || meta.desc)
     } else if (meta.Description) {
       return stripText(meta.Description)
     }
@@ -1223,6 +1319,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         description={
           (pageMeta?.metadata?.collection?.name ||
             pageMeta?.metadata?.description ||
+            pageMeta?.metadata?.desc ||
             (!pageMeta?.nftokenID ? t('desc', { ns: 'nft' }) : '')) +
           (pageMeta?.issuer ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(pageMeta, 'issuer') : '')
         }
@@ -1306,7 +1403,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           {!notFoundInTheNetwork && rendered && (
                             <SocialShare
                               title={nftName(data) || 'XRPL NFT'}
-                              description={pageMeta?.metadata?.description || ''}
+                              description={pageMeta?.metadata?.description || pageMeta?.metadata?.desc || ''}
                               hashtag="NFT"
                               image={imageUrl}
                               t={t}
@@ -1376,15 +1473,21 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                             {showRawMetadata && codeHighlight(data.metadata)}
                           </div>
                           {xahauNetwork && data.remarks?.length > 0 && (
-                            <table className="table-details">
+                            <table className="table-details remarks-table">
+                              <colgroup>
+                                <col className="remarks-name-column" />
+                                <col className="remarks-value-column" />
+                              </colgroup>
                               <thead>
                                 <tr>
-                                  <th colSpan="100">{t('table.remarks', { ns: 'nft' })}</th>
+                                  <th colSpan="2">{t('table.remarks', { ns: 'nft' })}</th>
                                 </tr>
                               </thead>
                               <tbody>
-                                {data.remarks.map((remark, index) => {
-                                  const href = remarkLink(remark.value)
+                                {combineRemarkParts(data.remarks).map((remark, index) => {
+                                  const value = remarkValue(remark.value)
+                                  const href = remarkLink(value.display)
+                                  const json = typeof value.display === 'string' && isValidJson(value.display)
                                   return (
                                     <tr key={`${remark.name || 'remark'}-${index}`}>
                                       <td className="brake">
@@ -1397,18 +1500,36 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                         )}
                                       </td>
                                       <td className="brake">
-                                        {href ? (
+                                        {value.image ? (
+                                          <div className="remark-image-preview">
+                                            <img src={value.image} alt={remark.name || 'Remark'} />
+                                            <div className="remark-image-caption">
+                                              <span className="grey">{value.display}</span>
+                                              <CopyButton text={String(value.copy)} />
+                                            </div>
+                                          </div>
+                                        ) : json ? (
+                                          <JsonRemarkValue value={value.display} />
+                                        ) : href ? (
                                           <a href={href} target="_blank" rel="noreferrer">
-                                            {remark.value}
+                                            {value.display}
                                           </a>
                                         ) : (
-                                          String(remark.value ?? '')
+                                          <span className={value.binary ? 'grey' : ''}>{String(value.display ?? '')}</span>
                                         )}{' '}
-                                        {remark.value != null && <CopyButton text={String(remark.value)} />}
+                                        {!json && !value.image && value.copy != null && (
+                                          <CopyButton text={String(value.copy)} />
+                                        )}
                                       </td>
                                     </tr>
                                   )
                                 })}
+                                <tr>
+                                  <td>{t('table.raw-data')}</td>
+                                  <td>
+                                    <JsonRemarkValue value={JSON.stringify(data.remarks)} />
+                                  </td>
+                                </tr>
                               </tbody>
                             </table>
                           )}

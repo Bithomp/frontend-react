@@ -41,6 +41,64 @@
         overflow: scroll;
       }
     }
+    .remarks-table {
+      table-layout: fixed;
+      .remarks-name-column {
+        width: 30%;
+      }
+      .remarks-value-column {
+        width: 70%;
+      }
+      td:first-child {
+        word-break: break-word;
+      }
+      td:last-child {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      pre {
+        max-width: 100%;
+        margin: 0;
+        overflow-x: auto;
+      }
+      .remark-image-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        img {
+          display: block;
+          width: auto;
+          max-width: 100%;
+          max-height: 420px;
+          border-radius: 8px;
+          object-fit: contain;
+        }
+      }
+      .remark-image-caption {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .remark-json-summary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .remark-json-toggle {
+        appearance: none;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        font: inherit;
+        cursor: pointer;
+      }
+      .remark-json-code {
+        margin-top: 8px;
+      }
+    }
   }
   .offer-history-filter-select {
     float: right;
@@ -81,6 +139,15 @@
     .column-right {
       width: 100%;
       padding: 0;
+      .remarks-table td:first-child {
+        word-break: break-word;
+      }
+      .remarks-table .remarks-name-column {
+        width: 34%;
+      }
+      .remarks-table .remarks-value-column {
+        width: 66%;
+      }
     }
   }
 }
