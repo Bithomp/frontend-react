@@ -77,5 +77,10 @@
       "other": "Lainnya",
       "failed": "Gagal"
     }
+  },
+  "footer": {
+    "tracking": "Ingin dApp Anda dilacak dan dikenali?",
+    "discord": "Kirim pesan kepada kami di Discord",
+    "api": "Ingin memantau data sendiri atau menampilkannya di proyek Anda? Akses data melalui"
   }
 }

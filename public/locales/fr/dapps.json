@@ -77,5 +77,10 @@
       "other": "Autre",
       "failed": "Échouées"
     }
+  },
+  "footer": {
+    "tracking": "Vous souhaitez que votre dApp soit suivie et reconnue ?",
+    "discord": "Écrivez-nous sur Discord",
+    "api": "Vous souhaitez suivre les données ou les afficher dans votre projet ? Accédez-y via notre"
   }
 }

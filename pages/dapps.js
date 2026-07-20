@@ -399,6 +399,7 @@ export default function Dapps({
         navExtra={toolbarControls}
         withoutLeftFilters
       >
+        <>
         {loading ? (
           <table className={isMobile ? 'table-mobile' : 'table-large expand'}>
             <tbody>
@@ -627,6 +628,21 @@ export default function Dapps({
             {errorMessage}
           </div>
         )}
+          {!loading && !errorMessage && (
+            <div className="dapps-data-note">
+              <span>
+                {t('dapps:footer.tracking')}{' '}
+                <a href="https://discord.gg/ZahGJ29WEs" target="_blank" rel="noreferrer">
+                  {t('dapps:footer.discord')}
+                </a>
+                .
+              </span>{' '}
+              <span>
+                {t('dapps:footer.api')} <a href="https://docs.bithomp.com/#dapps">API</a>.
+              </span>
+            </div>
+          )}
+        </>
       </FiltersFrame>
       {!isMobile && sentTip
         ? (() => {

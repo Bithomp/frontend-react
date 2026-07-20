@@ -125,6 +125,14 @@ export default function Contact() {
             For any questions about the username registration, transaction explorer or Bithomp Pro:{' '}
             <Mailto email="inquiries@bithomp.com" headers={{ subject: 'Bithomp usage question' }} />
           </Trans>
+          <br />
+          <Trans
+            ns="customer-support"
+            i18nKey="discord-contact"
+            components={{
+              discord: <a href="https://discord.gg/ZahGJ29WEs" target="_blank" rel="noreferrer" />
+            }}
+          />
         </p>
 
         <h3>{t('submit-info', { ns: 'customer-support' })}</h3>

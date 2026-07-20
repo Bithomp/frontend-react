@@ -40,6 +40,7 @@
   .dapps-signing-toggle.is-active {
     border-color: var(--accent-link);
     color: var(--accent-link);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-link) 12%, transparent);
   }
 
   .dapps-signing-toggle.is-active .dapps-signing-toggle__state {
@@ -178,6 +179,34 @@
   /* Prevent row-jump */
   .content-cols.is-without-left-filters .table-large.expand {
     width: 100%;
+  }
+
+  .dapps-data-note {
+    margin: 18px auto 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--unaccent-icon);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .dapps-data-note span {
+    display: block;
+  }
+
+  .dapps-data-note span + span {
+    margin-top: 4px;
+  }
+
+  @media (max-width: 440px) {
+    .dapps-data-note {
+      margin-top: 14px;
+      padding: 10px 12px;
+      text-align: left;
+    }
+
   }
 
   .table-large.expand td,

@@ -77,5 +77,10 @@
       "other": "其他",
       "failed": "失败"
     }
+  },
+  "footer": {
+    "tracking": "希望您的 dApp 被追踪和识别吗？",
+    "discord": "在 Discord 上联系我们",
+    "api": "想自行跟踪数据或在您的项目中展示吗？可通过我们的"
   }
 }
