@@ -315,7 +315,6 @@ export const dappBySourceTag = (sourceTag) => {
     24289778: 'ChatXRP',
     24546893: 'DeXfi',
     25853696: 'Grand Retail Chain (GRAIL)',
-    2606170005: 'XRP Toolbox',
     27116776: 'Crossmark',
     27802770: 'XRPL AI Signals by Liisa',
     28041992: 'Crypto Shop',
@@ -394,7 +393,9 @@ export const dappBySourceTag = (sourceTag) => {
     1160305145: 'Ap0cene',
     1741383633: 'Trust wallet', // timestamp 7 March 2025, 21:40:33 UTC
     2310819306: 'Indicator Success Rate',
-    2323232323: 'Chimoney & Unispend' //23232323236 is invalid tag
+    2323232323: 'Chimoney & Unispend', //23232323236 is invalid tag
+    2606170005: 'XRP Toolbox',
+    2606220006: 'xBoost'
   }
   //max sourceTag is 4294967295, more than that are invalid.
   return dapps[sourceTag] || null

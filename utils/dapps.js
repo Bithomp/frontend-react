@@ -278,6 +278,11 @@ export const DAPPS_META = [
       url: 'xrptoolbox.com',
       wallets: ['xaman'],
       logo: 'xrptoolbox.png'
+    },
+    2606220006: {
+      name: 'xBoost',
+      url: 'xboost.space',
+      logo: 'xboost.png'
     }
   }
 ]
