@@ -7,6 +7,8 @@
   "table": {
     "remarks": "Anmerkungen",
     "immutable": "Unveränderlich",
+    "show-more-remarks": "{{count}} weitere Anmerkungen anzeigen",
+    "hide-remarks": "Weniger Anmerkungen anzeigen",
     "digest": "Digest",
     "attention": "Achtung",
     "attention-texts": {

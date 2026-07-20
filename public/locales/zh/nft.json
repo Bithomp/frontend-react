@@ -7,6 +7,8 @@
   "table": {
     "remarks": "备注",
     "immutable": "不可更改",
+    "show-more-remarks": "再显示 {{count}} 条备注",
+    "hide-remarks": "收起备注",
     "digest": "摘要",
     "attention": "注意",
     "attention-texts": {

@@ -192,6 +192,85 @@ function JsonRemarkValue({ value }) {
   )
 }
 
+function RemarksTable({ remarks }) {
+  const { t } = useTranslation(['common', 'nft'])
+  const [expanded, setExpanded] = useState(false)
+  const combinedRemarks = combineRemarkParts(remarks)
+  const collapsible = combinedRemarks.length > 3
+  const visibleRemarks = collapsible && !expanded ? combinedRemarks.slice(0, 2) : combinedRemarks
+
+  return (
+    <table className="table-details remarks-table">
+      <colgroup>
+        <col className="remarks-name-column" />
+        <col className="remarks-value-column" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th colSpan="2">{t('table.remarks', { ns: 'nft' })}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {visibleRemarks.map((remark, index) => {
+          const value = remarkValue(remark.value)
+          const href = remarkLink(value.display)
+          const json = typeof value.display === 'string' && isValidJson(value.display)
+          return (
+            <tr key={`${remark.name || 'remark'}-${index}`}>
+              <td className="brake">
+                {remark.name || t('table.text.unspecified')}
+                {remark.flags?.immutable && (
+                  <>
+                    <br />
+                    <span className="grey">{t('table.immutable', { ns: 'nft' })}</span>
+                  </>
+                )}
+              </td>
+              <td className="brake">
+                {value.image ? (
+                  <div className="remark-image-preview">
+                    <img src={value.image} alt={remark.name || 'Remark'} />
+                    <div className="remark-image-caption">
+                      <span className="grey">{value.display}</span>
+                      <CopyButton text={String(value.copy)} />
+                    </div>
+                  </div>
+                ) : json ? (
+                  <JsonRemarkValue value={value.display} />
+                ) : href ? (
+                  <a href={href} target="_blank" rel="noreferrer">
+                    {value.display}
+                  </a>
+                ) : (
+                  <span className={value.binary ? 'grey' : ''}>{String(value.display ?? '')}</span>
+                )}{' '}
+                {!json && !value.image && value.copy != null && <CopyButton text={String(value.copy)} />}
+              </td>
+            </tr>
+          )
+        })}
+        {collapsible && (
+          <tr className="remarks-toggle-row">
+            <td colSpan="2">
+              <button type="button" className="link remarks-toggle" onClick={() => setExpanded(!expanded)}>
+                {expanded
+                  ? t('table.hide-remarks', { ns: 'nft' })
+                  : t('table.show-more-remarks', { ns: 'nft', count: combinedRemarks.length - 2 })}
+              </button>
+            </td>
+          </tr>
+        )}
+        <tr>
+          <td>{t('table.raw-data')}</td>
+          <td>
+            <JsonRemarkValue value={JSON.stringify(remarks)} />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
 // Show more/less for long descriptions
 function DescriptionWithShowMore({ text, maxLength = 400 }) {
   const [expanded, setExpanded] = useState(false)
@@ -1472,67 +1551,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           <div className={'slide ' + (showRawMetadata ? 'opened' : 'closed')}>
                             {showRawMetadata && codeHighlight(data.metadata)}
                           </div>
-                          {xahauNetwork && data.remarks?.length > 0 && (
-                            <table className="table-details remarks-table">
-                              <colgroup>
-                                <col className="remarks-name-column" />
-                                <col className="remarks-value-column" />
-                              </colgroup>
-                              <thead>
-                                <tr>
-                                  <th colSpan="2">{t('table.remarks', { ns: 'nft' })}</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {combineRemarkParts(data.remarks).map((remark, index) => {
-                                  const value = remarkValue(remark.value)
-                                  const href = remarkLink(value.display)
-                                  const json = typeof value.display === 'string' && isValidJson(value.display)
-                                  return (
-                                    <tr key={`${remark.name || 'remark'}-${index}`}>
-                                      <td className="brake">
-                                        {remark.name || t('table.text.unspecified')}
-                                        {remark.flags?.immutable && (
-                                          <>
-                                            <br />
-                                            <span className="grey">{t('table.immutable', { ns: 'nft' })}</span>
-                                          </>
-                                        )}
-                                      </td>
-                                      <td className="brake">
-                                        {value.image ? (
-                                          <div className="remark-image-preview">
-                                            <img src={value.image} alt={remark.name || 'Remark'} />
-                                            <div className="remark-image-caption">
-                                              <span className="grey">{value.display}</span>
-                                              <CopyButton text={String(value.copy)} />
-                                            </div>
-                                          </div>
-                                        ) : json ? (
-                                          <JsonRemarkValue value={value.display} />
-                                        ) : href ? (
-                                          <a href={href} target="_blank" rel="noreferrer">
-                                            {value.display}
-                                          </a>
-                                        ) : (
-                                          <span className={value.binary ? 'grey' : ''}>{String(value.display ?? '')}</span>
-                                        )}{' '}
-                                        {!json && !value.image && value.copy != null && (
-                                          <CopyButton text={String(value.copy)} />
-                                        )}
-                                      </td>
-                                    </tr>
-                                  )
-                                })}
-                                <tr>
-                                  <td>{t('table.raw-data')}</td>
-                                  <td>
-                                    <JsonRemarkValue value={JSON.stringify(data.remarks)} />
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          )}
+                          {xahauNetwork && data.remarks?.length > 0 && <RemarksTable remarks={data.remarks} />}
                           {data.collectionDetails && (
                             <table className="table-details">
                               <thead>

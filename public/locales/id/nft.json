@@ -7,6 +7,8 @@
   "table": {
     "remarks": "Catatan",
     "immutable": "Tidak dapat diubah",
+    "show-more-remarks": "Tampilkan {{count}} catatan lainnya",
+    "hide-remarks": "Tampilkan lebih sedikit catatan",
     "digest": "Digest",
     "attention": "Perhatian",
     "attention-texts": {

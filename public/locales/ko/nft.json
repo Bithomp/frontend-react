@@ -7,6 +7,8 @@
   "table": {
     "remarks": "비고",
     "immutable": "변경 불가",
+    "show-more-remarks": "비고 {{count}}개 더 보기",
+    "hide-remarks": "비고 접기",
     "digest": "다이제스트",
     "attention": "주의",
     "attention-texts": {

@@ -7,6 +7,8 @@
   "table": {
     "remarks": "備考",
     "immutable": "変更不可",
+    "show-more-remarks": "残り{{count}}件の備考を表示",
+    "hide-remarks": "備考を折りたたむ",
     "digest": "ダイジェスト",
     "attention": "注意",
     "attention-texts": {

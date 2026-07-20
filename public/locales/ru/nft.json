@@ -7,6 +7,8 @@
   "table": {
     "remarks": "Примечания",
     "immutable": "Неизменяемое",
+    "show-more-remarks": "Показать остальные примечания ({{count}})",
+    "hide-remarks": "Скрыть дополнительные примечания",
     "digest": "Дайджест",
     "attention": "Внимание",
     "attention-texts": {

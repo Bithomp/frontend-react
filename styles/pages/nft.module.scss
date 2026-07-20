@@ -98,6 +98,18 @@
       .remark-json-code {
         margin-top: 8px;
       }
+      .remarks-toggle-row td {
+        padding: 8px;
+        text-align: center;
+      }
+      .remarks-toggle {
+        appearance: none;
+        border: 0;
+        padding: 2px 8px;
+        background: transparent;
+        font: inherit;
+        cursor: pointer;
+      }
     }
   }
   .offer-history-filter-select {

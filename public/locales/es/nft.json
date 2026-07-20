@@ -7,6 +7,8 @@
   "table": {
     "remarks": "Observaciones",
     "immutable": "Inmutable",
+    "show-more-remarks": "Mostrar {{count}} observaciones más",
+    "hide-remarks": "Mostrar menos observaciones",
     "digest": "Resumen (Digest)",
     "attention": "Atención",
     "attention-texts": {
