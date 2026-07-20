@@ -283,6 +283,12 @@ export const DAPPS_META = [
       name: 'xBoost',
       url: 'xboost.space',
       logo: 'xboost.png'
+    },
+    161803: {
+      name: 'XRPL.to',
+      url: 'xrpl.to',
+      x: 'xrplto',
+      logo: 'xrplto.png'
     }
   }
 ]
