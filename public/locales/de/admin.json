@@ -453,6 +453,7 @@
     "alerts-plan": "{{plan}}-Warnungsplan",
     "channel-type": {
       "email": "E-Mail",
+      "telegram": "Telegram",
       "slack_webhook": "Slack",
       "discord_webhook": "Discord",
       "twitter_api": "X / Twitter"
@@ -463,6 +464,7 @@
     "channel-name-help": "Ein privater Name zur Erkennung dieses Kanals.",
     "channel-name-placeholder-by-type": {
       "email": "E-Mail für Alerts",
+      "telegram": "Telegram-Benachrichtigungen",
       "slack_webhook": "Haupt-Slack-Kanal",
       "discord_webhook": "Discord-Alert-Kanal",
       "twitter_api": "X-Alert-Konto"
@@ -546,6 +548,7 @@
       "show-executions": "Hinrichtungen zeigen"
     },
     "fields": {
+      "chat_id": "Telegram-Chat-ID",
       "webhook": "Webhook URL",
       "username": "Bot-Benutzername",
       "email": "E-Mail-Adresse",
@@ -559,6 +562,7 @@
       "access-token": "Zugriffstoken"
     },
     "field-help": {
+      "chat_id": "Wird nach dem Verbinden mit BithompBot automatisch ausgefüllt.",
       "webhook": "Eingehendwebhook URL.",
       "username": "Vom Bot angezeigter Name.",
       "email": "Adresse, die Benachrichtigungen erhalten soll.",
@@ -568,6 +572,7 @@
       "access_token_secret": "Zusammen mit dem Access Token generieren und privat halten."
     },
     "field-placeholder": {
+      "chat_id": "Zuerst Telegram verbinden",
       "webhook": "https://hooks.example.com/...",
       "username": "Bithomp Bot",
       "email": "name@example.com",
@@ -577,6 +582,11 @@
       "access_token_secret": "Access Token Secret aus X"
     },
     "guides": {
+      "telegram": {
+        "title": "Telegram",
+        "description": "Verbinde einen privaten Chat mit BithompBot und nutze ihn für Benachrichtigungen.",
+        "steps": ["Verbindungscode erstellen", "BithompBot öffnen und privaten Chat starten", "Verbindung prüfen"]
+      },
       "email": {
         "title": "E-Mail",
         "description": "Verwenden Sie das Postfach, das {{explorerName}} Benachrichtigungen empfangen soll.",
@@ -616,6 +626,9 @@
         ],
         "portal-link": "X Dev Console öffnen"
       }
+    },
+    "telegram": {
+      "create-token": "Telegram verbinden", "connecting": "Code wird erstellt...", "code": "Verbindungscode", "open-bot": "BithompBot öffnen", "check-connection": "Verbindung prüfen", "checking": "Wird geprüft...", "connected": "Telegram wurde erfolgreich verbunden.", "connected-id": "Verbundener Telegram-Chat: {{chatId}}", "not-connected": "Telegram ist noch nicht verbunden. Starte den Bot mit dem Code und prüfe erneut.", "connection-error": "Telegram konnte nicht verbunden werden. Bitte erneut versuchen."
     },
     "destination": {
       "any": "Jedes Ziel",

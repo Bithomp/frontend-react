@@ -199,6 +199,23 @@
       "02": "Mein Tisch"
     }
   },
+  "email-login": {
+    "close": "Schließen",
+    "register": "Registrieren",
+    "or": "oder",
+    "sign-in": "anmelden",
+    "to-get-started": "um loszulegen.",
+    "email-address": "E-Mail-Adresse",
+    "password": "Passwort",
+    "validated": "Bestätigt",
+    "remember-me": "Angemeldet bleiben",
+    "agree-with": "Ich akzeptiere die",
+    "period": ".",
+    "captcha-timeout": "Das Captcha ist abgelaufen. Bitte erneut versuchen.",
+    "check-email": "Prüfen Sie Ihre E-Mails auf ein temporäres Passwort.",
+    "change-email": "E-Mail-Adresse ändern.",
+    "submit": "Weiter"
+  },
   "signin": {
     "connect": "Verbinden",
     "signin": "Einloggen",

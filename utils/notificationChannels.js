@@ -1,5 +1,6 @@
 export const NOTIFICATION_CHANNEL_TYPES = Object.freeze({
   EMAIL: 'email',
+  TELEGRAM: 'telegram',
   SLACK: 'slack_webhook',
   DISCORD: 'discord_webhook',
   TWITTER: 'twitter_api'
@@ -16,6 +17,20 @@ const credentialInputProps = {
 }
 
 export const NOTIFICATION_CHANNELS = {
+  [NOTIFICATION_CHANNEL_TYPES.TELEGRAM]: {
+    label: 'Telegram',
+    fields: [
+      {
+        id: 'chat_id',
+        label: 'Telegram chat ID',
+        placeholder: 'Connect Telegram first',
+        helpText: 'Filled automatically after you connect BithompBot.',
+        inputProps: { readOnly: true },
+        required: true,
+        validate: (value) => /^-?\d+$/.test(value) || 'Connect a valid Telegram chat.'
+      }
+    ]
+  },
   [NOTIFICATION_CHANNEL_TYPES.SLACK]: {
     label: 'Slack',
     fields: [

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'next-i18next'
 
-import { FaDiscord, FaEnvelope, FaSlack } from 'react-icons/fa'
+import { FaDiscord, FaEnvelope, FaSlack, FaTelegramPlane } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { MdDelete, MdEdit } from 'react-icons/md'
 
@@ -12,7 +12,8 @@ const iconMap = {
   [NOTIFICATION_CHANNEL_TYPES.SLACK]: FaSlack,
   [NOTIFICATION_CHANNEL_TYPES.DISCORD]: FaDiscord,
   [NOTIFICATION_CHANNEL_TYPES.TWITTER]: FaXTwitter,
-  [NOTIFICATION_CHANNEL_TYPES.EMAIL]: FaEnvelope
+  [NOTIFICATION_CHANNEL_TYPES.EMAIL]: FaEnvelope,
+  [NOTIFICATION_CHANNEL_TYPES.TELEGRAM]: FaTelegramPlane
 }
 
 const DetailRow = ({ label, value, mono = false }) => (
@@ -44,6 +45,12 @@ const ChannelSpecificDetails = ({ channel, t }) => {
       return (
         <div className="notification-card-details">
           <DetailRow label={t('notifications.fields.email-address')} mono value={channel.settings.email || channel.settings.webhook} />
+        </div>
+      )
+    case NOTIFICATION_CHANNEL_TYPES.TELEGRAM:
+      return (
+        <div className="notification-card-details telegram">
+          <DetailRow label={t('notifications.fields.chat_id')} mono value={channel.settings.chat_id} />
         </div>
       )
     case NOTIFICATION_CHANNEL_TYPES.TWITTER:

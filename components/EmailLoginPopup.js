@@ -136,7 +136,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
             return
           }
           if (error.response?.data?.error === 'Invalid captcha') {
-            setErrorMessage('Captcha timeout, try again.')
+            setErrorMessage(t('email-login.captcha-timeout'))
           } else if (error && error.message !== 'canceled') {
             setErrorMessage(t(error.response.data.error || 'error.' + error.message))
           }
@@ -144,7 +144,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
 
       const data = formData?.data
       if (data?.status === 'success') {
-        setErrorMessage('Check your email for a temporary password.')
+        setErrorMessage(t('email-login.check-email'))
         setStep(1)
       }
     } else {
@@ -187,13 +187,19 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
   return (
     <div className="sign-in-form">
       <div className={`sign-in-body center loginform ${emailLoginPopup}`}>
-        <button type="button" className="email-login-close-button" onClick={handleClose} aria-label="Close" />
+        <button
+          type="button"
+          className="email-login-close-button"
+          onClick={handleClose}
+          aria-label={t('email-login.close')}
+        />
 
         <div className="email-login-header">Bithomp Pro</div>
 
         {step === 0 && (
           <p className="email-login-subtitle">
-            <b>Register</b> or <b>Sign In</b> to get started.
+            <b>{t('email-login.register')}</b> {t('email-login.or')} <b>{t('email-login.sign-in')}</b>{' '}
+            {t('email-login.to-get-started')}
           </p>
         )}
 
@@ -202,7 +208,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
             <div className="email-login-input-validation">
               <input
                 name="email"
-                placeholder="Email address"
+                placeholder={t('email-login.email-address')}
                 value={email}
                 onChange={onEmailChange}
                 className="input-text email-login-input"
@@ -213,7 +219,9 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
                 disabled={step !== 0}
                 autoFocus={step === 0}
               />
-              {isEmailValid(email) && <img src={checkmark} className="email-login-validation-icon" alt="validated" />}
+              {isEmailValid(email) && (
+                <img src={checkmark} className="email-login-validation-icon" alt={t('email-login.validated')} />
+              )}
             </div>
           )}
 
@@ -221,7 +229,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
             <>
               <div className="email-login-input-validation">
                 <input
-                  placeholder="Password"
+                  placeholder={t('email-login.password')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="input-text email-login-input"
@@ -230,7 +238,9 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
                   }}
                   spellCheck="false"
                 />
-                {password?.length > 8 && <img src={checkmark} className="email-login-validation-icon" alt="validated" />}
+                {password?.length > 8 && (
+                  <img src={checkmark} className="email-login-validation-icon" alt={t('email-login.validated')} />
+                )}
               </div>
             </>
           )}
@@ -255,14 +265,14 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
               </div>
               <div className="email-login-options">
                 <CheckBox checked={rememberMe} setChecked={setRememberMe}>
-                  Remember me
+                  {t('email-login.remember-me')}
                 </CheckBox>
                 <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
-                  I agree with the{' '}
+                  {t('email-login.agree-with')}{' '}
                   <Link href="/terms-and-conditions" onClick={handleClose}>
                     {t('menu.terms-and-conditions')}
                   </Link>
-                  .
+                  {t('email-login.period')}
                 </CheckBox>
               </div>
             </>
@@ -275,7 +285,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
             {step === 1 && (
               <>
                 <span className="link" onClick={() => setStep(0)}>
-                  Change email.
+                  {t('email-login.change-email')}
                 </span>
               </>
             )}
@@ -291,7 +301,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
               onClick={onLogin}
               disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
             >
-              Submit
+              {t('email-login.submit')}
             </button>
           </div>
         )}

@@ -453,6 +453,7 @@
     "alerts-plan": "{{plan}}경고 계획",
     "channel-type": {
       "email": "이메일",
+      "telegram": "Telegram",
       "slack_webhook": "Slack",
       "discord_webhook": "Discord",
       "twitter_api": "X / Twitter"
@@ -463,6 +464,7 @@
     "channel-name-help": "이 채널을 인식하기 위한 비공개 이름입니다.",
     "channel-name-placeholder-by-type": {
       "email": "알림 이메일",
+      "telegram": "Telegram 알림",
       "slack_webhook": "메인 Slack 채널",
       "discord_webhook": "Discord 알림 채널",
       "twitter_api": "X 알림 계정"
@@ -546,6 +548,7 @@
       "show-executions": "실행 표시"
     },
     "fields": {
+      "chat_id": "Telegram 채팅 ID",
       "webhook": "Webhook URL",
       "username": "봇 사용자 이름",
       "email": "이메일 주소",
@@ -559,6 +562,7 @@
       "access-token": "액세스 토큰"
     },
     "field-help": {
+      "chat_id": "BithompBot 연결 후 자동으로 입력됩니다.",
       "webhook": "수신 Webhook URL.",
       "username": "봇이 표시하는 이름입니다.",
       "email": "알림을 받아야 하는 주소입니다.",
@@ -568,6 +572,7 @@
       "access_token_secret": "Access Token과 함께 생성하고 비공개로 보관하세요."
     },
     "field-placeholder": {
+      "chat_id": "먼저 Telegram을 연결하세요",
       "webhook": "https://hooks.example.com/...",
       "username": "빗썸 봇",
       "email": "이름@example.com",
@@ -577,6 +582,9 @@
       "access_token_secret": "X의 Access Token Secret"
     },
     "guides": {
+      "telegram": {
+        "title": "Telegram", "description": "BithompBot과 비공개 채팅을 연결하여 알림을 받으세요.", "steps": ["연결 코드 만들기", "BithompBot을 열고 비공개 채팅 시작", "연결 확인"]
+      },
       "email": {
         "title": "이메일",
         "description": "{{explorerName}}경고를 수신해야 하는 사서함을 사용합니다.",
@@ -616,6 +624,9 @@
         ],
         "portal-link": "X Dev Console 열기"
       }
+    },
+    "telegram": {
+      "create-token": "Telegram 연결", "connecting": "코드 생성 중...", "code": "연결 코드", "open-bot": "BithompBot 열기", "check-connection": "연결 확인", "checking": "확인 중...", "connected": "Telegram이 연결되었습니다.", "connected-id": "연결된 Telegram 채팅: {{chatId}}", "not-connected": "Telegram이 아직 연결되지 않았습니다. 코드로 Bot을 시작한 후 다시 확인하세요.", "connection-error": "Telegram을 연결할 수 없습니다. 다시 시도하세요."
     },
     "destination": {
       "any": "모든 목적지",

@@ -453,6 +453,7 @@
     "alerts-plan": "{{plan}}アラート プラン",
     "channel-type": {
       "email": "電子メール",
+      "telegram": "Telegram",
       "slack_webhook": "Slack",
       "discord_webhook": "Discord",
       "twitter_api": "X / Twitter"
@@ -463,6 +464,7 @@
     "channel-name-help": "このチャネルを認識するためのプライベート名。",
     "channel-name-placeholder-by-type": {
       "email": "アラート用メール",
+      "telegram": "Telegramアラート",
       "slack_webhook": "メインの Slack チャンネル",
       "discord_webhook": "Discord アラートチャンネル",
       "twitter_api": "X アラートアカウント"
@@ -546,6 +548,7 @@
       "show-executions": "処刑を表示する"
     },
     "fields": {
+      "chat_id": "TelegramチャットID",
       "webhook": "Webhook URL",
       "username": "ボットのユーザー名",
       "email": "電子メールアドレス",
@@ -559,6 +562,7 @@
       "access-token": "アクセストークン"
     },
     "field-help": {
+      "chat_id": "BithompBotへの接続後に自動入力されます。",
       "webhook": "受信用 Webhook URL。",
       "username": "ボットによって表示される名前。",
       "email": "アラートを受信するアドレス。",
@@ -568,6 +572,7 @@
       "access_token_secret": "Access Token と一緒に生成し、非公開で保管してください。"
     },
     "field-placeholder": {
+      "chat_id": "先にTelegramを接続してください",
       "webhook": "https://hooks.example.com/...",
       "username": "ビトンプボット",
       "email": "名前@example.com",
@@ -577,6 +582,9 @@
       "access_token_secret": "X の Access Token Secret"
     },
     "guides": {
+      "telegram": {
+        "title": "Telegram", "description": "BithompBotとのプライベートチャットを接続してアラートを受信します。", "steps": ["接続コードを作成", "BithompBotを開いてプライベートチャットを開始", "接続を確認"]
+      },
       "email": {
         "title": "電子メール",
         "description": "{{explorerName}}アラートを受信するメールボックスを使用します。",
@@ -616,6 +624,9 @@
         ],
         "portal-link": "X Dev Console を開く"
       }
+    },
+    "telegram": {
+      "create-token": "Telegramを接続", "connecting": "コードを作成中...", "code": "接続コード", "open-bot": "BithompBotを開く", "check-connection": "接続を確認", "checking": "確認中...", "connected": "Telegramに接続しました。", "connected-id": "接続済みTelegramチャット: {{chatId}}", "not-connected": "Telegramはまだ接続されていません。コードでBotを開始して再確認してください。", "connection-error": "Telegramに接続できませんでした。もう一度お試しください。"
     },
     "destination": {
       "any": "任意の目的地",

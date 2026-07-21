@@ -199,6 +199,23 @@
       "02": "L2 - Meja saya"
     }
   },
+  "email-login": {
+    "close": "Tutup",
+    "register": "Daftar",
+    "or": "atau",
+    "sign-in": "masuk",
+    "to-get-started": "untuk memulai.",
+    "email-address": "Alamat email",
+    "password": "Kata sandi",
+    "validated": "Tervalidasi",
+    "remember-me": "Ingat saya",
+    "agree-with": "Saya menyetujui",
+    "period": ".",
+    "captcha-timeout": "Captcha telah kedaluwarsa. Silakan coba lagi.",
+    "check-email": "Periksa email Anda untuk kata sandi sementara.",
+    "change-email": "Ubah alamat email.",
+    "submit": "Lanjutkan"
+  },
   "signin": {
     "connect": "Hubungkan",
     "signin": "Masuk",

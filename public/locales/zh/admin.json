@@ -453,6 +453,7 @@
     "alerts-plan": "{{plan}} 提醒套餐",
     "channel-type": {
       "email": "e-mail",
+      "telegram": "Telegram",
       "slack_webhook": "Slack",
       "discord_webhook": "Discord",
       "twitter_api": "X / Twitter"
@@ -463,6 +464,7 @@
     "channel-name-help": "用于识别此频道的私密名称。",
     "channel-name-placeholder-by-type": {
       "email": "提醒邮箱",
+      "telegram": "Telegram 提醒",
       "slack_webhook": "主 Slack 频道",
       "discord_webhook": "Discord 提醒频道",
       "twitter_api": "X 提醒账号"
@@ -546,6 +548,7 @@
       "show-executions": "显示执行记录"
     },
     "fields": {
+      "chat_id": "Telegram 聊天 ID",
       "webhook": "Webhook 地址",
       "username": "机器人用户名",
       "email": "Email 地址",
@@ -559,6 +562,7 @@
       "access-token": "访问令牌"
     },
     "field-help": {
+      "chat_id": "连接 BithompBot 后自动填写。",
       "webhook": "传入 Webhook 地址。",
       "username": "机器人显示的名称。",
       "email": "接收提醒的地址。",
@@ -568,6 +572,7 @@
       "access_token_secret": "与访问令牌一起生成，并妥善保密。"
     },
     "field-placeholder": {
+      "chat_id": "请先连接 Telegram",
       "webhook": "https://hooks.example.com/...",
       "username": "Bithomp Bot",
       "email": "name@example.com",
@@ -577,6 +582,9 @@
       "access_token_secret": "来自 X 的访问令牌密文"
     },
     "guides": {
+      "telegram": {
+        "title": "Telegram", "description": "连接与 BithompBot 的私聊以接收提醒。", "steps": ["创建连接代码", "打开 BithompBot 并开始私聊", "检查连接"]
+      },
       "email": {
         "title": "Email",
         "description": "使用接收 {{explorerName}} 提醒的邮箱。",
@@ -616,6 +624,9 @@
         ],
         "portal-link": "打开 X Dev Console"
       }
+    },
+    "telegram": {
+      "create-token": "连接 Telegram", "connecting": "正在创建代码...", "code": "连接代码", "open-bot": "打开 BithompBot", "check-connection": "检查连接", "checking": "正在检查...", "connected": "Telegram 已成功连接。", "connected-id": "已连接的 Telegram 聊天：{{chatId}}", "not-connected": "Telegram 尚未连接。请使用代码启动机器人，然后再次检查。", "connection-error": "无法连接 Telegram，请重试。"
     },
     "destination": {
       "any": "任意目标",

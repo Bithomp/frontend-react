@@ -453,6 +453,7 @@
     "alerts-plan": "{{plan}} alerts plan",
     "channel-type": {
       "email": "Email",
+      "telegram": "Telegram",
       "slack_webhook": "Slack",
       "discord_webhook": "Discord",
       "twitter_api": "X / Twitter"
@@ -463,6 +464,7 @@
     "channel-name-help": "A private name to recognize this channel.",
     "channel-name-placeholder-by-type": {
       "email": "Alerts email",
+      "telegram": "Telegram alerts",
       "slack_webhook": "Main Slack channel",
       "discord_webhook": "Discord alerts channel",
       "twitter_api": "X alerts account"
@@ -549,6 +551,7 @@
       "webhook": "Webhook URL",
       "username": "Bot username",
       "email": "Email address",
+      "chat_id": "Telegram chat ID",
       "consumer_key": "API Key (Consumer Key)",
       "consumer_secret": "API Key Secret (Consumer Key Secret)",
       "access_token_key": "Access Token",
@@ -562,6 +565,7 @@
       "webhook": "Incoming webhook URL.",
       "username": "Name shown by the bot.",
       "email": "Address that should receive alerts.",
+      "chat_id": "Filled automatically after you connect BithompBot.",
       "consumer_key": "Shown in X as Consumer Key.",
       "consumer_secret": "Shown in X as Consumer Key Secret and displayed once together with Consumer Key.",
       "access_token_key": "Generate this after the app has Read and write permissions.",
@@ -571,6 +575,7 @@
       "webhook": "https://hooks.example.com/...",
       "username": "Bithomp Bot",
       "email": "name@example.com",
+      "chat_id": "Connect Telegram first",
       "consumer_key": "Consumer Key from X",
       "consumer_secret": "Consumer Key Secret from X",
       "access_token_key": "Access Token from X",
@@ -582,6 +587,15 @@
         "description": "Use the mailbox that should receive {{explorerName}} alerts.",
         "steps": [
 
+        ]
+      },
+      "telegram": {
+        "title": "Telegram",
+        "description": "Connect a private chat with BithompBot, then use it for alerts.",
+        "steps": [
+          "Create a connection code",
+          "Open BithompBot and start the private chat",
+          "Check the connection"
         ]
       },
       "discord_webhook": {
@@ -616,6 +630,18 @@
         ],
         "portal-link": "Open X Dev Console"
       }
+    },
+    "telegram": {
+      "create-token": "Connect Telegram",
+      "connecting": "Creating code...",
+      "code": "Connection code",
+      "open-bot": "Open BithompBot",
+      "check-connection": "Check connection",
+      "checking": "Checking...",
+      "connected": "Telegram connected successfully.",
+      "connected-id": "Connected Telegram chat: {{chatId}}",
+      "not-connected": "Telegram is not connected yet. Start the bot with the code, then check again.",
+      "connection-error": "Could not connect Telegram. Please try again."
     },
     "destination": {
       "any": "Any destination",

@@ -199,6 +199,23 @@
       "02": "L2 - 我的桌子"
     }
   },
+  "email-login": {
+    "close": "关闭",
+    "register": "注册",
+    "or": "或",
+    "sign-in": "登录",
+    "to-get-started": "以开始使用。",
+    "email-address": "电子邮箱地址",
+    "password": "密码",
+    "validated": "已验证",
+    "remember-me": "记住我",
+    "agree-with": "我同意",
+    "period": "。",
+    "captcha-timeout": "验证码已过期，请重试。",
+    "check-email": "请检查电子邮件以获取临时密码。",
+    "change-email": "更改电子邮箱地址。",
+    "submit": "继续"
+  },
   "signin": {
     "connect": "连接",
     "signin": "登录",

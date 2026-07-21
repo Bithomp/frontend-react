@@ -199,6 +199,23 @@
       "02": "私のテーブル"
     }
   },
+  "email-login": {
+    "close": "閉じる",
+    "register": "登録",
+    "or": "または",
+    "sign-in": "ログイン",
+    "to-get-started": "して始めましょう。",
+    "email-address": "メールアドレス",
+    "password": "パスワード",
+    "validated": "確認済み",
+    "remember-me": "ログイン状態を保持する",
+    "agree-with": "次の規約に同意します:",
+    "period": "。",
+    "captcha-timeout": "Captcha の有効期限が切れました。もう一度お試しください。",
+    "check-email": "一時パスワードをメールで確認してください。",
+    "change-email": "メールアドレスを変更する。",
+    "submit": "続行"
+  },
   "signin": {
     "connect": "接続",
     "signin": "サインイン",

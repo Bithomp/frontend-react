@@ -354,7 +354,7 @@
 
   .notification-channel-type-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 10px;
   }
 
@@ -415,6 +415,13 @@
       grid-template-columns: 1fr;
     }
 
+    &.telegram {
+      grid-template-columns: minmax(220px, 0.8fr) minmax(420px, 1.2fr);
+      align-items: center;
+      gap: 24px;
+      padding: 16px 18px;
+    }
+
     > div {
       min-width: 0;
     }
@@ -453,6 +460,75 @@
       color: var(--accent-link);
       font-size: 13px;
       font-weight: 700;
+    }
+  }
+
+  .notification-telegram-connect {
+    display: grid;
+    gap: 10px;
+
+    .button-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 0;
+      min-height: 38px;
+    }
+  }
+
+  .notification-telegram-setup {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(190px, auto);
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .notification-telegram-code {
+    display: grid;
+    grid-template-columns: auto minmax(150px, 1fr);
+    align-items: center;
+    gap: 4px 14px;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, var(--accent-link) 22%, var(--button-additional));
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--background-main) 72%, transparent);
+
+    > span {
+      grid-column: 1 / -1;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    > strong {
+      margin: 0;
+      color: var(--accent-link);
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0.1em;
+    }
+
+    > code {
+      min-width: 0;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      font-size: 14px;
+      text-align: center;
+      white-space: nowrap;
+    }
+  }
+
+  .notification-telegram-actions {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 8px;
+
+    .button-action {
+      width: 100%;
     }
   }
 
@@ -762,6 +838,10 @@
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 16px;
+
+    > .button-action {
+      width: 190px;
+    }
   }
 
   .notification-card-grid {
@@ -948,6 +1028,10 @@
 
     span {
       overflow-wrap: anywhere;
+    }
+
+    &.telegram .notification-card-detail-row {
+      grid-template-columns: minmax(160px, 0.45fr) minmax(0, 0.55fr);
     }
   }
 
@@ -1380,6 +1464,38 @@
       }
     }
 
+    .notification-selected-guide.telegram {
+      grid-template-columns: 1fr;
+      align-items: stretch;
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .notification-telegram-setup {
+      grid-template-columns: 1fr;
+    }
+
+    .notification-telegram-code {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .notification-form-actions > .button-action {
+      width: 100%;
+    }
+
+    .notification-card-details.telegram .notification-card-detail-row,
+    .notification-card-detail-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+
+      strong {
+        overflow: visible;
+        overflow-wrap: anywhere;
+        text-overflow: clip;
+        white-space: normal;
+      }
+    }
+
     .notification-rule-filter-chip {
       display: grid;
       grid-template-columns: 1fr;
@@ -1423,6 +1539,12 @@
     .notification-channel-type-grid,
     .notification-rule-event-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .notification-selected-guide.telegram {
+      grid-template-columns: 1fr;
+      align-items: stretch;
+      gap: 14px;
     }
   }
 }

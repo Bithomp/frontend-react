@@ -199,6 +199,23 @@
       "02": "L2 - 내 테이블"
     }
   },
+  "email-login": {
+    "close": "닫기",
+    "register": "가입",
+    "or": "또는",
+    "sign-in": "로그인",
+    "to-get-started": "하여 시작하세요.",
+    "email-address": "이메일 주소",
+    "password": "비밀번호",
+    "validated": "확인됨",
+    "remember-me": "로그인 상태 유지",
+    "agree-with": "다음에 동의합니다:",
+    "period": ".",
+    "captcha-timeout": "Captcha가 만료되었습니다. 다시 시도해 주세요.",
+    "check-email": "이메일에서 임시 비밀번호를 확인하세요.",
+    "change-email": "이메일 주소 변경.",
+    "submit": "계속"
+  },
   "signin": {
     "connect": "연결",
     "signin": "로그인",

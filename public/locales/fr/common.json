@@ -199,6 +199,23 @@
       "02": "L2 - Ma table"
     }
   },
+  "email-login": {
+    "close": "Fermer",
+    "register": "Inscrivez-vous",
+    "or": "ou",
+    "sign-in": "connectez-vous",
+    "to-get-started": "pour commencer.",
+    "email-address": "Adresse e-mail",
+    "password": "Mot de passe",
+    "validated": "Validé",
+    "remember-me": "Se souvenir de moi",
+    "agree-with": "J’accepte les",
+    "period": ".",
+    "captcha-timeout": "Le captcha a expiré. Veuillez réessayer.",
+    "check-email": "Consultez votre messagerie pour obtenir un mot de passe temporaire.",
+    "change-email": "Modifier l’adresse e-mail.",
+    "submit": "Continuer"
+  },
   "signin": {
     "connect": "Se connecter",
     "signin": "Se connecter",

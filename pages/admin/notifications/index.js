@@ -3,7 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import Select from 'react-select'
-import { FaDiscord, FaEnvelope, FaSlack } from 'react-icons/fa'
+import { FaDiscord, FaEnvelope, FaSlack, FaTelegramPlane } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { MdHistory, MdNotificationsActive, MdOutlineRule, MdWarningAmber, MdWebhook } from 'react-icons/md'
 
@@ -274,6 +274,13 @@ const setupGuides = [
     description: `Use the mailbox that should receive ${explorerName} alerts.`,
     steps: [],
     fromEmail: `noreply@${webSiteName}`
+  },
+  {
+    type: NOTIFICATION_CHANNEL_TYPES.TELEGRAM,
+    icon: FaTelegramPlane,
+    title: 'Telegram',
+    description: 'Connect a private chat with BithompBot, then use it for alerts.',
+    steps: ['Create a connection code', 'Open BithompBot and start the private chat', 'Check the connection']
   },
   {
     type: NOTIFICATION_CHANNEL_TYPES.DISCORD,
@@ -572,6 +579,10 @@ export default function Notifications({
   const [notificationPackages, setNotificationPackages] = useState([])
   const [loadingNotificationPrerequisites, setLoadingNotificationPrerequisites] = useState(false)
   const [notificationPrerequisitesLoaded, setNotificationPrerequisitesLoaded] = useState(false)
+  const [telegramChatId, setTelegramChatId] = useState('')
+  const [telegramVerification, setTelegramVerification] = useState(null)
+  const [telegramLoading, setTelegramLoading] = useState(false)
+  const [telegramMessage, setTelegramMessage] = useState('')
 
   const selectedChannel = useMemo(() => NOTIFICATION_CHANNELS[channelType], [channelType])
   const selectedChannelFields = selectedChannel?.fields || []
@@ -626,8 +637,12 @@ export default function Notifications({
     const loadNotificationPrerequisites = async () => {
       setLoadingNotificationPrerequisites(true)
       try {
-        const packagesResponse = await axiosAdmin.get('partner/packages').catch(() => null)
+        const [packagesResponse, userResponse] = await Promise.all([
+          axiosAdmin.get('partner/packages').catch(() => null),
+          axiosAdmin.get('user').catch(() => null)
+        ])
         setNotificationPackages(Array.isArray(packagesResponse?.data?.packages) ? packagesResponse.data.packages : [])
+        setTelegramChatId(String(userResponse?.data?.telegram_chat_id || ''))
       } finally {
         setNotificationPrerequisitesLoaded(true)
         setLoadingNotificationPrerequisites(false)
@@ -636,6 +651,11 @@ export default function Notifications({
 
     loadNotificationPrerequisites()
   }, [sessionToken])
+
+  useEffect(() => {
+    if (channelType !== NOTIFICATION_CHANNEL_TYPES.TELEGRAM || editingChannel || !telegramChatId) return
+    setFormData((previous) => ({ ...previous, chat_id: telegramChatId }))
+  }, [channelType, editingChannel, telegramChatId])
 
   const openAddChannel = (type = NOTIFICATION_CHANNEL_TYPES.EMAIL) => {
     if (notificationLimitsReady && channelLimitReached) {
@@ -656,7 +676,7 @@ export default function Notifications({
     const channelConfig = NOTIFICATION_CHANNELS[nextType]
     const nextForm = { name: channel.name || '' }
     channelConfig?.fields?.forEach((field) => {
-      nextForm[field.id] = channel.settings?.[field.id] || ''
+      nextForm[field.id] = String(channel.settings?.[field.id] ?? '')
     })
     setEditingChannel(channel)
     setChannelType(nextType)
@@ -762,9 +782,51 @@ export default function Notifications({
 
   const handleTypeChange = (type) => {
     setChannelType(type)
-    setFormData({ name: formData.name || '' })
+    setFormData({
+      name: formData.name || '',
+      ...(type === NOTIFICATION_CHANNEL_TYPES.TELEGRAM && telegramChatId ? { chat_id: telegramChatId } : {})
+    })
     setFormErrors({})
     setFormMessage('')
+    setTelegramMessage('')
+  }
+
+  const createTelegramVerification = async () => {
+    setTelegramLoading(true)
+    setTelegramMessage('')
+    try {
+      const response = await axiosAdmin.post('user/telegram')
+      const verification = response?.data || {}
+      setTelegramVerification({
+        verifyToken: String(verification.verifyToken || ''),
+        connectUrl: /^https:\/\/t\.me\//i.test(verification.connectUrl || '') ? verification.connectUrl : ''
+      })
+    } catch (error) {
+      setTelegramMessage(errorText(error, t('notifications.telegram.connection-error'), t))
+    } finally {
+      setTelegramLoading(false)
+    }
+  }
+
+  const checkTelegramConnection = async () => {
+    setTelegramLoading(true)
+    setTelegramMessage('')
+    try {
+      const response = await axiosAdmin.get('user')
+      const chatId = String(response?.data?.telegram_chat_id || '')
+      setTelegramChatId(chatId)
+      if (chatId) {
+        setFormData((previous) => ({ ...previous, chat_id: chatId }))
+        setFormErrors((previous) => ({ ...previous, chat_id: '' }))
+        setTelegramMessage(t('notifications.telegram.connected'))
+      } else {
+        setTelegramMessage(t('notifications.telegram.not-connected'))
+      }
+    } catch (error) {
+      setTelegramMessage(errorText(error, t('notifications.telegram.connection-error'), t))
+    } finally {
+      setTelegramLoading(false)
+    }
   }
 
   const validateChannelForm = () => {
@@ -1022,7 +1084,7 @@ export default function Notifications({
                 : t('notifications.actions.add-channel')}
           </button>
           {(channels.length > 0 || editingChannel) && (
-            <button className="button-action thin secondary" onClick={closeChannelForm} type="button">
+            <button className="button-action secondary" onClick={closeChannelForm} type="button">
               {t('button.cancel')}
             </button>
           )}
@@ -1058,11 +1120,21 @@ export default function Notifications({
 
   const renderSelectedChannelGuide = ({ showWithoutSteps = false } = {}) => {
     if (!selectedGuide) return null
+    if (
+      selectedGuide.type === NOTIFICATION_CHANNEL_TYPES.TELEGRAM &&
+      (formData.chat_id || telegramChatId)
+    ) {
+      return null
+    }
     const selectedGuideHasSteps = selectedGuide.steps.length > 0
     if (!showWithoutSteps && !selectedGuideHasSteps && !selectedGuide.fromEmail) return null
 
     return (
-      <div className={`notification-selected-guide${selectedGuideHasSteps ? '' : ' no-steps'}`}>
+      <div
+        className={`notification-selected-guide${selectedGuideHasSteps ? '' : ' no-steps'}${
+          selectedGuide.type === NOTIFICATION_CHANNEL_TYPES.TELEGRAM ? ' telegram' : ''
+        }`}
+      >
         <div>
           <strong>{t(`notifications.guides.${selectedGuide.type}.title`, { defaultValue: selectedGuide.title })}</strong>
           <p>
@@ -1082,13 +1154,66 @@ export default function Notifications({
         </div>
         {selectedGuideHasSteps && (
           <div>
-            <ol>
-              {selectedGuide.steps.map((step, index) => (
-                <li key={step}>
-                  {t(`notifications.guides.${selectedGuide.type}.steps.${index}`, { defaultValue: step })}
-                </li>
-              ))}
-            </ol>
+            {selectedGuide.type === NOTIFICATION_CHANNEL_TYPES.TELEGRAM && (
+              <div className="notification-telegram-connect">
+                <>
+                    {!telegramVerification?.verifyToken && (
+                      <button
+                        type="button"
+                        className="button-action thin"
+                        disabled={telegramLoading}
+                        onClick={createTelegramVerification}
+                      >
+                        <FaTelegramPlane aria-hidden="true" />{' '}
+                        {telegramLoading
+                          ? t('notifications.telegram.connecting')
+                          : t('notifications.telegram.create-token')}
+                      </button>
+                    )}
+                    {!!telegramVerification?.verifyToken && (
+                      <div className="notification-telegram-setup">
+                        <div className="notification-telegram-code">
+                          <span>{t('notifications.telegram.code')}</span>
+                          <strong>{telegramVerification.verifyToken}</strong>
+                          <code>/start {telegramVerification.verifyToken}</code>
+                        </div>
+                        <div className="notification-telegram-actions">
+                          {!!telegramVerification.connectUrl && (
+                            <a
+                              href={telegramVerification.connectUrl}
+                              className="button-action thin"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <FaTelegramPlane aria-hidden="true" /> {t('notifications.telegram.open-bot')}
+                            </a>
+                          )}
+                          <button
+                            type="button"
+                            className="button-action thin secondary"
+                            disabled={telegramLoading}
+                            onClick={checkTelegramConnection}
+                          >
+                            {telegramLoading
+                              ? t('notifications.telegram.checking')
+                              : t('notifications.telegram.check-connection')}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                </>
+                {telegramMessage && <p className={telegramChatId ? 'green' : 'orange'}>{telegramMessage}</p>}
+              </div>
+            )}
+            {selectedGuide.type !== NOTIFICATION_CHANNEL_TYPES.TELEGRAM && (
+              <ol>
+                {selectedGuide.steps.map((step, index) => (
+                  <li key={step}>
+                    {t(`notifications.guides.${selectedGuide.type}.steps.${index}`, { defaultValue: step })}
+                  </li>
+                ))}
+              </ol>
+            )}
             {selectedGuide.portalHref && (
               <a
                 href={selectedGuide.portalHref}
@@ -1521,7 +1646,7 @@ export default function Notifications({
                 ? t('notifications.actions.save-rule')
                 : t('notifications.actions.add-rule')}
           </button>
-          <button className="button-action thin secondary" onClick={closeRuleForm} type="button">
+          <button className="button-action secondary" onClick={closeRuleForm} type="button">
             {t('button.cancel')}
           </button>
         </div>

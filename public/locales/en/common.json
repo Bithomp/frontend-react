@@ -199,6 +199,23 @@
       "02": "L2 - My table"
     }
   },
+  "email-login": {
+    "close": "Close",
+    "register": "Register",
+    "or": "or",
+    "sign-in": "Sign in",
+    "to-get-started": "to get started.",
+    "email-address": "Email address",
+    "password": "Password",
+    "validated": "Validated",
+    "remember-me": "Remember me",
+    "agree-with": "I agree with the",
+    "period": ".",
+    "captcha-timeout": "Captcha expired. Please try again.",
+    "check-email": "Check your email for a temporary password.",
+    "change-email": "Change email.",
+    "submit": "Submit"
+  },
   "signin": {
     "connect": "Connect",
     "signin": "Sign in",

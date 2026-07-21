@@ -1005,7 +1005,7 @@
 
     .terms-checkbox {
       text-align: left;
-      width: min(100%, 560px);
+      width: min(calc(100% - 24px), 560px);
       margin: 16px auto 0;
       font-size: 14px;
       line-height: 1.4;

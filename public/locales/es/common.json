@@ -199,6 +199,23 @@
       "02": "L2 - Mi mesa"
     }
   },
+  "email-login": {
+    "close": "Cerrar",
+    "register": "Regístrate",
+    "or": "o",
+    "sign-in": "inicia sesión",
+    "to-get-started": "para comenzar.",
+    "email-address": "Correo electrónico",
+    "password": "Contraseña",
+    "validated": "Validado",
+    "remember-me": "Recordarme",
+    "agree-with": "Acepto los",
+    "period": ".",
+    "captcha-timeout": "El captcha ha caducado. Inténtalo de nuevo.",
+    "check-email": "Revisa tu correo para obtener una contraseña temporal.",
+    "change-email": "Cambiar correo electrónico.",
+    "submit": "Continuar"
+  },
   "signin": {
     "connect": "Conectar",
     "signin": "Conectar",

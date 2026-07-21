@@ -453,6 +453,7 @@
     "alerts-plan": "Paket peringatan {{plan}}",
     "channel-type": {
       "email": "E-mail",
+      "telegram": "Telegram",
       "slack_webhook": "Slack",
       "discord_webhook": "Discord",
       "twitter_api": "X / Twitter"
@@ -463,6 +464,7 @@
     "channel-name-help": "Nama pribadi untuk mengenali saluran ini.",
     "channel-name-placeholder-by-type": {
       "email": "Email peringatan",
+      "telegram": "Peringatan Telegram",
       "slack_webhook": "Saluran Slack utama",
       "discord_webhook": "Kanal peringatan Discord",
       "twitter_api": "Akun X peringatan"
@@ -546,6 +548,7 @@
       "show-executions": "Tampilkan eksekusi"
     },
     "fields": {
+      "chat_id": "ID chat Telegram",
       "webhook": "Webhook URL",
       "username": "Nama pengguna bot",
       "email": "Alamat email",
@@ -559,6 +562,7 @@
       "access-token": "Token akses"
     },
     "field-help": {
+      "chat_id": "Terisi otomatis setelah Anda menghubungkan BithompBot.",
       "webhook": "webhook URLmasuk.",
       "username": "Nama yang ditampilkan oleh bot.",
       "email": "Alamat yang seharusnya menerima peringatan.",
@@ -568,6 +572,7 @@
       "access_token_secret": "Buat bersama Access Token dan simpan secara pribadi."
     },
     "field-placeholder": {
+      "chat_id": "Hubungkan Telegram terlebih dahulu",
       "webhook": "https://hooks.example.com/...",
       "username": "Bot Bithom",
       "email": "nama@contoh.com",
@@ -577,6 +582,9 @@
       "access_token_secret": "Access Token Secret dari X"
     },
     "guides": {
+      "telegram": {
+        "title": "Telegram", "description": "Hubungkan chat pribadi dengan BithompBot untuk menerima peringatan.", "steps": ["Buat kode koneksi", "Buka BithompBot dan mulai chat pribadi", "Periksa koneksi"]
+      },
       "email": {
         "title": "E-mail",
         "description": "Gunakan kotak surat yang harus menerima peringatan {{explorerName}}.",
@@ -616,6 +624,9 @@
         ],
         "portal-link": "Buka X Dev Console"
       }
+    },
+    "telegram": {
+      "create-token": "Hubungkan Telegram", "connecting": "Membuat kode...", "code": "Kode koneksi", "open-bot": "Buka BithompBot", "check-connection": "Periksa koneksi", "checking": "Memeriksa...", "connected": "Telegram berhasil terhubung.", "connected-id": "Chat Telegram terhubung: {{chatId}}", "not-connected": "Telegram belum terhubung. Mulai bot dengan kode lalu periksa lagi.", "connection-error": "Tidak dapat menghubungkan Telegram. Coba lagi."
     },
     "destination": {
       "any": "Tujuan mana pun",
