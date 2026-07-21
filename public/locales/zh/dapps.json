@@ -95,7 +95,7 @@
     "sourceTag": "来源标签",
     "website": "网站",
     "activityHistory": "活动历史",
-    "aggregatedBy": "按{{interval}}汇总",
+    "groupBy": "按{{interval}}分组",
     "span": { "day": "天", "week": "周", "month": "月" },
     "averageSpan": { "day": "天", "week": "周", "month": "月" },
     "transactions": "交易",

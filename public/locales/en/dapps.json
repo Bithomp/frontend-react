@@ -95,7 +95,7 @@
     "sourceTag": "Source tag",
     "website": "Website",
     "activityHistory": "Activity history",
-    "aggregatedBy": "Grouped by {{interval}}",
+    "groupBy": "Group by {{interval}}",
     "span": { "day": "day", "week": "week", "month": "month" },
     "averageSpan": { "day": "day", "week": "week", "month": "month" },
     "transactions": "Transactions",

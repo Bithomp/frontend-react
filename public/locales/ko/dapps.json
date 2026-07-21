@@ -95,7 +95,7 @@
     "sourceTag": "소스 태그",
     "website": "웹사이트",
     "activityHistory": "활동 기록",
-    "aggregatedBy": "{{interval}} 단위로 그룹화",
+    "groupBy": "{{interval}} 단위로 그룹화",
     "span": { "day": "일", "week": "주", "month": "월" },
     "averageSpan": { "day": "일", "week": "주", "month": "월" },
     "transactions": "거래",

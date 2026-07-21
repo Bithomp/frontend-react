@@ -95,7 +95,7 @@
     "sourceTag": "Tag sumber",
     "website": "Situs web",
     "activityHistory": "Riwayat aktivitas",
-    "aggregatedBy": "Dikelompokkan per {{interval}}",
+    "groupBy": "Kelompokkan per {{interval}}",
     "span": { "day": "hari", "week": "minggu", "month": "bulan" },
     "averageSpan": { "day": "hari", "week": "minggu", "month": "bulan" },
     "transactions": "Transaksi",

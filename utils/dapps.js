@@ -306,6 +306,7 @@ export const dappsApiUrl = (convertCurrency, period) => {
 }
 
 export const DAPP_CHART_PERIODS = ['week', 'month', 'year', 'all']
+export const DAPP_CHART_SPANS = ['day', 'week', 'month']
 
 export const dappChartSpan = (period) => {
   if (period === 'year') return 'week'
@@ -313,11 +314,12 @@ export const dappChartSpan = (period) => {
   return 'day'
 }
 
-export const dappChartApiUrl = (sourceTag, convertCurrency, period = 'month') => {
+export const dappChartApiUrl = (sourceTag, convertCurrency, period = 'month', span) => {
   const normalizedPeriod = DAPP_CHART_PERIODS.includes(period) ? period : 'month'
+  const normalizedSpan = DAPP_CHART_SPANS.includes(span) ? span : dappChartSpan(normalizedPeriod)
   const params = new URLSearchParams({
     period: normalizedPeriod,
-    span: dappChartSpan(normalizedPeriod)
+    span: normalizedSpan
   })
   if (convertCurrency) params.set('convertCurrencies', String(convertCurrency).toLowerCase())
   return `v2/dapp/${encodeURIComponent(sourceTag)}/chart?${params.toString()}`

@@ -95,7 +95,7 @@
     "sourceTag": "Тег источника",
     "website": "Сайт",
     "activityHistory": "История активности",
-    "aggregatedBy": "Группировка по: {{interval}}",
+    "groupBy": "Группировать по: {{interval}}",
     "span": { "day": "дням", "week": "неделям", "month": "месяцам" },
     "averageSpan": { "day": "день", "week": "неделю", "month": "месяц" },
     "transactions": "Транзакции",

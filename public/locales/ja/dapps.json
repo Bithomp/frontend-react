@@ -95,7 +95,7 @@
     "sourceTag": "ソースタグ",
     "website": "ウェブサイト",
     "activityHistory": "アクティビティ履歴",
-    "aggregatedBy": "{{interval}}単位で集計",
+    "groupBy": "{{interval}}単位でグループ化",
     "span": { "day": "日", "week": "週", "month": "月" },
     "averageSpan": { "day": "日", "week": "週", "month": "月" },
     "transactions": "取引",

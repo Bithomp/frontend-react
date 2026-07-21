@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { FaArrowLeft, FaExternalLinkAlt } from 'react-icons/fa'
 import { FaDiscord, FaFacebook, FaInstagram, FaLinkedin, FaTelegram, FaXTwitter } from 'react-icons/fa6'
@@ -16,6 +16,7 @@ import DappSelect from '../../components/Dapps/DappSelect'
 import DappsDataNote from '../../components/Dapps/DappsDataNote'
 import DappTransactions from '../../components/Dapps/DappTransactions'
 import ChartPeriodSwitch from '../../components/UI/ChartPeriodSwitch'
+import SimpleSelect from '../../components/UI/SimpleSelect'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import { axiosServer, currencyServer, passHeaders } from '../../utils/axios'
 import { explorerName, nativeCurrency, normalizeLocale } from '../../utils'
@@ -23,6 +24,7 @@ import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
 import {
   DAPPS_META,
   DAPP_CHART_PERIODS,
+  DAPP_CHART_SPANS,
   dappChartApiUrl,
   dappChartSpan,
   dappTransactionsApiUrl,
@@ -67,6 +69,18 @@ const periodFromQuery = (period) => {
   return DAPP_CHART_PERIODS.includes(value) ? value : DEFAULT_PERIOD
 }
 
+const availableSpans = (period) => {
+  if (period === 'week') return ['day']
+  if (period === 'month') return ['day', 'week']
+  if (period === 'all') return ['week', 'month']
+  return DAPP_CHART_SPANS
+}
+
+const spanFromQuery = (span, period) => {
+  const value = Array.isArray(span) ? span[0] : span
+  return availableSpans(period).includes(value) ? value : dappChartSpan(period)
+}
+
 const absoluteUrl = (url) => {
   if (!url) return ''
   return /^https?:\/\//i.test(url) ? url : `https://${url}`
@@ -88,6 +102,7 @@ export async function getServerSideProps(context) {
   if (!/^\d+$/.test(sourceTag)) return { notFound: true }
 
   const period = periodFromQuery(query?.period)
+  const span = spanFromQuery(query?.span, period)
   const selectedCurrencyServer = currencyServer(req)
   let initialData = null
   let initialErrorMessage = ''
@@ -98,7 +113,7 @@ export async function getServerSideProps(context) {
   const [chartResult, transactionsResult] = await Promise.allSettled([
     axiosServer({
       method: 'get',
-      url: dappChartApiUrl(sourceTag, selectedCurrencyServer, period),
+      url: dappChartApiUrl(sourceTag, selectedCurrencyServer, period, span),
       headers
     }),
     axiosServer({
@@ -118,6 +133,7 @@ export async function getServerSideProps(context) {
     props: {
       sourceTag,
       periodQuery: period,
+      spanQuery: span,
       selectedCurrencyServer,
       initialData,
       initialErrorMessage,
@@ -206,6 +222,7 @@ function MetricLabel({ label, tip }) {
 export default function DappDetails({
   sourceTag,
   periodQuery,
+  spanQuery,
   initialData,
   initialErrorMessage,
   initialTransactions,
@@ -219,6 +236,7 @@ export default function DappDetails({
   const identity = useMemo(() => dappIdentity(sourceTag), [sourceTag])
   const currency = ((fiatRate ? selectedCurrencyApp : selectedCurrencyServer) || 'usd').toLowerCase()
   const [period, setPeriod] = useState(periodQuery)
+  const [span, setSpan] = useState(spanQuery)
   const [payload, setPayload] = useState(initialData || {})
   const [loading, setLoading] = useState(!initialData)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
@@ -231,23 +249,30 @@ export default function DappDetails({
     }
 
     const controller = new AbortController()
+    let active = true
     setLoading(true)
     setErrorMessage('')
     axios
-      .get(dappChartApiUrl(sourceTag, currency, period), { signal: controller.signal })
-      .then((response) => setPayload(response?.data || {}))
-      .catch((error) => {
-        if (error?.message !== 'canceled') setErrorMessage(error?.message || t('detail.loadError'))
+      .get(dappChartApiUrl(sourceTag, currency, period, span), { signal: controller.signal })
+      .then((response) => {
+        if (active) setPayload(response?.data || {})
       })
-      .finally(() => setLoading(false))
-    return () => controller.abort()
-  }, [currency, initialData, period, sourceTag, t])
+      .catch((error) => {
+        if (active && error?.message !== 'canceled') setErrorMessage(error?.message || t('detail.loadError'))
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+      controller.abort()
+    }
+  }, [currency, initialData, period, sourceTag, span, t])
 
   const rows = useMemo(
     () => (Array.isArray(payload?.chart) ? [...payload.chart].sort((a, b) => chartTimestamp(a) - chartTimestamp(b)) : []),
     [payload?.chart]
   )
-  const span = payload?.span || dappChartSpan(period)
   const summary = useMemo(() => {
     const transactions = sumRows(rows, (row) => row.totalTransactions)
     const success = sumRows(rows, (row) => row.successTransactions)
@@ -346,9 +371,37 @@ export default function DappDetails({
 
   const setChartPeriod = (nextPeriod) => {
     const normalized = periodFromQuery(nextPeriod)
+    const nextSpan = availableSpans(normalized).includes(span) ? span : dappChartSpan(normalized)
     setPeriod(normalized)
-    router.replace({ pathname: router.pathname, query: { id: sourceTag, period: normalized } }, undefined, { shallow: true })
+    setSpan(nextSpan)
+    router.replace(
+      { pathname: router.pathname, query: { id: sourceTag, period: normalized, span: nextSpan } },
+      undefined,
+      { shallow: true }
+    )
   }
+
+  const setChartSpan = useCallback(
+    (nextSpan) => {
+      const normalized = spanFromQuery(nextSpan, period)
+      setSpan(normalized)
+      router.replace(
+        { pathname: router.pathname, query: { id: sourceTag, period, span: normalized } },
+        undefined,
+        { shallow: true }
+      )
+    },
+    [period, router, sourceTag]
+  )
+
+  const spanOptions = useMemo(
+    () =>
+      availableSpans(period).map((option) => ({
+        value: option,
+        label: t('detail.groupBy', { interval: t(`detail.span.${option}`) })
+      })),
+    [period, t]
+  )
 
   const logo = identity.meta?.logo ? `/images/dapps/${identity.meta.logo}` : ''
   const website = absoluteUrl(identity.meta?.url)
@@ -358,7 +411,6 @@ export default function DappDetails({
     href: href(identity.meta[key]),
     Icon
   }))
-  const intervalLabel = t(`detail.span.${span}`)
   const averageIntervalLabel = t(`detail.averageSpan.${span}`)
   const successColor = summary.successRate >= 98 ? styles.good : summary.successRate >= 90 ? styles.warn : styles.bad
 
@@ -415,11 +467,26 @@ export default function DappDetails({
       </section>
 
       <section className={styles.toolbar}>
-        <div>
+        <div className={styles.toolbarTitle}>
           <strong>{t('detail.activityHistory')}</strong>
-          <span>{t('detail.aggregatedBy', { interval: intervalLabel })}</span>
+          {loading ? (
+            <span className={styles.toolbarLoading} role="status">
+              <span className="waiting inline" /> {t('common:general.loading')}
+            </span>
+          ) : null}
         </div>
-        <ChartPeriodSwitch value={period} periods={DAPP_CHART_PERIODS} onChange={setChartPeriod} />
+        <div className={styles.toolbarControls}>
+          <ChartPeriodSwitch value={period} periods={DAPP_CHART_PERIODS} onChange={setChartPeriod} />
+          <div className={styles.spanSelect}>
+            <SimpleSelect
+              value={span}
+              setValue={setChartSpan}
+              optionsList={spanOptions}
+              className={styles.spanDropdown}
+              instanceId="dapp-chart-span"
+            />
+          </div>
+        </div>
       </section>
 
       {errorMessage ? <div className={styles.error}>{errorMessage}</div> : null}
