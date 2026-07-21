@@ -48,7 +48,6 @@ import {
 } from '../../utils/format'
 import { axiosServer, logServerSideError, passHeaders } from '../../utils/axios'
 
-import SocialShare from '../../components/SocialShare'
 import { nftClass } from '../../styles/pages/nft.module.scss'
 
 export async function getServerSideProps(context) {
@@ -1479,16 +1478,6 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                         </div>
 
                         <div className="column-right">
-                          {!notFoundInTheNetwork && rendered && (
-                            <SocialShare
-                              title={nftName(data) || 'XRPL NFT'}
-                              description={pageMeta?.metadata?.description || pageMeta?.metadata?.desc || ''}
-                              hashtag="NFT"
-                              image={imageUrl}
-                              t={t}
-                            />
-                          )}
-
                           {warnings?.length > 0 && (
                             <table className="table-details">
                               <thead>
