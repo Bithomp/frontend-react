@@ -299,6 +299,12 @@ export const DAPPS_META = [
   }
 ]
 
+export const dappsApiUrl = (convertCurrency, period) => {
+  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true&previousPeriodMode=calendar-1`
+  if (period) apiUrl += `&period=${encodeURIComponent(period)}`
+  return apiUrl
+}
+
 const normalizeWalletId = (w) => (typeof w === 'string' ? w.trim().toLowerCase() : '')
 
 export const WALLET_FREQ = (() => {

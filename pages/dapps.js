@@ -12,7 +12,7 @@ import { setTabParams } from '../utils'
 import SEO from '../components/SEO'
 import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow, niceNumber } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
-import { DAPPS_META, buildPrevMapBySourceTag, generatedAgentNameBySourceTag } from '../utils/dapps'
+import { DAPPS_META, buildPrevMapBySourceTag, dappsApiUrl, generatedAgentNameBySourceTag } from '../utils/dapps'
 import DappLogo from '../components/Dapps/DappLogo'
 import WalletsCell from '../components/Dapps/WalletsCell'
 import TypeMixCell from '../components/Dapps/TypeMixCell'
@@ -61,14 +61,6 @@ const sortDapps = (list, order) => {
   }
 }
 
-const dappsApiUrl = (convertCurrency, period) => {
-  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true&previousPeriodMode=calendar-1`
-  if (period) {
-    apiUrl += `&period=${encodeURIComponent(period)}`
-  }
-  return apiUrl
-}
-
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
   const { order, period, includeAppsWithoutExternalSigning, wallet } = query
@@ -79,7 +71,8 @@ export async function getServerSideProps(context) {
   const selectedCurrencyServer = currencyServer(req)
   const convertCurrency = (selectedCurrencyServer || 'usd').toLowerCase()
 
-  const apiUrl = dappsApiUrl(convertCurrency, period)
+  const effectivePeriod = period || 'day'
+  const apiUrl = dappsApiUrl(convertCurrency, effectivePeriod)
 
   try {
     const res = await axiosServer({
@@ -106,7 +99,7 @@ export async function getServerSideProps(context) {
     props: {
       initialData: initialData || null,
       orderQuery: DAPP_ORDER_VALUES.includes(order) ? order : DEFAULT_DAPP_ORDER,
-      periodQuery: period || 'day',
+      periodQuery: effectivePeriod,
       includeAppsWithoutExternalSigningQuery: includeAppsWithoutExternalSigning === 'true',
       walletQuery: typeof wallet === 'string' ? wallet.toLowerCase() : '',
       initialErrorMessage: initialErrorMessage || '',

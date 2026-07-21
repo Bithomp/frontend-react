@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
+import { buildPrevMapBySourceTag, dappsApiUrl, DAPPS_META } from './dapps'
 import { nativeCurrency, devNet, xahauNetwork } from './index'
 import { dappBySourceTag } from './transaction'
 import { buildTeaserAmendments } from './amendments'
@@ -56,10 +56,7 @@ const mergeNativeTokenOnTop = (tokens, nativeToken) => {
 
 export const fetchTeaserDappsClient = async (selectedCurrency = 'usd') => {
   try {
-    const response = await axios(
-      'v2/dapps?convertCurrencies=' + selectedCurrency + '&previousPeriod=true',
-      { timeout: 5000 }
-    )
+    const response = await axios(dappsApiUrl(selectedCurrency, 'day'), { timeout: 5000 })
 
     const list = extractArray(response)
     const prevMap = buildPrevMapBySourceTag(response?.data?.previousPeriod?.dapps)

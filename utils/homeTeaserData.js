@@ -5,7 +5,7 @@
 
 import { axiosServer, passHeaders } from './axios'
 import { dappBySourceTag } from './transaction'
-import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
+import { buildPrevMapBySourceTag, dappsApiUrl, DAPPS_META } from './dapps'
 import { nativeCurrency, devNet, xahauNetwork } from './index'
 import { buildTeaserAmendments } from './amendments'
 
@@ -60,7 +60,7 @@ export const fetchTeaserDapps = async (req, selectedCurrency = 'usd') => {
   try {
     const response = await axiosServer({
       method: 'get',
-      url: 'v2/dapps?convertCurrencies=' + selectedCurrency + '&previousPeriod=true',
+      url: dappsApiUrl(selectedCurrency, 'day'),
       headers: passHeaders(req),
       timeout: 5000
     })
