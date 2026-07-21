@@ -79,7 +79,8 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
 
   const FAUCET_DENIED_COUNTRIES = [
     'ID', // Indonesia
-    'IN' // India
+    'IN', // India
+    'BD' // Bangladesh
   ]
 
   const isCountryKnown = Boolean(countryCode)
