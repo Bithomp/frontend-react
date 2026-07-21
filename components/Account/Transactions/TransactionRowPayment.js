@@ -1,5 +1,5 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { AddressWithIconInline, amountFormat, tokenToFiat } from '../../../utils/format'
+import { AddressWithIconInline, AmountWithIcon, amountFormat, tokenToFiat } from '../../../utils/format'
 import { addressBalanceChanges, isConvertionTx } from '../../../utils/transaction'
 import {
   isIOUpayment,
@@ -10,7 +10,7 @@ import {
 import { useIsMobile } from '../../../utils/mobile'
 import { RipplingChanges } from './Elements/RipplingChanges'
 import { MdCompareArrows, MdArrowDownward, MdArrowUpward, MdSwapVert } from 'react-icons/md'
-import { isXls14NftAmount } from '../../../utils'
+import { isXls14NftAmount, nativeCurrency } from '../../../utils'
 import { useTranslation } from 'next-i18next'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
@@ -25,6 +25,14 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
   const iouPayment = isIOUpayment(data)
   const isInsufFee = outcome?.result === 'tecINSUFF_FEE'
   const showExchangeRate = !sourceBalanceChangesList?.some(isXls14NftAmount)
+  const fallbackSwapDestinationAmount = outcome?.deliveredAmount
+  const fallbackSwapSourceAmount = tx?.Amount
+  const fallbackSwapSourceToken =
+    fallbackSwapSourceAmount && typeof fallbackSwapSourceAmount !== 'object'
+      ? { currency: nativeCurrency, value: String(Number(fallbackSwapSourceAmount) / 1000000) }
+      : fallbackSwapSourceAmount
+  const showFallbackSwapAmounts =
+    isConvertion && !sourceBalanceChangesList?.length && fallbackSwapSourceAmount && fallbackSwapDestinationAmount
 
   const isMobile = useIsMobile(600)
 
@@ -103,6 +111,23 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
               })}
               {tokenToFiat({
                 amount: outcome?.deliveredAmount,
+                selectedCurrency,
+                fiatRate
+              })}
+            </div>
+          )}
+          {showFallbackSwapAmounts && (
+            <div>
+              {balancesTitle}:<br />
+              <AmountWithIcon amount={fallbackSwapSourceToken} options={{ linkCurrency: true, bold: true, precise: 'nice' }} />{' '}
+              →{' '}
+              <AmountWithIcon
+                amount={fallbackSwapDestinationAmount}
+                options={{ linkCurrency: true, bold: true, precise: 'nice' }}
+              />
+              {' '}
+              {tokenToFiat({
+                amount: fallbackSwapSourceAmount,
                 selectedCurrency,
                 fiatRate
               })}

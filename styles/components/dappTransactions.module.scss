@@ -64,6 +64,14 @@
   box-shadow: none;
 }
 
+@media only screen and (min-width: 701px) {
+  .tableWrap table > tbody > tr > td:last-child {
+    width: 145px !important;
+    min-width: 145px;
+    white-space: nowrap;
+  }
+}
+
 .status,
 .error {
   display: grid;
