@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import { FaArrowsRotate } from 'react-icons/fa6'
 
 import { useIsMobile } from '../../utils/mobile'
 import { dappTransactionsApiUrl } from '../../utils/dapps'
@@ -51,6 +52,7 @@ const transactionRow = (type) => {
 
 export default function DappTransactions({ sourceTag, currency, knownTypes = [], initialData, initialErrorMessage }) {
   const { t } = useTranslation('dapps')
+  const { t: accountT } = useTranslation('account')
   const isMobile = useIsMobile(700)
   const firstRequestRef = useRef(true)
   const [type, setType] = useState('all')
@@ -59,6 +61,7 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
   const [loading, setLoading] = useState(!initialData)
   const [loadingMore, setLoadingMore] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [refreshVersion, setRefreshVersion] = useState(0)
 
   const typeOptions = useMemo(() => {
     const types = new Set(knownTypes.filter(Boolean))
@@ -98,7 +101,7 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
       active = false
       controller.abort()
     }
-  }, [currency, initialData, sourceTag, t, type])
+  }, [currency, initialData, refreshVersion, sourceTag, t, type])
 
   const loadMore = async () => {
     if (!marker || loadingMore) return
@@ -123,13 +126,25 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
             <h2>{t('detail.recentTransactions')}</h2>
             <span>{t('detail.transactionsAvailability')}</span>
           </div>
-          <label className={styles.controls}>
-            <span>{t('detail.transactionType')}</span>
-            <select value={type} onChange={(event) => setType(event.target.value)}>
-              <option value="all">{t('detail.allTransactionTypes')}</option>
-              {typeOptions.map((option) => <option value={option} key={option}>{option}</option>)}
-            </select>
-          </label>
+          <div className={styles.headerActions}>
+            <label className={styles.controls}>
+              <span>{t('detail.transactionType')}</span>
+              <select value={type} onChange={(event) => setType(event.target.value)}>
+                <option value="all">{t('detail.allTransactionTypes')}</option>
+                {typeOptions.map((option) => <option value={option} key={option}>{option}</option>)}
+              </select>
+            </label>
+            <button
+              className={styles.refreshButton}
+              type="button"
+              onClick={() => setRefreshVersion((value) => value + 1)}
+              disabled={loading || loadingMore}
+              aria-label={accountT('detail.aria.reload-transactions')}
+              title={accountT('detail.actions.update')}
+            >
+              <FaArrowsRotate className={loading ? styles.spinning : ''} aria-hidden="true" />
+            </button>
+          </div>
         </div>
 
         {loading ? <div className={styles.status}><span className="waiting" /></div> : null}
