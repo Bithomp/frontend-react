@@ -7,6 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { explorerName, nativeCurrency } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { setTabParams } from '../utils'
 
 import SEO from '../components/SEO'
@@ -20,6 +21,7 @@ import { dappsPageClass } from '../styles/pages/dapps.module.scss'
 import { HeaderTooltip } from '../components/UI/HeaderTooltip'
 import { useIsMobile } from '../utils/mobile'
 import DappCard from '../components/Dapps/DappCard'
+import DappsDataNote from '../components/Dapps/DappsDataNote'
 import WalletSelect from '../components/Dapps/WalletSelect'
 import Delta from '../components/UI/Delta'
 
@@ -493,6 +495,7 @@ export default function Dapps({
                     const prev = prevByTag ? prevByTag.get(String(d?.sourceTag)) : null
                     const rowKey = d?.sourceTag ?? idx
                     const isOpen = expandedRowKey === rowKey
+                    const detailsHref = `/dapp/${encodeURIComponent(d?.sourceTag)}`
 
                     const successByType = getSuccessByType(d?.transactionTypesResults)
 
@@ -514,19 +517,34 @@ export default function Dapps({
                     const generatedName = knownName ? null : generatedAgentNameBySourceTag(d?.sourceTag)
 
                     return (
-                      <tr key={d?.sourceTag ?? idx}>
+                      <tr
+                        key={d?.sourceTag ?? idx}
+                        className="dapp-row-link"
+                        role="link"
+                        tabIndex={0}
+                        onClick={(event) => {
+                          if (event.target.closest('a, [data-dapp-details]')) return
+                          router.push(detailsHref)
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+                            event.preventDefault()
+                            router.push(detailsHref)
+                          }
+                        }}
+                      >
                         <td className="center">
                           <span style={{ display: 'inline-block', transform: 'translateY(10px)' }}>{idx + 1}</span>
                         </td>
 
                         <td>
-                          <span style={{ display: 'flex', alignItems: 'center' }}>
+                          <Link className="dapp-identity-link" href={detailsHref}>
                             {logo ? <DappLogo src={logo} /> : null}
                             <span className="dapp-name-stack">
                               <span>{knownName || generatedName || d?.sourceTag}</span>
-                              {generatedName && <span className="dapp-source-tag">{d?.sourceTag}</span>}
+                              <span className="dapp-source-tag">{d?.sourceTag}</span>
                             </span>
-                          </span>
+                          </Link>
                         </td>
 
                         <td>
@@ -554,7 +572,7 @@ export default function Dapps({
                           </span>
                         </td>
 
-                        <td className="right">
+                        <td className="right" data-dapp-details>
                           <TypeMixCell
                             successByType={successByType}
                             totalTransactions={d?.totalTransactions}
@@ -622,18 +640,7 @@ export default function Dapps({
           </div>
         )}
           {!loading && !errorMessage && (
-            <div className="dapps-data-note">
-              <span>
-                {t('dapps:footer.tracking')}{' '}
-                <a href="https://discord.gg/ZahGJ29WEs" target="_blank" rel="noreferrer">
-                  {t('dapps:footer.discord')}
-                </a>
-                .
-              </span>{' '}
-              <span>
-                {t('dapps:footer.api')} <a href="https://docs.bithomp.com/#dapps">API</a>.
-              </span>
-            </div>
+            <DappsDataNote />
           )}
         </>
       </FiltersFrame>

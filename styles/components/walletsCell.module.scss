@@ -1,0 +1,58 @@
+.tooltip {
+  position: fixed;
+  z-index: 9999;
+  max-width: 50vw;
+  padding: 8px 10px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  color: var(--card-text);
+  background: var(--card-bg);
+  box-shadow: 0 10px 30px var(--shadow);
+  font-size: 12px;
+  line-height: 16px;
+  pointer-events: none;
+}
+
+.tooltipLine {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.singleRow,
+.mobileRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin-top: -2px;
+  padding-bottom: 2px;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.singleRow {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.mobileRow {
+  overflow-x: visible;
+  flex-wrap: wrap;
+  white-space: normal;
+}
+
+.singleRow::-webkit-scrollbar,
+.mobileRow::-webkit-scrollbar {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .singleRow {
+    overflow-x: visible;
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+}

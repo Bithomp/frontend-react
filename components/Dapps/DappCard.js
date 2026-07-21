@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { shortNiceNumber, amountFormat } from '../../utils/format'
 import { dappBySourceTag } from '../../utils/transaction'
 import { generatedAgentNameBySourceTag } from '../../utils/dapps'
@@ -30,6 +32,7 @@ export default function DappCard({
   setExpandedRowKey
 }) {
   const { t } = useTranslation('dapps')
+  const router = useRouter()
   const sourceTag = dapp?.sourceTag
   const rowKey = sourceTag ?? index
   const isOpen = expandedRowKey === rowKey
@@ -62,17 +65,36 @@ export default function DappCard({
   const walletconnect = entry?.walletconnect || []
   const hasExternalSigning =
     (Array.isArray(wallets) && wallets.length > 0) || (Array.isArray(walletconnect) && walletconnect.length > 0)
+  const detailsHref = `/dapp/${encodeURIComponent(sourceTag)}`
+  const openDetails = (event) => {
+    if (event.target.closest('a, [data-dapp-details]')) return
+    router.push(detailsHref)
+  }
 
   return (
-    <div className={styles.card}>
+    <div
+      className={styles.card}
+      role="link"
+      tabIndex={0}
+      onClick={openDetails}
+      onKeyDown={(event) => {
+        if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault()
+          router.push(detailsHref)
+        }
+      }}
+    >
       <div className={styles.head}>
         <div className={styles.left}>
           <div className={styles.index}>{index + 1}</div>
-          {logo ? <DappLogo src={logo} /> : null}
-          <div className={styles.titleWrap}>
-            <div className={styles.title}>{name}</div>
-            {generatedName && <div className={styles.sourceTag}>{sourceTag}</div>}
-
+          <div className={styles.identityContent}>
+            <Link className={styles.identityLink} href={detailsHref}>
+              {logo ? <DappLogo src={logo} /> : null}
+              <span className={styles.titleWrap}>
+                <span className={styles.title}>{name}</span>
+                <span className={styles.sourceTag}>{sourceTag}</span>
+              </span>
+            </Link>
             <div className={styles.wallets}>
               {hasExternalSigning ? <WalletsCell wallets={wallets} walletconnect={walletconnect} /> : null}
             </div>
@@ -121,7 +143,7 @@ export default function DappCard({
         </div>
       </div>
 
-      <div className={styles.activity}>
+      <div className={styles.activity} data-dapp-details>
         <TypeMixCell
           successByType={successByType}
           totalTransactions={dapp?.totalTransactions}

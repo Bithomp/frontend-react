@@ -5,6 +5,12 @@
   background: var(--background-main);
   box-shadow: 0 6px 18px var(--shadow);
   margin: 10px 0;
+  cursor: pointer;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent-link);
+  outline-offset: 2px;
 }
 
 .head {
@@ -31,10 +37,24 @@
 }
 
 .titleWrap {
+  display: block;
   min-width: 0;
 }
 
+.identityContent {
+  min-width: 0;
+}
+
+.identityLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  text-decoration: none;
+}
+
 .title {
+  display: block;
   font-weight: 800;
   font-size: 16px;
   line-height: 1.15;
@@ -43,9 +63,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 78vw;
+  text-decoration: none;
+}
+
+.identityLink:hover .title {
+  color: var(--accent-link);
 }
 
 .sourceTag {
+  display: block;
   margin-top: 3px;
   color: var(--text-secondary);
   font-size: 12px;

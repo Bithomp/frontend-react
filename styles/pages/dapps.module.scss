@@ -185,34 +185,6 @@
     width: 100%;
   }
 
-  .dapps-data-note {
-    margin: 18px auto 8px;
-    padding: 12px 16px;
-    border: 1px solid var(--unaccent-icon);
-    border-radius: 10px;
-    color: var(--text-secondary);
-    font-size: 14px;
-    line-height: 1.5;
-    text-align: center;
-  }
-
-  .dapps-data-note span {
-    display: block;
-  }
-
-  .dapps-data-note span + span {
-    margin-top: 4px;
-  }
-
-  @media (max-width: 440px) {
-    .dapps-data-note {
-      margin-top: 14px;
-      padding: 10px 12px;
-      text-align: left;
-    }
-
-  }
-
   .table-large.expand td,
   .table-large.expand th {
     vertical-align: top;
@@ -259,6 +231,28 @@
     flex-direction: column;
     min-width: 0;
     line-height: 1.2;
+  }
+
+  .dapp-identity-link {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    color: var(--text-main);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .dapp-identity-link:hover {
+    color: var(--accent-link);
+  }
+
+  .dapp-row-link {
+    cursor: pointer;
+  }
+
+  .dapp-row-link:focus-visible {
+    outline: 2px solid var(--accent-link);
+    outline-offset: -2px;
   }
 
   .dapp-source-tag {
@@ -363,6 +357,16 @@
     background: var(--background-secondary);
     border: 1px solid var(--card-border);
     box-shadow: 0 6px 18px var(--shadow);
+  }
+
+  .dapps-activity.is-all-details .dapps-activity__details {
+    overflow: visible;
+    margin-top: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   .dapps-activity__detailsGrid {
@@ -484,6 +488,52 @@
     gap: 10px;
   }
 
+  .dapps-activity__allGroups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 10px;
+  }
+
+  .dapps-activity__groupCard {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    background: var(--background-secondary);
+  }
+
+  .dapps-activity__groupCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+    color: var(--text-main);
+    font-size: 12px;
+  }
+
+  .dapps-activity__groupCardHeader > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .dapps-activity__groupCardHeader i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dapps-activity__groupCardHeader strong {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dapps-activity__groupCardHeader small {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+  }
+
   .dapps-activity__block {
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -527,6 +577,12 @@
     text-align: right;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+  }
+
+  .dapps-activity__count small {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
   }
 
   .dapps-activity__empty {

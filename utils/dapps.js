@@ -305,6 +305,24 @@ export const dappsApiUrl = (convertCurrency, period) => {
   return apiUrl
 }
 
+export const DAPP_CHART_PERIODS = ['week', 'month', 'year', 'all']
+
+export const dappChartSpan = (period) => {
+  if (period === 'year') return 'week'
+  if (period === 'all') return 'month'
+  return 'day'
+}
+
+export const dappChartApiUrl = (sourceTag, convertCurrency, period = 'month') => {
+  const normalizedPeriod = DAPP_CHART_PERIODS.includes(period) ? period : 'month'
+  const params = new URLSearchParams({
+    period: normalizedPeriod,
+    span: dappChartSpan(normalizedPeriod)
+  })
+  if (convertCurrency) params.set('convertCurrencies', String(convertCurrency).toLowerCase())
+  return `v2/dapp/${encodeURIComponent(sourceTag)}/chart?${params.toString()}`
+}
+
 const normalizeWalletId = (w) => (typeof w === 'string' ? w.trim().toLowerCase() : '')
 
 export const WALLET_FREQ = (() => {

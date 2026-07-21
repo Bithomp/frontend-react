@@ -172,7 +172,10 @@ export default function TypeMixCell({
   successTransactions = 0,
   isOpen = false,
   onToggle,
-  breakpoint = 600
+  breakpoint = 600,
+  showStats = true,
+  showToggle = true,
+  showAllDetails = false
 }) {
   const { t } = useTranslation('dapps')
   const isMobile = useIsMobile(breakpoint)
@@ -326,7 +329,7 @@ export default function TypeMixCell({
   if (!hasTotal) return <span style={{ opacity: 0.4 }}>—</span>
 
   return (
-    <div className={`dapps-activity ${isMobile ? 'is-mobile' : ''}`}>
+    <div className={`dapps-activity ${isMobile ? 'is-mobile' : ''} ${showAllDetails ? 'is-all-details' : ''}`.trim()}>
       {/* Stacked bar */}
       <div
         ref={ref}
@@ -368,8 +371,8 @@ export default function TypeMixCell({
       {!isMobile && tip ? <Tooltip x={tip.x} y={tip.y} lines={tip.lines} /> : null}
 
       {/* Meta */}
-      <div className="dapps-activity__meta">
-        <div className="dapps-activity__stats">
+      {showStats || showToggle ? <div className="dapps-activity__meta">
+        {showStats ? <div className="dapps-activity__stats">
           <span className="dapps-activity__stat">
             <span className="dapps-activity__statLabel">{t('activity.success')}</span> <b>{shortNiceNumber(success, 0)}</b>
             <span className="dapps-activity__muted">({successPct.toFixed(1)}%)</span>
@@ -381,20 +384,45 @@ export default function TypeMixCell({
               <span className={`dapps-activity__muted ${failedClass}`}>({failedPct.toFixed(1)}%)</span>
             </span>
           ) : null}
-        </div>
+        </div> : <span />}
 
-        {hasAnyDetails ? (
+        {showToggle && hasAnyDetails ? (
           <button type="button" className="dapps-activity__toggle" onClick={() => onToggle?.()}>
             {isOpen ? t('activity.hideDetails') : t('activity.showDetails')}
           </button>
         ) : (
           <span />
         )}
-      </div>
+      </div> : null}
 
       {/* Details */}
       {isOpen && hasAnyDetails ? (
         <div className="dapps-activity__details">
+          {showAllDetails ? (
+            <div className="dapps-activity__allGroups">
+              {leftList.filter((group) => group.key !== 'failed').map((group) => (
+                <div className="dapps-activity__groupCard" key={group.key}>
+                  <div className="dapps-activity__groupCardHeader">
+                    <span>
+                      <i style={{ background: group.color }} />
+                      <b>{groupLabel(group)}</b>
+                    </span>
+                    <strong>
+                      {shortNiceNumber(group.count, 0)} <small>({group.pctAll.toFixed(1)}%)</small>
+                    </strong>
+                  </div>
+                  {group.types.map((item) => (
+                    <div className="dapps-activity__row" key={item.type}>
+                      <div className="dapps-activity__type">{item.type}</div>
+                      <div className="dapps-activity__count">
+                        {shortNiceNumber(item.count, 0)} <small>({((item.count / group.count) * 100).toFixed(1)}%)</small>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          ) : (
           <div className="dapps-activity__detailsGrid">
             {/* Left: categories */}
             <div className="dapps-activity__catList">
@@ -491,6 +519,7 @@ export default function TypeMixCell({
               )}
             </div>
           </div>
+          )}
         </div>
       ) : null}
     </div>

@@ -1,0 +1,460 @@
+.page {
+  display: grid;
+  gap: 16px;
+  width: min(1480px, calc(100% - 32px));
+  margin: 18px auto 32px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.topNav {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.hero,
+.toolbar,
+.chartCard,
+.typeCard,
+.errorCard {
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 24px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-link) 10%, transparent), transparent 54%),
+    var(--card-bg);
+}
+
+.identity,
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.identity h1 {
+  margin: 2px 0 5px;
+  color: var(--text-main);
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.logo {
+  flex: 0 0 auto;
+  margin: 0 !important;
+  border-radius: 16px !important;
+}
+
+.eyebrow,
+.sourceTag,
+.toolbar span,
+.sectionHeader span {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.eyebrow {
+  color: var(--accent-link);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sourceTag {
+  font-variant-numeric: tabular-nums;
+}
+
+.heroActions {
+  flex: 0 0 auto;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.walletRow {
+  max-width: min(540px, 48vw);
+  padding: 3px;
+  overflow: hidden;
+}
+
+.externalActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.websiteLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 13px;
+  border: 1px solid var(--accent-link);
+  border-radius: 9px;
+  color: var(--accent-link);
+  background: var(--background-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.websiteLink:hover {
+  border-color: var(--accent-link);
+  color: var(--accent-link-hover);
+  background: color-mix(in srgb, var(--accent-link) 10%, var(--background-secondary));
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.websiteLink svg {
+  font-size: 10px;
+}
+
+.socialLinks {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.socialLinks a {
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--accent-link);
+  background: var(--background-secondary);
+  font-size: 15px;
+}
+
+.socialLinks a:hover {
+  border-color: var(--accent-link);
+  color: var(--accent-link-hover);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+}
+
+.toolbar > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metrics > div {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+.metrics > div > span {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.metricLabel {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  outline: none;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.metricLabel small {
+  color: var(--accent-link);
+  font-size: 11px;
+}
+
+.metricTooltip {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + 8px);
+  left: 0;
+  visibility: hidden;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 40px));
+  padding: 8px 10px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  color: var(--card-text);
+  background: var(--card-bg);
+  box-shadow: 0 10px 30px var(--shadow);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  opacity: 0;
+  text-transform: none;
+  white-space: normal;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.metricLabel:hover .metricTooltip,
+.metricLabel:focus .metricTooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.metrics strong {
+  min-width: 0;
+  color: var(--text-main);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.metrics .failedCount {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metrics .metricSecondary {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metrics .good { color: var(--green); }
+.metrics .warn { color: var(--orange); }
+.metrics .bad { color: var(--red); }
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.chartCard {
+  display: grid;
+  grid-template-rows: auto minmax(220px, 1fr);
+  min-width: 0;
+  padding: 14px;
+}
+
+.chartCard h2,
+.sectionHeader h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.emptyChart,
+.loading,
+.empty,
+.error {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  padding: 20px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.error {
+  min-height: auto;
+  border: 1px solid color-mix(in srgb, var(--red) 40%, var(--card-border));
+  border-radius: 12px;
+  color: var(--red);
+  background: color-mix(in srgb, var(--red) 7%, var(--card-bg));
+}
+
+.typeCard {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.errorCard {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+}
+
+.errorSummary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-main);
+}
+
+.errorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.errorBlock {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: var(--background-secondary);
+}
+
+.errorBlockTitle,
+.errorRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.errorBlockTitle {
+  margin-bottom: 6px;
+  color: var(--text-main);
+  font-size: 12px;
+}
+
+.errorBlockTitle span,
+.errorRow strong {
+  color: var(--red);
+}
+
+.errorBlockTitle small,
+.errorRow small {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.errorRow {
+  padding: 5px 0;
+  border-top: 1px solid color-mix(in srgb, var(--card-border) 65%, transparent);
+  font-size: 11px;
+}
+
+.errorRow code {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sectionHeader > div {
+  display: grid;
+  gap: 3px;
+}
+
+@media only screen and (max-width: 1100px) {
+  .metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media only screen and (max-width: 760px) {
+  .page {
+    gap: 12px;
+    width: calc(100% - 20px);
+    margin-top: 12px;
+  }
+
+  .hero,
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topNav {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .hero {
+    padding: 18px;
+  }
+
+  .heroActions {
+    align-items: stretch;
+  }
+
+  .walletRow {
+    max-width: 100%;
+    padding-inline: 0;
+  }
+
+  .externalActions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .metrics,
+  .charts {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+@media only screen and (max-width: 430px) {
+  .identity {
+    align-items: flex-start;
+  }
+
+  .logo {
+    width: 54px !important;
+    height: 54px !important;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+}

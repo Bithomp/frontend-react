@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useMemo } from 'react'
 import Image from 'next/image'
 import { useIsMobile } from '../../utils/mobile'
 import { WALLET_POPULARITY } from '../../utils/dapps'
+import styles from '../../styles/components/walletsCell.module.scss'
 
 const WALLET_LOGOS = {
   xaman: 'xaman.png',
@@ -32,15 +33,15 @@ const WALLET_NAMES = {
 function WalletTooltip({ x, y, name }) {
   if (!name) return null
   return (
-    <div className="dapps-activity-tooltip" style={{ left: x + 12, top: y + 12 }}>
-      <div className="dapps-activity-tooltip__line">{name}</div>
+    <div className={styles.tooltip} style={{ left: x + 12, top: y + 12 }}>
+      <div className={styles.tooltipLine}>{name}</div>
     </div>
   )
 }
 
 const POPULARITY_INDEX = new Map(WALLET_POPULARITY.map((id, idx) => [id, idx]))
 
-export default function WalletsCell({ wallets = [], walletconnect = [] }) {
+export default function WalletsCell({ wallets = [], walletconnect = [], singleRow = false, iconSize = 18 }) {
   const isMobile = useIsMobile(600)
   const [tip, setTip] = useState(null) // { x, y, name }
   const hideTimerRef = useRef(null)
@@ -113,9 +114,11 @@ export default function WalletsCell({ wallets = [], walletconnect = [] }) {
 
   const renderIcon = (w) => {
     const logo = WALLET_LOGOS[w] || `${w}.png`
+    const name = WALLET_NAMES[w] || w
     return (
       <span
         key={w}
+        aria-label={name}
         onMouseEnter={(e) => handleMouseEnter(e, w)}
         onMouseMove={(e) => handleMouseMove(e, w)}
         onMouseLeave={handleMouseLeave}
@@ -128,10 +131,10 @@ export default function WalletsCell({ wallets = [], walletconnect = [] }) {
       >
         <Image
           src={`/images/wallets/square-logos/${logo}`}
-          alt={WALLET_NAMES[w] || w}
-          width={18}
-          height={18}
-          style={{ borderRadius: 4, marginTop: 2 }}
+          alt=""
+          width={iconSize}
+          height={iconSize}
+          style={{ borderRadius: Math.max(4, Math.round(iconSize / 4)) }}
           draggable={false}
         />
       </span>
@@ -140,29 +143,8 @@ export default function WalletsCell({ wallets = [], walletconnect = [] }) {
 
   return (
     <span style={{ position: 'relative', display: 'inline-block', minWidth: 0 }}>
-      {isMobile ? (
-        <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            flexWrap: 'wrap',
-            whiteSpace: 'normal',
-            overflowX: 'visible',
-            overflowY: 'hidden',
-            WebkitOverflowScrolling: 'touch',
-            maxWidth: '100%',
-            paddingBottom: 2,
-            marginTop: -2,
-            scrollbarWidth: 'none'
-          }}
-        >
-          <style jsx>{`
-            span::-webkit-scrollbar {
-              display: none;
-            }
-          `}</style>
-
+      {isMobile || singleRow ? (
+        <span className={singleRow ? styles.singleRow : styles.mobileRow}>
           {allWallets.map(renderIcon)}
         </span>
       ) : (

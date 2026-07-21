@@ -77,7 +77,7 @@ export default function TeaserTopDapps({ data = [], isLoading = false, selectedC
       isEmpty={!topDapps.length}
     >
       {topDapps.map((dapp, index) => (
-        <HomeTeaseRow key={dapp.name || index}>
+        <HomeTeaseRow key={dapp.name || index} href={`/dapp/${encodeURIComponent(dapp.sourceTag)}`}>
           <div className={styles.dappNameCell}>
             {dappsMeta?.[String(dapp.sourceTag)]?.logo && (
               <DappLogo src={`/images/dapps/${dappsMeta[String(dapp.sourceTag)].logo}`} width={30} height={30} />
