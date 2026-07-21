@@ -57,7 +57,7 @@ const tokenSwapsUrl = (token, type, limit = 5) => {
       ? `${encodeURIComponent(token.issuer)}/${encodeURIComponent(token.currency)}`
       : encodeURIComponent(nativeCurrency)
 
-  return `v2/token/${tokenPath}/swaps?limit=${limit}&type=${type}`
+  return `v2/token/${tokenPath}/swaps?limit=${limit}&type=${type}&ignoreRounding=true`
 }
 
 const TOKEN_ACTIVITY_ORDER_AMOUNT_HIGH = 'amountHigh'
