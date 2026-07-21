@@ -1362,6 +1362,10 @@
     }
   }
 
+  .ammMetricSubRowNoDelta {
+    grid-template-columns: minmax(78px, 1fr) minmax(64px, max-content);
+  }
+
   .ammMetricSubLabel {
     min-width: 0;
     color: var(--text-secondary);
@@ -1409,14 +1413,14 @@
 
   .ammClosedDayGrid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
     min-width: 0;
   }
 
   .ammClosedDayGroup {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     align-content: start;
     gap: 8px;
     min-width: 0;
@@ -1588,6 +1592,22 @@
       place-items: center;
       min-height: 190px;
       padding: 12px;
+    }
+  }
+
+  .ammChartCardHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+
+    > span {
+      flex: 0 0 auto;
+      color: var(--text-secondary);
+      font-size: 10px;
+      line-height: 1.15;
+      white-space: nowrap;
     }
   }
 
@@ -3343,10 +3363,6 @@
       flex-wrap: wrap;
       padding-left: 24px;
       white-space: normal;
-    }
-
-    .ammClosedDayGroup {
-      grid-template-columns: 1fr;
     }
 
     .ammDetailsGrid {

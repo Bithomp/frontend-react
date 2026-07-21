@@ -35,8 +35,9 @@
     "poolStats": "Statistik pool",
     "lpSupply": "Suplai LP",
     "contributors": "Kontributor",
+    "holders": "Pemegang",
     "trustlines": "Trustline",
-    "dexTrades": "Trade DEX"
+    "lpTokenPrice": "Harga token LP"
   },
   "tooltips": {
     "comparedLastClosedDay": "Dibandingkan dengan hari tertutup terakhir",
@@ -47,7 +48,7 @@
     "price24h": "Perubahan harga selama 24 jam"
   },
   "daily": {
-    "title": "Likuiditas hari tertutup terakhir",
+    "title": "Aktivitas hari tertutup terakhir",
     "deposits": "Deposit",
     "withdrawals": "Penarikan",
     "depositTxs": "Tx deposit",
@@ -55,16 +56,24 @@
     "depositors": "Depositor",
     "withdrawers": "Penarik",
     "volume": "Volume",
-    "volumeUnavailable": "Volume tidak tersedia"
+    "volumeUnavailable": "Volume tidak tersedia",
+    "dexSwaps": "Swap AMM",
+    "swapTxs": "Tx swap",
+    "traders": "Trader"
   },
   "charts": {
     "poolHistory": "Riwayat pool",
     "subtitle": "Swap harian, cadangan, aktivitas deposit / penarikan, dan kontributor LP.",
     "swaps": "Swap",
+    "traders": "Trader unik",
     "depositsWithdrawals": "Deposit / penarikan",
     "assetVolume": "Volume deposit / penarikan {{asset}}",
+    "swapVolume": "Volume swap {{asset}}",
+    "recentData": "Hanya data terbaru",
     "series": {
-      "swaps": "Swap"
+      "swaps": "Swap",
+      "traders": "Trader",
+      "total": "Total"
     }
   },
   "activity": {

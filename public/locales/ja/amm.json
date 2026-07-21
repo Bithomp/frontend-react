@@ -35,8 +35,9 @@
     "poolStats": "プール統計",
     "lpSupply": "LP 供給量",
     "contributors": "コントリビューター",
+    "holders": "ホルダー",
     "trustlines": "トラストライン",
-    "dexTrades": "DEX 取引"
+    "lpTokenPrice": "LPトークン価格"
   },
   "tooltips": {
     "comparedLastClosedDay": "直近の確定日と比較",
@@ -47,7 +48,7 @@
     "price24h": "24時間の価格変化"
   },
   "daily": {
-    "title": "直近確定日の流動性",
+    "title": "直近確定日のアクティビティ",
     "deposits": "入金",
     "withdrawals": "出金",
     "depositTxs": "入金 tx",
@@ -55,16 +56,24 @@
     "depositors": "入金者",
     "withdrawers": "出金者",
     "volume": "ボリューム",
-    "volumeUnavailable": "ボリュームは利用できません"
+    "volumeUnavailable": "ボリュームは利用できません",
+    "dexSwaps": "AMM スワップ",
+    "swapTxs": "スワップ tx",
+    "traders": "トレーダー"
   },
   "charts": {
     "poolHistory": "プール履歴",
     "subtitle": "日次スワップ、リザーブ、入金 / 出金アクティビティ、LP コントリビューター。",
     "swaps": "スワップ",
+    "traders": "ユニークトレーダー",
     "depositsWithdrawals": "入金 / 出金",
     "assetVolume": "{{asset}} 入金 / 出金ボリューム",
+    "swapVolume": "{{asset}} スワップボリューム",
+    "recentData": "最近のデータのみ",
     "series": {
-      "swaps": "スワップ"
+      "swaps": "スワップ",
+      "traders": "トレーダー",
+      "total": "合計"
     }
   },
   "activity": {

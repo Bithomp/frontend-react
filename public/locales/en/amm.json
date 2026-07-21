@@ -35,8 +35,9 @@
     "poolStats": "Pool stats",
     "lpSupply": "LP supply",
     "contributors": "Contributors",
+    "holders": "Holders",
     "trustlines": "Trustlines",
-    "dexTrades": "DEX trades"
+    "lpTokenPrice": "LP token price"
   },
   "tooltips": {
     "comparedLastClosedDay": "Compared with last closed day",
@@ -47,7 +48,7 @@
     "price24h": "Price change over 24h"
   },
   "daily": {
-    "title": "Last closed day liquidity",
+    "title": "Last closed day activity",
     "deposits": "Deposits",
     "withdrawals": "Withdrawals",
     "depositTxs": "Deposit txs",
@@ -55,16 +56,24 @@
     "depositors": "Depositors",
     "withdrawers": "Withdrawers",
     "volume": "Volume",
-    "volumeUnavailable": "Volume is not available"
+    "volumeUnavailable": "Volume is not available",
+    "dexSwaps": "AMM swaps",
+    "swapTxs": "Swap txs",
+    "traders": "Traders"
   },
   "charts": {
     "poolHistory": "Pool history",
     "subtitle": "Daily swaps, reserves, deposit / withdrawal activity and LP contributors.",
     "swaps": "Swaps",
+    "traders": "Unique traders",
     "depositsWithdrawals": "Deposits / withdrawals",
     "assetVolume": "{{asset}} deposit / withdrawal volume",
+    "swapVolume": "{{asset}} swap volume",
+    "recentData": "Recent data only",
     "series": {
-      "swaps": "Swaps"
+      "swaps": "Swaps",
+      "traders": "Traders",
+      "total": "Total"
     }
   },
   "activity": {

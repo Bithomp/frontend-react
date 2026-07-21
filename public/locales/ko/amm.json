@@ -35,8 +35,9 @@
     "poolStats": "풀 통계",
     "lpSupply": "LP 공급량",
     "contributors": "기여자",
+    "holders": "홀더",
     "trustlines": "트러스트라인",
-    "dexTrades": "DEX 거래"
+    "lpTokenPrice": "LP 토큰 가격"
   },
   "tooltips": {
     "comparedLastClosedDay": "마지막 마감일과 비교",
@@ -47,7 +48,7 @@
     "price24h": "24시간 가격 변화"
   },
   "daily": {
-    "title": "마지막 마감일 유동성",
+    "title": "마지막 마감일 활동",
     "deposits": "예치",
     "withdrawals": "출금",
     "depositTxs": "예치 tx",
@@ -55,16 +56,24 @@
     "depositors": "예치자",
     "withdrawers": "출금자",
     "volume": "거래량",
-    "volumeUnavailable": "거래량을 사용할 수 없습니다"
+    "volumeUnavailable": "거래량을 사용할 수 없습니다",
+    "dexSwaps": "AMM 스왑",
+    "swapTxs": "스왑 tx",
+    "traders": "트레이더"
   },
   "charts": {
     "poolHistory": "풀 기록",
     "subtitle": "일별 스왑, 준비금, 예치 / 출금 활동 및 LP 기여자.",
     "swaps": "스왑",
+    "traders": "고유 트레이더",
     "depositsWithdrawals": "예치 / 출금",
     "assetVolume": "{{asset}} 예치 / 출금 거래량",
+    "swapVolume": "{{asset}} 스왑 거래량",
+    "recentData": "최근 데이터만 제공",
     "series": {
-      "swaps": "스왑"
+      "swaps": "스왑",
+      "traders": "트레이더",
+      "total": "합계"
     }
   },
   "activity": {

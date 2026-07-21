@@ -35,8 +35,9 @@
     "poolStats": "Статистика пула",
     "lpSupply": "Всего LP",
     "contributors": "Участники пула",
+    "holders": "Холдеры",
     "trustlines": "Трастлайны",
-    "dexTrades": "DEX сделки"
+    "lpTokenPrice": "Цена LP-токена"
   },
   "tooltips": {
     "comparedLastClosedDay": "По сравнению с последним закрытым днём",
@@ -47,7 +48,7 @@
     "price24h": "Изменение цены за 24ч"
   },
   "daily": {
-    "title": "Ликвидность за последний закрытый день",
+    "title": "Активность за последний закрытый день",
     "deposits": "Депозиты",
     "withdrawals": "Выводы",
     "depositTxs": "Транзакции депозитов",
@@ -55,16 +56,24 @@
     "depositors": "Депозиторы",
     "withdrawers": "Выводившие",
     "volume": "Объём",
-    "volumeUnavailable": "Объём недоступен"
+    "volumeUnavailable": "Объём недоступен",
+    "dexSwaps": "AMM-свопы",
+    "swapTxs": "Транзакции свопов",
+    "traders": "Трейдеры"
   },
   "charts": {
     "poolHistory": "История пула",
     "subtitle": "Свопы, резервы, депозиты / выводы и LP-участники по дням.",
     "swaps": "Свопы",
+    "traders": "Уникальные трейдеры",
     "depositsWithdrawals": "Депозиты / выводы",
     "assetVolume": "Объём депозитов / выводов {{asset}}",
+    "swapVolume": "Объём свопов {{asset}}",
+    "recentData": "Только новые данные",
     "series": {
-      "swaps": "Свопы"
+      "swaps": "Свопы",
+      "traders": "Трейдеры",
+      "total": "Всего"
     }
   },
   "activity": {

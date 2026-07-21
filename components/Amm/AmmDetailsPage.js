@@ -691,8 +691,15 @@ const assetDisplayAmount = (amount, value) => {
 }
 
 const chartPoint = (time, value) => {
+  if (value === undefined || value === null || value === '') return [time, null]
   const number = Number(value)
   return [time, Number.isFinite(number) ? number : null]
+}
+
+const sumPresentValues = (...values) => {
+  const presentValues = values.filter((value) => value !== undefined && value !== null && value !== '')
+  if (!presentValues.length) return null
+  return presentValues.reduce((total, value) => total.plus(value), new BigNumber(0)).toString()
 }
 
 const chartValue = (value) => {
@@ -728,7 +735,7 @@ const metricDeltaPct = (cur, prev) => {
   const current = Number(cur)
   const previous = Number(prev)
   if (!Number.isFinite(current) || !Number.isFinite(previous)) return null
-  if (previous === 0) return current === 0 ? 0 : null
+  if (previous === 0) return current === 0 ? 0 : 100
   if (previous < 0) return null
   return ((current - previous) / previous) * 100
 }
@@ -783,7 +790,7 @@ function AmmAssetPairIcons({ amount1, amount2 }) {
   )
 }
 
-function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false, loading = false }) {
+function AmmChartCard({ title, note, rows, series, type = 'line', dualYAxis = false, loading = false }) {
   const { t, i18n } = useTranslation('amm')
   const { theme } = useTheme()
   const dateLocale = normalizeLocale(i18n.language)
@@ -895,7 +902,10 @@ function AmmChartCard({ title, rows, series, type = 'line', dualYAxis = false, l
 
   return (
     <div className="ammChartCard">
-      <h3>{title}</h3>
+      <div className="ammChartCardHeader">
+        <h3>{title}</h3>
+        {note ? <span>{note}</span> : null}
+      </div>
       {hasData ? (
         <Chart type={type} series={series} options={options} height={190} />
       ) : loading ? (
@@ -1350,7 +1360,6 @@ export default function AmmDetailsPage({
   const currentContributorsKey = lpContributorsKey(data, selectedCurrency)
   const currentContributors = data?.holders ?? null
   const currentTrustlines = data?.trustlines ?? null
-  const closedDaySwaps = statistics.swapCount ?? null
   const hasAuctionSlot = !!data?.auctionSlot
   const auctionSlotExpired = hasAuctionSlot && isTimestampExpired(data.auctionSlot?.expiration)
   const auctionSlotActive = hasAuctionSlot && !auctionSlotExpired
@@ -2655,13 +2664,14 @@ export default function AmmDetailsPage({
       label: ta('overview.poolStats'),
       value: (
         <span className="ammMetricSubList">
-          <span className="ammMetricSubRow">
-            <span className="ammMetricSubLabel">{ta('overview.lpSupply')}</span>
-            <strong className="ammMetricSubValue">{data?.lpTokenBalance?.value ? renderMetricNumber(data.lpTokenBalance.value) : '-'}</strong>
-            <AmmMetricDelta cur={data?.lpTokenBalance?.value} prev={latestChartRow.lpValue} />
+          <span className="ammMetricSubRow ammMetricSubRowNoDelta">
+            <span className="ammMetricSubLabel">{ta('overview.lpTokenPrice')}</span>
+            <strong className="ammMetricSubValue">
+              {lpTokenUnitFiat !== null ? fiatEstimateText(lpTokenUnitFiat, selectedCurrency) : '-'}
+            </strong>
           </span>
           <span className="ammMetricSubRow">
-            <span className="ammMetricSubLabel">{ta('overview.contributors')}</span>
+            <span className="ammMetricSubLabel">{ta('overview.holders')}</span>
             <strong className="ammMetricSubValue">
               {currentContributors !== null ? (
                 <a href="#amm-contributors" className="ammMetricQuietLink">
@@ -2674,16 +2684,14 @@ export default function AmmDetailsPage({
             <AmmMetricDelta cur={currentContributors} prev={latestLpChartRow.holders} />
           </span>
           <span className="ammMetricSubRow">
+            <span className="ammMetricSubLabel">{ta('overview.lpSupply')}</span>
+            <strong className="ammMetricSubValue">{data?.lpTokenBalance?.value ? renderMetricNumber(data.lpTokenBalance.value) : '-'}</strong>
+            <AmmMetricDelta cur={data?.lpTokenBalance?.value} prev={latestChartRow.lpValue} />
+          </span>
+          <span className="ammMetricSubRow">
             <span className="ammMetricSubLabel">{ta('overview.trustlines')}</span>
             <strong className="ammMetricSubValue">{currentTrustlines !== null ? fullNiceNumber(currentTrustlines) : '-'}</strong>
             <AmmMetricDelta cur={currentTrustlines} prev={latestLpChartRow.trustlines} />
-          </span>
-          <span className="ammMetricSubRow">
-            <span className="ammMetricSubLabel">{ta('overview.dexTrades')}</span>
-            <strong className="ammMetricSubValue">
-              {closedDaySwaps !== undefined && closedDaySwaps !== null ? fullNiceNumber(closedDaySwaps) : '-'}
-            </strong>
-            <AmmMetricDelta cur={closedDaySwaps} prev={previousChartRow.swapCount} title={ta('tooltips.comparedPreviousClosedDay')} />
           </span>
         </span>
       )
@@ -2694,6 +2702,19 @@ export default function AmmDetailsPage({
     <section className="ammClosedDaySection">
       <div className="ammClosedDayTitle">{ta('daily.title')}</div>
       <div className="ammClosedDayGrid">
+        {renderClosedDayActivityGroup({
+          label: ta('daily.dexSwaps'),
+          countLabel: ta('daily.swapTxs'),
+          accountsLabel: ta('daily.traders'),
+          count: statistics.swapDexCount,
+          accounts: statistics.swapDexCountAccounts,
+          volume1: sumPresentValues(statistics.swapDexSellVolume1, statistics.swapDexBuyVolume1),
+          volume2: sumPresentValues(statistics.swapDexSellVolume2, statistics.swapDexBuyVolume2),
+          previousCount: previousChartRow.swapDexCount,
+          previousAccounts: previousChartRow.swapDexCountAccounts,
+          previousVolume1: sumPresentValues(previousChartRow.swapDexSellVolume1, previousChartRow.swapDexBuyVolume1),
+          previousVolume2: sumPresentValues(previousChartRow.swapDexSellVolume2, previousChartRow.swapDexBuyVolume2)
+        })}
         {renderClosedDayActivityGroup({
           label: ta('daily.deposits'),
           countLabel: ta('daily.depositTxs'),
@@ -2747,6 +2768,12 @@ export default function AmmDetailsPage({
           data: points.map(({ time, row }) => chartPoint(time, row.swapCount || 0))
         }
       ],
+      traders: [
+        {
+          name: ta('charts.series.traders'),
+          data: points.map(({ time, row }) => chartPoint(time, row.swapDexCountAccounts))
+        }
+      ],
       liquidityCounts: [
         {
           name: ta('daily.deposits'),
@@ -2775,6 +2802,22 @@ export default function AmmDetailsPage({
         {
           name: ta('daily.withdrawals'),
           data: points.map(({ time, row }) => chartPoint(time, row.withdrawVolume2 || 0))
+        }
+      ],
+      swapVolume1: [
+        {
+          name: ta('charts.series.total'),
+          data: points.map(({ time, row }) =>
+            chartPoint(time, sumPresentValues(row.swapDexSellVolume1, row.swapDexBuyVolume1))
+          )
+        }
+      ],
+      swapVolume2: [
+        {
+          name: ta('charts.series.total'),
+          data: points.map(({ time, row }) =>
+            chartPoint(time, sumPresentValues(row.swapDexSellVolume2, row.swapDexBuyVolume2))
+          )
         }
       ],
       lpHolders: [
@@ -2946,7 +2989,35 @@ export default function AmmDetailsPage({
                   </div>
                 </div>
                 <div className="ammChartsGrid">
-                  <AmmChartCard title={ta('charts.swaps')} rows={chartRows} series={chartSeries.activity} type="bar" loading={chartLoading} />
+                  <AmmChartCard
+                    title={ta('charts.swaps')}
+                    rows={chartRows}
+                    series={chartSeries.activity}
+                    type="bar"
+                    loading={chartLoading}
+                  />
+                  <AmmChartCard
+                    title={ta('charts.swapVolume', { asset: asset1Name })}
+                    note={ta('charts.recentData')}
+                    rows={chartRows}
+                    series={chartSeries.swapVolume1}
+                    loading={chartLoading}
+                  />
+                  <AmmChartCard
+                    title={ta('charts.swapVolume', { asset: asset2Name })}
+                    note={ta('charts.recentData')}
+                    rows={chartRows}
+                    series={chartSeries.swapVolume2}
+                    loading={chartLoading}
+                  />
+                  <AmmChartCard
+                    title={ta('charts.traders')}
+                    note={ta('charts.recentData')}
+                    rows={chartRows}
+                    series={chartSeries.traders}
+                    type="bar"
+                    loading={chartLoading}
+                  />
                   <AmmChartCard title={ta('overview.reserves')} rows={chartRows} series={chartSeries.reserves} dualYAxis loading={chartLoading} />
                   <AmmChartCard title={ta('contributors.title')} rows={lpChartRows} series={chartSeries.lpHolders} loading={chartLoading} />
                   <AmmChartCard

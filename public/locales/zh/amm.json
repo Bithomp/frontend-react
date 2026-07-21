@@ -35,8 +35,9 @@
     "poolStats": "池统计",
     "lpSupply": "LP 供应量",
     "contributors": "贡献者",
+    "holders": "持有者",
     "trustlines": "信任线",
-    "dexTrades": "DEX 交易"
+    "lpTokenPrice": "LP 代币价格"
   },
   "tooltips": {
     "comparedLastClosedDay": "与最近一个已关闭日相比",
@@ -47,7 +48,7 @@
     "price24h": "24 小时价格变化"
   },
   "daily": {
-    "title": "最近已关闭日流动性",
+    "title": "最近已关闭日活动",
     "deposits": "存入",
     "withdrawals": "取出",
     "depositTxs": "存入交易",
@@ -55,16 +56,24 @@
     "depositors": "存入账户",
     "withdrawers": "取出账户",
     "volume": "数量",
-    "volumeUnavailable": "数量不可用"
+    "volumeUnavailable": "数量不可用",
+    "dexSwaps": "AMM 交换",
+    "swapTxs": "交换交易",
+    "traders": "交易者"
   },
   "charts": {
     "poolHistory": "池历史",
     "subtitle": "每日交换、储备、存入 / 取出活动和 LP 贡献者。",
     "swaps": "交换",
+    "traders": "独立交易者",
     "depositsWithdrawals": "存入 / 取出",
     "assetVolume": "{{asset}} 存入 / 取出数量",
+    "swapVolume": "{{asset}} 交换量",
+    "recentData": "仅有近期数据",
     "series": {
-      "swaps": "交换"
+      "swaps": "交换",
+      "traders": "交易者",
+      "total": "总计"
     }
   },
   "activity": {
