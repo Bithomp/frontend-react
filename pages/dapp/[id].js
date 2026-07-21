@@ -107,7 +107,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-function DappHistoryChart({ title, rows, series, currency = '', type = 'line', showYear = false }) {
+function DappHistoryChart({ title, rows, series, currency = '', type = 'line', showYear = false, separateScales = false }) {
   const { t, i18n } = useTranslation('dapps')
   const { theme } = useTheme()
   const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
@@ -141,7 +141,16 @@ function DappHistoryChart({ title, rows, series, currency = '', type = 'line', s
         axisBorder: { color: chartTheme.gridColor },
         axisTicks: { show: false }
       },
-      yaxis: {
+      yaxis: separateScales ? series.map((item, index) => ({
+        seriesName: item.name,
+        opposite: index % 2 === 1,
+        forceNiceScale: true,
+        axisBorder: { show: true, color: item.color },
+        labels: {
+          formatter: (value) => shortNiceNumber(value, 2, 1, currency || null),
+          style: apexAxisLabelStyle(theme, { fontSize: '10px' })
+        }
+      })) : {
         labels: {
           formatter: (value) => shortNiceNumber(value, 2, 1, currency || null),
           style: apexAxisLabelStyle(theme, { fontSize: '10px' })
@@ -149,7 +158,7 @@ function DappHistoryChart({ title, rows, series, currency = '', type = 'line', s
       },
       tooltip: { shared: true, intersect: false, theme: chartTheme.tooltipTheme }
     }),
-    [chartTheme, currency, i18n.language, series, showYear, theme, type]
+    [chartTheme, currency, i18n.language, separateScales, series, showYear, theme, type]
   )
 
   return (
@@ -435,7 +444,14 @@ export default function DappDetails({
           </section>
 
           <section className={styles.charts}>
-            <DappHistoryChart title={t('detail.addressHistory')} rows={rows} series={chartSeries.addresses} showYear={period === 'all'} />
+            <DappHistoryChart
+              title={t('detail.addressHistory')}
+              rows={rows}
+              series={chartSeries.addresses}
+              type="bar"
+              showYear={period === 'all'}
+              separateScales
+            />
             <DappHistoryChart title={t('detail.transactionHistory')} rows={rows} series={chartSeries.transactions} type="bar" showYear={period === 'all'} />
             <DappHistoryChart title={t('detail.volumeHistory')} rows={rows} series={chartSeries.volume} currency={currency} showYear={period === 'all'} />
             <DappHistoryChart title={t('detail.feeHistory')} rows={rows} series={chartSeries.fees} currency={currency} showYear={period === 'all'} />
