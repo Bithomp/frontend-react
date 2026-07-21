@@ -48,6 +48,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
+  const hasOrderSpecification = myOrder && (takerGets || takerPays)
   const showRates = myBalanceChangesList?.length === 2 && !myBalanceChangesList.some(isXls14NftAmount)
 
   const icon = rippling ? (
@@ -69,7 +70,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
         <RipplingChanges balanceChanges={myBalanceChangesList} />
       ) : (
         <>
-          {myOrder && (
+          {hasOrderSpecification && (
             <>
               Order specification:
               <br />
@@ -87,7 +88,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
               )}
             </>
           )}
-          {myOrder && myBalanceChangesList?.length === 2 && <br />}
+          {hasOrderSpecification && myBalanceChangesList?.length === 2 && <br />}
           {myBalanceChangesList?.length === 2 && (
             <>
               <div>
