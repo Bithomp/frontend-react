@@ -323,6 +323,19 @@ export const dappChartApiUrl = (sourceTag, convertCurrency, period = 'month') =>
   return `v2/dapp/${encodeURIComponent(sourceTag)}/chart?${params.toString()}`
 }
 
+export const dappTransactionsApiUrl = (sourceTag, convertCurrency, options = {}) => {
+  const { type = 'all', order = 'new', marker, limit = 20 } = options
+  const params = new URLSearchParams({
+    order,
+    limit: String(limit),
+    currencyDetails: 'true'
+  })
+  if (convertCurrency) params.set('convertCurrencies', String(convertCurrency).toLowerCase())
+  if (type && type !== 'all') params.set('type', type)
+  if (marker) params.set('marker', typeof marker === 'object' ? JSON.stringify(marker) : marker)
+  return `v2/dapp/${encodeURIComponent(sourceTag)}/transactions?${params.toString()}`
+}
+
 const normalizeWalletId = (w) => (typeof w === 'string' ? w.trim().toLowerCase() : '')
 
 export const WALLET_FREQ = (() => {

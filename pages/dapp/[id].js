@@ -14,12 +14,20 @@ import WalletsCell from '../../components/Dapps/WalletsCell'
 import TypeMixCell from '../../components/Dapps/TypeMixCell'
 import DappSelect from '../../components/Dapps/DappSelect'
 import DappsDataNote from '../../components/Dapps/DappsDataNote'
+import DappTransactions from '../../components/Dapps/DappTransactions'
 import ChartPeriodSwitch from '../../components/UI/ChartPeriodSwitch'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import { axiosServer, currencyServer, passHeaders } from '../../utils/axios'
 import { explorerName, nativeCurrency, normalizeLocale } from '../../utils'
 import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
-import { DAPPS_META, DAPP_CHART_PERIODS, dappChartApiUrl, dappChartSpan, generatedAgentNameBySourceTag } from '../../utils/dapps'
+import {
+  DAPPS_META,
+  DAPP_CHART_PERIODS,
+  dappChartApiUrl,
+  dappChartSpan,
+  dappTransactionsApiUrl,
+  generatedAgentNameBySourceTag
+} from '../../utils/dapps'
 import { shortNiceNumber } from '../../utils/format'
 import { dappBySourceTag } from '../../utils/transaction'
 import styles from '../../styles/pages/dappDetails.module.scss'
@@ -83,17 +91,28 @@ export async function getServerSideProps(context) {
   const selectedCurrencyServer = currencyServer(req)
   let initialData = null
   let initialErrorMessage = ''
+  let initialTransactions = null
+  let initialTransactionsError = ''
 
-  try {
-    const response = await axiosServer({
+  const headers = passHeaders(req)
+  const [chartResult, transactionsResult] = await Promise.allSettled([
+    axiosServer({
       method: 'get',
       url: dappChartApiUrl(sourceTag, selectedCurrencyServer, period),
-      headers: passHeaders(req)
+      headers
+    }),
+    axiosServer({
+      method: 'get',
+      url: dappTransactionsApiUrl(sourceTag, selectedCurrencyServer),
+      headers
     })
-    initialData = response?.data || null
-  } catch (error) {
-    initialErrorMessage = error?.message || 'Dapp data not found'
-  }
+  ])
+
+  if (chartResult.status === 'fulfilled') initialData = chartResult.value?.data || null
+  else initialErrorMessage = chartResult.reason?.message || 'Dapp data not found'
+
+  if (transactionsResult.status === 'fulfilled') initialTransactions = transactionsResult.value?.data || null
+  else initialTransactionsError = transactionsResult.reason?.message || 'Dapp transactions not found'
 
   return {
     props: {
@@ -102,7 +121,9 @@ export async function getServerSideProps(context) {
       selectedCurrencyServer,
       initialData,
       initialErrorMessage,
-      ...(await serverSideTranslations(locale, ['common', 'dapps']))
+      initialTransactions,
+      initialTransactionsError,
+      ...(await serverSideTranslations(locale, ['common', 'dapps', 'account', 'transaction', 'transaction-errors']))
     }
   }
 }
@@ -187,6 +208,8 @@ export default function DappDetails({
   periodQuery,
   initialData,
   initialErrorMessage,
+  initialTransactions,
+  initialTransactionsError,
   selectedCurrency: selectedCurrencyApp,
   fiatRate,
   selectedCurrencyServer
@@ -504,6 +527,14 @@ export default function DappDetails({
           </section> : null}
         </>
       ) : !loading ? <div className={styles.empty}>{t('detail.noChartData')}</div> : null}
+
+      <DappTransactions
+        sourceTag={sourceTag}
+        currency={currency}
+        knownTypes={Object.keys(typeResultTotals)}
+        initialData={initialTransactions}
+        initialErrorMessage={initialTransactionsError}
+      />
 
       {!loading ? <DappsDataNote /> : null}
     </main>

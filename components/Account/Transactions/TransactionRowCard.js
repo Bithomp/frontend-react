@@ -66,6 +66,7 @@ export const TransactionRowCard = ({
 }) => {
   const { t: txT } = useTranslation('transaction')
   const { t: txErrorT } = useTranslation('transaction-errors')
+  const { t: accountT } = useTranslation('account')
   const width = useWidth()
   const { specification, tx, outcome, fiatRates } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
@@ -156,7 +157,7 @@ export const TransactionRowCard = ({
           <>
             {specification?.source?.address === address ? (
               <>
-                To:{' '}
+                {accountT('detail.labels.to')}:{' '}
                 <Link className="bold" href={'/account/' + specification?.destination?.address}>
                   {specification?.destination?.address}
                 </Link>{' '}
@@ -164,7 +165,9 @@ export const TransactionRowCard = ({
               </>
             ) : (
               <>
-                {specification?.destination?.address === address ? 'From' : 'Submitter'}:{' '}
+                {specification?.destination?.address === address
+                  ? accountT('detail.labels.from')
+                  : txT('labels.Submitter')}:{' '}
                 <Link className="bold" href={'/account/' + specification?.source?.address}>
                   {specification?.source?.address}
                 </Link>{' '}
@@ -191,13 +194,14 @@ export const TransactionRowCard = ({
           <>
             {sequence ? (
               <>
-                {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
+                {tx.TicketSequence ? txT('labels.Ticket sequence') : txT('labels.Sequence')}:{' '}
+                {tx.Sequence || tx.TicketSequence}
                 <br />
               </>
             ) : (
               ''
             )}
-            Fee: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
+            {accountT('detail.labels.fee')}: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
             {tokenToFiat({
               amount: tx.Fee,
               selectedCurrency,
@@ -207,7 +211,7 @@ export const TransactionRowCard = ({
           </>
         )}
         {memoNode(specification?.memos, 'div', { memoLabel: txT('labels.Memo') })}
-        Tx hash:{' '}
+        {txT('labels.Tx hash')}:{' '}
         <LinkTx tx={tx.hash} copy={true}>
           {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
         </LinkTx>

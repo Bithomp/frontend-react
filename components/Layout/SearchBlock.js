@@ -106,8 +106,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
   const windowWidth = useWidth()
 
   const { id } = router.query
+  const useRouteId = !(compact && router.pathname.startsWith('/dapp/'))
 
-  const [searchItem, setSearchItem] = useState(() => normalizeSearchInputValue(id))
+  const [searchItem, setSearchItem] = useState(() => normalizeSearchInputValue(useRouteId ? id : ''))
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)

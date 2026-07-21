@@ -1,0 +1,111 @@
+.section {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.header > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.header h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 17px;
+}
+
+.header > div:first-child span,
+.controls > span {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.controls {
+  display: grid;
+  gap: 4px;
+}
+
+.controls select {
+  box-sizing: border-box;
+  height: 36px;
+  min-width: 150px;
+  padding: 0 30px 0 10px;
+  border: 1px solid var(--accent-link);
+  border-radius: 9px;
+  color: var(--text-main);
+  background: var(--background-input);
+  font: inherit;
+}
+
+.tableWrap {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.tableWrap table {
+  margin-right: auto;
+  margin-left: auto;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  box-shadow: none;
+}
+
+.status,
+.error {
+  display: grid;
+  place-items: center;
+  min-height: 100px;
+  padding: 18px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.error {
+  min-height: auto;
+  color: var(--red);
+}
+
+.loadMore {
+  display: block;
+  min-width: 180px;
+  height: 38px;
+  margin: 14px auto;
+  padding: 0 16px;
+  border: 1px solid var(--accent-link);
+  border-radius: 9px;
+  color: var(--accent-link);
+  background: var(--background-secondary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.loadMore:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media only screen and (max-width: 700px) {
+  .header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .controls select {
+    width: 100%;
+    min-width: 0;
+  }
+}

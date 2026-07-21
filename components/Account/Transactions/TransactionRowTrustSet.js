@@ -13,6 +13,8 @@ import { CiLink } from 'react-icons/ci'
 export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency }) => {
   const { specification } = data
   const serviceOruser = userOrServiceName(specification?.counterpartyDetails)
+  const flags = showFlags(specification?.flags)
+  const hasLimit = specification?.limit !== undefined && specification?.limit !== null && specification?.limit !== ''
   const isMobile = useIsMobile(600)
   const txTypeSpecial = (
     <>
@@ -61,15 +63,27 @@ export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency 
           <br />
         </>
       )}
-      {serviceOruser ? 'Address' : 'Counterparty'}: <span className="bold">{specification.counterparty}</span>{' '}
-      <CopyButton text={specification.counterparty} />
-      <br />
-      Currency code: <span className="bold brake">{specification.currency}</span>{' '}
-      <CopyButton text={specification.currency} />
-      <br />
-      Limit: <span className="bold">{fullNiceNumber(specification.limit)}</span>
-      <br />
-      <span className="flex gap-1">Flags: {showFlags(specification.flags)}</span>
+      {specification?.counterparty && (
+        <>
+          {serviceOruser ? 'Address' : 'Counterparty'}: <span className="bold">{specification.counterparty}</span>{' '}
+          <CopyButton text={specification.counterparty} />
+          <br />
+        </>
+      )}
+      {specification?.currency && (
+        <>
+          Currency code: <span className="bold brake">{specification.currency}</span>{' '}
+          <CopyButton text={specification.currency} />
+          <br />
+        </>
+      )}
+      {hasLimit && (
+        <>
+          Limit: <span className="bold">{fullNiceNumber(specification.limit)}</span>
+          <br />
+        </>
+      )}
+      {flags && <span className="flex gap-1">Flags: {flags}</span>}
     </TransactionRowCard>
   )
 }

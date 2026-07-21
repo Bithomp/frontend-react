@@ -11,8 +11,11 @@ import { useIsMobile } from '../../../utils/mobile'
 import { RipplingChanges } from './Elements/RipplingChanges'
 import { MdCompareArrows, MdArrowDownward, MdArrowUpward, MdSwapVert } from 'react-icons/md'
 import { isXls14NftAmount } from '../../../utils'
+import { useTranslation } from 'next-i18next'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
+  const { t } = useTranslation('transaction')
+  const { t: accountT } = useTranslation('account')
   const { outcome, specification, tx, fiatRates } = data
   const fiatRate = fiatRates?.[selectedCurrency]
 
@@ -28,13 +31,19 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
   const rippling = isRipplingOnIssuer(sourceBalanceChangesList, address)
 
   if (rippling) {
-    txTypeSpecial = <span className="bold">Rippling through payment</span>
+    txTypeSpecial = <span className="bold">{t('labels.Rippling through payment')}</span>
   } else {
     if (!isConvertion) {
       txTypeSpecial = (
         <>
-          <span className="bold">{txTypeSpecial} </span>
-          {tx?.Destination === address ? 'from' : tx?.Account === address ? 'to' : 'by'}
+          <span className="bold">{txTypeSpecial === 'Payment' ? accountT('detail.transactions.payment') : txTypeSpecial} </span>
+          {accountT(
+            tx?.Destination === address
+              ? 'detail.phrases.from'
+              : tx?.Account === address
+                ? 'detail.phrases.to'
+                : 'detail.phrases.by'
+          )}
           {isMobile ? ' ' : <br />}
           <AddressWithIconInline
             data={
@@ -45,7 +54,9 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
         </>
       )
     } else {
-      txTypeSpecial = <span className="bold">{txTypeSpecial}</span>
+      txTypeSpecial = (
+        <span className="bold">{txTypeSpecial === 'Payment' ? accountT('detail.transactions.payment') : txTypeSpecial}</span>
+      )
     }
   }
 
@@ -65,7 +76,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
       )
   }
 
-  const balancesTitle = isConvertion ? 'Exchanged' : 'Sender spent'
+  const balancesTitle = isConvertion ? t('labels.Exchanged') : t('labels.Sender spent')
 
   return (
     <TransactionRowCard
@@ -82,7 +93,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
         <>
           {!isConvertion && outcome?.deliveredAmount && (
             <div>
-              {specification?.source?.address === address ? 'Sent' : 'Received'}:{' '}
+              {t(specification?.source?.address === address ? 'labels.Sent' : 'labels.Received')}:{' '}
               {amountFormat(outcome?.deliveredAmount, {
                 icon: true,
                 withIssuer: true,
@@ -123,7 +134,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
               </div>
               {sourceBalanceChangesList.length === 2 && showExchangeRate && (
                 <div>
-                  <span>Exchange rate: </span>
+                  <span>{t('labels.Exchange rate')}: </span>
                   <span>
                     {amountFormat(
                       {
