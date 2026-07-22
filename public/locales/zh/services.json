@@ -766,6 +766,7 @@
     "fields": { "scale": "小数位数", "maximum": "最大供应量", "transferFee": "转账费（%）", "domain": "许可域 ID" },
     "hints": { "scale": "0 至 255，发行后无法更改。", "maximum": "可选；省略时使用协议默认上限。", "baseUnits": "在账本中存储为 {{amount}} 个基本单位。", "transferFee": "可选，0 至 50，最多 3 位小数。", "domain": "可选的 64 位十六进制 ID；需要授权。" }, "placeholders": { "optional": "可选" },
     "permissions": { "title": "代币权限", "warning": "请谨慎选择：这些能力以后无法启用。", "canLock": { "title": "可锁定", "description": "发行方可锁定单个或所有余额。" }, "requireAuth": { "title": "需要授权", "description": "发行方必须批准每位持有人。" }, "canEscrow": { "title": "可托管", "description": "持有人可将余额放入 Escrow。" }, "canTrade": { "title": "可交易", "description": "可通过 DEX 或 AMM 交易。" }, "canTransfer": { "title": "可转账", "description": "持有人可向其他账户发送代币。" }, "canClawback": { "title": "可追回", "description": "发行方可从持有人处追回代币。" } },
+    "domainLookup": { "owner": "许可域所有者地址", "domains": "所有者的许可域", "hint": "输入 r 地址以查找其许可域。", "found": "找到 {{count}} 个域。请选择一个以填写域 ID。", "loading": "正在加载许可域…", "empty": "此账户没有许可域。", "error": "无法加载许可域。" },
     "metadata": { "title": "MPT 元数据" },
     "errors": { "scale": "小数位数必须是 0 至 255 的整数。", "maximumPrecision": "最大供应量最多可有 {{scale}} 位小数。", "maximumRange": "供应量必须为 1 至 9,223,372,036,854,775,807 个基本单位。", "fee": "转账费必须为 0 至 50，最多 3 位小数。", "feeTransfer": "设置转账费前请启用可转账。", "metadataJson": "元数据必须是有效的 JSON。", "metadataSize": "元数据为 {{count}} 字节；上限为 1024。", "domain": "域 ID 必须正好包含 64 个十六进制字符。", "domainAuth": "使用许可域前请启用需要授权。" }, "preview": "交易预览", "issue": "发行 MPT"
   },

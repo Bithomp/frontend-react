@@ -1,11 +1,13 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../../components/SEO'
 import MptMetadataBuilder from '../../components/Services/MptMetadataBuilder'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
-import { explorerName } from '../../utils'
+import SimpleSelect from '../../components/UI/SimpleSelect'
+import { explorerName, isAddressValid } from '../../utils'
 import styles from '../../styles/pages/issue-mpt.module.scss'
 
 const MAX_AMOUNT = 9223372036854775807n
@@ -55,7 +57,74 @@ export default function IssueMptPage({ setSignRequest }) {
   const [metadata, setMetadata] = useState('')
   const [metadataBuilderValid, setMetadataBuilderValid] = useState(null)
   const [domainId, setDomainId] = useState('')
+  const [domainOwner, setDomainOwner] = useState('')
+  const [ownedDomains, setOwnedDomains] = useState([])
+  const [domainsLoading, setDomainsLoading] = useState(false)
+  const [domainsLoaded, setDomainsLoaded] = useState(false)
+  const [domainsError, setDomainsError] = useState(false)
   const [flags, setFlags] = useState({ canTransfer: true, canTrade: true, canEscrow: true })
+
+  useEffect(() => {
+    const owner = domainOwner.trim()
+    setOwnedDomains([])
+    setDomainsLoaded(false)
+    setDomainsError(false)
+    if (!isAddressValid(owner)) {
+      setDomainsLoading(false)
+      return
+    }
+
+    const controller = new AbortController()
+    const timeout = setTimeout(async () => {
+      setDomainsLoading(true)
+      try {
+        const domains = []
+        const seenMarkers = new Set()
+        let marker
+
+        do {
+          const response = await axios.get(`v2/objects/${owner}`, {
+            params: { type: 'permissioned_domain', limit: 1000, ...(marker ? { marker } : {}) },
+            signal: controller.signal
+          })
+          const objects = Array.isArray(response?.data?.objects) ? response.data.objects : []
+          domains.push(...objects.filter((object) => object?.LedgerEntryType === 'PermissionedDomain'))
+
+          marker = response?.data?.marker || null
+          const markerKey = marker ? JSON.stringify(marker) : ''
+          if (markerKey && seenMarkers.has(markerKey)) break
+          if (markerKey) seenMarkers.add(markerKey)
+        } while (marker)
+
+        setOwnedDomains(domains)
+        setDomainsLoaded(true)
+      } catch (error) {
+        if (!axios.isCancel(error) && error?.name !== 'CanceledError') setDomainsError(true)
+      } finally {
+        if (!controller.signal.aborted) setDomainsLoading(false)
+      }
+    }, 400)
+
+    return () => {
+      clearTimeout(timeout)
+      controller.abort()
+    }
+  }, [domainOwner])
+
+  const domainOptions = useMemo(
+    () =>
+      ownedDomains
+        .map((domain) => {
+          const value = domain?.index || domain?.LedgerIndex
+          if (!value) return null
+          return {
+            value,
+            label: `${value}${domain.Sequence ? ` · #${domain.Sequence}` : ''}`
+          }
+        })
+        .filter(Boolean),
+    [ownedDomains]
+  )
 
   const validation = useMemo(() => {
     const assetScale = Number(scale || 0)
@@ -147,6 +216,33 @@ export default function IssueMptPage({ setSignRequest }) {
                 <input className="input-text" value={domainId} maxLength={64} placeholder={tm('placeholders.optional')} onChange={(event) => setDomainId(event.target.value.replace(/[^A-Fa-f0-9]/g, ''))} />
                 <small>{tm('hints.domain')}</small>
               </label>
+              <label className={styles.field}>
+                <span>{tm('domainLookup.owner')}</span>
+                <input className="input-text" value={domainOwner} placeholder="r..." spellCheck="false" onChange={(event) => setDomainOwner(event.target.value.trim())} />
+                <small>
+                  {domainsLoading
+                    ? tm('domainLookup.loading')
+                    : domainsError
+                      ? tm('domainLookup.error')
+                      : domainsLoaded && !domainOptions.length
+                        ? tm('domainLookup.empty')
+                        : tm('domainLookup.hint')}
+                </small>
+              </label>
+              {domainOptions.length > 0 && (
+                <label className={styles.field}>
+                  <span>{tm('domainLookup.domains')}</span>
+                  <SimpleSelect
+                    value={domainId}
+                    setValue={setDomainId}
+                    optionsList={domainOptions}
+                    className={styles.domainDropdown}
+                    instanceId="mpt-permissioned-domain"
+                    formatOptionLabel={(option) => <span className={styles.domainOption}>{option.label}</span>}
+                  />
+                  <small>{tm('domainLookup.found', { count: domainOptions.length })}</small>
+                </label>
+              )}
             </div>
 
             <h3>{tm('permissions.title')}</h3>
