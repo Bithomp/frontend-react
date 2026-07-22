@@ -144,6 +144,11 @@ const TokenCell = ({ token }) => {
   return <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
 }
 
+const transferFeeText = (token) => {
+  const transferFee = Number(token?.transferFee ?? token?.TransferFee)
+  return Number.isFinite(transferFee) && transferFee > 0 ? `${transferFee / 1000}%` : 'No fee'
+}
+
 export default function Mpts({
   initialData,
   initialErrorMessage,
@@ -532,7 +537,7 @@ export default function Mpts({
                               </span>
                             </td>
                             <td className="right">{token.sequence}</td>
-                            <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
+                            <td className="right">{transferFeeText(token)}</td>
                             <td className="right">
                               {dateFormat(token.createdAt)}
                               <br />
@@ -616,7 +621,7 @@ export default function Mpts({
                                 <br />
                                 <b>Token sequence:</b> {token.sequence}
                                 <br />
-                                <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : '0%'}
+                                <b>Transfer fee:</b> {transferFeeText(token)}
                                 <br />
                                 <b>Created:</b>{' '}
                                 <span>
