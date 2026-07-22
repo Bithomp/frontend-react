@@ -739,7 +739,11 @@
       "loaded": "Chargé",
       "pushed": "Envoyé",
       "shown-count": "{{count}} sur {{total}} affichées",
-      "number": "Exécution #{{id}}"
+      "number": "Exécution #{{id}}",
+      "last-day": "Dernières 24 heures",
+      "last-week": "7 derniers jours",
+      "last-month": "30 derniers jours",
+      "locked-until": "Limite d’exécutions atteinte. Déverrouillage :"
     },
     "guest": {
       "rules": "Créez des règles d’alerte {{explorerName}} après connexion.",

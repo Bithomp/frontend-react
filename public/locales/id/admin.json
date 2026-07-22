@@ -739,7 +739,11 @@
       "loaded": "Dimuat",
       "pushed": "Dikirim",
       "shown-count": "Menampilkan {{count}} dari {{total}}",
-      "number": "Eksekusi #{{id}}"
+      "number": "Eksekusi #{{id}}",
+      "last-day": "24 jam terakhir",
+      "last-week": "7 hari terakhir",
+      "last-month": "30 hari terakhir",
+      "locked-until": "Batas eksekusi tercapai. Terbuka kembali:"
     },
     "guest": {
       "rules": "Buat aturan peringatan {{explorerName}} setelah masuk.",

@@ -1154,6 +1154,18 @@
     line-height: 1.35;
   }
 
+  .notification-rule-lock {
+    width: fit-content;
+    margin-top: 7px;
+    padding: 5px 9px;
+    border-radius: 8px;
+    color: var(--orange);
+    background: color-mix(in srgb, var(--orange) 10%, transparent);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
   .notification-rule-meta {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1213,6 +1225,35 @@
         border-color: var(--chip-border);
         background: var(--chip-bg);
       }
+    }
+  }
+
+  .notification-rule-executions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+
+    > span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--button-additional) 25%, transparent);
+    }
+
+    small {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    strong {
+      color: var(--text-main);
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
     }
   }
 
@@ -1437,6 +1478,7 @@
     .notification-card-grid,
     .notification-rule-filter-grid,
     .notification-rule-meta,
+    .notification-rule-executions,
     .notification-filter-tx-type,
     .notification-selected-guide {
       grid-template-columns: 1fr;

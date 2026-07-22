@@ -739,7 +739,11 @@
       "loaded": "로드됨",
       "pushed": "전송됨",
       "shown-count": "{{total}}개 중 {{count}}개 표시",
-      "number": "실행 #{{id}}"
+      "number": "실행 #{{id}}",
+      "last-day": "최근 24시간",
+      "last-week": "최근 7일",
+      "last-month": "최근 30일",
+      "locked-until": "실행 한도에 도달했습니다. 잠금 해제:"
     },
     "guest": {
       "rules": "로그인 후{{explorerName}}경고 규칙을 생성합니다.",

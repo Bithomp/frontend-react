@@ -741,7 +741,11 @@
       "loaded": "Geladen",
       "pushed": "Gesendet",
       "shown-count": "{{count}} von {{total}} angezeigt",
-      "number": "Ausführung #{{id}}"
+      "number": "Ausführung #{{id}}",
+      "last-day": "Letzte 24 Stunden",
+      "last-week": "Letzte 7 Tage",
+      "last-month": "Letzte 30 Tage",
+      "locked-until": "Ausführungslimit erreicht. Entsperrung:"
     },
     "guest": {
       "rules": "Erstellen Sie nach der Anmeldung {{explorerName}} Benachrichtigungsregeln.",

@@ -739,7 +739,11 @@
       "loaded": "ロード済み",
       "pushed": "送信済み",
       "shown-count": "{{total}}件中{{count}}件を表示",
-      "number": "実行番号{{id}}"
+      "number": "実行番号{{id}}",
+      "last-day": "過去24時間",
+      "last-week": "過去7日間",
+      "last-month": "過去30日間",
+      "locked-until": "実行上限に達しました。解除日時："
     },
     "guest": {
       "rules": "サインインした後、{{explorerName}}アラート ルールを作成します。",

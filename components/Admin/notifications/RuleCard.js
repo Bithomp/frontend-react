@@ -195,6 +195,9 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
   const enabled = isRuleEnabled(rule.enabled)
   const rawDisableReason = settings.disableReason
   const disableReason = enabled ? '' : formatDisableReason(rawDisableReason, t)
+  const executions = rule.executions
+  const hasExecutionStats = executions && typeof executions === 'object'
+  const lockedUntil = Number(executions?.lockedUntil)
 
   return (
     <Card className="notification-card notification-rule-card">
@@ -207,6 +210,11 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
           {disableReason && (
             <div className="notification-rule-disable-reason">
               {t('notifications.paused-reason', { reason: disableReason })}
+            </div>
+          )}
+          {executions?.locked && Number.isFinite(lockedUntil) && lockedUntil > 0 && (
+            <div className="notification-rule-lock">
+              {t('notifications.executions.locked-until')} {fullDateAndTime(lockedUntil)}
             </div>
           )}
         </div>
@@ -271,6 +279,22 @@ export default function RuleCard({ deleting, loadingExecutions, onDelete, onEdit
           </span>
         )}
       </div>
+      {hasExecutionStats && (
+        <div className="notification-rule-executions">
+          <span>
+            <small>{t('notifications.executions.last-day')}</small>
+            <strong>{Number(executions.day) || 0}</strong>
+          </span>
+          <span>
+            <small>{t('notifications.executions.last-week')}</small>
+            <strong>{Number(executions.week) || 0}</strong>
+          </span>
+          <span>
+            <small>{t('notifications.executions.last-month')}</small>
+            <strong>{Number(executions.month) || 0}</strong>
+          </span>
+        </div>
+      )}
       <div className="notification-rule-condition">
         <span>{t('notifications.filters-title')}</span>
         <strong>{conditionText || t('notifications.every-matching-event')}</strong>

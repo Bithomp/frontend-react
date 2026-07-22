@@ -741,7 +741,11 @@
       "loaded": "Cargado",
       "pushed": "Enviado",
       "shown-count": "Mostrando {{count}} de {{total}}",
-      "number": "Ejecución #{{id}}"
+      "number": "Ejecución #{{id}}",
+      "last-day": "Últimas 24 horas",
+      "last-week": "Últimos 7 días",
+      "last-month": "Últimos 30 días",
+      "locked-until": "Límite de ejecuciones alcanzado. Se desbloquea:"
     },
     "guest": {
       "rules": "Cree reglas de alerta de {{explorerName}} después de iniciar sesión.",

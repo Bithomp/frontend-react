@@ -739,7 +739,11 @@
       "loaded": "已加载",
       "pushed": "已发送",
       "shown-count": "显示 {{count}} / {{total}}",
-      "number": "执行 #{{id}}"
+      "number": "执行 #{{id}}",
+      "last-day": "最近24小时",
+      "last-week": "最近7天",
+      "last-month": "最近30天",
+      "locked-until": "已达到执行限制。解锁时间："
     },
     "guest": {
       "rules": "登录后可创建 {{explorerName}} 提醒规则。",

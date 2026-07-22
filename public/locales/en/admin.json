@@ -754,7 +754,11 @@
       "loaded": "Loaded",
       "pushed": "Pushed",
       "shown-count": "Showing {{count}} of {{total}}",
-      "number": "Execution #{{id}}"
+      "number": "Execution #{{id}}",
+      "last-day": "Last 24 hours",
+      "last-week": "Last 7 days",
+      "last-month": "Last 30 days",
+      "locked-until": "Execution limit reached. Unlocks:"
     },
     "guest": {
       "rules": "Create {{explorerName}} alert rules after signing in.",
