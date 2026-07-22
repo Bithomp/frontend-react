@@ -6,8 +6,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import MptMetadataBuilder from '../../components/Services/MptMetadataBuilder'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
+import Dialog from '../../components/UI/Dialog'
 import SimpleSelect from '../../components/UI/SimpleSelect'
 import { explorerName, isAddressValid } from '../../utils'
+import { ipfsUrl } from '../../utils/nft'
+import { tokenPage as tokenPreviewTheme } from '../../styles/pages/token.module.scss'
 import styles from '../../styles/pages/issue-mpt.module.scss'
 
 const MAX_AMOUNT = 9223372036854775807n
@@ -45,8 +48,25 @@ const encodeMetadata = (value) => {
   }
 }
 
+const metadataValue = (value, ...keys) => {
+  for (const key of keys) {
+    const item = value?.[key]
+    if (item !== undefined && item !== null && String(item).trim()) return item
+  }
+  return ''
+}
+
+const metadataIconUrl = (value) => {
+  const uri = String(metadataValue(value, 'icon', 'i') || '').trim()
+  if (!uri) return ''
+  if (/^data:image\//i.test(uri) || /^https?:\/\//i.test(uri)) return uri
+  if (/^ipfs:\/\//i.test(uri)) return ipfsUrl(uri, 'image', 'cdn') || ''
+  if (/^[a-z][a-z\d+.-]*:/i.test(uri)) return ''
+  return `https://${uri}`
+}
+
 export async function getServerSideProps({ locale }) {
-  return { props: { ...(await serverSideTranslations(locale, ['common', 'services'])) } }
+  return { props: { ...(await serverSideTranslations(locale, ['common', 'services', 'token'])) } }
 }
 
 export default function IssueMptPage({ setSignRequest }) {
@@ -57,6 +77,8 @@ export default function IssueMptPage({ setSignRequest }) {
   const [transferFee, setTransferFee] = useState('')
   const [metadata, setMetadata] = useState('')
   const [metadataBuilderValid, setMetadataBuilderValid] = useState(null)
+  const [showTokenPreview, setShowTokenPreview] = useState(false)
+  const [previewIconError, setPreviewIconError] = useState(false)
   const [mode, setMode] = useState('simple')
   const [domainId, setDomainId] = useState('')
   const [domainOwner, setDomainOwner] = useState('')
@@ -127,6 +149,28 @@ export default function IssueMptPage({ setSignRequest }) {
         .filter(Boolean),
     [ownedDomains]
   )
+
+  const previewMetadata = useMemo(() => {
+    try {
+      const value = JSON.parse(metadata || '{}')
+      return value && typeof value === 'object' && !Array.isArray(value) ? value : {}
+    } catch (_) {
+      return {}
+    }
+  }, [metadata])
+  const previewTicker = String(metadataValue(previewMetadata, 'ticker', 't') || 'MPT')
+  const previewName = String(metadataValue(previewMetadata, 'name', 'n') || previewTicker)
+  const previewDescription = String(metadataValue(previewMetadata, 'description', 'desc', 'd') || '')
+  const previewIssuerName = String(metadataValue(previewMetadata, 'issuer_name', 'in') || '')
+  const previewAssetClass = String(metadataValue(previewMetadata, 'asset_class', 'ac') || '')
+  const previewAssetSubclass = String(metadataValue(previewMetadata, 'asset_subclass', 'as') || '')
+  const previewIcon = metadataIconUrl(previewMetadata)
+  const previewPermissions = (mode === 'advanced' ? FLAGS : SIMPLE_FLAGS)
+    .filter(([key]) => flags[key])
+    .map(([key]) => tm(`permissions.${key}.title`))
+    .join(', ')
+
+  useEffect(() => setPreviewIconError(false), [previewIcon])
 
   const validation = useMemo(() => {
     const assetScale = Number(scale || 0)
@@ -301,12 +345,96 @@ export default function IssueMptPage({ setSignRequest }) {
             <h3>{tm('preview')}</h3>
             <pre>{JSON.stringify(validation.request, null, 2)}</pre>
             {issuanceErrors.length > 0 && <div className={styles.errors}>{issuanceErrors.map((error) => <div key={error}>{error}</div>)}</div>}
+            <button type="button" className={`button-outline ${styles.previewButton}`} onClick={() => setShowTokenPreview(true)}>
+              {tm('tokenPreview.button')}
+            </button>
             <button type="button" className={`button-action ${styles.issueButton}`} disabled={validation.errors.length > 0 || metadataBuilderValid === false} onClick={() => setSignRequest({ request: validation.request })}>
               {tm('issue')}
             </button>
           </aside>
         </div>
       </div>
+
+      <Dialog
+        isOpen={showTokenPreview}
+        onClose={() => setShowTokenPreview(false)}
+        title={tm('tokenPreview.title')}
+        size="xlarge"
+      >
+        <p className={styles.previewNote}>{tm('tokenPreview.note')}</p>
+        <div className={`${tokenPreviewTheme} ${styles.tokenPreview}`}>
+          <div className="tokenOverview tokenOverviewTop2">
+            <aside className="tokenProfileCard">
+              <div className="tokenProfileImageWrap">
+                {previewIcon && !previewIconError ? (
+                  <img src={previewIcon} alt="" className={`token-image ${styles.previewTokenImage}`} onError={() => setPreviewIconError(true)} />
+                ) : (
+                  <div className={styles.previewIconPlaceholder}>{previewTicker.slice(0, 6)}</div>
+                )}
+              </div>
+              <h1 className="tokenProfileTitle">{previewName}</h1>
+              <div className="tokenProfileMeta">
+                {previewTicker !== previewName && <span>{previewTicker}</span>}
+                <span className="tokenProfileIssuerLine">
+                  <span>{t('title.issuedBy', { ns: 'token' })}</span>
+                  <span className="tokenProfileIssuerValue">{tm('tokenPreview.afterSigning')}</span>
+                </span>
+              </div>
+              <div className="tokenProfileInfo">
+                {previewDescription && (
+                  <div className="tokenProfileInfoRow">
+                    <span>{t('fields.description', { ns: 'token' })}</span><span>{previewDescription}</span>
+                  </div>
+                )}
+                {previewIssuerName && (
+                  <div className="tokenProfileInfoRow">
+                    <span>{t('fields.issuerName', { ns: 'token' })}</span><span>{previewIssuerName}</span>
+                  </div>
+                )}
+                {previewAssetClass && (
+                  <div className="tokenProfileInfoRow">
+                    <span>{t('fields.assetClass', { ns: 'token' })}</span>
+                    <span>{t(`mpt-metadata.asset-classes.${previewAssetClass}`, { ns: 'services', defaultValue: previewAssetClass })}</span>
+                  </div>
+                )}
+                {previewAssetSubclass && (
+                  <div className="tokenProfileInfoRow">
+                    <span>{t('fields.assetSubclass', { ns: 'token' })}</span>
+                    <span>{t(`mpt-metadata.asset-subclasses.${previewAssetSubclass}`, { ns: 'services', defaultValue: previewAssetSubclass })}</span>
+                  </div>
+                )}
+                <div className="tokenProfileInfoRow">
+                  <span>{t('fields.mptId', { ns: 'token' })}</span><span>{tm('tokenPreview.afterIssuance')}</span>
+                </div>
+                <div className="tokenProfileInfoRow">
+                  <span>{t('fields.flags', { ns: 'token' })}</span>
+                  <span>{previewPermissions || t('values.none', { ns: 'token' })}</span>
+                </div>
+              </div>
+            </aside>
+
+            <section className="tokenPanel tokenSupplyPanel">
+              <h2>{previewName}</h2>
+              <div className="tokenMetricGrid">
+                {[
+                  ['outstanding', '0'],
+                  ['maxSupply', maximum || tm('tokenPreview.protocolDefault')],
+                  ['lockedAmount', '0'],
+                  ['holders', '0'],
+                  ['authorizedAddresses', '0'],
+                  ['transferFee', transferFee ? `${transferFee}%` : t('values.none', { ns: 'token' })],
+                  ['decimalPlaces', scale || '0']
+                ].map(([key, value]) => (
+                  <div key={key}>
+                    <div className="tokenMetricHeader"><span>{t(`fields.${key}`, { ns: 'token' })}</span></div>
+                    <div className="tokenMetricValue">{value}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </div>
+      </Dialog>
     </>
   )
 }
