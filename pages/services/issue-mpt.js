@@ -65,6 +65,16 @@ const metadataIconUrl = (value) => {
   return `https://${uri}`
 }
 
+const metadataLinkHref = (value) => {
+  const uri = String(value || '').trim()
+  if (!uri) return ''
+  if (/^(?:ipfs|cid|hash):/i.test(uri)) return ipfsUrl(uri, 'viewer', 'cl') || ''
+  if (/^https?:\/\//i.test(uri)) return uri
+  if (/^[a-z][a-z\d+.-]*:/i.test(uri)) return ''
+  if (/^[^\s/]+\.[^\s]+/i.test(uri)) return `https://${uri}`
+  return ''
+}
+
 export async function getServerSideProps({ locale }) {
   return { props: { ...(await serverSideTranslations(locale, ['common', 'services', 'token'])) } }
 }
@@ -165,6 +175,21 @@ export default function IssueMptPage({ setSignRequest }) {
   const previewAssetClass = String(metadataValue(previewMetadata, 'asset_class', 'ac') || '')
   const previewAssetSubclass = String(metadataValue(previewMetadata, 'asset_subclass', 'as') || '')
   const previewIcon = metadataIconUrl(previewMetadata)
+  const previewLinks = useMemo(() => {
+    const uris = metadataValue(previewMetadata, 'uris', 'us')
+    return (Array.isArray(uris) ? uris : uris ? [uris] : [])
+      .map((item, index) => {
+        const uri = typeof item === 'object' ? metadataValue(item, 'uri', 'u') : item
+        if (!uri) return null
+        const title = typeof item === 'object' ? metadataValue(item, 'title', 't') : ''
+        return {
+          href: metadataLinkHref(uri),
+          key: `${uri}-${index}`,
+          label: String(title || uri)
+        }
+      })
+      .filter(Boolean)
+  }, [previewMetadata])
   const previewPermissions = (mode === 'advanced' ? FLAGS : SIMPLE_FLAGS)
     .filter(([key]) => flags[key])
     .map(([key]) => tm(`permissions.${key}.title`))
@@ -396,6 +421,24 @@ export default function IssueMptPage({ setSignRequest }) {
                   <div className="tokenProfileInfoRow">
                     <span>{t('fields.assetSubclass', { ns: 'token' })}</span>
                     <span>{t(`mpt-metadata.asset-subclasses.${previewAssetSubclass}`, { ns: 'services', defaultValue: previewAssetSubclass })}</span>
+                  </div>
+                )}
+                {previewLinks.length > 0 && (
+                  <div className="tokenProfileInfoRow">
+                    <span>{t('fields.relatedLinks', { ns: 'token' })}</span>
+                    <span className="tokenProfileInlineValue">
+                      {previewLinks.map((link) => (
+                        <span key={link.key}>
+                          {link.href ? (
+                            <a href={link.href} target="_blank" rel="noreferrer">
+                              {link.label}
+                            </a>
+                          ) : (
+                            link.label
+                          )}
+                        </span>
+                      ))}
+                    </span>
                   </div>
                 )}
                 <div className="tokenProfileInfoRow">
