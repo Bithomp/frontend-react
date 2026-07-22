@@ -125,6 +125,7 @@ const MenuDropDown = ({
   children,
   id,
   title,
+  titleHref,
   subtitle,
   setHoverStates,
   hoverStates,
@@ -169,7 +170,13 @@ const MenuDropDown = ({
         style={style}
         onClick={() => setHoverStates((state) => ({ ...state, [id]: true }))}
       >
-        {title}
+        {titleHref ? (
+          <Link href={titleHref} className="menu-dropdown-title" onClick={(event) => event.stopPropagation()}>
+            {title}
+          </Link>
+        ) : (
+          title
+        )}
         {subtitle && <div className="orange">&nbsp;{subtitle}</div>}
         <FaAngleDown className="chevron" />
       </div>
@@ -412,6 +419,7 @@ export default function Header({
           <MenuDropDown
             id="dropdown-services"
             title={t('menu.services.services')}
+            titleHref="/services"
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
@@ -469,6 +477,7 @@ export default function Header({
           <MenuDropDown
             id="dropdown2"
             title={t('menu.tokens')}
+            titleHref="/tokens"
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
@@ -506,6 +515,7 @@ export default function Header({
             <MenuDropDown
               id="dropdown4"
               title={t('menu.amm.amm')}
+              titleHref="/amms"
               setHoverStates={setHoverStates}
               hoverStates={hoverStates}
             >
@@ -540,7 +550,13 @@ export default function Header({
             </MenuDropDown>
           )}
 
-          <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
+          <MenuDropDown
+            id="dropdown3"
+            title="NFT"
+            titleHref="/nft-explorer"
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
             {displayName ? (
               <>
                 <Link href={'/nfts/' + address}>
@@ -628,6 +644,7 @@ export default function Header({
           <MenuDropDown
             id="dropdown5"
             title={t('menu.network.blockchain')}
+            titleHref="/validators"
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
@@ -706,6 +723,7 @@ export default function Header({
           <MenuDropDown
             id="dropdown6"
             title={t('menu.developers.developers')}
+            titleHref="/learn/the-bithomp-api"
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >

@@ -74,6 +74,17 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .tokenOverview .tokenPanel {
+    order: 3;
+  }
+
+  .tokenOverview .tokenProfileCard,
+  .tokenOverview .tokenPricePanel,
+  .tokenOverview .tokenSupplyPanel,
+  .tokenOverview .tokenClosedPanel {
+    order: 1;
+  }
+
   .tokenProfileCard,
   .tokenPanel {
     border: 1px solid var(--card-border);
@@ -258,14 +269,17 @@
     white-space: pre-wrap;
   }
 
-  .tokenExpandedDataPanel {
+  .tokenOverview .tokenExpandedDataPanel {
     grid-column: 1 / -1;
     width: 100%;
+    order: 2;
   }
 
   .tokenExpandedDataPre {
     max-height: min(65vh, 720px);
-    padding: 14px;
+    padding: 0;
+    border: 0;
+    background: transparent;
     font-size: 13px;
     line-height: 1.45;
   }
@@ -3272,12 +3286,23 @@
       grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
     }
 
+    .tokenOverview .tokenSupplyPanel,
+    .tokenOverview .tokenClosedPanel {
+      order: 3;
+    }
+
+    .tokenOverview .tokenProfileCard,
+    .tokenOverview.tokenOverviewHasPrice .tokenPricePanel,
+    .tokenOverview:not(.tokenOverviewHasPrice) .tokenSupplyPanel {
+      order: 1;
+    }
+
     .tokenOverviewTop2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .tokenOverviewTop3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .tokenProfileCard,
@@ -3406,6 +3431,11 @@
     .tokenProfileCard {
       grid-template-columns: auto minmax(0, 1fr);
       align-items: center;
+    }
+
+    .tokenOverview.tokenOverviewHasPrice .tokenPricePanel,
+    .tokenOverview:not(.tokenOverviewHasPrice) .tokenSupplyPanel {
+      order: 3;
     }
 
     .tokenProfileImageWrap {

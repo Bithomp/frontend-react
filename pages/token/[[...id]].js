@@ -2457,7 +2457,9 @@ export default function TokenPage({
             />
           </div>
 
-          <div className={`tokenOverview tokenOverviewTop${overviewTopCardCount}`}>
+          <div
+            className={`tokenOverview tokenOverviewTop${overviewTopCardCount}${showPriceInformation ? ' tokenOverviewHasPrice' : ''}`}
+          >
             <aside className="tokenProfileCard">
               <div className="tokenProfileImageWrap">
                 <img
@@ -2541,6 +2543,7 @@ export default function TokenPage({
                   </div>
                 )}
               </div>
+
             </aside>
 
             <div className="tokenDashboardGrid">
