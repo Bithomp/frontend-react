@@ -13,8 +13,7 @@
   "token-tabs": {
     "tokens": "Токены",
     "amms": "LP токены",
-    "mpts": "MPTs",
-    "generate-mpt-metadata": "Создать метаданные MPT"
+    "mpts": "MPTs"
   },
   "chart-period": {
     "aria-label": "Период графика",
@@ -88,7 +87,6 @@
       "tax-reports": "Налоговые отчеты",
       "username": "Регистрация псевдонима",
       "toml-generator": "Генератор TOML",
-      "mpt-metadata-generator": "Генератор метаданных MPToken",
       "issue-mpt": "Выпустить Multi-Purpose Token"
     },
     "business": {

@@ -779,14 +779,12 @@
       "canTransfer": { "title": "Can transfer", "description": "Holders can transfer tokens to other accounts." },
       "canClawback": { "title": "Can claw back", "description": "Issuer can reclaim tokens from holders." }
     },
-    "metadata": { "title": "Metadata JSON", "generator": "Open metadata generator", "placeholder": "Paste the generated metadata JSON here", "bytes": "{{count}} / {{max}} bytes" },
+    "metadata": { "title": "MPT metadata" },
     "errors": { "scale": "Decimal places must be a whole number from 0 to 255.", "maximumPrecision": "Maximum supply can have at most {{scale}} decimal places.", "maximumRange": "Maximum supply must resolve to 1–9,223,372,036,854,775,807 base units.", "fee": "Transfer fee must be from 0 to 50 with up to 3 decimals.", "feeTransfer": "Enable Can transfer to set a transfer fee.", "metadataJson": "Metadata must be valid JSON.", "metadataSize": "Metadata is {{count}} bytes; the limit is 1024.", "domain": "Domain ID must contain exactly 64 hexadecimal characters.", "domainAuth": "Enable Require authorization to use a permissioned domain." },
     "preview": "Transaction preview",
     "issue": "Issue MPT"
   },
-  "mpt-metadata-generator": {
-    "seo-description": "Create XLS-0089 compliant metadata for Multi-Purpose Tokens on the XRP Ledger.",
-    "intro": "Create MPToken metadata according to the current",
+  "mpt-metadata": {
     "generated-title": "Generated metadata JSON",
     "icon-preview": "Token icon preview",
     "icon-preview-error": "The icon could not be rendered.",

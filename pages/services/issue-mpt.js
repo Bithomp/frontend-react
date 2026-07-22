@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../../components/SEO'
+import MptMetadataBuilder from '../../components/Services/MptMetadataBuilder'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import { explorerName } from '../../utils'
 import styles from '../../styles/pages/issue-mpt.module.scss'
@@ -12,11 +11,11 @@ import styles from '../../styles/pages/issue-mpt.module.scss'
 const MAX_AMOUNT = 9223372036854775807n
 const MAX_METADATA_BYTES = 1024
 const FLAGS = [
-  ['canLock', 2],
-  ['requireAuth', 4],
-  ['canEscrow', 8],
-  ['canTrade', 16],
   ['canTransfer', 32],
+  ['canTrade', 16],
+  ['canEscrow', 8],
+  ['requireAuth', 4],
+  ['canLock', 2],
   ['canClawback', 64]
 ]
 
@@ -43,41 +42,20 @@ const encodeMetadata = (value) => {
   }
 }
 
-const decodeMetadataHex = (value) => {
-  const hex = String(value)
-  if (!hex || hex.length % 2 !== 0 || !/^[A-Fa-f0-9]+$/.test(hex)) throw new Error('Invalid metadata hex')
-  const bytes = Uint8Array.from(hex.match(/.{2}/g), (byte) => parseInt(byte, 16))
-  return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
-}
-
 export async function getServerSideProps({ locale }) {
   return { props: { ...(await serverSideTranslations(locale, ['common', 'services'])) } }
 }
 
 export default function IssueMptPage({ setSignRequest }) {
-  const router = useRouter()
   const { t } = useTranslation(['common', 'services'])
   const tm = useCallback((key, options) => t(`issue-mpt.${key}`, { ns: 'services', ...options }), [t])
   const [scale, setScale] = useState('0')
   const [maximum, setMaximum] = useState('')
   const [transferFee, setTransferFee] = useState('')
   const [metadata, setMetadata] = useState('')
+  const [metadataBuilderValid, setMetadataBuilderValid] = useState(null)
   const [domainId, setDomainId] = useState('')
-  const [flags, setFlags] = useState({ canTransfer: true })
-  const importedMetadataRef = useRef('')
-
-  useEffect(() => {
-    if (!router.isReady || typeof router.query.metadataHex !== 'string') return
-    if (importedMetadataRef.current === router.query.metadataHex) return
-    importedMetadataRef.current = router.query.metadataHex
-
-    try {
-      const imported = decodeMetadataHex(router.query.metadataHex)
-      setMetadata(JSON.stringify(JSON.parse(imported), null, 2))
-    } catch (_) {
-      // Ignore malformed external query values; the regular metadata field remains available.
-    }
-  }, [router.isReady, router.query.metadataHex])
+  const [flags, setFlags] = useState({ canTransfer: true, canTrade: true, canEscrow: true })
 
   const validation = useMemo(() => {
     const assetScale = Number(scale || 0)
@@ -117,7 +95,17 @@ export default function IssueMptPage({ setSignRequest }) {
     return { errors, request, metadataBytes: metadataResult.bytes, maximumRaw }
   }, [domainId, flags, maximum, metadata, scale, tm, transferFee])
 
-  const toggleFlag = (key) => setFlags((previous) => ({ ...previous, [key]: !previous[key] }))
+  const toggleFlag = (key) => {
+    if (key === 'canTransfer' && flags.canTransfer) setTransferFee('')
+    setFlags((previous) => ({ ...previous, [key]: !previous[key] }))
+  }
+  const issuanceErrors = validation.errors.filter(
+    (error) => error !== tm('errors.metadataJson') && error !== tm('errors.metadataSize', { count: validation.metadataBytes })
+  )
+  const useGeneratedMetadata = useCallback(({ json, isValid }) => {
+    setMetadata(json)
+    setMetadataBuilderValid(json ? isValid : null)
+  }, [])
 
   return (
     <>
@@ -126,6 +114,15 @@ export default function IssueMptPage({ setSignRequest }) {
         <ServicesTabs category="issuance" tab="issue-mpt" />
         <h1 className="center">{tm('title')}</h1>
         <p className={styles.intro}>{tm('intro')}</p>
+
+        <section className={styles.metadataPanel}>
+          <div className={styles.metadataHeading}>
+            <div>
+              <h2>{tm('metadata.title')}</h2>
+            </div>
+          </div>
+          <MptMetadataBuilder onMetadataChange={useGeneratedMetadata} />
+        </section>
 
         <div className={styles.layout}>
           <section className={styles.panel}>
@@ -142,7 +139,7 @@ export default function IssueMptPage({ setSignRequest }) {
               </label>
               <label className={styles.field}>
                 <span>{tm('fields.transferFee')}</span>
-                <input className="input-text" inputMode="decimal" value={transferFee} placeholder="0" onChange={(event) => setTransferFee(cleanNumber(event.target.value))} />
+                <input className="input-text" inputMode="decimal" value={transferFee} placeholder="0" disabled={!flags.canTransfer} onChange={(event) => setTransferFee(cleanNumber(event.target.value))} />
                 <small>{tm('hints.transferFee')}</small>
               </label>
               <label className={styles.field}>
@@ -164,26 +161,15 @@ export default function IssueMptPage({ setSignRequest }) {
               ))}
             </div>
 
-            <div className={styles.metadataHeading}>
-              <h3>{tm('metadata.title')}</h3>
-              <Link href="/services/mpt-metadata-generator" target="_blank" rel="noreferrer">
-                {tm('metadata.generator')}
-              </Link>
-            </div>
-            <label className={styles.field}>
-              <textarea className="input-text" rows={9} value={metadata} placeholder={tm('metadata.placeholder')} onChange={(event) => setMetadata(event.target.value)} />
-              <small className={validation.metadataBytes > MAX_METADATA_BYTES ? styles.error : ''}>{tm('metadata.bytes', { count: validation.metadataBytes, max: MAX_METADATA_BYTES })}</small>
-            </label>
-
-            {validation.errors.length > 0 && <div className={styles.errors}>{validation.errors.map((error) => <div key={error}>{error}</div>)}</div>}
-            <button type="button" className="button-action" disabled={validation.errors.length > 0} onClick={() => setSignRequest({ request: validation.request })}>
-              {tm('issue')}
-            </button>
           </section>
 
           <aside className={styles.preview}>
             <h3>{tm('preview')}</h3>
             <pre>{JSON.stringify(validation.request, null, 2)}</pre>
+            {issuanceErrors.length > 0 && <div className={styles.errors}>{issuanceErrors.map((error) => <div key={error}>{error}</div>)}</div>}
+            <button type="button" className={`button-action ${styles.issueButton}`} disabled={validation.errors.length > 0 || metadataBuilderValid === false} onClick={() => setSignRequest({ request: validation.request })}>
+              {tm('issue')}
+            </button>
           </aside>
         </div>
       </div>

@@ -35,11 +35,6 @@ export default function ServicesTabs({ category, tab }) {
       items: [
         { value: 'nft-mint', label: ts('services-nav.nft-mint'), href: '/services/nft-mint' },
         !xahauNetwork && { value: 'issue-mpt', label: ts('services-nav.issue-mpt'), href: '/services/issue-mpt' },
-        !xahauNetwork && {
-          value: 'mpt-metadata-generator',
-          label: t('menu.services.mpt-metadata-generator'),
-          href: '/services/mpt-metadata-generator'
-        },
         {
           value: 'toml-generator',
           label: t('menu.services.toml-generator'),

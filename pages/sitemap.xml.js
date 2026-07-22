@@ -91,7 +91,6 @@ if (xahauNetwork) {
 } else {
   // only on xrpl
   pages.push(
-    { loc: 'services/mpt-metadata-generator', changefreq: 'monthly', priority: '0.8' },
     { loc: 'services/issue-mpt', changefreq: 'monthly', priority: '0.9' },
     { loc: 'services/amm/deposit', changefreq: 'monthly', priority: '0.9' },
     { loc: 'services/amm/create', changefreq: 'monthly', priority: '0.8' },

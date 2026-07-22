@@ -1,17 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/router'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { LuArrowRight, LuCopy } from 'react-icons/lu'
+import { LuCopy } from 'react-icons/lu'
 
-import SEO from '../../components/SEO'
-import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import SimpleSelect from '../../components/UI/SimpleSelect'
-import { explorerName, isUrlValid } from '../../utils'
+import { isUrlValid } from '../../utils'
 import { ipfsUrl } from '../../utils/nft'
 import styles from '../../styles/pages/toml-generator.module.scss'
 
-const SPEC_URL = 'https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0089-multi-purpose-token-metadata-schema'
 const MAX_METADATA_BYTES = 1024
 const assetClasses = ['', 'rwa', 'memes', 'wrapped', 'gaming', 'defi', 'other']
 const assetSubclasses = ['', 'stablecoin', 'commodity', 'real_estate', 'private_credit', 'equity', 'treasury', 'other']
@@ -147,15 +142,9 @@ const FormSelect = ({ value, options, onChange, instanceId, showDescriptions = f
   />
 )
 
-export async function getServerSideProps({ locale }) {
-  return { props: { ...(await serverSideTranslations(locale, ['common', 'services'])) } }
-}
-
-export default function MptMetadataGeneratorPage() {
-  const router = useRouter()
+export default function MptMetadataBuilder({ onMetadataChange }) {
   const { t } = useTranslation(['common', 'services'])
-  const title = t('menu.services.mpt-metadata-generator')
-  const tg = useCallback((key, options) => t(`mpt-metadata-generator.${key}`, { ns: 'services', ...options }), [t])
+  const tg = useCallback((key, options) => t(`mpt-metadata.${key}`, { ns: 'services', ...options }), [t])
   const [form, setForm] = useState({
     ticker: '',
     name: '',
@@ -171,6 +160,8 @@ export default function MptMetadataGeneratorPage() {
   const [useFullKeys, setUseFullKeys] = useState(false)
   const [copied, setCopied] = useState('')
   const [iconPreviewError, setIconPreviewError] = useState(false)
+  const [editableOutput, setEditableOutput] = useState('{}')
+  const rawJsonEdited = useRef(false)
 
   const iconPreviewUrl = useMemo(() => {
     const uri = clean(form.icon)
@@ -185,13 +176,33 @@ export default function MptMetadataGeneratorPage() {
   }, [iconPreviewUrl])
 
   const updateForm = (key, value) => {
+    rawJsonEdited.current = false
     setForm((previous) => ({
       ...previous,
       [key]: value,
       ...(key === 'assetClass' && value !== 'rwa' ? { assetSubclass: '' } : {})
     }))
   }
-  const updateUri = (index, key, value) => setUris((previous) => replaceItem(previous, index, { [key]: value }))
+  const updateUri = (index, key, value) => {
+    rawJsonEdited.current = false
+    setUris((previous) => replaceItem(previous, index, { [key]: value }))
+  }
+  const addUri = () => {
+    rawJsonEdited.current = false
+    setUris((previous) => [...previous, createUri()])
+  }
+  const removeUri = (index) => {
+    rawJsonEdited.current = false
+    setUris((previous) => previous.filter((_, itemIndex) => itemIndex !== index))
+  }
+  const updateAdditionalInfoType = (value) => {
+    rawJsonEdited.current = false
+    setAdditionalInfoType(value)
+  }
+  const updateKeyFormat = (checked) => {
+    rawJsonEdited.current = false
+    setUseFullKeys(checked)
+  }
 
   const assetClassOptions = useMemo(
     () =>
@@ -228,33 +239,72 @@ export default function MptMetadataGeneratorPage() {
     () => buildMetadata({ form, uris, additionalInfo: additionalInfo.value, useFullKeys }),
     [additionalInfo.value, form, uris, useFullKeys]
   )
-  const encodedJson = useMemo(() => JSON.stringify(metadata), [metadata])
   const output = useMemo(() => JSON.stringify(metadata, null, 2), [metadata])
-  const hexOutput = useMemo(() => toHex(encodedJson), [encodedJson])
-  const byteCount = useMemo(() => utf8Bytes(encodedJson).length, [encodedJson])
+
+  useEffect(() => {
+    if (!rawJsonEdited.current) setEditableOutput(output)
+  }, [output])
+
+  const editableMetadata = useMemo(() => {
+    try {
+      const value = JSON.parse(editableOutput)
+      if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Metadata must be an object')
+      return { value, json: JSON.stringify(value), error: '' }
+    } catch (_) {
+      return { value: {}, json: '', error: t('issue-mpt.errors.metadataJson', { ns: 'services' }) }
+    }
+  }, [editableOutput, t])
+  const hexOutput = useMemo(() => (editableMetadata.json ? toHex(editableMetadata.json) : ''), [editableMetadata.json])
+  const byteCount = useMemo(() => (editableMetadata.json ? utf8Bytes(editableMetadata.json).length : 0), [editableMetadata.json])
   const overLimit = byteCount > MAX_METADATA_BYTES
 
   const warnings = useMemo(() => {
     const items = []
-    if (!/^[A-Z0-9]{1,6}$/.test(clean(form.ticker))) items.push(tg('warnings.ticker'))
-    if (!clean(form.name)) items.push(tg('warnings.name'))
-    if (!clean(form.icon)) items.push(tg('warnings.icon'))
-    else if (!isValidIconUri(form.icon)) items.push(tg('warnings.icon-uri'))
-    if (!form.assetClass) items.push(tg('warnings.asset-class'))
-    if (form.assetClass === 'rwa' && !form.assetSubclass) items.push(tg('warnings.asset-subclass'))
-    if (!clean(form.issuerName)) items.push(tg('warnings.issuer-name'))
-    uris.forEach((item) => {
-      if ((clean(item.uri) || clean(item.title)) && (!clean(item.uri) || !clean(item.title))) {
+    const value = editableMetadata.value
+    const ticker = value.t ?? value.ticker
+    const name = value.n ?? value.name
+    const icon = value.i ?? value.icon
+    const assetClass = value.ac ?? value.asset_class
+    const assetSubclass = value.as ?? value.asset_subclass
+    const issuerName = value.in ?? value.issuer_name
+    const relatedUris = value.us ?? value.uris ?? []
+    if (!/^[A-Z0-9]{1,6}$/.test(clean(ticker))) items.push(tg('warnings.ticker'))
+    if (!clean(name)) items.push(tg('warnings.name'))
+    if (!clean(icon)) items.push(tg('warnings.icon'))
+    else if (!isValidIconUri(icon)) items.push(tg('warnings.icon-uri'))
+    if (!assetClass) items.push(tg('warnings.asset-class'))
+    if (assetClass === 'rwa' && !assetSubclass) items.push(tg('warnings.asset-subclass'))
+    if (!clean(issuerName)) items.push(tg('warnings.issuer-name'))
+    if (Array.isArray(relatedUris)) relatedUris.forEach((item) => {
+      const uri = item.u ?? item.uri
+      const title = item.t ?? item.title
+      if ((clean(uri) || clean(title)) && (!clean(uri) || !clean(title))) {
         items.push(tg('warnings.uri'))
-      } else if (clean(item.uri) && !isValidRelatedUri(item.uri)) {
+      } else if (clean(uri) && !isValidRelatedUri(uri)) {
         items.push(tg('warnings.uri-format'))
       }
     })
-    if (additionalInfo.error === 'json') items.push(tg('warnings.additional-json'))
-    if (additionalInfo.error === 'object') items.push(tg('warnings.additional-object'))
+    if (editableOutput === output && additionalInfo.error === 'json') items.push(tg('warnings.additional-json'))
+    if (editableOutput === output && additionalInfo.error === 'object') items.push(tg('warnings.additional-object'))
+    if (editableMetadata.error) items.push(editableMetadata.error)
     if (overLimit) items.push(tg('warnings.size', { count: byteCount, max: MAX_METADATA_BYTES }))
     return [...new Set(items)]
-  }, [additionalInfo.error, byteCount, form, overLimit, tg, uris])
+  }, [additionalInfo.error, byteCount, editableMetadata, editableOutput, output, overLimit, tg])
+
+  const hasMetadataInput = useMemo(
+    () => editableOutput.trim() !== '{}' || Object.values(form).some((value) => clean(value)) || uris.some((item) => clean(item.uri) || clean(item.title)),
+    [editableOutput, form, uris]
+  )
+
+  useEffect(() => {
+    if (!onMetadataChange) return
+    onMetadataChange({
+      json: hasMetadataInput ? editableOutput : '',
+      hex: hasMetadataInput ? hexOutput : '',
+      byteCount: hasMetadataInput ? byteCount : 0,
+      isValid: hasMetadataInput && warnings.length === 0
+    })
+  }, [byteCount, editableOutput, hasMetadataInput, hexOutput, onMetadataChange, warnings.length])
 
   const copyValue = async (type, value) => {
     await navigator.clipboard.writeText(value)
@@ -262,26 +312,8 @@ export default function MptMetadataGeneratorPage() {
     setTimeout(() => setCopied(''), 1800)
   }
 
-  const useForIssuance = () => {
-    const query = new URLSearchParams({ metadataHex: hexOutput })
-    router.push(`/services/issue-mpt?${query.toString()}`)
-  }
-
   return (
-    <>
-      <SEO title={`${title} | ${explorerName}`} description={tg('seo-description')} />
-      <div className={`content-text ${styles.page}`}>
-        <ServicesTabs category="issuance" tab="mpt-metadata-generator" />
-        <h1 className="center">{title}</h1>
-        <p className="center">
-          {tg('intro')}{' '}
-          <a href={SPEC_URL} target="_blank" rel="noreferrer">
-            XLS-0089
-          </a>
-          .
-        </p>
-
-        <div className={styles.layout}>
+    <div className={`${styles.layout} ${styles.embeddedLayout}`}>
           <section className={styles.formPanel}>
             <div className={styles.grid}>
               <Field label={tg('fields.ticker')} required hint={tg('hints.ticker')}>
@@ -369,12 +401,12 @@ export default function MptMetadataGeneratorPage() {
 
             <div className={styles.repeatHeader}>
               <h4>{tg('sections.uris')}</h4>
-              <button type="button" className="button-action secondary" onClick={() => setUris((prev) => [...prev, createUri()])}>
+              <button type="button" className="button-action secondary" onClick={addUri}>
                 {tg('actions.add-link')}
               </button>
             </div>
             {uris.map((item, index) => (
-              <div className={styles.repeatRow} key={index}>
+              <div className={`${styles.repeatRow} ${uris.length > 1 ? styles.repeatRowWithAction : ''}`} key={index}>
                 <input
                   className="input-text"
                   value={item.uri}
@@ -394,7 +426,7 @@ export default function MptMetadataGeneratorPage() {
                   placeholder={tg('placeholders.link-title')}
                 />
                 {uris.length > 1 && (
-                  <button type="button" className="button-action secondary" onClick={() => setUris((prev) => prev.filter((_, i) => i !== index))}>
+                  <button type="button" className="button-action secondary" onClick={() => removeUri(index)}>
                     {tg('actions.remove')}
                   </button>
                 )}
@@ -407,7 +439,7 @@ export default function MptMetadataGeneratorPage() {
                 <FormSelect
                   value={additionalInfoType}
                   options={additionalInfoTypeOptions}
-                  onChange={setAdditionalInfoType}
+                  onChange={updateAdditionalInfoType}
                   instanceId="mpt-metadata-additional-info-type"
                 />
               </Field>
@@ -428,15 +460,31 @@ export default function MptMetadataGeneratorPage() {
             <div className={styles.previewTop}>
               <h4>{tg('generated-title')}</h4>
               <div className={styles.actions}>
-                <button type="button" className="button-action secondary" onClick={() => copyValue('json', output)}>
+                <button type="button" className="button-action secondary" onClick={() => copyValue('json', editableOutput)}>
                   <LuCopy aria-hidden="true" /> {copied === 'json' ? tg('actions.copied') : tg('actions.copy-json')}
                 </button>
               </div>
             </div>
 
+            <textarea
+              className={`${styles.preview} ${styles.metadataPreview} ${styles.editablePreview}`}
+              value={editableOutput}
+              onChange={(event) => {
+                rawJsonEdited.current = true
+                setEditableOutput(event.target.value)
+              }}
+              aria-label={tg('generated-title')}
+              spellCheck="false"
+            />
+            <div className={`${styles.byteMeter} ${overLimit ? styles.byteMeterOver : ''}`}>
+              <span>{tg('byte-count', { count: byteCount, max: MAX_METADATA_BYTES })}</span>
+            </div>
+            {warnings.length > 0 && (
+              <div className={styles.warnings}>{warnings.map((warning) => <div key={warning}>{warning}</div>)}</div>
+            )}
             <div className={styles.sectionChecks}>
               <label className={`${styles.sectionCheck} ${styles.keyFormatOption}`}>
-                <input type="checkbox" checked={useFullKeys} onChange={(event) => setUseFullKeys(event.target.checked)} />
+                <input type="checkbox" checked={useFullKeys} onChange={(event) => updateKeyFormat(event.target.checked)} />
                 <span className={styles.checkMark} aria-hidden="true" />
                 <span className={styles.sectionCheckText}>
                   <span className={`${styles.sectionCheckTitle} ${styles.keyFormatTitle}`}>
@@ -447,14 +495,6 @@ export default function MptMetadataGeneratorPage() {
               </label>
             </div>
 
-            <div className={`${styles.byteMeter} ${overLimit ? styles.byteMeterOver : ''}`}>
-              <span>{tg('byte-count', { count: byteCount, max: MAX_METADATA_BYTES })}</span>
-            </div>
-            {warnings.length > 0 && (
-              <div className={styles.warnings}>{warnings.map((warning) => <div key={warning}>{warning}</div>)}</div>
-            )}
-            <pre className={`${styles.preview} ${styles.metadataPreview}`}>{output}</pre>
-
             <div className={styles.previewTop}>
               <h4>{tg('hex-title')}</h4>
               <div className={styles.actions}>
@@ -464,17 +504,7 @@ export default function MptMetadataGeneratorPage() {
               </div>
             </div>
             <pre className={`${styles.preview} ${styles.hexPreview}`}>{hexOutput}</pre>
-            <button
-              type="button"
-              className={`button-action ${styles.issuanceButton}`}
-              onClick={useForIssuance}
-              disabled={warnings.length > 0}
-            >
-              {t('issue-mpt.title', { ns: 'services' })} <LuArrowRight aria-hidden="true" />
-            </button>
           </aside>
-        </div>
-      </div>
-    </>
+    </div>
   )
 }

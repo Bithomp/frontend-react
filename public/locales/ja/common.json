@@ -13,8 +13,7 @@
   "token-tabs": {
     "tokens": "トークン",
     "amms": "LPトークン",
-    "mpts": "MPTs",
-    "generate-mpt-metadata": "MPTメタデータを生成"
+    "mpts": "MPTs"
   },
   "chart-period": {
     "aria-label": "チャート期間",
@@ -88,7 +87,6 @@
       "tax-reports": "税務レポート",
       "username": "ユーザネームの登録",
       "toml-generator": "TOMLジェネレーター",
-      "mpt-metadata-generator": "MPTokenメタデータジェネレーター",
       "issue-mpt": "Multi-Purpose Tokenを発行"
     },
     "business": {

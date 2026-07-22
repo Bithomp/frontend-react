@@ -13,8 +13,7 @@
   "token-tabs": {
     "tokens": "代币",
     "amms": "LP代币",
-    "mpts": "MPTs",
-    "generate-mpt-metadata": "生成 MPT 元数据"
+    "mpts": "MPTs"
   },
   "chart-period": {
     "aria-label": "图表周期",
@@ -88,7 +87,6 @@
       "tax-reports": "税务报告",
       "username": "用户名注册",
       "toml-generator": "TOML 生成器",
-      "mpt-metadata-generator": "MPToken 元数据生成器",
       "issue-mpt": "发行多用途代币"
     },
     "business": {

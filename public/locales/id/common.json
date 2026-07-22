@@ -13,8 +13,7 @@
   "token-tabs": {
     "tokens": "Token",
     "amms": "LP Token",
-    "mpts": "MPTs",
-    "generate-mpt-metadata": "Buat metadata MPT"
+    "mpts": "MPTs"
   },
   "chart-period": {
     "aria-label": "Periode grafik",
@@ -88,7 +87,6 @@
       "tax-reports": "Laporan pajak",
       "username": "Pendaftaran Username",
       "toml-generator": "Generator TOML",
-      "mpt-metadata-generator": "Generator Metadata MPToken",
       "issue-mpt": "Terbitkan Multi-Purpose Token"
     },
     "business": {

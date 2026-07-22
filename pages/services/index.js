@@ -149,13 +149,6 @@ export default function ServicesPage() {
         !xahauNetwork
           ? { href: '/services/issue-mpt', title: t('menu.services.issue-mpt'), icon: LuCoins }
           : null,
-        !xahauNetwork
-          ? {
-              href: '/services/mpt-metadata-generator',
-              title: t('menu.services.mpt-metadata-generator'),
-              icon: IoCodeOutline
-            }
-          : null,
         {
           href: '/services/toml-generator?category=issuance',
           title: t('menu.services.toml-generator'),

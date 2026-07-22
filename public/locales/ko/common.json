@@ -13,8 +13,7 @@
   "token-tabs": {
     "tokens": "토큰",
     "amms": "LP 토큰",
-    "mpts": "MPTs",
-    "generate-mpt-metadata": "MPT 메타데이터 생성"
+    "mpts": "MPTs"
   },
   "chart-period": {
     "aria-label": "차트 기간",
@@ -88,7 +87,6 @@
       "tax-reports": "세금 보고서",
       "username": "사용자명을 등록하세요",
       "toml-generator": "TOML 생성기",
-      "mpt-metadata-generator": "MPToken 메타데이터 생성기",
       "issue-mpt": "Multi-Purpose Token 발행"
     },
     "business": {
