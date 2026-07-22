@@ -795,8 +795,11 @@
       "link-title": "Produktseite", "additional-text": "Wichtige Details zum Token"
     },
     "actions": {
-      "add-link": "Link hinzufügen", "remove": "Entfernen", "copy-json": "JSON kopieren", "copy-hex": "Hex kopieren",
-      "copied": "Kopiert", "download": "Herunterladen"
+      "add-link": "Link hinzufügen",
+      "remove": "Entfernen",
+      "copy-json": "JSON kopieren",
+      "copy-hex": "Hex kopieren",
+      "copied": "Kopiert"
     },
     "warnings": {
       "ticker": "Der Ticker ist erforderlich und muss aus 1–6 Großbuchstaben oder Ziffern bestehen.",

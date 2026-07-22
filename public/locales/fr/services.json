@@ -794,7 +794,13 @@
       "name": "Token de rendement obligataire", "issuer-name": "Exemple Yield SA", "description": "Ce que représente le token",
       "link-title": "Page du produit", "additional-text": "Informations clés sur le token"
     },
-    "actions": { "add-link": "Ajouter un lien", "remove": "Supprimer", "copy-json": "Copier le JSON", "copy-hex": "Copier l’hexadécimal", "copied": "Copié", "download": "Télécharger" },
+    "actions": {
+      "add-link": "Ajouter un lien",
+      "remove": "Supprimer",
+      "copy-json": "Copier le JSON",
+      "copy-hex": "Copier l’hexadécimal",
+      "copied": "Copié"
+    },
     "warnings": {
       "ticker": "Le symbole est obligatoire et doit contenir 1 à 6 lettres majuscules ou chiffres.",
       "name": "Le nom du token est obligatoire.", "icon": "L’URI de l’icône est obligatoire.",

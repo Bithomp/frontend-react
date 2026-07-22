@@ -794,7 +794,13 @@
       "name": "国库券收益代币", "issuer-name": "示例收益公司", "description": "代币所代表的内容",
       "link-title": "产品页面", "additional-text": "代币的重要信息"
     },
-    "actions": { "add-link": "添加链接", "remove": "删除", "copy-json": "复制 JSON", "copy-hex": "复制十六进制", "copied": "已复制", "download": "下载" },
+    "actions": {
+      "add-link": "添加链接",
+      "remove": "删除",
+      "copy-json": "复制 JSON",
+      "copy-hex": "复制十六进制",
+      "copied": "已复制"
+    },
     "warnings": {
       "ticker": "代币代码为必填项，且必须包含 1–6 个大写字母或数字。",
       "name": "代币名称为必填项。", "icon": "图标 URI 为必填项。",

@@ -794,7 +794,13 @@
       "name": "T-Bill 수익 토큰", "issuer-name": "Example Yield Co.", "description": "토큰이 나타내는 대상",
       "link-title": "제품 페이지", "additional-text": "토큰에 대한 주요 정보"
     },
-    "actions": { "add-link": "링크 추가", "remove": "삭제", "copy-json": "JSON 복사", "copy-hex": "16진수 복사", "copied": "복사됨", "download": "다운로드" },
+    "actions": {
+      "add-link": "링크 추가",
+      "remove": "삭제",
+      "copy-json": "JSON 복사",
+      "copy-hex": "16진수 복사",
+      "copied": "복사됨"
+    },
     "warnings": {
       "ticker": "티커는 필수이며 1~6자의 대문자 또는 숫자여야 합니다.",
       "name": "토큰 이름은 필수입니다.", "icon": "아이콘 URI는 필수입니다.",

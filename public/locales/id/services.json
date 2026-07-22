@@ -794,7 +794,13 @@
       "name": "Token Imbal Hasil T-Bill", "issuer-name": "Contoh Yield Co.", "description": "Apa yang direpresentasikan token",
       "link-title": "Halaman produk", "additional-text": "Detail penting tentang token"
     },
-    "actions": { "add-link": "Tambah tautan", "remove": "Hapus", "copy-json": "Salin JSON", "copy-hex": "Salin heksadesimal", "copied": "Disalin", "download": "Unduh" },
+    "actions": {
+      "add-link": "Tambah tautan",
+      "remove": "Hapus",
+      "copy-json": "Salin JSON",
+      "copy-hex": "Salin heksadesimal",
+      "copied": "Disalin"
+    },
     "warnings": {
       "ticker": "Ticker wajib diisi dan harus berisi 1–6 huruf kapital atau angka.",
       "name": "Nama token wajib diisi.", "icon": "URI ikon wajib diisi.",

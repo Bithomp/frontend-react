@@ -312,6 +312,17 @@
   word-break: break-all;
 }
 
+.issuanceButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 46px;
+  margin-top: 12px;
+  font-size: 15px;
+}
+
 .wideField {
   grid-column: 1 / -1;
 }

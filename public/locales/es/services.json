@@ -794,7 +794,13 @@
       "name": "Token de rendimiento de letras del Tesoro", "issuer-name": "Ejemplo Yield Co.",
       "description": "Qué representa el token", "link-title": "Página del producto", "additional-text": "Datos clave del token"
     },
-    "actions": { "add-link": "Añadir enlace", "remove": "Eliminar", "copy-json": "Copiar JSON", "copy-hex": "Copiar hexadecimal", "copied": "Copiado", "download": "Descargar" },
+    "actions": {
+      "add-link": "Añadir enlace",
+      "remove": "Eliminar",
+      "copy-json": "Copiar JSON",
+      "copy-hex": "Copiar hexadecimal",
+      "copied": "Copiado"
+    },
     "warnings": {
       "ticker": "El símbolo es obligatorio y debe contener entre 1 y 6 letras mayúsculas o dígitos.",
       "name": "El nombre del token es obligatorio.", "icon": "La URI del icono es obligatoria.",

@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -42,11 +43,19 @@ const encodeMetadata = (value) => {
   }
 }
 
+const decodeMetadataHex = (value) => {
+  const hex = String(value)
+  if (!hex || hex.length % 2 !== 0 || !/^[A-Fa-f0-9]+$/.test(hex)) throw new Error('Invalid metadata hex')
+  const bytes = Uint8Array.from(hex.match(/.{2}/g), (byte) => parseInt(byte, 16))
+  return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
+}
+
 export async function getServerSideProps({ locale }) {
   return { props: { ...(await serverSideTranslations(locale, ['common', 'services'])) } }
 }
 
 export default function IssueMptPage({ setSignRequest }) {
+  const router = useRouter()
   const { t } = useTranslation(['common', 'services'])
   const tm = useCallback((key, options) => t(`issue-mpt.${key}`, { ns: 'services', ...options }), [t])
   const [scale, setScale] = useState('0')
@@ -55,6 +64,20 @@ export default function IssueMptPage({ setSignRequest }) {
   const [metadata, setMetadata] = useState('')
   const [domainId, setDomainId] = useState('')
   const [flags, setFlags] = useState({ canTransfer: true })
+  const importedMetadataRef = useRef('')
+
+  useEffect(() => {
+    if (!router.isReady || typeof router.query.metadataHex !== 'string') return
+    if (importedMetadataRef.current === router.query.metadataHex) return
+    importedMetadataRef.current = router.query.metadataHex
+
+    try {
+      const imported = decodeMetadataHex(router.query.metadataHex)
+      setMetadata(JSON.stringify(JSON.parse(imported), null, 2))
+    } catch (_) {
+      // Ignore malformed external query values; the regular metadata field remains available.
+    }
+  }, [router.isReady, router.query.metadataHex])
 
   const validation = useMemo(() => {
     const assetScale = Number(scale || 0)

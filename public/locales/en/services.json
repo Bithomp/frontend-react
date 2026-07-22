@@ -829,8 +829,7 @@
       "remove": "Remove",
       "copy-json": "Copy JSON",
       "copy-hex": "Copy hex",
-      "copied": "Copied",
-      "download": "Download"
+      "copied": "Copied"
     },
     "warnings": {
       "ticker": "Ticker is required and must contain 1–6 uppercase letters or digits.",

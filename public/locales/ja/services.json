@@ -794,7 +794,13 @@
       "name": "T-Bill Yield Token", "issuer-name": "Example Yield Co.", "description": "トークンが表すもの",
       "link-title": "製品ページ", "additional-text": "トークンに関する主要情報"
     },
-    "actions": { "add-link": "リンクを追加", "remove": "削除", "copy-json": "JSONをコピー", "copy-hex": "16進数をコピー", "copied": "コピーしました", "download": "ダウンロード" },
+    "actions": {
+      "add-link": "リンクを追加",
+      "remove": "削除",
+      "copy-json": "JSONをコピー",
+      "copy-hex": "16進数をコピー",
+      "copied": "コピーしました"
+    },
     "warnings": {
       "ticker": "ティッカーは必須で、1～6文字の大文字英字または数字で指定してください。",
       "name": "トークン名は必須です。", "icon": "アイコンURIは必須です。",

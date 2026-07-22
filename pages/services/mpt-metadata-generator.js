@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { LuCopy, LuDownload } from 'react-icons/lu'
+import { LuArrowRight, LuCopy } from 'react-icons/lu'
 
 import SEO from '../../components/SEO'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
@@ -151,6 +152,7 @@ export async function getServerSideProps({ locale }) {
 }
 
 export default function MptMetadataGeneratorPage() {
+  const router = useRouter()
   const { t } = useTranslation(['common', 'services'])
   const title = t('menu.services.mpt-metadata-generator')
   const tg = useCallback((key, options) => t(`mpt-metadata-generator.${key}`, { ns: 'services', ...options }), [t])
@@ -260,14 +262,9 @@ export default function MptMetadataGeneratorPage() {
     setTimeout(() => setCopied(''), 1800)
   }
 
-  const downloadJson = () => {
-    const blob = new Blob([output + '\n'], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${clean(form.ticker).toLowerCase() || 'mptoken'}-metadata.json`
-    link.click()
-    URL.revokeObjectURL(url)
+  const useForIssuance = () => {
+    const query = new URLSearchParams({ metadataHex: hexOutput })
+    router.push(`/services/issue-mpt?${query.toString()}`)
   }
 
   return (
@@ -434,9 +431,6 @@ export default function MptMetadataGeneratorPage() {
                 <button type="button" className="button-action secondary" onClick={() => copyValue('json', output)}>
                   <LuCopy aria-hidden="true" /> {copied === 'json' ? tg('actions.copied') : tg('actions.copy-json')}
                 </button>
-                <button type="button" className="button-action" onClick={downloadJson}>
-                  <LuDownload aria-hidden="true" /> {tg('actions.download')}
-                </button>
               </div>
             </div>
 
@@ -470,6 +464,14 @@ export default function MptMetadataGeneratorPage() {
               </div>
             </div>
             <pre className={`${styles.preview} ${styles.hexPreview}`}>{hexOutput}</pre>
+            <button
+              type="button"
+              className={`button-action ${styles.issuanceButton}`}
+              onClick={useForIssuance}
+              disabled={warnings.length > 0}
+            >
+              {t('issue-mpt.title', { ns: 'services' })} <LuArrowRight aria-hidden="true" />
+            </button>
           </aside>
         </div>
       </div>
