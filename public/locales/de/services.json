@@ -784,8 +784,9 @@
     },
     "hints": {
       "ticker": "Nur Großbuchstaben und Ziffern, maximal 6 Zeichen.",
-      "icon-uri": "Verwenden Sie eine gültige HTTPS-URL oder IPFS-URI.",
-      "uri": "Verwenden Sie Hostname/Pfad, eine HTTPS-URL oder eine vollständige URI wie ipfs://."
+      "icon-uri": "Das Protokoll https:// kann weggelassen werden; HTTPS wird angenommen. IPFS-URIs müssen ipfs:// enthalten.",
+      "uri": "Das Protokoll https:// kann weggelassen werden; HTTPS wird angenommen. Andere Schemas müssen vollständig sein, z. B. ipfs://.",
+      "other-links": "Links in zusätzlichen Informationen müssen die vollständige URI einschließlich Protokoll enthalten."
     },
     "placeholders": {
       "name": "T-Bill Yield Token", "issuer-name": "Beispiel Yield GmbH", "description": "Was der Token repräsentiert",
@@ -798,9 +799,9 @@
     "warnings": {
       "ticker": "Der Ticker ist erforderlich und muss aus 1–6 Großbuchstaben oder Ziffern bestehen.",
       "name": "Der Tokenname ist erforderlich.", "icon": "Eine Icon-URI ist erforderlich.",
-      "icon-uri": "Die Icon-URI muss eine gültige HTTPS-URL oder IPFS-URI sein.",
+      "icon-uri": "Die Icon-URI muss eine gültige HTTPS-Adresse mit oder ohne https:// oder eine IPFS-URI sein.",
       "asset-class": "Die Asset-Klasse ist erforderlich.", "asset-subclass": "Für RWA-Token ist eine Asset-Unterklasse erforderlich.",
-      "issuer-name": "Der Name des Emittenten ist erforderlich.", "uri": "Jeder zugehörige Link benötigt eine URI und einen Titel.",
+      "issuer-name": "Der Name des Emittenten ist erforderlich.", "uri": "Jeder zugehörige Link benötigt eine URI und einen Titel.", "uri-format": "Jeder zugehörige Link muss eine gültige HTTPS-Adresse oder eine vollständige URI sein.",
       "additional-json": "Die zusätzlichen Informationen müssen gültiges JSON sein.",
       "additional-object": "Die zusätzlichen JSON-Informationen müssen ein Objekt sein.",
       "size": "Die Metadaten umfassen {{count}} Bytes und überschreiten das On-Ledger-Limit von {{max}} Bytes."

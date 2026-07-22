@@ -783,8 +783,9 @@
     },
     "hints": {
       "ticker": "只能使用大写字母和数字，最多 6 个字符。",
-      "icon-uri": "请使用有效的 HTTPS URL 或 IPFS URI。",
-      "uri": "请使用主机名/路径、HTTPS URL 或 ipfs:// 等完整 URI。"
+      "icon-uri": "可以省略 https:// 协议；此时默认使用 HTTPS。IPFS URI 必须包含 ipfs://。",
+      "uri": "可以省略 https:// 协议；此时默认使用 HTTPS。其他协议必须完整填写，例如 ipfs://。",
+      "other-links": "附加信息中的链接必须包含完整 URI 和协议。"
     },
     "placeholders": {
       "name": "国库券收益代币", "issuer-name": "示例收益公司", "description": "代币所代表的内容",
@@ -794,9 +795,9 @@
     "warnings": {
       "ticker": "代币代码为必填项，且必须包含 1–6 个大写字母或数字。",
       "name": "代币名称为必填项。", "icon": "图标 URI 为必填项。",
-      "icon-uri": "图标 URI 必须是有效的 HTTPS URL 或 IPFS URI。",
+      "icon-uri": "图标 URI 必须是有效的 HTTPS 地址（可含或不含 https://）或 IPFS URI。",
       "asset-class": "资产类别为必填项。", "asset-subclass": "RWA 代币必须选择资产子类别。",
-      "issuer-name": "发行方名称为必填项。", "uri": "每个相关链接都需要 URI 和标题。",
+      "issuer-name": "发行方名称为必填项。", "uri": "每个相关链接都需要 URI 和标题。", "uri-format": "每个相关链接必须是有效的 HTTPS 地址或完整 URI。",
       "additional-json": "附加信息必须是有效的 JSON。",
       "additional-object": "附加信息 JSON 必须是对象。",
       "size": "元数据为 {{count}} 字节，超过 {{max}} 字节的链上限制。"

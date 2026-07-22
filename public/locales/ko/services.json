@@ -783,8 +783,9 @@
     },
     "hints": {
       "ticker": "대문자와 숫자만 사용하며 최대 6자입니다.",
-      "icon-uri": "유효한 HTTPS URL 또는 IPFS URI를 사용하세요.",
-      "uri": "호스트명/경로, HTTPS URL 또는 ipfs://와 같은 전체 URI를 사용하세요."
+      "icon-uri": "https:// 프로토콜은 생략할 수 있으며 HTTPS로 간주됩니다. IPFS URI에는 ipfs://가 포함되어야 합니다.",
+      "uri": "https:// 프로토콜은 생략할 수 있으며 HTTPS로 간주됩니다. 다른 스킴은 ipfs://처럼 완전하게 입력해야 합니다.",
+      "other-links": "추가 정보 안의 링크에는 프로토콜을 포함한 전체 URI를 입력해야 합니다."
     },
     "placeholders": {
       "name": "T-Bill 수익 토큰", "issuer-name": "Example Yield Co.", "description": "토큰이 나타내는 대상",
@@ -794,9 +795,9 @@
     "warnings": {
       "ticker": "티커는 필수이며 1~6자의 대문자 또는 숫자여야 합니다.",
       "name": "토큰 이름은 필수입니다.", "icon": "아이콘 URI는 필수입니다.",
-      "icon-uri": "아이콘 URI는 유효한 HTTPS URL 또는 IPFS URI여야 합니다.",
+      "icon-uri": "아이콘 URI는 https:// 포함 여부와 관계없이 유효한 HTTPS 주소이거나 IPFS URI여야 합니다.",
       "asset-class": "자산 클래스는 필수입니다.", "asset-subclass": "RWA 토큰에는 자산 하위 클래스가 필요합니다.",
-      "issuer-name": "발행자 이름은 필수입니다.", "uri": "각 관련 링크에는 URI와 제목이 필요합니다.",
+      "issuer-name": "발행자 이름은 필수입니다.", "uri": "각 관련 링크에는 URI와 제목이 필요합니다.", "uri-format": "각 관련 링크는 유효한 HTTPS 주소 또는 완전한 URI여야 합니다.",
       "additional-json": "추가 정보는 유효한 JSON이어야 합니다.",
       "additional-object": "추가 정보 JSON은 객체여야 합니다.",
       "size": "메타데이터가 {{count}}바이트로 온레저 제한인 {{max}}바이트를 초과합니다."

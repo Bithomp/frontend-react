@@ -783,8 +783,9 @@
     },
     "hints": {
       "ticker": "Solo letras mayúsculas y dígitos, hasta 6 caracteres.",
-      "icon-uri": "Usa una URL HTTPS o URI de IPFS válida.",
-      "uri": "Usa un host/ruta, una URL HTTPS o una URI completa como ipfs://."
+      "icon-uri": "El protocolo https:// puede omitirse; se asumirá HTTPS. Las URI de IPFS deben incluir ipfs://.",
+      "uri": "El protocolo https:// puede omitirse; se asumirá HTTPS. Otros esquemas deben estar completos, como ipfs://.",
+      "other-links": "Los enlaces en la información adicional deben incluir la URI completa y el protocolo."
     },
     "placeholders": {
       "name": "Token de rendimiento de letras del Tesoro", "issuer-name": "Ejemplo Yield Co.",
@@ -794,9 +795,9 @@
     "warnings": {
       "ticker": "El símbolo es obligatorio y debe contener entre 1 y 6 letras mayúsculas o dígitos.",
       "name": "El nombre del token es obligatorio.", "icon": "La URI del icono es obligatoria.",
-      "icon-uri": "La URI del icono debe ser una URL HTTPS o URI de IPFS válida.",
+      "icon-uri": "La URI del icono debe ser una dirección HTTPS válida, con o sin https://, o una URI de IPFS.",
       "asset-class": "La clase de activo es obligatoria.", "asset-subclass": "La subclase de activo es obligatoria para tokens RWA.",
-      "issuer-name": "El nombre del emisor es obligatorio.", "uri": "Cada enlace relacionado necesita una URI y un título.",
+      "issuer-name": "El nombre del emisor es obligatorio.", "uri": "Cada enlace relacionado necesita una URI y un título.", "uri-format": "Cada enlace relacionado debe ser una dirección HTTPS válida o una URI completa.",
       "additional-json": "La información adicional debe ser JSON válido.",
       "additional-object": "La información adicional JSON debe ser un objeto.",
       "size": "Los metadatos ocupan {{count}} bytes y superan el límite de {{max}} bytes del ledger."

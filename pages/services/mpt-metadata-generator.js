@@ -19,11 +19,20 @@ const additionalInfoTypes = ['object', 'text']
 
 const createUri = () => ({ uri: '', category: 'website', title: '' })
 const clean = (value) => String(value || '').trim()
+const compactHttpsUri = (value) => clean(value).replace(/^https:\/\//i, '')
 const isValidIconUri = (value) => {
   const uri = clean(value)
   if (/^https:\/\//i.test(uri)) return isUrlValid(uri)
   if (/^ipfs:\/\//i.test(uri)) return !!ipfsUrl(uri, 'viewer', 'cl')
-  return false
+  if (/^[a-z][a-z\d+.-]*:/i.test(uri)) return false
+  return isUrlValid(`https://${uri}`)
+}
+const isValidRelatedUri = (value) => {
+  const uri = clean(value)
+  if (!uri) return false
+  if (/^ipfs:\/\//i.test(uri)) return !!ipfsUrl(uri, 'viewer', 'cl')
+  if (/^[a-z][a-z\d+.-]*:/i.test(uri)) return isUrlValid(uri)
+  return isUrlValid(`https://${uri}`)
 }
 const replaceItem = (items, index, update) =>
   items.map((item, itemIndex) => (itemIndex === index ? { ...item, ...update } : item))
@@ -78,7 +87,7 @@ const buildMetadata = ({ form, uris, additionalInfo, useFullKeys }) => {
   add(keys.ticker, clean(form.ticker))
   add(keys.name, clean(form.name))
   add(keys.description, clean(form.description))
-  add(keys.icon, clean(form.icon))
+  add(keys.icon, compactHttpsUri(form.icon))
   add(keys.assetClass, form.assetClass)
   add(keys.assetSubclass, form.assetClass === 'rwa' ? form.assetSubclass : '')
   add(keys.issuerName, clean(form.issuerName))
@@ -86,7 +95,7 @@ const buildMetadata = ({ form, uris, additionalInfo, useFullKeys }) => {
   const validUris = uris
     .filter((item) => clean(item.uri) || clean(item.title))
     .map((item) => ({
-      [uriKeys.uri]: clean(item.uri),
+      [uriKeys.uri]: compactHttpsUri(item.uri),
       [uriKeys.category]: item.category,
       [uriKeys.title]: clean(item.title)
     }))
@@ -215,6 +224,8 @@ export default function MptMetadataGeneratorPage() {
     uris.forEach((item) => {
       if ((clean(item.uri) || clean(item.title)) && (!clean(item.uri) || !clean(item.title))) {
         items.push(tg('warnings.uri'))
+      } else if (clean(item.uri) && !isValidRelatedUri(item.uri)) {
+        items.push(tg('warnings.uri-format'))
       }
     })
     if (additionalInfo.error === 'json') items.push(tg('warnings.additional-json'))
@@ -279,7 +290,7 @@ export default function MptMetadataGeneratorPage() {
                   className="input-text"
                   value={form.icon}
                   onChange={(event) => updateForm('icon', event.target.value)}
-                  placeholder="https://example.com/token.png"
+                  placeholder="example.com/token.png"
                 />
               </Field>
               <Field label={tg('fields.issuer-name')} required>
@@ -341,7 +352,7 @@ export default function MptMetadataGeneratorPage() {
                   className="input-text"
                   value={item.uri}
                   onChange={(event) => updateUri(index, 'uri', event.target.value)}
-                  placeholder="https://example.com or ipfs://..."
+                  placeholder="example.com or ipfs://..."
                 />
                 <FormSelect
                   value={item.category}
@@ -373,7 +384,7 @@ export default function MptMetadataGeneratorPage() {
                   instanceId="mpt-metadata-additional-info-type"
                 />
               </Field>
-              <Field label={tg('fields.additional-info')} className={styles.wideField}>
+              <Field label={tg('fields.additional-info')} hint={tg('hints.other-links')} className={styles.wideField}>
                 <textarea
                   className="input-text"
                   rows={6}
