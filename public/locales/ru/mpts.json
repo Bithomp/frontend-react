@@ -1,0 +1,34 @@
+{
+  "title": "Многоцелевые токены",
+  "order": {
+    "holdersHighToLow": "Держатели: по убыванию",
+    "authorizedHighToLow": "Авторизованные: по убыванию",
+    "createdLatestFirst": "Созданные: сначала новые",
+    "createdOldestFirst": "Созданные: сначала старые"
+  },
+  "headers": {
+    "token": "Токен",
+    "mptId": "ID MPT",
+    "currency": "Валюта",
+    "issuer": "Эмитент",
+    "holders": "Держатели",
+    "authorized": "Авторизованные",
+    "authorizedAddresses": "Авторизованные адреса",
+    "sequence": "Последовательность",
+    "tokenSequence": "Последовательность токена",
+    "transferFee": "Комиссия за перевод",
+    "created": "Создан",
+    "scale": "Масштаб",
+    "outstanding": "В обращении",
+    "maxSupply": "Максимальное предложение",
+    "lastUsed": "Последнее использование",
+    "description": "Описание",
+    "action": "Действие"
+  },
+  "actions": { "authorize": "Авторизовать", "tokenPage": "Страница токена" },
+  "values": { "noFee": "Без комиссии", "notAvailable": "Н/Д" },
+  "errors": {
+    "invalidCurrencyCode": "Недопустимый код валюты",
+    "invalidIssuer": "Недопустимый адрес или имя пользователя эмитента"
+  }
+}

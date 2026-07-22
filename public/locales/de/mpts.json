@@ -1,0 +1,34 @@
+{
+  "title": "Mehrzweck-Token",
+  "order": {
+    "holdersHighToLow": "Inhaber: absteigend",
+    "authorizedHighToLow": "Autorisiert: absteigend",
+    "createdLatestFirst": "Erstellt: neueste zuerst",
+    "createdOldestFirst": "Erstellt: älteste zuerst"
+  },
+  "headers": {
+    "token": "Token",
+    "mptId": "MPT-ID",
+    "currency": "Währung",
+    "issuer": "Emittent",
+    "holders": "Inhaber",
+    "authorized": "Autorisiert",
+    "authorizedAddresses": "Autorisierte Adressen",
+    "sequence": "Sequenz",
+    "tokenSequence": "Token-Sequenz",
+    "transferFee": "Transfergebühr",
+    "created": "Erstellt",
+    "scale": "Skalierung",
+    "outstanding": "Im Umlauf",
+    "maxSupply": "Maximales Angebot",
+    "lastUsed": "Zuletzt verwendet",
+    "description": "Beschreibung",
+    "action": "Aktion"
+  },
+  "actions": { "authorize": "Autorisieren", "tokenPage": "Token-Seite" },
+  "values": { "noFee": "Keine Gebühr", "notAvailable": "k. A." },
+  "errors": {
+    "invalidCurrencyCode": "Ungültiger Währungscode",
+    "invalidIssuer": "Ungültige Adresse oder ungültiger Benutzername des Emittenten"
+  }
+}

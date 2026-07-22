@@ -1,0 +1,34 @@
+{
+  "title": "Tokens polyvalents",
+  "order": {
+    "holdersHighToLow": "Détenteurs : ordre décroissant",
+    "authorizedHighToLow": "Autorisés : ordre décroissant",
+    "createdLatestFirst": "Créés : plus récents d’abord",
+    "createdOldestFirst": "Créés : plus anciens d’abord"
+  },
+  "headers": {
+    "token": "Token",
+    "mptId": "ID MPT",
+    "currency": "Devise",
+    "issuer": "Émetteur",
+    "holders": "Détenteurs",
+    "authorized": "Autorisés",
+    "authorizedAddresses": "Adresses autorisées",
+    "sequence": "Séquence",
+    "tokenSequence": "Séquence du token",
+    "transferFee": "Frais de transfert",
+    "created": "Créé",
+    "scale": "Échelle",
+    "outstanding": "En circulation",
+    "maxSupply": "Offre maximale",
+    "lastUsed": "Dernière utilisation",
+    "description": "Description",
+    "action": "Action"
+  },
+  "actions": { "authorize": "Autoriser", "tokenPage": "Page du token" },
+  "values": { "noFee": "Aucuns frais", "notAvailable": "N/D" },
+  "errors": {
+    "invalidCurrencyCode": "Code de devise non valide",
+    "invalidIssuer": "Adresse ou nom d’utilisateur de l’émetteur non valide"
+  }
+}

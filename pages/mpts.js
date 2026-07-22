@@ -93,14 +93,14 @@ export async function getServerSideProps(context) {
     if (valid) {
       url += `&currency=${currencyCode}`
     } else {
-      initialErrorMessage = 'Invalid currency code'
+      initialErrorMessage = 'invalidCurrencyCode'
     }
   }
   if (issuer) {
     if (isAddressOrUsername(issuer)) {
       url += `&issuer=${issuer}`
     } else {
-      initialErrorMessage = 'Invalid issuer address or issuer username'
+      initialErrorMessage = 'invalidIssuer'
     }
   }
 
@@ -125,28 +125,28 @@ export async function getServerSideProps(context) {
       currencyQuery: currency || initialData?.currency || null,
       issuerQuery: issuer || initialData?.issuer || null,
       orderQuery: supportedOrders.includes(order) ? order : null,
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'mpts']))
     }
   }
 }
 
-const orderList = [
+const getOrderList = (t) => [
   //{ value: 'rating', label: 'Rating: High to Low' },
-  { value: 'holdersHigh', label: 'Holders: High to Low' },
-  { value: 'mptokensHigh', label: 'Authorized: High to Low' },
-  { value: 'createdNew', label: 'Created: Latest first' },
-  { value: 'createdOld', label: 'Created: Oldest first' }
+  { value: 'holdersHigh', label: t('order.holdersHighToLow') },
+  { value: 'mptokensHigh', label: t('order.authorizedHighToLow') },
+  { value: 'createdNew', label: t('order.createdLatestFirst') },
+  { value: 'createdOld', label: t('order.createdOldestFirst') }
 ]
 
 // Helper component to render token with icon
-const TokenCell = ({ token }) => {
-  if (!token) return 'N/A'
+const TokenCell = ({ token, fallback }) => {
+  if (!token) return fallback
   return <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
 }
 
-const transferFeeText = (token) => {
+const transferFeeText = (token, noFeeText) => {
   const transferFee = Number(token?.transferFee ?? token?.TransferFee)
-  return Number.isFinite(transferFee) && transferFee > 0 ? `${transferFee / 1000}%` : 'No fee'
+  return Number.isFinite(transferFee) && transferFee > 0 ? `${transferFee / 1000}%` : noFeeText
 }
 
 export default function Mpts({
@@ -160,18 +160,22 @@ export default function Mpts({
   orderQuery,
   setSignRequest
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
+  const { t: tm } = useTranslation('mpts')
   const isFirstRender = useRef(true)
   const router = useRouter()
+  const orderList = getOrderList(tm)
 
   const [data, setData] = useState(initialData?.issuances || [])
   const [rawData, setRawData] = useState(initialData || {})
   const [marker, setMarker] = useState(initialData?.marker || '')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(
-    t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
+    tm(`errors.${initialErrorMessage}`, {
+      defaultValue: t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage })
+    }) || ''
   )
-  const [order, setOrder] = useState(orderQuery || 'holdersHight') //'rating
+  const [order, setOrder] = useState(orderQuery || 'holdersHigh') //'rating
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
@@ -266,7 +270,7 @@ export default function Mpts({
         if (newdata.error) {
           setErrorMessage(newdata.error)
         } else {
-          setErrorMessage('Error')
+          setErrorMessage(t('general.error'))
         }
       }
     } else {
@@ -335,18 +339,18 @@ export default function Mpts({
 
   // CSV headers for export
   const csvHeaders = [
-    { label: 'MPT ID', key: 'mptokenIssuanceID' },
-    { label: 'Currency', key: 'currency' },
-    { label: 'Issuer', key: 'issuer' },
-    { label: 'Authorised addresses', key: 'mptokens' },
-    { label: 'Holders', key: 'holders' },
-    { label: 'Created', key: 'createdAt' },
-    { label: 'Scale', key: 'scale' },
-    { label: 'Outstanding', key: 'outstandingAmount' },
-    { label: 'Max supply', key: 'maximumAmount' },
-    { label: 'Last used', key: 'lastUsedAt' },
-    { label: 'Transfer fee', key: 'transferFee' },
-    { label: 'Description', key: 'metadata.description' }
+    { label: tm('headers.mptId'), key: 'mptokenIssuanceID' },
+    { label: tm('headers.currency'), key: 'currency' },
+    { label: tm('headers.issuer'), key: 'issuer' },
+    { label: tm('headers.authorizedAddresses'), key: 'mptokens' },
+    { label: tm('headers.holders'), key: 'holders' },
+    { label: tm('headers.created'), key: 'createdAt' },
+    { label: tm('headers.scale'), key: 'scale' },
+    { label: tm('headers.outstanding'), key: 'outstandingAmount' },
+    { label: tm('headers.maxSupply'), key: 'maximumAmount' },
+    { label: tm('headers.lastUsed'), key: 'lastUsedAt' },
+    { label: tm('headers.transferFee'), key: 'transferFee' },
+    { label: tm('headers.description'), key: 'metadata.description' }
   ]
 
   const sortTable = (key) => {
@@ -414,8 +418,8 @@ export default function Mpts({
 
   return (
     <>
-      <SEO title="Multi-Purpose Tokens" />
-      <h1 className="center">Multi-Purpose Tokens</h1>
+      <SEO title={tm('title')} />
+      <h1 className="center">{tm('title')}</h1>
 
       {!xahauNetwork && <TokenTabs tab="mpts" />}
 
@@ -460,24 +464,24 @@ export default function Mpts({
                     {/* <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} /> */}
                   </span>
                 </th>
-                <th>Token</th>
+                <th>{tm('headers.token')}</th>
                 <th className="right">
                   <span className="inline-flex items-center">
-                    Holders
+                    {tm('headers.holders')}
                     <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />
                   </span>
                   <br />
                   <span className="inline-flex items-center">
-                    Authorized
+                    {tm('headers.authorized')}
                     <SortingArrow sortKey="mptokens" currentSort={sortConfig} onClick={() => sortTable('mptokens')} />
                   </span>
                 </th>
-                <th className="center">MPT ID</th>
-                <th className="right">Sequence</th>
-                <th className="right">Transfer fee</th>
+                <th className="center">{tm('headers.mptId')}</th>
+                <th className="right">{tm('headers.sequence')}</th>
+                <th className="right">{tm('headers.transferFee')}</th>
                 <th className="right">
                   <span className="inline-flex items-center">
-                    Created
+                    {tm('headers.created')}
                     <SortingArrow
                       sortKey="created"
                       currentSort={sortConfig}
@@ -486,10 +490,10 @@ export default function Mpts({
                     />
                   </span>
                 </th>
-                <th className="right">Outstanding</th>
-                <th className="right">Max supply</th>
-                <th>Last used</th>
-                <th className="center">Action</th>
+                <th className="right">{tm('headers.outstanding')}</th>
+                <th className="right">{tm('headers.maxSupply')}</th>
+                <th>{tm('headers.lastUsed')}</th>
+                <th className="center">{tm('headers.action')}</th>
               </tr>
             </thead>
             <tbody>
@@ -518,7 +522,7 @@ export default function Mpts({
                             >
                               <td className="center">{i + 1}</td>
                               <td>
-                                <TokenCell token={token} />
+                                <TokenCell token={token} fallback={tm('values.notAvailable')} />
                               </td>
                             <td className="right">
                               <span className="tooltip green">
@@ -537,7 +541,7 @@ export default function Mpts({
                               </span>
                             </td>
                             <td className="right">{token.sequence}</td>
-                            <td className="right">{transferFeeText(token)}</td>
+                            <td className="right">{transferFeeText(token, tm('values.noFee'))}</td>
                             <td className="right">
                               {dateFormat(token.createdAt)}
                               <br />
@@ -559,7 +563,7 @@ export default function Mpts({
                                 className="orange tooltip"
                               >
                                 <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                                <span className="tooltiptext no-brake">Authorize</span>
+                                <span className="tooltiptext no-brake">{tm('actions.authorize')}</span>
                               </span>
                             </td>
                           </tr>
@@ -600,45 +604,45 @@ export default function Mpts({
                               </td>
                               <td>
                                 <br />
-                                <TokenCell token={token} />
+                                <TokenCell token={token} fallback={tm('values.notAvailable')} />
                                 <br />
-                                <b>MPT ID:</b>{' '}
+                                <b>{tm('headers.mptId')}:</b>{' '}
                                 <span onClick={stopRowClick}>
                                   <CopyButton text={token.mptokenIssuanceID} />
                                 </span>{' '}
                                 <br />
-                                <b>Holders:</b>{' '}
+                                <b>{tm('headers.holders')}:</b>{' '}
                                 <span className="tooltip">
                                   {shortNiceNumber(token.holders, 0, 1)}
                                   <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
                                 </span>
                                 <br />
-                                <b>Authorized addresses:</b>{' '}
+                                <b>{tm('headers.authorizedAddresses')}:</b>{' '}
                                 <span className="tooltip">
                                   {shortNiceNumber(token.mptokens, 0, 1)}
                                   <span className="tooltiptext no-brake">{fullNiceNumber(token.mptokens)}</span>
                                 </span>
                                 <br />
-                                <b>Token sequence:</b> {token.sequence}
+                                <b>{tm('headers.tokenSequence')}:</b> {token.sequence}
                                 <br />
-                                <b>Transfer fee:</b> {transferFeeText(token)}
+                                <b>{tm('headers.transferFee')}:</b> {transferFeeText(token, tm('values.noFee'))}
                                 <br />
-                                <b>Created:</b>{' '}
+                                <b>{tm('headers.created')}:</b>{' '}
                                 <span>
                                   {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
                                 </span>
                                 <br />
-                                <b>Outstanding:</b>{' '}
+                                <b>{tm('headers.outstanding')}:</b>{' '}
                                 <span suppressHydrationWarning>
                                   {shortNiceNumber(scaleAmount(token.outstandingAmount, token.scale))}
                                 </span>
                                 <br />
-                                <b>Max supply:</b>{' '}
+                                <b>{tm('headers.maxSupply')}:</b>{' '}
                                 <span suppressHydrationWarning>
                                   {shortNiceNumber(scaleAmount(token.maximumAmount, token.scale))}
                                 </span>
                                 <br />
-                                <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
+                                <b>{tm('headers.lastUsed')}:</b> {timeFromNow(token.lastUsedAt, i18n)}
                                 <br />
                                 <br />
                                 <span className="mobile-token-actions">
@@ -646,7 +650,7 @@ export default function Mpts({
                                     className="button-action narrow thin"
                                     onClick={() => openTokenPage(token.mptokenIssuanceID)}
                                   >
-                                    Token page
+                                    {tm('actions.tokenPage')}
                                   </button>
                                   <button
                                     className="button-action narrow thin"
@@ -655,7 +659,7 @@ export default function Mpts({
                                       authorize(token.mptokenIssuanceID)
                                     }}
                                   >
-                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Authorize
+                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> {tm('actions.authorize')}
                                   </button>
                                 </span>
                                 <br />

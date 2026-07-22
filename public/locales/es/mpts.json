@@ -1,0 +1,34 @@
+{
+  "title": "Tokens multipropósito",
+  "order": {
+    "holdersHighToLow": "Tenedores: de mayor a menor",
+    "authorizedHighToLow": "Autorizados: de mayor a menor",
+    "createdLatestFirst": "Creados: más recientes primero",
+    "createdOldestFirst": "Creados: más antiguos primero"
+  },
+  "headers": {
+    "token": "Token",
+    "mptId": "ID de MPT",
+    "currency": "Moneda",
+    "issuer": "Emisor",
+    "holders": "Tenedores",
+    "authorized": "Autorizados",
+    "authorizedAddresses": "Direcciones autorizadas",
+    "sequence": "Secuencia",
+    "tokenSequence": "Secuencia del token",
+    "transferFee": "Comisión de transferencia",
+    "created": "Creado",
+    "scale": "Escala",
+    "outstanding": "En circulación",
+    "maxSupply": "Suministro máximo",
+    "lastUsed": "Último uso",
+    "description": "Descripción",
+    "action": "Acción"
+  },
+  "actions": { "authorize": "Autorizar", "tokenPage": "Página del token" },
+  "values": { "noFee": "Sin comisión", "notAvailable": "N/D" },
+  "errors": {
+    "invalidCurrencyCode": "Código de moneda no válido",
+    "invalidIssuer": "La dirección o el nombre de usuario del emisor no son válidos"
+  }
+}

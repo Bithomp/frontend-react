@@ -1,0 +1,34 @@
+{
+  "title": "다목적 토큰",
+  "order": {
+    "holdersHighToLow": "보유자: 높은 순",
+    "authorizedHighToLow": "승인됨: 높은 순",
+    "createdLatestFirst": "생성일: 최신순",
+    "createdOldestFirst": "생성일: 오래된 순"
+  },
+  "headers": {
+    "token": "토큰",
+    "mptId": "MPT ID",
+    "currency": "통화",
+    "issuer": "발행자",
+    "holders": "보유자",
+    "authorized": "승인됨",
+    "authorizedAddresses": "승인된 주소",
+    "sequence": "시퀀스",
+    "tokenSequence": "토큰 시퀀스",
+    "transferFee": "전송 수수료",
+    "created": "생성일",
+    "scale": "스케일",
+    "outstanding": "유통 중",
+    "maxSupply": "최대 공급량",
+    "lastUsed": "마지막 사용",
+    "description": "설명",
+    "action": "작업"
+  },
+  "actions": { "authorize": "승인", "tokenPage": "토큰 페이지" },
+  "values": { "noFee": "수수료 없음", "notAvailable": "해당 없음" },
+  "errors": {
+    "invalidCurrencyCode": "잘못된 통화 코드입니다",
+    "invalidIssuer": "발행자 주소 또는 사용자 이름이 잘못되었습니다"
+  }
+}

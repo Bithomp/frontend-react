@@ -1,0 +1,34 @@
+{
+  "title": "多目的トークン",
+  "order": {
+    "holdersHighToLow": "保有者数：多い順",
+    "authorizedHighToLow": "承認済み：多い順",
+    "createdLatestFirst": "作成日：新しい順",
+    "createdOldestFirst": "作成日：古い順"
+  },
+  "headers": {
+    "token": "トークン",
+    "mptId": "MPT ID",
+    "currency": "通貨",
+    "issuer": "発行者",
+    "holders": "保有者",
+    "authorized": "承認済み",
+    "authorizedAddresses": "承認済みアドレス",
+    "sequence": "シーケンス",
+    "tokenSequence": "トークンシーケンス",
+    "transferFee": "送金手数料",
+    "created": "作成日",
+    "scale": "スケール",
+    "outstanding": "流通量",
+    "maxSupply": "最大供給量",
+    "lastUsed": "最終使用",
+    "description": "説明",
+    "action": "操作"
+  },
+  "actions": { "authorize": "承認", "tokenPage": "トークンページ" },
+  "values": { "noFee": "手数料なし", "notAvailable": "該当なし" },
+  "errors": {
+    "invalidCurrencyCode": "通貨コードが無効です",
+    "invalidIssuer": "発行者のアドレスまたはユーザー名が無効です"
+  }
+}

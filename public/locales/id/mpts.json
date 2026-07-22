@@ -1,0 +1,34 @@
+{
+  "title": "Token Multiguna",
+  "order": {
+    "holdersHighToLow": "Pemegang: tertinggi ke terendah",
+    "authorizedHighToLow": "Diotorisasi: tertinggi ke terendah",
+    "createdLatestFirst": "Dibuat: terbaru lebih dulu",
+    "createdOldestFirst": "Dibuat: terlama lebih dulu"
+  },
+  "headers": {
+    "token": "Token",
+    "mptId": "ID MPT",
+    "currency": "Mata uang",
+    "issuer": "Penerbit",
+    "holders": "Pemegang",
+    "authorized": "Diotorisasi",
+    "authorizedAddresses": "Alamat terotorisasi",
+    "sequence": "Urutan",
+    "tokenSequence": "Urutan token",
+    "transferFee": "Biaya transfer",
+    "created": "Dibuat",
+    "scale": "Skala",
+    "outstanding": "Beredar",
+    "maxSupply": "Suplai maksimum",
+    "lastUsed": "Terakhir digunakan",
+    "description": "Deskripsi",
+    "action": "Tindakan"
+  },
+  "actions": { "authorize": "Otorisasi", "tokenPage": "Halaman token" },
+  "values": { "noFee": "Tanpa biaya", "notAvailable": "T/A" },
+  "errors": {
+    "invalidCurrencyCode": "Kode mata uang tidak valid",
+    "invalidIssuer": "Alamat atau nama pengguna penerbit tidak valid"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "title": "Multi-Purpose Tokens",
+  "order": {
+    "holdersHighToLow": "Holders: High to Low",
+    "authorizedHighToLow": "Authorized: High to Low",
+    "createdLatestFirst": "Created: Latest first",
+    "createdOldestFirst": "Created: Oldest first"
+  },
+  "headers": {
+    "token": "Token",
+    "mptId": "MPT ID",
+    "currency": "Currency",
+    "issuer": "Issuer",
+    "holders": "Holders",
+    "authorized": "Authorized",
+    "authorizedAddresses": "Authorized addresses",
+    "sequence": "Sequence",
+    "tokenSequence": "Token sequence",
+    "transferFee": "Transfer fee",
+    "created": "Created",
+    "scale": "Scale",
+    "outstanding": "Outstanding",
+    "maxSupply": "Maximum supply",
+    "lastUsed": "Last used",
+    "description": "Description",
+    "action": "Action"
+  },
+  "actions": { "authorize": "Authorize", "tokenPage": "Token page" },
+  "values": { "noFee": "No fee", "notAvailable": "N/A" },
+  "errors": {
+    "invalidCurrencyCode": "Invalid currency code",
+    "invalidIssuer": "Invalid issuer address or issuer username"
+  }
+}

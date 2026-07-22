@@ -1,0 +1,34 @@
+{
+  "title": "多用途代币",
+  "order": {
+    "holdersHighToLow": "持有者：从高到低",
+    "authorizedHighToLow": "已授权：从高到低",
+    "createdLatestFirst": "创建时间：最新优先",
+    "createdOldestFirst": "创建时间：最早优先"
+  },
+  "headers": {
+    "token": "代币",
+    "mptId": "MPT ID",
+    "currency": "货币",
+    "issuer": "发行方",
+    "holders": "持有者",
+    "authorized": "已授权",
+    "authorizedAddresses": "已授权地址",
+    "sequence": "序列",
+    "tokenSequence": "代币序列",
+    "transferFee": "转账手续费",
+    "created": "创建时间",
+    "scale": "精度",
+    "outstanding": "流通量",
+    "maxSupply": "最大供应量",
+    "lastUsed": "最后使用",
+    "description": "描述",
+    "action": "操作"
+  },
+  "actions": { "authorize": "授权", "tokenPage": "代币页面" },
+  "values": { "noFee": "无手续费", "notAvailable": "不适用" },
+  "errors": {
+    "invalidCurrencyCode": "货币代码无效",
+    "invalidIssuer": "发行方地址或用户名无效"
+  }
+}
