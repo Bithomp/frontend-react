@@ -243,11 +243,6 @@ export default function IssueMptPage({ setSignRequest }) {
         <p className={styles.intro}>{tm('intro')}</p>
 
         <section className={styles.metadataPanel}>
-          <div className={styles.metadataHeading}>
-            <div>
-              <h2>{tm('metadata.title')}</h2>
-            </div>
-          </div>
           <MptMetadataBuilder onMetadataChange={useGeneratedMetadata} />
         </section>
 
