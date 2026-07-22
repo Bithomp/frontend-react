@@ -840,9 +840,6 @@ function AmmChartCard({ title, note, rows, series, type = 'line', dualYAxis = fa
         stroke: { curve: 'smooth', width: type === 'bar' ? 0 : 2 },
         xaxis: {
           type: 'datetime',
-          crosshairs: {
-            show: type !== 'bar'
-          },
           tickAmount: 4,
           labels: {
             show: true,

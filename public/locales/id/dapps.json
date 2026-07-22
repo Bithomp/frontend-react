@@ -106,8 +106,7 @@
     "transactionHistory": "Transaksi",
     "recentTransactions": "Transaksi terbaru",
     "transactionsAvailability": "Data transaksi tersedia untuk bulan terakhir",
-    "transactionType": "Jenis transaksi",
-    "allTransactionTypes": "Semua jenis",
+    "allTransactionTypes": "Semua jenis transaksi",
     "noTransactions": "Transaksi tidak ditemukan",
     "transactionsLoadError": "Transaksi dApp tidak dapat dimuat.",
     "loadMoreTransactions": "Muat transaksi lainnya",
@@ -115,6 +114,7 @@
     "addressHistory": "Alamat aktif",
     "volumeHistory": "Volume",
     "feeHistory": "Biaya",
+    "expandChart": "Buka grafik {{title}}",
     "transactionMix": "Jenis transaksi",
     "periodTotal": "Total periode yang dipilih"
   },

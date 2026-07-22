@@ -106,8 +106,7 @@
     "transactionHistory": "取引",
     "recentTransactions": "最近の取引",
     "transactionsAvailability": "取引データは直近1か月分利用できます",
-    "transactionType": "取引タイプ",
-    "allTransactionTypes": "すべてのタイプ",
+    "allTransactionTypes": "すべての取引タイプ",
     "noTransactions": "取引が見つかりません",
     "transactionsLoadError": "dAppの取引を読み込めませんでした。",
     "loadMoreTransactions": "取引をさらに読み込む",
@@ -115,6 +114,7 @@
     "addressHistory": "アクティブアドレス",
     "volumeHistory": "取引量",
     "feeHistory": "手数料",
+    "expandChart": "{{title}}グラフを開く",
     "transactionMix": "取引タイプ",
     "periodTotal": "選択期間の合計"
   },

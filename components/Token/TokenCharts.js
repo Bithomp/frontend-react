@@ -394,9 +394,6 @@ function TokenChart({ group = {}, expanded = false }) {
         },
         xaxis: {
           type: 'datetime',
-          crosshairs: {
-            show: group.crosshairs !== false
-          },
           labels: {
             datetimeUTC: true,
             style: { colors: labelColor },
@@ -1063,7 +1060,6 @@ export default function TokenCharts({ token, selectedCurrency, onChartRowsChange
         chartType: 'bar',
         stacked: true,
         stackOnlyBar: true,
-        crosshairs: false,
         colors: volumeSeries.map((series) => series.color),
         series: volumeSeries,
         axisFormatter: (value) => compactNumber(value, volumeUnit),
@@ -1093,7 +1089,6 @@ export default function TokenCharts({ token, selectedCurrency, onChartRowsChange
         chartType: 'bar',
         stacked: true,
         stackOnlyBar: true,
-        crosshairs: false,
         colors: dexAccountsSeries.map((series) => series.color),
         series: dexAccountsSeries,
         yRange: integerSeriesRange(dexAccountsSeries, { startAtZero: true }),
@@ -1125,7 +1120,6 @@ export default function TokenCharts({ token, selectedCurrency, onChartRowsChange
         summaryValue: compactNumber(toNumber(latest?.dexTxs)),
         chartType: 'bar',
         stacked: true,
-        crosshairs: false,
         colors: dexActivitySeries.map((series) => series.color),
         series: dexActivitySeries,
         axisFormatter: (value) => compactNumber(value),
@@ -1140,7 +1134,6 @@ export default function TokenCharts({ token, selectedCurrency, onChartRowsChange
         summaryLabel: t('charts.transfer.summary'),
         summaryValue: compactNumber(volumeValue(latest, 'transferVolume'), volumeUnit),
         chartType: 'bar',
-        crosshairs: false,
         colors: transferSeries.map((series) => series.color),
         series: transferSeries,
         primarySeriesName: transferVolumeSeriesName,
@@ -1158,7 +1151,6 @@ export default function TokenCharts({ token, selectedCurrency, onChartRowsChange
         summaryLabel: t('charts.mintBurn.summary'),
         summaryItems: mintBurnSummaryItems,
         chartType: 'bar',
-        crosshairs: false,
         colors: mintBurnSeries.map((series) => series.color),
         series: mintBurnSeries,
         axisFormatter: (value) => compactNumber(value),

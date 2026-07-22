@@ -304,6 +304,46 @@
   line-height: 1.2;
 }
 
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chartHeader button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--accent-link);
+  background: var(--background-secondary);
+  cursor: pointer;
+}
+
+.chartHeader button:hover {
+  border-color: var(--accent-link);
+  color: var(--accent-link-hover);
+}
+
+.chartHeader button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.chartCardExpanded {
+  display: block;
+  min-height: 440px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .emptyChart,
 .loading,
 .empty,

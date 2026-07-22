@@ -106,8 +106,7 @@
     "transactionHistory": "Транзакции",
     "recentTransactions": "Последние транзакции",
     "transactionsAvailability": "Данные о транзакциях доступны за последний месяц",
-    "transactionType": "Тип транзакции",
-    "allTransactionTypes": "Все типы",
+    "allTransactionTypes": "Все типы транзакций",
     "noTransactions": "Транзакции не найдены",
     "transactionsLoadError": "Не удалось загрузить транзакции dApp.",
     "loadMoreTransactions": "Показать ещё транзакции",
@@ -115,6 +114,7 @@
     "addressHistory": "Активные адреса",
     "volumeHistory": "Объём",
     "feeHistory": "Комиссии",
+    "expandChart": "Открыть график «{{title}}»",
     "transactionMix": "Типы транзакций",
     "periodTotal": "Итого за выбранный период"
   },

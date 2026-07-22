@@ -1210,6 +1210,12 @@ body.dark {
   fill: var(--text-main) !important;
 }
 
+// Bar charts already highlight the hovered bar; ApexCharts' wide x-axis crosshair
+// adds a second grey block that obscures neighbouring series.
+.apexcharts-canvas:has(.apexcharts-bar-series) .apexcharts-xcrosshairs {
+  display: none !important;
+}
+
 .social-icons {
   a {
     font-size: 1.5em;

@@ -106,8 +106,7 @@
     "transactionHistory": "交易",
     "recentTransactions": "最近交易",
     "transactionsAvailability": "交易数据可查询最近一个月",
-    "transactionType": "交易类型",
-    "allTransactionTypes": "所有类型",
+    "allTransactionTypes": "所有交易类型",
     "noTransactions": "未找到交易",
     "transactionsLoadError": "无法加载 dApp 交易。",
     "loadMoreTransactions": "加载更多交易",
@@ -115,6 +114,7 @@
     "addressHistory": "活跃地址",
     "volumeHistory": "交易量",
     "feeHistory": "费用",
+    "expandChart": "打开{{title}}图表",
     "transactionMix": "交易类型",
     "periodTotal": "所选时间段合计"
   },

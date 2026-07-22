@@ -27,15 +27,9 @@
   font-size: 17px;
 }
 
-.header > div:first-child span,
-.controls > span {
+.header > div:first-child span {
   color: var(--text-secondary);
   font-size: 11px;
-}
-
-.controls {
-  display: grid;
-  gap: 4px;
 }
 
 .headerActions {
@@ -44,16 +38,9 @@
   align-items: flex-end;
 }
 
-.controls select {
-  box-sizing: border-box;
-  height: 36px;
-  min-width: 150px;
-  padding: 0 30px 0 10px;
-  border: 1px solid var(--accent-link);
-  border-radius: 9px;
-  color: var(--text-main);
-  background: var(--background-input);
-  font: inherit;
+.typeDropdown {
+  min-width: 190px;
+  min-height: 36px;
 }
 
 .refreshButton {
@@ -149,13 +136,12 @@
     flex-direction: column;
   }
 
-  .controls select {
+  .headerActions {
     width: 100%;
-    min-width: 0;
   }
 
-  .headerActions,
-  .controls {
+  .typeDropdown {
     width: 100%;
+    min-width: 0;
   }
 }

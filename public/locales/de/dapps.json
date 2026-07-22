@@ -106,8 +106,7 @@
     "transactionHistory": "Transaktionen",
     "recentTransactions": "Neueste Transaktionen",
     "transactionsAvailability": "Transaktionsdaten sind für den letzten Monat verfügbar",
-    "transactionType": "Transaktionstyp",
-    "allTransactionTypes": "Alle Typen",
+    "allTransactionTypes": "Alle Transaktionstypen",
     "noTransactions": "Keine Transaktionen gefunden",
     "transactionsLoadError": "dApp-Transaktionen konnten nicht geladen werden.",
     "loadMoreTransactions": "Weitere Transaktionen laden",
@@ -115,6 +114,7 @@
     "addressHistory": "Aktive Adressen",
     "volumeHistory": "Volumen",
     "feeHistory": "Gebühren",
+    "expandChart": "Diagramm {{title}} öffnen",
     "transactionMix": "Transaktionstypen",
     "periodTotal": "Gesamt im ausgewählten Zeitraum"
   },

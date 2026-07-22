@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { FaArrowLeft, FaExternalLinkAlt } from 'react-icons/fa'
 import { FaDiscord, FaFacebook, FaInstagram, FaLinkedin, FaTelegram, FaXTwitter } from 'react-icons/fa6'
+import { IoExpandOutline } from 'react-icons/io5'
 
 import SEO from '../../components/SEO'
 import DappLogo from '../../components/Dapps/DappLogo'
@@ -17,6 +18,7 @@ import DappsDataNote from '../../components/Dapps/DappsDataNote'
 import DappTransactions from '../../components/Dapps/DappTransactions'
 import ChartPeriodSwitch from '../../components/UI/ChartPeriodSwitch'
 import SimpleSelect from '../../components/UI/SimpleSelect'
+import Dialog from '../../components/UI/Dialog'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import { axiosServer, currencyServer, passHeaders } from '../../utils/axios'
 import { explorerName, nativeCurrency, normalizeLocale } from '../../utils'
@@ -144,7 +146,17 @@ export async function getServerSideProps(context) {
   }
 }
 
-function DappHistoryChart({ title, rows, series, currency = '', type = 'line', showYear = false, separateScales = false }) {
+function DappHistoryChart({
+  title,
+  rows,
+  series,
+  currency = '',
+  type = 'line',
+  showYear = false,
+  separateScales = false,
+  expanded = false,
+  onExpand
+}) {
   const { t, i18n } = useTranslation('dapps')
   const { theme } = useTheme()
   const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
@@ -199,10 +211,17 @@ function DappHistoryChart({ title, rows, series, currency = '', type = 'line', s
   )
 
   return (
-    <section className={styles.chartCard}>
-      <h2>{title}</h2>
+    <section className={`${styles.chartCard} ${expanded ? styles.chartCardExpanded : ''}`}>
+      {!expanded ? (
+        <div className={styles.chartHeader}>
+          <h2>{title}</h2>
+          <button type="button" onClick={onExpand} aria-label={t('detail.expandChart', { title })}>
+            <IoExpandOutline aria-hidden="true" />
+          </button>
+        </div>
+      ) : null}
       {hasData ? (
-        <Chart height={220} options={options} series={series} type={type} />
+        <Chart height={expanded ? 440 : 220} options={options} series={series} type={type} />
       ) : (
         <div className={styles.emptyChart}>{t('detail.noChartData')}</div>
       )}
@@ -240,6 +259,7 @@ export default function DappDetails({
   const [payload, setPayload] = useState(initialData || {})
   const [loading, setLoading] = useState(!initialData)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [expandedChartKey, setExpandedChartKey] = useState('')
   const initialRequestRef = useRef(true)
 
   useEffect(() => {
@@ -413,6 +433,19 @@ export default function DappDetails({
   }))
   const averageIntervalLabel = t(`detail.averageSpan.${span}`)
   const successColor = summary.successRate >= 98 ? styles.good : summary.successRate >= 90 ? styles.warn : styles.bad
+  const historyCharts = [
+    {
+      key: 'addresses',
+      title: t('detail.addressHistory'),
+      series: chartSeries.addresses,
+      type: 'bar',
+      separateScales: true
+    },
+    { key: 'transactions', title: t('detail.transactionHistory'), series: chartSeries.transactions, type: 'bar' },
+    { key: 'volume', title: t('detail.volumeHistory'), series: chartSeries.volume, currency },
+    { key: 'fees', title: t('detail.feeHistory'), series: chartSeries.fees, currency }
+  ]
+  const expandedChart = historyCharts.find((chart) => chart.key === expandedChartKey)
 
   return (
     <main className={styles.page}>
@@ -496,6 +529,14 @@ export default function DappDetails({
         <>
           <section className={styles.metrics}>
             <div>
+              <MetricLabel label={t('metrics.performingAddresses')} tip={t('detail.avgPerforming', { interval: averageIntervalLabel })} />
+              <strong suppressHydrationWarning>{shortNiceNumber(summary.performing, 1)}</strong>
+            </div>
+            <div>
+              <MetricLabel label={t('metrics.interactingAddresses')} tip={t('detail.avgInteracting', { interval: averageIntervalLabel })} />
+              <strong suppressHydrationWarning>{shortNiceNumber(summary.interacting, 1)}</strong>
+            </div>
+            <div>
               <span>{t('detail.transactions')}</span>
               <strong suppressHydrationWarning>{shortNiceNumber(summary.transactions, 0)}</strong>
               <small className={styles.metricSecondary} suppressHydrationWarning>
@@ -508,14 +549,6 @@ export default function DappDetails({
               <small className={styles.failedCount} suppressHydrationWarning>
                 {t('activity.failed')}: {shortNiceNumber(summary.failed, 0)}
               </small>
-            </div>
-            <div>
-              <MetricLabel label={t('metrics.performingAddresses')} tip={t('detail.avgPerforming', { interval: averageIntervalLabel })} />
-              <strong suppressHydrationWarning>{shortNiceNumber(summary.performing, 1)}</strong>
-            </div>
-            <div>
-              <MetricLabel label={t('metrics.interactingAddresses')} tip={t('detail.avgInteracting', { interval: averageIntervalLabel })} />
-              <strong suppressHydrationWarning>{shortNiceNumber(summary.interacting, 1)}</strong>
             </div>
             <div>
               <span>{t('detail.volume')}</span>
@@ -534,18 +567,27 @@ export default function DappDetails({
           </section>
 
           <section className={styles.charts}>
-            <DappHistoryChart
-              title={t('detail.addressHistory')}
-              rows={rows}
-              series={chartSeries.addresses}
-              type="bar"
-              showYear={period === 'all'}
-              separateScales
-            />
-            <DappHistoryChart title={t('detail.transactionHistory')} rows={rows} series={chartSeries.transactions} type="bar" showYear={period === 'all'} />
-            <DappHistoryChart title={t('detail.volumeHistory')} rows={rows} series={chartSeries.volume} currency={currency} showYear={period === 'all'} />
-            <DappHistoryChart title={t('detail.feeHistory')} rows={rows} series={chartSeries.fees} currency={currency} showYear={period === 'all'} />
+            {historyCharts.map((chart) => (
+              <DappHistoryChart
+                key={chart.key}
+                {...chart}
+                rows={rows}
+                showYear={period === 'all'}
+                onExpand={() => setExpandedChartKey(chart.key)}
+              />
+            ))}
           </section>
+
+          <Dialog
+            isOpen={!!expandedChart}
+            onClose={() => setExpandedChartKey('')}
+            title={expandedChart?.title || ''}
+            size="xlarge"
+          >
+            {expandedChart ? (
+              <DappHistoryChart {...expandedChart} rows={rows} showYear={period === 'all'} expanded />
+            ) : null}
+          </Dialog>
 
           <section className={`${styles.typeCard} ${dappsPageClass}`}>
             <div className={styles.sectionHeader}>

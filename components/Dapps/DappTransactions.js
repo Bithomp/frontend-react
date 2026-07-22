@@ -5,6 +5,7 @@ import { FaArrowsRotate } from 'react-icons/fa6'
 
 import { useIsMobile } from '../../utils/mobile'
 import { dappTransactionsApiUrl } from '../../utils/dapps'
+import SimpleSelect from '../UI/SimpleSelect'
 import {
   TransactionRowDetails,
   TransactionRowAccountDelete,
@@ -70,6 +71,13 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
     })
     return [...types].sort()
   }, [knownTypes, transactions])
+  const typeSelectOptions = useMemo(
+    () => [
+      { value: 'all', label: t('detail.allTransactionTypes') },
+      ...typeOptions.map((option) => ({ value: option, label: option }))
+    ],
+    [t, typeOptions]
+  )
 
   useEffect(() => {
     if (firstRequestRef.current) {
@@ -127,13 +135,13 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
             <span>{t('detail.transactionsAvailability')}</span>
           </div>
           <div className={styles.headerActions}>
-            <label className={styles.controls}>
-              <span>{t('detail.transactionType')}</span>
-              <select value={type} onChange={(event) => setType(event.target.value)}>
-                <option value="all">{t('detail.allTransactionTypes')}</option>
-                {typeOptions.map((option) => <option value={option} key={option}>{option}</option>)}
-              </select>
-            </label>
+            <SimpleSelect
+              value={type}
+              setValue={setType}
+              optionsList={typeSelectOptions}
+              className={styles.typeDropdown}
+              instanceId="dapp-transaction-type"
+            />
             <button
               className={styles.refreshButton}
               type="button"

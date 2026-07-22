@@ -1802,6 +1802,9 @@ export default function Account({
   const hasHeldMpts = heldMpts.length > 0
   const hasIssuedMpts = issuedMpts.length > 0
   const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
+  const onlyIssuedToken = !issuedTokensLoading && !issuedTokensError && issuedTokens.length === 1 ? issuedTokens[0] : null
+  const onlyIssuedTokenPageUrl =
+    data?.address && onlyIssuedToken?.currency ? `/token/${data.address}/${onlyIssuedToken.currency}` : null
   const hasSignerAccountsSection = !!data?.address && (signerAccountsLoading || signerAccounts.length > 0)
   const nftMinterAccountsPreview = nftMinterAccounts.slice(0, nftMinterAccountsDisplayLimit)
   const hasMoreNftMinterAccountsLoaded = nftMinterAccounts.length > nftMinterAccountsPreview.length
@@ -3915,6 +3918,15 @@ export default function Account({
                 </div>
               )}
             </div>
+
+            {onlyIssuedTokenPageUrl && (
+              <div className="get-first-native-wrap">
+                <a href={onlyIssuedTokenPageUrl} className="get-first-native-btn">
+                  <MdOpenInNew style={{ fontSize: 15, marginRight: 6 }} aria-hidden="true" />
+                  {ta('actions.token-page')}
+                </a>
+              </div>
+            )}
 
             {/* Social icons */}
             {socialAccountsNode && <div className="social-icons-wrapper">{socialAccountsNode}</div>}
@@ -9072,6 +9084,7 @@ export default function Account({
                     const issuedTokenCurrencyCode = token.currency
                     const issuedTokenCurrencyCodeDisplay =
                       issuedTokenCurrencyCode?.replace(/0+$/, '') || issuedTokenCurrencyCode
+                    const issuedTokenPageUrl = `/token/${data.address}/${issuedTokenCurrencyCode}`
                     const issuedTokenDistributionUrl = `/distribution?currencyIssuer=${data.address}&currency=${issuedTokenCurrencyCode}`
                     const isExpanded = expandedIssuedToken === tokenKey
 
@@ -9103,14 +9116,6 @@ export default function Account({
                               <span>{ta('labels.currency')}:</span>
                               <span className="copy-inline">
                                 <span>{issuedTokenCurrencyCodeDisplay}</span>
-                                <Link
-                                  href={`/token/${data.address}/${issuedTokenCurrencyCode}`}
-                                  className="inline-link-icon tooltip"
-                                  onClick={(event) => event.stopPropagation()}
-                                >
-                                  <LinkIcon />
-                                  <span className="tooltiptext no-brake">{ta('tooltips.token-page')}</span>
-                                </Link>
                                 <span onClick={(event) => event.stopPropagation()}>
                                   <CopyButton text={issuedTokenCurrencyCode} />
                                 </span>
@@ -9180,6 +9185,17 @@ export default function Account({
                               <span>
                                 {shortNiceNumber(tokenVolume24h, 2, 1)} {niceCurrency(token.currency)}
                               </span>
+                            </div>
+
+                            <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                              <button
+                                type="button"
+                                className="card-action-btn token-page"
+                                onClick={() => router.push(issuedTokenPageUrl)}
+                              >
+                                <MdOpenInNew style={{ fontSize: 15, marginBottom: -2 }} />{' '}
+                                {ta('actions.token-page')}
+                              </button>
                             </div>
                           </div>
                         )}
