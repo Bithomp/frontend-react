@@ -783,8 +783,8 @@
     },
     "hints": {
       "ticker": "大文字の英字と数字のみ、最大6文字です。",
-      "icon-uri": "https:// プロトコルは省略でき、その場合はHTTPSとみなされます。IPFS URIにはipfs://が必要です。",
-      "uri": "https:// プロトコルは省略でき、その場合はHTTPSとみなされます。その他のスキームはipfs://のように完全に指定してください。",
+      "icon-uri": "https:// プロトコルは省略でき、その場合はHTTPSとみなされます。IPFS URIと埋め込みdata:image URIにも対応しています。",
+      "uri": "https:// プロトコルは省略でき、その場合はHTTPSとみなされます。完全なIPFS URIとdata URIにも対応しています。",
       "other-links": "追加情報内のリンクには、プロトコルを含む完全なURIを指定してください。"
     },
     "placeholders": {
@@ -795,9 +795,9 @@
     "warnings": {
       "ticker": "ティッカーは必須で、1～6文字の大文字英字または数字で指定してください。",
       "name": "トークン名は必須です。", "icon": "アイコンURIは必須です。",
-      "icon-uri": "アイコンURIは、https://の有無を問わず有効なHTTPSアドレス、またはIPFS URIである必要があります。",
+      "icon-uri": "アイコンURIは、有効なHTTPSアドレス、IPFS URI、またはdata:image URIである必要があります。",
       "asset-class": "資産クラスは必須です。", "asset-subclass": "RWAトークンには資産サブクラスが必要です。",
-      "issuer-name": "発行者名は必須です。", "uri": "各関連リンクにはURIとタイトルが必要です。", "uri-format": "各関連リンクには有効なHTTPSアドレスまたは完全なURIが必要です。",
+      "issuer-name": "発行者名は必須です。", "uri": "各関連リンクにはURIとタイトルが必要です。", "uri-format": "各関連リンクには有効なHTTPSアドレスまたはdata URIを含む完全なURIが必要です。",
       "additional-json": "追加情報は有効なJSONである必要があります。",
       "additional-object": "追加情報のJSONはオブジェクトである必要があります。",
       "size": "メタデータは{{count}}バイトで、オンレジャー上限の{{max}}バイトを超えています。"

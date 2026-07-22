@@ -783,8 +783,8 @@
     },
     "hints": {
       "ticker": "Lettres majuscules et chiffres uniquement, 6 caractères maximum.",
-      "icon-uri": "Le protocole https:// peut être omis ; HTTPS est supposé. Les URI IPFS doivent inclure ipfs://.",
-      "uri": "Le protocole https:// peut être omis ; HTTPS est supposé. Les autres schémas doivent être complets, comme ipfs://.",
+      "icon-uri": "Le protocole https:// peut être omis ; HTTPS est supposé. Les URI IPFS et data:image intégrées sont aussi prises en charge.",
+      "uri": "Le protocole https:// peut être omis ; HTTPS est supposé. Les URI IPFS et data complètes sont aussi prises en charge.",
       "other-links": "Les liens dans les informations supplémentaires doivent inclure l’URI complète et le protocole."
     },
     "placeholders": {
@@ -795,9 +795,9 @@
     "warnings": {
       "ticker": "Le symbole est obligatoire et doit contenir 1 à 6 lettres majuscules ou chiffres.",
       "name": "Le nom du token est obligatoire.", "icon": "L’URI de l’icône est obligatoire.",
-      "icon-uri": "L’URI de l’icône doit être une adresse HTTPS valide, avec ou sans https://, ou une URI IPFS.",
+      "icon-uri": "L’URI de l’icône doit être une adresse HTTPS, une URI IPFS ou une URI data:image valide.",
       "asset-class": "La classe d’actif est obligatoire.", "asset-subclass": "La sous-classe d’actif est obligatoire pour les tokens RWA.",
-      "issuer-name": "Le nom de l’émetteur est obligatoire.", "uri": "Chaque lien associé nécessite une URI et un titre.", "uri-format": "Chaque lien associé doit être une adresse HTTPS valide ou une URI complète.",
+      "issuer-name": "Le nom de l’émetteur est obligatoire.", "uri": "Chaque lien associé nécessite une URI et un titre.", "uri-format": "Chaque lien associé doit être une adresse HTTPS valide ou une URI complète, y compris une URI data.",
       "additional-json": "Les informations supplémentaires doivent être un JSON valide.",
       "additional-object": "Les informations JSON supplémentaires doivent être un objet.",
       "size": "Les métadonnées font {{count}} octets et dépassent la limite on-ledger de {{max}} octets."

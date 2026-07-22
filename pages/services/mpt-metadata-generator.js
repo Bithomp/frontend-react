@@ -20,10 +20,16 @@ const additionalInfoTypes = ['object', 'text']
 const createUri = () => ({ uri: '', category: 'website', title: '' })
 const clean = (value) => String(value || '').trim()
 const compactHttpsUri = (value) => clean(value).replace(/^https:\/\//i, '')
+const isValidDataUri = (value, mediaType) => {
+  const uri = clean(value)
+  const prefix = mediaType ? `data:${mediaType}/` : 'data:'
+  return uri.toLowerCase().startsWith(prefix) && /^data:[^,]*,.+$/is.test(uri)
+}
 const isValidIconUri = (value) => {
   const uri = clean(value)
   if (/^https:\/\//i.test(uri)) return isUrlValid(uri)
   if (/^ipfs:\/\//i.test(uri)) return !!ipfsUrl(uri, 'viewer', 'cl')
+  if (/^data:/i.test(uri)) return isValidDataUri(uri, 'image')
   if (/^[a-z][a-z\d+.-]*:/i.test(uri)) return false
   return isUrlValid(`https://${uri}`)
 }
@@ -31,6 +37,7 @@ const isValidRelatedUri = (value) => {
   const uri = clean(value)
   if (!uri) return false
   if (/^ipfs:\/\//i.test(uri)) return !!ipfsUrl(uri, 'viewer', 'cl')
+  if (/^data:/i.test(uri)) return isValidDataUri(uri)
   if (/^[a-z][a-z\d+.-]*:/i.test(uri)) return isUrlValid(uri)
   return isUrlValid(`https://${uri}`)
 }

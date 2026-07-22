@@ -784,8 +784,8 @@
     },
     "hints": {
       "ticker": "Nur Großbuchstaben und Ziffern, maximal 6 Zeichen.",
-      "icon-uri": "Das Protokoll https:// kann weggelassen werden; HTTPS wird angenommen. IPFS-URIs müssen ipfs:// enthalten.",
-      "uri": "Das Protokoll https:// kann weggelassen werden; HTTPS wird angenommen. Andere Schemas müssen vollständig sein, z. B. ipfs://.",
+      "icon-uri": "Das Protokoll https:// kann weggelassen werden; HTTPS wird angenommen. IPFS- und eingebettete data:image-URIs werden ebenfalls unterstützt.",
+      "uri": "Das Protokoll https:// kann weggelassen werden; HTTPS wird angenommen. Vollständige IPFS- und data-URIs werden ebenfalls unterstützt.",
       "other-links": "Links in zusätzlichen Informationen müssen die vollständige URI einschließlich Protokoll enthalten."
     },
     "placeholders": {
@@ -799,9 +799,9 @@
     "warnings": {
       "ticker": "Der Ticker ist erforderlich und muss aus 1–6 Großbuchstaben oder Ziffern bestehen.",
       "name": "Der Tokenname ist erforderlich.", "icon": "Eine Icon-URI ist erforderlich.",
-      "icon-uri": "Die Icon-URI muss eine gültige HTTPS-Adresse mit oder ohne https:// oder eine IPFS-URI sein.",
+      "icon-uri": "Die Icon-URI muss eine gültige HTTPS-Adresse, IPFS-URI oder data:image-URI sein.",
       "asset-class": "Die Asset-Klasse ist erforderlich.", "asset-subclass": "Für RWA-Token ist eine Asset-Unterklasse erforderlich.",
-      "issuer-name": "Der Name des Emittenten ist erforderlich.", "uri": "Jeder zugehörige Link benötigt eine URI und einen Titel.", "uri-format": "Jeder zugehörige Link muss eine gültige HTTPS-Adresse oder eine vollständige URI sein.",
+      "issuer-name": "Der Name des Emittenten ist erforderlich.", "uri": "Jeder zugehörige Link benötigt eine URI und einen Titel.", "uri-format": "Jeder zugehörige Link muss eine gültige HTTPS-Adresse oder eine vollständige URI einschließlich data-URI sein.",
       "additional-json": "Die zusätzlichen Informationen müssen gültiges JSON sein.",
       "additional-object": "Die zusätzlichen JSON-Informationen müssen ein Objekt sein.",
       "size": "Die Metadaten umfassen {{count}} Bytes und überschreiten das On-Ledger-Limit von {{max}} Bytes."

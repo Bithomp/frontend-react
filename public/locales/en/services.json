@@ -811,8 +811,8 @@
     },
     "hints": {
       "ticker": "Uppercase letters and digits only, up to 6 characters.",
-      "icon-uri": "The https:// protocol may be omitted; HTTPS is assumed. IPFS URIs must include ipfs://.",
-      "uri": "The https:// protocol may be omitted; HTTPS is assumed. Other schemes must be complete, such as ipfs://.",
+      "icon-uri": "The https:// protocol may be omitted; HTTPS is assumed. IPFS and inline data:image URIs are also supported.",
+      "uri": "The https:// protocol may be omitted; HTTPS is assumed. Complete IPFS and data URIs are also supported.",
       "other-links": "Links inside additional information must include the full URI and protocol."
     },
     "placeholders": {
@@ -834,12 +834,12 @@
       "ticker": "Ticker is required and must contain 1–6 uppercase letters or digits.",
       "name": "Token name is required.",
       "icon": "Icon URI is required.",
-      "icon-uri": "Icon URI must be a valid HTTPS address, with or without https://, or an IPFS URI.",
+      "icon-uri": "Icon URI must be a valid HTTPS address, IPFS URI, or data:image URI.",
       "asset-class": "Asset class is required.",
       "asset-subclass": "Asset subclass is required for RWA tokens.",
       "issuer-name": "Issuer name is required.",
       "uri": "Each related link needs both a URI and a title.",
-      "uri-format": "Each related link must be a valid HTTPS address or a complete URI.",
+      "uri-format": "Each related link must be a valid HTTPS address or a complete URI, including data URIs.",
       "additional-json": "Additional information must be valid JSON.",
       "additional-object": "Additional information JSON must be an object.",
       "size": "Metadata is {{count}} bytes and exceeds the {{max}}-byte on-ledger limit."

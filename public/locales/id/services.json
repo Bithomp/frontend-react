@@ -783,8 +783,8 @@
     },
     "hints": {
       "ticker": "Hanya huruf kapital dan angka, maksimal 6 karakter.",
-      "icon-uri": "Protokol https:// boleh dihilangkan; HTTPS akan digunakan. URI IPFS harus menyertakan ipfs://.",
-      "uri": "Protokol https:// boleh dihilangkan; HTTPS akan digunakan. Skema lain harus lengkap, seperti ipfs://.",
+      "icon-uri": "Protokol https:// boleh dihilangkan; HTTPS akan digunakan. URI IPFS dan data:image tertanam juga didukung.",
+      "uri": "Protokol https:// boleh dihilangkan; HTTPS akan digunakan. URI IPFS dan data yang lengkap juga didukung.",
       "other-links": "Tautan dalam informasi tambahan harus menyertakan URI lengkap dan protokol."
     },
     "placeholders": {
@@ -795,9 +795,9 @@
     "warnings": {
       "ticker": "Ticker wajib diisi dan harus berisi 1–6 huruf kapital atau angka.",
       "name": "Nama token wajib diisi.", "icon": "URI ikon wajib diisi.",
-      "icon-uri": "URI ikon harus berupa alamat HTTPS yang valid, dengan atau tanpa https://, atau URI IPFS.",
+      "icon-uri": "URI ikon harus berupa alamat HTTPS, URI IPFS, atau URI data:image yang valid.",
       "asset-class": "Kelas aset wajib dipilih.", "asset-subclass": "Subkelas aset wajib untuk token RWA.",
-      "issuer-name": "Nama penerbit wajib diisi.", "uri": "Setiap tautan terkait memerlukan URI dan judul.", "uri-format": "Setiap tautan terkait harus berupa alamat HTTPS yang valid atau URI lengkap.",
+      "issuer-name": "Nama penerbit wajib diisi.", "uri": "Setiap tautan terkait memerlukan URI dan judul.", "uri-format": "Setiap tautan terkait harus berupa alamat HTTPS yang valid atau URI lengkap, termasuk URI data.",
       "additional-json": "Informasi tambahan harus berupa JSON yang valid.",
       "additional-object": "JSON informasi tambahan harus berupa objek.",
       "size": "Metadata berukuran {{count}} byte dan melebihi batas on-ledger {{max}} byte."
