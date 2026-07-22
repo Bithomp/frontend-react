@@ -339,6 +339,18 @@ export default function DappDetails({
     [typeResultTotals]
   )
 
+  const transactionStatuses = useMemo(() => {
+    const statuses = new Set()
+    Object.values(typeResultTotals).forEach((results) => {
+      Object.keys(results || {}).forEach((status) => statuses.add(status))
+    })
+    return [...statuses].sort((a, b) => {
+      if (a === 'tesSUCCESS') return -1
+      if (b === 'tesSUCCESS') return 1
+      return a.localeCompare(b)
+    })
+  }, [typeResultTotals])
+
   const successByType = useMemo(() => {
     const successes = {}
     Object.entries(typeResultTotals).forEach(([type, results]) => {
@@ -641,6 +653,7 @@ export default function DappDetails({
         sourceTag={sourceTag}
         currency={currency}
         knownTypes={Object.keys(typeResultTotals)}
+        knownStatuses={transactionStatuses}
         initialData={initialTransactions}
         initialErrorMessage={initialTransactionsError}
       />

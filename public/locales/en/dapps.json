@@ -107,6 +107,7 @@
     "recentTransactions": "Recent transactions",
     "transactionsAvailability": "Transaction data is available for the latest month",
     "allTransactionTypes": "All transaction types",
+    "allTransactionStatuses": "All statuses",
     "noTransactions": "No transactions found",
     "transactionsLoadError": "Could not load dApp transactions.",
     "loadMoreTransactions": "Load more transactions",

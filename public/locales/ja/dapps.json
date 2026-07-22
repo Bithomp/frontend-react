@@ -107,6 +107,7 @@
     "recentTransactions": "最近の取引",
     "transactionsAvailability": "取引データは直近1か月分利用できます",
     "allTransactionTypes": "すべての取引タイプ",
+    "allTransactionStatuses": "すべてのステータス",
     "noTransactions": "取引が見つかりません",
     "transactionsLoadError": "dAppの取引を読み込めませんでした。",
     "loadMoreTransactions": "取引をさらに読み込む",

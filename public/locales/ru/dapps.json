@@ -107,6 +107,7 @@
     "recentTransactions": "Последние транзакции",
     "transactionsAvailability": "Данные о транзакциях доступны за последний месяц",
     "allTransactionTypes": "Все типы транзакций",
+    "allTransactionStatuses": "Все статусы",
     "noTransactions": "Транзакции не найдены",
     "transactionsLoadError": "Не удалось загрузить транзакции dApp.",
     "loadMoreTransactions": "Показать ещё транзакции",

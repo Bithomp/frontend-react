@@ -39,7 +39,8 @@
 }
 
 .typeDropdown {
-  min-width: 190px;
+  flex: 1 1 230px;
+  min-width: 230px;
   min-height: 36px;
 }
 
@@ -137,11 +138,23 @@
   }
 
   .headerActions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36px;
     width: 100%;
   }
 
   .typeDropdown {
+    grid-column: 1 / -1;
     width: 100%;
     min-width: 0;
+  }
+
+  .typeDropdown:first-child {
+    grid-column: 1;
+  }
+
+  .refreshButton {
+    grid-column: 2;
+    grid-row: 1;
   }
 }

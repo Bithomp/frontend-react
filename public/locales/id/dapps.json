@@ -107,6 +107,7 @@
     "recentTransactions": "Transaksi terbaru",
     "transactionsAvailability": "Data transaksi tersedia untuk bulan terakhir",
     "allTransactionTypes": "Semua jenis transaksi",
+    "allTransactionStatuses": "Semua status",
     "noTransactions": "Transaksi tidak ditemukan",
     "transactionsLoadError": "Transaksi dApp tidak dapat dimuat.",
     "loadMoreTransactions": "Muat transaksi lainnya",

@@ -107,6 +107,7 @@
     "recentTransactions": "最近交易",
     "transactionsAvailability": "交易数据可查询最近一个月",
     "allTransactionTypes": "所有交易类型",
+    "allTransactionStatuses": "所有状态",
     "noTransactions": "未找到交易",
     "transactionsLoadError": "无法加载 dApp 交易。",
     "loadMoreTransactions": "加载更多交易",

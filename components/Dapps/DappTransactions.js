@@ -51,12 +51,20 @@ const transactionRow = (type) => {
   return TransactionRowDetails
 }
 
-export default function DappTransactions({ sourceTag, currency, knownTypes = [], initialData, initialErrorMessage }) {
+export default function DappTransactions({
+  sourceTag,
+  currency,
+  knownTypes = [],
+  knownStatuses = [],
+  initialData,
+  initialErrorMessage
+}) {
   const { t } = useTranslation('dapps')
   const { t: accountT } = useTranslation('account')
   const isMobile = useIsMobile(700)
   const firstRequestRef = useRef(true)
   const [type, setType] = useState('all')
+  const [status, setStatus] = useState('all')
   const [transactions, setTransactions] = useState(initialData?.transactions || [])
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(!initialData)
@@ -78,12 +86,19 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
     ],
     [t, typeOptions]
   )
+  const statusSelectOptions = useMemo(
+    () => [
+      { value: 'all', label: t('detail.allTransactionStatuses') },
+      ...knownStatuses.map((option) => ({ value: option, label: option }))
+    ],
+    [knownStatuses, t]
+  )
 
   useEffect(() => {
     if (firstRequestRef.current) {
       firstRequestRef.current = false
       const initialCurrency = String(initialData?.convertCurrencies?.[0] || '').toLowerCase()
-      if (initialData && type === 'all' && (!initialCurrency || initialCurrency === currency)) return
+      if (initialData && type === 'all' && status === 'all' && (!initialCurrency || initialCurrency === currency)) return
     }
 
     const controller = new AbortController()
@@ -93,7 +108,7 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
     setMarker(null)
     setErrorMessage('')
     axios
-      .get(dappTransactionsApiUrl(sourceTag, currency, { type }), { signal: controller.signal })
+      .get(dappTransactionsApiUrl(sourceTag, currency, { type, status }), { signal: controller.signal })
       .then((response) => {
         if (!active) return
         setTransactions(response?.data?.transactions || [])
@@ -109,14 +124,14 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
       active = false
       controller.abort()
     }
-  }, [currency, initialData, refreshVersion, sourceTag, t, type])
+  }, [currency, initialData, refreshVersion, sourceTag, status, t, type])
 
   const loadMore = async () => {
     if (!marker || loadingMore) return
     setLoadingMore(true)
     setErrorMessage('')
     try {
-      const response = await axios.get(dappTransactionsApiUrl(sourceTag, currency, { type, marker }))
+      const response = await axios.get(dappTransactionsApiUrl(sourceTag, currency, { type, status, marker }))
       setTransactions((current) => [...current, ...(response?.data?.transactions || [])])
       setMarker(response?.data?.marker || null)
     } catch (error) {
@@ -141,6 +156,13 @@ export default function DappTransactions({ sourceTag, currency, knownTypes = [],
               optionsList={typeSelectOptions}
               className={styles.typeDropdown}
               instanceId="dapp-transaction-type"
+            />
+            <SimpleSelect
+              value={status}
+              setValue={setStatus}
+              optionsList={statusSelectOptions}
+              className={styles.typeDropdown}
+              instanceId="dapp-transaction-status"
             />
             <button
               className={styles.refreshButton}
