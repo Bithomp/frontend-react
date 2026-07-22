@@ -89,6 +89,7 @@
     "backToDapps": "Semua dApp",
     "searchDapp": "Cari berdasarkan nama atau tag sumber",
     "openSourceTag": "Buka tag sumber",
+    "openDapp": "Buka",
     "noDappsFound": "Tidak ada dApp yang cocok",
     "searchListHint": "Hanya {{count}} dApp pertama yang ditampilkan. Masukkan nama atau tag sumber untuk menemukan yang lain.",
     "dappAnalytics": "Analitik dApp",

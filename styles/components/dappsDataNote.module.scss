@@ -17,6 +17,20 @@
   margin-top: 4px;
 }
 
+.mobileDocsLink {
+  display: none;
+}
+
+@media only screen and (max-width: 764px) {
+  .desktopDocsLink {
+    display: none;
+  }
+
+  .mobileDocsLink {
+    display: inline;
+  }
+}
+
 @media only screen and (max-width: 440px) {
   .note {
     margin-top: 14px;

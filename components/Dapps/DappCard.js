@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { MdArrowForward } from 'react-icons/md'
 import { shortNiceNumber, amountFormat } from '../../utils/format'
 import { dappBySourceTag } from '../../utils/transaction'
 import { generatedAgentNameBySourceTag } from '../../utils/dapps'
@@ -32,7 +32,6 @@ export default function DappCard({
   setExpandedRowKey
 }) {
   const { t } = useTranslation('dapps')
-  const router = useRouter()
   const sourceTag = dapp?.sourceTag
   const rowKey = sourceTag ?? index
   const isOpen = expandedRowKey === rowKey
@@ -66,24 +65,9 @@ export default function DappCard({
   const hasExternalSigning =
     (Array.isArray(wallets) && wallets.length > 0) || (Array.isArray(walletconnect) && walletconnect.length > 0)
   const detailsHref = `/dapp/${encodeURIComponent(sourceTag)}`
-  const openDetails = (event) => {
-    if (event.target.closest('a, [data-dapp-details]')) return
-    router.push(detailsHref)
-  }
 
   return (
-    <div
-      className={styles.card}
-      role="link"
-      tabIndex={0}
-      onClick={openDetails}
-      onKeyDown={(event) => {
-        if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
-          event.preventDefault()
-          router.push(detailsHref)
-        }
-      }}
-    >
+    <div className={styles.card}>
       <div className={styles.head}>
         <div className={styles.left}>
           <div className={styles.index}>{index + 1}</div>
@@ -100,6 +84,10 @@ export default function DappCard({
             </div>
           </div>
         </div>
+        <Link className={styles.openButton} href={detailsHref}>
+          <span>{t('detail.openDapp')}</span>
+          <MdArrowForward aria-hidden="true" />
+        </Link>
       </div>
 
       <div className={styles.grid}>

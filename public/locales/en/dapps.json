@@ -89,6 +89,7 @@
     "backToDapps": "All dApps",
     "searchDapp": "Search by name or source tag",
     "openSourceTag": "Open source tag",
+    "openDapp": "Open",
     "noDappsFound": "No matching dApps found",
     "searchListHint": "Only the first {{count}} dApps are shown. Enter a name or source tag to find another one.",
     "dappAnalytics": "dApp analytics",

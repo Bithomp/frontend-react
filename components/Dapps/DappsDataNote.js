@@ -15,7 +15,14 @@ export default function DappsDataNote() {
         .
       </span>
       <span>
-        {t('footer.api')} <a href="https://docs.bithomp.com/#dapps">API</a>.
+        {t('footer.api')}{' '}
+        <a className={styles.desktopDocsLink} href="https://docs.bithomp.com/#dapps">
+          API
+        </a>
+        <a className={styles.mobileDocsLink} href="https://docs.bithomp.com">
+          API
+        </a>
+        .
       </span>
     </div>
   )

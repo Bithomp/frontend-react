@@ -89,6 +89,7 @@
     "backToDapps": "すべてのdApp",
     "searchDapp": "名前またはソースタグで検索",
     "openSourceTag": "ソースタグを開く",
+    "openDapp": "開く",
     "noDappsFound": "一致するdAppがありません",
     "searchListHint": "最初の{{count}}件のdAppのみ表示しています。名前またはソースタグを入力して検索してください。",
     "dappAnalytics": "dApp分析",

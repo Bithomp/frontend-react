@@ -89,6 +89,7 @@
     "backToDapps": "Toutes les dApps",
     "searchDapp": "Rechercher par nom ou tag source",
     "openSourceTag": "Ouvrir le tag source",
+    "openDapp": "Ouvrir",
     "noDappsFound": "Aucune dApp correspondante",
     "searchListHint": "Seules les {{count}} premières dApps sont affichées. Saisissez un nom ou un tag source pour en trouver une autre.",
     "dappAnalytics": "Analyse dApp",

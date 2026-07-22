@@ -89,6 +89,7 @@
     "backToDapps": "Все dApps",
     "searchDapp": "Поиск по названию или source tag",
     "openSourceTag": "Открыть source tag",
+    "openDapp": "Открыть",
     "noDappsFound": "Подходящие dApps не найдены",
     "searchListHint": "Показаны только первые {{count}} dApps. Введите название или source tag, чтобы найти нужную.",
     "dappAnalytics": "Аналитика dApp",

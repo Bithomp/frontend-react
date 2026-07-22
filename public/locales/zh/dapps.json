@@ -89,6 +89,7 @@
     "backToDapps": "所有 dApp",
     "searchDapp": "按名称或来源标签搜索",
     "openSourceTag": "打开来源标签",
+    "openDapp": "打开",
     "noDappsFound": "未找到匹配的 dApp",
     "searchListHint": "仅显示前 {{count}} 个 dApp。请输入名称或来源标签以查找其他 dApp。",
     "dappAnalytics": "dApp 分析",

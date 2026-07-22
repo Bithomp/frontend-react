@@ -5,12 +5,6 @@
   background: var(--background-main);
   box-shadow: 0 6px 18px var(--shadow);
   margin: 10px 0;
-  cursor: pointer;
-}
-
-.card:focus-visible {
-  outline: 2px solid var(--accent-link);
-  outline-offset: 2px;
 }
 
 .head {
@@ -68,6 +62,35 @@
 
 .identityLink:hover .title {
   color: var(--accent-link);
+}
+
+.openButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--accent-link);
+  border-radius: 10px;
+  color: var(--accent-link);
+  background: var(--background-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.openButton:hover,
+.openButton:focus-visible {
+  color: var(--background-main);
+  background: var(--accent-link);
+}
+
+.openButton svg {
+  flex: 0 0 auto;
+  font-size: 17px;
 }
 
 .sourceTag {
