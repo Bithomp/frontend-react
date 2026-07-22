@@ -24,6 +24,8 @@
     "remaining": "Restant",
     "issuer-fee": "Frais de l'émetteur : {{fee}}",
     "to-receive": "À recevoir ≈ {{amount}}",
+    "to-spend": "À dépenser ≈ {{amount}}",
+    "amount-mode": { "title": "La somme représente", "deliver": "Somme à livrer", "spend": "Somme à dépenser" },
     "errors": {
       "destination-fetch": "Erreur lors du chargement des données du compte de destination",
       "valid-amount": "Veuillez saisir un montant valide.",

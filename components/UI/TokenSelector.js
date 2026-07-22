@@ -202,7 +202,7 @@ export default function TokenSelector({
         try {
           let tokens = []
 
-          if (destinationAddress) {
+          if (destinationAddress && !searchMPTokens) {
             // Fetch tokens that destination can hold based on trustlines
             tokens = await fetchTrustlinesForDestination(destinationAddress, '', senderAddress, canLock)
           } else {
@@ -258,7 +258,7 @@ export default function TokenSelector({
 
       setIsLoading(true)
       try {
-        if (destinationAddress) {
+        if (destinationAddress && !searchMPTokens) {
           // For destination-specific search, filter the existing trustlines
           const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery, senderAddress, canLock)
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)

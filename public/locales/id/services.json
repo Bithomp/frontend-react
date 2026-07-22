@@ -24,6 +24,8 @@
     "remaining": "Sisa",
     "issuer-fee": "Biaya penerbit: {{fee}}",
     "to-receive": "Akan diterima ≈ {{amount}}",
+    "to-spend": "Akan dibelanjakan ≈ {{amount}}",
+    "amount-mode": { "title": "Arti jumlah", "deliver": "Jumlah yang akan diterima", "spend": "Jumlah yang akan dibelanjakan" },
     "errors": {
       "destination-fetch": "Gagal memuat data akun tujuan",
       "valid-amount": "Masukkan jumlah yang valid.",

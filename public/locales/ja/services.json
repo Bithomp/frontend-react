@@ -24,6 +24,8 @@
     "remaining": "残り",
     "issuer-fee": "発行者手数料: {{fee}}",
     "to-receive": "受取予定 ≈ {{amount}}",
+    "to-spend": "支払予定 ≈ {{amount}}",
+    "amount-mode": { "title": "金額の意味", "deliver": "受取人に届く金額", "spend": "自分が支払う金額" },
     "errors": {
       "destination-fetch": "送信先アカウントデータの取得に失敗しました",
       "valid-amount": "有効な金額を入力してください。",

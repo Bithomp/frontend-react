@@ -355,7 +355,8 @@
       "dex-orders": "DEX orders",
       "nft-offers": "NFT offers",
       "activated-accounts": "Activated accounts",
-      "objects": "Objects"
+      "objects": "Objects",
+      "permissioned-domains": "Permissioned domains"
     },
     "tabs": {
       "all": "All",

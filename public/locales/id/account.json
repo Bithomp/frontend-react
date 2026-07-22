@@ -360,7 +360,8 @@
       "dex-orders": "Order DEX",
       "nft-offers": "Penawaran NFT",
       "activated-accounts": "Akun aktif",
-      "objects": "Objek"
+      "objects": "Objek",
+      "permissioned-domains": "Domain berizin"
     },
     "tabs": {
       "all": "Semua",

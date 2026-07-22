@@ -24,6 +24,8 @@
     "remaining": "Remaining",
     "issuer-fee": "Issuer fee: {{fee}}",
     "to-receive": "To receive ≈ {{amount}}",
+    "to-spend": "To spend ≈ {{amount}}",
+    "amount-mode": { "title": "Amount means", "deliver": "Amount to be delivered", "spend": "Amount to be spent" },
     "errors": {
       "destination-fetch": "Error fetching destination account data",
       "valid-amount": "Please enter a valid amount.",

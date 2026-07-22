@@ -360,7 +360,8 @@
       "dex-orders": "Ordres DEX",
       "nft-offers": "Offres NFT",
       "activated-accounts": "Comptes activés",
-      "objects": "Objets"
+      "objects": "Objets",
+      "permissioned-domains": "Domaines autorisés"
     },
     "tabs": {
       "all": "Tous",

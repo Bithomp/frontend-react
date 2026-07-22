@@ -24,6 +24,8 @@
     "remaining": "剩余",
     "issuer-fee": "发行人费用：{{fee}}",
     "to-receive": "将收到 ≈ {{amount}}",
+    "to-spend": "将支出 ≈ {{amount}}",
+    "amount-mode": { "title": "金额含义", "deliver": "收款方收到的金额", "spend": "自己账户支出的金额" },
     "errors": {
       "destination-fetch": "获取目标账户数据时出错",
       "valid-amount": "请输入有效金额。",

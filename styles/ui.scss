@@ -2,9 +2,16 @@
 @use "variables.scss";
 
 html, body {
-  height: 100%;
   margin: 0;
   padding: 0;
+}
+
+html,
+body,
+#root,
+#__next {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 body {
@@ -21,10 +28,6 @@ body[data-hide-ads='true'] [data-ad-slot='brands'] {
   display: none;
 }
 
-#root {
-  height: 100%;
-}
-
 body.dark {
   #logo, #receiptLogo {
     path, rect, use, polygon, circle, ellipse {
@@ -35,7 +38,8 @@ body.dark {
 
 .body {
   display: flex;
-  min-height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   flex-direction: column;
   position: relative;
   background-color: var(--background-main);

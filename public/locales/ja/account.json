@@ -360,7 +360,8 @@
       "dex-orders": "DEX注文",
       "nft-offers": "NFTオファー",
       "activated-accounts": "有効化済みアカウント",
-      "objects": "オブジェクト"
+      "objects": "オブジェクト",
+      "permissioned-domains": "許可済みドメイン"
     },
     "tabs": {
       "all": "すべて",

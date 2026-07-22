@@ -878,6 +878,7 @@ export default function Account({
   const [outgoingPaychannels, setOutgoingPaychannels] = useState([])
   const [dexOrders, setDexOrders] = useState([])
   const [depositPreauthAccounts, setDepositPreauthAccounts] = useState([])
+  const [permissionedDomains, setPermissionedDomains] = useState([])
   const [hookList, setHookList] = useState([])
   const [heldMpts, setHeldMpts] = useState([])
   const [issuedMpts, setIssuedMpts] = useState([])
@@ -897,6 +898,7 @@ export default function Account({
   const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
   const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
   const [showDepositPreauthDetails, setShowDepositPreauthDetails] = useState(false)
+  const [showPermissionedDomainsDetails, setShowPermissionedDomainsDetails] = useState(false)
   const [showXahauRewardDetails, setShowXahauRewardDetails] = useState(false)
   const [showHooksDetails, setShowHooksDetails] = useState(false)
   const [showCronDetails, setShowCronDetails] = useState(false)
@@ -2655,6 +2657,7 @@ export default function Account({
     const accountObjectWithDepositPreauth =
       accountObjects.filter((node) => node.LedgerEntryType === 'DepositPreauth' && node.Authorize) || []
     setDepositPreauthAccounts(accountObjectWithDepositPreauth)
+    setPermissionedDomains(accountObjects.filter((node) => node.LedgerEntryType === 'PermissionedDomain'))
 
     const accountObjectWithHooks = accountObjects.find((node) => node.LedgerEntryType === 'Hook')
     if (accountObjectWithHooks?.Hooks?.length > 0) {
@@ -5166,6 +5169,37 @@ export default function Account({
                   )}
                 </div>
               )}
+
+              {permissionedDomains.length > 0 && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showPermissionedDomainsDetails ? 'active' : ''}`}
+                    onClick={() => setShowPermissionedDomainsDetails((prev) => !prev)}
+                  >
+                    {ta('sections.permissioned-domains')}
+                    <span className="account-control-collapsed"> · {permissionedDomains.length}</span>
+                  </button>
+
+                  {showPermissionedDomainsDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      {permissionedDomains.map((domain, index) => {
+                        const domainId = domain?.index || domain?.LedgerIndex
+
+                        return (
+                          <div className="detail-row issuer-detail-row" key={domainId || `permissioned-domain-${index}`}>
+                            <span>#{index + 1}:</span>
+                            <span className="copy-inline">
+                              {domainId ? <Link href={`/object/${domainId}`}>{shortHash(domainId)}</Link> : '-'}
+                              {domainId && <CopyButton text={domainId} />}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -6229,6 +6263,14 @@ export default function Account({
                                       data: {
                                         mptokenIssuanceID: issuanceId,
                                         mptAssetScale: mptNode?.mptokenCurrencyDetails?.scale || 0,
+                                        issuer:
+                                          mptNode?.mptokenCurrencyDetails?.account ||
+                                          mptNode?.mptokenCurrencyDetails?.issuer ||
+                                          mptNode?.Issuer,
+                                        transferFee:
+                                          mptNode?.mptokenCurrencyDetails?.transferFee ??
+                                          mptNode?.mptokenCurrencyDetails?.TransferFee ??
+                                          mptNode?.TransferFee,
                                         currencyCode:
                                           mptNode?.mptokenCurrencyDetails?.metadata?.t ||
                                           mptNode?.mptokenCurrencyDetails?.metadata?.ticker ||
@@ -9299,6 +9341,8 @@ export default function Account({
                                         data: {
                                           mptokenIssuanceID: issuanceId,
                                           mptAssetScale: mptNode?.AssetScale || 0,
+                                          issuer: mptNode?.Issuer || data?.address,
+                                          transferFee: mptNode?.TransferFee ?? mptNode?.transferFee,
                                           currencyCode:
                                             mptNode?.metadata?.t ||
                                             mptNode?.metadata?.ticker ||

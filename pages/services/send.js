@@ -8,7 +8,7 @@ import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
-import { multiply } from '../../utils/calc'
+import { divide, multiply } from '../../utils/calc'
 import {
   typeNumberOnly,
   isAddressValid,
@@ -35,6 +35,8 @@ import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import TokenSelector from '../../components/UI/TokenSelector'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
+import PaymentAmountMode from '../../components/SignForms/PaymentAmountMode'
+import { amountWithValue, PAYMENT_AMOUNT_MODE, transferFeeAmounts } from '../../utils/paymentTransferFee'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -108,9 +110,46 @@ export default function Send({
   const [destinationStatus, setDestinationStatus] = useState(0)
   const [useRemit, setUseRemit] = useState(remitQuery)
   const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
+  const [amountMode, setAmountMode] = useState(PAYMENT_AMOUNT_MODE.DELIVER)
+
+  const selectedMptId =
+    selectedToken?.mptokenIssuanceID || selectedToken?.MPTokenIssuanceID || selectedToken?.mpt_issuance_id
+  const isMptPayment = !!selectedMptId
+  const selectedTokenIssuer = selectedToken?.issuer || selectedToken?.account
+  const isIssuerTransfer =
+    !!selectedTokenIssuer && (account?.address === selectedTokenIssuer || address === selectedTokenIssuer)
+  const transferFeeNumber = Number(selectedToken?.transferFee ?? selectedToken?.TransferFee)
+  const hasIssuerFee =
+    !isNativeCurrency(selectedToken) &&
+    !isIssuerTransfer &&
+    Number.isFinite(transferFeeNumber) &&
+    transferFeeNumber > 0
+  const mptAssetScale = Math.min(255, Math.max(0, Math.floor(Number(selectedToken?.scale ?? selectedToken?.AssetScale) || 0)))
+  const mptScaleMultiplier = `1${'0'.repeat(mptAssetScale)}`
+  const scaledMptAmount = isMptPayment && amount ? multiply(amount, mptScaleMultiplier) : ''
+  const hasMptPrecisionError = isMptPayment && !!amount && !/^\d+$/.test(scaledMptAmount)
+  const feeAmounts =
+    hasIssuerFee && amount && Number(amount) > 0 && !hasMptPrecisionError
+      ? transferFeeAmounts({
+          amount: isMptPayment ? scaledMptAmount : amount,
+          transferFee: transferFeeNumber,
+          isMpt: isMptPayment
+        })
+      : null
+  const feeDeliverDisplay = feeAmounts
+    ? isMptPayment
+      ? divide(feeAmounts.deliver, mptScaleMultiplier)
+      : feeAmounts.deliver
+    : ''
+  const feeSpendDisplay = feeAmounts
+    ? isMptPayment
+      ? divide(feeAmounts.spend, mptScaleMultiplier)
+      : feeAmounts.spend
+    : ''
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
+    setAmountMode(PAYMENT_AMOUNT_MODE.DELIVER)
   }
 
   // Fetch network info for reserve amounts only when account is not activated
@@ -269,6 +308,11 @@ export default function Send({
       return
     }
 
+    if (hasMptPrecisionError) {
+      setError(ts('shared.errors.mpt-decimal-places', { count: mptAssetScale }))
+      return
+    }
+
     // Check if destination requires a tag but none is provided
     if (requireDestTag && !destinationTag) {
       setError(ts('shared.errors.destination-tag-required'))
@@ -330,9 +374,9 @@ export default function Send({
       let payment = {}
 
       let amountData = null
-      let particialPayment = false
-
-      if (isNativeCurrency(selectedToken)) {
+      if (isMptPayment) {
+        amountData = { mpt_issuance_id: selectedMptId, value: scaledMptAmount }
+      } else if (isNativeCurrency(selectedToken)) {
         amountData = multiply(amount, 1000000)
       } else {
         amountData = {
@@ -340,7 +384,6 @@ export default function Send({
           issuer: selectedToken.issuer,
           value: amount
         }
-        particialPayment = true
       }
 
       if (xahauNetwork && useRemit) {
@@ -363,7 +406,10 @@ export default function Send({
           Destination: address,
           Amount: amountData
         }
-        if (particialPayment) {
+        if (hasIssuerFee && feeAmounts && amountMode === PAYMENT_AMOUNT_MODE.DELIVER) {
+          payment.SendMax = amountWithValue(amountData, feeAmounts.spend)
+        } else if (hasIssuerFee && feeAmounts && amountMode === PAYMENT_AMOUNT_MODE.SPEND) {
+          payment.DeliverMin = amountWithValue(amountData, feeAmounts.deliver)
           payment.Flags = 131072 // tfPartialPayment
         }
       }
@@ -614,9 +660,11 @@ export default function Send({
                 inputMode="decimal"
                 type="text"
                 textUnder={
-                  selectedToken?.transferFee && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0 ? (
+                  feeAmounts ? (
                     <span className="grey">
-                      {ts('shared.to-receive', { amount: formatXDigits(parseFloat(amount) / selectedToken.transferFee, 11) })}
+                      {amountMode === PAYMENT_AMOUNT_MODE.DELIVER
+                        ? ts('shared.to-spend', { amount: formatXDigits(Number(feeSpendDisplay), 11) })
+                        : ts('shared.to-receive', { amount: formatXDigits(Number(feeDeliverDisplay), 11) })}
                     </span>
                   ) : null
                 }
@@ -630,14 +678,23 @@ export default function Send({
                 destinationAddress={useRemit ? null : address}
                 currencyQueryName="currency"
                 senderAddress={account?.address || null}
+                includeMPTokens
               />
-              {selectedToken.transferFee ? (
+              {hasIssuerFee ? (
                 <div style={{ marginTop: 8 }}>
-                  <span className="orange">{ts('shared.issuer-fee', { fee: transferRateToPercent(selectedToken.transferFee) })}</span>
+                  <span className="orange">
+                    {ts('shared.issuer-fee', {
+                      fee: isMptPayment
+                        ? `${formatXDigits(transferFeeNumber / 1000, 6)}%`
+                        : transferRateToPercent(selectedToken.transferFee ?? selectedToken.TransferFee)
+                    })}
+                  </span>
                 </div>
               ) : null}
             </div>
           </div>
+
+          {hasIssuerFee && <PaymentAmountMode value={amountMode} onChange={setAmountMode} />}
 
           <FormInput
             title={

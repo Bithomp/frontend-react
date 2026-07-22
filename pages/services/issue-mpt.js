@@ -20,6 +20,7 @@ const FLAGS = [
   ['canLock', 2],
   ['canClawback', 64]
 ]
+const SIMPLE_FLAGS = FLAGS.slice(0, 3)
 
 const cleanNumber = (value, decimals = true) => {
   const cleaned = value.replace(decimals ? /[^\d.]/g : /\D/g, '')
@@ -56,6 +57,7 @@ export default function IssueMptPage({ setSignRequest }) {
   const [transferFee, setTransferFee] = useState('')
   const [metadata, setMetadata] = useState('')
   const [metadataBuilderValid, setMetadataBuilderValid] = useState(null)
+  const [mode, setMode] = useState('simple')
   const [domainId, setDomainId] = useState('')
   const [domainOwner, setDomainOwner] = useState('')
   const [ownedDomains, setOwnedDomains] = useState([])
@@ -69,7 +71,7 @@ export default function IssueMptPage({ setSignRequest }) {
     setOwnedDomains([])
     setDomainsLoaded(false)
     setDomainsError(false)
-    if (!isAddressValid(owner)) {
+    if (mode !== 'advanced' || !flags.requireAuth || !isAddressValid(owner)) {
       setDomainsLoading(false)
       return
     }
@@ -109,7 +111,7 @@ export default function IssueMptPage({ setSignRequest }) {
       clearTimeout(timeout)
       controller.abort()
     }
-  }, [domainOwner])
+  }, [domainOwner, flags.requireAuth, mode])
 
   const domainOptions = useMemo(
     () =>
@@ -150,19 +152,21 @@ export default function IssueMptPage({ setSignRequest }) {
     if (fee > 0 && !flags.canTransfer) errors.push(tm('errors.feeTransfer'))
     if (metadataError) errors.push(metadataError)
     if (metadataResult.bytes > MAX_METADATA_BYTES) errors.push(tm('errors.metadataSize', { count: metadataResult.bytes }))
-    if (domainId && !/^[A-Fa-f0-9]{64}$/.test(domainId)) errors.push(tm('errors.domain'))
-    if (domainId && !flags.requireAuth) errors.push(tm('errors.domainAuth'))
+    if (mode === 'advanced' && flags.requireAuth && domainId && !/^[A-Fa-f0-9]{64}$/.test(domainId)) {
+      errors.push(tm('errors.domain'))
+    }
 
     const request = { TransactionType: 'MPTokenIssuanceCreate', AssetScale: assetScale }
-    const flagValue = FLAGS.reduce((total, [key, value]) => total + (flags[key] ? value : 0), 0)
+    const activeFlags = mode === 'advanced' ? FLAGS : SIMPLE_FLAGS
+    const flagValue = activeFlags.reduce((total, [key, value]) => total + (flags[key] ? value : 0), 0)
     if (flagValue) request.Flags = flagValue
     if (maximumRaw) request.MaximumAmount = maximumRaw
     if (transferFee && flags.canTransfer) request.TransferFee = Math.floor(fee * 1000)
     if (metadataResult.hex) request.MPTokenMetadata = metadataResult.hex
-    if (domainId) request.DomainID = domainId.toUpperCase()
+    if (mode === 'advanced' && flags.requireAuth && domainId) request.DomainID = domainId.toUpperCase()
 
     return { errors, request, metadataBytes: metadataResult.bytes, maximumRaw }
-  }, [domainId, flags, maximum, metadata, scale, tm, transferFee])
+  }, [domainId, flags, maximum, metadata, mode, scale, tm, transferFee])
 
   const toggleFlag = (key) => {
     if (key === 'canTransfer' && flags.canTransfer) setTransferFee('')
@@ -175,6 +179,16 @@ export default function IssueMptPage({ setSignRequest }) {
     setMetadata(json)
     setMetadataBuilderValid(json ? isValid : null)
   }, [])
+  const permissionOption = (key, className = '') => (
+    <label className={`${styles.flag} ${className}`.trim()} key={key}>
+      <input type="checkbox" checked={!!flags[key]} onChange={() => toggleFlag(key)} />
+      <span className={styles.checkMark} aria-hidden="true" />
+      <span>
+        <strong>{tm(`permissions.${key}.title`)}</strong>
+        <small>{tm(`permissions.${key}.description`)}</small>
+      </span>
+    </label>
+  )
 
   return (
     <>
@@ -195,6 +209,29 @@ export default function IssueMptPage({ setSignRequest }) {
 
         <div className={styles.layout}>
           <section className={styles.panel}>
+            <div className={`radio-options ${styles.modeSelector}`}>
+              <div className="radio-input">
+                <input
+                  type="radio"
+                  name="issueMptMode"
+                  checked={mode === 'simple'}
+                  onChange={() => setMode('simple')}
+                  id="issueMptModeSimple"
+                />
+                <label htmlFor="issueMptModeSimple">{t('trustline.simple', { ns: 'services' })}</label>
+              </div>
+              <div className="radio-input">
+                <input
+                  type="radio"
+                  name="issueMptMode"
+                  checked={mode === 'advanced'}
+                  onChange={() => setMode('advanced')}
+                  id="issueMptModeAdvanced"
+                />
+                <label htmlFor="issueMptModeAdvanced">{t('trustline.advanced', { ns: 'services' })}</label>
+              </div>
+            </div>
+
             <div className={styles.grid}>
               <label className={styles.field}>
                 <span>{tm('fields.scale')}</span>
@@ -211,52 +248,53 @@ export default function IssueMptPage({ setSignRequest }) {
                 <input className="input-text" inputMode="decimal" value={transferFee} placeholder="0" disabled={!flags.canTransfer} onChange={(event) => setTransferFee(cleanNumber(event.target.value))} />
                 <small>{tm('hints.transferFee')}</small>
               </label>
-              <label className={styles.field}>
-                <span>{tm('fields.domain')}</span>
-                <input className="input-text" value={domainId} maxLength={64} placeholder={tm('placeholders.optional')} onChange={(event) => setDomainId(event.target.value.replace(/[^A-Fa-f0-9]/g, ''))} />
-                <small>{tm('hints.domain')}</small>
-              </label>
-              <label className={styles.field}>
-                <span>{tm('domainLookup.owner')}</span>
-                <input className="input-text" value={domainOwner} placeholder="r..." spellCheck="false" onChange={(event) => setDomainOwner(event.target.value.trim())} />
-                <small>
-                  {domainsLoading
-                    ? tm('domainLookup.loading')
-                    : domainsError
-                      ? tm('domainLookup.error')
-                      : domainsLoaded && !domainOptions.length
-                        ? tm('domainLookup.empty')
-                        : tm('domainLookup.hint')}
-                </small>
-              </label>
-              {domainOptions.length > 0 && (
-                <label className={styles.field}>
-                  <span>{tm('domainLookup.domains')}</span>
-                  <SimpleSelect
-                    value={domainId}
-                    setValue={setDomainId}
-                    optionsList={domainOptions}
-                    className={styles.domainDropdown}
-                    instanceId="mpt-permissioned-domain"
-                    formatOptionLabel={(option) => <span className={styles.domainOption}>{option.label}</span>}
-                  />
-                  <small>{tm('domainLookup.found', { count: domainOptions.length })}</small>
-                </label>
+              {permissionOption('canTransfer')}
+              {permissionOption('canTrade')}
+              {permissionOption('canEscrow')}
+              {mode === 'advanced' && (
+                <>
+                  {permissionOption('canLock')}
+                  {permissionOption('canClawback')}
+                  {permissionOption('requireAuth', styles.fullWidth)}
+                  {flags.requireAuth && (
+                    <>
+                      <label className={styles.field}>
+                        <span>{tm('domainLookup.owner')}</span>
+                        <input className="input-text" value={domainOwner} placeholder="r..." spellCheck="false" onChange={(event) => setDomainOwner(event.target.value.trim())} />
+                        <small>
+                          {domainsLoading
+                            ? tm('domainLookup.loading')
+                            : domainsError
+                              ? tm('domainLookup.error')
+                              : domainsLoaded && !domainOptions.length
+                                ? tm('domainLookup.empty')
+                                : tm('domainLookup.hint')}
+                        </small>
+                      </label>
+                      <label className={styles.field}>
+                        <span>{tm('fields.domain')}</span>
+                        <input className="input-text" value={domainId} maxLength={64} placeholder={tm('placeholders.optional')} onChange={(event) => setDomainId(event.target.value.replace(/[^A-Fa-f0-9]/g, ''))} />
+                        <small>{tm('hints.domain')}</small>
+                      </label>
+                      {domainOptions.length > 0 && (
+                        <label className={`${styles.field} ${styles.fullWidth}`}>
+                          <span>{tm('domainLookup.domains')}</span>
+                          <SimpleSelect
+                            value={domainId}
+                            setValue={setDomainId}
+                            optionsList={domainOptions}
+                            className={styles.domainDropdown}
+                            instanceId="mpt-permissioned-domain"
+                            formatOptionLabel={(option) => <span className={styles.domainOption}>{option.label}</span>}
+                          />
+                          <small>{tm('domainLookup.found', { count: domainOptions.length })}</small>
+                        </label>
+                      )}
+                    </>
+                  )}
+                </>
               )}
             </div>
-
-            <h3>{tm('permissions.title')}</h3>
-            <p className={styles.warning}>{tm('permissions.warning')}</p>
-            <div className={styles.flags}>
-              {FLAGS.map(([key]) => (
-                <label className={styles.flag} key={key}>
-                  <input type="checkbox" checked={!!flags[key]} onChange={() => toggleFlag(key)} />
-                  <span className={styles.checkMark} aria-hidden="true" />
-                  <span><strong>{tm(`permissions.${key}.title`)}</strong><small>{tm(`permissions.${key}.description`)}</small></span>
-                </label>
-              ))}
-            </div>
-
           </section>
 
           <aside className={styles.preview}>

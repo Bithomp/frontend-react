@@ -24,6 +24,8 @@
     "remaining": "Verbleibend",
     "issuer-fee": "Emittentengebühr: {{fee}}",
     "to-receive": "Zu empfangen ≈ {{amount}}",
+    "to-spend": "Auszugeben ≈ {{amount}}",
+    "amount-mode": { "title": "Bedeutung des Betrags", "deliver": "Zu liefernder Betrag", "spend": "Auszugebender Betrag" },
     "errors": {
       "destination-fetch": "Fehler beim Laden der Zielkonto-Daten",
       "valid-amount": "Bitte gib einen gültigen Betrag ein.",

@@ -24,6 +24,8 @@
     "remaining": "Restante",
     "issuer-fee": "Comisión del emisor: {{fee}}",
     "to-receive": "A recibir ≈ {{amount}}",
+    "to-spend": "A gastar ≈ {{amount}}",
+    "amount-mode": { "title": "La cantidad significa", "deliver": "Cantidad que se entregará", "spend": "Cantidad que se gastará" },
     "errors": {
       "destination-fetch": "Error al cargar los datos de la cuenta de destino",
       "valid-amount": "Introduce un importe válido.",

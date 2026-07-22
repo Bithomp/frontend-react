@@ -24,6 +24,8 @@
     "remaining": "잔액",
     "issuer-fee": "발행자 수수료: {{fee}}",
     "to-receive": "받을 금액 ≈ {{amount}}",
+    "to-spend": "지출 금액 ≈ {{amount}}",
+    "amount-mode": { "title": "금액 기준", "deliver": "수취인에게 전달될 금액", "spend": "내 계정에서 지출될 금액" },
     "errors": {
       "destination-fetch": "수신 계정 데이터를 가져오지 못했습니다",
       "valid-amount": "유효한 금액을 입력하세요.",

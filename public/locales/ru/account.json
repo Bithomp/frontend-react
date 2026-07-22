@@ -360,7 +360,8 @@
       "dex-orders": "DEX-ордера",
       "nft-offers": "NFT-предложения",
       "activated-accounts": "Активации",
-      "objects": "Объекты"
+      "objects": "Объекты",
+      "permissioned-domains": "Разрешённые домены"
     },
     "tabs": {
       "all": "Все",

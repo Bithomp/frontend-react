@@ -360,7 +360,8 @@
       "dex-orders": "DEX 订单",
       "nft-offers": "NFT 报价",
       "activated-accounts": "已激活账户",
-      "objects": "对象"
+      "objects": "对象",
+      "permissioned-domains": "许可域"
     },
     "tabs": {
       "all": "全部",
