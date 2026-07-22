@@ -772,7 +772,10 @@
   "mpt-metadata-generator": {
     "seo-description": "为 XRP Ledger 上的多用途代币创建符合 XLS-0089 的元数据。",
     "intro": "根据当前规范创建 MPToken 元数据：",
-    "generated-title": "生成的元数据 JSON", "hex-title": "链上十六进制元数据",
+    "generated-title": "生成的元数据 JSON",
+    "icon-preview": "代币图标预览",
+    "icon-preview-error": "无法显示该图标。",
+    "hex-title": "链上十六进制元数据",
     "byte-count": "{{count}} / {{max}} 字节",
     "full-keys": { "title": "使用完整元数据键", "not-recommended": "不推荐" },
     "sections": { "uris": "相关链接", "additional-info": "附加信息" },
@@ -797,7 +800,9 @@
       "name": "代币名称为必填项。", "icon": "图标 URI 为必填项。",
       "icon-uri": "图标 URI 必须是有效的 HTTPS 地址、IPFS URI 或 data:image URI。",
       "asset-class": "资产类别为必填项。", "asset-subclass": "RWA 代币必须选择资产子类别。",
-      "issuer-name": "发行方名称为必填项。", "uri": "每个相关链接都需要 URI 和标题。", "uri-format": "每个相关链接必须是有效的 HTTPS 地址或完整 URI，包括 data URI。",
+      "issuer-name": "发行方名称为必填项。",
+      "uri": "每个相关链接都需要 URI 和标题。",
+      "uri-format": "每个相关链接必须是有效的 HTTPS 地址或完整 URI，包括 data URI。",
       "additional-json": "附加信息必须是有效的 JSON。",
       "additional-object": "附加信息 JSON 必须是对象。",
       "size": "元数据为 {{count}} 字节，超过 {{max}} 字节的链上限制。"

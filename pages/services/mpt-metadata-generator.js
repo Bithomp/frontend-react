@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { LuCopy, LuDownload } from 'react-icons/lu'
@@ -168,6 +168,19 @@ export default function MptMetadataGeneratorPage() {
   const [additionalInfoType, setAdditionalInfoType] = useState('object')
   const [useFullKeys, setUseFullKeys] = useState(false)
   const [copied, setCopied] = useState('')
+  const [iconPreviewError, setIconPreviewError] = useState(false)
+
+  const iconPreviewUrl = useMemo(() => {
+    const uri = clean(form.icon)
+    if (!isValidIconUri(uri)) return ''
+    if (/^data:image\//i.test(uri) || /^https:\/\//i.test(uri)) return uri
+    if (/^ipfs:\/\//i.test(uri)) return ipfsUrl(uri, 'image', 'cdn') || ''
+    return `https://${uri}`
+  }, [form.icon])
+
+  useEffect(() => {
+    setIconPreviewError(false)
+  }, [iconPreviewUrl])
 
   const updateForm = (key, value) => {
     setForm((previous) => ({
@@ -299,6 +312,16 @@ export default function MptMetadataGeneratorPage() {
                   onChange={(event) => updateForm('icon', event.target.value)}
                   placeholder="example.com/token.png"
                 />
+                {iconPreviewUrl && (
+                  <div className={styles.iconPreview}>
+                    {iconPreviewError ? (
+                      <span>{tg('icon-preview-error')}</span>
+                    ) : (
+                      <img src={iconPreviewUrl} alt={tg('icon-preview')} onError={() => setIconPreviewError(true)} />
+                    )}
+                    <small>{tg('icon-preview')}</small>
+                  </div>
+                )}
               </Field>
               <Field label={tg('fields.issuer-name')} required>
                 <input

@@ -772,7 +772,10 @@
   "mpt-metadata-generator": {
     "seo-description": "Créez des métadonnées conformes à XLS-0089 pour les Multi-Purpose Tokens sur le XRP Ledger.",
     "intro": "Créez des métadonnées MPToken selon la version actuelle de",
-    "generated-title": "Métadonnées JSON générées", "hex-title": "Métadonnées hexadécimales on-ledger",
+    "generated-title": "Métadonnées JSON générées",
+    "icon-preview": "Aperçu de l’icône du token",
+    "icon-preview-error": "L’icône n’a pas pu être affichée.",
+    "hex-title": "Métadonnées hexadécimales on-ledger",
     "byte-count": "{{count}} / {{max}} octets",
     "full-keys": { "title": "Utiliser les clés de métadonnées complètes", "not-recommended": "non recommandé" },
     "sections": { "uris": "Liens associés", "additional-info": "Informations supplémentaires" },
@@ -797,7 +800,9 @@
       "name": "Le nom du token est obligatoire.", "icon": "L’URI de l’icône est obligatoire.",
       "icon-uri": "L’URI de l’icône doit être une adresse HTTPS, une URI IPFS ou une URI data:image valide.",
       "asset-class": "La classe d’actif est obligatoire.", "asset-subclass": "La sous-classe d’actif est obligatoire pour les tokens RWA.",
-      "issuer-name": "Le nom de l’émetteur est obligatoire.", "uri": "Chaque lien associé nécessite une URI et un titre.", "uri-format": "Chaque lien associé doit être une adresse HTTPS valide ou une URI complète, y compris une URI data.",
+      "issuer-name": "Le nom de l’émetteur est obligatoire.",
+      "uri": "Chaque lien associé nécessite une URI et un titre.",
+      "uri-format": "Chaque lien associé doit être une adresse HTTPS valide ou une URI complète, y compris une URI data.",
       "additional-json": "Les informations supplémentaires doivent être un JSON valide.",
       "additional-object": "Les informations JSON supplémentaires doivent être un objet.",
       "size": "Les métadonnées font {{count}} octets et dépassent la limite on-ledger de {{max}} octets."

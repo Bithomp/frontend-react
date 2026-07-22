@@ -772,7 +772,10 @@
   "mpt-metadata-generator": {
     "seo-description": "XRP LedgerのMulti-Purpose Token向けにXLS-0089準拠のメタデータを作成します。",
     "intro": "最新の仕様に従ってMPTokenメタデータを作成します：",
-    "generated-title": "生成されたメタデータJSON", "hex-title": "オンレジャー用16進メタデータ",
+    "generated-title": "生成されたメタデータJSON",
+    "icon-preview": "トークンアイコンのプレビュー",
+    "icon-preview-error": "アイコンを表示できませんでした。",
+    "hex-title": "オンレジャー用16進メタデータ",
     "byte-count": "{{count}} / {{max}} バイト",
     "full-keys": { "title": "完全なメタデータキーを使用", "not-recommended": "非推奨" },
     "sections": { "uris": "関連リンク", "additional-info": "追加情報" },
@@ -797,7 +800,9 @@
       "name": "トークン名は必須です。", "icon": "アイコンURIは必須です。",
       "icon-uri": "アイコンURIは、有効なHTTPSアドレス、IPFS URI、またはdata:image URIである必要があります。",
       "asset-class": "資産クラスは必須です。", "asset-subclass": "RWAトークンには資産サブクラスが必要です。",
-      "issuer-name": "発行者名は必須です。", "uri": "各関連リンクにはURIとタイトルが必要です。", "uri-format": "各関連リンクには有効なHTTPSアドレスまたはdata URIを含む完全なURIが必要です。",
+      "issuer-name": "発行者名は必須です。",
+      "uri": "各関連リンクにはURIとタイトルが必要です。",
+      "uri-format": "各関連リンクには有効なHTTPSアドレスまたはdata URIを含む完全なURIが必要です。",
       "additional-json": "追加情報は有効なJSONである必要があります。",
       "additional-object": "追加情報のJSONはオブジェクトである必要があります。",
       "size": "メタデータは{{count}}バイトで、オンレジャー上限の{{max}}バイトを超えています。"

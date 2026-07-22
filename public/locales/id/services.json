@@ -772,7 +772,10 @@
   "mpt-metadata-generator": {
     "seo-description": "Buat metadata yang sesuai XLS-0089 untuk Multi-Purpose Token di XRP Ledger.",
     "intro": "Buat metadata MPToken sesuai versi terkini",
-    "generated-title": "JSON metadata yang dibuat", "hex-title": "Metadata heksadesimal on-ledger",
+    "generated-title": "JSON metadata yang dibuat",
+    "icon-preview": "Pratinjau ikon token",
+    "icon-preview-error": "Ikon tidak dapat ditampilkan.",
+    "hex-title": "Metadata heksadesimal on-ledger",
     "byte-count": "{{count}} / {{max}} byte",
     "full-keys": { "title": "Gunakan kunci metadata lengkap", "not-recommended": "tidak disarankan" },
     "sections": { "uris": "Tautan terkait", "additional-info": "Informasi tambahan" },
@@ -797,7 +800,9 @@
       "name": "Nama token wajib diisi.", "icon": "URI ikon wajib diisi.",
       "icon-uri": "URI ikon harus berupa alamat HTTPS, URI IPFS, atau URI data:image yang valid.",
       "asset-class": "Kelas aset wajib dipilih.", "asset-subclass": "Subkelas aset wajib untuk token RWA.",
-      "issuer-name": "Nama penerbit wajib diisi.", "uri": "Setiap tautan terkait memerlukan URI dan judul.", "uri-format": "Setiap tautan terkait harus berupa alamat HTTPS yang valid atau URI lengkap, termasuk URI data.",
+      "issuer-name": "Nama penerbit wajib diisi.",
+      "uri": "Setiap tautan terkait memerlukan URI dan judul.",
+      "uri-format": "Setiap tautan terkait harus berupa alamat HTTPS yang valid atau URI lengkap, termasuk URI data.",
       "additional-json": "Informasi tambahan harus berupa JSON yang valid.",
       "additional-object": "JSON informasi tambahan harus berupa objek.",
       "size": "Metadata berukuran {{count}} byte dan melebihi batas on-ledger {{max}} byte."

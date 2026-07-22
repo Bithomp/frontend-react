@@ -788,6 +788,8 @@
     "seo-description": "Create XLS-0089 compliant metadata for Multi-Purpose Tokens on the XRP Ledger.",
     "intro": "Create MPToken metadata according to the current",
     "generated-title": "Generated metadata JSON",
+    "icon-preview": "Token icon preview",
+    "icon-preview-error": "The icon could not be rendered.",
     "hex-title": "On-ledger hexadecimal metadata",
     "byte-count": "{{count}} / {{max}} bytes",
     "full-keys": {

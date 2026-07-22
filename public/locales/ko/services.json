@@ -772,7 +772,10 @@
   "mpt-metadata-generator": {
     "seo-description": "XRP Ledger의 Multi-Purpose Token을 위한 XLS-0089 호환 메타데이터를 생성합니다.",
     "intro": "최신 사양에 따라 MPToken 메타데이터를 생성합니다:",
-    "generated-title": "생성된 메타데이터 JSON", "hex-title": "온레저 16진수 메타데이터",
+    "generated-title": "생성된 메타데이터 JSON",
+    "icon-preview": "토큰 아이콘 미리보기",
+    "icon-preview-error": "아이콘을 표시할 수 없습니다.",
+    "hex-title": "온레저 16진수 메타데이터",
     "byte-count": "{{count}} / {{max}}바이트",
     "full-keys": { "title": "전체 메타데이터 키 사용", "not-recommended": "권장하지 않음" },
     "sections": { "uris": "관련 링크", "additional-info": "추가 정보" },
@@ -797,7 +800,9 @@
       "name": "토큰 이름은 필수입니다.", "icon": "아이콘 URI는 필수입니다.",
       "icon-uri": "아이콘 URI는 유효한 HTTPS 주소, IPFS URI 또는 data:image URI여야 합니다.",
       "asset-class": "자산 클래스는 필수입니다.", "asset-subclass": "RWA 토큰에는 자산 하위 클래스가 필요합니다.",
-      "issuer-name": "발행자 이름은 필수입니다.", "uri": "각 관련 링크에는 URI와 제목이 필요합니다.", "uri-format": "각 관련 링크는 유효한 HTTPS 주소 또는 data URI를 포함한 완전한 URI여야 합니다.",
+      "issuer-name": "발행자 이름은 필수입니다.",
+      "uri": "각 관련 링크에는 URI와 제목이 필요합니다.",
+      "uri-format": "각 관련 링크는 유효한 HTTPS 주소 또는 data URI를 포함한 완전한 URI여야 합니다.",
       "additional-json": "추가 정보는 유효한 JSON이어야 합니다.",
       "additional-object": "추가 정보 JSON은 객체여야 합니다.",
       "size": "메타데이터가 {{count}}바이트로 온레저 제한인 {{max}}바이트를 초과합니다."

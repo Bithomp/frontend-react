@@ -321,6 +321,34 @@
   min-width: 0;
 }
 
+.iconPreview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 8px;
+  border: 1px solid var(--unaccent-icon);
+  border-radius: 10px;
+  background: var(--background-input);
+
+  img {
+    display: block;
+    width: 56px;
+    height: 56px;
+    flex: 0 0 56px;
+    border: 1px solid var(--unaccent-icon);
+    border-radius: 50%;
+    background: var(--background-main);
+    object-fit: contain;
+  }
+
+  span,
+  small {
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+  }
+}
+
 .describedOption {
   display: grid;
   gap: 2px;
