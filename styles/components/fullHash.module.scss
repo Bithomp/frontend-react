@@ -1,0 +1,8 @@
+.value {
+  display: inline-block;
+  max-width: var(--full-hash-width);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  white-space: nowrap;
+}

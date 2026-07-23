@@ -24,10 +24,11 @@ export const getServerSideProps = async (context) => {
 import SEO from '../../components/SEO'
 
 import { ledgerName, rewardRateHuman } from '../../utils'
-import { duration, shortAddress, shortHash, addressUsernameOrServiceLink, userOrServiceName } from '../../utils/format'
+import { duration, shortHash, addressUsernameOrServiceLink, userOrServiceName } from '../../utils/format'
 
 import LinkIcon from '../../public/images/link.svg'
 import CopyButton from '../../components/UI/CopyButton'
+import FullHash from '../../components/UI/FullHash'
 
 export default function Governance({ id, setSignRequest, refreshPage, account }) {
   const { t } = useTranslation(['common', 'governance'])
@@ -124,7 +125,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
       coloredName = (
         <span className="tooltip">
           {coloredName}
-          <span className="tooltiptext right">{shortAddress(addressData[addessName])}</span>
+          <span className="tooltiptext right">{addressData[addessName]}</span>
         </span>
       )
     }
@@ -136,7 +137,8 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
           {!options?.short && (
             <>
               {' '}
-              - <CopyButton text={addressData[addessName]} /> {coloredName || shortAddress(addressData[addessName], 4)}
+              - <CopyButton text={addressData[addessName]} />{' '}
+              {coloredName || <FullHash value={addressData[addessName]} length={4} />}
             </>
           )}
         </>
@@ -145,7 +147,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
     return (
       <>
         {t('table.seat', { ns: 'governance' })} {seat}
-        {!options?.short && <> - {coloredName || shortAddress(addressData[addessName])}</>}
+        {!options?.short && <> - {coloredName || <FullHash value={addressData[addessName]} />}</>}
       </>
     )
   }

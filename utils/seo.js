@@ -23,6 +23,12 @@ export const isRecentTimestamp = (timestamp, days, now = Date.now()) => {
   return ageMs >= 0 && ageMs <= periodMs
 }
 
-export const shouldIndexAccount = (account, activityDays = 7) =>
-  Boolean(account?.username || account?.service?.name) ||
-  isRecentTimestamp(account?.ledgerInfo?.previousTxnAt, activityDays)
+export const shouldIndexAccount = (account) => {
+  const details =
+    account?.addressDetails || account?.details?.addressDetails || account?.accountDetails || {}
+  const username = account?.username || details.username
+  const service = account?.service || details.service
+  const serviceName = typeof service === 'string' ? service : service?.name
+
+  return Boolean(username || serviceName)
+}

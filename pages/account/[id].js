@@ -520,6 +520,7 @@ import AccountWithTag from '../../components/Account/AccountWithTag'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
+import FullHash from '../../components/UI/FullHash'
 import { CurrencyWithIcon } from '../../utils/format'
 import { NftImage, bestNftOffer, isNftExplicit, nftName, nftUrl, partnerMarketplaces } from '../../utils/nft'
 import {
@@ -3665,7 +3666,7 @@ export default function Account({
               >
                 <span className="tooltip no-brake">
                   {activatedByName}
-                  <span className="tooltiptext right no-brake activation-tooltip">{shortHash(activatedByAddress)}</span>
+                  <span className="tooltiptext right no-brake activation-tooltip">{activatedByAddress}</span>
                 </span>
               </span>
             </Link>
@@ -5075,7 +5076,7 @@ export default function Account({
                         <span>{ta('labels.address')}:</span>
                         <span className="copy-inline airdrop-address-wrap">
                           <span className="address-text" title={data.flare.address}>
-                            {shortHash(data.flare.address)}
+                            <FullHash value={data.flare.address} />
                           </span>
                           <span onClick={(event) => event.stopPropagation()}>
                             <CopyButton text={data.flare.address} />

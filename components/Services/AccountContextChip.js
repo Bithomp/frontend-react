@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { avatarSrc } from '../../utils'
-import { shortHash } from '../../utils/format'
 import Avatar from '../UI/Avatar'
 import styles from './AccountContextChip.module.scss'
 
@@ -19,7 +18,6 @@ export default function AccountContextChip({ account }) {
           {accountDisplayName && <span className={styles.name}>{accountDisplayName}</span>}
           <span className={`${styles.address} ${accountDisplayName ? '' : styles.primary}`}>
             <span className={styles.addressFull}>{account.address}</span>
-            <span className={styles.addressShort}>{shortHash(account.address)}</span>
           </span>
         </span>
       </Link>

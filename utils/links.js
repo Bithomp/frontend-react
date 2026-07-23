@@ -2,6 +2,7 @@ import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
 import { niceCurrency, shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
+import FullHash from '../components/UI/FullHash'
 import { isValidTaxon } from './nft'
 import { shortName } from '.'
 
@@ -99,7 +100,7 @@ export const LinkAccount = ({ address, icon, copy, text, short }) =>
   address ? (
     <>
       <Link href={'/account/' + address}>
-        {text ? text : short > 0 ? shortHash(address, short) : short === 0 ? '' : address}
+        {text ? text : short > 0 ? <FullHash value={address} length={short} /> : short === 0 ? '' : address}
         {icon ? (
           <>
             {' '}

@@ -51,10 +51,6 @@
   font-weight: 700;
 }
 
-.addressShort {
-  display: none;
-}
-
 @media (max-width: 600px) {
   .context {
     margin-top: -0.2rem;
@@ -70,10 +66,11 @@
   }
 
   .addressFull {
-    display: none;
-  }
-
-  .addressShort {
-    display: inline;
+    display: inline-block;
+    max-width: 15ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
   }
 }

@@ -7,6 +7,7 @@ import { Trans } from 'next-i18next'
 
 import Avatar from '../components/UI/Avatar'
 import CopyButton from '../components/UI/CopyButton'
+import FullHash from '../components/UI/FullHash'
 import LinkIcon from '../public/images/link.svg'
 import { mpUrl } from './nft'
 import {
@@ -60,6 +61,13 @@ export const serviceUsernameOrAddressText = (data, name = 'address', options) =>
   } else {
     return shortHash(address)
   }
+}
+
+export const ServiceUsernameOrAddress = ({ data, name = 'address', length = 6 }) => {
+  if (!data || !data[name]) return null
+  const details = data[name + 'Details'] || {}
+  const label = details.service?.name || details.service || details.username
+  return label || <FullHash value={data[name]} length={length} />
 }
 
 export const NiceNativeBalance = ({ amount }) => {
@@ -246,7 +254,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
               {!doubleIcon && !hideIssuer && (
                 <>
                   <br />
-                  <span className="grey text-xs">{serviceUsernameOrAddressText(token, 'issuer')}</span>
+                  <span className="grey text-xs"><ServiceUsernameOrAddress data={token} name="issuer" /></span>
                 </>
               )}
             </td>
@@ -285,7 +293,7 @@ export const CurrencyWithIconInline = ({ token, copy, link, linkIcon, showIssuer
       <TokenImage token={token} />
       {link && !lp_token ? <LinkToken token={token} showIssuer={showIssuer} /> : currencyText}
       {!link && showIssuer && token?.issuer && (
-        <> ({serviceUsernameOrAddressText(token, 'issuer') || shortHash(token.issuer, 6)})</>
+        <> (<ServiceUsernameOrAddress data={token} name="issuer" />)</>
       )}
       {copy && (
         <>
@@ -304,8 +312,8 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   const noLink = options?.noLink
   const label = options?.showAddress
     ? noLink
-      ? shortAddress(address, options?.short || 6)
-      : <Link href={'/account/' + address}>{shortAddress(address, options?.short || 6)}</Link>
+      ? <FullHash value={address} length={options?.short || 6} />
+      : <Link href={'/account/' + address}><FullHash value={address} length={options?.short || 6} /></Link>
     : addressUsernameOrServiceLink(data, name, options)
   const icon = (
     <Avatar
@@ -699,7 +707,7 @@ export const nftLink = (nft, type, options = {}) => {
 
   let defaultContent = <LinkIcon />
   if (options.address === 'short') {
-    defaultContent = shortAddress(nft[type])
+    defaultContent = <FullHash value={nft[type]} />
   } else if (options.address === 'full') {
     defaultContent = nft[type]
   }
@@ -816,12 +824,16 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   if (userOrServiceLink(data, type) !== '') {
     if (options.noLink) {
       const details = data?.[type + 'Details']
-      return userOrServiceName(details) || shortAddress(data?.[type], options.short || 6)
+      return userOrServiceName(details) || <FullHash value={data?.[type]} length={options.short || 6} />
     }
     return userOrServiceLink(data, type, options)
   }
   if (options.short) {
-    return options.noLink ? shortAddress(data?.[type], options.short) : <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
+    return options.noLink ? (
+      <FullHash value={data?.[type]} length={options.short} />
+    ) : (
+      <Link href={options.url + data?.[type]}><FullHash value={data?.[type]} length={options.short} /></Link>
+    )
   }
   return options.noLink ? data?.[type] : <Link href={options.url + data?.[type]}>{data?.[type]}</Link>
 }
@@ -830,7 +842,7 @@ export const addressLink = (address, options = {}) => {
   if (!address) return ''
   return (
     <Link href={'/account/' + address} aria-label="address link">
-      {options?.short ? shortAddress(address, options.short) : address}
+      {options?.short ? <FullHash value={address} length={options.short} /> : address}
     </Link>
   )
 }

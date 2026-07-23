@@ -6,11 +6,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 
 import SEO from '../../components/SEO'
+import FullHash from '../../components/UI/FullHash'
 import AddressInput from '../../components/UI/AddressInput'
 import styles from '../../styles/pages/activation-tree.module.scss'
 
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { explorerName, ledgerName, nativeCurrency } from '../../utils'
+import { shouldIndexAccount } from '../../utils/seo'
 import {
   AddressWithIcon,
   dateFormat,
@@ -254,7 +256,7 @@ function NodeCard({
   const { service: serviceName, username, nickname } = data?.addressDetails || {}
   const displayName =
     userOrServiceName({ service: serviceName, username }) ||
-    (nickname ? <span className="orange bold">{nickname}</span> : shortHash(address, 8))
+    (nickname ? <span className="orange bold">{nickname}</span> : <FullHash value={address} length={8} />)
   const hasCustomLabel = Boolean(serviceName || username || nickname)
 
   const onActivate = () => {
@@ -291,7 +293,9 @@ function NodeCard({
         <AddressWithIcon address={address}>
           <div className={`${styles.nodeText} ${!hasCustomLabel ? styles.nodeTextSingle : ''}`}>
             <div className={styles.nodeTitle}>{displayName}</div>
-            {hasCustomLabel && <div className={styles.nodeAddress}>{address ? shortHash(address, 8) : '-'}</div>}
+            {hasCustomLabel && (
+              <div className={styles.nodeAddress}>{address ? <FullHash value={address} length={8} /> : '-'}</div>
+            )}
           </div>
         </AddressWithIcon>
       </div>
@@ -661,6 +665,7 @@ export default function ActivationTreePage({
   const [searchError, setSearchError] = useState('')
   const treeHasGenesisBalance =
     hasGenesisBalance(treeState.rootData) || (treeState.ancestors || []).some(hasGenesisBalance)
+  const isIndexableTree = treeState.pageMode === 'genesis' || shouldIndexAccount(treeState.rootData)
 
   useEffect(() => {
     setTreeState({
@@ -793,7 +798,7 @@ export default function ActivationTreePage({
 
   return (
     <>
-      <SEO title={pageTitle} description={pageDescription} />
+      <SEO title={pageTitle} description={pageDescription} noindex={!isIndexableTree} />
       <div className={styles.page}>
         <section className={styles.hero}>
           <div className={styles.heroAura} />
