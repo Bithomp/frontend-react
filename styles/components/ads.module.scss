@@ -59,6 +59,22 @@
         height: 24px;
       }
     }
+    &.mexc {
+      background-color: white;
+      border-color: #dfe5f2;
+      color: #111827;
+
+      &:hover {
+        background-color: #f7f9ff;
+        border-color: #0057ff;
+      }
+
+      .brand-item-icon {
+        left: 8px;
+        width: 42px;
+        height: 42px;
+      }
+    }
     &.stake {
       .brand-item-icon {
         height: 45px;
@@ -127,6 +143,18 @@
         }
         .brand-item-title {
           left: 47px;
+        }
+      }
+      &.mexc {
+        .brand-item-icon {
+          left: 7px;
+          width: 32px;
+          height: 32px;
+        }
+        .brand-item-title {
+          left: 44px;
+          font-size: 12px;
+          font-weight: 600;
         }
       }
       &.stake {

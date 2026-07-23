@@ -90,7 +90,7 @@ export default function FaucetPage({ account, showAds, sessionTokenData, country
           setSignRequest={setSignRequest}
         />
       </div>
-      {showAds && <Ads />}
+      {showAds && <Ads countryCode={countryCode} />}
       <br />
     </>
   )

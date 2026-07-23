@@ -120,7 +120,7 @@ const examples = {
   }
 }
 
-export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
+export default function Explorer({ initialLocale, isSsrMobile, showAds, countryCode }) {
   const { t } = useTranslation()
   const { t: tt } = useTranslation('explorer')
   const isEnglishLikeLocale = !initialLocale || initialLocale === 'default' || initialLocale === 'en'
@@ -178,7 +178,7 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
         <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} type="explorer" />
       </section>
 
-      {showAds && <Ads />}
+      {showAds && <Ads countryCode={countryCode} />}
 
       <section className="home-section">
         <div className="content-text content-center">

@@ -7,8 +7,9 @@ import Nexo from '../../public/images/sponsored/nexo.svg'
 //import Doppler from '../../public/images/sponsored/doppler.svg'
 import { useState, useEffect } from 'react'
 
-//countryCode
-export default function Ads({}) {
+const MEXC_EXCLUDED_COUNTRIES = new Set(['US', 'GB', 'UK', 'IN', 'CA', 'NL', 'FR', 'DE'])
+
+export default function Ads({ countryCode }) {
   const { theme } = useTheme()
 
   const [rendered, setRendered] = useState(false)
@@ -18,9 +19,20 @@ export default function Ads({}) {
   }, [])
 
   const color = rendered ? (theme === 'dark' ? 'white' : '#1C1F21') : '#1C1F21'
+  const normalizedCountryCode = countryCode?.trim().toUpperCase()
+  const showMexcAd = normalizedCountryCode && !MEXC_EXCLUDED_COUNTRIES.has(normalizedCountryCode)
 
   return (
     <div className={brandsBlock} data-ad-slot="brands">
+      {showMexcAd && (
+        <a href="https://bithomp.com/go/banner-mexc" target="_blank" rel="noreferrer">
+          <div className="brand-item mexc">
+            <img src="/images/sponsored/mexc.svg" className="brand-item-icon" alt="MEXC" />
+            <div className="brand-item-title">Earn up to 600% APR</div>
+            <div className="brand-item-text">Hold your crypto and earn rewards.</div>
+          </div>
+        </a>
+      )}
       {/*
       <a href="https://bithomp.com/go/main-buy-swap" target="_blank" rel="noreferrer">
         <div className="brand-item nexo">
