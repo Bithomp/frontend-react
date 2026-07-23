@@ -10131,20 +10131,22 @@ export default function Account({
                                   </span>
                                 </div>
 
-                                <div className="tx-collapsed-meta">
-                                  {!isSelfEscrow && <span className="escrow-direction-label">{collapsedDirectionLabel}</span>}
-                                  {counterpartAddress ? (
-                                    <span className="tx-counterparty-inline">
-                                      <AddressWithIconInline
-                                        data={escrow}
-                                        name={counterpartName}
-                                        options={{ short: 6 }}
-                                      />
-                                    </span>
-                                  ) : (
-                                    <span className="tx-counterparty-inline">-</span>
-                                  )}
-                                </div>
+                                {!isSelfEscrow && (
+                                  <div className="tx-collapsed-meta">
+                                    <span className="escrow-direction-label">{collapsedDirectionLabel}</span>
+                                    {counterpartAddress ? (
+                                      <span className="tx-counterparty-inline">
+                                        <AddressWithIconInline
+                                          data={escrow}
+                                          name={counterpartName}
+                                          options={{ short: 6 }}
+                                        />
+                                      </span>
+                                    ) : (
+                                      <span className="tx-counterparty-inline">-</span>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                               <div className="asset-value tx-collapsed-change">
                                 <span className="tx-inline-change-item">
