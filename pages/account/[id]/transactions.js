@@ -19,7 +19,7 @@ import {
   nativeCurrency
 } from '../../../utils'
 import { addressUsernameOrServiceLink } from '../../../utils/format'
-import { isRecentTimestamp } from '../../../utils/seo'
+import { shouldIndexAccount } from '../../../utils/seo'
 
 import SEO from '../../../components/SEO'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
@@ -127,7 +127,7 @@ export async function getServerSideProps(context) {
     })
     const accountPromise = axiosServer({
       method: 'get',
-      url: `v2/address/${id}?ledgerInfo=true`,
+      url: `v2/address/${id}?username=true&service=true&ledgerInfo=true`,
       headers
     }).catch(() => null)
 
@@ -149,7 +149,7 @@ export async function getServerSideProps(context) {
 
       const accountRes = await accountPromise
       canonicalAccount = accountRes?.data?.address || canonicalAccount
-      isIndexableAccount = isRecentTimestamp(accountRes?.data?.ledgerInfo?.previousTxnAt, 7)
+      isIndexableAccount = shouldIndexAccount(accountRes?.data)
 
       if (isAddressValid(id) && (!initialData?.transactions || initialData?.transactions?.length === 0)) {
         if (!initialData?.marker) {

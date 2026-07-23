@@ -33,7 +33,7 @@ import {
 } from '../../utils'
 import { TESTNET_RLUSD_CURRENCY, TESTNET_RLUSD_ISSUER } from '../../utils/faucet'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
-import { isRecentTimestamp } from '../../utils/seo'
+import { shouldIndexAccount } from '../../utils/seo'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
 
 const TOKEN_PREVIEW_LIMIT = 5
@@ -489,8 +489,7 @@ export async function getServerSideProps(context) {
         balanceListServer: balanceListServer || {},
         isSsrMobile: getIsSsrMobile(context),
         initialData: initialData || {},
-        isIndexableAccount:
-          !isHistoricalLedger && isRecentTimestamp(initialData?.ledgerInfo?.previousTxnAt, 7),
+        isIndexableAccount: !isHistoricalLedger && shouldIndexAccount(initialData),
         initialErrorMessage: initialErrorMessage || null,
         initialSignerAccountsData,
         initialNftMinterAccountsData,

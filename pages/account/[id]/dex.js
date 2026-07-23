@@ -17,7 +17,7 @@ import {
   addressUsernameOrServiceLink
 } from '../../../utils/format'
 import { avatarSrc, nativeCurrency, timestampExpired, useWidth, xahauNetwork } from '../../../utils'
-import { isRecentTimestamp } from '../../../utils/seo'
+import { shouldIndexAccount } from '../../../utils/seo'
 import { divide, multiply } from '../../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
 
@@ -63,7 +63,7 @@ export async function getServerSideProps(context) {
       id: account,
       initialData: initialData || {},
       initialAccountData: initialAccountData || {},
-      isIndexableAccount: isRecentTimestamp(initialAccountData?.ledgerInfo?.previousTxnAt, 7),
+      isIndexableAccount: shouldIndexAccount(initialAccountData),
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }

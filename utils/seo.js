@@ -22,3 +22,7 @@ export const isRecentTimestamp = (timestamp, days, now = Date.now()) => {
   const ageMs = now - timestampMs
   return ageMs >= 0 && ageMs <= periodMs
 }
+
+export const shouldIndexAccount = (account, activityDays = 7) =>
+  Boolean(account?.username || account?.service?.name) ||
+  isRecentTimestamp(account?.ledgerInfo?.previousTxnAt, activityDays)
