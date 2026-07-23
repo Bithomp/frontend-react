@@ -460,6 +460,11 @@ export default function Distribution({
     : token?.issuer
       ? `/token/${encodeURIComponent(token.issuer)}/${encodeURIComponent(token.currency)}`
       : `/token/${encodeURIComponent(nativeCurrency)}`
+  const canonicalPath = isMptToken
+    ? `/distribution?mptokenIssuanceID=${encodeURIComponent(selectedMptId)}`
+    : isIssuedToken
+      ? `/distribution?currencyIssuer=${encodeURIComponent(token.issuer)}&currency=${encodeURIComponent(token.currency)}`
+      : '/distribution'
 
   const addToken = () => {
     if (!setSignRequest || !token?.issuer || isMptToken) return
@@ -574,6 +579,7 @@ export default function Distribution({
     <div className={distributionClass}>
       <SEO
         title={t('menu.network.distribution', { currency })}
+        canonicalPath={canonicalPath}
         image={distributionPreviewImage}
         twitterImage={distributionTwitterImage}
       />

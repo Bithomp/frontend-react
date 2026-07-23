@@ -191,12 +191,17 @@ const getTokenEntries = async ({ req } = {}) => {
   ].slice(0, 100)
 
   return uniqueEntries(
-    rankedTokens.map((token) => {
-      if (!token?.currency) return null
-      const path = token?.issuer
-        ? `token/${encodeURIComponent(token.issuer)}/${encodeURIComponent(token.currency)}`
-        : `token/${encodeURIComponent(token.currency)}`
-      return sitemapEntry(path)
+    rankedTokens.flatMap((token) => {
+      if (!token?.currency) return []
+
+      const encodedCurrency = encodeURIComponent(token.currency)
+      if (!token?.issuer) return [sitemapEntry(`token/${encodedCurrency}`)]
+
+      const encodedIssuer = encodeURIComponent(token.issuer)
+      return [
+        sitemapEntry(`token/${encodedIssuer}/${encodedCurrency}`),
+        sitemapEntry(`distribution?currencyIssuer=${encodedIssuer}&currency=${encodedCurrency}`)
+      ]
     })
   )
 }
@@ -206,13 +211,19 @@ const getMptEntries = async ({ req } = {}) => {
   const issuances = Array.isArray(data?.issuances) ? data.issuances : []
 
   return uniqueEntries(
-    issuances.slice(0, 100).map((issuance) => {
+    issuances.slice(0, 100).flatMap((issuance) => {
       const issuanceId =
         issuance?.mptokenIssuanceID ||
         issuance?.MPTokenIssuanceID ||
         issuance?.mptId ||
         issuance?.mpt_issuance_id
-      return issuanceId ? sitemapEntry(`token/${encodeURIComponent(issuanceId)}`) : null
+      if (!issuanceId) return []
+
+      const encodedIssuanceId = encodeURIComponent(issuanceId)
+      return [
+        sitemapEntry(`token/${encodedIssuanceId}`),
+        sitemapEntry(`distribution?mptokenIssuanceID=${encodedIssuanceId}`)
+      ]
     })
   )
 }

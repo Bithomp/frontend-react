@@ -46,7 +46,7 @@ export default function SEO({
       : `${description} ${explorerName}`
 
   const cleanPath = (router.asPath || '/').split('#')[0].split('?')[0]
-  const cleanCanonicalPath = canonicalPath ? canonicalPath.split('#')[0].split('?')[0] : cleanPath
+  const cleanCanonicalPath = canonicalPath ? canonicalPath.split('#')[0] : cleanPath
   const normalizedPath = stripLeadingLocale(cleanPath)
   const currentLocale = normalizeLocale(router.locale)
   const canonical = server + absolutePath(cleanCanonicalPath)
