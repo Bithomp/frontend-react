@@ -33,6 +33,7 @@ import {
 } from '../../utils'
 import { TESTNET_RLUSD_CURRENCY, TESTNET_RLUSD_ISSUER } from '../../utils/faucet'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
+import { isRecentTimestamp } from '../../utils/seo'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
 
 const TOKEN_PREVIEW_LIMIT = 5
@@ -488,6 +489,8 @@ export async function getServerSideProps(context) {
         balanceListServer: balanceListServer || {},
         isSsrMobile: getIsSsrMobile(context),
         initialData: initialData || {},
+        isIndexableAccount:
+          !isHistoricalLedger && isRecentTimestamp(initialData?.ledgerInfo?.previousTxnAt, 7),
         initialErrorMessage: initialErrorMessage || null,
         initialSignerAccountsData,
         initialNftMinterAccountsData,
@@ -502,6 +505,7 @@ export async function getServerSideProps(context) {
         isHistoricalLedger,
         accountWithTag: accountWithTag || null,
         isSsrMobile: getIsSsrMobile(context),
+        isIndexableAccount: false,
         initialErrorMessage: initialErrorMessage || null,
         initialSignerAccountsData,
         initialNftMinterAccountsData,
@@ -782,6 +786,7 @@ const nftSalesUrl = ({ address, selectedCurrency, marker, ledgerTimestamp, incep
 
 export default function Account({
   initialData,
+  isIndexableAccount,
   initialErrorMessage,
   initialSignerAccountsData,
   initialNftMinterAccountsData,
@@ -3733,7 +3738,7 @@ export default function Account({
   if (initialErrorMessage) {
     return (
       <>
-        <SEO title={ta('seo.account-error')} />
+        <SEO title={ta('seo.account-error')} noindex />
         <div className="center">
           <br />
           <br />
@@ -3759,7 +3764,7 @@ export default function Account({
   if (!data || !data.address) {
     return (
       <>
-        <SEO title={ta('seo.loading-account')} />
+        <SEO title={ta('seo.loading-account')} noindex />
         <div className="center">
           <h1>{ta('states.loading')}</h1>
         </div>
@@ -3781,6 +3786,8 @@ export default function Account({
           name: `${data.service?.name || data.username || ''} ${data.address}`.trim()
         })}
         image={{ file: avatarSrc(data.address, refreshPage) }}
+        canonicalPath={`/account/${data.address}`}
+        noindex={!isIndexableAccount}
       />
 
       <div className="account-container">

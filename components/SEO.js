@@ -5,7 +5,14 @@ import { useRouter } from 'next/router'
 import { normalizeLocale, stripLeadingLocale, server, explorerName, xahauNetwork, network } from '../utils'
 
 const absolutePath = (path) => {
-  const cleanPath = stripLeadingLocale(path || '/')
+  let cleanPath = stripLeadingLocale(path || '/')
+
+  if (cleanPath === '/address' || cleanPath.startsWith('/address/')) {
+    cleanPath = cleanPath.replace(/^\/address/, '/account')
+  } else if (cleanPath === '/transaction' || cleanPath.startsWith('/transaction/')) {
+    cleanPath = cleanPath.replace(/^\/transaction/, '/tx')
+  }
+
   return cleanPath === '/' ? '' : cleanPath
 }
 

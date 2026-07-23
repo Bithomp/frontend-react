@@ -28,6 +28,8 @@ const TransactionSearch = () => {
         page={t('seo.searchPage')}
         title={t('seo.searchTitle')}
         description={t('seo.searchDescription')}
+        canonicalPath="/tx"
+        noindex
       />
       <Container>
         <h1 className="center">{t('search.title')}</h1>

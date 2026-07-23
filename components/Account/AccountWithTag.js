@@ -127,7 +127,7 @@ export default function AccountWithTag({ data }) {
   if (loading) {
     return (
       <>
-        <SEO page="Account with tag" />
+        <SEO page="Account with tag" noindex />
         <div className="content-center">
           <div className="center" style={{ marginTop: '50px' }}>
             <span className="waiting"></span>
@@ -142,7 +142,7 @@ export default function AccountWithTag({ data }) {
   if (errorMessage) {
     return (
       <>
-        <SEO page="Account with tag" />
+        <SEO page="Account with tag" noindex />
         <div className="content-center">
           <div className="center orange bold" style={{ marginTop: '50px' }}>
             {errorMessage}
@@ -155,7 +155,7 @@ export default function AccountWithTag({ data }) {
   if (!address || !accountData) {
     return (
       <>
-        <SEO page="Account with tag" />
+        <SEO page="Account with tag" noindex />
         <div className="content-center">
           <div className="center orange bold" style={{ marginTop: '50px' }}>
             Invalid address or missing data
@@ -171,6 +171,8 @@ export default function AccountWithTag({ data }) {
         page="Account with tag information"
         title={`${t('explorer.header.account')} ${data?.payId || data?.xAddress || ''}`}
         description={`Details for ${data?.payId || data?.xAddress || ''}`}
+        canonicalPath={`/account/${address}`}
+        noindex
       />
       {/* add tab="account" to show transactions link */}
 

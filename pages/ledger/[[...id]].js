@@ -11,6 +11,7 @@ import { fullDateAndTime, AddressWithIconInline, shortHash } from '../../utils/f
 import { LedgerLink, LinkTx } from '../../utils/links'
 import { axiosServer, logServerSideError, passHeaders } from '../../utils/axios'
 import CopyButton from '../../components/UI/CopyButton'
+import { isRecentTimestamp } from '../../utils/seo'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -39,13 +40,14 @@ export async function getServerSideProps(context) {
     props: {
       ledgerIndexQuery: ledgerIndex || '',
       pageMeta,
+      isIndexableLedger: isRecentTimestamp(pageMeta?.closeTime || pageMeta?.close_time, 7),
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'ledger']))
     }
   }
 }
 
-export default function Ledger({ pageMeta, ledgerIndexQuery, isSsrMobile }) {
+export default function Ledger({ pageMeta, ledgerIndexQuery, isIndexableLedger, isSsrMobile }) {
   const [data, setData] = useState(pageMeta)
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -137,6 +139,8 @@ export default function Ledger({ pageMeta, ledgerIndexQuery, isSsrMobile }) {
         description={
           ledgerIndexQuery ? 'Transactions from the Last Ledger' : 'Transactions in the Ledger #' + ledgerIndexQuery
         }
+        canonicalPath={ledgerIndexQuery ? `/ledger/${pageMeta?.ledgerIndex || ledgerIndexQuery}` : '/ledger'}
+        noindex={!isIndexableLedger}
       />
       <div className="content-center">
         <h1 className="center">

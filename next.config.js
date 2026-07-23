@@ -69,6 +69,30 @@ module.exports = withBundleAnalyzer({
   async redirects() {
     return [
       {
+        source: '/address',
+        destination: '/account',
+        permanent: true,
+        locale: false
+      },
+      {
+        source: '/address/:path*',
+        destination: '/account/:path*',
+        permanent: true,
+        locale: false
+      },
+      {
+        source: '/transaction',
+        destination: '/tx',
+        permanent: true,
+        locale: false
+      },
+      {
+        source: '/transaction/:path*',
+        destination: '/tx/:path*',
+        permanent: true,
+        locale: false
+      },
+      {
         source: '/go/:path*',
         destination: '/api/go/:path*',
         permanent: true,
@@ -147,22 +171,6 @@ module.exports = withBundleAnalyzer({
       {
         source: '/tx',
         destination: '/transaction'
-      },
-      {
-        source: '/address/:id/dex',
-        destination: '/account/:id/dex'
-      },
-      {
-        source: '/address/:id/transactions',
-        destination: '/account/:id/transactions'
-      },
-      {
-        source: '/address/:id',
-        destination: '/account/:id'
-      },
-      {
-        source: '/address',
-        destination: '/account'
       }
     ]
   }

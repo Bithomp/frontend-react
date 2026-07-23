@@ -25,6 +25,8 @@ export default function AccountIndex() {
         page="Account"
         title={t('explorer.header.account')}
         description={t('index.seo-description', { ns: 'account', ledgerName })}
+        canonicalPath="/account"
+        noindex
       />
       <div className="content-profile account">
         <h1 className="center">{t('explorer.header.account')}</h1>

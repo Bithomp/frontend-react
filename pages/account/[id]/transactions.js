@@ -19,6 +19,7 @@ import {
   nativeCurrency
 } from '../../../utils'
 import { addressUsernameOrServiceLink } from '../../../utils/format'
+import { isRecentTimestamp } from '../../../utils/seo'
 
 import SEO from '../../../components/SEO'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
@@ -105,10 +106,13 @@ export async function getServerSideProps(context) {
   const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order, filterSpam } = query
   let initialErrorMessage = ''
   let initialData = null
+  let isIndexableAccount = false
+  let canonicalAccount = id || null
   let initialNoRelevantTransactions = false
   const selectedCurrencyServer = currencyServer(req) || 'usd'
 
   if (isAddressOrUsername(id)) {
+    const headers = passHeaders(req)
     let url = apiUrl({
       address: id,
       order,
@@ -121,12 +125,17 @@ export async function getServerSideProps(context) {
       filterSpam,
       convertCurrency: selectedCurrencyServer
     })
+    const accountPromise = axiosServer({
+      method: 'get',
+      url: `v2/address/${id}?ledgerInfo=true`,
+      headers
+    }).catch(() => null)
 
     try {
       const res = await axiosServer({
         method: 'get',
         url,
-        headers: passHeaders(req)
+        headers
       })
       if (res?.data) {
         if (res.data?.error) {
@@ -137,6 +146,10 @@ export async function getServerSideProps(context) {
       } else {
         initialErrorMessage = 'Transactions not found'
       }
+
+      const accountRes = await accountPromise
+      canonicalAccount = accountRes?.data?.address || canonicalAccount
+      isIndexableAccount = isRecentTimestamp(accountRes?.data?.ledgerInfo?.previousTxnAt, 7)
 
       if (isAddressValid(id) && (!initialData?.transactions || initialData?.transactions?.length === 0)) {
         if (!initialData?.marker) {
@@ -156,6 +169,8 @@ export async function getServerSideProps(context) {
     props: {
       id: id || null,
       initialData: initialData || null,
+      isIndexableAccount,
+      canonicalAccount,
       initialErrorMessage,
       initialNoRelevantTransactions,
       isSsrMobile: getIsSsrMobile(context),
@@ -176,6 +191,8 @@ export async function getServerSideProps(context) {
 export default function AccountTransactions({
   id,
   initialData,
+  isIndexableAccount,
+  canonicalAccount,
   initialErrorMessage,
   initialNoRelevantTransactions,
   selectedCurrency: selectedCurrencyApp,
@@ -410,6 +427,8 @@ export default function AccountTransactions({
         title={`Transactions of ${address}`}
         description={`All transactions for address ${address}`}
         image={{ file: avatarSrc(address) }}
+        canonicalPath={`/account/${canonicalAccount || address}/transactions`}
+        noindex={!isIndexableAccount}
       />
       <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
         <h1 className="center">

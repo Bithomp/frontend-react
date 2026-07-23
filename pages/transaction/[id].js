@@ -38,6 +38,7 @@ import { fetchHistoricalRate } from '../../utils/common'
 import { buildTransactionSeo } from '../../utils/transaction/seo'
 import { server } from '../../utils'
 import { collectMptIssuanceIds } from '../../utils/transaction/mpt'
+import { isRecentTimestamp } from '../../utils/seo'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -99,7 +100,9 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      id: id || null,
       data: data || null,
+      isIndexableTransaction: isRecentTimestamp(data?.outcome?.ledgerTimestamp, 7),
       initialErrorMessage: initialErrorMessage || null,
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
@@ -108,7 +111,14 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Transaction({ data, selectedCurrency, selectedCurrencyServer, initialErrorMessage }) {
+export default function Transaction({
+  id,
+  data,
+  isIndexableTransaction,
+  selectedCurrency,
+  selectedCurrencyServer,
+  initialErrorMessage
+}) {
   const { t: txT } = useTranslation('transaction')
   const effectiveSelectedCurrency = selectedCurrency || selectedCurrencyServer
 
@@ -129,12 +139,15 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
 
   if (!data || initialErrorMessage)
     return (
-      <center>
-        <br />
-        {initialErrorMessage || txT('errors.noData')}
-        <br />
-        <br />
-      </center>
+      <>
+        <SEO canonicalPath={id ? `/tx/${id}` : '/tx'} noindex />
+        <center>
+          <br />
+          {initialErrorMessage || txT('errors.noData')}
+          <br />
+          <br />
+        </center>
+      </>
     )
 
   const { tx } = data
@@ -241,6 +254,8 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
         image={transactionPreviewImage}
         twitterImage={transactionTwitterImage}
         twitterCardType="summary_large_image"
+        canonicalPath={`/tx/${data.id}`}
+        noindex={!isIndexableTransaction}
       />
       <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={effectiveSelectedCurrency} />
     </>

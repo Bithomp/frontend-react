@@ -17,6 +17,7 @@ import {
   addressUsernameOrServiceLink
 } from '../../../utils/format'
 import { avatarSrc, nativeCurrency, timestampExpired, useWidth, xahauNetwork } from '../../../utils'
+import { isRecentTimestamp } from '../../../utils/seo'
 import { divide, multiply } from '../../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
 
@@ -40,7 +41,7 @@ export async function getServerSideProps(context) {
       // fetch account info for display
       const accountRes = await axiosServer({
         method: 'get',
-        url: `v2/address/${account}?username=true&service=true&verifiedDomain=true`,
+        url: `v2/address/${account}?username=true&service=true&verifiedDomain=true&ledgerInfo=true`,
         headers: passHeaders(req)
       })
       initialAccountData = accountRes?.data
@@ -62,13 +63,22 @@ export async function getServerSideProps(context) {
       id: account,
       initialData: initialData || {},
       initialAccountData: initialAccountData || {},
+      isIndexableAccount: isRecentTimestamp(initialAccountData?.ledgerInfo?.previousTxnAt, 7),
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }
 }
 
-export default function AccountDex({ id, initialData, initialAccountData, account, setSignRequest, isSsrMobile }) {
+export default function AccountDex({
+  id,
+  initialData,
+  initialAccountData,
+  isIndexableAccount,
+  account,
+  setSignRequest,
+  isSsrMobile
+}) {
   const width = useWidth()
   const isMobile = useIsMobile(600)
 
@@ -286,6 +296,8 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
         title={`DEX Orders - ${accountData?.username || accountData?.service?.name || id}`}
         description={`DEX orders for ${accountData?.username || accountData?.service?.name || id}`}
         image={{ file: avatarSrc(id) }}
+        canonicalPath={`/account/${accountData?.address || id}/dex`}
+        noindex={!isIndexableAccount}
       />
       <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
         <h1 className="center">
