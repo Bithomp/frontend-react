@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "{{explorerName}}의 인증된 도메인",
+    "description": "{{explorerName}}의 인증된 도메인이 무엇인지, 도메인을 설정하고 소유권을 확인하는 방법을 알아보세요."
+  },
+  "title": "{{explorerName}} 도메인 인증",
+  "images": {
+    "cover": "인증된 도메인",
+    "setDomain": "인증된 도메인 설정",
+    "accountPage": "계정 페이지의 인증된 도메인",
+    "badge": "{{explorerName}}의 인증된 도메인"
+  },
+  "intro": {
+    "proof": "도메인 인증은 동일한 주체가 특정 {{explorerName}} 주소와 도메인을 관리한다는 것을 증명합니다.",
+    "transparency": "도메인을 인증하면 투명성이 높아지고 신뢰할 수 있는 {{explorerName}} 서비스 운영자임을 보여줄 수 있습니다.",
+    "twoWay": "누구나 자신의 {{explorerName}} 주소에 임의의 도메인을 설정할 수 있습니다. 따라서 인증하려면 도메인과 주소가 서로 연결되어야 합니다.",
+    "domainClaim": "도메인이 주소의 소유권을 선언해야 합니다.",
+    "addressClaim": "주소가 도메인에 의해 소유됨을 선언해야 합니다."
+  },
+  "domainClaim": {
+    "title": "도메인이 주소 소유권을 선언합니다",
+    "serve": "웹 서버는 다음 URL에서 {{ledgerName}}용 TOML 파일을 제공해야 합니다.",
+    "accountBefore": "인증할 주소를",
+    "accountAfter": "항목에 지정하세요.",
+    "example": "TOML 파일 예시:",
+    "instructions": "다음 안내를 읽고 따르세요:"
+  },
+  "addressClaim": {
+    "title": "주소가 도메인 소유임을 선언합니다",
+    "setBefore": "도메인을 설정하려면",
+    "domainsLink": "인증된 도메인",
+    "setAfter": "페이지에서 도메인 설정을 선택하고 트랜잭션에 서명하세요.",
+    "manageBefore": "설정한 도메인은",
+    "accountLink": "계정 페이지",
+    "manageAfter": "에서 언제든 변경하거나 삭제할 수 있습니다(로그인 필요)."
+  },
+  "website": {
+    "title": "웹사이트의 인증된 도메인",
+    "listBefore": "웹사이트에서",
+    "listLink": "{{explorerName}}의 모든 인증된 도메인",
+    "examples": "인증된 도메인이 있는 계정 예시:",
+    "badge": "Bithomp {{ledgerName}} 탐색기는 아바타 옆에 인증 배지를 표시합니다. 도메인은 그 아래에 체크 표시가 있는 클릭 가능한 녹색 링크로 나타납니다.",
+    "reverify": "시스템은 24시간마다 모든 인증된 도메인을 다시 확인합니다. 주소와 도메인이 계속 서로 연결된 경우에만 체크 표시가 나타납니다.",
+    "recommendation": "먼저 TOML 파일을 업로드하고 유효성을 확인한 다음 {{explorerName}} 계정에 도메인을 설정하는 것이 좋습니다. 이 순서대로 하면 보통 1분 이내에 인증되며, 그렇지 않으면 최대 24시간이 걸릴 수 있습니다."
+  },
+  "related": {
+    "title": "관련 문서"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "{{explorerName}} 上的已验证域名",
+    "description": "了解 {{explorerName}} 已验证域名的含义，以及如何设置域名并验证所有权。"
+  },
+  "title": "{{explorerName}} 域名验证",
+  "images": {
+    "cover": "已验证域名",
+    "setDomain": "设置已验证域名",
+    "accountPage": "账户页面上的已验证域名",
+    "badge": "{{explorerName}} 上的已验证域名"
+  },
+  "intro": {
+    "proof": "域名验证用于证明同一实体同时控制特定的 {{explorerName}} 地址和域名。",
+    "transparency": "验证域名可以提高透明度，并帮助你成为值得信赖的 {{explorerName}} 服务运营者。",
+    "twoWay": "任何人都可以为自己的 {{explorerName}} 地址设置任意域名。因此，验证需要域名与地址之间建立双向关联。",
+    "domainClaim": "域名必须声明其拥有该地址。",
+    "addressClaim": "地址必须声明其归该域名所有。"
+  },
+  "domainClaim": {
+    "title": "域名声明拥有某个地址",
+    "serve": "你的 Web 服务器必须在以下 URL 提供用于 {{ledgerName}} 的 TOML 文件：",
+    "accountBefore": "请在",
+    "accountAfter": "条目中指定要验证的地址。",
+    "example": "TOML 文件示例：",
+    "instructions": "请阅读并遵循以下说明："
+  },
+  "addressClaim": {
+    "title": "地址声明归某个域名所有",
+    "setBefore": "要设置域名，请打开",
+    "domainsLink": "已验证域名",
+    "setAfter": "选择设置域名并签署交易。",
+    "manageBefore": "设置后，你可以随时在",
+    "accountLink": "账户页面",
+    "manageAfter": "更改或删除域名（需要登录）。"
+  },
+  "website": {
+    "title": "我们网站上的已验证域名",
+    "listBefore": "你可以在我们的网站查看",
+    "listLink": "{{explorerName}} 上的所有已验证域名",
+    "examples": "具有已验证域名的账户示例：",
+    "badge": "Bithomp 的 {{ledgerName}} 浏览器会在头像旁显示验证徽章。域名显示在下方，是一个带有对勾的绿色可点击链接。",
+    "reverify": "系统每 24 小时重新验证一次所有域名。只有当地址和域名仍然互相链接时，才会显示对勾。",
+    "recommendation": "建议先上传并验证 TOML 文件，再为 {{explorerName}} 账户设置域名。按此顺序操作，通常一分钟内即可显示为已验证；否则可能需要等待最多 24 小时。"
+  },
+  "related": {
+    "title": "相关文章"
+  }
+}

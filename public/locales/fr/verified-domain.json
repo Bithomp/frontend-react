@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Domaines vérifiés sur {{explorerName}}",
+    "description": "Découvrez les domaines vérifiés sur {{explorerName}}, comment définir un domaine et confirmer sa propriété."
+  },
+  "title": "Vérification de domaine sur {{explorerName}}",
+  "images": {
+    "cover": "Domaines vérifiés",
+    "setDomain": "Définir un domaine vérifié",
+    "accountPage": "Domaines vérifiés sur la page de votre compte",
+    "badge": "Domaines vérifiés sur {{explorerName}}"
+  },
+  "intro": {
+    "proof": "La vérification prouve qu’une même entité contrôle une adresse {{explorerName}} précise et un domaine.",
+    "transparency": "Vérifier votre domaine améliore la transparence et renforce la confiance envers votre service {{explorerName}}.",
+    "twoWay": "N’importe qui peut associer n’importe quel domaine à son adresse {{explorerName}}. La vérification exige donc un lien réciproque entre le domaine et l’adresse.",
+    "domainClaim": "Le domaine doit déclarer être propriétaire de l’adresse.",
+    "addressClaim": "L’adresse doit déclarer appartenir au domaine."
+  },
+  "domainClaim": {
+    "title": "Le domaine revendique la propriété d’une adresse",
+    "serve": "Votre serveur web doit fournir un fichier TOML pour {{ledgerName}} à l’URL suivante :",
+    "accountBefore": "Indiquez l’adresse à vérifier dans l’entrée",
+    "accountAfter": ".",
+    "example": "Exemple de fichier TOML :",
+    "instructions": "Lisez et suivez les instructions de"
+  },
+  "addressClaim": {
+    "title": "L’adresse déclare appartenir à un domaine",
+    "setBefore": "Pour définir un domaine, ouvrez",
+    "domainsLink": "Domaines vérifiés",
+    "setAfter": "sélectionnez Définir le domaine, puis signez la transaction.",
+    "manageBefore": "Vous pourrez ensuite modifier ou supprimer le domaine depuis la",
+    "accountLink": "page de votre compte",
+    "manageAfter": "(vous devez être connecté)."
+  },
+  "website": {
+    "title": "Domaines vérifiés sur notre site",
+    "listBefore": "Sur notre site, vous pouvez consulter",
+    "listLink": "tous les domaines vérifiés sur {{explorerName}}",
+    "examples": "Exemples de comptes avec un domaine vérifié :",
+    "badge": "L’explorateur Bithomp pour {{ledgerName}} affiche un badge de vérification près de l’avatar. Le domaine apparaît dessous sous forme de lien vert cliquable avec une coche.",
+    "reverify": "Notre système revérifie chaque domaine toutes les 24 heures. La coche n’est affichée que si l’adresse et le domaine continuent à se référencer mutuellement.",
+    "recommendation": "Nous recommandons de téléverser et valider d’abord le fichier TOML, puis de définir le domaine sur votre compte {{explorerName}}. Il apparaît alors généralement comme vérifié en moins d’une minute ; sinon, la vérification peut prendre jusqu’à 24 heures."
+  },
+  "related": {
+    "title": "Articles associés"
+  }
+}

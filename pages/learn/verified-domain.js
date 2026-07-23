@@ -1,4 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 import SEO from '../../components/SEO'
 import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -12,56 +13,55 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'learn']))
+      ...(await serverSideTranslations(locale, ['common', 'learn', 'verified-domain']))
     }
   }
 }
 
 export default function VerifiedDomains() {
+  const { t } = useTranslation('verified-domain')
+  const { t: tl } = useTranslation('learn')
+
   return (
     <>
       <SEO
-        title={'Verified Domains on ' + explorerName}
-        description="What are verified domains on {explorerName}, how to set and verify domain"
+        title={t('seo.title', { explorerName })}
+        description={t('seo.description', { explorerName })}
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/learn/verified-domain/cover.png', width: 1536, height: 1024, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
-          <h1>{explorerName} Domain Verification</h1>
+          <h1>{t('title', { explorerName })}</h1>
           <ArticleMeta />
           <Image
             src="/images/pages/learn/verified-domain/cover.png"
-            alt="Verified Domains"
+            alt={t('images.cover')}
             width={1520}
             height={855}
             className="w-full h-auto object"
             priority
           />
           <p>
-            The idea of domain verification is to prove that the same entity operates a particular {explorerName}{' '}
-            address and a particular domain.
+            {t('intro.proof', { explorerName })}
           </p>
           <p>
-            You may desire to verify your domain in the name of transparency, in order to become a trusted{' '}
-            {explorerName} service operator.
+            {t('intro.transparency', { explorerName })}
           </p>
           <p>
-            Anyone can set any domain for their {explorerName} address. Therefore, for domain verification, a two-way
-            link between the domain operator and the address must be established.
+            {t('intro.twoWay', { explorerName })}
           </p>
           <ul>
             <li>
-              <strong>The domain should claim ownership of the address.</strong>
+              <strong>{t('intro.domainClaim')}</strong>
             </li>
             <li>
-              <strong>The address should claim ownership by the domain.</strong>
+              <strong>{t('intro.addressClaim')}</strong>
             </li>
           </ul>
-          <h2>Domain claims to own an address</h2>
+          <h2>{t('domainClaim.title')}</h2>
           <p>
-            Your web server should serve {xahauNetwork ? 'a' : 'an'} {ledgerName}-ledger.toml file, available at the
-            following URL:
+            {t('domainClaim.serve', { ledgerName })}
           </p>
           <pre>
             <code>
@@ -69,10 +69,10 @@ export default function VerifiedDomains() {
             </code>
           </pre>
           <p>
-            The address you want to verify should be specified under the <code>[[ACCOUNTS]]</code>entry.
+            {t('domainClaim.accountBefore')} <code>[[ACCOUNTS]]</code> {t('domainClaim.accountAfter')}
           </p>
           <p>
-            <strong>Example of toml file:</strong>
+            <strong>{t('domainClaim.example')}</strong>
           </p>
           <p>
             <strong>
@@ -92,7 +92,7 @@ export default function VerifiedDomains() {
           <p>
             {!xahauNetwork && (
               <>
-                Please read and follow the instructions described in{' '}
+                {t('domainClaim.instructions')}{' '}
                 <a href="https://xrpl.org/docs/references/xrp-ledger-toml">
                   <strong>XRPL TOML</strong>
                 </a>
@@ -100,44 +100,44 @@ export default function VerifiedDomains() {
               </>
             )}
           </p>
-          <h2>Address claims to be owned by a domain</h2>
+          <h2>{t('addressClaim.title')}</h2>
           <p>
-            To set a domain go to <Link href="/domains/">Verified Domains</Link>, press set domain and sign in the
-            transaction.
+            {t('addressClaim.setBefore')} <Link href="/domains/">{t('addressClaim.domainsLink')}</Link>{' '}
+            {t('addressClaim.setAfter')}
           </p>
           <figure>
             <Image
               src="/images/pages/verified-domains/domains-screen.png"
-              alt="Set a verified domain"
+              alt={t('images.setDomain')}
               width={1520}
               height={556}
               className="w-full h-auto object-contain scale-110"
               priority
             />
-            <figcaption>Set a verified domain</figcaption>
+            <figcaption>{t('images.setDomain')}</figcaption>
           </figure>
           <p>
-            Once the domain is set, you can easily change or delete it anytime you need on your{' '}
-            <Link href="/account/">Account Page</Link> (you need to be signed in).
+            {t('addressClaim.manageBefore')} <Link href="/account/">{t('addressClaim.accountLink')}</Link>{' '}
+            {t('addressClaim.manageAfter')}
           </p>
           <figure>
             <Image
               src={'/images/' + (xahauNetwork ? 'xahau' : 'xrpl') + 'explorer/verified-domains/screen-account-page.png'}
-              alt="Verified domains on your account page"
+              alt={t('images.accountPage')}
               width={1520}
               height={950}
               className="w-full h-auto object-contain scale-110"
               priority
             />
-            <figcaption>Verified domains on your account page</figcaption>
+            <figcaption>{t('images.accountPage')}</figcaption>
           </figure>
-          <h2>Verified domains on our website</h2>
+          <h2>{t('website.title')}</h2>
           <p>
-            On our website you can find <Link href="/domains/">the list of all verified domains on {explorerName}</Link>
-            .
+            {t('website.listBefore')}{' '}
+            <Link href="/domains/">{t('website.listLink', { explorerName })}</Link>.
           </p>
           <p>
-            <strong>Examples of accounts with verified domains:</strong>
+            <strong>{t('website.examples')}</strong>
           </p>
           <p>
             <Link
@@ -173,8 +173,7 @@ export default function VerifiedDomains() {
             </Link>
           </p>
           <p>
-            Bithomp {ledgerName} explorer shows verified domains on a badge next to the avatar. The domain is shown
-            below as a clickable green link with a checkmark indicator
+            {t('website.badge', { ledgerName })}
           </p>
           <figure>
             <Image
@@ -183,52 +182,53 @@ export default function VerifiedDomains() {
                 (xahauNetwork ? 'xahau' : 'xrpl') +
                 'explorer/verified-domains/checkmark-example-screen.png'
               }
-              alt="Verified domains on Bithomp"
+              alt={t('images.badge', { explorerName })}
               width={1520}
               height={945}
               className="w-full h-auto object-contain scale-110"
               priority
             />
-            <figcaption>Verified domains on {explorerName}</figcaption>
+            <figcaption>{t('images.badge', { explorerName })}</figcaption>
           </figure>
           <p>
-            Our system re-verifies every verified domain every 24 hours to make sure that we only show checkmark for
-            currently two-way linked addresses to domains.
+            {t('website.reverify')}
           </p>
           <p>
-            We recommend you to upload a toml file first and make sure it's valid and then to set a domain on your{' '}
-            {explorerName} account, in that order your domain will be shown as verified within a minute on our website,
-            otherwise it can take up to 24 hours to get verified.
+            {t('website.recommendation', { explorerName })}
           </p>
           <br />
-          <h3>Related Articles</h3>
+          <h3>{t('related.title')}</h3>
 
           <ul>
             {!xahauNetwork && (
               <>
                 <li>
-                  <Link href="/learn/xrpl-article">XRP, XRP Ledger, Ripple – key differences</Link>
+                  <Link href="/learn/xrpl-article">{tl('items.xrpl-article')}</Link>
                 </li>
                 <li>
-                  <Link href="/learn/ripple-usd">Ripple USD</Link>
+                  <Link href="/learn/ripple-usd">{tl('items.ripple-usd')}</Link>
                 </li>
                 <li>
-                  <Link href="/learn/the-bithomp-explorer-advantages">Advantages of Bithomp XRP Ledger Explorer</Link>
+                  <Link href="/learn/the-bithomp-explorer-advantages">
+                    {tl('items.the-bithomp-explorer-advantages')}
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/learn/guide-for-token-issuers">Guide for the Token Issuers</Link>
+                  <Link href="/learn/guide-for-token-issuers">{tl('items.guide-for-token-issuers')}</Link>
                 </li>
               </>
             )}
 
             {xahauNetwork && (
               <li>
-                <Link href="/learn/the-bithomp-explorer-advantages">Advantages of Xahau Explorer</Link>
+                <Link href="/learn/the-bithomp-explorer-advantages">
+                  {tl('items.the-bithomp-explorer-advantages')}
+                </Link>
               </li>
             )}
 
             <li>
-              <Link href="/learn/blackholed-address">Blackholed addresses on {explorerName}</Link>
+              <Link href="/learn/blackholed-address">{tl('items.blackholed-address')}</Link>
             </li>
           </ul>
         </article>

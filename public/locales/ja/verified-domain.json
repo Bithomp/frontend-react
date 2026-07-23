@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "{{explorerName}}の認証済みドメイン",
+    "description": "{{explorerName}}の認証済みドメインとは何か、ドメインの設定方法と所有権の確認方法を説明します。"
+  },
+  "title": "{{explorerName}}のドメイン認証",
+  "images": {
+    "cover": "認証済みドメイン",
+    "setDomain": "認証済みドメインを設定",
+    "accountPage": "アカウントページの認証済みドメイン",
+    "badge": "{{explorerName}}の認証済みドメイン"
+  },
+  "intro": {
+    "proof": "ドメイン認証は、同じ主体が特定の{{explorerName}}アドレスとドメインを管理していることを証明します。",
+    "transparency": "ドメインを認証すると透明性が高まり、信頼できる{{explorerName}}サービス運営者であることを示せます。",
+    "twoWay": "誰でも{{explorerName}}アドレスに任意のドメインを設定できます。そのため、認証にはドメインとアドレスの双方向リンクが必要です。",
+    "domainClaim": "ドメイン側でアドレスの所有を宣言する必要があります。",
+    "addressClaim": "アドレス側でドメインによる所有を宣言する必要があります。"
+  },
+  "domainClaim": {
+    "title": "ドメインがアドレスの所有を宣言する",
+    "serve": "Webサーバーは、{{ledgerName}}用のTOMLファイルを次のURLで提供する必要があります。",
+    "accountBefore": "認証するアドレスを",
+    "accountAfter": "エントリに指定します。",
+    "example": "TOMLファイルの例：",
+    "instructions": "次の説明を読み、手順に従ってください："
+  },
+  "addressClaim": {
+    "title": "アドレスがドメインによる所有を宣言する",
+    "setBefore": "ドメインを設定するには、",
+    "domainsLink": "認証済みドメイン",
+    "setAfter": "を開き、「ドメインを設定」を選択してトランザクションに署名します。",
+    "manageBefore": "設定後は、",
+    "accountLink": "アカウントページ",
+    "manageAfter": "からいつでも変更または削除できます（ログインが必要です）。"
+  },
+  "website": {
+    "title": "当サイトの認証済みドメイン",
+    "listBefore": "当サイトでは、",
+    "listLink": "{{explorerName}}の認証済みドメイン一覧",
+    "examples": "認証済みドメインを持つアカウントの例：",
+    "badge": "Bithompの{{ledgerName}}エクスプローラーでは、アバターの横に認証バッジが表示されます。ドメインはその下に、チェックマーク付きのクリック可能な緑色リンクとして表示されます。",
+    "reverify": "システムは24時間ごとにすべての認証済みドメインを再確認します。アドレスとドメインが相互にリンクされている場合のみチェックマークが表示されます。",
+    "recommendation": "最初にTOMLファイルをアップロードして検証し、その後{{explorerName}}アカウントにドメインを設定することを推奨します。この順序なら通常1分以内に認証されますが、逆の場合は最大24時間かかることがあります。"
+  },
+  "related": {
+    "title": "関連記事"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Domain Terverifikasi di {{explorerName}}",
+    "description": "Pelajari domain terverifikasi di {{explorerName}}, cara menetapkan domain, dan cara memverifikasi kepemilikannya."
+  },
+  "title": "Verifikasi Domain di {{explorerName}}",
+  "images": {
+    "cover": "Domain terverifikasi",
+    "setDomain": "Menetapkan domain terverifikasi",
+    "accountPage": "Domain terverifikasi di halaman akun Anda",
+    "badge": "Domain terverifikasi di {{explorerName}}"
+  },
+  "intro": {
+    "proof": "Verifikasi domain membuktikan bahwa entitas yang sama mengendalikan alamat {{explorerName}} tertentu dan sebuah domain.",
+    "transparency": "Memverifikasi domain meningkatkan transparansi dan membantu membangun kepercayaan sebagai operator layanan {{explorerName}}.",
+    "twoWay": "Siapa pun dapat menetapkan domain apa pun untuk alamat {{explorerName}} mereka. Karena itu, verifikasi memerlukan tautan dua arah antara domain dan alamat.",
+    "domainClaim": "Domain harus menyatakan kepemilikan atas alamat.",
+    "addressClaim": "Alamat harus menyatakan bahwa alamat tersebut dimiliki oleh domain."
+  },
+  "domainClaim": {
+    "title": "Domain menyatakan kepemilikan atas alamat",
+    "serve": "Server web Anda harus menyediakan file TOML untuk {{ledgerName}} di URL berikut:",
+    "accountBefore": "Cantumkan alamat yang ingin diverifikasi pada entri",
+    "accountAfter": ".",
+    "example": "Contoh file TOML:",
+    "instructions": "Baca dan ikuti petunjuk di"
+  },
+  "addressClaim": {
+    "title": "Alamat menyatakan kepemilikan oleh domain",
+    "setBefore": "Untuk menetapkan domain, buka",
+    "domainsLink": "Domain Terverifikasi",
+    "setAfter": "pilih Tetapkan domain, lalu tandatangani transaksi.",
+    "manageBefore": "Setelah itu, Anda dapat mengubah atau menghapus domain dari",
+    "accountLink": "Halaman Akun",
+    "manageAfter": "(Anda harus masuk)."
+  },
+  "website": {
+    "title": "Domain terverifikasi di situs kami",
+    "listBefore": "Di situs kami Anda dapat melihat",
+    "listLink": "semua domain terverifikasi di {{explorerName}}",
+    "examples": "Contoh akun dengan domain terverifikasi:",
+    "badge": "Explorer Bithomp untuk {{ledgerName}} menampilkan lencana verifikasi di samping avatar. Domain ditampilkan di bawahnya sebagai tautan hijau yang dapat diklik dengan tanda centang.",
+    "reverify": "Sistem kami memverifikasi ulang setiap domain setiap 24 jam. Tanda centang hanya ditampilkan selama alamat dan domain masih saling menautkan.",
+    "recommendation": "Sebaiknya unggah dan validasi file TOML terlebih dahulu, lalu tetapkan domain pada akun {{explorerName}} Anda. Dengan urutan ini, domain biasanya terverifikasi dalam satu menit; jika tidak, prosesnya dapat memakan waktu hingga 24 jam."
+  },
+  "related": {
+    "title": "Artikel terkait"
+  }
+}

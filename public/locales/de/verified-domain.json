@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Verifizierte Domains auf {{explorerName}}",
+    "description": "Erfahre, was verifizierte Domains auf {{explorerName}} sind und wie du eine Domain einrichtest und bestätigst."
+  },
+  "title": "Domain-Verifizierung auf {{explorerName}}",
+  "images": {
+    "cover": "Verifizierte Domains",
+    "setDomain": "Eine verifizierte Domain festlegen",
+    "accountPage": "Verifizierte Domains auf deiner Kontoseite",
+    "badge": "Verifizierte Domains auf {{explorerName}}"
+  },
+  "intro": {
+    "proof": "Die Domain-Verifizierung belegt, dass dieselbe Stelle eine bestimmte {{explorerName}}-Adresse und Domain kontrolliert.",
+    "transparency": "Eine verifizierte Domain erhöht die Transparenz und schafft Vertrauen in dich als {{explorerName}}-Dienstanbieter.",
+    "twoWay": "Jeder kann für seine {{explorerName}}-Adresse eine beliebige Domain angeben. Deshalb ist eine gegenseitige Verknüpfung zwischen Domain und Adresse erforderlich.",
+    "domainClaim": "Die Domain muss den Besitz der Adresse bestätigen.",
+    "addressClaim": "Die Adresse muss die Zugehörigkeit zur Domain bestätigen."
+  },
+  "domainClaim": {
+    "title": "Die Domain bestätigt den Besitz einer Adresse",
+    "serve": "Dein Webserver muss unter der folgenden URL eine TOML-Datei für {{ledgerName}} bereitstellen:",
+    "accountBefore": "Trage die zu verifizierende Adresse im Eintrag",
+    "accountAfter": "ein.",
+    "example": "Beispiel einer TOML-Datei:",
+    "instructions": "Lies und befolge die Anweisungen unter"
+  },
+  "addressClaim": {
+    "title": "Die Adresse bestätigt die Zugehörigkeit zu einer Domain",
+    "setBefore": "Öffne zum Festlegen einer Domain",
+    "domainsLink": "Verifizierte Domains",
+    "setAfter": "wähle Domain festlegen und signiere die Transaktion.",
+    "manageBefore": "Danach kannst du die Domain jederzeit auf deiner",
+    "accountLink": "Kontoseite",
+    "manageAfter": "ändern oder löschen (du musst angemeldet sein)."
+  },
+  "website": {
+    "title": "Verifizierte Domains auf unserer Website",
+    "listBefore": "Auf unserer Website findest du",
+    "listLink": "alle verifizierten Domains auf {{explorerName}}",
+    "examples": "Beispiele für Konten mit verifizierten Domains:",
+    "badge": "Der Bithomp-Explorer für {{ledgerName}} zeigt neben dem Avatar ein Verifizierungsabzeichen. Darunter erscheint die Domain als anklickbarer grüner Link mit Häkchen.",
+    "reverify": "Unser System überprüft jede verifizierte Domain alle 24 Stunden erneut. Das Häkchen wird nur angezeigt, solange Adresse und Domain weiterhin gegenseitig verknüpft sind.",
+    "recommendation": "Wir empfehlen, zuerst die TOML-Datei hochzuladen und zu validieren und danach die Domain im {{explorerName}}-Konto festzulegen. Dann erscheint sie meist innerhalb einer Minute als verifiziert; andernfalls kann es bis zu 24 Stunden dauern."
+  },
+  "related": {
+    "title": "Verwandte Artikel"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Verified Domains on {{explorerName}}",
+    "description": "Learn what verified domains are on {{explorerName}}, how to set a domain, and how to verify ownership."
+  },
+  "title": "{{explorerName}} Domain Verification",
+  "images": {
+    "cover": "Verified domains",
+    "setDomain": "Set a verified domain",
+    "accountPage": "Verified domains on your account page",
+    "badge": "Verified domains on {{explorerName}}"
+  },
+  "intro": {
+    "proof": "Domain verification proves that the same entity controls a particular {{explorerName}} address and domain.",
+    "transparency": "Verifying your domain improves transparency and helps establish you as a trusted {{explorerName}} service operator.",
+    "twoWay": "Anyone can set any domain for their {{explorerName}} address. Verification therefore requires a two-way link between the domain operator and the address.",
+    "domainClaim": "The domain must claim ownership of the address.",
+    "addressClaim": "The address must claim ownership by the domain."
+  },
+  "domainClaim": {
+    "title": "The domain claims ownership of an address",
+    "serve": "Your web server must provide a TOML file for {{ledgerName}} at the following URL:",
+    "accountBefore": "Specify the address you want to verify in the",
+    "accountAfter": "entry.",
+    "example": "Example TOML file:",
+    "instructions": "Read and follow the instructions in"
+  },
+  "addressClaim": {
+    "title": "The address claims ownership by a domain",
+    "setBefore": "To set a domain, open",
+    "domainsLink": "Verified Domains",
+    "setAfter": "select Set domain, and sign the transaction.",
+    "manageBefore": "After setting the domain, you can change or delete it from your",
+    "accountLink": "Account Page",
+    "manageAfter": "(you must be signed in)."
+  },
+  "website": {
+    "title": "Verified domains on our website",
+    "listBefore": "On our website you can view",
+    "listLink": "all verified domains on {{explorerName}}",
+    "examples": "Examples of accounts with verified domains:",
+    "badge": "Bithomp’s {{ledgerName}} explorer displays a verification badge next to the avatar. The domain appears below it as a clickable green link with a checkmark.",
+    "reverify": "Our system re-verifies every verified domain every 24 hours, so the checkmark is shown only for addresses and domains that still link to each other.",
+    "recommendation": "We recommend uploading and validating the TOML file before setting the domain on your {{explorerName}} account. In this order, the domain usually appears as verified within a minute; otherwise verification can take up to 24 hours."
+  },
+  "related": {
+    "title": "Related articles"
+  }
+}

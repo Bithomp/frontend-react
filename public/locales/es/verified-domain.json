@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Dominios verificados en {{explorerName}}",
+    "description": "Descubre qué son los dominios verificados en {{explorerName}}, cómo configurar un dominio y cómo verificar su propiedad."
+  },
+  "title": "Verificación de dominios en {{explorerName}}",
+  "images": {
+    "cover": "Dominios verificados",
+    "setDomain": "Configurar un dominio verificado",
+    "accountPage": "Dominios verificados en la página de tu cuenta",
+    "badge": "Dominios verificados en {{explorerName}}"
+  },
+  "intro": {
+    "proof": "La verificación demuestra que la misma entidad controla una dirección concreta de {{explorerName}} y un dominio.",
+    "transparency": "Verificar tu dominio mejora la transparencia y ayuda a generar confianza como operador de servicios de {{explorerName}}.",
+    "twoWay": "Cualquiera puede asignar cualquier dominio a su dirección de {{explorerName}}. Por eso, la verificación requiere un vínculo bidireccional entre el dominio y la dirección.",
+    "domainClaim": "El dominio debe declarar que es propietario de la dirección.",
+    "addressClaim": "La dirección debe declarar que pertenece al dominio."
+  },
+  "domainClaim": {
+    "title": "El dominio declara la propiedad de una dirección",
+    "serve": "Tu servidor web debe proporcionar un archivo TOML para {{ledgerName}} en la siguiente URL:",
+    "accountBefore": "Indica la dirección que quieres verificar en la entrada",
+    "accountAfter": ".",
+    "example": "Ejemplo de archivo TOML:",
+    "instructions": "Lee y sigue las instrucciones de"
+  },
+  "addressClaim": {
+    "title": "La dirección declara que pertenece a un dominio",
+    "setBefore": "Para configurar un dominio, abre",
+    "domainsLink": "Dominios verificados",
+    "setAfter": "selecciona Configurar dominio y firma la transacción.",
+    "manageBefore": "Después podrás cambiar o eliminar el dominio desde la",
+    "accountLink": "página de tu cuenta",
+    "manageAfter": "(debes haber iniciado sesión)."
+  },
+  "website": {
+    "title": "Dominios verificados en nuestro sitio web",
+    "listBefore": "En nuestro sitio web puedes consultar",
+    "listLink": "todos los dominios verificados en {{explorerName}}",
+    "examples": "Ejemplos de cuentas con dominios verificados:",
+    "badge": "El explorador de Bithomp para {{ledgerName}} muestra una insignia de verificación junto al avatar. Debajo aparece el dominio como un enlace verde con una marca de verificación.",
+    "reverify": "Nuestro sistema vuelve a verificar cada dominio cada 24 horas. La marca solo aparece mientras la dirección y el dominio sigan enlazándose mutuamente.",
+    "recommendation": "Recomendamos subir y validar primero el archivo TOML y después configurar el dominio en tu cuenta de {{explorerName}}. Así suele aparecer verificado en un minuto; de lo contrario, puede tardar hasta 24 horas."
+  },
+  "related": {
+    "title": "Artículos relacionados"
+  }
+}
