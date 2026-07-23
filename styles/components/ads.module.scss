@@ -10,7 +10,7 @@
     width: 308px;
     display: inline-block;
     background-color: var(--button-additional);
-    border: 1px solid var(--button-additional);
+    border: 1px solid color-mix(in srgb, var(--accent-icon) 38%, var(--button-additional));
     border-radius: 12px;
     z-index: 1;
     position: relative;
@@ -60,15 +60,6 @@
       }
     }
     &.mexc {
-      background-color: white;
-      border-color: #dfe5f2;
-      color: #111827;
-
-      &:hover {
-        background-color: #f7f9ff;
-        border-color: #0057ff;
-      }
-
       .brand-item-icon {
         left: 8px;
         width: 42px;

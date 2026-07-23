@@ -27,7 +27,11 @@ export default function Ads({ countryCode }) {
       {showMexcAd && (
         <a href="https://bithomp.com/go/banner-mexc" target="_blank" rel="noreferrer">
           <div className="brand-item mexc">
-            <img src="/images/sponsored/mexc.svg" className="brand-item-icon" alt="MEXC" />
+            <img
+              src={theme === 'dark' ? '/images/sponsored/mexc-dark.svg' : '/images/sponsored/mexc.svg'}
+              className="brand-item-icon"
+              alt="MEXC"
+            />
             <div className="brand-item-title">Earn up to 600% APR</div>
             <div className="brand-item-text">Hold your crypto and earn rewards.</div>
           </div>
