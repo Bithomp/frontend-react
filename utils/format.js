@@ -186,6 +186,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
       : currencyDetails?.type === 'lp_token' && currencyDetails?.currency
         ? currencyDetails.currency
         : niceCurrency(currency)
+  const tokenFlags = token?.flags ? showFlags(token.flags) : null
 
   const iconNode = doubleIcon ? (
     <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
@@ -270,7 +271,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
           </tr>
         </tbody>
       </table>
-      {token?.flags && <div>{showFlags(token.flags)}</div>}
+      {tokenFlags && <div className="token-flags">{tokenFlags}</div>}
     </>
   )
 }

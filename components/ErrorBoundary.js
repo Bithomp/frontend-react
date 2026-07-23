@@ -1,5 +1,4 @@
 import React from 'react'
-import Mailto from 'react-protected-mailto'
 import { reportErrorNotification } from '../utils/errorReporting'
 
 class ErrorBoundary extends React.Component {
@@ -30,9 +29,11 @@ class ErrorBoundary extends React.Component {
       return (
         <div className="center">
           <br />
-          <h1 className="contrast">Something went wrong, contact our support.</h1>
+          <h1 className="contrast">Something went wrong.</h1>
           <center>
-            <Mailto email="support@bithomp.com" headers={{ subject: 'Frontend error' }} />
+            <a href="https://discord.gg/ZahGJ29WEs" target="_blank" rel="noreferrer">
+              Contact our support on Discord
+            </a>
           </center>
           <br />
           <span className="contrast">

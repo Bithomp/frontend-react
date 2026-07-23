@@ -1323,15 +1323,20 @@ pre {
 }
 
 .flag {
-  background-color: #e6f4ea;
-  color: #008000;
+  background-color: color-mix(in srgb, var(--green) 10%, var(--background-input));
+  color: var(--green);
   padding: 0 2px;
   border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
-  border: 1px solid #008000;
+  border: 1px solid color-mix(in srgb, var(--green) 65%, transparent);
   margin-right: 5px;
   cursor: default;
+}
+
+body.dark .flag {
+  background-color: color-mix(in srgb, var(--green) 14%, var(--background-input));
+  border-color: color-mix(in srgb, var(--green) 45%, transparent);
 }
 
 .flag-list {
@@ -1342,6 +1347,10 @@ pre {
   .flag {
     margin-right: 0;
   }
+}
+
+.token-flags {
+  margin-top: 8px;
 }
 
 //common ui
