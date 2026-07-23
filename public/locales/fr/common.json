@@ -253,6 +253,8 @@
       "set-did": "Définir un DID",
       "set-domain": "Définir un domaine",
       "set-avatar": "Définir un avatar",
+      "payment-header": "Envoyer",
+      "payment": "Je comprends que les transactions sur la blockchain sont irréversibles et je confirme avoir vérifié l’adresse du destinataire, le tag de destination si nécessaire et toutes les informations du paiement avant l’envoi, car les fonds peuvent être perdus. J’accepte également les <termsLink>Conditions générales</termsLink>.",
       "nft-create-transfer-offer-header": "Transfert de NFT",
       "nft-transfer": "Je propose que ce NFT soit offert GRATUITEMENT au compte de destination, <2>le compte de destination doit accepter le transfert de NFT</2>.",
       "nft-accept-sell-offer-header": "Achat de NFT",

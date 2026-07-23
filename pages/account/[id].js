@@ -596,6 +596,10 @@ const hookNameText = (hookHash) => {
 }
 
 const mptId = (node) => node?.MPTokenIssuanceID || node?.mpt_issuance_id || null
+const mptTransferFeeText = (node) => {
+  const transferFee = Number(node?.TransferFee ?? node?.transferFee)
+  return `${Number.isFinite(transferFee) && transferFee > 0 ? transferFee / 1000 : 0}%`
+}
 
 const issuedTokenSpotPrice = (token) => Number(token?.priceNativeCurrencySpot || 0)
 const issuedTokenValueNative = (token) => Number(token?.supply || 0) * issuedTokenSpotPrice(token)
@@ -1809,9 +1813,20 @@ export default function Account({
   const hasHeldMpts = heldMpts.length > 0
   const hasIssuedMpts = issuedMpts.length > 0
   const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
-  const onlyIssuedToken = !issuedTokensLoading && !issuedTokensError && issuedTokens.length === 1 ? issuedTokens[0] : null
-  const onlyIssuedTokenPageUrl =
-    data?.address && onlyIssuedToken?.currency ? `/token/${data.address}/${onlyIssuedToken.currency}` : null
+  const issuedAssetsCount = issuedTokens.length + issuedMpts.length
+  const onlyIssuedAssetPageUrl =
+    !issuedTokensLoading &&
+    !issuedTokensError &&
+    !objectsLoading &&
+    !objectsError &&
+    !accountObjectsMarker &&
+    issuedAssetsCount === 1
+      ? issuedTokens.length === 1 && data?.address && issuedTokens[0]?.currency
+        ? `/token/${data.address}/${issuedTokens[0].currency}`
+        : mptId(issuedMpts[0])
+          ? `/token/${mptId(issuedMpts[0])}`
+          : null
+      : null
   const hasSignerAccountsSection = !!data?.address && (signerAccountsLoading || signerAccounts.length > 0)
   const nftMinterAccountsPreview = nftMinterAccounts.slice(0, nftMinterAccountsDisplayLimit)
   const hasMoreNftMinterAccountsLoaded = nftMinterAccounts.length > nftMinterAccountsPreview.length
@@ -3929,9 +3944,9 @@ export default function Account({
               )}
             </div>
 
-            {onlyIssuedTokenPageUrl && (
+            {onlyIssuedAssetPageUrl && (
               <div className="get-first-native-wrap">
-                <a href={onlyIssuedTokenPageUrl} className="get-first-native-btn">
+                <a href={onlyIssuedAssetPageUrl} className="get-first-native-btn">
                   <MdOpenInNew style={{ fontSize: 15, marginRight: 6 }} aria-hidden="true" />
                   {ta('actions.token-page')}
                 </a>
@@ -9318,6 +9333,10 @@ export default function Account({
                             <div className="detail-row">
                               <span>{ta('labels.max-supply')}:</span>
                               <span>{maxSupply === null ? ta('states.not-set') : fullNiceNumber(maxSupply)}</span>
+                            </div>
+                            <div className="detail-row">
+                              <span>{ta('labels.transfer-fee')}:</span>
+                              <b>{mptTransferFeeText(mptNode)}</b>
                             </div>
                             {!!issuanceId && (
                               <div className="card-actions" onClick={(event) => event.stopPropagation()}>

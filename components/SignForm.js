@@ -1407,15 +1407,12 @@ export default function SignForm({
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
     if (screen === 'payment') {
       return (
-        <>
-          I understand that blockchain transactions are irreversible, and I confirm that I have verified the recipient
-          address, destination tag if required, and all payment details before sending, as funds can be lost. I also
-          agree to the{' '}
-          <Link href="/terms-and-conditions" target="_blank">
-            Terms and conditions
-          </Link>
-          .
-        </>
+        <Trans
+          i18nKey="signin.confirm.payment"
+          components={{
+            termsLink: <Link href="/terms-and-conditions" target="_blank" />
+          }}
+        />
       )
     }
     if (screen === 'setTrustline') {
@@ -1548,7 +1545,7 @@ export default function SignForm({
                     {screen === 'setDid' && t('signin.confirm.set-did')}
                     {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
                     {screen === 'setTrustline' && 'Add a token'}
-                    {screen === 'payment' && 'Send'}
+                    {screen === 'payment' && t('signin.confirm.payment-header')}
                     {screen === 'ammDeposit' && t('sign.depositTitle', { ns: 'amm' })}
                     {screen === 'ammWithdraw' && t('sign.withdrawTitle', { ns: 'amm' })}
                     {screen === 'ammVoteFee' && t('sign.feeVoteTitle', { ns: 'amm' })}

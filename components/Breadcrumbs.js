@@ -193,6 +193,16 @@ const accountLabel = (pageProps) => {
   return null
 }
 
+const addressLabel = (addressData) => {
+  if (!addressData) return null
+
+  const details = addressData.addressDetails || {}
+  const service = addressData.service || details.service
+  const serviceName = typeof service === 'string' ? service : service?.name
+
+  return serviceName || addressData.username || details.username || addressData.address || null
+}
+
 const tokenLabel = (pageProps, fallback) => {
   const token = pageProps?.initialData
   if (!token) return fallback
@@ -327,6 +337,43 @@ export default function Breadcrumbs({ pageProps }) {
         isCurrentPage: true
       }
     ]
+  }
+
+  if (pathSegments[0].toLowerCase() === 'account' && pathSegments.length > 1) {
+    breadcrumbs = [
+      {
+        segment: pathSegments.slice(1).join('/'),
+        parent: 'account',
+        href: cleanPath,
+        label: humanize(pathSegments[pathSegments.length - 1], t),
+        isCurrentPage: true
+      }
+    ]
+  }
+
+  if (['tx', 'transaction'].includes(pathSegments[0].toLowerCase()) && pathSegments.length > 1) {
+    const source = pageProps?.data?.specification?.source
+    const sourceAddress = source?.address || pageProps?.data?.tx?.Account
+    const transactionBreadcrumb = {
+      segment: pathSegments[pathSegments.length - 1],
+      parent: 'tx',
+      href: cleanPath,
+      label: humanize(pathSegments[pathSegments.length - 1], t),
+      isCurrentPage: true
+    }
+
+    breadcrumbs = sourceAddress
+      ? [
+          {
+            segment: sourceAddress,
+            parent: 'tx-source',
+            href: `/account/${sourceAddress}`,
+            label: addressLabel(source) || sourceAddress,
+            isCurrentPage: false
+          },
+          transactionBreadcrumb
+        ]
+      : [transactionBreadcrumb]
   }
 
   const serviceRootPage = pathSegments.length === 1 ? SERVICE_ROOT_PAGES[pathSegments[0].toLowerCase()] : null

@@ -8,6 +8,7 @@ import { encode, isAddressValid, isNativeCurrency, isTagValid, nativeCurrency } 
 import { divide, multiply, subtract, toPlainDecimal } from '../../utils/calc'
 import { formatXDigits, niceCurrency, transferRateToPercent } from '../../utils/format'
 import { amountWithValue, PAYMENT_AMOUNT_MODE, transferFeeAmounts } from '../../utils/paymentTransferFee'
+import { acceptedTokensForAddress, mptIssuanceId } from '../../utils/acceptedTokens'
 
 const toInitialAmount = (amountValue) => {
   if (!amountValue) return ''
@@ -94,32 +95,24 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
         return
       }
 
-      // MPT acceptance is not available from the backend yet. Keep address and destination-tag checks above.
-      if (isMptPayment) {
-        setDestinationTokenError('')
-        const account = signRequest?.request?.Account
-        const isIssuerTransfer = !!issuer && (account === issuer || destinationValue === issuer)
-        setDestinationTokenTransferFee(isIssuerTransfer ? null : signRequest?.data?.transferFee || null)
-        return
-      }
-
       try {
-        let url = `v2/address/${destinationValue}/acceptedTokens?limit=100`
-        if (signRequest?.request?.Account) {
-          url += `&sender=${signRequest.request.Account}`
-        }
-
-        const response = await axios(url)
-        const acceptedTokens = response?.data?.tokens || []
-        const acceptedToken = acceptedTokens.find(
-          (token) => token?.currency === currencyCode && token?.issuer === issuer
-        )
+        const response = await acceptedTokensForAddress({
+          destination: destinationValue,
+          sender: signRequest?.request?.Account,
+          stopWhen: (token) =>
+            isMptPayment
+              ? mptIssuanceId(token) === mptokenIssuanceID
+              : token?.currency === currencyCode && token?.issuer === issuer
+        })
+        const acceptedToken = response.match
         const canAcceptToken = !!acceptedToken
 
         setDestinationTokenError(
           canAcceptToken ? '' : ts('shared.errors.destination-cannot-accept', { currency: currencyLabel })
         )
-        setDestinationTokenTransferFee(acceptedToken?.transferFee || null)
+        setDestinationTokenTransferFee(
+          acceptedToken?.transferFee ?? acceptedToken?.TransferFee ?? null
+        )
       } catch (error) {
         setDestinationTokenError('')
         setDestinationTokenTransferFee(null)

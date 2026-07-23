@@ -9,25 +9,30 @@ import { nativeCurrency, useWidth, setTabParams } from '../../utils'
 import { CurrencyWithIcon, niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
 import RadioOptions from './RadioOptions'
 import { useRouter } from 'next/router'
+import { acceptedTokensForAddress, mptIssuanceId } from '../../utils/acceptedTokens'
 
 const limit = 20
 
-// Helper function to fetch and process trustlines for a destination address
-const fetchTrustlinesForDestination = async (
+const fetchAcceptedTokensForDestination = async (
   destinationAddress,
   searchQuery = '',
   senderAddress = null,
-  canLock = false
+  canLock = false,
+  includeMPTokens = false,
+  onlyMPTokens = false,
+  excludeNative = false
 ) => {
-  let url = `v2/address/${destinationAddress}/acceptedTokens?limit=${limit}`
-  if (senderAddress) {
-    url += `&sender=${senderAddress}`
-  }
-  if (canLock) {
-    url += `&canLock=true`
-  }
-  const response = await axios(url)
-  const tokens = response.data?.tokens || []
+  const response = await acceptedTokensForAddress({
+    destination: destinationAddress,
+    sender: senderAddress,
+    canLock
+  })
+  const tokens = response.tokens.filter((token) => {
+    const isMpt = !!mptIssuanceId(token)
+    if (excludeNative && token.currency === nativeCurrency && !token.issuer) return false
+    if (onlyMPTokens) return isMpt
+    return includeMPTokens || !isMpt
+  })
 
   // Trim the search query to handle whitespace
   const trimmedQuery = searchQuery.trim()
@@ -35,18 +40,24 @@ const fetchTrustlinesForDestination = async (
   const trustlines = tokens.filter((token) => {
     // If search query is provided, filter by it
     if (trimmedQuery) {
-      const currency = token.currency
+      const currency = token.currency || ''
       const issuerDetails = token.issuerDetails || {}
-      const service = issuerDetails.service || ''
+      const service = typeof issuerDetails.service === 'string' ? issuerDetails.service : issuerDetails.service?.name || ''
       const username = issuerDetails.username || ''
       const issuer = token.issuer || ''
+      const issuanceId = mptIssuanceId(token) || ''
+      const metadataName = token.metadata?.name || token.metadata?.n || ''
+      const metadataTicker = token.metadata?.ticker || token.metadata?.t || ''
 
       const searchLower = trimmedQuery.toLowerCase()
       return (
         currency.toLowerCase().includes(searchLower) ||
         service.toLowerCase().includes(searchLower) ||
         username.toLowerCase().includes(searchLower) ||
-        issuer.toLowerCase().includes(searchLower)
+        issuer.toLowerCase().includes(searchLower) ||
+        issuanceId.toLowerCase().includes(searchLower) ||
+        metadataName.toLowerCase().includes(searchLower) ||
+        metadataTicker.toLowerCase().includes(searchLower)
       )
     }
     return true
@@ -68,8 +79,6 @@ const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
   return tokens
 }
 
-const mptIssuanceId = (token) => token?.mptokenIssuanceID || token?.MPTokenIssuanceID || token?.mpt_issuance_id
-
 const hasTokenValue = (token) => !!(token?.currency || mptIssuanceId(token))
 
 const mptDisplayName = (token) =>
@@ -79,8 +88,9 @@ const tokenListUrl = (searchQuery, urlPart, onlyMPTokens) => {
   const trimmedQuery = searchQuery.trim()
 
   if (onlyMPTokens) {
-    const currencyParam = trimmedQuery ? `&currency=${encodeURIComponent(trimmedQuery)}` : ''
-    return `v2/mptokens?limit=${limit}${currencyParam}${urlPart}`
+    return trimmedQuery
+      ? `v2/mptokens/search/${encodeURIComponent(trimmedQuery)}?limit=${limit}${urlPart}`
+      : `v2/mptokens?limit=${limit}${urlPart}`
   }
 
   if (trimmedQuery) {
@@ -202,9 +212,16 @@ export default function TokenSelector({
         try {
           let tokens = []
 
-          if (destinationAddress && !searchMPTokens) {
-            // Fetch tokens that destination can hold based on trustlines
-            tokens = await fetchTrustlinesForDestination(destinationAddress, '', senderAddress, canLock)
+          if (destinationAddress) {
+            tokens = await fetchAcceptedTokensForDestination(
+              destinationAddress,
+              '',
+              senderAddress,
+              canLock,
+              includeMPTokens,
+              onlyMPTokens,
+              excludeNative
+            )
           } else {
             // Fallback to original behavior if no destination address
             // &statistics=true - shall we get USD prices and show them?
@@ -258,14 +275,20 @@ export default function TokenSelector({
 
       setIsLoading(true)
       try {
-        if (destinationAddress && !searchMPTokens) {
-          // For destination-specific search, filter the existing trustlines
-          const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery, senderAddress, canLock)
-          const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
-          setSearchResults(tokensWithNative)
+        if (destinationAddress) {
+          const tokens = await fetchAcceptedTokensForDestination(
+            destinationAddress,
+            searchQuery,
+            senderAddress,
+            canLock,
+            includeMPTokens,
+            onlyMPTokens,
+            excludeNative
+          )
+          setSearchResults(tokens)
           // Cache the results
           setLastSearchQuery(searchQuery)
-          setCachedSearchResults(tokensWithNative)
+          setCachedSearchResults(tokens)
           setCachedSearchScope(searchScope)
         } else {
           // Fallback to original search behavior
@@ -405,7 +428,7 @@ export default function TokenSelector({
                       <IoMdClose className="token-selector-modal-close" onClick={() => setIsOpen(false)} />
                     </div>
 
-                    {includeMPTokens && (
+                    {includeMPTokens && !destinationAddress && (
                       <div className="token-selector-type-switch" role="group" aria-label={t('token-selector.search-in')}>
                         <button
                           type="button"
@@ -483,7 +506,7 @@ export default function TokenSelector({
                               </div>
                             )
                           })}
-                          {searchResults.length >= limit && (
+                          {!destinationAddress && searchResults.length >= limit && (
                             <p className="center orange">
                               {t('token-selector.more-results', { count: limit })}
                             </p>

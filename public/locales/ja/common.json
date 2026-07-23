@@ -253,6 +253,8 @@
       "set-did": "Seting a DID",
       "set-domain": "ドメインの設定",
       "set-avatar": "アバターの設定",
+      "payment-header": "送信",
+      "payment": "ブロックチェーン取引は取り消せないことを理解し、資金を失う可能性があるため、送信前に受取人のアドレス、必要な場合は宛先タグ、およびすべての支払い情報を確認したことを認めます。また、<termsLink>利用規約</termsLink>に同意します。",
       "nft-create-transfer-offer-header": "NFTの送信",
       "nft-transfer": "私はそのNFTを宛先アカウントに無料で送信しています。<2>宛先アカウントは、NFTの送信を受け入れる必要があります</2>",
       "nft-accept-sell-offer-header": "NFTの購入",

@@ -966,7 +966,11 @@ export const amountFormat = (amount, options = {}) => {
   if (showIcon) {
     tokenImage = (
       <TokenImage
-        token={{ issuer, currency: originalCurrency || currency }}
+        token={
+          type === 'MPT'
+            ? { mpt_issuance_id: originalCurrency }
+            : { issuer, currency: originalCurrency || currency }
+        }
         size={options?.iconSize}
       />
     )

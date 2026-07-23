@@ -253,6 +253,8 @@
       "set-did": "设置DID",
       "set-domain": "设置域名",
       "set-avatar": "设置头像",
+      "payment-header": "发送",
+      "payment": "我了解区块链交易不可撤销，并确认已在发送前核对收款地址、必要时的目标标签以及所有付款信息，否则资金可能会丢失。我也同意<termsLink>条款和条件</termsLink>。",
       "nft-create-transfer-offer-header": "NFT转账",
       "nft-transfer": "我将该 NFT 免费提供给目标账户，<2>目标账户需要接受 NFT 转账</2>。",
       "nft-accept-sell-offer-header": "NFT购买",

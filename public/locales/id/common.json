@@ -253,6 +253,8 @@
       "set-did": "Menyetel DID",
       "set-domain": "Mengatur Domain",
       "set-avatar": "Mengatur Avatar",
+      "payment-header": "Kirim",
+      "payment": "Saya memahami bahwa transaksi blockchain tidak dapat dibatalkan, dan saya mengonfirmasi bahwa saya telah memeriksa alamat penerima, tag tujuan jika diperlukan, serta semua detail pembayaran sebelum mengirim karena dana dapat hilang. Saya juga menyetujui <termsLink>Syarat dan ketentuan</termsLink>.",
       "nft-create-transfer-offer-header": "Kirim NFT",
       "nft-transfer": "Saya menawarkan NFT ini GRATIS kepada akun Tujuan, <2>akun tujuan perlu menerima transfer NFT</2>.",
       "nft-accept-sell-offer-header": "Pembelian NFT",

@@ -253,6 +253,8 @@
       "set-did": "Festlegen einer DID",
       "set-domain": "Eine Domain definieren",
       "set-avatar": "Ein Avatar definieren",
+      "payment-header": "Senden",
+      "payment": "Ich verstehe, dass Blockchain-Transaktionen unumkehrbar sind, und bestätige, dass ich die Empfängeradresse, falls erforderlich das Destination Tag und alle Zahlungsdetails vor dem Senden überprüft habe, da Gelder verloren gehen können. Ich stimme außerdem den <termsLink>Allgemeinen Geschäftsbedingungen</termsLink> zu.",
       "nft-create-transfer-offer-header": "NFT Transfer",
       "nft-transfer": "Ich biete diesen NFT KOSTENLOS für die Zielwallet an, <2>die Zielwallet muss den NFT Transfer akzeptieren</2>.",
       "nft-accept-sell-offer-header": "NFT Kauf",

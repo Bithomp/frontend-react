@@ -6,8 +6,7 @@ import { useState, useEffect, useRef } from 'react'
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
-import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
-import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
+import TokenSelector from '../components/UI/TokenSelector'
 import {
   fullNiceNumber,
   shortNiceNumber,
@@ -25,6 +24,7 @@ import CopyButton from '../components/UI/CopyButton'
 import { scaleAmount } from '../utils/calc'
 import TokenTabs from '../components/Tabs/TokenTabs'
 import { FaHandshake } from 'react-icons/fa'
+import { tokensClass } from '../styles/pages/tokens.module.scss'
 
 /*
   {
@@ -176,10 +176,8 @@ export default function Mpts({
     }) || ''
   )
   const [order, setOrder] = useState(orderQuery || 'holdersHigh') //'rating
-  const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
-  const [rendered, setRendered] = useState(false)
   const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
 
   const controller = new AbortController()
@@ -330,7 +328,6 @@ export default function Mpts({
 
   // Cleanup on unmount
   useEffect(() => {
-    setRendered(true)
     return () => {
       controller.abort()
     }
@@ -416,8 +413,17 @@ export default function Mpts({
     event.stopPropagation()
   }
 
+  const tokenFilter =
+    issuer && currency
+      ? data.find((token) => token?.issuer === issuer && token?.currency === currency) || { issuer, currency }
+      : {}
+  const setTokenFilter = (token) => {
+    setIssuer(token?.issuer || null)
+    setCurrency(token?.currency || null)
+  }
+
   return (
-    <>
+    <div className={tokensClass}>
       <SEO title={tm('title')} />
       <h1 className="center">{tm('title')}</h1>
 
@@ -428,33 +434,23 @@ export default function Mpts({
         hasMore={marker}
         data={data || []}
         csvHeaders={csvHeaders}
-        filtersHide={filtersHide}
-        setFiltersHide={setFiltersHide}
-        filters={{
-          issuer: issuer || '',
-          currency: currency || ''
-        }}
         order={order}
         setOrder={setOrder}
         orderList={orderList}
+        navExtra={<TokenSelector value={tokenFilter} onChange={setTokenFilter} onlyMPTokens />}
+        withoutLeftFilters
+        showCsvInNav
       >
-        <>
-          {rendered && (
-            <div className="flex flex-col sm:gap-4 md:h-[400px]">
-              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} type="mpt" />
-              <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} type="mpt" />
-            </div>
-          )}
-        </>
-        <InfiniteScrolling
-          dataLength={data.length}
-          loadMore={checkApi}
-          hasMore={marker}
-          errorMessage={errorMessage}
-          subscriptionExpired={subscriptionExpired}
-          sessionToken={sessionToken}
-          openEmailLogin={openEmailLogin}
-        >
+        <div className="page">
+          <InfiniteScrolling
+            dataLength={data.length}
+            loadMore={checkApi}
+            hasMore={marker}
+            errorMessage={errorMessage}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
+            openEmailLogin={openEmailLogin}
+          >
           <table className="table-large clickable expand hide-on-small-w800">
             <thead>
               <tr>
@@ -675,7 +671,8 @@ export default function Mpts({
               </tbody>
             </table>
           </div>
-        </InfiniteScrolling>
+          </InfiniteScrolling>
+        </div>
       </FiltersFrame>
 
       <style jsx>{`
@@ -694,6 +691,6 @@ export default function Mpts({
           }
         }
       `}</style>
-    </>
+    </div>
   )
 }
