@@ -650,7 +650,7 @@ export default function Header({
           >
             <Link href="/dapps">
               <RiPuzzleLine className="menu-item-icon" />
-              {t('menu.network.dapps')}
+              {t('menu.network.dapps', { networkName: xahauNetwork ? 'Xahau' : 'XRPL' })}
             </Link>
             {xahauNetwork && (
               <Link href="/governance">

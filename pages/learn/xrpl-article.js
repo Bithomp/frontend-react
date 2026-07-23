@@ -3,7 +3,6 @@ import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import Link from 'next/link'
 import Image from 'next/image'
-import Breadcrumbs from '../../components/Breadcrumbs'
 import { network } from '../../utils'
 
 export async function getServerSideProps(context) {
@@ -11,7 +10,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -27,7 +26,6 @@ export default function XrplArticle() {
       />
 
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
 
         <article className="prose sm:prose-lg dark:prose-invert mx-auto my-10">
           <h1>What is XRP, XRP Ledger (XRPL), and Ripple? Guide & Key Differences</h1>

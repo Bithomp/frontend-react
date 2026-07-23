@@ -1,8 +1,9 @@
 {
   "seo": {
-    "title": "Dapps"
+    "title": "{{networkName}} Dapps"
   },
-  "title": "Radar Dapps {{explorerName}}",
+  "title": "{{networkName}} Dapps",
+  "description": "Radar aktivitas dapp di {{ledgerName}} yang mencakup transaksi, volume, dompet aktif, tingkat keberhasilan, dan tren.",
   "lastUpdate": "Pembaruan terakhir",
   "periodComparison": {
     "day": "% membandingkan 24 jam terakhir dengan hari kalender penuh sebelumnya",
@@ -86,7 +87,6 @@
     "totalTransactions": "Total transaksi",
     "successful": "Berhasil",
     "fees": "Biaya",
-    "backToDapps": "Semua dApp",
     "searchDapp": "Cari berdasarkan nama atau tag sumber",
     "openSourceTag": "Buka tag sumber",
     "openDapp": "Buka",

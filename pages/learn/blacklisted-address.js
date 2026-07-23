@@ -5,7 +5,6 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
 import Image from 'next/image'
-import Breadcrumbs from '../../components/Breadcrumbs'
 import Link from 'next/link'
 
 export async function getServerSideProps(context) {
@@ -13,7 +12,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'learn-blacklisted-address']))
+      ...(await serverSideTranslations(locale, ['common', 'learn', 'learn-blacklisted-address']))
     }
   }
 }
@@ -30,7 +29,6 @@ export default function BlacklistedAddress() {
         image={{ file: 'pages/blacklisted-picture.jpg', width: 1520, height: 1084, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>{t('h1', { explorerName })}</h1>
 

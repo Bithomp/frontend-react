@@ -112,7 +112,7 @@
     },
     "network": {
       "blockchain": "블록체인",
-      "dapps": "Dapp",
+      "dapps": "{{networkName}} Dapps",
       "nodes": "노드",
       "governance": "거버넌스",
       "activations": "활성화된 계정 (차트)",

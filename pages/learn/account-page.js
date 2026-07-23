@@ -4,14 +4,13 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
-import Breadcrumbs from '../../components/Breadcrumbs'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -26,7 +25,6 @@ export default function AccountPage() {
         noindex={network !== 'mainnet'}
       />
       <div className="px-4">
-        <Breadcrumbs />
 
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl mx-auto my-10">
           <h1>How to Analyze Any XRP Ledger Account with Bithomp</h1>

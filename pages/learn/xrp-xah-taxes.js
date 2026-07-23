@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import Breadcrumbs from '../../components/Breadcrumbs'
 import SEO from '../../components/SEO'
 import { localePath } from '../../utils'
 import { network } from '../../utils'
@@ -14,7 +13,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -28,7 +27,6 @@ export default function XRPXAHTaxes() {
         noindex={network !== 'mainnet'}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert mx-auto max-w-4xl my-10">
           <h1>XRP and XAH Taxes</h1>
           <figure>

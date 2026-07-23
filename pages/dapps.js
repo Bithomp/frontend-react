@@ -4,7 +4,7 @@ import axios from 'axios'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { axiosServer, passHeaders, currencyServer, logServerSideError } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { explorerName, nativeCurrency } from '../utils'
+import { ledgerName, nativeCurrency, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -17,7 +17,7 @@ import { DAPPS_META, buildPrevMapBySourceTag, dappsApiUrl, generatedAgentNameByS
 import DappLogo from '../components/Dapps/DappLogo'
 import WalletsCell from '../components/Dapps/WalletsCell'
 import TypeMixCell from '../components/Dapps/TypeMixCell'
-import { dappsPageClass } from '../styles/pages/dapps.module.scss'
+import { dappsPageClass, description } from '../styles/pages/dapps.module.scss'
 import { HeaderTooltip } from '../components/UI/HeaderTooltip'
 import { useIsMobile } from '../utils/mobile'
 import DappCard from '../components/Dapps/DappCard'
@@ -134,8 +134,10 @@ export default function Dapps({
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
+  const networkName = xahauNetwork ? 'Xahau' : 'XRPL'
   const router = useRouter()
   const { t, i18n } = useTranslation(['common', 'dapps'])
+  const pageDescription = t('dapps:description', { ledgerName })
   const isMobile = useIsMobile(764)
 
   let selectedCurrency = selectedCurrencyServer
@@ -373,9 +375,13 @@ export default function Dapps({
 
   return (
     <div className={dappsPageClass}>
-      <SEO title={t('dapps:seo.title')} />
+      <SEO
+        title={t('dapps:seo.title', { networkName })}
+        descriptionWithNetwork={pageDescription}
+      />
 
-      <h1 className="center">{t('dapps:title', { explorerName })}</h1>
+      <h1 className="center">{t('dapps:title', { networkName })}</h1>
+      <p className={description}>{pageDescription}</p>
 
       <div className="center" style={{ marginBottom: 16, fontSize: 15, color: '#888' }}>
         {rawData?.updatedAt ? (

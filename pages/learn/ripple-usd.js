@@ -4,14 +4,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
-import Breadcrumbs from '../../components/Breadcrumbs'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -26,7 +25,6 @@ export default function RLUSD() {
         image={{ file: 'images/pages/rlusd/rocket.png', width: 'auto', height: 'auto', allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>What is Ripple USD (RLUSD)?</h1>
           <Image

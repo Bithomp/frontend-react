@@ -5,23 +5,6 @@
   margin: 18px auto 32px;
 }
 
-.backLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  width: fit-content;
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.topNav {
-  display: flex;
-  align-items: stretch;
-  flex-direction: column;
-  gap: 9px;
-}
-
 .hero,
 .toolbar,
 .chartCard,
@@ -473,12 +456,6 @@
   .toolbar {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .topNav {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 9px;
   }
 
   .hero {

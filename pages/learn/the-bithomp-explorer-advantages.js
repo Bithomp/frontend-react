@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import Breadcrumbs from '../../components/Breadcrumbs'
 import SEO from '../../components/SEO'
 import { explorerName, nativeCurrency, network, xahauNetwork } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -12,7 +11,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -26,7 +25,6 @@ export default function UnderstandingTheBithompExplorer() {
         noindex={network !== 'mainnet'}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert mx-auto max-w-4xl my-10">
           <h1>Why Bithomp {explorerName} Transaction Explorer Stands Out</h1>
           <Image

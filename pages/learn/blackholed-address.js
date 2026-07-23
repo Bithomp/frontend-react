@@ -6,14 +6,13 @@ import { network } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
-import Breadcrumbs from '../../components/Breadcrumbs'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'learn-blackholed-address']))
+      ...(await serverSideTranslations(locale, ['common', 'learn', 'learn-blackholed-address']))
     }
   }
 }
@@ -62,7 +61,6 @@ export default function BlackholedAddress() {
         }}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>{t('h1', { explorerName })}</h1>
           <div className="flex justify-center">

@@ -112,7 +112,7 @@
     },
     "network": {
       "blockchain": "区块链",
-      "dapps": "Dapps",
+      "dapps": "{{networkName}} Dapps",
       "nodes": "节点",
       "governance": "治理",
       "activations": "已激活账户（图表）",

@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Breadcrumbs from './Breadcrumbs'
 import SEO from './SEO'
 import { network } from '../utils'
 
@@ -111,7 +110,6 @@ export default function LedgerWalletsPage({ networkName = 'XRPL', pageTitle, pag
     <>
       <SEO title={pageTitle} description={pageDescription} noindex={!['mainnet', 'xahau'].includes(network)} />
       <div className="max-w-6xl mx-auto px-4">
-        <Breadcrumbs />
 
         <section className="wallet-guide-hero">
           <div className="wallet-guide-eyebrow">{networkName} hardware wallets</div>

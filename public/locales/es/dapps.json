@@ -1,8 +1,9 @@
 {
   "seo": {
-    "title": "Dapps"
+    "title": "{{networkName}} Dapps"
   },
-  "title": "Radar de Dapps de {{explorerName}}",
+  "title": "{{networkName}} Dapps",
+  "description": "Un radar de actividad para dapps en {{ledgerName}} con transacciones, volumen, monederos activos, tasas de éxito y tendencias.",
   "lastUpdate": "Última actualización",
   "periodComparison": {
     "day": "% compara las últimas 24 horas con el día calendario completo anterior",
@@ -86,7 +87,6 @@
     "totalTransactions": "Transacciones totales",
     "successful": "Exitosas",
     "fees": "Comisiones",
-    "backToDapps": "Todas las dApps",
     "searchDapp": "Buscar por nombre o etiqueta de origen",
     "openSourceTag": "Abrir etiqueta de origen",
     "openDapp": "Abrir",

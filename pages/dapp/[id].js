@@ -1,11 +1,10 @@
 import axios from 'axios'
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'next-i18next'
-import { FaArrowLeft, FaExternalLinkAlt } from 'react-icons/fa'
+import { FaExternalLinkAlt } from 'react-icons/fa'
 import { FaDiscord, FaFacebook, FaInstagram, FaLinkedin, FaTelegram, FaXTwitter } from 'react-icons/fa6'
 import { IoExpandOutline } from 'react-icons/io5'
 
@@ -134,6 +133,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       sourceTag,
+      dappName: dappIdentity(sourceTag).name,
       periodQuery: period,
       spanQuery: span,
       selectedCurrencyServer,
@@ -463,12 +463,7 @@ export default function DappDetails({
     <main className={styles.page}>
       <SEO title={t('detail.seoTitle', { name: identity.name })} description={t('detail.seoDescription', { name: identity.name, explorerName })} />
 
-      <div className={styles.topNav}>
-        <Link className={styles.backLink} href="/dapps">
-          <FaArrowLeft aria-hidden="true" /> {t('detail.backToDapps')}
-        </Link>
-        <DappSelect sourceTag={sourceTag} />
-      </div>
+      <DappSelect sourceTag={sourceTag} />
 
       <section className={styles.hero}>
         <div className={styles.identity}>

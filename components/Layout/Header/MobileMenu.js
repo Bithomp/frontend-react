@@ -545,7 +545,7 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           <Link href="/dapps" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <RiPuzzleLine style={itemIconStyle} />
-            {t('menu.network.dapps')}
+            {t('menu.network.dapps', { networkName: xahauNetwork ? 'Xahau' : 'XRPL' })}
           </Link>
           {xahauNetwork && (
             <Link href="/governance" className="mobile-menu-item" onClick={mobileMenuToggle}>

@@ -1,8 +1,9 @@
 {
   "seo": {
-    "title": "Dapps"
+    "title": "{{networkName}} Dapps"
   },
-  "title": "{{explorerName}} Dapps 레이더",
+  "title": "{{networkName}} Dapps",
+  "description": "{{ledgerName}}의 dapp 트랜잭션, 거래량, 활성 지갑, 성공률 및 추세를 보여주는 활동 레이더입니다.",
   "lastUpdate": "마지막 업데이트",
   "periodComparison": {
     "day": "%는 최근 24시간을 이전 전체 달력일과 비교합니다",
@@ -86,7 +87,6 @@
     "totalTransactions": "총 거래",
     "successful": "성공",
     "fees": "수수료",
-    "backToDapps": "모든 dApp",
     "searchDapp": "이름 또는 소스 태그로 검색",
     "openSourceTag": "소스 태그 열기",
     "openDapp": "열기",

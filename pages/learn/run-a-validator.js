@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
-import Breadcrumbs from '../../components/Breadcrumbs'
 import SEO from '../../components/SEO'
 import CopyButton from '../../components/UI/CopyButton'
 import { network, xahauNetwork } from '../../utils'
@@ -152,7 +151,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -170,7 +169,6 @@ export default function RunAValidator() {
         image={{ file: '/images/xrplexplorer/previews/1200x630/validators.png', width: 1200, height: 630 }}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert mx-auto my-10">
           <h1>How to Run an XRP Ledger Validator</h1>
           <p>

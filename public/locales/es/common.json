@@ -112,7 +112,7 @@
     },
     "network": {
       "blockchain": "Blockchain",
-      "dapps": "DApps",
+      "dapps": "{{networkName}} Dapps",
       "nodes": "Nodos",
       "governance": "Gobierno",
       "activations": "Cuentas activadas (gráfica)",

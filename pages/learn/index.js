@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import Link from 'next/link'
 
-import Breadcrumbs from '@/components/Breadcrumbs'
 import SEO from '@/components/SEO'
 import Card from '@/components/UI/Card'
 import styles from '@/styles/pages/learn.module.scss'
@@ -95,7 +94,6 @@ export default function LearnPage() {
       </Head>
 
       <div className="max-w-6xl mx-auto px-4 pb-10">
-        <Breadcrumbs />
         <h1 className="!text-3xl sm:!text-4xl font-bold text-center mb-6">{pageDetails.h1}</h1>
         <p className="text-gray-600 dark:text-gray-400 text-center max-w-4xl mx-auto mb-12">
           {pageDetails.description}

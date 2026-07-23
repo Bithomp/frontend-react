@@ -1,8 +1,9 @@
 {
   "seo": {
-    "title": "Dapps"
+    "title": "{{networkName}} Dapps"
   },
-  "title": "{{explorerName}} Dapps レーダー",
+  "title": "{{networkName}} Dapps",
+  "description": "{{ledgerName}}上のdappについて、トランザクション、取引量、アクティブウォレット、成功率、トレンドを確認できるアクティビティレーダーです。",
   "lastUpdate": "最終更新",
   "periodComparison": {
     "day": "% は直近24時間を前の完全な暦日と比較しています",
@@ -86,7 +87,6 @@
     "totalTransactions": "総取引数",
     "successful": "成功",
     "fees": "手数料",
-    "backToDapps": "すべてのdApp",
     "searchDapp": "名前またはソースタグで検索",
     "openSourceTag": "ソースタグを開く",
     "openDapp": "開く",

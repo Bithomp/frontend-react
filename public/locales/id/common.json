@@ -112,7 +112,7 @@
     },
     "network": {
       "blockchain": "Blockchain",
-      "dapps": "Aplikasi",
+      "dapps": "{{networkName}} Dapps",
       "nodes": "Node",
       "governance": "Tata kelola",
       "activations": "Akun yang Telah Aktif (grafik)",

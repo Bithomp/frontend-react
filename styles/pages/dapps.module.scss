@@ -1,3 +1,20 @@
+.description {
+  width: calc(100% - 32px);
+  margin: -4px auto 16px;
+  padding: 0 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .description {
+    white-space: normal;
+  }
+}
+
 .dappsPageClass {:global {
   .filters-nav {
     --filters-nav-control-height: 32px;

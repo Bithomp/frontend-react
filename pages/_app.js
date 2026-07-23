@@ -37,6 +37,7 @@ import { useEmailLogin } from '@/hooks/useEmailLogin'
 import LogoAnimated from '../components/Layout/LogoAnimated'
 import Header from '../components/Layout/Header'
 import SearchBlock from '../components/Layout/SearchBlock'
+import Breadcrumbs from '../components/Breadcrumbs'
 
 const WalletConnectModalSign = dynamic(
   () => import('@walletconnect/modal-sign-react').then((mod) => mod.WalletConnectModalSign),
@@ -1102,6 +1103,7 @@ const MyApp = ({ Component, pageProps }) => {
               <main className="content">
                 {nonCriticalUiReady && <TopProgressBar />}
                 {showTopAds && <TopLinks countryCode={countryCode} />}
+                <Breadcrumbs pageProps={pageProps} />
                 <Component
                   {...pageProps}
                   refreshPage={refreshPage}

@@ -5,14 +5,13 @@ import { network } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
-import Breadcrumbs from '../../components/Breadcrumbs'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -27,7 +26,6 @@ export default function IssueAToken() {
         image={{ file: '/images/pages/learn/issue-a-token/cover', width: 1520, height: 953, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>How to Issue a Token on {explorerName}: A Complete Guide</h1>
           <div className="flex justify-center">

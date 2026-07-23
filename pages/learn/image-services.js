@@ -4,7 +4,6 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import { network, explorerName } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
-import Breadcrumbs from '../../components/Breadcrumbs'
 import Mailto from 'react-protected-mailto'
 
 export async function getServerSideProps(context) {
@@ -12,7 +11,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -33,7 +32,6 @@ export default function ImageServices() {
       />
 
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1 className="text-center">Bithomp Image Services</h1>
 

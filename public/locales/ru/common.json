@@ -112,7 +112,7 @@
     },
     "network": {
       "blockchain": "Блокчейн",
-      "dapps": "Децентрализованные приложения",
+      "dapps": "{{networkName}} Dapps",
       "nodes": "Ноды",
       "governance": "Правление",
       "activations": "Активированные адреса (график)",

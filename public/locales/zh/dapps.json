@@ -1,8 +1,9 @@
 {
   "seo": {
-    "title": "Dapps"
+    "title": "{{networkName}} Dapps"
   },
-  "title": "{{explorerName}} Dapps 雷达",
+  "title": "{{networkName}} Dapps",
+  "description": "{{ledgerName}}上的dapp活动雷达，展示交易、交易量、活跃钱包、成功率和趋势。",
   "lastUpdate": "最后更新",
   "periodComparison": {
     "day": "% 将最近 24 小时与上一个完整自然日比较",
@@ -86,7 +87,6 @@
     "totalTransactions": "交易总数",
     "successful": "成功",
     "fees": "费用",
-    "backToDapps": "所有 dApp",
     "searchDapp": "按名称或来源标签搜索",
     "openSourceTag": "打开来源标签",
     "openDapp": "打开",

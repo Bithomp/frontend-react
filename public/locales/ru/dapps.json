@@ -1,8 +1,9 @@
 {
   "seo": {
-    "title": "Dapps"
+    "title": "{{networkName}} Dapps"
   },
-  "title": "Радар Dapps {{explorerName}}",
+  "title": "{{networkName}} Dapps",
+  "description": "Радар активности dapps в {{ledgerName}}: транзакции, объёмы, активные кошельки, успешность операций и динамика показателей.",
   "lastUpdate": "Последнее обновление",
   "periodComparison": {
     "day": "% сравнивает последние 24 часа с предыдущим полным календарным днем",
@@ -86,7 +87,6 @@
     "totalTransactions": "Всего транзакций",
     "successful": "Успешные",
     "fees": "Комиссии",
-    "backToDapps": "Все dApps",
     "searchDapp": "Поиск по названию или source tag",
     "openSourceTag": "Открыть source tag",
     "openDapp": "Открыть",

@@ -5,7 +5,6 @@ import { localePath, network, server, siteName } from '../../utils'
 import { explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
-import Breadcrumbs from '../../components/Breadcrumbs'
 import { i18n } from 'next-i18next'
 
 export async function getServerSideProps(context) {
@@ -13,7 +12,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'learn']))
     }
   }
 }
@@ -33,7 +32,6 @@ export default function GuideForTokenIssuers() {
         }}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1 className="text-center">Guide for {explorerName} Token Issuers</h1>
           <div className="flex justify-center">
