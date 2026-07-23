@@ -1,4 +1,7 @@
 {
+  "seo": {
+    "default-description": "Изучайте {{pageTitle}} на {{siteName}}. Смотрите актуальные данные, активность и подробную информацию из {{ledgerName}}."
+  },
   "article": {
     "published": "Опубликовано",
     "updated": "Обновлено"

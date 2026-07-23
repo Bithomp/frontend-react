@@ -313,7 +313,7 @@ export default function Dapps({
     <div className={dappsPageClass}>
       <SEO
         title={t('dapps:seo.title', { networkName })}
-        descriptionWithNetwork={pageDescription}
+        description={pageDescription}
       />
 
       <h1 className="center">{t('dapps:title', { networkName })}</h1>

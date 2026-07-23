@@ -1,4 +1,7 @@
 {
+  "seo": {
+    "default-description": "Explore {{pageTitle}} on {{siteName}}. View current {{ledgerName}} data, activity, and related details."
+  },
   "article": {
     "published": "Published",
     "updated": "Updated"

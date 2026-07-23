@@ -1,4 +1,7 @@
 {
+  "seo": {
+    "default-description": "{{siteName}}で{{pageTitle}}を確認できます。{{ledgerName}}の最新データ、アクティビティ、関連情報をご覧ください。"
+  },
   "article": {
     "published": "公開",
     "updated": "更新"

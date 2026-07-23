@@ -74,7 +74,6 @@ export default function FaucetPage({ account, showAds, sessionTokenData, country
       <SEO
         title={faucetSeoTitle}
         description={faucetSeoDescription}
-        descriptionWithNetwork={true}
       />
       <div className="content-text content-center">
         <h1 className="center">

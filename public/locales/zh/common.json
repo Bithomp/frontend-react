@@ -1,4 +1,7 @@
 {
+  "seo": {
+    "default-description": "在 {{siteName}} 上查看 {{pageTitle}}，了解 {{ledgerName}} 的最新数据、活动和相关详情。"
+  },
   "article": {
     "published": "发布",
     "updated": "更新"

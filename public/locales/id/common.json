@@ -1,4 +1,7 @@
 {
+  "seo": {
+    "default-description": "Jelajahi {{pageTitle}} di {{siteName}}. Lihat data, aktivitas, dan detail {{ledgerName}} terkini."
+  },
   "article": {
     "published": "Diterbitkan",
     "updated": "Diperbarui"

@@ -358,7 +358,6 @@ export default function Home({
         title={pageTitle}
         titleWithNetwork="true"
         description={pageDescription}
-        descriptionWithNetwork="true"
         image={{
           width: 1200,
           height: 630,

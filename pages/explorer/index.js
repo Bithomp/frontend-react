@@ -163,7 +163,6 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds, countryC
         title={pageTitle}
         titleWithNetwork="true"
         description={pageDescription}
-        descriptionWithNetwork="true"
       />
 
       <section className="home-section">

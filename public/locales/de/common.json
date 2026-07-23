@@ -1,4 +1,7 @@
 {
+  "seo": {
+    "default-description": "Entdecke {{pageTitle}} auf {{siteName}}. Sieh dir aktuelle Daten, Aktivitäten und Details zu {{ledgerName}} an."
+  },
   "article": {
     "published": "Veröffentlicht",
     "updated": "Aktualisiert"

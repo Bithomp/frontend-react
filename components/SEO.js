@@ -1,8 +1,18 @@
 import { NextSeo } from 'next-seo'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
-import { normalizeLocale, stripLeadingLocale, server, explorerName, siteName, xahauNetwork, network } from '../utils'
+import {
+  normalizeLocale,
+  stripLeadingLocale,
+  server,
+  explorerName,
+  ledgerName,
+  siteName,
+  xahauNetwork,
+  network
+} from '../utils'
 import { getArticleDates } from '../utils/articleDates'
 
 const OPEN_GRAPH_LOCALES = {
@@ -53,11 +63,13 @@ const imageDimension = (value) => {
   return Number.isFinite(number) && number > 0 ? number : undefined
 }
 
+const normalizeSeoText = (value) =>
+  typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().toLocaleLowerCase() : ''
+
 export default function SEO({
   title,
   titleWithNetwork,
   description,
-  descriptionWithNetwork,
   image,
   twitterCardType,
   page,
@@ -66,20 +78,25 @@ export default function SEO({
   canonicalPath
 }) {
   const router = useRouter()
-
-  description = description || title
+  const { t } = useTranslation('common')
 
   const hasExplorerName = (value) =>
     value && String(value).toLowerCase().includes(explorerName.toLowerCase())
   const pageTitle = title || page
+  const suppliedDescription = typeof description === 'string' ? description.trim() : description
+  description =
+    suppliedDescription && normalizeSeoText(suppliedDescription) !== normalizeSeoText(pageTitle)
+      ? suppliedDescription
+      : t('seo.default-description', {
+          pageTitle: pageTitle || ledgerName,
+          ledgerName,
+          siteName
+        })
   const seoTitle =
     titleWithNetwork || hasExplorerName(pageTitle) || !pageTitle
       ? pageTitle
       : `${pageTitle} | ${explorerName}`
-  const seoDescription =
-    descriptionWithNetwork || hasExplorerName(description) || !description
-      ? description
-      : `${description} ${explorerName}`
+  const seoDescription = description
 
   const cleanPath = (router.asPath || '/').split('#')[0].split('?')[0]
   const cleanCanonicalPath = canonicalPath ? canonicalPath.split('#')[0] : cleanPath
