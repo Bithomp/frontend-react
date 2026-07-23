@@ -8,7 +8,13 @@ import { shortName } from '.'
 
 export const LinkToken = ({ token, icon, copy, children, showIssuer = false, className }) => {
   if (!token) return ''
-  const { currencyDetails, issuer, issuerDetails, mptId, currency, metadata } = token
+  const currencyDetails = token.currencyDetails
+  const mptId =
+    token.mptId || token.mptokenIssuanceID || token.MPTokenIssuanceID || token.mpt_issuance_id
+  const currency = token.currency || (mptId ? currencyDetails?.currency : null)
+  const metadata = token.metadata || (mptId ? currencyDetails?.metadata : null)
+  const issuer = token.issuer || (mptId ? currencyDetails?.account : null)
+  const issuerDetails = token.issuerDetails || (mptId ? currencyDetails?.accountDetails : null)
 
   const tokenUrl = mptId ? '/token/' + mptId : issuer ? '/token/' + issuer + '/' + currency : '/token/' + currency
   const lpToken = currencyDetails?.type === 'lp_token'
