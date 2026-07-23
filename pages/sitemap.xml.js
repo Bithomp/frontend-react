@@ -1,176 +1,18 @@
-import { network, server, xahauNetwork } from '../utils'
+import { generateSitemapIndex, sitemapSectionNames } from '../utils/sitemap'
 
-const pages = [
-  { loc: 'dapps', changefreq: 'daily', priority: '1' },
-  { loc: 'explorer', changefreq: 'weekly', priority: '1' },
-  { loc: '', changefreq: 'always', priority: '1' },
-  { loc: 'faucet', changefreq: 'monthly', priority: '1' },
-  { loc: 'username', changefreq: 'monthly', priority: '1' },
-  { loc: 'nft-explorer', changefreq: 'daily', priority: '1' },
-  { loc: 'amendments', changefreq: 'always', priority: '1' },
-  { loc: 'validators', changefreq: 'always', priority: '1' },
-  { loc: 'amms', changefreq: 'always', priority: '1' },
-  { loc: 'whales', changefreq: 'always', priority: '1' },
-
-  { loc: 'services', changefreq: 'monthly', priority: '0.9' },
-  { loc: 'services/send', changefreq: 'monthly', priority: '0.9' },
-  { loc: 'services/nft-mint', changefreq: 'monthly', priority: '0.9' },
-  { loc: 'services/trustline', changefreq: 'monthly', priority: '1' },
-  { loc: 'services/check', changefreq: 'monthly', priority: '0.8' },
-  { loc: 'services/escrow', changefreq: 'monthly', priority: '0.9' },
-  { loc: 'services/account-settings', changefreq: 'monthly', priority: '0.9' },
-  { loc: 'services/account-control', changefreq: 'monthly', priority: '0.8' },
-  { loc: 'services/token-issuer-settings', changefreq: 'monthly', priority: '0.8' },
-  { loc: 'services/account-delete', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'services/toml-checker', changefreq: 'monthly', priority: '0.8' },
-  { loc: 'services/toml-generator', changefreq: 'monthly', priority: '0.8' },
-
-  { loc: 'whales/receivers', changefreq: 'always', priority: '0.9' },
-  { loc: 'whales/senders', changefreq: 'always', priority: '0.9' },
-  { loc: 'whales/submitters', changefreq: 'always', priority: '0.9' },
-  { loc: 'nft-sales', changefreq: 'daily', priority: '0.9' },
-  { loc: 'nft-statistics', changefreq: 'always', priority: '0.9' },
-  { loc: 'nft-volumes', changefreq: 'always', priority: '0.9' },
-  { loc: 'nft-minters', changefreq: 'always', priority: '0.9' },
-
-  { loc: 'amm', changefreq: 'daily', priority: '0.7' },
-  { loc: 'nfts', changefreq: 'daily', priority: '0.7' },
-  { loc: 'nft', changefreq: 'daily', priority: '0.7' },
-  { loc: 'nft-distribution', changefreq: 'daily', priority: '0.7' },
-  { loc: 'nft-offer', changefreq: 'daily', priority: '0.7' },
-  { loc: 'nft-offers', changefreq: 'daily', priority: '0.7' },
-  { loc: 'ledger', changefreq: 'always', priority: '0.7' },
-  { loc: 'donate', changefreq: 'daily', priority: '0.7' },
-  { loc: 'alerts', changefreq: 'daily', priority: '0.7' },
-  { loc: 'last-ledger-information', changefreq: 'always', priority: '0.7' },
-  { loc: 'whales', changefreq: 'always', priority: '0.7' },
-  { loc: 'nodes', changefreq: 'always', priority: '0.7' },
-  { loc: 'activations', changefreq: 'always', priority: '0.7' },
-  { loc: 'domains', changefreq: 'always', priority: '0.7' },
-  { loc: 'allocation', changefreq: 'always', priority: '0.8' },
-  { loc: 'distribution', changefreq: 'always', priority: '0.7' },
-
-  { loc: 'genesis', changefreq: 'weekly', priority: '0.6' },
-  { loc: 'activation-tree', changefreq: 'weekly', priority: '0.6' },
-  { loc: 'build-unl', changefreq: 'yearly', priority: '0.6' },
-  { loc: 'advertise', changefreq: 'yearly', priority: '0.6' },
-  { loc: 'eaas', changefreq: 'yearly', priority: '0.6' },
-
-  { loc: 'submit-account-information', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/watchlist', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/referrals', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/pro', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/pro/history', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/api', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/api/requests', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/api/statistics', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/api/charts', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/notifications', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/notifications/slack-guide', changefreq: 'yearly', priority: '0.5' },
-  { loc: 'admin/notifications/x-guide', changefreq: 'yearly', priority: '0.5' },
-
-  { loc: 'object', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'about-us', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'customer-support', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'developer', changefreq: 'yearly', priority: '0.4' },
-
-  { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' }
-]
-
-//network specific pages
-if (xahauNetwork) {
-  //only on xahau
-  pages.push(
-    { loc: 'governance', changefreq: 'hourly', priority: '0.9' },
-    { loc: 'unl-report', changefreq: 'always', priority: '0.5' },
-    { loc: 'services/reward-auto-claim', changefreq: 'monthly', priority: '0.8' },
-    { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.9' },
-    { loc: 'xahau-wallets', changefreq: 'monthly', priority: '0.8' }
-  )
-} else {
-  // only on xrpl
-  pages.push(
-    { loc: 'services/issue-mpt', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'services/amm/deposit', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'services/amm/create', changefreq: 'monthly', priority: '0.8' },
-    { loc: 'services/amm/withdraw', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'services/amm/vote', changefreq: 'monthly', priority: '0.7' },
-    { loc: 'xrp-wallets', changefreq: 'monthly', priority: '0.8' }
-  )
+function SitemapIndex() {
+  // getServerSideProps returns the XML response.
 }
 
-//works only on the mainnet
-if (network === 'mainnet') {
-  if (!xahauNetwork) {
-    pages.push(
-      { loc: 'learn/xrpl-article', changefreq: 'monthly', priority: '0.6' },
-      { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.7' },
-      { loc: 'learn/amm', changefreq: 'monthly', priority: '0.8' },
-      { loc: 'learn/run-a-validator', changefreq: 'monthly', priority: '0.8' },
-      { loc: 'learn/account-page', changefreq: 'monthly', priority: '0.5' }
-    )
-  }
-  pages.push(
-    { loc: 'the-chain-of-blocks-summit', changefreq: 'monthly', priority: '1' },
-    { loc: 'press', changefreq: 'yearly', priority: '0.4' },
-    { loc: 'learn', changefreq: 'weekly', priority: '0.7' },
-    { loc: 'learn/understanding-the-bithomp-explorer', changefreq: 'monthly', priority: '0.8' },
-    { loc: 'learn/verified-domain', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/blackholed-address', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/blacklisted-address', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.8' },
-    { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'learn/xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'learn/issue-a-token', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'learn/guide-for-token-issuers', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'learn/create-escrow', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/image-services', changefreq: 'monthly', priority: '0.6' },
-    { loc: 'learn/trustlines', changefreq: 'monthly', priority: '0.6' },
-    { loc: 'learn/nft-explorer', changefreq: 'monthly', priority: '0.7' },
-    { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/send-payments', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/types-of-assets', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/checks', changefreq: 'monthly', priority: '0.5' }
-  )
-}
-
-function generateSiteMap(posts) {
-  const pageHref = (loc) => {
-    const suffix = loc ? '/' + loc : ''
-    return `${server}${suffix}`
-  }
-
-  return `<?xml version="1.0" encoding="UTF-8"?>
-   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-     ${posts
-       .map(({ loc, changefreq, priority }) => {
-         return `
-          <url>
-            <loc>${pageHref(loc)}</loc>
-            <changefreq>${changefreq}</changefreq>
-            <priority>${priority}</priority>
-          </url>
-        `
-       })
-       .join('')}
-   </urlset>
- `
-}
-
-function SiteMap() {
-  // getServerSideProps will do everything we need here
-}
-
-export async function getServerSideProps({ res }) {
-  const sitemap = generateSiteMap(pages)
+export function getServerSideProps({ res }) {
   res.setHeader('Content-Type', 'text/xml')
-  res.write(sitemap)
+  res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800')
+  res.write(generateSitemapIndex(sitemapSectionNames))
   res.end()
+
   return {
     props: {}
   }
 }
 
-export default SiteMap
+export default SitemapIndex

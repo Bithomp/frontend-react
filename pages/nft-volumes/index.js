@@ -1234,7 +1234,7 @@ export default function NftVolumes({
                                       </td>
                                     )}
                                     {listTab === 'issuers' && (
-                                      <td>{addressUsernameOrServiceLink(volume, 'issuer', { short: true })}</td>
+                                      <td>{addressUsernameOrServiceLink(volume, 'issuer')}</td>
                                     )}
                                     {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                                       <td className="right">

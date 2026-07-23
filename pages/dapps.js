@@ -14,6 +14,12 @@ import SEO from '../components/SEO'
 import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow, niceNumber } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
 import { DAPPS_META, buildPrevMapBySourceTag, dappsApiUrl, generatedAgentNameBySourceTag } from '../utils/dapps'
+import {
+  DAPP_ORDER_VALUES,
+  DEFAULT_DAPP_ORDER,
+  filterDappsForListing,
+  sortDapps
+} from '../utils/dappListing'
 import DappLogo from '../components/Dapps/DappLogo'
 import WalletsCell from '../components/Dapps/WalletsCell'
 import TypeMixCell from '../components/Dapps/TypeMixCell'
@@ -24,44 +30,6 @@ import DappCard from '../components/Dapps/DappCard'
 import DappsDataNote from '../components/Dapps/DappsDataNote'
 import WalletSelect from '../components/Dapps/WalletSelect'
 import Delta from '../components/UI/Delta'
-
-const calcSuccessRate = (total, success) => {
-  const t = Number(total)
-  const s = Number(success)
-  if (!Number.isFinite(t) || t <= 0 || !Number.isFinite(s) || s < 0) return 0
-  return (s / t) * 100
-}
-
-const DAPP_ORDER_VALUES = ['performingHigh', 'totalSentHigh', 'interactingHigh', 'txHigh', 'successRateHigh']
-const DEFAULT_DAPP_ORDER = 'performingHigh'
-
-const sortDapps = (list, order) => {
-  const arr = Array.isArray(list) ? [...list] : []
-
-  switch (order) {
-    case 'performingHigh':
-      return arr.sort(
-        (a, b) =>
-          Number(b?.uniqueSourceAddresses ?? 0) - Number(a?.uniqueSourceAddresses ?? 0) ||
-          Number(b?.uniqueInteractedAddresses ?? 0) - Number(a?.uniqueInteractedAddresses ?? 0) ||
-          Number(b?.totalTransactions ?? 0) - Number(a?.totalTransactions ?? 0)
-      )
-    case 'totalSentHigh':
-      return arr.sort((a, b) => Number(b?.totalSent ?? 0) - Number(a?.totalSent ?? 0))
-    case 'interactingHigh':
-      return arr.sort((a, b) => Number(b?.uniqueInteractedAddresses ?? 0) - Number(a?.uniqueInteractedAddresses ?? 0))
-    case 'txHigh':
-      return arr.sort((a, b) => Number(b?.totalTransactions ?? 0) - Number(a?.totalTransactions ?? 0))
-    case 'successRateHigh':
-      return arr.sort(
-        (a, b) =>
-          calcSuccessRate(b?.totalTransactions, b?.successTransactions) -
-          calcSuccessRate(a?.totalTransactions, a?.successTransactions)
-      )
-    default:
-      return arr
-  }
-}
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -219,44 +187,12 @@ export default function Dapps({
 
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
-    const metaObj = DAPPS_META[0] || {}
-    // Exclude these sourceTags
-    const excludeSourceTags = [0, 222, 777, 4004, 555002, 604802567, 446588767]
-    const filtered = list.filter((d) => {
-      const sourceTag = Number(d?.sourceTag)
-      if (sourceTag < 100 || excludeSourceTags.includes(sourceTag)) return false
-      const hasName =
-        dappBySourceTag(d?.sourceTag) ||
-        metaObj[String(d?.sourceTag)]?.name ||
-        generatedAgentNameBySourceTag(d?.sourceTag)
-      if (hasName) return true
-      return Number(d?.uniqueSourceAddresses) > 3
+    const filtered = filterDappsForListing(list, {
+      includeAppsWithoutExternalSigning: !excludeNoWallets,
+      wallet: walletFilter
     })
-    const hasAnyExternalSigning = (entry) => {
-      const hasWallets = Array.isArray(entry?.wallets) && entry.wallets.length > 0
-      const hasWC = Array.isArray(entry?.walletconnect) && entry.walletconnect.length > 0
-      return hasWallets || hasWC
-    }
 
-    const filteredWallets = excludeNoWallets
-      ? filtered.filter((d) => {
-          const entry = metaObj && metaObj[String(d?.sourceTag)]
-          return hasAnyExternalSigning(entry)
-        })
-      : filtered
-
-    const byWallet = walletFilter
-      ? filteredWallets.filter((d) => {
-          const entry = metaObj && metaObj[String(d?.sourceTag)]
-          const all = [
-            ...(Array.isArray(entry?.wallets) ? entry.wallets : []),
-            ...(Array.isArray(entry?.walletconnect) ? entry.walletconnect : [])
-          ].map((w) => String(w).toLowerCase())
-          return all.includes(String(walletFilter).toLowerCase())
-        })
-      : filteredWallets
-
-    return sortDapps(byWallet, order)
+    return sortDapps(filtered, order)
   }, [rawData, order, excludeNoWallets, walletFilter])
 
   const orderList = useMemo(
