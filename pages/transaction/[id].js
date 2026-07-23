@@ -38,7 +38,6 @@ import { fetchHistoricalRate } from '../../utils/common'
 import { buildTransactionSeo } from '../../utils/transaction/seo'
 import { server } from '../../utils'
 import { collectMptIssuanceIds } from '../../utils/transaction/mpt'
-import { isRecentTimestamp } from '../../utils/seo'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -102,7 +101,6 @@ export async function getServerSideProps(context) {
     props: {
       id: id || null,
       data: data || null,
-      isIndexableTransaction: isRecentTimestamp(data?.outcome?.ledgerTimestamp, 7),
       initialErrorMessage: initialErrorMessage || null,
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
@@ -114,7 +112,6 @@ export async function getServerSideProps(context) {
 export default function Transaction({
   id,
   data,
-  isIndexableTransaction,
   selectedCurrency,
   selectedCurrencyServer,
   initialErrorMessage
@@ -255,7 +252,7 @@ export default function Transaction({
         twitterImage={transactionTwitterImage}
         twitterCardType="summary_large_image"
         canonicalPath={`/tx/${data.id}`}
-        noindex={!isIndexableTransaction}
+        noindex
       />
       <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={effectiveSelectedCurrency} />
     </>

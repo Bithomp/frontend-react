@@ -40,7 +40,7 @@ export async function getServerSideProps(context) {
     props: {
       ledgerIndexQuery: ledgerIndex || '',
       pageMeta,
-      isIndexableLedger: isRecentTimestamp(pageMeta?.closeTime || pageMeta?.close_time, 7),
+      isIndexableLedger: isRecentTimestamp(pageMeta?.closeTime || pageMeta?.close_time, 1),
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'ledger']))
     }
