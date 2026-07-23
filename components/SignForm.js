@@ -535,7 +535,7 @@ export default function SignForm({
 
       // Only set source tag if it's not already set from the send page
       if (!tx.SourceTag) {
-        tx.SourceTag = 42697468
+        tx.SourceTag = 2606210014 //42697468
       }
     }
 
@@ -1454,7 +1454,16 @@ export default function SignForm({
     crossmark: 'Crossmark',
     xyra: 'Xyra'
   }
-  const walletSignScreens = ['xaman', 'gemwallet', 'ledgerwallet', 'dcent', 'metamask', 'walletconnect', 'crossmark', 'xyra']
+  const walletSignScreens = [
+    'xaman',
+    'gemwallet',
+    'ledgerwallet',
+    'dcent',
+    'metamask',
+    'walletconnect',
+    'crossmark',
+    'xyra'
+  ]
   const isWalletSignScreen = walletSignScreens.includes(screen)
 
   const supportedByCrossmark = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
@@ -1488,8 +1497,8 @@ export default function SignForm({
     ? needsAmmDepositConsent
       ? 'Please confirm the checkboxes first.'
       : noCheckboxScreens.includes(screen)
-      ? 'Please complete the form first.'
-      : 'Please confirm the checkbox first.'
+        ? 'Please complete the form first.'
+        : 'Please confirm the checkbox first.'
     : formError
       ? 'Please complete all required fields correctly.'
       : ''
@@ -1520,12 +1529,7 @@ export default function SignForm({
               screen === 'ledgerwallet-addresses' || screen === 'dcent-addresses' ? ' address-selection-screen' : ''
             }`}
           >
-            <button
-              type="button"
-              className="sign-in-close"
-              onClick={signInCancelAndClose}
-              aria-label="Close"
-            />
+            <button type="button" className="sign-in-close" onClick={signInCancelAndClose} aria-label="Close" />
             {askInfoScreens.includes(screen) ? (
               <>
                 <div className="sign-in-modal-header">
@@ -1679,9 +1683,7 @@ export default function SignForm({
                           value={rewardRate}
                         />
                       </span>
-                      <div>
-                        {!status && rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />}
-                      </div>
+                      <div>{!status && rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />}</div>
                     </div>
                   )}
 
@@ -1818,7 +1820,11 @@ export default function SignForm({
                     </div>
                   )}
 
-                  {status && <div className="signin-status"><b className="orange">{status}</b></div>}
+                  {status && (
+                    <div className="signin-status">
+                      <b className="orange">{status}</b>
+                    </div>
+                  )}
                 </div>
 
                 <div className="sign-in-actions">
@@ -1867,104 +1873,104 @@ export default function SignForm({
                         </button>
                       </div>
                     ) : (
-                    <div className="signin-apps">
-                      {showMobileWallet('xaman') && (
-                        <WalletTile
-                          name="Xaman (Mobile app)"
-                          alt="xaman"
-                          src="/images/wallets/xaman-large.svg"
-                          width={110}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'xaman' })}
-                          disabled={false}
-                        />
-                      )}
+                      <div className="signin-apps">
+                        {showMobileWallet('xaman') && (
+                          <WalletTile
+                            name="Xaman (Mobile app)"
+                            alt="xaman"
+                            src="/images/wallets/xaman-large.svg"
+                            width={110}
+                            height={48}
+                            onClick={() => txSend({ wallet: 'xaman' })}
+                            disabled={false}
+                          />
+                        )}
 
-                      {!isMobile && (
-                        <WalletTile
-                          name="Ledger (Hardware wallet)"
-                          alt="Ledger Wallet"
-                          src="/images/wallets/ledgerwallet-large.svg"
-                          width={110}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'ledgerwallet' })}
-                          disabled={false}
-                        />
-                      )}
+                        {!isMobile && (
+                          <WalletTile
+                            name="Ledger (Hardware wallet)"
+                            alt="Ledger Wallet"
+                            src="/images/wallets/ledgerwallet-large.svg"
+                            width={110}
+                            height={48}
+                            onClick={() => txSend({ wallet: 'ledgerwallet' })}
+                            disabled={false}
+                          />
+                        )}
 
-                      {/* available only for mainnet and testnet */}
-                      {(networkId === 0 || networkId === 1) && showMobileWallet('walletconnect') && (
-                        <WalletTile
-                          name={isMobile ? 'WalletConnect' : 'Joey, Bifrost, Girin'}
-                          alt="WalletConnect"
-                          onClick={() => txSend({ wallet: 'walletconnect' })}
-                          disabled={false}
-                          extraIcons={wcWalletIcons}
-                          iconsOnly={true}
-                          isMobile={isMobile}
-                        />
-                      )}
+                        {/* available only for mainnet and testnet */}
+                        {(networkId === 0 || networkId === 1) && showMobileWallet('walletconnect') && (
+                          <WalletTile
+                            name={isMobile ? 'WalletConnect' : 'Joey, Bifrost, Girin'}
+                            alt="WalletConnect"
+                            onClick={() => txSend({ wallet: 'walletconnect' })}
+                            disabled={false}
+                            extraIcons={wcWalletIcons}
+                            iconsOnly={true}
+                            isMobile={isMobile}
+                          />
+                        )}
 
-                      {!isMobile && (
-                        <WalletTile
-                          name="D'Cent (Hardware wallet)"
-                          alt="D'Cent"
-                          src="/images/wallets/square-logos/dcent.png"
-                          width={48}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'dcent' })}
-                          disabled={!supportedByDcent}
-                        />
-                      )}
+                        {!isMobile && (
+                          <WalletTile
+                            name="D'Cent (Hardware wallet)"
+                            alt="D'Cent"
+                            src="/images/wallets/square-logos/dcent.png"
+                            width={48}
+                            height={48}
+                            onClick={() => txSend({ wallet: 'dcent' })}
+                            disabled={!supportedByDcent}
+                          />
+                        )}
 
-                      {!isMobile && (
-                        <WalletTile
-                          name="MetaMask (Browser wallet)"
-                          alt="Metamask"
-                          src="/images/wallets/metamask.svg"
-                          width={44}
-                          height={44}
-                          onClick={() => txSend({ wallet: 'metamask' })}
-                          disabled={!supportedByMetamask}
-                        />
-                      )}
+                        {!isMobile && (
+                          <WalletTile
+                            name="MetaMask (Browser wallet)"
+                            alt="Metamask"
+                            src="/images/wallets/metamask.svg"
+                            width={44}
+                            height={44}
+                            onClick={() => txSend({ wallet: 'metamask' })}
+                            disabled={!supportedByMetamask}
+                          />
+                        )}
 
-                      {!isMobile && (
-                        <WalletTile
-                          name="Crossmark (Browser wallet)"
-                          alt="Crossmark"
-                          src="/images/wallets/crossmark-large.png"
-                          width={110}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'crossmark' })}
-                          disabled={!supportedByCrossmark}
-                        />
-                      )}
+                        {!isMobile && (
+                          <WalletTile
+                            name="Crossmark (Browser wallet)"
+                            alt="Crossmark"
+                            src="/images/wallets/crossmark-large.png"
+                            width={110}
+                            height={48}
+                            onClick={() => txSend({ wallet: 'crossmark' })}
+                            disabled={!supportedByCrossmark}
+                          />
+                        )}
 
-                      {!isMobile && (
-                        <WalletTile
-                          name="Gem (Browser wallet)"
-                          alt="GemWallet"
-                          src="/images/wallets/gemwallet.svg"
-                          width={44}
-                          height={44}
-                          onClick={() => txSend({ wallet: 'gemwallet' })}
-                          disabled={false}
-                        />
-                      )}
+                        {!isMobile && (
+                          <WalletTile
+                            name="Gem (Browser wallet)"
+                            alt="GemWallet"
+                            src="/images/wallets/gemwallet.svg"
+                            width={44}
+                            height={44}
+                            onClick={() => txSend({ wallet: 'gemwallet' })}
+                            disabled={false}
+                          />
+                        )}
 
-                      {showMobileWallet('xyra') && (
-                        <WalletTile
-                          name="Xyra (Popup wallet)"
-                          alt="Xyra"
-                          src="/images/wallets/xyra.svg"
-                          width={48}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'xyra' })}
-                          disabled={false}
-                        />
-                      )}
-                    </div>
+                        {showMobileWallet('xyra') && (
+                          <WalletTile
+                            name="Xyra (Popup wallet)"
+                            alt="Xyra"
+                            src="/images/wallets/xyra.svg"
+                            width={48}
+                            height={48}
+                            onClick={() => txSend({ wallet: 'xyra' })}
+                            disabled={false}
+                          />
+                        )}
+                      </div>
                     )}
                   </>
                 ) : screen === 'ledgerwallet-addresses' ? (

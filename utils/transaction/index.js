@@ -398,6 +398,7 @@ export const dappBySourceTag = (sourceTag) => {
     2310819306: 'Indicator Success Rate',
     2323232323: 'Chimoney & Unispend', //23232323236 is invalid tag
     2606170005: 'XRP Toolbox',
+    2606210014: 'Bithomp DeFi',
     2606220006: 'xBoost'
   }
   //max sourceTag is 4294967295, more than that are invalid.

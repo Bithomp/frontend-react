@@ -89,6 +89,18 @@ export const DAPPS_META = [
       facebook: 'xrpexplorer',
       logo: 'bithomp.png'
     },
+    2606210014: {
+      name: 'Bithomp DeFi',
+      url: 'bithomp.com',
+      wallets: ['xaman', 'ledger', 'dcent', 'xyra', 'crossmark', 'gemwallet', 'metamask'],
+      walletconnect: ['joey', 'bifrost', 'girin'],
+      x: 'bithomp',
+      discord: 'invite/ZahGJ29WEs',
+      instagram: 'bithomp',
+      linkedin: 'company/bithomp',
+      facebook: 'xrpexplorer',
+      logo: 'bithomp.png'
+    },
     89898989: {
       name: 'Axelar Bridge',
       url: 'axelar.foundation',
