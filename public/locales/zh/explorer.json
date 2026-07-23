@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "{{explorerSearchName}} 搜索：扫描 {{ledgerName}} 账户和交易",
-      "description": "使用 {{explorerSearchAttribution}} 扫描 {{ledgerName}} 地址、交易哈希、用户名、CTID、NFT、代币、AMM 和账本对象。",
-      "heading": "{{explorerSearchName}} 搜索"
+      "title": "搜索 {{nativeCurrency}} 账户和交易 | {{siteName}}",
+      "description": "使用 {{siteName}} 查询 {{ledgerName}} 账户地址、用户名、交易哈希和 CTID。还可以搜索代币、NFT、AMM 和账本对象。",
+      "heading": "搜索 {{nativeCurrency}} 账户和交易"
     },
     "testnet": {
       "title": "搜索 XRPL 测试网 — 账户、交易、代币、NFT",

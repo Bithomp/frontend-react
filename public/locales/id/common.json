@@ -54,6 +54,7 @@
       "new": "BARU"
     },
     "explorer": "Explorer {{explorerName}}",
+    "search-accounts-transactions": "Cari akun & transaksi {{nativeCurrency}}",
     "token-menu": {
       "multi-purpose": "Token Multi-Purpose",
       "top-holders": "Holder teratas",

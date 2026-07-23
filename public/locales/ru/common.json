@@ -54,6 +54,7 @@
       "new": "НОВОЕ"
     },
     "explorer": "{{explorerName}} Эксплорер",
+    "search-accounts-transactions": "Поиск аккаунтов и транзакций {{nativeCurrency}}",
     "token-menu": {
       "multi-purpose": "Многоцелевые токены",
       "top-holders": "Крупнейшие держатели",

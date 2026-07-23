@@ -2,7 +2,7 @@ import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 
-import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarSrc, retinaImageSize } from '../../../utils'
+import { devNet, xahauNetwork, nativeCurrency, avatarSrc, retinaImageSize } from '../../../utils'
 import { shortHash } from '../../../utils/format'
 
 import WalletProviderIcon, { walletProviderName } from '../../UI/WalletProviderIcon'
@@ -317,7 +317,7 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           <Link href="/explorer" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCompassOutline style={itemIconStyle} />
-            {t('menu.explorer', { explorerName })}
+            {t('menu.search-accounts-transactions', { nativeCurrency })}
           </Link>
           {xahauNetwork && (
             <Link href="/services/reward-auto-claim" className="mobile-menu-item" onClick={mobileMenuToggle}>

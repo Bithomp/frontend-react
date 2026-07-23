@@ -54,6 +54,7 @@
       "new": "新規"
     },
     "explorer": "{{explorerName}}エクスプローラ",
+    "search-accounts-transactions": "{{nativeCurrency}}アカウントとトランザクションを検索",
     "token-menu": {
       "multi-purpose": "多目的トークン",
       "top-holders": "上位保有者",

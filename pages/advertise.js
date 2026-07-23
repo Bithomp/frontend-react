@@ -53,7 +53,7 @@ export default function Advertise() {
         />
         <p>
           The banner is also displayed on the <Link href="/faucet">Faucet</Link> and{' '}
-          <Link href="/explorer">Explorer</Link> pages.
+          <Link href="/explorer">account and transaction search</Link> pages.
         </p>
         <br />
         <br />

@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "{{explorerSearchName}} 검색 — 계정, 트랜잭션, 토큰, NFT",
-      "description": "{{explorerSearchAttribution}}로 {{ledgerName}}의 주소, 트랜잭션 해시, 사용자명, CTID, NFT, 토큰, AMM, Ledger 객체를 검색하세요.",
-      "heading": "{{explorerSearchName}} 검색"
+      "title": "{{nativeCurrency}} 계정 및 트랜잭션 검색 | {{siteName}}",
+      "description": "{{siteName}}에서 {{ledgerName}} 계정 주소, 사용자명, 트랜잭션 해시, CTID를 조회하세요. 토큰, NFT, AMM, Ledger 객체도 검색할 수 있습니다.",
+      "heading": "{{nativeCurrency}} 계정 및 트랜잭션 검색"
     },
     "testnet": {
       "title": "XRPL Testnet 검색 — 계정, 거래, 토큰, NFT",

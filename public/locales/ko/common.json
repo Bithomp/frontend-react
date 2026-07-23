@@ -54,6 +54,7 @@
       "new": "신규"
     },
     "explorer": "{{explorerName}} 탐색기",
+    "search-accounts-transactions": "{{nativeCurrency}} 계정 및 트랜잭션 검색",
     "token-menu": {
       "multi-purpose": "다목적 토큰",
       "top-holders": "상위 보유자",

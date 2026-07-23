@@ -16,7 +16,7 @@ const LABELS = {
   amendments: 'Amendments',
   dapp: 'Dapp',
   dapps: 'Dapps',
-  explorer: 'Explorer',
+  explorer: 'Account and transaction search',
   governance: 'Governance',
   learn: 'Learn',
   ledger: 'Ledger',
@@ -41,6 +41,7 @@ const TRANSLATION_KEYS = {
   amms: 'menu.amm.pools',
   amendments: 'menu.network.amendments',
   dapps: 'menu.network.dapps',
+  explorer: 'menu.search-accounts-transactions',
   governance: 'menu.network.governance',
   ledger: 'menu.ledger',
   nft: 'explorer.header.nft',
@@ -100,6 +101,7 @@ const ROUTE_TRANSLATIONS = {
   '/domains': 'menu.network.verified-domains',
   '/donate': 'menu.donate',
   '/eaas': 'menu.business.eaas',
+  '/explorer': 'menu.search-accounts-transactions',
   '/faucet': 'menu.developers.faucet',
   '/genesis': 'menu.network.genesis',
   '/governance': 'menu.network.governance',
@@ -164,6 +166,7 @@ const humanize = (segment, t) => {
   if (translationKey) {
     return t(translationKey, {
       defaultValue: LABELS[decoded.toLowerCase()],
+      nativeCurrency,
       networkName: explorerNetworkName
     })
   }

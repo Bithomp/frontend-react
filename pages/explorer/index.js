@@ -2,7 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 
-import { explorerName, nativeCurrency, network, ledgerName, siteName, xahauNetwork } from '../../utils'
+import { explorerName, nativeCurrency, network, ledgerName, siteName } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import SEO from '../../components/SEO'
@@ -127,37 +127,22 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds }) {
   const isPrimaryExplorer = network === 'mainnet' || network === 'xahau'
   const isEnglishTestnetExplorer = network === 'testnet' && isEnglishLikeLocale
   const isEnglishDevnetExplorer = network === 'devnet' && isEnglishLikeLocale
-  const explorerSearchName = xahauNetwork ? siteName : `${nativeCurrency} Explorer`
-  const explorerSearchAttribution = xahauNetwork ? explorerSearchName : `${explorerSearchName} by ${siteName}`
-
   const pageTitle = isPrimaryExplorer
-    ? xahauNetwork
-      ? `${explorerSearchName} Search — Accounts, Transactions, Tokens, NFTs`
-      : tt('seo.mainnet.title', { ledgerName, nativeCurrency, explorerSearchName, explorerSearchAttribution, siteName })
+    ? tt('seo.mainnet.title', { ledgerName, nativeCurrency, siteName })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.title')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.title')
         : t('explorer.header.main', { explorerName })
   const pageDescription = isPrimaryExplorer
-    ? xahauNetwork
-      ? `Use ${explorerSearchAttribution} to search ${nativeCurrency} addresses, transaction hashes, usernames, CTIDs, NFTs, tokens, and ledger objects on ${ledgerName}.`
-      : tt('seo.mainnet.description', {
-          ledgerName,
-          nativeCurrency,
-          explorerSearchName,
-          explorerSearchAttribution,
-          siteName
-        })
+    ? tt('seo.mainnet.description', { ledgerName, nativeCurrency, siteName })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.description')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.description')
         : tt('intro.subtitle', { nativeCurrency })
   const pageHeading = isPrimaryExplorer
-    ? xahauNetwork
-      ? `${explorerSearchName} Search`
-      : tt('seo.mainnet.heading', { ledgerName, nativeCurrency, explorerSearchName, explorerSearchAttribution, siteName })
+    ? tt('seo.mainnet.heading', { ledgerName, nativeCurrency, siteName })
     : isEnglishTestnetExplorer
       ? tt('seo.testnet.heading')
       : isEnglishDevnetExplorer

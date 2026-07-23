@@ -54,6 +54,7 @@
       "new": "新"
     },
     "explorer": "{{explorerName}} 浏览器",
+    "search-accounts-transactions": "搜索 {{nativeCurrency}} 账户和交易",
     "token-menu": {
       "multi-purpose": "多用途代币",
       "top-holders": "顶级持有者",

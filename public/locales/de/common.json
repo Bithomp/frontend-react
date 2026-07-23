@@ -54,6 +54,7 @@
       "new": "NEU"
     },
     "explorer": "{{explorerName}}-Explorer",
+    "search-accounts-transactions": "{{nativeCurrency}}-Konten und Transaktionen suchen",
     "token-menu": {
       "multi-purpose": "Multi-Purpose-Token",
       "top-holders": "Top-Inhaber",

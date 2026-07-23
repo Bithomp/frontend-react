@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "Pencarian {{explorerSearchName}}: akun, transaksi, token, dan NFT {{ledgerName}}",
-      "description": "Gunakan {{explorerSearchAttribution}} untuk mencari alamat, hash transaksi, username, CTID, NFT, token, AMM, dan objek ledger di {{ledgerName}}.",
-      "heading": "Pencarian {{explorerSearchName}}"
+      "title": "Cari Akun & Transaksi {{nativeCurrency}} | {{siteName}}",
+      "description": "Cari alamat akun, username, hash transaksi, dan CTID {{ledgerName}} dengan {{siteName}}. Anda juga dapat mencari token, NFT, AMM, dan objek ledger.",
+      "heading": "Cari Akun & Transaksi {{nativeCurrency}}"
     },
     "testnet": {
       "title": "Cari di XRPL Testnet — akun, transaksi, token, NFT",

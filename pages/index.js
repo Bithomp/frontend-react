@@ -369,7 +369,10 @@ export default function Home({
           <p className="center home-direct-lookup">
             <span>Need direct lookup?</span>{' '}
             <span className="home-direct-lookup-action">
-              Open the <Link href="/explorer" prefetch={false}>XRP Ledger search page</Link>.
+              <Link href="/explorer" prefetch={false}>
+                Search XRP accounts and transactions
+              </Link>
+              .
             </span>
           </p>
         )}

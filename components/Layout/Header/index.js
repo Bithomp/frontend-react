@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from 'react'
 
 import {
   devNet,
-  explorerName,
   xahauNetwork,
   ledgerName,
   nativeCurrency,
@@ -425,7 +424,7 @@ export default function Header({
           >
             <Link href="/explorer">
               <IoCompassOutline className="menu-item-icon" />
-              {t('menu.explorer', { explorerName })}
+              {t('menu.search-accounts-transactions', { nativeCurrency })}
             </Link>
             {xahauNetwork && (
               <Link href="/services/reward-auto-claim">

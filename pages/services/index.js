@@ -82,7 +82,7 @@ export default function ServicesPage() {
       items: [
         {
           href: '/explorer',
-          title: t('services-page.items.explorer', { ns: 'services', explorerName }),
+          title: t('menu.search-accounts-transactions', { ns: 'common', nativeCurrency }),
           icon: RiCompassDiscoverLine
         },
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: LuFileCheck2 },

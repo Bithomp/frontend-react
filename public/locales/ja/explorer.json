@@ -1,9 +1,9 @@
 {
   "seo": {
     "mainnet": {
-      "title": "{{explorerSearchName}} 検索: {{ledgerName}} のアカウント、トランザクション、トークン、NFT",
-      "description": "{{explorerSearchAttribution}} で、{{ledgerName}} 上のアドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、AMM、Ledger オブジェクトを検索できます。",
-      "heading": "{{explorerSearchName}} 検索"
+      "title": "{{nativeCurrency}}アカウントとトランザクションを検索 | {{siteName}}",
+      "description": "{{siteName}}で{{ledgerName}}のアカウントアドレス、ユーザー名、トランザクションハッシュ、CTIDを検索できます。トークン、NFT、AMM、Ledgerオブジェクトも検索できます。",
+      "heading": "{{nativeCurrency}}アカウントとトランザクションを検索"
     },
     "testnet": {
       "title": "XRPL Testnet を検索 — アカウント、トランザクション、トークン、NFT",
