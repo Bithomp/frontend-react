@@ -1,6 +1,6 @@
 .value {
   display: inline-block;
-  max-width: var(--full-hash-width);
+  max-width: min(100%, var(--full-hash-width));
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: bottom;

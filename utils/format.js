@@ -63,7 +63,7 @@ export const serviceUsernameOrAddressText = (data, name = 'address', options) =>
   }
 }
 
-export const ServiceUsernameOrAddress = ({ data, name = 'address', length = 6 }) => {
+export const ServiceUsernameOrAddress = ({ data, name = 'address', length = 17 }) => {
   if (!data || !data[name]) return null
   const details = data[name + 'Details'] || {}
   const label = details.service?.name || details.service || details.username
@@ -171,9 +171,18 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
     asset2ImageUrl = tokenImageSrc(currencyDetails.asset2, lpAssetIconSize)
   }
 
+  const mptTokenText = options?.preferMptName
+    ? token.metadata?.name ||
+      token.metadata?.n ||
+      token.metadata?.ticker ||
+      token.metadata?.t ||
+      token.metadata?.c ||
+      token.metadata?.currency ||
+      currency
+    : token.metadata?.t || token.metadata?.c || token.metadata?.currency || currency
   const tokenText =
     mptId && token.metadata
-      ? token.metadata?.t || token.metadata?.c || token.metadata?.currency || currency || 'N/A'
+      ? mptTokenText || 'N/A'
       : currencyDetails?.type === 'lp_token' && currencyDetails?.currency
         ? currencyDetails.currency
         : niceCurrency(currency)

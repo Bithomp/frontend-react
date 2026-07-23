@@ -10,8 +10,7 @@ import TokenSelector from '../components/UI/TokenSelector'
 import {
   fullNiceNumber,
   shortNiceNumber,
-  dateFormat,
-  timeFormat,
+  timeOrDate,
   timeFromNow,
   CurrencyWithIcon
 } from '../utils/format'
@@ -141,7 +140,7 @@ const getOrderList = (t) => [
 // Helper component to render token with icon
 const TokenCell = ({ token, fallback }) => {
   if (!token) return fallback
-  return <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
+  return <CurrencyWithIcon token={token} options={{ disableTokenLink: true, preferMptName: true }} />
 }
 
 const transferFeeText = (token, noFeeText) => {
@@ -538,11 +537,7 @@ export default function Mpts({
                             </td>
                             <td className="right">{token.sequence}</td>
                             <td className="right">{transferFeeText(token, tm('values.noFee'))}</td>
-                            <td className="right">
-                              {dateFormat(token.createdAt)}
-                              <br />
-                              {timeFormat(token.createdAt)}
-                            </td>
+                            <td className="right">{timeOrDate(token.createdAt)}</td>
                             <td className="right" suppressHydrationWarning>
                               {shortNiceNumber(scaleAmount(token.outstandingAmount, token.scale))}
                             </td>
@@ -623,10 +618,7 @@ export default function Mpts({
                                 <br />
                                 <b>{tm('headers.transferFee')}:</b> {transferFeeText(token, tm('values.noFee'))}
                                 <br />
-                                <b>{tm('headers.created')}:</b>{' '}
-                                <span>
-                                  {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
-                                </span>
+                                <b>{tm('headers.created')}:</b> {timeOrDate(token.createdAt)}
                                 <br />
                                 <b>{tm('headers.outstanding')}:</b>{' '}
                                 <span suppressHydrationWarning>
