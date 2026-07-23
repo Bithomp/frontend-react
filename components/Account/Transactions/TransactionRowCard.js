@@ -3,7 +3,6 @@ import {
   dateFormat,
   fullDateAndTime,
   tokenToFiat,
-  shortHash,
   timeFormat,
   timeFromNow
 } from '../../../utils/format'
@@ -16,7 +15,7 @@ import {
   addressBalanceChanges,
   memoNode
 } from '../../../utils/transaction'
-import { isTagValid, useWidth } from '../../../utils'
+import { isTagValid } from '../../../utils'
 import { i18n, useTranslation } from 'next-i18next'
 import CopyButton from '../../UI/CopyButton'
 import { useIsMobile } from '../../../utils/mobile'
@@ -67,7 +66,6 @@ export const TransactionRowCard = ({
   const { t: txT } = useTranslation('transaction')
   const { t: txErrorT } = useTranslation('transaction-errors')
   const { t: accountT } = useTranslation('account')
-  const width = useWidth()
   const { specification, tx, outcome, fiatRates } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const isConvertion = isConvertionTx(specification)
@@ -158,20 +156,24 @@ export const TransactionRowCard = ({
             {specification?.source?.address === address ? (
               <>
                 {accountT('detail.labels.to')}:{' '}
-                <Link className="bold" href={'/account/' + specification?.destination?.address}>
-                  {specification?.destination?.address}
-                </Link>{' '}
-                <CopyButton text={specification?.destination?.address} />{' '}
+                <span className="copyable-value">
+                  <Link className="bold copyable-value-text" href={'/account/' + specification?.destination?.address}>
+                    {specification?.destination?.address}
+                  </Link>{' '}
+                  <CopyButton text={specification?.destination?.address} />
+                </span>{' '}
               </>
             ) : (
               <>
                 {specification?.destination?.address === address
                   ? accountT('detail.labels.from')
                   : txT('labels.Submitter')}:{' '}
-                <Link className="bold" href={'/account/' + specification?.source?.address}>
-                  {specification?.source?.address}
-                </Link>{' '}
-                <CopyButton text={specification?.source?.address} />
+                <span className="copyable-value">
+                  <Link className="bold copyable-value-text" href={'/account/' + specification?.source?.address}>
+                    {specification?.source?.address}
+                  </Link>{' '}
+                  <CopyButton text={specification?.source?.address} />
+                </span>
               </>
             )}
             <br />
@@ -212,9 +214,11 @@ export const TransactionRowCard = ({
         )}
         {memoNode(specification?.memos, 'div', { memoLabel: txT('labels.Memo') })}
         {txT('labels.Tx hash')}:{' '}
-        <LinkTx tx={tx.hash} copy={true}>
-          {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
-        </LinkTx>
+        <span className="copyable-value tx-hash-value">
+          <LinkTx tx={tx.hash} copy={true} className="copyable-value-text">
+            {tx.hash}
+          </LinkTx>
+        </span>
       </td>
       {!isMobile && (
         <td className="right" style={{ width: 100, verticalAlign: 'top' }}>

@@ -76,10 +76,10 @@ export const LinkToken = ({ token, icon, copy, children, showIssuer = false, cla
   )
 }
 
-export const LinkTx = ({ tx, icon, short, children, copy }) =>
+export const LinkTx = ({ tx, icon, short, children, copy, className }) =>
   tx ? (
     <>
-      <Link href={`/tx/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, short || 10))}</Link>
+      <Link href={`/tx/${tx}`} className={className}>{children || (icon ? <LinkIcon /> : shortHash(tx, short || 10))}</Link>
       {copy ? (
         <>
           {' '}

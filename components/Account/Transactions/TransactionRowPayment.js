@@ -57,7 +57,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
             data={
               tx?.Account === address && specification?.destination ? specification?.destination : specification?.source
             }
-            options={{ short: 5 }}
+            options={{ labelClassName: 'responsive-address' }}
           />
         </>
       )

@@ -131,7 +131,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                   ? nftDestination
                   : specification.source
             }
-            options={{ short: 5 }}
+            options={{ labelClassName: 'responsive-address' }}
           />
         </>
       )
@@ -150,7 +150,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           <>
             {tx?.Amount === '0' ? 'Free NFT offer' : 'NFT Sell offer'} from
             {isMobile ? ' ' : <br />}
-            <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
+            <AddressWithIconInline data={specification.source} options={{ labelClassName: 'responsive-address' }} />
           </>
         )
       }

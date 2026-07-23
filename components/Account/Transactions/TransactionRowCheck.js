@@ -22,7 +22,7 @@ export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) 
         <>
           {t('detail.transactions.check-received-from')}
           <br />
-          <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
+          <AddressWithIconInline data={specification.source} options={{ labelClassName: 'responsive-address' }} />
         </>
       ) : (
         checkTypeLabels[tx?.TransactionType] || tx?.TransactionType

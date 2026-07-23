@@ -625,6 +625,37 @@ table {
   white-space: nowrap !important;
 }
 
+.copyable-value {
+  display: inline-flex;
+  align-items: baseline;
+  max-width: 100%;
+  white-space: nowrap;
+
+  .copyable-value-text {
+    min-width: 0;
+  }
+}
+
+.responsive-address {
+  min-width: 0;
+}
+
+@media only screen and (max-width: 1210px) {
+  .copyable-value-text,
+  .responsive-address {
+    display: inline-block;
+    max-width: 18ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+
+  .tx-hash-value .copyable-value-text {
+    max-width: 28ch;
+  }
+}
+
 .uppercase {
   text-transform: uppercase;
 }
