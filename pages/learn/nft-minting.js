@@ -1,5 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
@@ -27,6 +28,7 @@ export default function NFTMinting() {
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert mx-auto max-w-4xl my-10">
           <h1>How to mint NFTs on {explorerName}?</h1>
+          <ArticleMeta />
 
           <p>
             Minting is the process of creating a new NFT and recording it on a blockchain. When you mint an NFT on{' '}

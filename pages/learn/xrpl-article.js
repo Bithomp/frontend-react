@@ -1,5 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -29,6 +30,7 @@ export default function XrplArticle() {
 
         <article className="prose sm:prose-lg dark:prose-invert mx-auto my-10">
           <h1>What is XRP, XRP Ledger (XRPL), and Ripple? Guide & Key Differences</h1>
+          <ArticleMeta />
           <p>
             Understand how XRP, the XRP Ledger (XRPL), and Ripple work together in the global blockchain payments
             ecosystem.

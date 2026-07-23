@@ -2,7 +2,8 @@ import { NextSeo } from 'next-seo'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import { normalizeLocale, stripLeadingLocale, server, explorerName, xahauNetwork, network } from '../utils'
+import { normalizeLocale, stripLeadingLocale, server, explorerName, siteName, xahauNetwork, network } from '../utils'
+import { getArticleDates } from '../utils/articleDates'
 
 const absolutePath = (path) => {
   let cleanPath = stripLeadingLocale(path || '/')
@@ -112,6 +113,39 @@ export default function SEO({
   const isPrimaryIndexableNetwork = ['mainnet', 'xahau'].includes(network)
   const isNonMainnetLandingPage = ['', '/', '/faucet', '/explorer'].includes(normalizedPath || '/')
   const shouldNoindex = noindex || (!isPrimaryIndexableNetwork && !isNonMainnetLandingPage)
+  const isLearnArticle = normalizedPath.startsWith('/learn/')
+  const articleDateDetails = getArticleDates(normalizedPath)
+  const articleStructuredData = isLearnArticle
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        '@id': `${canonical}#article`,
+        headline: pageTitle,
+        description,
+        url: canonical,
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonical
+        },
+        image: url ? [url] : undefined,
+        author: {
+          '@id': `${server}/#organization`
+        },
+        publisher: {
+          '@type': 'Organization',
+          '@id': `${server}/#organization`,
+          name: siteName,
+          url: server,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${server}/images/${xahauNetwork ? 'xahauexplorer' : 'xrplexplorer'}/192.png`
+          }
+        },
+        inLanguage: currentLocale,
+        isAccessibleForFree: true,
+        ...(articleDateDetails || {})
+      }
+    : null
 
   return (
     <>
@@ -126,6 +160,17 @@ export default function SEO({
       {twitterImageUrl && (
         <Head>
           <meta name="twitter:image" content={twitterImageUrl} />
+        </Head>
+      )}
+      {articleStructuredData && (
+        <Head>
+          <script
+            key="article-jsonld"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(articleStructuredData).replace(/</g, '\\u003c')
+            }}
+          />
         </Head>
       )}
     </>

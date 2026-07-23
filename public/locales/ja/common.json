@@ -1,4 +1,8 @@
 {
+  "article": {
+    "published": "公開",
+    "updated": "更新"
+  },
   "common": {
     "viewAll": "すべて表示",
     "noData": "利用可能なデータがありません",

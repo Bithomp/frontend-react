@@ -409,6 +409,7 @@ export default function Breadcrumbs({ pageProps }) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
+    '@id': `${server}${cleanPath}#breadcrumb`,
     itemListElement: schemaItems.map((item, index) => ({
       '@type': 'ListItem',
       position: index + 1,

@@ -1,5 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import Link from 'next/link'
@@ -28,6 +29,7 @@ export default function AccountPage() {
 
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl mx-auto my-10">
           <h1>How to Analyze Any XRP Ledger Account with Bithomp</h1>
+          <ArticleMeta />
 
           <p>
             The XRP Ledger is highly transparent. Every payment, trust line, NFT, offer, escrow, check, AMM position,

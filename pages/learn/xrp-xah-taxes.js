@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { localePath } from '../../utils'
 import { network } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -29,6 +30,7 @@ export default function XRPXAHTaxes() {
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert mx-auto max-w-4xl my-10">
           <h1>XRP and XAH Taxes</h1>
+          <ArticleMeta />
           <figure>
             <Image
               src={'/images/pages/learn/xrp-xah-taxes/cover.jpg'}

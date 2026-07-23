@@ -1,5 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork, webSiteName } from '../../utils'
@@ -37,6 +38,7 @@ export default function SendPayments() {
             Send {nativeCurrency} and {explorerName} Tokens via {xahauNetwork ? 'Xahau Explorer' : 'Bithomp'}: Key
             Benefits
           </h1>
+          <ArticleMeta />
 
           <div className="flex justify-center">
             <figure>

@@ -1,5 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import { explorerName, ledgerName, xahauNetwork } from '../../utils'
@@ -28,6 +29,7 @@ export default function VerifiedDomains() {
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>{explorerName} Domain Verification</h1>
+          <ArticleMeta />
           <Image
             src="/images/pages/learn/verified-domain/cover.png"
             alt="Verified Domains"

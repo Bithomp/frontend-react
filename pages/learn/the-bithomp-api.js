@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { network } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AboutApiTabs from '../../components/Tabs/AboutApiTabs'
@@ -31,6 +32,7 @@ export default function TheBithompAPI() {
 
         <article className="prose sm:prose-lg dark:prose-invert mx-auto max-w-4xl my-10">
           <h1>How to Use the Bithomp API – And Why It’s Unique Among XRPL and Xahau APIs</h1>
+          <ArticleMeta />
           <Image
             src="/images/pages/learn/the-bithomp-api/cover.jpg"
             alt="The Bithomp API"

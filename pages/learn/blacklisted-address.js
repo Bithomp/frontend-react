@@ -1,6 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
@@ -31,6 +32,7 @@ export default function BlacklistedAddress() {
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>{t('h1', { explorerName })}</h1>
+          <ArticleMeta />
 
           <Image
             src="/images/pages/blacklisted-address-cover.png"

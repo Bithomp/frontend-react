@@ -1,5 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -27,6 +28,7 @@ export default function AMM() {
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert mx-auto my-10">
           <h1 className="text-center">What Is an Automated Market Maker (AMM)?</h1>
+          <ArticleMeta />
           <figure>
             <Image
               src={'/images/pages/learn/amm/cover.jpg'}

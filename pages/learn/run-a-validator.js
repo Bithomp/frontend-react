@@ -3,6 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import CopyButton from '../../components/UI/CopyButton'
 import { network, xahauNetwork } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -171,6 +172,7 @@ export default function RunAValidator() {
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert mx-auto my-10">
           <h1>How to Run an XRP Ledger Validator</h1>
+          <ArticleMeta />
           <p>
             This is a quick practical guide for running <code>xrpld</code> in validator mode on the XRP Ledger. Keep the
             validator dedicated, private, updated, and monitored.

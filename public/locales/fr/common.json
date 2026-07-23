@@ -1,4 +1,8 @@
 {
+  "article": {
+    "published": "Publié",
+    "updated": "Mis à jour"
+  },
   "common": {
     "viewAll": "Voir tous",
     "noData": "Aucune donnée disponible",

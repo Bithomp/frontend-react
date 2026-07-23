@@ -1,5 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
+import ArticleMeta from '../../components/ArticleMeta'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
@@ -30,6 +31,7 @@ export default function Paystrings() {
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1 className="text-center"> PayStrings on {explorerName}.</h1>
+          <ArticleMeta />
           <div className="flex justify-center">
             <figure>
               <Image

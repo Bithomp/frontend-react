@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
 import { server, explorerName, nativeCurrency, xahauNetwork, ledgerName, network, siteName } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -290,60 +289,68 @@ export default function Home({
   }, [isSsrMobile, selectedCurrency])
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
+  const organizationId = `${server}/#organization`
+  const websiteId = `${server}/#website`
+  const socialProfiles = [
+    'https://www.instagram.com/bithomp/',
+    'https://x.com/bithomp',
+    'https://www.youtube.com/@bithomp',
+    'https://www.linkedin.com/company/bithomp/'
+  ]
 
   return (
     <>
-      <LogoJsonLd logo={imagePath + 'longDark.svg'} url={server} />
-      <SocialProfileJsonLd
-        type="Organization"
-        name={homeExplorerName}
-        url={server}
-        sameAs={
-          xahauNetwork
-            ? [
-                'http://instagram.com/bithomp/',
-                'https://x.com/bithomp',
-                'https://www.youtube.com/@bithomp',
-                'https://www.linkedin.com/company/bithomp/'
-              ]
-            : [
-                'https://www.instagram.com/bithomp/',
-                'https://x.com/bithomp',
-                'https://www.youtube.com/@bithomp',
-                'https://www.linkedin.com/company/bithomp/'
-              ]
-        }
-      />
       <Head>
         <script
+          key="home-jsonld"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'WebSite',
-              name: homeExplorerName + ' and Tools',
-              alternateName: xahauNetwork
-                ? [siteName, 'Xahau Ledger Explorer', 'Xahau Transaction Tracker', 'Scan Xahau Ledger']
-                : [
-                    nativeCurrency + ' Explorer',
-                    'XRPL Explorer',
-                    'XRP Scan',
-                    'Scan XRP Ledger',
-                    'XRP Ledger Tracker',
-                    'XRP Transaction Tracker',
-                    explorerName + ' Explorer',
-                    'Scan ' + nativeCurrency + ' Ledger'
-                  ],
-              url: server,
-              potentialAction: {
-                '@type': 'SearchAction',
-                target: {
-                  '@type': 'EntryPoint',
-                  urlTemplate: server + '/explorer/{search_term_string}'
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  '@id': organizationId,
+                  name: siteName,
+                  url: server,
+                  logo: {
+                    '@type': 'ImageObject',
+                    url: imagePath + 'longDark.svg'
+                  },
+                  sameAs: socialProfiles
                 },
-                'query-input': 'required name=search_term_string'
-              }
-            })
+                {
+                  '@type': 'WebSite',
+                  '@id': websiteId,
+                  name: homeExplorerName + ' and Tools',
+                  alternateName: xahauNetwork
+                    ? [siteName, 'Xahau Ledger Explorer', 'Xahau Transaction Tracker', 'Scan Xahau Ledger']
+                    : [
+                        nativeCurrency + ' Explorer',
+                        'XRPL Explorer',
+                        'XRP Scan',
+                        'Scan XRP Ledger',
+                        'XRP Ledger Tracker',
+                        'XRP Transaction Tracker',
+                        explorerName + ' Explorer',
+                        'Scan ' + nativeCurrency + ' Ledger'
+                      ],
+                  url: server,
+                  description: pageDescription,
+                  publisher: {
+                    '@id': organizationId
+                  },
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: {
+                      '@type': 'EntryPoint',
+                      urlTemplate: server + '/explorer/{search_term_string}'
+                    },
+                    'query-input': 'required name=search_term_string'
+                  }
+                }
+              ]
+            }).replace(/</g, '\\u003c')
           }}
         />
       </Head>

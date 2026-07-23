@@ -1,4 +1,8 @@
 {
+  "article": {
+    "published": "发布",
+    "updated": "更新"
+  },
   "common": {
     "viewAll": "查看全部",
     "noData": "无可用数据",

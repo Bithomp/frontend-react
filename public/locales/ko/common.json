@@ -1,4 +1,8 @@
 {
+  "article": {
+    "published": "게시",
+    "updated": "업데이트"
+  },
   "common": {
     "viewAll": "모두 보기",
     "noData": "이용 가능한 데이터가 없습니다",

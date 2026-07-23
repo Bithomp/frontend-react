@@ -1,4 +1,8 @@
 {
+  "article": {
+    "published": "Diterbitkan",
+    "updated": "Diperbarui"
+  },
   "common": {
     "viewAll": "Lihat Semua",
     "noData": "Tidak ada data tersedia",
