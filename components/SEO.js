@@ -5,6 +5,18 @@ import { useRouter } from 'next/router'
 import { normalizeLocale, stripLeadingLocale, server, explorerName, siteName, xahauNetwork, network } from '../utils'
 import { getArticleDates } from '../utils/articleDates'
 
+const OPEN_GRAPH_LOCALES = {
+  de: 'de_DE',
+  en: 'en_US',
+  es: 'es_ES',
+  fr: 'fr_FR',
+  id: 'id_ID',
+  ja: 'ja_JP',
+  ko: 'ko_KR',
+  ru: 'ru_RU',
+  zh: 'zh_CN'
+}
+
 const absolutePath = (path) => {
   let cleanPath = stripLeadingLocale(path || '/')
 
@@ -17,13 +29,36 @@ const absolutePath = (path) => {
   return cleanPath === '/' ? '' : cleanPath
 }
 
+const imageUrl = (file, allNetworks, networkImagePath) => {
+  if (!file) return null
+  if (/^(?:https?:|data:)/i.test(file)) return file
+  if (file.startsWith('/public/images/')) return server + file.replace('/public', '')
+  if (file.startsWith('/')) return server + file
+  if (file.startsWith('images/')) return `${server}/${file}`
+  return (allNetworks ? `${server}/images/` : networkImagePath) + file
+}
+
+const imageMimeType = (url) => {
+  const path = url?.split('?')[0].toLowerCase() || ''
+  if (path.endsWith('.jpg') || path.endsWith('.jpeg')) return 'image/jpeg'
+  if (path.endsWith('.webp')) return 'image/webp'
+  if (path.endsWith('.gif')) return 'image/gif'
+  if (path.endsWith('.svg')) return 'image/svg+xml'
+  if (path.endsWith('.png') || path.includes('/nextapi/')) return 'image/png'
+  return undefined
+}
+
+const imageDimension = (value) => {
+  const number = Number(value)
+  return Number.isFinite(number) && number > 0 ? number : undefined
+}
+
 export default function SEO({
   title,
   titleWithNetwork,
   description,
   descriptionWithNetwork,
   image,
-  twitterImage,
   twitterCardType,
   page,
   websiteName,
@@ -51,59 +86,58 @@ export default function SEO({
   const normalizedPath = stripLeadingLocale(cleanPath)
   const currentLocale = normalizeLocale(router.locale)
   const canonical = server + absolutePath(cleanCanonicalPath)
+  const isLearnArticle = normalizedPath.startsWith('/learn/')
+  const articleDateDetails = getArticleDates(normalizedPath)
 
   let openGraph = {
-    type: 'website',
+    type: isLearnArticle ? 'article' : 'website',
     url: canonical,
     title: seoTitle,
     description: seoDescription,
-    locale: currentLocale,
-    site_name: websiteName || explorerName + ' ' + (page ? page : 'Explorer')
+    locale: OPEN_GRAPH_LOCALES[currentLocale] || currentLocale,
+    siteName: websiteName || siteName
   }
 
-  const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
+  if (isLearnArticle && articleDateDetails) {
+    openGraph.article = {
+      publishedTime: articleDateDetails.datePublished,
+      modifiedTime: articleDateDetails.dateModified,
+      authors: [server],
+      section: 'Learn'
+    }
+  }
 
-  let noImagePage = false
+  const networkImagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
-  if (!image) {
+  if (!image?.file) {
     image = {
       width: 1200,
       height: 630,
-      file: imagePath + 'previews/1200x630/index.png'
+      file: networkImagePath + 'previews/1200x630/index.png'
     }
-    noImagePage = true
   }
 
-  const { file, width, height, allNetworks } = image
-  let url = file
-  if (file?.indexOf('http') !== 0) {
-    url = (allNetworks ? server + '/images/' : imagePath) + file
-  }
+  const url = imageUrl(image.file, image.allNetworks, networkImagePath)
+  const width = imageDimension(image.width)
+  const height = imageDimension(image.height)
+  const alt = image.alt || `${seoTitle} preview`
+  const type = image.type || imageMimeType(url)
 
   openGraph.images = [
     {
       url,
+      secureUrl: url?.startsWith('https://') ? url : undefined,
       width,
       height,
-      alt: `Image for ${title}`
+      alt,
+      type
     }
   ]
 
   let twitter = {
     handle: '@bithomp',
     site: '@xrplexplorer',
-    cardType: twitterCardType || 'summary'
-  }
-
-  let twitterImageUrl = null
-
-  if (twitterImage) {
-    twitterImageUrl = twitterImage.file
-    if (twitterImage.file?.indexOf('http') !== 0) {
-      twitterImageUrl = (allNetworks ? server + '/images/' : imagePath) + twitterImage.file
-    }
-  } else if (noImagePage) {
-    twitterImageUrl = imagePath + 'previews/630x630/index.png'
+    cardType: twitterCardType || 'summary_large_image'
   }
 
   if (xahauNetwork) {
@@ -113,8 +147,6 @@ export default function SEO({
   const isPrimaryIndexableNetwork = ['mainnet', 'xahau'].includes(network)
   const isNonMainnetLandingPage = ['', '/', '/faucet', '/explorer'].includes(normalizedPath || '/')
   const shouldNoindex = noindex || (!isPrimaryIndexableNetwork && !isNonMainnetLandingPage)
-  const isLearnArticle = normalizedPath.startsWith('/learn/')
-  const articleDateDetails = getArticleDates(normalizedPath)
   const articleStructuredData = isLearnArticle
     ? {
         '@context': 'https://schema.org',
@@ -156,12 +188,15 @@ export default function SEO({
         twitter={twitter}
         canonical={canonical}
         noindex={shouldNoindex}
+        robotsProps={{ maxImagePreview: 'large' }}
       />
-      {twitterImageUrl && (
-        <Head>
-          <meta name="twitter:image" content={twitterImageUrl} />
-        </Head>
-      )}
+      <Head>
+        <meta key="twitter-url" name="twitter:url" content={canonical} />
+        <meta key="twitter-title" name="twitter:title" content={seoTitle} />
+        <meta key="twitter-description" name="twitter:description" content={seoDescription} />
+        <meta key="twitter-image" name="twitter:image" content={url} />
+        <meta key="twitter-image-alt" name="twitter:image:alt" content={alt} />
+      </Head>
       {articleStructuredData && (
         <Head>
           <script

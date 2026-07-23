@@ -434,7 +434,6 @@ export default function TrustSet({
           height: 630,
           file: 'previews/1200x630/services/trustline.png'
         }}
-        twitterImage={{ file: 'previews/630x630/services/trustline.png' }}
       />
       <div className="content-text content-center">
         <ServicesTabs category="payments" tab="trustline" />

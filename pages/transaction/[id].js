@@ -177,8 +177,6 @@ export default function Transaction({
       '/nextapi/tx-preview?' +
       new URLSearchParams(transactionPreviewParams).toString()
   }
-  const transactionTwitterImage = transactionPreviewImage
-
   let TransactionComponent = null
   const txType = tx?.TransactionType
   // https://xrpl.org/docs/references/protocol/transactions/types
@@ -249,7 +247,6 @@ export default function Transaction({
         title={transactionSeo.title}
         description={transactionSeo.description}
         image={transactionPreviewImage}
-        twitterImage={transactionTwitterImage}
         twitterCardType="summary_large_image"
         canonicalPath={`/tx/${data.id}`}
         noindex

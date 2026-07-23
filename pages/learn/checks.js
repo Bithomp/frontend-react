@@ -25,7 +25,7 @@ export default function Checks() {
         description="Learn how to issue checks and when they are used. Issue and redeem checks on Bithomp."
         noindex={network !== 'mainnet'}
         image={{
-          file: '/xrplexplorer/learn/checks/cover.jpg',
+          file: imagePath + 'cover.jpg',
           width: 1520,
           height: 855,
           allNetworks: true

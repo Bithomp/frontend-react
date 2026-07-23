@@ -364,9 +364,6 @@ export default function Home({
           height: 630,
           file: 'previews/1200x630/index.png'
         }}
-        twitterImage={{
-          file: 'previews/630x630/index.png'
-        }}
       />
 
       <section className="home-section">

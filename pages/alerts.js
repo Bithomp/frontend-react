@@ -65,7 +65,6 @@ export default function Alerts() {
           height: 630,
           file: 'previews/1200x630/alerts.png'
         }}
-        twitterImage={{ file: 'previews/630x630/alerts.png' }}
       />
       <div className="page-alerts content-center">
         <h1 className="center">{t('menu.price-alerts', { nativeCurrency })}</h1>

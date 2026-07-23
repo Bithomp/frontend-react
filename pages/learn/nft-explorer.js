@@ -24,7 +24,12 @@ export default function NftExplorer() {
         title={'Search, buy, sell, mint NFTs'}
         description="Explore all NFTs in one place. Discover, buy, sell, and manage NFTs with Bithomp — the fastest and most complete NFT explorer."
         noindex={network !== 'mainnet'}
-        image={{ file: '/images/xrplexplorer/learn/nft-explorer/cover', width: 1520, height: 855, allNetworks: true }}
+        image={{
+          file: `/images/${xahauNetwork ? 'xahau' : 'xrpl'}explorer/learn/nft-explorer/cover.jpg`,
+          width: 1520,
+          height: 855,
+          allNetworks: true
+        }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">

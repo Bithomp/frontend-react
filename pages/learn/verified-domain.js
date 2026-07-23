@@ -28,7 +28,7 @@ export default function VerifiedDomains() {
         title={t('seo.title', { explorerName })}
         description={t('seo.description', { explorerName })}
         noindex={network !== 'mainnet'}
-        image={{ file: 'pages/learn/verified-domain/cover.png', width: 1536, height: 1024, allNetworks: true }}
+        image={{ file: 'pages/learn/verified-domain/cover.png', width: 1520, height: 855, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">

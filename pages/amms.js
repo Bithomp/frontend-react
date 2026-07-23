@@ -425,7 +425,6 @@ export default function Amms({
                 file: 'previews/1200x630/amms.png'
               }
         }
-        twitterImage={xahauNetwork ? null : { file: 'previews/630x630/amms.png' }}
       />
       <div className={amms}>
         <h1 className="center">{t('menu.amm.pools')}</h1>

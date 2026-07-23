@@ -28,10 +28,6 @@ export default function ChainOfBlocksSummit() {
           height: 'auto',
           allNetworks: true
         }}
-        twitterImage={{
-          file: '/images/chainOfBlocksSummit/2026-summit-preview.jpeg',
-          allNetworks: true
-        }}
       />
       <article className="prose sm:prose-lg dark:prose-invert content-center">
         <h1>CHAIN OF BLOCKS SUMMIT</h1>

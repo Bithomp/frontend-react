@@ -290,7 +290,6 @@ export default function Amendment({ initialData, initialErrorMessage, isSsrMobil
           height: 630,
           file: 'previews/1200x630/amendments.png'
         }}
-        twitterImage={{ file: 'previews/630x630/amendments.png' }}
       />
       <div className={`content-text ${amendmentsClass}`}>
         <h1 className="center">{t('menu.network.amendments')}</h1>

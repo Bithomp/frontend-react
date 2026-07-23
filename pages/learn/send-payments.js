@@ -26,7 +26,7 @@ export default function SendPayments() {
         description="Explore the advantages of using Bithomp for secure and efficient payments: trustlines, Issuer fee, token issuance, wallet signing, and more. "
         noindex={network !== 'mainnet'}
         image={{
-          file: '/xrplexplorer/learn/send-payments/cover.jpg',
+          file: imagePath + 'cover.jpg',
           width: 1520,
           height: 855,
           allNetworks: true

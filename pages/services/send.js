@@ -488,7 +488,6 @@ export default function Send({
           height: 630,
           file: 'previews/1200x630/services/send.png'
         }}
-        twitterImage={{ file: 'previews/630x630/services/send.png' }}
       />
       <div className="content-text content-center">
         <ServicesTabs category="payments" tab="send" />

@@ -210,7 +210,6 @@ export default function ValidatorPage({ validator, reportsPayload, errorMessage,
         titleWithNetwork="true"
         description={`Validator details, agreement scores, network settings and reports for ${title}.`}
         image={{ file: validatorAvatarImage, width: 400, height: 400 }}
-        twitterImage={{ file: validatorAvatarImage }}
       />
 
       <div className="content-profile validator-page">

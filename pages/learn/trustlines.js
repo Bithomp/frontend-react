@@ -26,7 +26,7 @@ export default function IssueAToken() {
         description="How trustlines work on {explorerName} and how to set them up"
         noindex={network !== 'mainnet'}
         image={{
-          file: '/public/images/xrplexplorer/learn/trustlines/cover.jpg',
+          file: imagePath + 'cover.jpg',
           width: 1520,
           height: 855,
           allNetworks: true

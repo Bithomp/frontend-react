@@ -548,12 +548,6 @@ export default function Distribution({
     height: 630,
     file: `${server}/nextapi/distribution-preview?${new URLSearchParams(distributionPreviewParams).toString()}`
   }
-  const distributionTwitterImage = {
-    file: `${server}/nextapi/distribution-preview?${new URLSearchParams({
-      ...distributionPreviewParams,
-      shape: 'square'
-    }).toString()}`
-  }
   const distributionActions = (
     <div className="distribution-chart-actions">
       <Link href={tokenPageUrl} className="button-action">
@@ -581,7 +575,6 @@ export default function Distribution({
         title={t('menu.network.distribution', { currency })}
         canonicalPath={canonicalPath}
         image={distributionPreviewImage}
-        twitterImage={distributionTwitterImage}
       />
       <div className="content-center">
         <h1 className="center">{t('menu.network.distribution', { currency })}</h1>

@@ -1499,9 +1499,6 @@ export default function TokenPage({
     height: 630,
     file: `${server}/nextapi/token-preview?${new URLSearchParams(tokenPreviewParams).toString()}`
   }
-  const tokenTwitterImage = {
-    file: `${server}/nextapi/token-preview?${new URLSearchParams({ ...tokenPreviewParams, shape: 'square' }).toString()}`
-  }
   const tokenSupplyTitle = isMptToken
     ? tokenDisplayCurrency
     : token?.currencyDetails?.currency || niceCurrency(token?.currency) || tokenDisplayCurrency
@@ -2441,7 +2438,6 @@ export default function TokenPage({
               (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
         }
         image={tokenPreviewImage}
-        twitterImage={tokenTwitterImage}
       />
       <div className={tokenPage}>
         {!xahauNetwork && <TokenTabs />}

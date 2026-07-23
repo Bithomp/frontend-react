@@ -25,9 +25,9 @@ export default function ImageServices() {
         description="Boost your Apps with Bithomp Image Services — free, high-performance avatars, token logos, NFT previews, and MPT images. Fetch usernames, service names, and visuals via Bithomp API."
         noindex={network !== 'mainnet'}
         image={{
-          file: '/images/pages/learn/image-services/cover',
-          width: 1520,
-          height: 955,
+          file: '/images/pages/learn/image-services/cover.jpg',
+          width: 1600,
+          height: 900,
           allNetworks: true
         }}
       />

@@ -26,9 +26,9 @@ export default function GuideForTokenIssuers() {
         description="Step-by-step guide for token issuers: register services, verify domains, set up TOML files, add logos, create AMM pools, and and grow your project’s trust."
         noindex={network !== 'mainnet'}
         image={{
-          file: '/images/pages/learn/guide-for-token-issuers/cover',
-          width: 1520,
-          height: 953,
+          file: `/images/pages/learn/guide-for-token-issuers/cover${xahauNetwork ? '-xahau' : ''}.jpg`,
+          width: 1600,
+          height: 900,
           allNetworks: true
         }}
       />

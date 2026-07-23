@@ -720,7 +720,6 @@ export default function Tokens({
           height: 630,
           file: 'previews/1200x630/tokens.png'
         }}
-        twitterImage={{ file: 'previews/630x630/tokens.png' }}
       />
       <h1 className="center">{tt('h1', { explorerName })}</h1>
 

@@ -24,7 +24,12 @@ export default function IssueAToken() {
         title={'How to issue a token on ' + explorerName}
         description="Step-by-step guide on how to issue a token on XRPL or Xahau. Understand XRPL and Xahau tokens, their use cases, and how to get started with tokenization."
         noindex={network !== 'mainnet'}
-        image={{ file: '/images/pages/learn/issue-a-token/cover', width: 1520, height: 953, allNetworks: true }}
+        image={{
+          file: `/images/pages/learn/issue-a-token/cover${xahauNetwork ? '-xahau' : ''}.jpg`,
+          width: 1520,
+          height: 855,
+          allNetworks: true
+        }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">

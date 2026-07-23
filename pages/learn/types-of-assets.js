@@ -25,7 +25,7 @@ export default function TypesOfAssets() {
         description="Learn about the different types of assets, including the native asset, issued tokens, stablecoins, utility tokens, memecoins, RWA tokens, and NFTs. Understand their characteristics, use cases, and how they differ from each other."
         noindex={network !== 'mainnet'}
         image={{
-          file: '/xrplexplorer/learn/types-of-assets/cover.png',
+          file: imagePath + 'cover.png',
           width: 1520,
           height: 855,
           allNetworks: true

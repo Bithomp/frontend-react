@@ -28,7 +28,6 @@ export default function ClaimReward() {
           height: 630,
           file: 'previews/1200x630/claim-reward.png'
         }}
-        twitterImage={{ file: 'previews/630x630/claim-reward.png' }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">

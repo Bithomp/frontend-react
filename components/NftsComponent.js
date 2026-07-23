@@ -733,7 +733,6 @@ export default function NftsComponent({
             height: 630,
             file: 'previews/1200x630/nft-explorer.png'
           }}
-          twitterImage={{ file: 'previews/630x630/nft-explorer.png' }}
         />
       ) : (
         <>

@@ -591,7 +591,6 @@ export default function NftSales({
           height: 630,
           file: 'previews/1200x630/nft-sales.png'
         }}
-        twitterImage={{ file: 'previews/630x630/nft-sales.png' }}
       />
 
       <h1 className="center">
