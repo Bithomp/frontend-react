@@ -9160,7 +9160,11 @@ export default function Account({
                       >
                         <div className="asset-main">
                           <div className="asset-logo">
-                            <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
+                            <CurrencyWithIcon
+                              token={token}
+                              hideIssuer
+                              options={{ disableTokenLink: true }}
+                            />
                           </div>
                           <div className="asset-value">
                             <div className="asset-amount" suppressHydrationWarning>
