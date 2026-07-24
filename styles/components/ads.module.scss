@@ -97,8 +97,8 @@
       }
       .brand-item-title {
         top: 10px;
-        font-size: 14px;
-        font-weight: 400;
+        font-size: 12px;
+        font-weight: 600;
       }
       .brand-item-title .brand-item-optional {
         display: none;
@@ -143,9 +143,13 @@
           height: 32px;
         }
         .brand-item-title {
+          top: 4px;
           left: 44px;
-          font-size: 12px;
-          font-weight: 600;
+          right: 4px;
+          line-height: 16px;
+        }
+        .mexc-apr {
+          display: block;
         }
       }
       &.stake {

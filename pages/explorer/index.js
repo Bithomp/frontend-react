@@ -10,11 +10,13 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import Ads from '../../components/Layout/Ads'
 import CopyButton from '../../components/UI/CopyButton'
 import { shortHash } from '../../utils/format'
+import { countryServer } from '../../utils/axios'
 
 export async function getServerSideProps(context) {
-  const { locale } = context
+  const { locale, req } = context
   return {
     props: {
+      countryCode: await countryServer(req),
       initialLocale: locale || 'en',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'explorer']))

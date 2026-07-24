@@ -13,7 +13,7 @@ import FeaturedCard from '../components/Home/FeaturedCard'
 import styles from '@/styles/components/home-teaser.module.scss'
 
 import dynamic from 'next/dynamic'
-import { currencyServer } from '../utils/axios'
+import { countryServer, currencyServer } from '../utils/axios'
 import {
   emptyHomeTeasers,
   fetchTeaserAmendmentsClient,
@@ -150,10 +150,12 @@ function LazyHomeWidget({ children, placeholder, rootMargin = '0px 0px 120px 0px
 export async function getServerSideProps(context) {
   const { locale, req, res } = context
   const selectedCurrencyServer = currencyServer(req)
+  const countryCode = await countryServer(req)
   res.setHeader('Cache-Control', 'private, no-cache, max-age=0, must-revalidate')
 
   return {
     props: {
+      countryCode,
       selectedCurrencyServer,
       initialLocale: locale || 'en',
       isSsrMobile: getIsSsrMobile(context),

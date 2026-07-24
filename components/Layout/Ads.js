@@ -32,7 +32,9 @@ export default function Ads({ countryCode }) {
               className="brand-item-icon"
               alt="MEXC"
             />
-            <div className="brand-item-title">Earn up to 600% APR</div>
+            <div className="brand-item-title">
+              Earn up to 600% <span className="mexc-apr">APR</span>
+            </div>
             <div className="brand-item-text">Hold your crypto and earn rewards.</div>
           </div>
         </a>

@@ -8,23 +8,22 @@ import { devNet, explorerName, ledgerName, nativeCurrency, network } from '../ut
 import NetworkTabs from '../components/Tabs/NetworkTabs'
 import Ads from '../components/Layout/Ads'
 import { useTranslation } from 'next-i18next'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, countryServer, passHeaders } from '../utils/axios'
 
 export async function getServerSideProps(context) {
   const { locale, req } = context
 
-  let sessionTokenData = null
-
-  const res = await axiosServer({
-    method: 'get',
-    url: devNet ? 'xrpl/faucet' : 'xrpl/testPayment',
-    headers: passHeaders(req)
-  }).catch(() => {
-    console.error('Axios server error: ', devNet ? 'xrpl/faucet' : 'xrpl/testPayment')
-  })
-  if (res?.data) {
-    sessionTokenData = res.data
-  }
+  const [res, countryCode] = await Promise.all([
+    axiosServer({
+      method: 'get',
+      url: devNet ? 'xrpl/faucet' : 'xrpl/testPayment',
+      headers: passHeaders(req)
+    }).catch(() => {
+      console.error('Axios server error: ', devNet ? 'xrpl/faucet' : 'xrpl/testPayment')
+    }),
+    countryServer(req)
+  ])
+  const sessionTokenData = res?.data || null
   /*
     {
       faucetSessionToken: xx,
@@ -38,8 +37,9 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      countryCode,
       isSsrMobile: getIsSsrMobile(context),
-      sessionTokenData: sessionTokenData || null,
+      sessionTokenData,
       ...(await serverSideTranslations(locale, ['common', 'faucet']))
     }
   }

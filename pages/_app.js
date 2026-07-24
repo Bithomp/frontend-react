@@ -329,7 +329,7 @@ const MyApp = ({ Component, pageProps }) => {
   const [wcSessions, setWcSessions] = useState({})
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
-  const [countryCode, setCountryCode] = useState('')
+  const [countryCode, setCountryCode] = useState(pageProps.countryCode || '')
   const [nonCriticalUiReady, setNonCriticalUiReady] = useState(false)
   const accountSchemaInitializedRef = useRef(false)
 
@@ -664,7 +664,7 @@ const MyApp = ({ Component, pageProps }) => {
 
   //check country
   useEffect(() => {
-    if (!nonCriticalUiReady) return
+    if (countryCode) return
 
     async function fetchData() {
       // {"ip":"176.28.256.49","country":"SE"}
@@ -674,7 +674,13 @@ const MyApp = ({ Component, pageProps }) => {
 
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nonCriticalUiReady])
+  }, [countryCode])
+
+  useEffect(() => {
+    if (pageProps.countryCode) {
+      setCountryCode(pageProps.countryCode)
+    }
+  }, [pageProps.countryCode])
 
   useEffect(() => {
     // Always refresh when currency changes to avoid stale rates.

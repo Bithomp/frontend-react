@@ -65,6 +65,16 @@ export const requestIp = (req) => {
   return forwardedIp || realIp || req?.socket?.remoteAddress || 'unknown-ip'
 }
 
+export const countryServer = async (req) => {
+  try {
+    const response = await axiosServer.get('client/info', { headers: passHeaders(req) })
+    return response?.data?.country?.trim().toUpperCase() || ''
+  } catch (error) {
+    logServerSideError(error, req, 'Country')
+    return ''
+  }
+}
+
 const responseMessage = (data) => {
   if (!data) return ''
   if (typeof data === 'string') return data
