@@ -60,6 +60,9 @@
       }
     }
     &.mexc {
+      .mexc-logo-dark {
+        display: none;
+      }
       .brand-item-icon {
         left: 8px;
         width: 42px;
@@ -160,5 +163,15 @@
         }
       }
     }
+  }
+}
+
+:global(.dark) .brandsBlock :global {
+  .brand-item.mexc .mexc-logo-light {
+    display: none;
+  }
+
+  .brand-item.mexc .mexc-logo-dark {
+    display: block;
   }
 }

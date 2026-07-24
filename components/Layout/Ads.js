@@ -27,10 +27,12 @@ export default function Ads({ countryCode }) {
       {showMexcAd && (
         <a href="https://bithomp.com/go/banner-mexc" target="_blank" rel="noreferrer">
           <div className="brand-item mexc">
+            <img src="/images/sponsored/mexc.svg" className="brand-item-icon mexc-logo-light" alt="MEXC" />
             <img
-              src={theme === 'dark' ? '/images/sponsored/mexc-dark.svg' : '/images/sponsored/mexc.svg'}
-              className="brand-item-icon"
-              alt="MEXC"
+              src="/images/sponsored/mexc-dark.svg"
+              className="brand-item-icon mexc-logo-dark"
+              alt=""
+              aria-hidden="true"
             />
             <div className="brand-item-title">
               Earn up to 600% <span className="mexc-apr">APR</span>
