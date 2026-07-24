@@ -3805,7 +3805,7 @@ export default function Account({
         noindex={!isIndexableAccount}
       />
 
-      <div className="account-container">
+      <div className={`account-container${isHistoricalLedger ? ' has-historical-banner' : ''}`}>
         {isHistoricalLedger && (
           <div className="historical-banner">
             <span className="historical-badge">{ta('labels.historical-mode')}</span>
@@ -11459,6 +11459,25 @@ export default function Account({
         .historical-date {
           font-size: 13px;
           color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+          .account-container.has-historical-banner {
+            padding-bottom: 72px;
+          }
+
+          .historical-banner {
+            position: fixed;
+            right: 12px;
+            bottom: calc(12px + env(safe-area-inset-bottom));
+            left: 12px;
+            z-index: 14;
+            width: auto;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 8px 10px;
+            box-shadow: 0 5px 14px color-mix(in srgb, #000 18%, transparent);
+          }
         }
 
         .account-grid {
