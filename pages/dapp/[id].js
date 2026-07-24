@@ -248,7 +248,10 @@ export default function DappDetails({
   initialTransactionsError,
   selectedCurrency: selectedCurrencyApp,
   fiatRate,
-  selectedCurrencyServer
+  selectedCurrencyServer,
+  subscriptionExpired,
+  sessionToken,
+  openEmailLogin
 }) {
   const router = useRouter()
   const { t } = useTranslation('dapps')
@@ -651,6 +654,9 @@ export default function DappDetails({
         knownStatuses={transactionStatuses}
         initialData={initialTransactions}
         initialErrorMessage={initialTransactionsError}
+        subscriptionExpired={subscriptionExpired}
+        sessionToken={sessionToken}
+        openEmailLogin={openEmailLogin}
       />
 
       {!loading ? <DappsDataNote /> : null}

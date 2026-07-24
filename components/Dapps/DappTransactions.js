@@ -5,6 +5,7 @@ import { FaArrowsRotate } from 'react-icons/fa6'
 
 import { useIsMobile } from '../../utils/mobile'
 import { dappTransactionsApiUrl } from '../../utils/dapps'
+import InfiniteScrolling from '../Layout/InfiniteScrolling'
 import SimpleSelect from '../UI/SimpleSelect'
 import {
   TransactionRowDetails,
@@ -57,7 +58,10 @@ export default function DappTransactions({
   knownTypes = [],
   knownStatuses = [],
   initialData,
-  initialErrorMessage
+  initialErrorMessage,
+  subscriptionExpired,
+  sessionToken,
+  openEmailLogin
 }) {
   const { t } = useTranslation('dapps')
   const { t: accountT } = useTranslation('account')
@@ -127,7 +131,7 @@ export default function DappTransactions({
   }, [currency, initialData, refreshVersion, sourceTag, status, t, type])
 
   const loadMore = async () => {
-    if (!marker || loadingMore) return
+    if (!marker || loadingMore || !sessionToken || subscriptionExpired) return
     setLoadingMore(true)
     setErrorMessage('')
     try {
@@ -179,26 +183,41 @@ export default function DappTransactions({
 
         {loading ? <div className={styles.status}><span className="waiting" /></div> : null}
         {!loading && transactions.length ? (
-          <div className={styles.tableWrap}>
-            <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
-              <tbody>
-                {transactions.map((transaction, index) => {
-                  const Row = transactionRow(transaction?.tx?.TransactionType)
-                  const address = transaction?.specification?.source?.address || transaction?.tx?.Account
-                  return <Row key={transaction.txHash || transaction?.tx?.hash || index} data={transaction} address={address} index={index} selectedCurrency={currency} />
-                })}
-              </tbody>
-            </table>
-          </div>
+          <InfiniteScrolling
+            dataLength={transactions.length}
+            loadMore={loadMore}
+            hasMore={marker}
+            errorMessage={errorMessage}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
+            loadMoreMessage={t('detail.loadingTransactions')}
+            openEmailLogin={openEmailLogin}
+          >
+            <div className={styles.tableWrap}>
+              <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
+                <tbody>
+                  {transactions.map((transaction, index) => {
+                    const Row = transactionRow(transaction?.tx?.TransactionType)
+                    const address = transaction?.specification?.source?.address || transaction?.tx?.Account
+                    return (
+                      <Row
+                        key={transaction.txHash || transaction?.tx?.hash || index}
+                        data={transaction}
+                        address={address}
+                        index={index}
+                        selectedCurrency={currency}
+                        dappView
+                      />
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </InfiniteScrolling>
         ) : null}
         {!loading && !transactions.length && !errorMessage ? <div className={styles.status}>{t('detail.noTransactions')}</div> : null}
-        {errorMessage ? <div className={styles.error}>{errorMessage}</div> : null}
+        {errorMessage && !transactions.length ? <div className={styles.error}>{errorMessage}</div> : null}
       </section>
-      {marker ? (
-        <button className={styles.loadMore} type="button" onClick={loadMore} disabled={loadingMore}>
-          {loadingMore ? t('detail.loadingTransactions') : t('detail.loadMoreTransactions')}
-        </button>
-      ) : null}
     </>
   )
 }

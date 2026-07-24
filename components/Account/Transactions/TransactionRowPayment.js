@@ -13,7 +13,7 @@ import { MdCompareArrows, MdArrowDownward, MdArrowUpward, MdSwapVert } from 'rea
 import { isXls14NftAmount, nativeCurrency } from '../../../utils'
 import { useTranslation } from 'next-i18next'
 
-export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
+export const TransactionRowPayment = ({ data, address, index, selectedCurrency, dappView = false }) => {
   const { t } = useTranslation('transaction')
   const { t: accountT } = useTranslation('account')
   const { outcome, specification, tx, fiatRates } = data
@@ -46,16 +46,22 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
         <>
           <span className="bold">{txTypeSpecial === 'Payment' ? accountT('detail.transactions.payment') : txTypeSpecial} </span>
           {accountT(
-            tx?.Destination === address
+            dappView
               ? 'detail.phrases.from'
-              : tx?.Account === address
-                ? 'detail.phrases.to'
-                : 'detail.phrases.by'
+              : tx?.Destination === address
+                ? 'detail.phrases.from'
+                : tx?.Account === address
+                  ? 'detail.phrases.to'
+                  : 'detail.phrases.by'
           )}
           {isMobile ? ' ' : <br />}
           <AddressWithIconInline
             data={
-              tx?.Account === address && specification?.destination ? specification?.destination : specification?.source
+              dappView
+                ? specification?.source
+                : tx?.Account === address && specification?.destination
+                  ? specification?.destination
+                  : specification?.source
             }
             options={{ labelClassName: 'responsive-address' }}
           />

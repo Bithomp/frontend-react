@@ -112,25 +112,6 @@
   color: var(--red);
 }
 
-.loadMore {
-  display: block;
-  min-width: 180px;
-  height: 38px;
-  margin: 14px auto;
-  padding: 0 16px;
-  border: 1px solid var(--accent-link);
-  border-radius: 9px;
-  color: var(--accent-link);
-  background: var(--background-secondary);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.loadMore:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
 @media only screen and (max-width: 700px) {
   .header {
     align-items: stretch;
