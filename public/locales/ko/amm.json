@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "poolPage": "풀 페이지"
+  },
   "search": {
     "pageTitle": "AMM 탐색기",
     "metaDescription": "AMM 풀, 준비금, 유동성 활동, 기여자, 경매 슬롯, 수수료 투표를 찾아보세요.",

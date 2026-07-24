@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "poolPage": "Pool-Seite"
+  },
   "search": {
     "pageTitle": "AMM Explorer",
     "metaDescription": "Finde AMM Pools, Reserven, Liquiditaetsaktivitaet, Mitwirkende, Auktions-Slots und Gebuehrenstimmen.",

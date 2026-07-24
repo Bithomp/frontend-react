@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "poolPage": "Halaman pool"
+  },
   "search": {
     "pageTitle": "Penjelajah AMM",
     "metaDescription": "Cari pool AMM, cadangan, aktivitas likuiditas, kontributor, slot lelang, dan vote biaya.",

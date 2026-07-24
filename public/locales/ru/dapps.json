@@ -40,7 +40,8 @@
   "columns": {
     "dapp": "Dapp",
     "wallets": "Кошельки",
-    "activity": "Активность"
+    "activity": "Активность",
+    "action": "Действие"
   },
   "tooltips": {
     "performingAddresses": "Уникальные адреса, которые подписывали транзакции.",

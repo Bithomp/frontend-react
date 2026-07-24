@@ -8,6 +8,7 @@ import { ledgerName, nativeCurrency, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { FaExternalLinkAlt } from 'react-icons/fa'
 import { setTabParams } from '../utils'
 
 import SEO from '../components/SEO'
@@ -428,6 +429,7 @@ export default function Dapps({
                       </>
                     }
                   />
+                  <th className="center">{t('dapps:columns.action')}</th>
                 </tr>
               </thead>
 
@@ -562,6 +564,21 @@ export default function Dapps({
                               prev={prev?.totalSentInFiats?.[convertCurrency]}
                             />
                           </span>
+                        </td>
+                        <td className="center">
+                          <Link
+                            href={detailsHref}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="dapp-action-link tooltip"
+                            onClick={(event) => event.stopPropagation()}
+                            aria-label={t('dapps:detail.openDapp')}
+                          >
+                            <FaExternalLinkAlt />
+                            <span className="tooltiptext left no-brake token-action-tooltip">
+                              {t('dapps:detail.openDapp')}
+                            </span>
+                          </Link>
                         </td>
                       </tr>
                     )

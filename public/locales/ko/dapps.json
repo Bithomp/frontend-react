@@ -40,7 +40,8 @@
   "columns": {
     "dapp": "Dapp",
     "wallets": "지갑",
-    "activity": "활동"
+    "activity": "활동",
+    "action": "작업"
   },
   "tooltips": {
     "performingAddresses": "트랜잭션에 서명한 고유 주소입니다.",

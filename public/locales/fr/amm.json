@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "poolPage": "Page du pool"
+  },
   "search": {
     "pageTitle": "Explorateur AMM",
     "metaDescription": "Recherchez des pools AMM, reserves, activite de liquidite, contributeurs, slots d'enchere et votes de frais.",

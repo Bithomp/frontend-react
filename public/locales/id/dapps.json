@@ -40,7 +40,8 @@
   "columns": {
     "dapp": "Dapp",
     "wallets": "Dompet",
-    "activity": "Aktivitas"
+    "activity": "Aktivitas",
+    "action": "Tindakan"
   },
   "tooltips": {
     "performingAddresses": "Alamat unik yang telah menandatangani transaksi.",

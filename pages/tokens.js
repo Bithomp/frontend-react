@@ -1077,39 +1077,6 @@ export default function Tokens({
           white-space: nowrap;
         }
 
-        .token-row-actions {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          min-width: 54px;
-        }
-
-        .token-action-link,
-        .token-action-button {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 24px;
-          height: 24px;
-          padding: 0;
-          border: 0;
-          background: transparent;
-          color: var(--accent-link);
-          font-size: 16px;
-          line-height: 1;
-          cursor: pointer;
-        }
-
-        .token-action-button.orange {
-          color: var(--orange);
-        }
-
-        .token-action-link:hover,
-        .token-action-button:hover {
-          opacity: 0.82;
-        }
-
         @media only screen and (max-width: 480px) {
           .mobile-token-actions :global(.button-action.narrow.thin) {
             padding: 7px 10px;

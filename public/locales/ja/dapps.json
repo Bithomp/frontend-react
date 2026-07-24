@@ -40,7 +40,8 @@
   "columns": {
     "dapp": "Dapp",
     "wallets": "ウォレット",
-    "activity": "アクティビティ"
+    "activity": "アクティビティ",
+    "action": "操作"
   },
   "tooltips": {
     "performingAddresses": "トランザクションに署名した一意のアドレス。",

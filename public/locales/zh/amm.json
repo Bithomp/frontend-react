@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "poolPage": "资金池页面"
+  },
   "search": {
     "pageTitle": "AMM 浏览器",
     "metaDescription": "查找 AMM 池、储备、流动性活动、贡献者、拍卖槽和手续费投票。",

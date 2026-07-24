@@ -6,6 +6,8 @@ import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 import Link from 'next/link'
+import { FaExternalLinkAlt } from 'react-icons/fa'
+import { MdNorth, MdSouth } from 'react-icons/md'
 import { DEFAULT_CHART_PERIOD, chartPeriodQuery, normalizeChartPeriod } from '../utils/chartPeriods'
 
 import {
@@ -385,7 +387,7 @@ export default function Amms({
     { label: 'Updated', key: 'updatedAtFormated' }
   ]
 
-  const openAmmDeposit = (amm) => {
+  const openAmmLiquidity = (amm, action) => {
     if (!setSignRequest || !amm?.amount || !amm?.amount2) return
 
     const signData = {
@@ -402,9 +404,9 @@ export default function Amms({
     }
 
     setSignRequest({
-      action: 'ammDeposit',
+      action,
       request: {
-        TransactionType: 'AMMDeposit',
+        TransactionType: action === 'ammWithdraw' ? 'AMMWithdraw' : 'AMMDeposit',
         Asset: assetTxIssue(signData.asset1),
         Asset2: assetTxIssue(signData.asset2)
       },
@@ -540,14 +542,44 @@ export default function Amms({
                                   <td className="right">{timeFromNow(a.createdAt, i18n)}</td>
                                   <td className="right">{showAmmPercents(a.tradingFee)}</td>
                                   <td className="center" onClick={(e) => e.stopPropagation()}>
-                                    <button
-                                      type="button"
-                                      className="button-action thin narrow"
-                                      disabled={!setSignRequest}
-                                      onClick={() => openAmmDeposit(a)}
-                                    >
-                                      {t('menu.amm.deposit')}
-                                    </button>
+                                    <div className="amm-row-actions">
+                                      <Link
+                                        href={`/amm/${a.ammID}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="amm-row-action tooltip"
+                                        aria-label={t('amm:actions.poolPage')}
+                                      >
+                                        <FaExternalLinkAlt />
+                                        <span className="tooltiptext left no-brake token-action-tooltip">
+                                          {t('amm:actions.poolPage')}
+                                        </span>
+                                      </Link>
+                                      <button
+                                        type="button"
+                                        className="amm-row-action tooltip"
+                                        disabled={!setSignRequest}
+                                        onClick={() => openAmmLiquidity(a, 'ammDeposit')}
+                                        aria-label={t('menu.amm.deposit')}
+                                      >
+                                        <MdSouth />
+                                        <span className="tooltiptext left no-brake token-action-tooltip">
+                                          {t('menu.amm.deposit')}
+                                        </span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="amm-row-action withdraw tooltip"
+                                        disabled={!setSignRequest}
+                                        onClick={() => openAmmLiquidity(a, 'ammWithdraw')}
+                                        aria-label={t('menu.amm.withdraw')}
+                                      >
+                                        <MdNorth />
+                                        <span className="tooltiptext left no-brake token-action-tooltip">
+                                          {t('menu.amm.withdraw')}
+                                        </span>
+                                      </button>
+                                    </div>
                                   </td>
                                 </tr>
                               ))}
@@ -634,9 +666,17 @@ export default function Amms({
                                   type="button"
                                   className="button-action thin narrow"
                                   disabled={!setSignRequest}
-                                  onClick={() => openAmmDeposit(a)}
+                                  onClick={() => openAmmLiquidity(a, 'ammDeposit')}
                                 >
                                   {t('menu.amm.deposit')}
+                                </button>{' '}
+                                <button
+                                  type="button"
+                                  className="button-action thin narrow"
+                                  disabled={!setSignRequest}
+                                  onClick={() => openAmmLiquidity(a, 'ammWithdraw')}
+                                >
+                                  {t('menu.amm.withdraw')}
                                 </button>{' '}
                                 <button
                                   className="button-action thin narrow"

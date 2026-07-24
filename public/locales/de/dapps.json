@@ -40,7 +40,8 @@
   "columns": {
     "dapp": "Dapp",
     "wallets": "Wallets",
-    "activity": "Aktivität"
+    "activity": "Aktivität",
+    "action": "Aktion"
   },
   "tooltips": {
     "performingAddresses": "Eindeutige Adressen, die Transaktionen signiert haben.",

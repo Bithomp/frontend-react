@@ -40,7 +40,8 @@
   "columns": {
     "dapp": "Dapp",
     "wallets": "钱包",
-    "activity": "活动"
+    "activity": "活动",
+    "action": "操作"
   },
   "tooltips": {
     "performingAddresses": "已签署交易的唯一地址。",

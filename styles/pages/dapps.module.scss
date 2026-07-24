@@ -235,9 +235,11 @@
   .table-large.expand.no-hover.border th:nth-child(6),
   .table-large.expand.no-hover.border td:nth-child(6) { width: 6%; }
   .table-large.expand.no-hover.border th:nth-child(7),
-  .table-large.expand.no-hover.border td:nth-child(7) { width: 49%; }
+  .table-large.expand.no-hover.border td:nth-child(7) { width: 41%; }
   .table-large.expand.no-hover.border th:nth-child(8),
   .table-large.expand.no-hover.border td:nth-child(8) { width: 10%; }
+  .table-large.expand.no-hover.border th:nth-child(9),
+  .table-large.expand.no-hover.border td:nth-child(9) { width: 8%; }
 
   .table-large.expand.no-hover.border td:nth-child(7) {
     min-width: 0;
@@ -270,6 +272,21 @@
   .dapp-row-link:focus-visible {
     outline: 2px solid var(--accent-link);
     outline-offset: -2px;
+  }
+
+  .dapp-action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--accent-link);
+    font-size: 16px;
+    line-height: 1;
+
+    &:hover {
+      opacity: 0.82;
+    }
   }
 
   .dapp-source-tag {

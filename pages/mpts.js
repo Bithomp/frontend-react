@@ -18,11 +18,12 @@ import { axiosServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isAddressOrUsername, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import SortingArrow from '../components/Tables/SortingArrow'
 import CopyButton from '../components/UI/CopyButton'
 import { scaleAmount } from '../utils/calc'
 import TokenTabs from '../components/Tabs/TokenTabs'
-import { FaHandshake } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaHandshake } from 'react-icons/fa'
 import { tokensClass } from '../styles/pages/tokens.module.scss'
 
 /*
@@ -546,16 +547,35 @@ export default function Mpts({
                             </td>
                             <td>{timeFromNow(token.lastUsedAt, i18n)}</td>
                             <td className="center">
-                              <span
-                                onClick={(event) => {
-                                  stopRowClick(event)
-                                  authorize(token.mptokenIssuanceID)
-                                }}
-                                className="orange tooltip"
-                              >
-                                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                                <span className="tooltiptext no-brake">{tm('actions.authorize')}</span>
-                              </span>
+                              <div className="token-row-actions">
+                                <Link
+                                  href={`/token/${token.mptokenIssuanceID}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="token-action-link tooltip"
+                                  onClick={stopRowClick}
+                                  aria-label={tm('actions.tokenPage')}
+                                >
+                                  <FaExternalLinkAlt />
+                                  <span className="tooltiptext left no-brake token-action-tooltip">
+                                    {tm('actions.tokenPage')}
+                                  </span>
+                                </Link>
+                                <button
+                                  type="button"
+                                  onClick={(event) => {
+                                    stopRowClick(event)
+                                    authorize(token.mptokenIssuanceID)
+                                  }}
+                                  className="token-action-button orange tooltip"
+                                  aria-label={tm('actions.authorize')}
+                                >
+                                  <FaHandshake />
+                                  <span className="tooltiptext left no-brake token-action-tooltip">
+                                    {tm('actions.authorize')}
+                                  </span>
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         )

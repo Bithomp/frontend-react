@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "poolPage": "Pool page"
+  },
   "search": {
     "pageTitle": "AMM explorer",
     "metaDescription": "Find AMM pools, reserves, liquidity activity, contributors, auction slots and fee votes.",

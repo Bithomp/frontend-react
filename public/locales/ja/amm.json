@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "poolPage": "プールページ"
+  },
   "search": {
     "pageTitle": "AMM エクスプローラー",
     "metaDescription": "AMM プール、リザーブ、流動性アクティビティ、コントリビューター、オークションスロット、手数料投票を検索できます。",

@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "poolPage": "Página del pool"
+  },
   "search": {
     "pageTitle": "Explorador AMM",
     "metaDescription": "Busca pools AMM, reservas, actividad de liquidez, contribuyentes, ranuras de subasta y votos de comision.",
