@@ -626,7 +626,7 @@
       }
     },
     "telegram": {
-      "create-token": "连接 Telegram", "connecting": "正在创建代码...", "code": "连接代码", "open-bot": "打开 BithompBot", "check-connection": "检查连接", "checking": "正在检查...", "connected": "Telegram 已成功连接。", "connected-id": "已连接的 Telegram 聊天：{{chatId}}", "not-connected": "Telegram 尚未连接。请使用代码启动机器人，然后再次检查。", "connection-error": "无法连接 Telegram，请重试。"
+      "create-token": "连接 Telegram", "connecting": "正在创建代码...", "open-bot": "打开 BithompBot", "same-device-title": "在此设备上连接", "same-device-description": "打开 Telegram，在 BithompBot 中点击 Start，然后等待连接确认。", "other-device-title": "在其他设备上连接", "other-device-description": "在其他设备上打开与 @BithompBot 的私聊，然后发送以下消息：", "copy-command": "复制 Telegram 命令", "check-description": "BithompBot 确认您的 Telegram 账户已连接到 Bithomp 后，请返回此处检查连接。", "check-connection": "检查连接", "checking": "正在检查...", "connected": "Telegram 已成功连接。", "connected-id": "已连接的 Telegram 聊天：{{chatId}}", "not-connected": "Telegram 尚未连接。请完成上面的任一选项，等待 BithompBot 确认，然后再次检查。", "connection-error": "无法连接 Telegram，请重试。"
     },
     "destination": {
       "any": "任意目标",

@@ -626,7 +626,7 @@
       }
     },
     "telegram": {
-      "create-token": "Telegramを接続", "connecting": "コードを作成中...", "code": "接続コード", "open-bot": "BithompBotを開く", "check-connection": "接続を確認", "checking": "確認中...", "connected": "Telegramに接続しました。", "connected-id": "接続済みTelegramチャット: {{chatId}}", "not-connected": "Telegramはまだ接続されていません。コードでBotを開始して再確認してください。", "connection-error": "Telegramに接続できませんでした。もう一度お試しください。"
+      "create-token": "Telegramを接続", "connecting": "コードを作成中...", "open-bot": "BithompBotを開く", "same-device-title": "このデバイスで接続", "same-device-description": "Telegramを開き、BithompBotでStartをタップして接続確認を待ちます。", "other-device-title": "別のデバイスで接続", "other-device-description": "別のデバイスで@BithompBotとのプライベートチャットを開き、次のメッセージを送信してください：", "copy-command": "Telegramコマンドをコピー", "check-description": "BithompBotがTelegramアカウントとBithompの接続を確認したら、ここに戻って接続を確認してください。", "check-connection": "接続を確認", "checking": "確認中...", "connected": "Telegramに接続しました。", "connected-id": "接続済みTelegramチャット: {{chatId}}", "not-connected": "Telegramはまだ接続されていません。上のいずれかの方法を完了し、BithompBotの確認を待ってから、もう一度確認してください。", "connection-error": "Telegramに接続できませんでした。もう一度お試しください。"
     },
     "destination": {
       "any": "任意の目的地",

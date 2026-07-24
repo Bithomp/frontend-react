@@ -479,38 +479,45 @@
 
   .notification-telegram-setup {
     display: grid;
-    grid-template-columns: minmax(220px, 1fr) minmax(190px, auto);
-    align-items: stretch;
     gap: 12px;
   }
 
-  .notification-telegram-code {
+  .notification-telegram-options {
     display: grid;
-    grid-template-columns: auto minmax(150px, 1fr);
-    align-items: center;
-    gap: 4px 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .notification-telegram-option {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
     min-width: 0;
-    padding: 10px 12px;
+    padding: 12px;
     border: 1px solid color-mix(in srgb, var(--accent-link) 22%, var(--button-additional));
     border-radius: 9px;
     background: color-mix(in srgb, var(--background-main) 72%, transparent);
 
-    > span {
-      grid-column: 1 / -1;
-      color: var(--text-secondary);
-      font-size: 12px;
+    > strong {
+      color: var(--text-main);
+      font-size: 14px;
       font-weight: 700;
     }
 
-    > strong {
-      margin: 0;
-      color: var(--accent-link);
-      font-size: 22px;
-      line-height: 1;
-      letter-spacing: 0.1em;
+    > p {
+      flex: 1 1 auto;
     }
+  }
+
+  .notification-telegram-command {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
 
     > code {
+      flex: 1 1 auto;
       min-width: 0;
       padding: 7px 10px;
       border-radius: 6px;
@@ -522,13 +529,15 @@
     }
   }
 
-  .notification-telegram-actions {
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
+  .notification-telegram-check {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 8px;
+    padding-top: 2px;
 
     .button-action {
-      width: 100%;
+      flex: 0 0 auto;
     }
   }
 
@@ -1317,10 +1326,19 @@
     }
 
     strong {
+      min-width: 0;
       color: var(--text-main);
       font-size: 13px;
       font-weight: 800;
       line-height: 1.25;
+
+      a {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
       :global(span) {
         color: inherit;
@@ -1513,12 +1531,17 @@
       padding: 14px;
     }
 
-    .notification-telegram-setup {
+    .notification-telegram-options {
       grid-template-columns: 1fr;
     }
 
-    .notification-telegram-code {
-      grid-template-columns: auto minmax(0, 1fr);
+    .notification-telegram-check {
+      align-items: stretch;
+      flex-direction: column;
+
+      .button-action {
+        width: 100%;
+      }
     }
 
     .notification-form-actions > .button-action {

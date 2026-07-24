@@ -17,6 +17,7 @@ import AdminTabs from '@/components/Tabs/AdminTabs'
 import Dialog from '@/components/UI/Dialog'
 import CountrySelect from '@/components/UI/CountrySelect'
 import AddressInput from '@/components/UI/AddressInput'
+import CopyButton from '@/components/UI/CopyButton'
 import TokenSelector from '@/components/UI/TokenSelector'
 import { axiosAdmin } from '@/utils/axios'
 import { adminNotifications } from '@/styles/pages/adminNotifications.module.scss'
@@ -1156,52 +1157,63 @@ export default function Notifications({
           <div>
             {selectedGuide.type === NOTIFICATION_CHANNEL_TYPES.TELEGRAM && (
               <div className="notification-telegram-connect">
-                <>
-                    {!telegramVerification?.verifyToken && (
-                      <button
-                        type="button"
-                        className="button-action thin"
-                        disabled={telegramLoading}
-                        onClick={createTelegramVerification}
-                      >
-                        <FaTelegramPlane aria-hidden="true" />{' '}
-                        {telegramLoading
-                          ? t('notifications.telegram.connecting')
-                          : t('notifications.telegram.create-token')}
-                      </button>
-                    )}
-                    {!!telegramVerification?.verifyToken && (
-                      <div className="notification-telegram-setup">
-                        <div className="notification-telegram-code">
-                          <span>{t('notifications.telegram.code')}</span>
-                          <strong>{telegramVerification.verifyToken}</strong>
-                          <code>/start {telegramVerification.verifyToken}</code>
-                        </div>
-                        <div className="notification-telegram-actions">
-                          {!!telegramVerification.connectUrl && (
-                            <a
-                              href={telegramVerification.connectUrl}
-                              className="button-action thin"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              <FaTelegramPlane aria-hidden="true" /> {t('notifications.telegram.open-bot')}
-                            </a>
-                          )}
-                          <button
-                            type="button"
-                            className="button-action thin secondary"
-                            disabled={telegramLoading}
-                            onClick={checkTelegramConnection}
+                {!telegramVerification?.verifyToken && (
+                  <button
+                    type="button"
+                    className="button-action thin"
+                    disabled={telegramLoading}
+                    onClick={createTelegramVerification}
+                  >
+                    <FaTelegramPlane aria-hidden="true" />{' '}
+                    {telegramLoading
+                      ? t('notifications.telegram.connecting')
+                      : t('notifications.telegram.create-token')}
+                  </button>
+                )}
+                {!!telegramVerification?.verifyToken && (
+                  <div className="notification-telegram-setup">
+                    <div className="notification-telegram-options">
+                      <div className="notification-telegram-option">
+                        <strong>{t('notifications.telegram.same-device-title')}</strong>
+                        <p>{t('notifications.telegram.same-device-description')}</p>
+                        {!!telegramVerification.connectUrl && (
+                          <a
+                            href={telegramVerification.connectUrl}
+                            className="button-action thin"
+                            target="_blank"
+                            rel="noreferrer"
                           >
-                            {telegramLoading
-                              ? t('notifications.telegram.checking')
-                              : t('notifications.telegram.check-connection')}
-                          </button>
+                            <FaTelegramPlane aria-hidden="true" /> {t('notifications.telegram.open-bot')}
+                          </a>
+                        )}
+                      </div>
+                      <div className="notification-telegram-option">
+                        <strong>{t('notifications.telegram.other-device-title')}</strong>
+                        <p>{t('notifications.telegram.other-device-description')}</p>
+                        <div className="notification-telegram-command">
+                          <code>/start {telegramVerification.verifyToken}</code>
+                          <CopyButton
+                            text={`/start ${telegramVerification.verifyToken}`}
+                            ariaLabel={t('notifications.telegram.copy-command')}
+                          />
                         </div>
                       </div>
-                    )}
-                </>
+                    </div>
+                    <div className="notification-telegram-check">
+                      <p>{t('notifications.telegram.check-description')}</p>
+                      <button
+                        type="button"
+                        className="button-action thin secondary"
+                        disabled={telegramLoading}
+                        onClick={checkTelegramConnection}
+                      >
+                        {telegramLoading
+                          ? t('notifications.telegram.checking')
+                          : t('notifications.telegram.check-connection')}
+                      </button>
+                    </div>
+                  </div>
+                )}
                 {telegramMessage && <p className={telegramChatId ? 'green' : 'orange'}>{telegramMessage}</p>}
               </div>
             )}

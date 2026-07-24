@@ -626,7 +626,7 @@
       }
     },
     "telegram": {
-      "create-token": "Hubungkan Telegram", "connecting": "Membuat kode...", "code": "Kode koneksi", "open-bot": "Buka BithompBot", "check-connection": "Periksa koneksi", "checking": "Memeriksa...", "connected": "Telegram berhasil terhubung.", "connected-id": "Chat Telegram terhubung: {{chatId}}", "not-connected": "Telegram belum terhubung. Mulai bot dengan kode lalu periksa lagi.", "connection-error": "Tidak dapat menghubungkan Telegram. Coba lagi."
+      "create-token": "Hubungkan Telegram", "connecting": "Membuat kode...", "open-bot": "Buka BithompBot", "same-device-title": "Hubungkan di perangkat ini", "same-device-description": "Buka Telegram, ketuk Start di BithompBot, lalu tunggu konfirmasi koneksi.", "other-device-title": "Hubungkan di perangkat lain", "other-device-description": "Di perangkat lain, buka chat pribadi dengan @BithompBot lalu kirim pesan ini:", "copy-command": "Salin perintah Telegram", "check-description": "Setelah BithompBot mengonfirmasi bahwa akun Telegram Anda terhubung ke Bithomp, kembali ke sini dan periksa koneksi.", "check-connection": "Periksa koneksi", "checking": "Memeriksa...", "connected": "Telegram berhasil terhubung.", "connected-id": "Chat Telegram terhubung: {{chatId}}", "not-connected": "Telegram belum terhubung. Selesaikan salah satu opsi di atas, tunggu konfirmasi dari BithompBot, lalu periksa lagi.", "connection-error": "Tidak dapat menghubungkan Telegram. Coba lagi."
     },
     "destination": {
       "any": "Tujuan mana pun",

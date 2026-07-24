@@ -638,13 +638,18 @@
     "telegram": {
       "create-token": "Подключить Telegram",
       "connecting": "Создаём код...",
-      "code": "Код подключения",
       "open-bot": "Открыть BithompBot",
+      "same-device-title": "Подключить на этом устройстве",
+      "same-device-description": "Откройте Telegram, нажмите Start в BithompBot и дождитесь подтверждения подключения.",
+      "other-device-title": "Подключить на другом устройстве",
+      "other-device-description": "На другом устройстве откройте личный чат с @BithompBot и отправьте сообщение:",
+      "copy-command": "Скопировать команду для Telegram",
+      "check-description": "Когда BithompBot подтвердит, что ваш Telegram-аккаунт подключён к Bithomp, вернитесь сюда и проверьте подключение.",
       "check-connection": "Проверить подключение",
       "checking": "Проверяем...",
       "connected": "Telegram успешно подключён.",
       "connected-id": "Подключённый чат Telegram: {{chatId}}",
-      "not-connected": "Telegram ещё не подключён. Запустите бота с кодом и проверьте снова.",
+      "not-connected": "Telegram ещё не подключён. Выполните один из вариантов выше, дождитесь подтверждения от BithompBot и проверьте снова.",
       "connection-error": "Не удалось подключить Telegram. Попробуйте ещё раз."
     },
     "destination": {

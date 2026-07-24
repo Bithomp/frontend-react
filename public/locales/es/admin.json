@@ -628,7 +628,7 @@
       }
     },
     "telegram": {
-      "create-token": "Conectar Telegram", "connecting": "Creando código...", "code": "Código de conexión", "open-bot": "Abrir BithompBot", "check-connection": "Comprobar conexión", "checking": "Comprobando...", "connected": "Telegram se conectó correctamente.", "connected-id": "Chat de Telegram conectado: {{chatId}}", "not-connected": "Telegram aún no está conectado. Inicia el bot con el código y vuelve a comprobar.", "connection-error": "No se pudo conectar Telegram. Inténtalo de nuevo."
+      "create-token": "Conectar Telegram", "connecting": "Creando código...", "open-bot": "Abrir BithompBot", "same-device-title": "Conectar en este dispositivo", "same-device-description": "Abre Telegram, pulsa Start en BithompBot y espera la confirmación de conexión.", "other-device-title": "Conectar en otro dispositivo", "other-device-description": "En el otro dispositivo, abre un chat privado con @BithompBot y envía este mensaje:", "copy-command": "Copiar comando de Telegram", "check-description": "Cuando BithompBot confirme que tu cuenta de Telegram está conectada a Bithomp, vuelve aquí y comprueba la conexión.", "check-connection": "Comprobar conexión", "checking": "Comprobando...", "connected": "Telegram se conectó correctamente.", "connected-id": "Chat de Telegram conectado: {{chatId}}", "not-connected": "Telegram aún no está conectado. Completa una de las opciones anteriores, espera la confirmación de BithompBot y vuelve a comprobar.", "connection-error": "No se pudo conectar Telegram. Inténtalo de nuevo."
     },
     "destination": {
       "any": "Cualquier destino",

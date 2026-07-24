@@ -626,7 +626,7 @@
       }
     },
     "telegram": {
-      "create-token": "Telegram 연결", "connecting": "코드 생성 중...", "code": "연결 코드", "open-bot": "BithompBot 열기", "check-connection": "연결 확인", "checking": "확인 중...", "connected": "Telegram이 연결되었습니다.", "connected-id": "연결된 Telegram 채팅: {{chatId}}", "not-connected": "Telegram이 아직 연결되지 않았습니다. 코드로 Bot을 시작한 후 다시 확인하세요.", "connection-error": "Telegram을 연결할 수 없습니다. 다시 시도하세요."
+      "create-token": "Telegram 연결", "connecting": "코드 생성 중...", "open-bot": "BithompBot 열기", "same-device-title": "이 기기에서 연결", "same-device-description": "Telegram을 열고 BithompBot에서 Start를 누른 다음 연결 확인을 기다리세요.", "other-device-title": "다른 기기에서 연결", "other-device-description": "다른 기기에서 @BithompBot과의 비공개 채팅을 열고 다음 메시지를 보내세요:", "copy-command": "Telegram 명령 복사", "check-description": "BithompBot이 Telegram 계정과 Bithomp의 연결을 확인하면 여기로 돌아와 연결을 확인하세요.", "check-connection": "연결 확인", "checking": "확인 중...", "connected": "Telegram이 연결되었습니다.", "connected-id": "연결된 Telegram 채팅: {{chatId}}", "not-connected": "Telegram이 아직 연결되지 않았습니다. 위 옵션 중 하나를 완료하고 BithompBot의 확인을 기다린 후 다시 확인하세요.", "connection-error": "Telegram을 연결할 수 없습니다. 다시 시도하세요."
     },
     "destination": {
       "any": "모든 목적지",

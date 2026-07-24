@@ -89,7 +89,7 @@ function renderConditionValue(field, value, t) {
   }
 
   if (addressConditionFields.has(field) && typeof value === 'string' && isAddressValid(value)) {
-    return <LinkAccount address={value} short={8} />
+    return <LinkAccount address={value} />
   }
 
   if (field === 'timestamp' && Number.isFinite(Number(value))) {
