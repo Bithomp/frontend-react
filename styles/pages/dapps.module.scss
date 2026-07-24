@@ -218,30 +218,30 @@
     overflow: hidden;
   }
 
-  .table-large.expand.no-hover.border {
+  .table-large.expand.border {
     table-layout: fixed;
   }
 
-  .table-large.expand.no-hover.border th:nth-child(1),
-  .table-large.expand.no-hover.border td:nth-child(1) { width: 4%; }
-  .table-large.expand.no-hover.border th:nth-child(2),
-  .table-large.expand.no-hover.border td:nth-child(2) { width: 12%; }
-  .table-large.expand.no-hover.border th:nth-child(3),
-  .table-large.expand.no-hover.border td:nth-child(3) { width: 7%; }
-  .table-large.expand.no-hover.border th:nth-child(4),
-  .table-large.expand.no-hover.border td:nth-child(4),
-  .table-large.expand.no-hover.border th:nth-child(5),
-  .table-large.expand.no-hover.border td:nth-child(5),
-  .table-large.expand.no-hover.border th:nth-child(6),
-  .table-large.expand.no-hover.border td:nth-child(6) { width: 6%; }
-  .table-large.expand.no-hover.border th:nth-child(7),
-  .table-large.expand.no-hover.border td:nth-child(7) { width: 41%; }
-  .table-large.expand.no-hover.border th:nth-child(8),
-  .table-large.expand.no-hover.border td:nth-child(8) { width: 10%; }
-  .table-large.expand.no-hover.border th:nth-child(9),
-  .table-large.expand.no-hover.border td:nth-child(9) { width: 8%; }
+  .table-large.expand.border th:nth-child(1),
+  .table-large.expand.border td:nth-child(1) { width: 4%; }
+  .table-large.expand.border th:nth-child(2),
+  .table-large.expand.border td:nth-child(2) { width: 12%; }
+  .table-large.expand.border th:nth-child(3),
+  .table-large.expand.border td:nth-child(3) { width: 7%; }
+  .table-large.expand.border th:nth-child(4),
+  .table-large.expand.border td:nth-child(4),
+  .table-large.expand.border th:nth-child(5),
+  .table-large.expand.border td:nth-child(5),
+  .table-large.expand.border th:nth-child(6),
+  .table-large.expand.border td:nth-child(6) { width: 6%; }
+  .table-large.expand.border th:nth-child(7),
+  .table-large.expand.border td:nth-child(7) { width: 41%; }
+  .table-large.expand.border th:nth-child(8),
+  .table-large.expand.border td:nth-child(8) { width: 10%; }
+  .table-large.expand.border th:nth-child(9),
+  .table-large.expand.border td:nth-child(9) { width: 8%; }
 
-  .table-large.expand.no-hover.border td:nth-child(7) {
+  .table-large.expand.border td:nth-child(7) {
     min-width: 0;
   }
 

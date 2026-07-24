@@ -379,7 +379,7 @@ export default function Dapps({
               })()}
             </div>
           ) : (
-            <table className="table-large expand no-hover border">
+            <table className="table-large expand border">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
