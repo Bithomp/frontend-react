@@ -53,6 +53,7 @@ import NFTokenModify from './SignForms/NFTokenModify'
 import AddressSelectionPanel from './SignForms/AddressSelectionPanel'
 import { errorCodeDescription } from '../utils/transaction'
 import { broadcastTransaction, getNextTransactionParams } from '../utils/user'
+import { partnerMarketplaces } from '../utils/nft'
 
 const qr = '/images/qr.gif'
 
@@ -1133,14 +1134,19 @@ export default function SignForm({
   }
 
   const afterSubmitExe = async ({ redirectName, broker, txHash, txType, result, xamanReturn = false }) => {
+    const effectiveBroker =
+      broker ||
+      signRequest?.broker?.name ||
+      partnerMarketplaces[signRequest?.request?.Destination]?.name
+
     //if broker, notify about the offer
-    if (broker) {
-      setStatus(t('signin.status.awaiting-broker', { serviceName: broker }))
-      if (broker === 'bidds') {
+    if (effectiveBroker) {
+      setStatus(t('signin.status.awaiting-broker', { serviceName: effectiveBroker }))
+      if (effectiveBroker === 'bidds') {
         setAwaiting(true)
         const response = await axios('/v2/bidds/transaction/broker/' + txHash).catch(() => {
           console.log('ERROR: can not get bidds transaction')
-          setStatus(t('signin.status.failed-broker', { serviceName: broker }))
+          setStatus(t('signin.status.failed-broker', { serviceName: effectiveBroker }))
           closeSignInFormAndRefresh() //setAwaiting false inside
         })
         setAwaiting(false)
@@ -1167,11 +1173,11 @@ export default function SignForm({
             // hash of the offer accept transaction
             validateTransactionOnLedger({ txid: responseData.data.hash, redirectName, txType, result })
           } else {
-            setStatus(t('signin.status.failed-broker', { serviceName: broker }))
+            setStatus(t('signin.status.failed-broker', { serviceName: effectiveBroker }))
             delay(3000, closeSignInFormAndRefresh)
           }
         } else {
-          setStatus(t('signin.status.failed-broker', { serviceName: broker }))
+          setStatus(t('signin.status.failed-broker', { serviceName: effectiveBroker }))
           delay(3000, closeSignInFormAndRefresh)
         }
       }
