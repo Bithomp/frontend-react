@@ -361,6 +361,7 @@ export default function Header({
     HIDE_SEARCH_HEADER.includes(router?.pathname) ||
     (HIDE_SEARCH_WHEN_NO_ID.some((route) => router?.pathname === route || router?.pathname?.startsWith(route + '/')) &&
       !router?.query?.id)
+  const headerSearchTab = router?.pathname?.startsWith('/nfts/') ? 'nfts' : 'account'
 
   const showLargeLogo = (width < 1050 && width > 370) || width >= 1440 || !width
   const showFiatRateSlot = !xahauNetwork || width > 460 || !width
@@ -791,7 +792,7 @@ export default function Header({
             <SearchBlock
               compact={true}
               searchPlaceholderText={width < 730 ? t('home.search-placeholder-short') : t('home.search-placeholder')}
-              tab="account"
+              tab={headerSearchTab}
             />
           ) : (
             <div className="header-search-reserved" aria-hidden="true" />
