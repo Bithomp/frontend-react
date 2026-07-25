@@ -84,6 +84,17 @@ const hasTokenValue = (token) => !!(token?.currency || mptIssuanceId(token))
 const mptDisplayName = (token) =>
   token?.metadata?.name || token?.metadata?.n || token?.metadata?.ticker || token?.metadata?.t || token?.currency || 'MPT'
 
+const mptDropdownName = (token) => {
+  const name = token?.metadata?.name || token?.metadata?.n
+  const ticker = token?.metadata?.ticker || token?.metadata?.t
+
+  if (!name || !ticker || String(name).trim().toLowerCase() === String(ticker).trim().toLowerCase()) {
+    return mptDisplayName(token)
+  }
+
+  return `${name} (${ticker})`
+}
+
 const tokenListUrl = (searchQuery, urlPart, onlyMPTokens) => {
   const trimmedQuery = searchQuery.trim()
 
@@ -485,7 +496,7 @@ export default function TokenSelector({
                                   </div>
                                   <div className="token-selector-modal-item-name">
                                     <span>
-                                      {getTokenDisplayName(token)}
+                                      {mptIssuanceId(token) ? mptDropdownName(token) : getTokenDisplayName(token)}
                                       {token.holders !== undefined && (
                                         <span
                                           style={{
