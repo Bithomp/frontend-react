@@ -242,7 +242,7 @@ const tooltipDivider = () =>
 
 const tooltipRow = ({ color, label, value, bold = false, formatter }) =>
   `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display:flex;align-items:center;gap:8px;padding:4px 10px;line-height:1.25;">
-    <span class="apexcharts-tooltip-marker" style="width:9px;height:9px;min-width:9px;border-radius:999px;background-color:${color};"></span>
+    <span class="apexcharts-tooltip-marker" style="background-color:${color};"></span>
     <div class="apexcharts-tooltip-text" style="display:flex;flex:1 1 auto;min-width:0;font-family:Helvetica, Arial, sans-serif;font-size:12px;">
       <div class="apexcharts-tooltip-y-group" style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;width:100%;font-weight:${bold ? 700 : 400};">
         <span class="apexcharts-tooltip-text-y-label" style="font-size:12px;white-space:normal;">${escapeHtml(label)}: </span>

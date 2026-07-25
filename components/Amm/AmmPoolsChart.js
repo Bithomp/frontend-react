@@ -136,7 +136,6 @@ export default function AmmPoolsChart({ rows, period = 'month', selectedPeriod =
             rows,
             minWidth: 214,
             maxWidth: 330,
-            markerSize: 18,
             valueFormatter: (value) => niceNumber(value, 0, 0)
           })
         },

@@ -1245,6 +1245,32 @@ body.dark {
   fill: var(--text-main) !important;
 }
 
+.apexcharts-tooltip-series-group {
+  gap: 8px;
+}
+
+.apexcharts-tooltip-marker {
+  display: block !important;
+  flex: 0 0 9px !important;
+  width: 9px !important;
+  height: 9px !important;
+  min-width: 9px !important;
+  margin: 0 !important;
+  overflow: hidden;
+  border-radius: 50% !important;
+}
+
+.apexcharts-tooltip-marker[shape]::before {
+  content: '' !important;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  background: currentColor;
+  border-radius: inherit;
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
 // Bar charts already highlight the hovered bar; ApexCharts' wide x-axis crosshair
 // adds a second grey block that obscures neighbouring series.
 .apexcharts-canvas:has(.apexcharts-bar-series) .apexcharts-xcrosshairs {
