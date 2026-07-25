@@ -78,10 +78,8 @@ export const DAPPS_META = [
       logo: 'anodos.png'
     },
     42697468: {
-      name: 'Bithomp',
+      name: 'Bithomp Bot',
       url: 'bithomp.com',
-      wallets: ['xaman', 'ledger', 'dcent', 'xyra', 'crossmark', 'gemwallet', 'metamask'],
-      walletconnect: ['joey', 'bifrost', 'girin'],
       x: 'bithomp',
       discord: 'invite/ZahGJ29WEs',
       instagram: 'bithomp',

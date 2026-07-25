@@ -325,7 +325,7 @@ export const dappBySourceTag = (sourceTag) => {
     37373737: 'HexTrust Custodian Wallet',
     38887387: 'Futureverse',
     42157396: 'BRLA',
-    42697468: 'Bithomp',
+    42697468: 'Bithomp Bot',
     46350430: 'Meld Gold',
     48151623: 'XRPL Dash',
     48484848: 'AMY DAO',
