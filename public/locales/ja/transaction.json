@@ -378,6 +378,15 @@
     "don't require": "不要",
     "yes": "はい",
     "no": "いいえ",
+    "Authorize MPT": "MPTを承認",
+    "Unauthorize MPT": "MPTの承認を解除",
+    "Create MPT issuance": "MPT発行を作成",
+    "Destroy MPT issuance": "MPT発行を破棄",
+    "Update MPT issuance": "MPT発行を更新",
+    "Enable global lock": "グローバルロックを有効化",
+    "Revoke global lock": "グローバルロックを解除",
+    "Lock MPT for holder": "保有者のMPTをロック",
+    "Unlock MPT for holder": "保有者のMPTをアンロック",
     "Accepted": "承認済み",
     "Not accepted": "未承認"
   }

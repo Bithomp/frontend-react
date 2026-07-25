@@ -378,6 +378,15 @@
     "don't require": "don't require",
     "yes": "yes",
     "no": "no",
+    "Authorize MPT": "Authorize MPT",
+    "Unauthorize MPT": "Unauthorize MPT",
+    "Create MPT issuance": "Create MPT issuance",
+    "Destroy MPT issuance": "Destroy MPT issuance",
+    "Update MPT issuance": "Update MPT issuance",
+    "Enable global lock": "Enable global lock",
+    "Revoke global lock": "Revoke global lock",
+    "Lock MPT for holder": "Lock MPT for holder",
+    "Unlock MPT for holder": "Unlock MPT for holder",
     "Accepted": "Accepted",
     "Not accepted": "Not accepted"
   }

@@ -378,6 +378,15 @@
     "don't require": "不需要",
     "yes": "是的",
     "no": "没有",
+    "Authorize MPT": "授权 MPT",
+    "Unauthorize MPT": "撤销 MPT 授权",
+    "Create MPT issuance": "创建 MPT 发行",
+    "Destroy MPT issuance": "销毁 MPT 发行",
+    "Update MPT issuance": "更新 MPT 发行",
+    "Enable global lock": "启用全局锁定",
+    "Revoke global lock": "解除全局锁定",
+    "Lock MPT for holder": "锁定持有者的 MPT",
+    "Unlock MPT for holder": "解锁持有者的 MPT",
     "Accepted": "已接受",
     "Not accepted": "不接受"
   }

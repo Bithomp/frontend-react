@@ -176,11 +176,33 @@
   }
 
   .tokenProfileActions {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 8px;
+    max-width: 100%;
 
     .button-action.wide {
-      width: 100%;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .tokenProfileActionButton {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+
+      span {
+        white-space: nowrap;
+      }
+
+      svg {
+        flex: 0 0 18px;
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 
@@ -3135,8 +3157,6 @@
       grid-column: 2;
 
       .button-action.wide {
-        justify-self: start;
-        max-width: 210px;
         min-height: 40px;
         padding: 9px 16px;
       }

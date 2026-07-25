@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { FaHandshake } from 'react-icons/fa'
+import { FaHandshake, FaLock, FaLockOpen } from 'react-icons/fa'
 import axios from 'axios'
 
 import SEO from '../../components/SEO'
@@ -1503,6 +1503,9 @@ export default function TokenPage({
     ? tokenDisplayCurrency
     : token?.currencyDetails?.currency || niceCurrency(token?.currency) || tokenDisplayCurrency
   const tokenIssuerLink = addressUsernameOrServiceLink(token, 'issuer')
+  const isMptIssuer = isMptToken && !!account?.address && account.address === token?.issuer
+  const canGloballyLockMpt = isMptIssuer && token?.flags?.canLock === true
+  const isMptGloballyLocked = token?.flags?.locked === true
   const currencyCodeText = token.currencyDetails?.currencyCode || token.currency
   const currencyCodeDisplay = displayCurrencyCode(currencyCodeText)
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
@@ -1579,6 +1582,18 @@ export default function TokenPage({
       request: {
         TransactionType: 'MPTokenAuthorize',
         MPTokenIssuanceID: mptId
+      }
+    })
+  }
+
+  const handleMptGlobalLock = () => {
+    if (!setSignRequest || !mptId || !canGloballyLockMpt) return
+    setSignRequest({
+      request: {
+        TransactionType: 'MPTokenIssuanceSet',
+        Account: token.issuer,
+        MPTokenIssuanceID: mptId,
+        Flags: isMptGloballyLocked ? 2 : 1
       }
     })
   }
@@ -2491,16 +2506,23 @@ export default function TokenPage({
                 </span>
               </div>
 
-              {(!isNativeToken || isMptToken) && (
+              {((!isNativeToken && !isMptToken) || (isMptToken && (!isMptIssuer || canGloballyLockMpt))) && (
                 <div className="tokenProfileActions">
                   {!isNativeToken && !isMptToken && (
                     <button className="button-action wide center" onClick={handleSetTrustline}>
                       {tt('actions.setTrustline')}
                     </button>
                   )}
-                  {isMptToken && (
-                    <button className="button-action wide center" onClick={handleAuthorizeMpt}>
-                      <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> {tt('actions.authorize')}
+                  {isMptToken && !isMptIssuer && (
+                    <button className="button-action wide tokenProfileActionButton" onClick={handleAuthorizeMpt}>
+                      <FaHandshake aria-hidden="true" />
+                      <span>{tt('actions.authorize')}</span>
+                    </button>
+                  )}
+                  {canGloballyLockMpt && (
+                    <button className="button-action wide tokenProfileActionButton" onClick={handleMptGlobalLock}>
+                      {isMptGloballyLocked ? <FaLockOpen aria-hidden="true" /> : <FaLock aria-hidden="true" />}
+                      <span>{isMptGloballyLocked ? tt('actions.revokeGlobalLock') : tt('actions.globalLock')}</span>
                     </button>
                   )}
                 </div>

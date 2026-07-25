@@ -378,6 +378,15 @@
     "don't require": "필수 아님",
     "yes": "예",
     "no": "아니요",
+    "Authorize MPT": "MPT 승인",
+    "Unauthorize MPT": "MPT 승인 취소",
+    "Create MPT issuance": "MPT 발행 생성",
+    "Destroy MPT issuance": "MPT 발행 폐기",
+    "Update MPT issuance": "MPT 발행 업데이트",
+    "Enable global lock": "전체 잠금 활성화",
+    "Revoke global lock": "전체 잠금 해제",
+    "Lock MPT for holder": "보유자 MPT 잠금",
+    "Unlock MPT for holder": "보유자 MPT 잠금 해제",
     "Accepted": "수락됨",
     "Not accepted": "수락되지 않음"
   }

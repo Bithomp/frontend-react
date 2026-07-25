@@ -79,7 +79,7 @@ export async function getServerSideProps({ locale }) {
   return { props: { ...(await serverSideTranslations(locale, ['common', 'services', 'token'])) } }
 }
 
-export default function IssueMptPage({ setSignRequest }) {
+export default function IssueMptPage({ setSignRequest, account }) {
   const { t } = useTranslation(['common', 'services'])
   const tm = useCallback((key, options) => t(`issue-mpt.${key}`, { ns: 'services', ...options }), [t])
   const [scale, setScale] = useState('0')
@@ -225,7 +225,11 @@ export default function IssueMptPage({ setSignRequest }) {
       errors.push(tm('errors.domain'))
     }
 
-    const request = { TransactionType: 'MPTokenIssuanceCreate', AssetScale: assetScale }
+    const request = {
+      TransactionType: 'MPTokenIssuanceCreate',
+      ...(isAddressValid(account?.address) ? { Account: account.address } : {}),
+      AssetScale: assetScale
+    }
     const activeFlags = mode === 'advanced' ? FLAGS : SIMPLE_FLAGS
     const flagValue = activeFlags.reduce((total, [key, value]) => total + (flags[key] ? value : 0), 0)
     if (flagValue) request.Flags = flagValue
@@ -235,7 +239,7 @@ export default function IssueMptPage({ setSignRequest }) {
     if (mode === 'advanced' && flags.requireAuth && domainId) request.DomainID = domainId.toUpperCase()
 
     return { errors, request, metadataBytes: metadataResult.bytes, maximumRaw }
-  }, [domainId, flags, maximum, metadata, mode, scale, tm, transferFee])
+  }, [account?.address, domainId, flags, maximum, metadata, mode, scale, tm, transferFee])
 
   const toggleFlag = (key) => {
     if (key === 'canTransfer' && flags.canTransfer) setTransferFee('')

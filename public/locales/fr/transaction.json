@@ -378,6 +378,15 @@
     "don't require": "non requis",
     "yes": "oui",
     "no": "non",
+    "Authorize MPT": "Autoriser le MPT",
+    "Unauthorize MPT": "Révoquer l’autorisation du MPT",
+    "Create MPT issuance": "Créer l’émission MPT",
+    "Destroy MPT issuance": "Détruire l’émission MPT",
+    "Update MPT issuance": "Mettre à jour l’émission MPT",
+    "Enable global lock": "Activer le verrouillage global",
+    "Revoke global lock": "Révoquer le verrouillage global",
+    "Lock MPT for holder": "Verrouiller le MPT pour le détenteur",
+    "Unlock MPT for holder": "Déverrouiller le MPT pour le détenteur",
     "Accepted": "Accepté",
     "Not accepted": "Non accepté"
   }

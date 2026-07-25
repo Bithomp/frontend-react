@@ -378,6 +378,15 @@
     "don't require": "tidak wajib",
     "yes": "ya",
     "no": "tidak",
+    "Authorize MPT": "Otorisasi MPT",
+    "Unauthorize MPT": "Cabut otorisasi MPT",
+    "Create MPT issuance": "Buat penerbitan MPT",
+    "Destroy MPT issuance": "Hapus penerbitan MPT",
+    "Update MPT issuance": "Perbarui penerbitan MPT",
+    "Enable global lock": "Aktifkan kunci global",
+    "Revoke global lock": "Cabut kunci global",
+    "Lock MPT for holder": "Kunci MPT untuk pemegang",
+    "Unlock MPT for holder": "Buka kunci MPT untuk pemegang",
     "Accepted": "Diterima",
     "Not accepted": "Tidak diterima"
   }

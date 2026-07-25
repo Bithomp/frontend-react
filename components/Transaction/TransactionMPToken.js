@@ -6,7 +6,9 @@ import CopyButton from '../UI/CopyButton'
 import { AddressWithIconFilled, CurrencyWithIcon, shortHash } from '../../utils/format'
 import { collectMptIssuanceIds } from '../../utils/transaction/mpt'
 
-const getMpTokenActionLabel = (txType, flags) => {
+const getMpTokenActionLabel = (tx, flags) => {
+  const txType = tx?.TransactionType
+
   if (txType === 'MPTokenAuthorize') {
     return flags?.unauthorize ? 'Unauthorize MPT' : 'Authorize MPT'
   }
@@ -17,6 +19,12 @@ const getMpTokenActionLabel = (txType, flags) => {
     return 'Destroy MPT issuance'
   }
   if (txType === 'MPTokenIssuanceSet') {
+    const holderSpecific = !!tx?.Holder
+    const lock = flags?.lock ?? (Number(tx?.Flags || 0) & 1) === 1
+    const unlock = flags?.unlock ?? (Number(tx?.Flags || 0) & 2) === 2
+
+    if (lock) return holderSpecific ? 'Lock MPT for holder' : 'Enable global lock'
+    if (unlock) return holderSpecific ? 'Unlock MPT for holder' : 'Revoke global lock'
     return 'Update MPT issuance'
   }
   return txType || 'MPToken transaction'
@@ -72,7 +80,7 @@ export const TransactionMPToken = ({ data, pageFiatRate, selectedCurrency }) => 
 
   const { specification, tx, mptokensDetails } = data
   const mptIssuanceIds = collectMptIssuanceIds(data)
-  const actionLabel = getMpTokenActionLabel(tx?.TransactionType, specification?.flags)
+  const actionLabel = getMpTokenActionLabel(tx, specification?.flags)
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -86,6 +94,14 @@ export const TransactionMPToken = ({ data, pageFiatRate, selectedCurrency }) => 
         <TData>Action</TData>
         <TData className="bold">{actionLabel}</TData>
       </tr>
+      {tx?.Holder && (
+        <tr>
+          <TData>Holder</TData>
+          <TData>
+            <AddressWithIconFilled data={{ address: tx.Holder }} name="address" />
+          </TData>
+        </tr>
+      )}
       <tr>
         <TData>{mptIssuanceIds.length > 1 ? 'MPTs' : 'MPT'}</TData>
         <TData>

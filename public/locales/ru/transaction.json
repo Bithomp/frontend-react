@@ -378,6 +378,15 @@
     "don't require": "не требуется",
     "yes": "да",
     "no": "нет",
+    "Authorize MPT": "Авторизовать MPT",
+    "Unauthorize MPT": "Отменить авторизацию MPT",
+    "Create MPT issuance": "Выпустить MPT",
+    "Destroy MPT issuance": "Уничтожить выпуск MPT",
+    "Update MPT issuance": "Обновить выпуск MPT",
+    "Enable global lock": "Включение глобальной блокировки",
+    "Revoke global lock": "Снятие глобальной блокировки",
+    "Lock MPT for holder": "Заблокировать MPT у держателя",
+    "Unlock MPT for holder": "Разблокировать MPT у держателя",
     "Accepted": "Принято",
     "Not accepted": "Не принято"
   }
