@@ -522,7 +522,15 @@ import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
 import FullHash from '../../components/UI/FullHash'
 import { CurrencyWithIcon } from '../../utils/format'
-import { NftImage, bestNftOffer, isNftExplicit, nftName, nftUrl, partnerMarketplaces } from '../../utils/nft'
+import {
+  NftImage,
+  bestNftOffer,
+  isNftExplicit,
+  nftName,
+  nftSellOfferPurchase,
+  nftUrl,
+  partnerMarketplaces
+} from '../../utils/nft'
 import {
   AddressWithIconFilled,
   AddressWithIconInline,
@@ -10510,7 +10518,35 @@ export default function Account({
                             !!account?.address &&
                             account.address === data?.address &&
                             (!ownerAddress || ownerAddress !== account.address)
+                          const isCreatedSellNftOffer =
+                            nftOffersTab === 'createdSelling' && offerTypeCode === 'sell'
                           const partnerMarketplace = destinationAddress ? partnerMarketplaces[destinationAddress] : null
+                          const sellOfferPurchase =
+                            isCreatedSellNftOffer && !effectiveLedgerTimestamp
+                              ? nftSellOfferPurchase({
+                                  offer,
+                                  nftId,
+                                  owner: ownerAddress,
+                                  issuer: nftDisplayData?.issuer || offer?.issuer,
+                                  buyer: account?.address
+                                })
+                              : null
+                          const canBuyCreatedNftOffer =
+                            !!setSignRequest &&
+                            isCreatedSellNftOffer &&
+                            !!offerIndex &&
+                            !!account?.address &&
+                            sellOfferPurchase?.type === 'sign'
+                          const disabledBuyCreatedNftOfferTooltip = (() => {
+                            if (!isCreatedSellNftOffer || sellOfferPurchase?.type === 'external' || canBuyCreatedNftOffer) return ''
+                            if (!account?.address) return ta('tooltips.connect-buy-nft')
+                            if (ownerAddress === account.address) return ta('tooltips.offer-owner-cannot-accept')
+                            if (offer?.valid === false) return ta('tooltips.offer-cannot-accept')
+                            if (destinationAddress && destinationAddress !== account.address && !partnerMarketplace) {
+                              return ta('tooltips.only-destination-accept')
+                            }
+                            return ta('tooltips.offer-cannot-accept')
+                          })()
                           const partnerSellOfferSignRequest =
                             isOwnedNftOfferTab &&
                             partnerMarketplace &&
@@ -10810,6 +10846,40 @@ export default function Account({
 
                                     {isCreatedNftOfferTab && !xahauNetwork && (
                                       <div className="card-actions">
+                                        {isCreatedSellNftOffer && sellOfferPurchase?.type === 'external' ? (
+                                          <a
+                                            className="card-action-btn redeem"
+                                            href={sellOfferPurchase.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            {t('button.nft.buy-for-amount-on', {
+                                              amount: amountFormat(offer.amount),
+                                              service: sellOfferPurchase.service
+                                            })}
+                                          </a>
+                                        ) : isCreatedSellNftOffer ? (
+                                          <span className={disabledBuyCreatedNftOfferTooltip ? 'tooltip' : ''}>
+                                            <button
+                                              type="button"
+                                              className={`card-action-btn ${canBuyCreatedNftOffer ? 'redeem' : 'disabled'}`}
+                                              disabled={!canBuyCreatedNftOffer}
+                                              onClick={() => {
+                                                if (!canBuyCreatedNftOffer) return
+                                                setSignRequest(sellOfferPurchase.signRequest)
+                                              }}
+                                            >
+                                              {ta('actions.buy-nft-for', {
+                                                amount: amountFormat(sellOfferPurchase?.displayAmount || offer.amount)
+                                              })}
+                                            </button>
+                                            {!!disabledBuyCreatedNftOfferTooltip && (
+                                              <span className="tooltiptext left">
+                                                {disabledBuyCreatedNftOfferTooltip}
+                                              </span>
+                                            )}
+                                          </span>
+                                        ) : null}
                                         <span className={disabledCancelCreatedNftOfferTooltip ? 'tooltip' : ''}>
                                           <button
                                             type="button"

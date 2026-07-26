@@ -23,8 +23,8 @@ import { AddressWithIconFilled, convertedAmount, tokenToFiat, timeFromNow, usern
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
   nftName,
-  mpUrl,
   bestNftOffer,
+  nftSellOfferPurchase,
   nftUrl,
   partnerMarketplaces,
   ipfsUrl,
@@ -917,69 +917,35 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       return ''
     }
 
-    if (mpUrl(best)) {
-      //Partner marketplaces - place counteroffers
-      if (partnerMarketplaces[best.destination]) {
-        const { multiplier, fee, name, feeText } = partnerMarketplaces[best.destination]
-        let request = {
-          TransactionType: 'NFTokenCreateOffer',
-          NFTokenID: id,
-          Destination: best.destination,
-          Owner: data.owner,
-          Amount: Math.ceil(best.amount * multiplier).toString()
-        }
-
-        if (best.amount.value) {
-          request.Amount = {
-            value: Math.ceil(best.amount.value * multiplier).toString(),
-            currency: best.amount.currency,
-            issuer: best.amount.issuer
-          }
-        } else {
-          request.Amount = Math.ceil(best.amount * multiplier).toString()
-        }
-
-        if (name === 'bidds') {
-          if (data.issuer === data.owner) {
-            return ''
-          }
-          if (request.Amount === '0') {
-            return '' // 0 amount is won't be accepted by bidds
-          }
-        }
-
+    if (data.type === 'xls35') {
+      if (!best.destination || (accountAddress && accountAddress === best.destination)) {
         return (
           <>
-            <button
-              className="button-action wide center"
-              onClick={() =>
-                setSignRequest({
-                  request,
-                  broker: {
-                    name,
-                    fee: Math.ceil(best.amount > 0 ? best.amount * fee : 1),
-                    nftPrice: best.amount,
-                    feeText
-                  }
-                })
-              }
-            >
-              {t('button.nft.buy-for-amount', {
-                amount: amountFormat(Math.ceil(best.amount > 0 ? best.amount * multiplier : 1))
-              })}
-            </button>
+            {acceptNftSellOfferButton(t, setSignRequest, best, data.type)}
             <br />
             <br />
           </>
         )
       }
+      return ''
+    }
 
+    const purchase = nftSellOfferPurchase({
+      offer: best,
+      nftId: id,
+      owner: data.owner || best.owner,
+      issuer: data.issuer,
+      buyer: accountAddress
+    })
+    if (!purchase) return ''
+
+    if (purchase.type === 'external') {
       return (
         <>
-          <a className="button-action wide center" href={mpUrl(best)} target="_blank" rel="noreferrer">
+          <a className="button-action wide center" href={purchase.url} target="_blank" rel="noreferrer">
             {t('button.nft.buy-for-amount-on', {
-              amount: amountFormat(best.amount),
-              service: best.destinationDetails.service
+              amount: amountFormat(purchase.displayAmount),
+              service: purchase.service
             })}
           </a>
           <br />
@@ -988,20 +954,15 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       )
     }
 
-    //1. check if owner is above - will show Cancel,
-    //2. if known destination, we have checked it above mpURL (xls20 brokers)
-    //3. check there is no destination, or destination is me (xls20 private offers, xls35)
-    if (!best.destination || (best.destination && accountAddress && accountAddress === best.destination)) {
-      return (
-        <>
-          {acceptNftSellOfferButton(t, setSignRequest, best, data.type)}
-          <br />
-          <br />
-        </>
-      )
-    }
-
-    return ''
+    return (
+      <>
+        <button className="button-action wide center" onClick={() => setSignRequest(purchase.signRequest)}>
+          {t('button.nft.buy-for-amount', { amount: amountFormat(purchase.displayAmount) })}
+        </button>
+        <br />
+        <br />
+      </>
+    )
   }
 
   const sellButton = (buyOffers) => {

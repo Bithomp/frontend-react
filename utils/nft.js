@@ -88,6 +88,76 @@ export const mpUrl = (offer) => {
   }
 }
 
+export const nftSellOfferPurchase = ({ offer, nftId, owner, issuer, buyer }) => {
+  if (!offer || !nftId || !owner || offer.valid === false || (buyer && owner === buyer)) return null
+
+  const marketplaceUrl = mpUrl(offer)
+  const marketplace = offer.destination ? partnerMarketplaces[offer.destination] : null
+
+  if (marketplaceUrl && !marketplace) {
+    return {
+      type: 'external',
+      url: marketplaceUrl,
+      service: offer.destinationDetails?.service || 'marketplace',
+      displayAmount: offer.amount
+    }
+  }
+
+  if (marketplace) {
+    if (!offer.amount || Number(offer.amount?.value || offer.amount) === 0) return null
+
+    const { multiplier, fee, name, feeText } = marketplace
+    if (name === 'bidds' && issuer === owner) return null
+
+    const amount = offer.amount?.value
+      ? {
+          value: Math.ceil(Number(offer.amount.value) * multiplier).toString(),
+          currency: offer.amount.currency,
+          issuer: offer.amount.issuer
+        }
+      : Math.ceil(Number(offer.amount) * multiplier).toString()
+
+    return {
+      type: 'sign',
+      displayAmount: amount,
+      signRequest: {
+        offerAmount: offer.amount,
+        offerType: 'sell',
+        request: {
+          TransactionType: 'NFTokenCreateOffer',
+          ...(buyer ? { Account: buyer } : {}),
+          NFTokenID: nftId,
+          Destination: offer.destination,
+          Owner: owner,
+          Amount: amount
+        },
+        broker: {
+          name,
+          fee: Math.ceil(Number(offer.amount?.value || offer.amount) * fee || 1),
+          nftPrice: offer.amount,
+          feeText
+        }
+      }
+    }
+  }
+
+  if (offer.destination && offer.destination !== buyer) return null
+
+  return {
+    type: 'sign',
+    displayAmount: offer.amount,
+    signRequest: {
+      offerAmount: offer.amount,
+      offerType: 'sell',
+      request: {
+        TransactionType: 'NFTokenAcceptOffer',
+        ...(buyer ? { Account: buyer } : {}),
+        NFTokenSellOffer: offer.offerIndex
+      }
+    }
+  }
+}
+
 export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell', showLowest = false) => {
   if (!nftOffers) return null
 
