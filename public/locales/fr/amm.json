@@ -292,6 +292,7 @@
       "maxLpPerAsset": "LP max par {{asset}}",
       "priceLimitNote": "Suggere depuis le pool actuel et inclut un buffer de 0.5%.",
       "approxLpToRedeem": "Tokens LP a racheter",
+      "shareAll": "Tout",
       "modes": {
         "twoAsset": {
           "label": "Deux actifs",

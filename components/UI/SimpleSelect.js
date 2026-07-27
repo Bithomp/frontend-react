@@ -7,7 +7,8 @@ export default function SimpleSelect({
   optionsList,
   className,
   instanceId = 'dropdown',
-  formatOptionLabel
+  formatOptionLabel,
+  menuPortal = false
 }) {
   const [rendered, setRendered] = useState(false)
   const [choosenOption, setChoosenOption] = useState(undefined)
@@ -53,11 +54,17 @@ export default function SimpleSelect({
       isSearchable={false}
       className={`dropdown ${className || ''}`}
       classNamePrefix="react-select"
+      menuPortalTarget={menuPortal ? document.body : undefined}
+      menuPosition={menuPortal ? 'fixed' : 'absolute'}
       styles={{
         menuList: (provided) => ({
           ...provided,
           maxHeight: 200,
           overflowY: 'auto'
+        }),
+        menuPortal: (provided) => ({
+          ...provided,
+          zIndex: 1000
         })
       }}
     />

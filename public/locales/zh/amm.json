@@ -292,6 +292,7 @@
       "maxLpPerAsset": "每 {{asset}} 最大 LP",
       "priceLimitNote": "根据当前池建议，并包含 0.5% 缓冲。",
       "approxLpToRedeem": "赎回的 LP 代币",
+      "shareAll": "全部",
       "modes": {
         "twoAsset": {
           "label": "双资产",

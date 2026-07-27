@@ -292,6 +292,7 @@
       "maxLpPerAsset": "Макс. LP на {{asset}}",
       "priceLimitNote": "Рассчитано по текущему пулу и включает буфер 0.5%.",
       "approxLpToRedeem": "LP к списанию",
+      "shareAll": "Всё",
       "modes": {
         "twoAsset": {
           "label": "Два актива",

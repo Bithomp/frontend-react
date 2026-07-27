@@ -292,6 +292,7 @@
       "maxLpPerAsset": "LP max. por {{asset}}",
       "priceLimitNote": "Sugerido desde el pool actual e incluye un buffer de 0.5%.",
       "approxLpToRedeem": "Tokens LP a canjear",
+      "shareAll": "Todo",
       "modes": {
         "twoAsset": {
           "label": "Dos activos",

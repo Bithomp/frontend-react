@@ -1099,6 +1099,7 @@ export default function Account({
       const asset1 = ammData?.amount
       const asset2 = ammData?.amount2
       const lpToken = ammData?.lpTokenBalance
+      const availableLpTokens = Math.abs(subtract(token?.Balance?.value, token?.LockedBalance?.value || 0))
 
       if (!asset1 || !asset2 || !lpToken?.currency || !lpToken?.issuer || !lpToken?.value) return
 
@@ -1117,7 +1118,8 @@ export default function Account({
           lpToken: {
             currency: lpToken.currency,
             issuer: lpToken.issuer,
-            value: lpToken.value
+            value: lpToken.value,
+            available: action === 'ammWithdraw' ? availableLpTokens : undefined
           }
         }
       })

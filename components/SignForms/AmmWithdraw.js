@@ -20,6 +20,7 @@ const FLAGS = {
 
 const FEE_SCALE = 100000
 const WITHDRAW_ESTIMATE_MARGIN = new BigNumber('0.005')
+const WITHDRAW_SHARES = [10, 25, 50, 100]
 
 const isNativeAsset = (asset) => !asset || typeof asset !== 'object' || !asset.issuer
 const assetName = (asset) => (isNativeAsset(asset) ? nativeCurrency : niceCurrency(asset.currency))
@@ -279,6 +280,7 @@ export default function AmmWithdraw({
   const [amount2, setAmount2] = useState('')
   const [lpTokenIn, setLpTokenIn] = useState('')
   const [ePrice, setEPrice] = useState('')
+  const [selectedShare, setSelectedShare] = useState(null)
 
   const selectedAsset = selectedAssetKey === 'asset2' ? asset2 : asset1
   const modeInfo = modes.find((item) => item.value === mode)
@@ -300,7 +302,39 @@ export default function AmmWithdraw({
     { value: 'asset1', label: assetName(asset1), token: displayToken(asset1) },
     { value: 'asset2', label: assetName(asset2), token: displayToken(asset2) }
   ]
+  const availableLpTokens = formatPoolAmount(new BigNumber(lpToken?.available || 0))
+
+  const applyWithdrawalShare = (share, event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    if (!availableLpTokens) return
+
+    const singleAssetMode = ['tfSingleAsset', 'tfOneAssetLPToken', 'tfLimitLPToken', 'tfOneAssetWithdrawAll'].includes(mode)
+    setSelectedShare(share)
+
+    if (share === 100) {
+      if (singleAssetMode) {
+        setAmount1('0')
+        setMode('tfOneAssetWithdrawAll')
+      } else {
+        setMode('tfWithdrawAll')
+      }
+      return
+    }
+
+    const lpAmount = formatPoolAmount(new BigNumber(availableLpTokens).multipliedBy(share).dividedBy(100))
+    setLpTokenIn(lpAmount)
+
+    if (singleAssetMode) {
+      setAmount1(approximateSingleAssetAmountLimit({ lpTokenIn: lpAmount, asset: selectedAsset, lpToken, tradingFee }))
+      setMode('tfOneAssetLPToken')
+    } else {
+      setMode('tfLPToken')
+    }
+  }
+
   const setWithdrawMode = (value) => {
+    setSelectedShare(null)
     setMode(value)
 
     if (value === 'tfTwoAsset' && amount1 && !amount2) {
@@ -332,6 +366,7 @@ export default function AmmWithdraw({
   }
 
   const onAmount1Change = (value) => {
+    setSelectedShare(null)
     setAmount1(value)
     if (isTwoAssetMode) setAmount2(pairedAssetAmount(value, asset1, asset2))
     if (mode === 'tfOneAssetLPToken') {
@@ -342,11 +377,13 @@ export default function AmmWithdraw({
   }
 
   const onAmount2Change = (value) => {
+    setSelectedShare(null)
     setAmount2(value)
     if (isTwoAssetMode) setAmount1(pairedAssetAmount(value, asset2, asset1))
   }
 
   const onLpTokenInChange = (value) => {
+    setSelectedShare(null)
     setLpTokenIn(value)
     if (mode === 'tfOneAssetLPToken') {
       setAmount1(approximateSingleAssetAmountLimit({ lpTokenIn: value, asset: selectedAsset, lpToken, tradingFee }))
@@ -429,6 +466,7 @@ export default function AmmWithdraw({
           setValue={setWithdrawMode}
           optionsList={modes}
           instanceId="amm-withdraw-mode-select"
+          menuPortal
         />
         {modeInfo?.description ? <span className="input-title ammModeDescription">{modeInfo.description}</span> : null}
       </span>
@@ -440,6 +478,27 @@ export default function AmmWithdraw({
           <CurrencyWithIconInline token={displayToken(asset2)} link={true} />
         </b>
       </span>
+
+      {availableLpTokens ? (
+        <span className="halv ammWithdrawBalance">
+          <span className="ammAvailableBalance" title={`${availableLpTokens} LP`}>
+            {t('sign.deposit.available')}: {shortNiceNumber(availableLpTokens, 6, 2)} LP
+          </span>
+          <span className="ammWithdrawShares" role="group" aria-label={t('sign.withdraw.lpTokensToRedeem')}>
+            {WITHDRAW_SHARES.map((share) => (
+              <button
+                key={share}
+                type="button"
+                className={`ammWithdrawShareButton${selectedShare === share ? ' selected' : ''}`}
+                aria-pressed={selectedShare === share}
+                onClick={(event) => applyWithdrawalShare(share, event)}
+              >
+                {share === 100 ? t('sign.withdraw.shareAll') : `${share}%`}
+              </button>
+            ))}
+          </span>
+        </span>
+      ) : null}
 
       <br />
       {showSingleAssetSelector ? (

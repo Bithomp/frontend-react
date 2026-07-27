@@ -292,6 +292,7 @@
       "maxLpPerAsset": "{{asset}} あたり最大 LP",
       "priceLimitNote": "現在のプールから提案され、0.5% のバッファを含みます。",
       "approxLpToRedeem": "償還する LP トークン",
+      "shareAll": "すべて",
       "modes": {
         "twoAsset": {
           "label": "2つの資産",

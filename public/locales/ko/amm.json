@@ -292,6 +292,7 @@
       "maxLpPerAsset": "{{asset}}당 최대 LP",
       "priceLimitNote": "현재 풀 기준 제안값이며 0.5% 버퍼를 포함합니다.",
       "approxLpToRedeem": "상환 LP 토큰",
+      "shareAll": "전체",
       "modes": {
         "twoAsset": {
           "label": "두 자산",

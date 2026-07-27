@@ -292,6 +292,7 @@
       "maxLpPerAsset": "Max LP per {{asset}}",
       "priceLimitNote": "Suggested from the current pool and includes a 0.5% buffer.",
       "approxLpToRedeem": "LP tokens to redeem",
+      "shareAll": "All",
       "modes": {
         "twoAsset": {
           "label": "Two assets",

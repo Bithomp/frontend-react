@@ -733,6 +733,51 @@
       }
     }
 
+    .ammWithdrawBalance {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 0;
+      margin-top: 8px;
+    }
+
+    .ammWithdrawShares {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 2px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--background-input);
+    }
+
+    .ammWithdrawShareButton {
+      appearance: none;
+      min-width: 38px;
+      min-height: 26px;
+      padding: 3px 7px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--accent-link);
+        background: color-mix(in srgb, var(--accent-link) 9%, transparent);
+      }
+
+      &.selected {
+        color: var(--button-text);
+        background: var(--accent-link);
+      }
+    }
+
     .paymentAmountHeader {
       display: flex;
       align-items: stretch;
@@ -1000,6 +1045,23 @@
         justify-content: flex-start;
         max-width: 100%;
         text-align: left;
+      }
+
+      .ammWithdrawBalance {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+      }
+
+      .ammWithdrawShares {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+      }
+
+      .ammWithdrawShareButton {
+        min-width: 0;
       }
     }
 

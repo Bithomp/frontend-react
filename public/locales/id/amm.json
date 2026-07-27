@@ -292,6 +292,7 @@
       "maxLpPerAsset": "LP maks. per {{asset}}",
       "priceLimitNote": "Disarankan dari pool saat ini dan mencakup buffer 0.5%.",
       "approxLpToRedeem": "Token LP ditebus",
+      "shareAll": "Semua",
       "modes": {
         "twoAsset": {
           "label": "Dua aset",
