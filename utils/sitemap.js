@@ -4,6 +4,12 @@ import { dappsApiUrl } from './dapps'
 import { DEFAULT_DAPP_ORDER, filterDappsForListing, sortDapps } from './dappListing'
 
 const isPublicMainnet = network === 'mainnet' || network === 'xahau'
+const hasBithompLanguageAlternates = network === 'mainnet' && !xahauNetwork
+const BITHOMP_LANGUAGE_DOMAINS = {
+  en: 'https://bithomp.com',
+  'ru-RU': 'https://bithomp.ru',
+  'x-default': 'https://bithomp.com'
+}
 
 const pageEntries = [
   { loc: 'dapps', changefreq: 'daily', priority: '1' },
@@ -142,6 +148,7 @@ if (network === 'mainnet') {
 }
 
 const absoluteUrl = (loc) => `${server}${loc ? `/${loc}` : ''}`
+const languageAlternateUrl = (domain, loc) => `${domain}${loc ? `/${loc}` : ''}`
 
 const sitemapEntry = (loc, changefreq = 'daily', priority = '0.8') => ({
   loc,
@@ -311,12 +318,27 @@ const escapeXml = (value) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&apos;')
 
+const languageAlternateLinks = (loc) =>
+  hasBithompLanguageAlternates
+    ? Object.entries(BITHOMP_LANGUAGE_DOMAINS)
+        .map(
+          ([language, domain]) =>
+            `    <xhtml:link rel="alternate" hreflang="${language}" href="${escapeXml(
+              languageAlternateUrl(domain, loc)
+            )}" />`
+        )
+        .join('\n')
+    : ''
+
 export const generateUrlSet = (entries) => `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${
+  hasBithompLanguageAlternates ? ' xmlns:xhtml="http://www.w3.org/1999/xhtml"' : ''
+}>
 ${entries
   .map(
     ({ loc, changefreq, priority }) => `  <url>
     <loc>${escapeXml(absoluteUrl(loc))}</loc>
+${languageAlternateLinks(loc)}
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`
