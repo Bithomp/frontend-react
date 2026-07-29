@@ -32,6 +32,7 @@ import {
   xahauNetwork
 } from '../../utils'
 import { TESTNET_RLUSD_CURRENCY, TESTNET_RLUSD_ISSUER } from '../../utils/faucet'
+import { socialAccountUrl } from '../../utils/socialAccounts'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 import { shouldIndexAccount } from '../../utils/seo'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
@@ -3362,18 +3363,18 @@ export default function Account({
   const socialAccountsNode = socialAccounts ? (
     <div className="social-icons">
       {socialAccounts.twitter && (
-        <a href={`https://x.com/${socialAccounts.twitter}`} aria-label="X" target="_blank" rel="noopener">
+        <a href={socialAccountUrl('twitter', socialAccounts.twitter)} aria-label="X" target="_blank" rel="noopener">
           <FaXTwitter />
         </a>
       )}
       {socialAccounts.youtube && (
-        <a href={`https://youtube.com/${socialAccounts.youtube}`} aria-label="Youtube" target="_blank" rel="noopener">
+        <a href={socialAccountUrl('youtube', socialAccounts.youtube)} aria-label="Youtube" target="_blank" rel="noopener">
           <FaYoutube />
         </a>
       )}
       {socialAccounts.linkedin && (
         <a
-          href={`https://linkedin.com/company/${socialAccounts.linkedin}/`}
+          href={socialAccountUrl('linkedin', socialAccounts.linkedin)}
           aria-label="Linkedin"
           target="_blank"
           rel="noopener"
@@ -3383,7 +3384,7 @@ export default function Account({
       )}
       {socialAccounts.instagram && (
         <a
-          href={`https://www.instagram.com/${socialAccounts.instagram}/`}
+          href={socialAccountUrl('instagram', socialAccounts.instagram)}
           aria-label="Instagram"
           target="_blank"
           rel="noopener"
@@ -3392,13 +3393,13 @@ export default function Account({
         </a>
       )}
       {socialAccounts.telegram && (
-        <a href={`https://t.me/${socialAccounts.telegram}`} aria-label="Telegram" target="_blank" rel="noopener">
+        <a href={socialAccountUrl('telegram', socialAccounts.telegram)} aria-label="Telegram" target="_blank" rel="noopener">
           <FaTelegram />
         </a>
       )}
       {socialAccounts.facebook && (
         <a
-          href={`https://www.facebook.com/${socialAccounts.facebook}/`}
+          href={socialAccountUrl('facebook', socialAccounts.facebook)}
           aria-label="Facebook"
           target="_blank"
           rel="noopener"
@@ -3407,12 +3408,12 @@ export default function Account({
         </a>
       )}
       {socialAccounts.medium && (
-        <a href={`https://medium.com/${socialAccounts.medium}`} aria-label="Medium" target="_blank" rel="noopener">
+        <a href={socialAccountUrl('medium', socialAccounts.medium)} aria-label="Medium" target="_blank" rel="noopener">
           <FaMedium />
         </a>
       )}
       {socialAccounts.reddit && (
-        <a href={`https://www.reddit.com/${socialAccounts.reddit}/`} aria-label="Reddit" target="_blank" rel="noopener">
+        <a href={socialAccountUrl('reddit', socialAccounts.reddit)} aria-label="Reddit" target="_blank" rel="noopener">
           <FaReddit />
         </a>
       )}
@@ -3538,7 +3539,7 @@ export default function Account({
   }
 
   if (data?.ledgerInfo?.domain) {
-    const domainText = stripDomain(data.ledgerInfo.domain)
+    const domainText = stripDomain(data.ledgerInfo.domain, { preserveWww: true })
     const isValidDomain = isDomainValid(domainText)
     const showUnverified =
       isValidDomain &&

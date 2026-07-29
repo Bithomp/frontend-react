@@ -839,11 +839,13 @@ export const isUrlValid = (x) => {
   }
 }
 
-export const stripDomain = (x) => {
+export const stripDomain = (x, { preserveWww = false } = {}) => {
   if (!x) return ''
   x = x.replace('http://', '')
   x = x.replace('https://', '')
-  x = x.replace('www.', '')
+  if (!preserveWww) {
+    x = x.replace('www.', '')
+  }
   x = x.split('/')[0]
   return x
 }

@@ -14,6 +14,7 @@ import SEO from '../components/SEO'
 import { localePath } from '../utils'
 import axios from 'axios'
 import ServicesTabs from '../components/Tabs/ServicesTabs'
+import { normalizeSocialAccount } from '../utils/socialAccounts'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -110,8 +111,6 @@ export default function SubmitAccountInformation() {
     telegram: ''
   })
 
-  const baseList = ['address', 'name', 'email', 'domain']
-
   const style = {
     fontSize: '18px',
     marginBlock: '50px 12px'
@@ -160,7 +159,11 @@ export default function SubmitAccountInformation() {
 
   const onSubmit = async () => {
     // eslint-disable-next-line no-unused-vars
-    const clearData = Object.fromEntries(Object.entries(allValues).filter(([key, value]) => value !== ''))
+    const clearData = Object.fromEntries(
+      Object.entries(allValues)
+        .map(([key, value]) => [key, String(value || '').trim()])
+        .filter(([, value]) => value !== '')
+    )
 
     if (!clearData.address) {
       setErrorMessage(t('form.error.address-empty'))
@@ -204,23 +207,18 @@ export default function SubmitAccountInformation() {
       return
     }
 
-    const structuredData = Object.keys(clearData).reduce((obj, key) => {
-      if (baseList.includes(key)) {
-        return {
-          ...obj,
-          [key]: clearData[key]
-        }
-      } else {
-        return {
-          ...obj,
-          email,
-          accounts: {
-            ...(obj.accounts || {}),
-            [key]: clearData[key]
-          }
-        }
-      }
-    }, {})
+    const accounts = Object.fromEntries(
+      Object.entries(clearData)
+        .filter(([key]) => !['address', 'name', 'domain'].includes(key))
+        .map(([key, value]) => [key, normalizeSocialAccount(key, value)])
+        .filter(([, value]) => value)
+    )
+    const structuredData = {
+      address: clearData.address,
+      name: clearData.name,
+      domain: clearData.domain,
+      ...(Object.keys(accounts).length ? { email, accounts } : {})
+    }
 
     const apiData = await axios.post('v1/userinfo', structuredData).catch((error) => {
       setErrorMessage(t('error.' + error?.response?.data?.error, { ns: 'submit-account-information' }))
