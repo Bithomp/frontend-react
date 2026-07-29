@@ -32,6 +32,7 @@
     "issue-a-token": "{{explorerName}}에서 토큰을 발행하는 방법",
     "guide-for-token-issuers": "토큰 발행자 가이드: username, TOML 파일, 프로젝트 등록",
     "guide-for-xrpl-projects": "XRPL 프로젝트 프로필 설정 방법",
+    "guide-for-xahau-projects": "Xahau 프로젝트 프로필 설정 방법",
     "image-services": "Bithomp 이미지 서비스",
     "trustlines": "Trustline 이해하기",
     "nft-explorer": "NFT Explorer",

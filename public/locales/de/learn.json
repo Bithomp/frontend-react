@@ -32,6 +32,7 @@
     "issue-a-token": "Einen Token im {{explorerName}} ausgeben",
     "guide-for-token-issuers": "Leitfaden für Token-Emittenten: Username, TOML-Datei, Projektregistrierung",
     "guide-for-xrpl-projects": "So richtest du ein XRPL-Projektprofil ein",
+    "guide-for-xahau-projects": "So richtest du ein Xahau-Projektprofil ein",
     "image-services": "Bithomp-Bilddienste",
     "trustlines": "Trustlines verstehen",
     "nft-explorer": "NFT Explorer",

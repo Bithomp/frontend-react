@@ -32,6 +32,7 @@
     "issue-a-token": "Cara menerbitkan token di {{explorerName}}",
     "guide-for-token-issuers": "Panduan untuk penerbit token: username, file TOML, pendaftaran proyek",
     "guide-for-xrpl-projects": "Cara menyiapkan profil proyek XRPL",
+    "guide-for-xahau-projects": "Cara menyiapkan profil proyek Xahau",
     "image-services": "Layanan gambar Bithomp",
     "trustlines": "Memahami trustline",
     "nft-explorer": "NFT Explorer",

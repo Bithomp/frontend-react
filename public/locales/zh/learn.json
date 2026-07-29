@@ -32,6 +32,7 @@
     "issue-a-token": "如何在 {{explorerName}} 上发行代币",
     "guide-for-token-issuers": "代币发行方指南：username、TOML 文件、项目注册",
     "guide-for-xrpl-projects": "如何设置 XRPL 项目资料",
+    "guide-for-xahau-projects": "如何设置 Xahau 项目资料",
     "image-services": "Bithomp 图片服务",
     "trustlines": "理解 trustline",
     "nft-explorer": "NFT Explorer",
