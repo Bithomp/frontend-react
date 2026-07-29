@@ -125,7 +125,7 @@ import { useRouter } from 'next/router'
 import SimpleSelect from '../components/UI/SimpleSelect'
 import { distributionClass } from '../styles/pages/distribution.module.scss'
 import { useTheme } from '../components/Layout/ThemeContext'
-import { apexChartTheme, apexDonutSliceColors } from '../utils/apexCharts'
+import { apexChartTheme, apexDonutSliceColors, apexDonutStates } from '../utils/apexCharts'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -150,6 +150,7 @@ function DistributionDonut({ rows, totalCoins, actions }) {
       chart: { type: 'donut', animations: { enabled: false }, foreColor: chartTheme.textColor },
       labels,
       colors: apexDonutSliceColors(series.length),
+      states: apexDonutStates,
       dataLabels: { enabled: false },
       legend: { show: false },
       stroke: { width: 1, colors: ['var(--card-bg)'] },

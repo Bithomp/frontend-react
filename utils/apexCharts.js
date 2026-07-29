@@ -29,6 +29,21 @@ export const apexDonutSliceColor = (index, count) => {
 
 export const apexDonutSliceColors = (count) => Array.from({ length: count }, (_, index) => apexDonutSliceColor(index, count))
 
+export const apexDonutStates = {
+  hover: {
+    filter: {
+      type: 'darken',
+      value: 0.08
+    }
+  },
+  active: {
+    filter: {
+      type: 'darken',
+      value: 0.12
+    }
+  }
+}
+
 const execApexChart = (chartId, method, ...args) => {
   if (typeof window === 'undefined') return
 

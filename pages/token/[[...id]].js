@@ -42,6 +42,7 @@ import {
   apexChartTheme,
   apexDonutSliceColor,
   apexDonutSliceColors,
+  apexDonutStates,
   apexSafeChartId,
   syncApexDonutSelection
 } from '../../utils/apexCharts'
@@ -519,6 +520,7 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
       },
       labels: chartItems.map((item) => item.label),
       colors: holderChartColors(chartItems.length),
+      states: apexDonutStates,
       dataLabels: { enabled: false },
       legend: { show: false },
       stroke: { width: 1, colors: ['var(--card-bg)'] },

@@ -27,6 +27,7 @@ import {
   apexChartTheme,
   apexDonutSliceColor,
   apexDonutSliceColors,
+  apexDonutStates,
   apexSafeChartId,
   syncApexDonutSelection
 } from '../../utils/apexCharts'
@@ -1009,6 +1010,7 @@ function AmmContributorsCard({ contributors, rawData, data, loading, lpTokenUnit
       },
       labels: chartItems.map((item) => item.label),
       colors: contributorChartColors(chartItems.length),
+      states: apexDonutStates,
       dataLabels: {
         enabled: false
       },
