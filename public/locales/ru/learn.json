@@ -31,6 +31,7 @@
     "xrp-xah-taxes": "Налоги по XRP и XAH - CSV-экспорт для отчета",
     "issue-a-token": "Как выпустить токен в {{explorerName}}",
     "guide-for-token-issuers": "Руководство для эмитентов токенов: username, TOML-файл, регистрация проекта",
+    "guide-for-xrpl-projects": "Как оформить профиль проекта в XRPL",
     "image-services": "Сервисы изображений Bithomp",
     "trustlines": "Что такое trustline",
     "nft-explorer": "NFT Explorer",

@@ -31,6 +31,7 @@
     "xrp-xah-taxes": "Fiscalité XRP et XAH - exports CSV pour votre rapport",
     "issue-a-token": "Comment émettre un token sur {{explorerName}}",
     "guide-for-token-issuers": "Guide pour les émetteurs de tokens : username, fichier TOML, enregistrement du projet",
+    "guide-for-xrpl-projects": "Configurer le profil d’un projet XRPL",
     "image-services": "Services d'images Bithomp",
     "trustlines": "Comprendre les trustlines",
     "nft-explorer": "NFT Explorer",

@@ -31,6 +31,14 @@ export const articleDates = {
     datePublished: '2025-09-28T10:49:11+03:00',
     dateModified: '2026-07-23T15:31:44+05:00'
   },
+  '/learn/guide-for-xrpl-projects': {
+    datePublished: '2026-07-29T13:15:31+05:00',
+    dateModified: '2026-07-29T13:15:31+05:00'
+  },
+  '/learn/guide-for-xahau-projects': {
+    datePublished: '2026-07-29T13:15:31+05:00',
+    dateModified: '2026-07-29T13:15:31+05:00'
+  },
   '/learn/image-services': {
     datePublished: '2025-10-29T10:50:23+03:00',
     dateModified: '2026-07-23T15:31:44+05:00'

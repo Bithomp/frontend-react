@@ -1,0 +1,82 @@
+{
+  "seo": {
+    "title": "How to Set Up an XRPL Project Profile",
+    "description": "Make your XRPL project recognizable and verifiable with a username, service profile, xrp-ledger.toml file, and verified domain on {{explorerName}}."
+  },
+  "title": "How to Set Up an XRPL Project Profile",
+  "intro": {
+    "lead": "A clear public identity helps users recognize your XRPL project, find its official account, and distinguish it from impersonators. This guide connects your account, project name, website, and public information on {{explorerName}}.",
+    "scope": "It is intended for wallets, exchanges, NFT platforms, infrastructure providers, applications, communities, non-profits, and other projects using the XRP Ledger. You do not need to issue a token."
+  },
+  "before": {
+    "title": "Before you start: choose the public project account",
+    "account": "Choose the XRPL account that should represent the project publicly. Use the same account throughout the steps below.",
+    "items": {
+      "public": "Use an account intended to be publicly associated with the project.",
+      "control": "Make sure the project retains secure signing access before changing on-ledger settings.",
+      "consistent": "Use the same official name, domain, logo, and social accounts across your website and profiles."
+    }
+  },
+  "steps": {
+    "username": {
+      "title": "1. Register a username",
+      "text": "A username gives the project account a memorable public name and makes it easier to find on {{explorerName}} and services using Bithomp data.",
+      "tip": "Choose a name that matches the project’s official branding. The registration must be signed by the account owner.",
+      "action": "Register a username"
+    },
+    "service": {
+      "title": "2. Register the project or service",
+      "text": "Submit the project’s public details to Bithomp so we can make its account recognizable on our explorers and provide the profile through the Bithomp API.",
+      "details": "Provide the official service name, description, website, logo, contact email, and social accounts. We store and publish this information, so submit only public project details and keep them consistent with your website.",
+      "action": "Submit project or service information"
+    },
+    "domain": {
+      "title": "4. Set the domain on the XRPL account",
+      "text": "The account’s Domain field is an on-ledger claim that the account belongs to your website. Sign in with the chosen project account and set its official domain.",
+      "format": "Enter only the domain name, without a path. For example: example.com.",
+      "action": "Open account settings"
+    },
+    "toml": {
+      "title": "3. Publish xrp-ledger.toml",
+      "serve": "Serve the file over HTTPS at this exact location:",
+      "content": "For a project profile without a token, focus on the organization and its public accounts:",
+      "principals": "describes the entity or people operating the project.",
+      "accounts": "lists the XRPL accounts officially controlled by the project.",
+      "note": "You do not need a [[TOKENS]] section unless the project also issues a token. Generate the file, publish it on your domain, and validate the live URL.",
+      "generate": "Generate an xrp-ledger.toml file",
+      "check": "Check the published TOML file"
+    },
+    "verify": {
+      "title": "5. Verify the domain",
+      "text": "Verification requires a two-way link. Setting only the account Domain field or publishing only the TOML file is not enough.",
+      "domainClaims": "The domain claims the account by listing its address under [[ACCOUNTS]] in xrp-ledger.toml.",
+      "accountClaims": "The XRPL account claims the same domain in its on-ledger Domain field.",
+      "action": "Follow the domain verification guide"
+    },
+    "review": {
+      "title": "6. Review the public project profile",
+      "text": "Open the project account on {{explorerName}} and review it as a user would see it.",
+      "items": {
+        "name": "The username and service name identify the correct project.",
+        "domain": "The domain is correct and shows as verified after both claims are detected.",
+        "links": "The website, logo, and social links lead to official resources.",
+        "account": "The displayed XRPL address is the account you intend to publish."
+      },
+      "action": "Open the account explorer"
+    }
+  },
+  "maintenance": {
+    "title": "Keep the profile current",
+    "text": "Update the submitted service information and TOML file when the project changes its name, website, logo, social accounts, or public XRPL addresses. Remove obsolete accounts and links.",
+    "security": "Never publish secret keys, seeds, recovery phrases, validator tokens, private contact information, or internal infrastructure credentials."
+  },
+  "checklist": {
+    "title": "Project profile checklist",
+    "username": "Username registered for the public project account",
+    "service": "Project or service information submitted",
+    "domain": "Official domain set on the XRPL account",
+    "toml": "xrp-ledger.toml published and validated",
+    "verified": "Two-way domain verification completed",
+    "reviewed": "Public account page reviewed for accuracy"
+  }
+}

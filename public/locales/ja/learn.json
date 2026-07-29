@@ -31,6 +31,7 @@
     "xrp-xah-taxes": "XRP と XAH の税務 - レポート用 CSV エクスポート",
     "issue-a-token": "{{explorerName}} でトークンを発行する方法",
     "guide-for-token-issuers": "トークン発行者向けガイド: username、TOML ファイル、プロジェクト登録",
+    "guide-for-xrpl-projects": "XRPLプロジェクトプロフィールの設定方法",
     "image-services": "Bithomp 画像サービス",
     "trustlines": "Trustline を理解する",
     "nft-explorer": "NFT Explorer",

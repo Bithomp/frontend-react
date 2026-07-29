@@ -35,6 +35,13 @@ const buildLearnContent = (t) => {
           title: t('items.guide-for-token-issuers'),
           slug: 'guide-for-token-issuers'
         },
+        {
+          title:
+            nativeCurrency === 'XAH'
+              ? t('items.guide-for-xrpl-projects').replaceAll('XRPL', 'Xahau')
+              : t('items.guide-for-xrpl-projects'),
+          slug: nativeCurrency === 'XAH' ? 'guide-for-xahau-projects' : 'guide-for-xrpl-projects'
+        },
         { title: t('items.image-services'), slug: 'image-services' },
         { title: t('items.trustlines'), slug: 'trustlines' },
         { title: t('items.nft-explorer'), slug: 'nft-explorer' },

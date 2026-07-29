@@ -1,0 +1,16 @@
+{
+  "seo": { "title": "如何设置 XRPL 项目资料", "description": "通过用户名、服务资料、xrp-ledger.toml 和已验证域名，让您的 XRPL 项目在 {{explorerName}} 上易于识别和验证。" },
+  "title": "如何设置 XRPL 项目资料",
+  "intro": { "lead": "清晰的公开身份可帮助用户识别 XRPL 项目、找到官方账户并避开冒充者。本指南将在 {{explorerName}} 上关联账户、项目名称、网站和公开信息。", "scope": "适用于钱包、交易所、NFT 平台、基础设施提供商、应用、社区、非营利组织及其他使用 XRP Ledger 的项目，无需发行代币。" },
+  "before": { "title": "开始之前：选择项目的公开账户", "account": "选择用于公开代表项目的 XRPL 账户，并在以下所有步骤中使用同一账户。", "items": { "public": "使用计划与项目公开关联的账户。", "control": "更改链上设置前，确保项目保留安全的签名权限。", "consistent": "在网站和所有资料中使用一致的官方名称、域名、徽标和社交账户。" } },
+  "steps": {
+    "username": { "title": "1. 注册用户名", "text": "用户名为项目账户提供易记的公开名称，并便于在 {{explorerName}} 及使用 Bithomp 数据的服务中搜索。", "tip": "选择与官方品牌一致的名称。注册必须由账户所有者签名。", "action": "注册用户名" },
+    "service": { "title": "2. 注册项目或服务", "text": "向 Bithomp 提交项目的公开资料，以便我们在浏览器中提高账户辨识度，并通过 Bithomp API 提供该资料。", "details": "提供官方名称、说明、网站、徽标、联系邮箱和社交账户。我们会存储并发布这些资料，因此请仅提交公开信息并保持名称一致。", "action": "提交项目或服务信息" },
+    "domain": { "title": "4. 在 XRPL 账户中设置域名", "text": "Domain 字段是账户与网站关联的链上声明。使用选定的项目账户登录并设置官方域名。", "format": "只输入域名，不要包含路径，例如 example.com。", "action": "打开账户设置" },
+    "toml": { "title": "3. 发布 xrp-ledger.toml", "serve": "通过 HTTPS 在以下准确位置提供文件：", "content": "对于不发行代币的项目，重点描述组织及其公开账户：", "principals": "描述运营项目的实体或人员。", "accounts": "列出项目正式控制的 XRPL 账户。", "note": "除非项目也发行代币，否则无需 [[TOKENS]] 部分。生成文件、发布到域名并验证线上地址。", "generate": "生成 xrp-ledger.toml", "check": "检查已发布的 TOML 文件" },
+    "verify": { "title": "5. 验证域名", "text": "验证需要双向关联。仅设置 Domain 字段或仅发布 TOML 文件都不够。", "domainClaims": "域名通过 xrp-ledger.toml 中的 [[ACCOUNTS]] 声明账户地址。", "accountClaims": "XRPL 账户通过链上 Domain 字段声明同一域名。", "action": "查看域名验证指南" },
+    "review": { "title": "6. 检查公开项目资料", "text": "在 {{explorerName}} 中打开项目账户，并从用户视角检查。", "items": { "name": "用户名和服务名称指向正确的项目。", "domain": "域名正确，并在检测到双方声明后显示为已验证。", "links": "网站、徽标和社交链接均指向官方资源。", "account": "显示的 XRPL 地址就是计划公开的账户。" }, "action": "打开账户浏览器" }
+  },
+  "maintenance": { "title": "保持资料最新", "text": "项目名称、网站、徽标、社交账户或公开 XRPL 地址变化时，请更新服务信息和 TOML，并删除过期账户和链接。", "security": "切勿发布私钥、seed、恢复短语、validator token、私人联系方式或内部基础设施凭据。" },
+  "checklist": { "title": "项目资料检查清单", "username": "已为公开项目账户注册用户名", "service": "已提交项目或服务信息", "domain": "已在 XRPL 账户设置官方域名", "toml": "已发布并验证 xrp-ledger.toml", "verified": "已完成双向域名验证", "reviewed": "已检查公开账户页面的准确性" }
+}

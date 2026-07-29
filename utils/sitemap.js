@@ -96,7 +96,10 @@ if (xahauNetwork) {
     { loc: 'services/reward-auto-claim', changefreq: 'monthly', priority: '0.8' },
     { loc: 'xahau-wallets', changefreq: 'monthly', priority: '0.8' }
   )
-  learnEntries.push({ loc: 'learn/claim-reward', changefreq: 'always', priority: '0.9' })
+  learnEntries.push(
+    { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.9' },
+    { loc: 'learn/guide-for-xahau-projects', changefreq: 'monthly', priority: '0.8' }
+  )
 } else {
   pageEntries.push(
     { loc: 'services/issue-mpt', changefreq: 'monthly', priority: '0.9' },
@@ -120,7 +123,8 @@ if (network === 'mainnet') {
       { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.7' },
       { loc: 'learn/amm', changefreq: 'monthly', priority: '0.8' },
       { loc: 'learn/run-a-validator', changefreq: 'monthly', priority: '0.8' },
-      { loc: 'learn/account-page', changefreq: 'monthly', priority: '0.5' }
+      { loc: 'learn/account-page', changefreq: 'monthly', priority: '0.5' },
+      { loc: 'learn/guide-for-xrpl-projects', changefreq: 'monthly', priority: '0.8' }
     )
   }
 
