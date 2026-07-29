@@ -200,35 +200,30 @@
     padding-right: 20px;
     box-sizing: border-box;
 
+    .tabs-scroll {
+      width: 100%;
+      overflow: visible;
+    }
+
     .tabs-list {
-      flex-wrap: wrap;
+      justify-content: center;
+      flex-wrap: nowrap;
+      width: 100%;
       border-radius: 12px;
       padding: 6px;
 
       .tab-item {
-        flex: 1 1 calc(50% - 8px);
-        min-width: 120px;
+        flex: 1 1 0;
+        min-width: 0;
         padding: 9px 10px;
         font-size: 13px;
 
         > span {
           max-width: 100%;
           white-space: normal;
+          overflow-wrap: anywhere;
           overflow: visible;
           text-overflow: clip;
-        }
-      }
-    }
-
-    .tabs-list[aria-label="networkPagesTab"] {
-      flex-wrap: nowrap;
-
-      .tab-item {
-        flex: 0 1 auto;
-        min-width: max-content;
-
-        > span {
-          white-space: nowrap;
         }
       }
     }
