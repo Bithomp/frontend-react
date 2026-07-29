@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import MptMetadataBuilder from '../../components/Services/MptMetadataBuilder'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
+import AddressInput from '../../components/UI/AddressInput'
 import Dialog from '../../components/UI/Dialog'
 import SimpleSelect from '../../components/UI/SimpleSelect'
 import { explorerName, isAddressValid } from '../../utils'
@@ -326,9 +327,16 @@ export default function IssueMptPage({ setSignRequest, account }) {
                   {permissionOption('requireAuth', styles.fullWidth)}
                   {flags.requireAuth && (
                     <>
-                      <label className={styles.field}>
-                        <span>{tm('domainLookup.owner')}</span>
-                        <input className="input-text" value={domainOwner} placeholder="r..." spellCheck="false" onChange={(event) => setDomainOwner(event.target.value.trim())} />
+                      <div className={styles.field}>
+                        <AddressInput
+                          title={tm('domainLookup.owner')}
+                          placeholder={t('explorer.enter-address')}
+                          hideButton={true}
+                          setValue={setDomainOwner}
+                          setInnerValue={setDomainOwner}
+                          rawData={isAddressValid(domainOwner) ? { address: domainOwner } : {}}
+                          type="address"
+                        />
                         <small>
                           {domainsLoading
                             ? tm('domainLookup.loading')
@@ -338,7 +346,7 @@ export default function IssueMptPage({ setSignRequest, account }) {
                                 ? tm('domainLookup.empty')
                                 : tm('domainLookup.hint')}
                         </small>
-                      </label>
+                      </div>
                       <label className={styles.field}>
                         <span>{tm('fields.domain')}</span>
                         <input className="input-text" value={domainId} maxLength={64} placeholder={tm('placeholders.optional')} onChange={(event) => setDomainId(event.target.value.replace(/[^A-Fa-f0-9]/g, ''))} />
