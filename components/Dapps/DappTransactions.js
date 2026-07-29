@@ -28,7 +28,7 @@ import {
   TransactionRowUNLModify,
   TransactionRowDelegateSet
 } from '../Account/Transactions'
-import styles from '../../styles/components/dappTransactions.module.scss'
+import { dappTransactions } from '../../styles/components/dappTransactions.module.scss'
 
 const transactionRow = (type) => {
   if (type === 'AccountDelete') return TransactionRowAccountDelete
@@ -146,78 +146,80 @@ export default function DappTransactions({
   }
 
   return (
-    <>
-      <section className={styles.section}>
-        <div className={styles.header}>
+    <div className={dappTransactions}>
+      <section className="section">
+        <div className="header">
           <div>
             <h2>{t('detail.recentTransactions')}</h2>
             <span>{t('detail.transactionsAvailability')}</span>
           </div>
-          <div className={styles.headerActions}>
+          <div className="headerActions">
             <SimpleSelect
               value={type}
               setValue={setType}
               optionsList={typeSelectOptions}
-              className={styles.typeDropdown}
+              className="typeDropdown"
               instanceId="dapp-transaction-type"
             />
             <SimpleSelect
               value={status}
               setValue={setStatus}
               optionsList={statusSelectOptions}
-              className={styles.typeDropdown}
+              className="typeDropdown"
               instanceId="dapp-transaction-status"
             />
             <button
-              className={styles.refreshButton}
+              className="refreshButton"
               type="button"
               onClick={() => setRefreshVersion((value) => value + 1)}
               disabled={loading || loadingMore}
               aria-label={accountT('detail.aria.reload-transactions')}
               title={accountT('detail.actions.update')}
             >
-              <FaArrowsRotate className={loading ? styles.spinning : ''} aria-hidden="true" />
+              <FaArrowsRotate className={loading ? 'spinning' : ''} aria-hidden="true" />
             </button>
           </div>
         </div>
 
-        {loading ? <div className={styles.status}><span className="waiting" /></div> : null}
+        {loading ? <div className="status"><span className="waiting" /></div> : null}
         {!loading && transactions.length ? (
-          <InfiniteScrolling
-            dataLength={transactions.length}
-            loadMore={loadMore}
-            hasMore={marker}
-            errorMessage={errorMessage}
-            subscriptionExpired={subscriptionExpired}
-            sessionToken={sessionToken}
-            loadMoreMessage={t('detail.loadingTransactions')}
-            openEmailLogin={openEmailLogin}
-          >
-            <div className={styles.tableWrap}>
-              <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
-                <tbody>
-                  {transactions.map((transaction, index) => {
-                    const Row = transactionRow(transaction?.tx?.TransactionType)
-                    const address = transaction?.specification?.source?.address || transaction?.tx?.Account
-                    return (
-                      <Row
-                        key={transaction.txHash || transaction?.tx?.hash || index}
-                        data={transaction}
-                        address={address}
-                        index={index}
-                        selectedCurrency={currency}
-                        dappView
-                      />
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </InfiniteScrolling>
+          <div className="transactionsScroll">
+            <InfiniteScrolling
+              dataLength={transactions.length}
+              loadMore={loadMore}
+              hasMore={marker}
+              errorMessage={errorMessage}
+              subscriptionExpired={subscriptionExpired}
+              sessionToken={sessionToken}
+              loadMoreMessage={t('detail.loadingTransactions')}
+              openEmailLogin={openEmailLogin}
+            >
+              <div className="tableWrap">
+                <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
+                  <tbody>
+                    {transactions.map((transaction, index) => {
+                      const Row = transactionRow(transaction?.tx?.TransactionType)
+                      const address = transaction?.specification?.source?.address || transaction?.tx?.Account
+                      return (
+                        <Row
+                          key={transaction.txHash || transaction?.tx?.hash || index}
+                          data={transaction}
+                          address={address}
+                          index={index}
+                          selectedCurrency={currency}
+                          dappView
+                        />
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </InfiniteScrolling>
+          </div>
         ) : null}
-        {!loading && !transactions.length && !errorMessage ? <div className={styles.status}>{t('detail.noTransactions')}</div> : null}
-        {errorMessage && !transactions.length ? <div className={styles.error}>{errorMessage}</div> : null}
+        {!loading && !transactions.length && !errorMessage ? <div className="status">{t('detail.noTransactions')}</div> : null}
+        {errorMessage && !transactions.length ? <div className="error">{errorMessage}</div> : null}
       </section>
-    </>
+    </div>
   )
 }
