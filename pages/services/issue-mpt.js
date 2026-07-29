@@ -86,7 +86,7 @@ export default function IssueMptPage({ setSignRequest, account }) {
   const [maximum, setMaximum] = useState('')
   const [transferFee, setTransferFee] = useState('')
   const [metadata, setMetadata] = useState('')
-  const [metadataBuilderValid, setMetadataBuilderValid] = useState(null)
+  const [metadataBuilderValid, setMetadataBuilderValid] = useState(false)
   const [showTokenPreview, setShowTokenPreview] = useState(false)
   const [previewIconError, setPreviewIconError] = useState(false)
   const [mode, setMode] = useState('simple')
@@ -250,7 +250,7 @@ export default function IssueMptPage({ setSignRequest, account }) {
   )
   const useGeneratedMetadata = useCallback(({ json, isValid }) => {
     setMetadata(json)
-    setMetadataBuilderValid(json ? isValid : null)
+    setMetadataBuilderValid(isValid)
   }, [])
   const permissionOption = (key, className = '') => (
     <label className={`${styles.flag} ${className}`.trim()} key={key}>
@@ -372,7 +372,7 @@ export default function IssueMptPage({ setSignRequest, account }) {
             <button type="button" className={`button-outline ${styles.previewButton}`} onClick={() => setShowTokenPreview(true)}>
               {tm('tokenPreview.button')}
             </button>
-            <button type="button" className={`button-action ${styles.issueButton}`} disabled={validation.errors.length > 0 || metadataBuilderValid === false} onClick={() => setSignRequest({ request: validation.request })}>
+            <button type="button" className={`button-action ${styles.issueButton}`} disabled={validation.errors.length > 0 || !metadataBuilderValid} onClick={() => setSignRequest({ request: validation.request })}>
               {tm('issue')}
             </button>
           </aside>

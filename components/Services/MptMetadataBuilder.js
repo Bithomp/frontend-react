@@ -108,13 +108,18 @@ const buildMetadata = ({ form, uris, additionalInfo, useFullKeys }) => {
   return metadata
 }
 
-const Field = ({ label, hint, required, className, children }) => (
+const Field = ({ label, hint, error, required, className, children }) => (
   <label className={`${styles.field} ${className || ''}`}>
     <span>
       {label}
       {required && <b> *</b>}
     </span>
     {children}
+    {error && (
+      <small className={styles.fieldError} role="alert">
+        {error}
+      </small>
+    )}
     {hint && <small>{hint}</small>}
   </label>
 )
@@ -443,7 +448,12 @@ export default function MptMetadataBuilder({ onMetadataChange }) {
                   instanceId="mpt-metadata-additional-info-type"
                 />
               </Field>
-              <Field label={tg('fields.additional-info')} hint={tg('hints.other-links')} className={styles.wideField}>
+              <Field
+                label={tg('fields.additional-info')}
+                hint={tg('hints.other-links')}
+                error={additionalInfo.error ? tg(`warnings.additional-${additionalInfo.error}`) : ''}
+                className={styles.wideField}
+              >
                 <textarea
                   className="input-text"
                   rows={6}
@@ -451,6 +461,7 @@ export default function MptMetadataBuilder({ onMetadataChange }) {
                   onChange={(event) => updateForm('additionalInfo', event.target.value)}
                   placeholder={additionalInfoType === 'object' ? '{\n  "interest_rate": "5.00%"\n}' : tg('placeholders.additional-text')}
                   spellCheck="false"
+                  aria-invalid={!!additionalInfo.error}
                 />
               </Field>
             </div>
