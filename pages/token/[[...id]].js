@@ -327,18 +327,28 @@ export async function getServerSideProps(context) {
         try {
           // Fetch token data
           const url = `v2/token/${encodeURIComponent(issuer)}/${encodeURIComponent(currencyCode)}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}&toml=true`
-          const res = await axiosServer({
-            method: 'get',
-            url,
-            headers: passHeaders(req)
-          }).catch((error) => {
-            initialErrorMessage = error.message
-          })
+          const [res, issuerResult] = await Promise.all([
+            axiosServer({
+              method: 'get',
+              url,
+              headers: passHeaders(req)
+            }).catch((error) => {
+              initialErrorMessage = error.message
+            }),
+            axiosServer({
+              method: 'get',
+              url: `v2/address/${encodeURIComponent(issuer)}?ledgerInfo=true`,
+              headers: passHeaders(req)
+            }).catch(() => null)
+          ])
           if (res?.data) {
             if (res.data?.error) {
               initialErrorMessage = res.data.error
             } else {
-              initialData = res.data
+              initialData = {
+                ...res.data,
+                issuerFlags: issuerResult?.data?.ledgerInfo?.flags || null
+              }
             }
           } else {
             initialErrorMessage = 'Token not found'
@@ -928,13 +938,21 @@ export default function TokenPage({
       : selectedToken?.issuer
         ? `v2/token/${encodeURIComponent(selectedToken.issuer)}/${encodeURIComponent(selectedToken.currency)}?statistics=true&currencyDetails=true&convertCurrencies=${cur}&toml=true`
         : `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${cur}`
-    const res = await axiosServer({
-      method: 'get',
-      url
-    }).catch((error) => {
-      initialErrorMessage = error.message
+    const [res, issuerResult] = await Promise.all([
+      axiosServer({
+        method: 'get',
+        url
+      }).catch((error) => {
+        initialErrorMessage = error.message
+      }),
+      selectedToken?.issuer
+        ? axios(`v2/address/${encodeURIComponent(selectedToken.issuer)}?ledgerInfo=true`).catch(() => null)
+        : Promise.resolve(null)
+    ])
+    setToken({
+      ...res.data,
+      ...(selectedToken?.issuer ? { issuerFlags: issuerResult?.data?.ledgerInfo?.flags || null } : {})
     })
-    setToken(res.data)
     setLoading(false)
   }
 
@@ -1454,6 +1472,7 @@ export default function TokenPage({
   const { statistics } = token
   const mptId = token?.mptokenIssuanceID
   const isMptToken = !!mptId
+  const isIouToken = !!token?.issuer && !isMptToken
   const mptMetadata = token?.metadata && typeof token.metadata === 'object' && !Array.isArray(token.metadata) ? token.metadata : {}
   const mptMetadataTicker = mptMetadataValue(mptMetadata, 'ticker', 't')
   const mptMetadataName = mptMetadataValue(mptMetadata, 'name', 'n')
@@ -1513,14 +1532,9 @@ export default function TokenPage({
   const currencyCodeText = token.currencyDetails?.currencyCode || token.currency
   const currencyCodeDisplay = displayCurrencyCode(currencyCodeText)
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
-  const escrowStatus =
-    token?.canLock === true ? (
-      <span className="bold">{tt('escrow.can')}</span>
-    ) : token?.canLock === false ? (
-      tt('escrow.cannot')
-    ) : (
-      tt('escrow.unknown')
-    )
+  const issuerFlags = token?.issuerFlags
+  const iouPermissionStatus = (value, enabledKey, disabledKey) =>
+    typeof value === 'boolean' ? tt(`iouPermissions.${value ? enabledKey : disabledKey}`) : tt('escrow.unknown')
   const changeItems = [
     {
       key: '5m',
@@ -1869,7 +1883,18 @@ export default function TokenPage({
   const renderMetricTiles = (items) =>
     items
       .filter((item) => item.show !== false)
-      .map(({ key, label, value, details = [], wide = false, delta = null, compactHeader = false }) => {
+      .map(
+        ({
+          key,
+          label,
+          value,
+          details = [],
+          wide = false,
+          delta = null,
+          compactHeader = false,
+          detailsOnly = false,
+          compactDetails = false
+        }) => {
         const valueNode = value === undefined || value === null || value === '' ? '-' : value
         const visibleDetails = details.filter((detail) => detail.show !== false)
 
@@ -1886,9 +1911,9 @@ export default function TokenPage({
                 delta
               )}
             </span>
-            {!compactHeader ? <span className="tokenMetricValue">{valueNode}</span> : null}
+            {!compactHeader && !detailsOnly ? <span className="tokenMetricValue">{valueNode}</span> : null}
             {visibleDetails.length ? (
-              <span className="tokenMetricDetails">
+              <span className={`tokenMetricDetails${compactDetails ? ' tokenMetricDetailsCompact' : ''}`}>
                 {visibleDetails.map((detail) => {
                   const detailValueNode =
                     detail.value === undefined || detail.value === null || detail.value === '' ? '-' : detail.value
@@ -1906,7 +1931,8 @@ export default function TokenPage({
             ) : null}
           </div>
         )
-      })
+        }
+      )
 
   const renderProfileRows = (items) =>
     items
@@ -2219,7 +2245,57 @@ export default function TokenPage({
           value: ammPoolsLink,
           show: statistics && !xahauNetwork && !isMptToken
         },
-        { key: 'escrow', label: tt('fields.escrow'), value: escrowStatus }
+        {
+          key: 'issuerFlags',
+          label: tt('fields.flags'),
+          show: isIouToken,
+          wide: true,
+          detailsOnly: true,
+          compactDetails: true,
+          details: [
+            {
+              key: 'escrow',
+              label: tt('iouPermissions.escrow'),
+              value: iouPermissionStatus(
+                issuerFlags?.allowTrustLineLocking ?? token?.canLock,
+                'canBeEscrowed',
+                'cannotBeEscrowed'
+              )
+            },
+            {
+              key: 'authorization',
+              label: tt('iouPermissions.authorization'),
+              value: iouPermissionStatus(
+                issuerFlags?.requireAuth,
+                'authorizationRequired',
+                'noAuthorizationRequired'
+              )
+            },
+            {
+              key: 'clawback',
+              label: tt('iouPermissions.clawback'),
+              value: iouPermissionStatus(
+                issuerFlags?.allowTrustLineClawback,
+                'canBeClawedBack',
+                'cannotBeClawedBack'
+              )
+            },
+            {
+              key: 'freeze',
+              label: tt('iouPermissions.freeze'),
+              value: iouPermissionStatus(
+                typeof issuerFlags?.noFreeze === 'boolean' ? !issuerFlags.noFreeze : undefined,
+                'canBeFrozen',
+                'cannotBeFrozen'
+              )
+            },
+            {
+              key: 'globalFreeze',
+              label: tt('iouPermissions.globalFreeze'),
+              value: iouPermissionStatus(issuerFlags?.globalFreeze, 'globallyFrozen', 'notGloballyFrozen')
+            }
+          ]
+        }
       ]
 
   const priceMetricItems = [
