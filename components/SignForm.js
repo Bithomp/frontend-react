@@ -69,6 +69,7 @@ const askInfoScreens = [
   'setDid',
   'setAvatar',
   'setTrustline',
+  'mptDestroy',
   'payment',
   'nftTransfer',
   'NFTokenModify'
@@ -91,6 +92,7 @@ const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
   if (signRequest.action === 'setDid') return 'setDid'
   if (signRequest.action === 'setAvatar') return 'setAvatar'
   if (signRequest.action === 'setTrustline') return 'setTrustline'
+  if (signRequest.action === 'mptDestroy') return 'mptDestroy'
   if (signRequest.action === 'payment') return 'payment'
   if (signRequest.action && voteTxs.includes(signRequest.action)) return signRequest.action
   return null
@@ -1410,6 +1412,7 @@ export default function SignForm({
     }
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
+    if (screen === 'mptDestroy') return t('destroy.confirm', { ns: 'token' })
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
     if (screen === 'payment') {
       return (
@@ -1555,6 +1558,7 @@ export default function SignForm({
                     {screen === 'setDid' && t('signin.confirm.set-did')}
                     {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
                     {screen === 'setTrustline' && 'Add a token'}
+                    {screen === 'mptDestroy' && t('destroy.title', { ns: 'token' })}
                     {screen === 'payment' && t('signin.confirm.payment-header')}
                     {screen === 'ammDeposit' && t('sign.depositTitle', { ns: 'amm' })}
                     {screen === 'ammWithdraw' && t('sign.withdrawTitle', { ns: 'amm' })}
@@ -1564,6 +1568,13 @@ export default function SignForm({
                 </div>
 
                 <div className="sign-in-content">
+                  {screen === 'mptDestroy' && (
+                    <div className="mptDestroyWarning">
+                      <p>{t('destroy.warning', { ns: 'token', token: signRequest.data?.tokenName })}</p>
+                      <code>{signRequest.request?.MPTokenIssuanceID}</code>
+                    </div>
+                  )}
+
                   {screen === 'NFTokenCreateOffer' && (
                     <NFTokenCreateOffer
                       signRequest={signRequest}

@@ -204,6 +204,18 @@
         height: 18px;
       }
     }
+
+    .tokenProfileDangerAction {
+      border-color: color-mix(in srgb, var(--red) 52%, var(--card-border));
+      background: color-mix(in srgb, var(--red) 8%, var(--background-input));
+      color: var(--red);
+
+      &:hover:not(:disabled),
+      &:focus-visible:not(:disabled) {
+        border-color: var(--red);
+        background: color-mix(in srgb, var(--red) 14%, var(--background-input));
+      }
+    }
   }
 
   .tokenProfileInfo {

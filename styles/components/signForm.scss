@@ -178,6 +178,29 @@
       width: min(560px, calc(100vw - 32px));
     }
 
+    .mptDestroyWarning {
+      width: calc(100% - 24px);
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 16px;
+      border: 1px solid color-mix(in srgb, var(--red) 42%, var(--card-border));
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--red) 8%, var(--background-input));
+      color: var(--text-main);
+      text-align: left;
+
+      p {
+        margin: 0 0 12px;
+        line-height: 1.45;
+      }
+
+      code {
+        display: block;
+        overflow-wrap: anywhere;
+        color: var(--text-secondary);
+      }
+    }
+
     &.address-selection-screen {
       width: min(560px, calc(100vw - 32px));
       overflow: hidden;

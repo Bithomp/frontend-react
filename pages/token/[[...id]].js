@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { FaHandshake, FaLock, FaLockOpen } from 'react-icons/fa'
+import { FaHandshake, FaLock, FaLockOpen, FaTrashAlt } from 'react-icons/fa'
 import axios from 'axios'
 
 import SEO from '../../components/SEO'
@@ -1506,6 +1506,8 @@ export default function TokenPage({
   const isMptIssuer = isMptToken && !!account?.address && account.address === token?.issuer
   const canGloballyLockMpt = isMptIssuer && token?.flags?.canLock === true
   const isMptGloballyLocked = token?.flags?.locked === true
+  const mptHolderCount = Number(token?.holders)
+  const canDestroyMpt = isMptIssuer && Number.isFinite(mptHolderCount) && mptHolderCount === 0
   const currencyCodeText = token.currencyDetails?.currencyCode || token.currency
   const currencyCodeDisplay = displayCurrencyCode(currencyCodeText)
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
@@ -1594,6 +1596,21 @@ export default function TokenPage({
         Account: token.issuer,
         MPTokenIssuanceID: mptId,
         Flags: isMptGloballyLocked ? 2 : 1
+      }
+    })
+  }
+
+  const handleDestroyMpt = () => {
+    if (!setSignRequest || !mptId || !canDestroyMpt) return
+    setSignRequest({
+      action: 'mptDestroy',
+      request: {
+        TransactionType: 'MPTokenIssuanceDestroy',
+        Account: token.issuer,
+        MPTokenIssuanceID: mptId
+      },
+      data: {
+        tokenName: tokenDisplayCurrency
       }
     })
   }
@@ -2506,7 +2523,7 @@ export default function TokenPage({
                 </span>
               </div>
 
-              {((!isNativeToken && !isMptToken) || (isMptToken && (!isMptIssuer || canGloballyLockMpt))) && (
+              {((!isNativeToken && !isMptToken) || isMptToken) && (
                 <div className="tokenProfileActions">
                   {!isNativeToken && !isMptToken && (
                     <button className="button-action wide center" onClick={handleSetTrustline}>
@@ -2524,6 +2541,23 @@ export default function TokenPage({
                       {isMptGloballyLocked ? <FaLockOpen aria-hidden="true" /> : <FaLock aria-hidden="true" />}
                       <span>{isMptGloballyLocked ? tt('actions.revokeGlobalLock') : tt('actions.globalLock')}</span>
                     </button>
+                  )}
+                  {isMptIssuer && (
+                    <span
+                      className={canDestroyMpt ? '' : 'tooltip'}
+                      title={!canDestroyMpt ? tt('destroy.holdersRequired') : undefined}
+                    >
+                      <button
+                        type="button"
+                        className="button-action wide tokenProfileActionButton tokenProfileDangerAction"
+                        disabled={!canDestroyMpt}
+                        onClick={handleDestroyMpt}
+                      >
+                        <FaTrashAlt aria-hidden="true" />
+                        <span>{tt('actions.destroyIssuance')}</span>
+                      </button>
+                      {!canDestroyMpt && <span className="tooltiptext">{tt('destroy.holdersRequired')}</span>}
+                    </span>
                   )}
                 </div>
               )}
