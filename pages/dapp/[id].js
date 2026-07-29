@@ -59,6 +59,12 @@ const averageRows = (rows, getter) => (rows.length ? sumRows(rows, getter) / row
 
 const chartTimestamp = (row) => numberValue(row?.time || row?.timestamp) * 1000
 
+const chartDateText = (timestamp, locale, options) =>
+  new Date(timestamp).toLocaleDateString(normalizeLocale(locale), {
+    ...options,
+    timeZone: 'UTC'
+  })
+
 const CHART_SPAN_MS = {
   day: 24 * 60 * 60 * 1000,
   week: 7 * 24 * 60 * 60 * 1000,
@@ -178,12 +184,13 @@ function DappHistoryChart({
       xaxis: {
         type: 'datetime',
         labels: {
-          datetimeUTC: false,
+          datetimeUTC: true,
           hideOverlappingLabels: true,
           style: apexAxisLabelStyle(theme, { fontSize: '10px' }),
           formatter: (_value, timestamp) =>
-            new Date(timestamp).toLocaleDateString(
-              normalizeLocale(i18n.language),
+            chartDateText(
+              timestamp,
+              i18n.language,
               showYear ? { month: 'short', year: 'numeric' } : { month: 'short', day: 'numeric' }
             )
         },
@@ -205,7 +212,15 @@ function DappHistoryChart({
           style: apexAxisLabelStyle(theme, { fontSize: '10px' })
         }
       },
-      tooltip: { shared: true, intersect: false, theme: chartTheme.tooltipTheme }
+      tooltip: {
+        shared: true,
+        intersect: false,
+        theme: chartTheme.tooltipTheme,
+        x: {
+          formatter: (timestamp) =>
+            chartDateText(timestamp, i18n.language, { year: 'numeric', month: 'short', day: 'numeric' })
+        }
+      }
     }),
     [chartTheme, currency, i18n.language, separateScales, series, showYear, theme, type]
   )
