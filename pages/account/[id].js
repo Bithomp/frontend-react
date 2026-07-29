@@ -749,6 +749,10 @@ const nftSearchUrl = ({ address, tab, search, marker, ledgerTimestamp }) => {
 
   if (tab === 'owned') {
     params.set('owner', address)
+    if (!xahauNetwork) {
+      params.set('sellOffers', 'true')
+      params.set('offersValidate', 'true')
+    }
   } else {
     params.set('issuer', address)
     params.set('includeDeleted', 'true')
@@ -2251,7 +2255,9 @@ export default function Account({
                 marker,
                 ledgerTimestamp: effectiveLedgerTimestamp
               })
-            : `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
+            : `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}${
+                xahauNetwork ? '' : '&sellOffers=true&offersValidate=true'
+              }`
       } else if (nftTab === 'sold') {
         url = nftSalesUrl({
           address: data.address,
@@ -2851,7 +2857,9 @@ export default function Account({
         if (!effectiveLedgerTimestamp && (nftIds.length > 0 || xahauNetwork)) {
           let nftPreviewUrl = ''
           try {
-            nftPreviewUrl = `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
+            nftPreviewUrl =
+              `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
+              (xahauNetwork ? '' : '&sellOffers=true&offersValidate=true')
 
             let bidNftsList = []
             if (!xahauNetwork) {
@@ -6563,6 +6571,26 @@ export default function Account({
                             : null
                           const bestBid =
                             nftTab === 'owned' ? bestNftOffer(validBuyOffers, account?.address, 'buy') : null
+                          const validSellOffers = Array.isArray(nft?.sellOffers)
+                            ? nft.sellOffers.filter((offer) => offer?.valid !== false)
+                            : null
+                          const bestSellOffer =
+                            nftTab === 'owned' ? bestNftOffer(validSellOffers, account?.address, 'sell') : null
+                          const sellOfferPurchase = bestSellOffer
+                            ? nftSellOfferPurchase({
+                                offer: bestSellOffer,
+                                nftId,
+                                owner: nftOwner || data?.address || bestSellOffer.owner,
+                                issuer: nftIssuer,
+                                buyer: account?.address
+                              })
+                            : null
+                          const canBuyNft =
+                            !!setSignRequest && !!account?.address && sellOfferPurchase?.type === 'sign'
+                          const disabledBuyNftTooltip =
+                            sellOfferPurchase?.type === 'sign' && !account?.address
+                              ? ta('tooltips.connect-buy-nft')
+                              : ''
                           const bestBidAmount = bestBid?.amount
                             ? amountFormat(bestBid.amount, { short: true, maxFractionDigits: 2 })
                             : null
@@ -6751,6 +6779,43 @@ export default function Account({
                                   </div>
 
                                   <div className="nft-expanded-actions" onClick={(event) => event.stopPropagation()}>
+                                    {sellOfferPurchase?.type === 'external' ? (
+                                      <div className="card-actions">
+                                        <a
+                                          className="card-action-btn redeem"
+                                          href={sellOfferPurchase.url}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          {t('button.nft.buy-for-amount-on', {
+                                            amount: amountFormat(sellOfferPurchase.displayAmount),
+                                            service: sellOfferPurchase.service
+                                          })}
+                                        </a>
+                                      </div>
+                                    ) : sellOfferPurchase?.type === 'sign' ? (
+                                      <div className="card-actions">
+                                        <span className={disabledBuyNftTooltip ? 'tooltip' : ''}>
+                                          <button
+                                            type="button"
+                                            className={`card-action-btn ${canBuyNft ? 'redeem' : 'disabled'}`}
+                                            disabled={!canBuyNft}
+                                            onClick={() => {
+                                              if (!canBuyNft) return
+                                              setSignRequest(sellOfferPurchase.signRequest)
+                                            }}
+                                          >
+                                            {ta('actions.buy-nft-for', {
+                                              amount: amountFormat(sellOfferPurchase.displayAmount)
+                                            })}
+                                          </button>
+                                          {!!disabledBuyNftTooltip && (
+                                            <span className="tooltiptext left">{disabledBuyNftTooltip}</span>
+                                          )}
+                                        </span>
+                                      </div>
+                                    ) : null}
+
                                     {shouldShowMakeBuyOfferButton && (
                                       <div className="card-actions">
                                         <span className={disabledBuyOfferTooltip ? 'tooltip' : ''}>
