@@ -419,6 +419,14 @@ export const tokenToFiat = (params) => {
   if (devNet) return ''
   const { amount, selectedCurrency, fiatRate, tokenFiatRate } = params
   if (!amount || amount === '0' || !selectedCurrency) return ''
+  if (
+    amount?.mpt_issuance_id ||
+    amount?.mptokenIssuanceID ||
+    amount?.MPTokenIssuanceID ||
+    amount?.mptokenIssuanceId
+  ) {
+    return ''
+  }
 
   const currencyKey = selectedCurrency.toLowerCase()
   let currency = ''
