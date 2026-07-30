@@ -527,6 +527,43 @@
     }
   }
 
+  .tokenPermissionUnavailable {
+    cursor: help;
+
+    > svg,
+    > span:not(.tooltiptext) {
+      opacity: 0.55;
+    }
+
+    > span:not(.tooltiptext) {
+      text-decoration: line-through;
+    }
+  }
+
+  .tokenIssuerBlackholed {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    color: var(--orange);
+    font-weight: 700;
+    white-space: nowrap;
+
+    > svg {
+      flex: 0 0 auto;
+    }
+  }
+
+  .tokenMptFlagList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 12px;
+    align-items: center;
+  }
+
+  .tokenMptFlag {
+    white-space: nowrap;
+  }
+
   .tokenMetricDetails {
     display: grid;
     flex: 0 0 100%;

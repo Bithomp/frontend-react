@@ -288,7 +288,18 @@ export async function getServerSideProps(context) {
           if (res.data?.error) {
             initialErrorMessage = res.data.error
           } else {
-            initialData = res.data
+            const tokenIssuer = res.data?.issuer
+            const issuerResult = tokenIssuer
+              ? await axiosServer({
+                  method: 'get',
+                  url: `v2/address/${encodeURIComponent(tokenIssuer)}?ledgerInfo=true`,
+                  headers: passHeaders(req)
+                }).catch(() => null)
+              : null
+            initialData = {
+              ...res.data,
+              issuerLedgerInfo: issuerResult?.data?.ledgerInfo || null
+            }
           }
         } else {
           initialErrorMessage = 'Token not found'
@@ -356,7 +367,7 @@ export async function getServerSideProps(context) {
             } else {
               initialData = {
                 ...res.data,
-                issuerFlags: issuerResult?.data?.ledgerInfo?.flags || null
+                issuerLedgerInfo: issuerResult?.data?.ledgerInfo || null
               }
             }
           } else {
@@ -960,7 +971,7 @@ export default function TokenPage({
     ])
     setToken({
       ...res.data,
-      ...(selectedToken?.issuer ? { issuerFlags: issuerResult?.data?.ledgerInfo?.flags || null } : {})
+      ...(selectedToken?.issuer ? { issuerLedgerInfo: issuerResult?.data?.ledgerInfo || null } : {})
     })
     setLoading(false)
   }
@@ -1541,7 +1552,9 @@ export default function TokenPage({
   const currencyCodeText = token.currencyDetails?.currencyCode || token.currency
   const currencyCodeDisplay = displayCurrencyCode(currencyCodeText)
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
-  const issuerFlags = token?.issuerFlags
+  const issuerLedgerInfo = token?.issuerLedgerInfo
+  const issuerFlags = issuerLedgerInfo?.flags
+  const issuerBlackholed = issuerLedgerInfo?.blackholed === true
   const canEscrowIou = issuerFlags?.allowTrustLineLocking ?? token?.canLock
   const requiresIouAuthorization = issuerFlags?.requireAuth
   const canClawbackIou = issuerFlags?.allowTrustLineClawback
@@ -2084,6 +2097,36 @@ export default function TokenPage({
       </Link>
     )
   )
+  const blackholedPermissionText = tt('tooltips.blackholedPermission')
+  const blackholedIssuerBadge = (
+    <span className="tokenIssuerBlackholed tooltip">
+      <FaLock aria-hidden="true" />
+      <span>{tt('values.blackholedIssuer')}</span>
+      <span className="tooltiptext no-brake">{tt('tooltips.blackholedIssuer')}</span>
+    </span>
+  )
+  const mptIssuerControlledFlags = new Set(['canLock', 'requireAuth', 'canClawback'])
+  const mptFlags = token.flags
+    ? Object.keys(token.flags).filter((flag) => token.flags[flag])
+    : []
+  const mptFlagsValue = mptFlags.length ? (
+    <span className="tokenMptFlagList">
+      {mptFlags.map((flag) => {
+        const unavailable = issuerBlackholed && mptIssuerControlledFlags.has(flag)
+        return (
+          <span
+            key={flag}
+            className={`tokenMptFlag${unavailable ? ' tokenPermissionUnavailable tooltip' : ''}`}
+          >
+            <span>{flag}</span>
+            {unavailable && <span className="tooltiptext no-brake">{blackholedPermissionText}</span>}
+          </span>
+        )
+      })}
+    </span>
+  ) : (
+    tt('values.noneSet')
+  )
 
   const tokenInfoItems = [
     {
@@ -2193,11 +2236,7 @@ export default function TokenPage({
     {
       key: 'flags',
       label: tt('fields.flags'),
-      value: token.flags
-        ? Object.keys(token.flags)
-            .filter((flag) => token.flags[flag])
-            .join(', ') || tt('values.noneSet')
-        : tt('values.none'),
+      value: token.flags ? mptFlagsValue : tt('values.none'),
       show: isMptToken
     }
   ]
@@ -2317,9 +2356,17 @@ export default function TokenPage({
               ].map(({ key, Icon, value, enabledKey, disabledKey, enabledTone, disabledTone }) => {
                 const tone = typeof value === 'boolean' ? (value ? enabledTone : disabledTone) : 'unknown'
                 return (
-                  <span key={key} className={`tokenPermission tokenPermission-${tone}`}>
+                  <span
+                    key={key}
+                    className={`tokenPermission tokenPermission-${tone}${
+                      issuerBlackholed ? ' tokenPermissionUnavailable tooltip' : ''
+                    }`}
+                  >
                     <Icon aria-hidden="true" />
                     <span>{iouPermissionStatus(value, enabledKey, disabledKey)}</span>
+                    {issuerBlackholed && (
+                      <span className="tooltiptext no-brake">{blackholedPermissionText}</span>
+                    )}
                   </span>
                 )
               })}
@@ -2629,6 +2676,7 @@ export default function TokenPage({
                     </span>
                   )}
                 </span>
+                {issuerBlackholed ? blackholedIssuerBadge : null}
               </div>
 
               {((!isNativeToken && !isMptToken) || isMptToken) && (
