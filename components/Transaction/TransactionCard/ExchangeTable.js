@@ -60,10 +60,11 @@ export default function ExchangesTable({ exchanges = [], ledgerIndex = null }) {
         return (
           <div key={keyOf(e, i)} className="text-sm leading-6">
             {exchanges?.length > 1 && <>{i + 1}. </>}
-            <AddressWithIconInline data={e} name="address1" options={{ short: true }} /> {t('exchange.exchanged')}{' '}
-            <b className="tabular-nums">{sent}</b> {t('exchange.for')}{' '}
-            <b className="tabular-nums">{received}</b> {t('exchange.with')}{' '}
-            <AddressWithIconInline data={e} name="address2" options={{ short: true }} />
+            <AddressWithIconInline data={e} name="address1" options={{ labelClassName: 'responsive-address' }} />{' '}
+            {t('exchange.exchanged')}{' '}
+            <b className="tabular-nums no-brake">{sent}</b> {t('exchange.for')}{' '}
+            <b className="tabular-nums no-brake">{received}</b> {t('exchange.with')}{' '}
+            <AddressWithIconInline data={e} name="address2" options={{ labelClassName: 'responsive-address' }} />
             {by}.
             {showRates && (
               <>
