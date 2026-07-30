@@ -1533,6 +1533,11 @@ export default function TokenPage({
   const currencyCodeDisplay = displayCurrencyCode(currencyCodeText)
   const effectiveNativePrice = statistics?.priceNativeCurrency ?? (isNativeToken ? 1 : null)
   const issuerFlags = token?.issuerFlags
+  const canEscrowIou = issuerFlags?.allowTrustLineLocking ?? token?.canLock
+  const requiresIouAuthorization = issuerFlags?.requireAuth
+  const canClawbackIou = issuerFlags?.allowTrustLineClawback
+  const canFreezeIou = typeof issuerFlags?.noFreeze === 'boolean' ? !issuerFlags.noFreeze : undefined
+  const isIouGloballyFrozen = issuerFlags?.globalFreeze
   const iouPermissionStatus = (value, enabledKey, disabledKey) =>
     typeof value === 'boolean' ? tt(`iouPermissions.${value ? enabledKey : disabledKey}`) : tt('escrow.unknown')
   const changeItems = [
@@ -1921,7 +1926,7 @@ export default function TokenPage({
                     <span key={detail.key} className="tokenMetricDetail">
                       <span>{detail.label}</span>
                       <span className="tokenMetricDetailValue">
-                        <span>{detailValueNode}</span>
+                        <span className={detail.className}>{detailValueNode}</span>
                         {detail.delta}
                       </span>
                     </span>
@@ -2256,43 +2261,32 @@ export default function TokenPage({
             {
               key: 'escrow',
               label: tt('iouPermissions.escrow'),
-              value: iouPermissionStatus(
-                issuerFlags?.allowTrustLineLocking ?? token?.canLock,
-                'canBeEscrowed',
-                'cannotBeEscrowed'
-              )
+              value: iouPermissionStatus(canEscrowIou, 'canBeEscrowed', 'cannotBeEscrowed'),
+              className: canEscrowIou === true ? 'bold green' : undefined
             },
             {
               key: 'authorization',
               label: tt('iouPermissions.authorization'),
-              value: iouPermissionStatus(
-                issuerFlags?.requireAuth,
-                'authorizationRequired',
-                'noAuthorizationRequired'
-              )
+              value: iouPermissionStatus(requiresIouAuthorization, 'authorizationRequired', 'noAuthorizationRequired'),
+              className: requiresIouAuthorization === true ? 'bold orange' : undefined
             },
             {
               key: 'clawback',
               label: tt('iouPermissions.clawback'),
-              value: iouPermissionStatus(
-                issuerFlags?.allowTrustLineClawback,
-                'canBeClawedBack',
-                'cannotBeClawedBack'
-              )
+              value: iouPermissionStatus(canClawbackIou, 'canBeClawedBack', 'cannotBeClawedBack'),
+              className: canClawbackIou === true ? 'bold orange' : undefined
             },
             {
               key: 'freeze',
               label: tt('iouPermissions.freeze'),
-              value: iouPermissionStatus(
-                typeof issuerFlags?.noFreeze === 'boolean' ? !issuerFlags.noFreeze : undefined,
-                'canBeFrozen',
-                'cannotBeFrozen'
-              )
+              value: iouPermissionStatus(canFreezeIou, 'canBeFrozen', 'cannotBeFrozen'),
+              className: canFreezeIou === false ? 'bold green' : undefined
             },
             {
               key: 'globalFreeze',
               label: tt('iouPermissions.globalFreeze'),
-              value: iouPermissionStatus(issuerFlags?.globalFreeze, 'globallyFrozen', 'notGloballyFrozen')
+              value: iouPermissionStatus(isIouGloballyFrozen, 'globallyFrozen', 'notGloballyFrozen'),
+              className: isIouGloballyFrozen === true ? 'bold red' : undefined
             }
           ]
         }
