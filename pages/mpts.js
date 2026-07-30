@@ -25,6 +25,7 @@ import { scaleAmount } from '../utils/calc'
 import TokenTabs from '../components/Tabs/TokenTabs'
 import { FaExternalLinkAlt, FaHandshake } from 'react-icons/fa'
 import { tokensClass } from '../styles/pages/tokens.module.scss'
+import { mptIssuanceId } from '../utils/acceptedTokens'
 
 /*
   {
@@ -176,8 +177,9 @@ export default function Mpts({
     }) || ''
   )
   const [order, setOrder] = useState(orderQuery || 'holdersHigh') //'rating
-  const [issuer, setIssuer] = useState(issuerQuery)
-  const [currency, setCurrency] = useState(currencyQuery)
+  const [issuer] = useState(issuerQuery)
+  const [currency] = useState(currencyQuery)
+  const [selectedTokens, setSelectedTokens] = useState([])
   const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
 
   const controller = new AbortController()
@@ -205,9 +207,12 @@ export default function Mpts({
     const oldOrder = rawData?.order
     const oldCurrency = rawData?.currency
     const oldIssuer = rawData?.issuer
-    if (!oldOrder || !order) return
+    if (!order) return
 
+    const selectedTokenIds = selectedTokens.map(mptIssuanceId).filter(Boolean)
     let loadMoreRequest =
+      selectedTokenIds.length === 0 &&
+      !!oldOrder &&
       (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
       (currency ? oldCurrency === currency : !oldCurrency) &&
       (issuer ? oldIssuer === issuer : !oldIssuer)
@@ -228,11 +233,15 @@ export default function Mpts({
     }
     setRawData({})
 
-    let apiUrl = 'v2/mptokens?limit=100&order=' + order + markerPart
-    if (issuer) {
+    let apiUrl = selectedTokenIds.length
+      ? `v2/tokens?tokens=${encodeURIComponent(
+          selectedTokenIds.join(',')
+        )}&currencyDetails=true&statistics=true`
+      : 'v2/mptokens?limit=100&order=' + order + markerPart
+    if (!selectedTokenIds.length && issuer) {
       apiUrl += `&issuer=${encodeURIComponent(issuer)}`
     }
-    if (currency) {
+    if (!selectedTokenIds.length && currency) {
       apiUrl += `&currency=${encodeURIComponent(currency)}`
     }
 
@@ -251,11 +260,11 @@ export default function Mpts({
     if (newdata) {
       setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
-      if (newdata.issuances) {
-        let list = newdata.issuances
+      const list = newdata.issuances ?? newdata.tokens
+      if (Array.isArray(list)) {
         if (list.length > 0) {
           setErrorMessage('')
-          setMarker(newdata.marker)
+          setMarker(newdata.marker || '')
           if (!loadMoreRequest) {
             setData(list)
           } else {
@@ -263,6 +272,10 @@ export default function Mpts({
           }
         } else {
           setErrorMessage(t('general.no-data'))
+          setMarker('')
+          if (!loadMoreRequest) {
+            setData([])
+          }
         }
       } else {
         if (newdata.error) {
@@ -284,7 +297,7 @@ export default function Mpts({
     }
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, issuer, currency, subscriptionExpired])
+  }, [order, issuer, currency, selectedTokens, subscriptionExpired])
 
   // Effect: update sortConfig when order changes (e.g., from dropdown)
   useEffect(() => {
@@ -413,15 +426,6 @@ export default function Mpts({
     event.stopPropagation()
   }
 
-  const tokenFilter =
-    issuer && currency
-      ? data.find((token) => token?.issuer === issuer && token?.currency === currency) || { issuer, currency }
-      : {}
-  const setTokenFilter = (token) => {
-    setIssuer(token?.issuer || null)
-    setCurrency(token?.currency || null)
-  }
-
   return (
     <div className={tokensClass}>
       <SEO title={tm('title')} />
@@ -437,7 +441,15 @@ export default function Mpts({
         order={order}
         setOrder={setOrder}
         orderList={orderList}
-        navExtra={<TokenSelector value={tokenFilter} onChange={setTokenFilter} onlyMPTokens />}
+        navExtra={
+          <TokenSelector
+            value={selectedTokens}
+            onChange={setSelectedTokens}
+            onlyMPTokens
+            multiple
+            multipleType="mpts"
+          />
+        }
         withoutLeftFilters
         showCsvInNav
       >

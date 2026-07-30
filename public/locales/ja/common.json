@@ -48,6 +48,12 @@
   },
   "token-selector": {
     "select-token": "トークンを選択",
+    "select-tokens": "トークンを選択",
+    "select-mpts": "MPTを選択",
+    "mpts-selected": "{{count}}個のMPTを選択中",
+    "tokens-selected": "{{count}}個のトークンを選択中",
+    "show-selected": "選択したトークンを表示 ({{count}})",
+    "clear-selection": "クリア",
     "select-token-destination": "トークンを選択（宛先が保有可能）",
     "search-in": "検索対象",
     "search-placeholder": "通貨、発行者、またはユーザー名で検索",

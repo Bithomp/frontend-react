@@ -48,6 +48,12 @@
   },
   "token-selector": {
     "select-token": "Sélectionner un token",
+    "select-tokens": "Sélectionner des tokens",
+    "select-mpts": "Sélectionner des MPTs",
+    "mpts-selected": "{{count}} MPTs sélectionnés",
+    "tokens-selected": "{{count}} tokens sélectionnés",
+    "show-selected": "Afficher la sélection ({{count}})",
+    "clear-selection": "Effacer",
     "select-token-destination": "Sélectionner un token (le destinataire peut le détenir)",
     "search-in": "Rechercher dans",
     "search-placeholder": "Rechercher par devise, émetteur ou username",

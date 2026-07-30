@@ -48,6 +48,12 @@
   },
   "token-selector": {
     "select-token": "选择代币",
+    "select-tokens": "选择多个代币",
+    "select-mpts": "选择多个 MPT",
+    "mpts-selected": "已选择 {{count}} 个 MPT",
+    "tokens-selected": "已选择 {{count}} 个代币",
+    "show-selected": "显示已选择项 ({{count}})",
+    "clear-selection": "清除",
     "select-token-destination": "选择代币（目的地可以持有）",
     "search-in": "搜索范围",
     "search-placeholder": "按货币、发行人或用户名搜索",

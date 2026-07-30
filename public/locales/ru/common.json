@@ -48,6 +48,12 @@
   },
   "token-selector": {
     "select-token": "Выберите токен",
+    "select-tokens": "Выберите токены",
+    "select-mpts": "Выберите MPT",
+    "mpts-selected": "Выбрано MPT: {{count}}",
+    "tokens-selected": "Выбрано токенов: {{count}}",
+    "show-selected": "Показать выбранные ({{count}})",
+    "clear-selection": "Очистить",
     "select-token-destination": "Выберите токен (доступен получателю)",
     "search-in": "Искать среди",
     "search-placeholder": "Поиск по валюте, эмитенту или username",

@@ -24,6 +24,7 @@ import { useRouter } from 'next/router'
 import TokenTabs from '../components/Tabs/TokenTabs'
 import Link from 'next/link'
 import { tokensClass } from '../styles/pages/tokens.module.scss'
+import { mptIssuanceId } from '../utils/acceptedTokens'
 
 const mergeNativeTokenOnTop = (tokens, nativeToken) => {
   const list = Array.isArray(tokens) ? tokens : []
@@ -203,10 +204,23 @@ const TokenCell = ({ token }) => {
   return <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
 }
 
-const getTokenDistributionUrl = (token) =>
-  token?.issuer
+const getTokenDistributionUrl = (token) => {
+  const issuanceId = mptIssuanceId(token)
+  if (issuanceId) return `/distribution?mptokenIssuanceID=${encodeURIComponent(issuanceId)}`
+  return token?.issuer
     ? `/distribution?currencyIssuer=${encodeURIComponent(token.issuer)}&currency=${encodeURIComponent(token.currency)}`
     : '/distribution'
+}
+
+const tokenRequestId = (token) =>
+  mptIssuanceId(token) ||
+  (token?.issuer && token?.currency ? `${token.issuer}:${token.currency}` : token?.currency || '')
+
+const getTokenPageUrl = (token) => {
+  const issuanceId = mptIssuanceId(token)
+  if (issuanceId) return `/token/${issuanceId}`
+  return token?.issuer ? `/token/${token.issuer}/${token.currency}` : `/token/${token.currency}`
+}
 
 export default function Tokens({
   initialData,
@@ -250,9 +264,10 @@ export default function Tokens({
     }) || ''
   )
   const [order, setOrder] = useState(orderQuery || 'rating')
-  const [issuer, setIssuer] = useState(issuerQuery)
-  const [currency, setCurrency] = useState(currencyQuery)
+  const [issuer] = useState(issuerQuery)
+  const [currency] = useState(currencyQuery)
   const [canEscrow, setCanEscrow] = useState(canEscrowQuery || false)
+  const [selectedTokens, setSelectedTokens] = useState([])
   const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
 
   const controller = new AbortController()
@@ -290,6 +305,8 @@ export default function Tokens({
   const checkApi = async ({ loadMoreRequest = false } = {}) => {
     if (isFetchingRef.current) return
 
+    if (loadMoreRequest && selectedTokens.length > 0) return
+
     // do not load more if there is no next marker
     if (loadMoreRequest && !marker) return
 
@@ -307,24 +324,28 @@ export default function Tokens({
         setLoading(true)
       }
 
-      let apiUrl =
-        'v2/trustlines/tokens?limit=100&order=' +
-        order +
-        '&currencyDetails=true&statistics=true&convertCurrencies=' +
-        selectedCurrency +
-        markerPart
-      if (issuer) {
+      const selectedTokenIds = selectedTokens.map(tokenRequestId).filter(Boolean)
+      let apiUrl = selectedTokenIds.length
+        ? `v2/tokens?tokens=${encodeURIComponent(
+            selectedTokenIds.join(',')
+          )}&currencyDetails=true&statistics=true&convertCurrencies=${encodeURIComponent(selectedCurrency)}`
+        : 'v2/trustlines/tokens?limit=100&order=' +
+          order +
+          '&currencyDetails=true&statistics=true&convertCurrencies=' +
+          selectedCurrency +
+          markerPart
+      if (!selectedTokenIds.length && issuer) {
         apiUrl += `&issuer=${encodeURIComponent(issuer)}`
       }
-      if (currency) {
+      if (!selectedTokenIds.length && currency) {
         apiUrl += `&currency=${encodeURIComponent(currency)}`
       }
-      if (canEscrow) {
+      if (!selectedTokenIds.length && canEscrow) {
         apiUrl += '&canLock=true'
       }
 
-      const shouldShowNativeFirst = !issuer && !currency
-      const nativeOnly = !issuer && currency === nativeCurrency
+      const shouldShowNativeFirst = !selectedTokenIds.length && !issuer && !currency
+      const nativeOnly = !selectedTokenIds.length && !issuer && currency === nativeCurrency
       const nativeTokenUrl = `v2/token/${nativeCurrency}?statistics=true&convertCurrencies=${selectedCurrency}`
 
       if (nativeOnly) {
@@ -426,7 +447,7 @@ export default function Tokens({
     }
     checkApi({ loadMoreRequest: false })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, order, issuer, currency, canEscrow, subscriptionExpired])
+  }, [selectedCurrency, order, issuer, currency, canEscrow, selectedTokens, subscriptionExpired])
 
   // Effect: update sortConfig when order changes (e.g., from dropdown)
   useEffect(() => {
@@ -678,25 +699,15 @@ export default function Tokens({
     }
   }
 
-  const tokenFilter = currency && (issuer || currency === nativeCurrency) ? { issuer, currency } : {}
-  const setTokenFilter = (nextToken) => {
-    if (!nextToken?.issuer && nextToken?.currency === nativeCurrency) {
-      setIssuer(null)
-      setCurrency(nativeCurrency)
-      return
-    }
-    if (nextToken?.issuer && nextToken?.currency) {
-      setIssuer(nextToken.issuer)
-      setCurrency(nextToken.currency)
-      return
-    }
-    setIssuer(null)
-    setCurrency(null)
-  }
-
   const toolbarControls = (
     <>
-      <TokenSelector value={tokenFilter} onChange={setTokenFilter} excludeLPtokens canLock={canEscrow} />
+      <TokenSelector
+        value={selectedTokens}
+        onChange={setSelectedTokens}
+        excludeLPtokens
+        canLock={canEscrow}
+        multiple
+      />
       {!xahauNetwork && (
         <button
           type="button"
@@ -853,9 +864,8 @@ export default function Tokens({
                       {data.map((token, i) => {
                         const hasIssuer = !!token?.issuer
                         const isNativeToken = !hasIssuer && token?.currency === nativeCurrency
-                        const tokenPageUrl = hasIssuer
-                          ? `/token/${token.issuer}/${token.currency}`
-                          : `/token/${token.currency}`
+                        const tokenPageUrl = getTokenPageUrl(token)
+                        const isMpt = !!mptIssuanceId(token)
                         const ammsUrl = isNativeToken
                           ? '/amms'
                           : hasIssuer
@@ -863,7 +873,7 @@ export default function Tokens({
                             : `/amms?currency=${token.currency}`
                         const distributionUrl = getTokenDistributionUrl(token)
                         return (
-                          <tr key={i} onClick={() => router.push(tokenPageUrl)}>
+                          <tr key={tokenRequestId(token) || i} onClick={() => router.push(tokenPageUrl)}>
                             <td className="center">{i + 1}</td>
                             <td>
                               <TokenCell token={token} />
@@ -922,7 +932,7 @@ export default function Tokens({
                                     {tt('actions.openTokenNewTab')}
                                   </span>
                                 </Link>
-                                {hasIssuer && (
+                                {hasIssuer && !isMpt && (
                                   <button
                                     type="button"
                                     onClick={(event) => {
@@ -974,12 +984,11 @@ export default function Tokens({
                         {data.map((token, i) => {
                           const hasIssuer = !!token?.issuer
                           const isNativeToken = !hasIssuer && token?.currency === nativeCurrency
-                          const tokenPageUrl = hasIssuer
-                            ? `/token/${token.issuer}/${token.currency}`
-                            : `/token/${token.currency}`
+                          const tokenPageUrl = getTokenPageUrl(token)
+                          const isMpt = !!mptIssuanceId(token)
                           const distributionUrl = getTokenDistributionUrl(token)
                           return (
-                            <tr key={i}>
+                            <tr key={tokenRequestId(token) || i}>
                               <td style={{ padding: '5px' }} className="center">
                                 <b>{i + 1}</b>
                               </td>
@@ -1032,7 +1041,7 @@ export default function Tokens({
                                       <FaExternalLinkAlt style={{ fontSize: 14, marginBottom: -1 }} />{' '}
                                       {tt('actions.tokenPage')}
                                     </Link>
-                                    {!isNativeToken && (
+                                    {!isNativeToken && !isMpt && (
                                       <button
                                         className="button-action narrow thin"
                                         onClick={() => {

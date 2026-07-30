@@ -48,6 +48,12 @@
   },
   "token-selector": {
     "select-token": "토큰 선택",
+    "select-tokens": "토큰 선택",
+    "select-mpts": "MPT 선택",
+    "mpts-selected": "MPT {{count}}개 선택됨",
+    "tokens-selected": "토큰 {{count}}개 선택됨",
+    "show-selected": "선택 항목 표시 ({{count}})",
+    "clear-selection": "지우기",
     "select-token-destination": "토큰 선택(수신 주소가 보유 가능)",
     "search-in": "검색 범위",
     "search-placeholder": "통화, 발행자 또는 사용자 이름으로 검색",

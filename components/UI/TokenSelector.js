@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'next-i18next'
-import { IoSearch } from 'react-icons/io5'
+import { IoCheckmark, IoChevronDown, IoSearch } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
-import { IoChevronDown } from 'react-icons/io5'
 import axios from 'axios'
 import { nativeCurrency, useWidth, setTabParams } from '../../utils'
 import { CurrencyWithIcon, niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
@@ -81,6 +80,11 @@ const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
 
 const hasTokenValue = (token) => !!(token?.currency || mptIssuanceId(token))
 
+const tokenKey = (token) =>
+  mptIssuanceId(token) ||
+  token?.token ||
+  (token?.issuer && token?.currency ? `${token.issuer}:${token.currency}` : token?.currency || '')
+
 const mptDisplayName = (token) =>
   token?.metadata?.name || token?.metadata?.n || token?.metadata?.ticker || token?.metadata?.t || token?.currency || 'MPT'
 
@@ -126,17 +130,23 @@ export default function TokenSelector({
   onlyLPtokens = false,
   onlyMPTokens = false,
   includeMPTokens = false,
-  canLock = false
+  canLock = false,
+  multiple = false,
+  multipleType = 'tokens'
 }) {
   const { t } = useTranslation()
   const router = useRouter()
   const width = useWidth()
   const [isOpen, setIsOpen] = useState(false)
+  const [multipleValue, setMultipleValue] = useState(() => (multiple && Array.isArray(value) ? value : []))
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState(null)
-  const [tokenType, setTokenType] = useState(() => (mptIssuanceId(value) ? 'mpts' : 'tokens'))
+  const selectedTokens = multiple ? multipleValue : []
+  const [tokenType, setTokenType] = useState(() =>
+    mptIssuanceId(multiple ? selectedTokens[0] : value) ? 'mpts' : 'tokens'
+  )
   const searchMPTokens = onlyMPTokens || (includeMPTokens && tokenType === 'mpts')
   const searchScope = `${searchMPTokens ? 'mpts' : 'tokens'}:${canLock ? 'canLock' : 'all'}`
 
@@ -335,7 +345,30 @@ export default function TokenSelector({
   }, [searchQuery, isOpen, destinationAddress, searchMPTokens, canLock])
 
   const handleSelect = (token) => {
+    if (multiple) {
+      const selectedKey = tokenKey(token)
+      setMultipleValue(
+        selectedTokens.some((selectedToken) => tokenKey(selectedToken) === selectedKey)
+          ? selectedTokens.filter((selectedToken) => tokenKey(selectedToken) !== selectedKey)
+          : [...selectedTokens, token]
+      )
+      return
+    }
     onChange(token)
+    setIsOpen(false)
+  }
+
+  const openSelector = () => {
+    if (multiple) {
+      setMultipleValue(Array.isArray(value) ? value : [])
+    }
+    setIsOpen(true)
+  }
+
+  const closeSelector = () => {
+    if (multiple) {
+      setMultipleValue(Array.isArray(value) ? value : [])
+    }
     setIsOpen(false)
   }
 
@@ -367,7 +400,7 @@ export default function TokenSelector({
     return niceCurrency(token.currency)
   }
 
-  const selectedValue = hasTokenValue(value)
+  const selectedValue = multiple ? selectedTokens.length > 0 : hasTokenValue(value)
   const secondaryTokenText = (token) => {
     const mptId = mptIssuanceId(token)
     if (mptId) return shortAddress(mptId, width > 1100 ? 10 : 6)
@@ -398,20 +431,28 @@ export default function TokenSelector({
         <div className="token-selector">
           <div
             className="token-selector-dropdown"
-            onClick={() => setIsOpen(true)}
+            onClick={openSelector}
             role="button"
             style={{ outline: 'none' }}
           >
             {/* Icon */}
             {selectedValue && (
               <div className="token-selector-icon">
-                <CurrencyWithIcon token={value} options={{ iconOnly: true }} />
+                {multiple ? (
+                  <span className="token-selector-count">{selectedTokens.length}</span>
+                ) : (
+                  <CurrencyWithIcon token={value} options={{ iconOnly: true }} />
+                )}
               </div>
             )}
             {/* Text */}
             <div className="token-selector-label">
               <span className="token-selector-code">
-                {selectedValue ? getTokenDisplayName(value) : t('token-selector.select-token')}
+                {multiple && selectedValue
+                  ? t(`token-selector.${multipleType}-selected`, { count: selectedTokens.length })
+                  : selectedValue
+                    ? getTokenDisplayName(value)
+                    : t(multiple ? `token-selector.select-${multipleType}` : 'token-selector.select-token')}
               </span>
             </div>
             {/* Chevron */}
@@ -426,7 +467,7 @@ export default function TokenSelector({
               <div className="token-selector-modal">
                 <div className="token-selector-modal-content">
                   {/* Backdrop */}
-                  <div className="token-selector-modal-backdrop" onClick={() => setIsOpen(false)} />
+                  <div className="token-selector-modal-backdrop" onClick={closeSelector} />
 
                   {/* Modal */}
                   <div className="token-selector-modal-container">
@@ -434,9 +475,9 @@ export default function TokenSelector({
                       <h3 className="token-selector-modal-title">
                         {destinationAddress
                           ? t('token-selector.select-token-destination')
-                          : t('token-selector.select-token')}
+                          : t(multiple ? `token-selector.select-${multipleType}` : 'token-selector.select-token')}
                       </h3>
-                      <IoMdClose className="token-selector-modal-close" onClick={() => setIsOpen(false)} />
+                      <IoMdClose className="token-selector-modal-close" onClick={closeSelector} />
                     </div>
 
                     {includeMPTokens && !destinationAddress && (
@@ -483,11 +524,14 @@ export default function TokenSelector({
                         <div className="token-selector-modal-items">
                           {searchResults.map((token, index) => {
                             const secondaryText = secondaryTokenText(token)
+                            const isSelected =
+                              multiple &&
+                              selectedTokens.some((selectedToken) => tokenKey(selectedToken) === tokenKey(token))
 
                             return (
                               <div
                                 key={`${mptIssuanceId(token) || token.currency}-${token.issuer || ''}-${index}`}
-                                className="token-selector-modal-item"
+                                className={`token-selector-modal-item${isSelected ? ' is-selected' : ''}`}
                                 onClick={() => handleSelect(token)}
                               >
                                 <div className="token-selector-modal-item-content">
@@ -513,6 +557,11 @@ export default function TokenSelector({
                                     </span>
                                     {secondaryText ? <span>{secondaryText}</span> : null}
                                   </div>
+                                  {multiple && (
+                                    <span className="token-selector-modal-item-check" aria-hidden="true">
+                                      {isSelected && <IoCheckmark />}
+                                    </span>
+                                  )}
                                 </div>
                               </div>
                             )
@@ -531,6 +580,25 @@ export default function TokenSelector({
                         </div>
                       ) : null}
                     </div>
+                    {multiple && (
+                      <div className="token-selector-modal-actions">
+                        <button
+                          type="button"
+                          className="button-action"
+                          onClick={() => {
+                            onChange(selectedTokens)
+                            setIsOpen(false)
+                          }}
+                        >
+                          {t('token-selector.show-selected', { count: selectedTokens.length })}
+                        </button>
+                        {selectedTokens.length > 0 && (
+                          <button type="button" className="button-text" onClick={() => setMultipleValue([])}>
+                            {t('token-selector.clear-selection')}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>,
