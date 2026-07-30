@@ -20,7 +20,6 @@ import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
 import ExpirationSelect from '../../components/UI/ExpirationSelect'
-import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../utils/format'
@@ -248,7 +247,6 @@ export default function IssueCheck({
             {ts('check.learn', { explorerName })}
           </Link>
         </p>
-        <NetworkTabs />
         <div>
           <AddressInput
             title={t('table.destination')}

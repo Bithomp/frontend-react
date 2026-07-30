@@ -19,7 +19,6 @@ import { useRouter } from 'next/router'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
-import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenSelector from '../../components/UI/TokenSelector'
@@ -346,8 +345,6 @@ export default function CreateEscrow({
           </Link>
           .
         </p>
-        <NetworkTabs />
-
         <div>
           <AddressInput
             title={t('table.destination')}
