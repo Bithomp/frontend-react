@@ -58,7 +58,8 @@
     "search-in": "Search in",
     "search-placeholder": "Search by currency, issuer, or username",
     "holders": "{{value}} holders",
-    "more-results": "More than {{count}} results found. Please specify an issuer to narrow down the search.",
+    "more-results": "More than {{count}} results found. Refine your search by currency or issuer.",
+    "more-results-mpts": "More than {{count}} results found. Refine your search by MPT name, ticker, or issuance ID.",
     "no-destination-trustlines": "No trustlines found for this destination address."
   },
   "menu": {

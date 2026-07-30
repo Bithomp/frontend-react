@@ -58,7 +58,8 @@
     "search-in": "Rechercher dans",
     "search-placeholder": "Rechercher par devise, émetteur ou username",
     "holders": "{{value}} détenteurs",
-    "more-results": "Plus de {{count}} résultats trouvés. Veuillez préciser un émetteur pour affiner la recherche.",
+    "more-results": "Plus de {{count}} résultats trouvés. Affinez la recherche par devise ou émetteur.",
+    "more-results-mpts": "Plus de {{count}} résultats trouvés. Affinez la recherche par nom du MPT, ticker ou ID d’émission.",
     "no-destination-trustlines": "Aucune trustline trouvée pour cette adresse de destination."
   },
   "menu": {

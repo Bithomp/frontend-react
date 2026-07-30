@@ -58,7 +58,8 @@
     "search-in": "Suchen in",
     "search-placeholder": "Nach Währung, Issuer oder Username suchen",
     "holders": "{{value}} Inhaber",
-    "more-results": "Mehr als {{count}} Ergebnisse gefunden. Bitte geben Sie einen Issuer an, um die Suche einzugrenzen.",
+    "more-results": "Mehr als {{count}} Ergebnisse gefunden. Verfeinern Sie die Suche nach Währung oder Issuer.",
+    "more-results-mpts": "Mehr als {{count}} Ergebnisse gefunden. Verfeinern Sie die Suche nach MPT-Name, Ticker oder Ausgabe-ID.",
     "no-destination-trustlines": "Keine Trustlines für diese Zieladresse gefunden."
   },
   "menu": {

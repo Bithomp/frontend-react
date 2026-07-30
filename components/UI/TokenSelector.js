@@ -568,7 +568,12 @@ export default function TokenSelector({
                           })}
                           {!destinationAddress && searchResults.length >= limit && (
                             <p className="center orange">
-                              {t('token-selector.more-results', { count: limit })}
+                              {t(
+                                searchMPTokens
+                                  ? 'token-selector.more-results-mpts'
+                                  : 'token-selector.more-results',
+                                { count: limit }
+                              )}
                             </p>
                           )}
                         </div>

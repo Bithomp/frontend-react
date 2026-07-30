@@ -58,7 +58,8 @@
     "search-in": "Cari di",
     "search-placeholder": "Cari berdasarkan mata uang, penerbit, atau username",
     "holders": "{{value}} pemegang",
-    "more-results": "Ditemukan lebih dari {{count}} hasil. Tentukan penerbit untuk mempersempit pencarian.",
+    "more-results": "Ditemukan lebih dari {{count}} hasil. Persempit pencarian berdasarkan mata uang atau penerbit.",
+    "more-results-mpts": "Ditemukan lebih dari {{count}} hasil. Persempit pencarian berdasarkan nama MPT, ticker, atau ID penerbitan.",
     "no-destination-trustlines": "Tidak ada trustline untuk alamat tujuan ini."
   },
   "menu": {

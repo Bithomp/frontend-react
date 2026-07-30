@@ -58,7 +58,8 @@
     "search-in": "Buscar en",
     "search-placeholder": "Buscar por moneda, emisor o username",
     "holders": "{{value}} titulares",
-    "more-results": "Se encontraron más de {{count}} resultados. Especifica un emisor para acotar la búsqueda.",
+    "more-results": "Se encontraron más de {{count}} resultados. Acota la búsqueda por moneda o emisor.",
+    "more-results-mpts": "Se encontraron más de {{count}} resultados. Acota la búsqueda por nombre del MPT, ticker o ID de emisión.",
     "no-destination-trustlines": "No se encontraron trustlines para esta dirección de destino."
   },
   "menu": {

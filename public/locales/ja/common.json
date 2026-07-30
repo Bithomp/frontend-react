@@ -58,7 +58,8 @@
     "search-in": "検索対象",
     "search-placeholder": "通貨、発行者、またはユーザー名で検索",
     "holders": "{{value}} ホルダー",
-    "more-results": "{{count}}件を超える結果が見つかりました。検索を絞り込むには発行者を指定してください。",
+    "more-results": "{{count}}件を超える結果が見つかりました。通貨または発行者で検索を絞り込んでください。",
+    "more-results-mpts": "{{count}}件を超える結果が見つかりました。MPT名、ティッカー、または発行IDで検索を絞り込んでください。",
     "no-destination-trustlines": "この宛先アドレスのトラストラインが見つかりません。"
   },
   "menu": {

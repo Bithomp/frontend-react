@@ -58,7 +58,8 @@
     "search-in": "搜索范围",
     "search-placeholder": "按货币、发行人或用户名搜索",
     "holders": "{{value}} 持有者",
-    "more-results": "找到超过 {{count}} 个结果。请指定发行人以缩小搜索范围。",
+    "more-results": "找到超过 {{count}} 个结果。请按币种或发行方缩小搜索范围。",
+    "more-results-mpts": "找到超过 {{count}} 个结果。请按 MPT 名称、代码或发行 ID 缩小搜索范围。",
     "no-destination-trustlines": "找不到此目标地址的信任线。"
   },
   "menu": {
