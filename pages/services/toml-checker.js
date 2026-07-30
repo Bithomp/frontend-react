@@ -18,7 +18,6 @@ const normalizeDomain = (value) => {
 
   return trimmed
     .replace(/^https?:\/\//i, '')
-    .replace(/^www\./i, '')
     .replace(/\/.*$/, '')
     .toLowerCase()
 }
