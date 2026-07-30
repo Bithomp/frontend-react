@@ -465,6 +465,68 @@
     grid-column: 1 / -1;
   }
 
+  .tokenMetricGridSupply {
+    grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+  }
+
+  .tokenMetricGridSupply .tokenMetricFlags {
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto;
+    gap: 12px 18px;
+    align-items: center;
+  }
+
+  .tokenMetricFlags .tokenMetricHeader {
+    padding-right: 18px;
+    border-right: 1px solid color-mix(in srgb, var(--card-border) 56%, transparent);
+  }
+
+  .tokenMetricFlags .tokenMetricValue {
+    align-self: center;
+  }
+
+  .tokenPermissionList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    align-items: center;
+  }
+
+  .tokenPermission {
+    display: inline-flex;
+    gap: 7px;
+    align-items: center;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+
+    > svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+
+    &-positive {
+      color: var(--green);
+    }
+
+    &-warning {
+      color: var(--orange);
+    }
+
+    &-danger {
+      color: var(--red);
+    }
+
+    &-neutral,
+    &-unknown {
+      color: var(--text-secondary);
+    }
+  }
+
   .tokenMetricDetails {
     display: grid;
     flex: 0 0 100%;
@@ -3746,6 +3808,22 @@
 
     .tokenMetricGridStats {
       grid-template-columns: 1fr;
+    }
+
+    .tokenMetricGridSupply {
+      grid-template-columns: 1fr;
+
+      .tokenMetricFlags {
+        grid-column: 1;
+        grid-template-columns: 1fr;
+      }
+
+      .tokenMetricFlags .tokenMetricHeader {
+        padding-right: 0;
+        padding-bottom: 8px;
+        border-right: 0;
+        border-bottom: 1px solid color-mix(in srgb, var(--card-border) 56%, transparent);
+      }
     }
 
     .ammMetricGrid {

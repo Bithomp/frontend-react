@@ -4,7 +4,16 @@ import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { FaHandshake, FaLock, FaLockOpen, FaTrashAlt } from 'react-icons/fa'
+import {
+  FaGlobe,
+  FaHandshake,
+  FaLock,
+  FaLockOpen,
+  FaSnowflake,
+  FaUndoAlt,
+  FaUserLock,
+  FaTrashAlt
+} from 'react-icons/fa'
 import axios from 'axios'
 
 import SEO from '../../components/SEO'
@@ -1898,13 +1907,14 @@ export default function TokenPage({
           delta = null,
           compactHeader = false,
           detailsOnly = false,
-          compactDetails = false
+          compactDetails = false,
+          className = ''
         }) => {
         const valueNode = value === undefined || value === null || value === '' ? '-' : value
         const visibleDetails = details.filter((detail) => detail.show !== false)
 
         return (
-          <div key={key} className={wide ? 'tokenMetricWide' : undefined}>
+          <div key={key} className={[wide ? 'tokenMetricWide' : '', className].filter(Boolean).join(' ') || undefined}>
             <span className={compactHeader ? 'tokenMetricDetail tokenMetricPrimaryDetail' : 'tokenMetricHeader'}>
               <span>{label}</span>
               {compactHeader ? (
@@ -2231,7 +2241,7 @@ export default function TokenPage({
               {fullNiceNumber(token.supply)} {tokenDisplayCurrency}
             </>
           ),
-          wide: true
+          className: 'tokenMetricSupply'
         },
         {
           key: 'holders',
@@ -2254,41 +2264,67 @@ export default function TokenPage({
           key: 'issuerFlags',
           label: tt('fields.flags'),
           show: isIouToken,
+          className: 'tokenMetricFlags',
           wide: true,
-          detailsOnly: true,
-          compactDetails: true,
-          details: [
-            {
-              key: 'escrow',
-              label: tt('iouPermissions.escrow'),
-              value: iouPermissionStatus(canEscrowIou, 'canBeEscrowed', 'cannotBeEscrowed'),
-              className: canEscrowIou === true ? 'bold green' : undefined
-            },
-            {
-              key: 'authorization',
-              label: tt('iouPermissions.authorization'),
-              value: iouPermissionStatus(requiresIouAuthorization, 'authorizationRequired', 'noAuthorizationRequired'),
-              className: requiresIouAuthorization === true ? 'bold orange' : undefined
-            },
-            {
-              key: 'clawback',
-              label: tt('iouPermissions.clawback'),
-              value: iouPermissionStatus(canClawbackIou, 'canBeClawedBack', 'cannotBeClawedBack'),
-              className: canClawbackIou === true ? 'bold orange' : undefined
-            },
-            {
-              key: 'freeze',
-              label: tt('iouPermissions.freeze'),
-              value: iouPermissionStatus(canFreezeIou, 'canBeFrozen', 'cannotBeFrozen'),
-              className: canFreezeIou === false ? 'bold green' : undefined
-            },
-            {
-              key: 'globalFreeze',
-              label: tt('iouPermissions.globalFreeze'),
-              value: iouPermissionStatus(isIouGloballyFrozen, 'globallyFrozen', 'notGloballyFrozen'),
-              className: isIouGloballyFrozen === true ? 'bold red' : undefined
-            }
-          ]
+          value: (
+            <span className="tokenPermissionList">
+              {[
+                {
+                  key: 'escrow',
+                  Icon: FaLockOpen,
+                  value: canEscrowIou,
+                  enabledKey: 'canBeEscrowed',
+                  disabledKey: 'cannotBeEscrowed',
+                  enabledTone: 'positive',
+                  disabledTone: 'neutral'
+                },
+                {
+                  key: 'authorization',
+                  Icon: FaUserLock,
+                  value: requiresIouAuthorization,
+                  enabledKey: 'authorizationRequired',
+                  disabledKey: 'noAuthorizationRequired',
+                  enabledTone: 'warning',
+                  disabledTone: 'neutral'
+                },
+                {
+                  key: 'clawback',
+                  Icon: FaUndoAlt,
+                  value: canClawbackIou,
+                  enabledKey: 'canBeClawedBack',
+                  disabledKey: 'cannotBeClawedBack',
+                  enabledTone: 'warning',
+                  disabledTone: 'neutral'
+                },
+                {
+                  key: 'freeze',
+                  Icon: FaSnowflake,
+                  value: canFreezeIou,
+                  enabledKey: 'canBeFrozen',
+                  disabledKey: 'cannotBeFrozen',
+                  enabledTone: 'neutral',
+                  disabledTone: 'positive'
+                },
+                {
+                  key: 'globalFreeze',
+                  Icon: FaGlobe,
+                  value: isIouGloballyFrozen,
+                  enabledKey: 'globallyFrozen',
+                  disabledKey: 'notGloballyFrozen',
+                  enabledTone: 'danger',
+                  disabledTone: 'neutral'
+                }
+              ].map(({ key, Icon, value, enabledKey, disabledKey, enabledTone, disabledTone }) => {
+                const tone = typeof value === 'boolean' ? (value ? enabledTone : disabledTone) : 'unknown'
+                return (
+                  <span key={key} className={`tokenPermission tokenPermission-${tone}`}>
+                    <Icon aria-hidden="true" />
+                    <span>{iouPermissionStatus(value, enabledKey, disabledKey)}</span>
+                  </span>
+                )
+              })}
+            </span>
+          )
         }
       ]
 
@@ -2705,7 +2741,11 @@ export default function TokenPage({
               {renderPanel({
                 title: tokenSupplyTitle,
                 className: 'tokenSupplyPanel',
-                children: <div className="tokenMetricGrid">{renderMetricTiles(tokenSupplyItems)}</div>
+                children: (
+                  <div className={`tokenMetricGrid${isIouToken ? ' tokenMetricGridSupply' : ''}`}>
+                    {renderMetricTiles(tokenSupplyItems)}
+                  </div>
+                )
               })}
 
               {statistics &&
