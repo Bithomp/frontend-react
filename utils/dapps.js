@@ -534,5 +534,5 @@ export const generatedAgentNameBySourceTag = (sourceTag) => {
     return null
   }
 
-  return `${SHORT_MONTHS[month - 1]} ${day}, AI Agent ${agent}`
+  return `${SHORT_MONTHS[month - 1]} ${day}, Make Waves ${agent}`
 }
