@@ -3,6 +3,7 @@ import { nativeCurrency, safeClone } from '..'
 import { TData } from '../../components/Table'
 import { add } from '../calc'
 import { decodeJsonMemo } from '../format'
+import { dappNameBySourceTag } from '../dapps'
 import { FaLink, FaUserShield } from 'react-icons/fa6'
 import { FaRegHandPaper, FaMoneyCheckAlt } from 'react-icons/fa'
 import {
@@ -284,126 +285,7 @@ export const getAccountTransactionTypeIcon = ({
 
 export { errorCodeDescription, fallbackErrorCodeDescription } from './errorCodes'
 
-//https://view.ponedelnik.com/4652017081-75a4eea34dfa9b083a4f0c0d5b901530?r=use1
-export const dappBySourceTag = (sourceTag) => {
-  if (!sourceTag) return null
-  const dapps = {
-    16: 'UniversalNFT.dev',
-    111: 'Horizon',
-    101010: 'HEROES-exchange',
-    161803: 'XRPL.to',
-    508090: 'XRP Deals',
-    589123: 'Katz Wallet',
-    999999: 'Loansnap',
-    1060223: 'Epic Task',
-    1739300: 'Styngr',
-    5042137: 'conFIEL',
-    5523279: 'Things Go Online',
-    10000001: 'MetaTV',
-    10011001: 'Myrkle',
-    10011010: 'Magnetic',
-    //10102021: 'Junction', // no info
-    10509910: 'xLux',
-    11782013: 'Anodos',
-    13888813: 'Zerpmon',
-    14655641: 'X-Tokenize',
-    19089388: 'Hummingbot',
-    20102305: 'OpulenceX',
-    20120513: 'BPM Wallet',
-    20220613: 'DalliPay',
-    20221212: 'XPMarket',
-    20260530: 'XRPL Agent Wallet',
-    22222222: 'EQLX',
-    24289778: 'ChatXRP',
-    24546893: 'DeXfi',
-    25853696: 'Grand Retail Chain (GRAIL)',
-    27116776: 'Crossmark',
-    27802770: 'XRPL AI Signals by Liisa',
-    28041992: 'Crypto Shop',
-    29041995: 'Amped Studio',
-    30033003: 'Calypso wallet',
-    37373737: 'HexTrust Custodian Wallet',
-    38887387: 'Futureverse',
-    42157396: 'BRLA',
-    42697468: 'Bithomp Bot',
-    46350430: 'Meld Gold',
-    48151623: 'XRPL Dash',
-    48484848: 'AMY DAO',
-    52809917: 'Credefi Finance',
-    54576093: 'Tugela',
-    55074236: 'zazema',
-    55555555: 'TheShillverse',
-    60006000: 'Moai Fianance',
-    62423574: 'VNX Stablecoins on the XRPL',
-    66666666: 'XRP Carbon Offset Toolkit',
-    69420589: 'bidds',
-    70000003: 'Axone Universe',
-    72587259: 'Fieldboss NFT',
-    74920348: 'First Ledger',
-    75437338: 'NGNC',
-    75856879: 'Kudos Setler',
-    77777777: 'Giving Universe',
-    79455288: 'QuantZilla Developer Console',
-    80008000: 'Orchestra Finance',
-    81818181: 'Cornermarket',
-    83788309: 'OpenEden',
-    83834545: 'D3',
-    84190958: 'Multiverse Wallet',
-    88122188: 'Breezepay',
-    88807279: 'XRPPhone',
-    88888888: 'Mintable',
-    88990334: 'VWBL',
-    89898989: 'Axelar Bridge',
-    99819001: 'HubSecure',
-    99994200: 'Cryptum',
-    99999420: 'Cryptum',
-    100010010: 'StaticBit',
-    101102979: 'xrp.cafe',
-    110100111: 'Sologenic',
-    115102100: 'Web3 Enabler, Inc.',
-    122131125: 'LuckyHash',
-    211211211: 'Ethernity',
-    223366889: 'FLUIDEFI InstiLink',
-    246896201: 'Food Trust Simulator',
-    247645524: 'Frii World',
-    255192015: 'XRPLCoins',
-    271717272: 'Amora',
-    280957156: 'Dhali',
-    310428004: 'Scratch2Hooks (Blockly2Hooks)',
-    353353353: 'ProprHome',
-    358132134: 'XSGD Stablecoin',
-    369333333: 'Feetture',
-    369369369: 'Carbonland Trust',
-    418078113: 'Credefi',
-    494456745: 'Aigent', // aigent.run
-    510162502: 'Sonar Muse',
-    512512512: 'PetProof',
-    524942424: 'Ribble Trading Bot', //@ribble_trading_bot on Telegram
-    544841000: 'Thallo Two-Way Carbon Bridge',
-    567567567: 'StaykX',
-    589141516: 'DragonKill.online',
-    589589589: 'Guardians of the Reefs',
-    658879330: 'Filedgr',
-    666999666: 'TKTZ',
-    690321814: 'Gatehub bridge',
-    719719719: 'Wallery.me',
-    732946831: 'Lightsource Games (XRPL4GD)',
-    744925538: 'Phi Wallet',
-    804681468: 'T54 x402 XRPL facilitator',
-    902978157: 'Poof XRPL Payments',
-    936618804: 'RandX',
-    999999007: 'MetaCarbon',
-    1160305145: 'Ap0cene',
-    1741383633: 'Trust wallet', // timestamp 7 March 2025, 21:40:33 UTC
-    2310819306: 'Indicator Success Rate',
-    2323232323: 'Chimoney & Unispend', //23232323236 is invalid tag
-    2606170005: 'XRP Toolbox',
-    2606210014: 'Bithomp DeFi',
-    2606220006: 'xBoost'
-  }
-  //max sourceTag is 4294967295, more than that are invalid.
-  return dapps[sourceTag] || null
-}
+export const dappBySourceTag = dappNameBySourceTag
 
 export const memoNode = (memos, type = 'tr', options = {}) => {
   let output = []

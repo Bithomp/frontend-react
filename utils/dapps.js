@@ -99,6 +99,13 @@ export const DAPPS_META = [
       facebook: 'xrpexplorer',
       logo: 'bithomp.png'
     },
+    2606160021: {
+      name: 'LFG',
+      url: 'build.letseffinggo.com',
+      wallets: ['xaman'],
+      x: 'letseffinggo',
+      logo: 'lfg.png'
+    },
     89898989: {
       name: 'Axelar Bridge',
       url: 'axelar.foundation',
@@ -308,6 +315,87 @@ export const DAPPS_META = [
     }
   }
 ]
+
+// Known historical Source Tags that do not have a full catalog profile.
+export const LEGACY_DAPP_NAMES = {
+  16: 'UniversalNFT.dev',
+  999999: 'Loansnap',
+  1060223: 'Epic Task',
+  1739300: 'Styngr',
+  5042137: 'conFIEL',
+  5523279: 'Things Go Online',
+  10000001: 'MetaTV',
+  10011001: 'Myrkle',
+  10509910: 'xLux',
+  14655641: 'X-Tokenize',
+  20120513: 'BPM Wallet',
+  20260530: 'XRPL Agent Wallet',
+  22222222: 'EQLX',
+  24289778: 'ChatXRP',
+  24546893: 'DeXfi',
+  25853696: 'Grand Retail Chain (GRAIL)',
+  27116776: 'Crossmark',
+  27802770: 'XRPL AI Signals by Liisa',
+  28041992: 'Crypto Shop',
+  29041995: 'Amped Studio',
+  37373737: 'HexTrust Custodian Wallet',
+  42157396: 'BRLA',
+  46350430: 'Meld Gold',
+  48151623: 'XRPL Dash',
+  48484848: 'AMY DAO',
+  52809917: 'Credefi Finance',
+  54576093: 'Tugela',
+  55074236: 'zazema',
+  55555555: 'TheShillverse',
+  62423574: 'VNX Stablecoins on the XRPL',
+  66666666: 'XRP Carbon Offset Toolkit',
+  70000003: 'Axone Universe',
+  72587259: 'Fieldboss NFT',
+  75437338: 'NGNC',
+  77777777: 'Giving Universe',
+  81818181: 'Cornermarket',
+  83788309: 'OpenEden',
+  83834545: 'D3',
+  84190958: 'Multiverse Wallet',
+  88122188: 'Breezepay',
+  88807279: 'XRPPhone',
+  88888888: 'Mintable',
+  88990334: 'VWBL',
+  99819001: 'HubSecure',
+  99994200: 'Cryptum',
+  99999420: 'Cryptum',
+  115102100: 'Web3 Enabler, Inc.',
+  211211211: 'Ethernity',
+  223366889: 'FLUIDEFI InstiLink',
+  246896201: 'Food Trust Simulator',
+  255192015: 'XRPLCoins',
+  271717272: 'Amora',
+  310428004: 'Scratch2Hooks (Blockly2Hooks)',
+  353353353: 'ProprHome',
+  358132134: 'XSGD Stablecoin',
+  369333333: 'Feetture',
+  369369369: 'Carbonland Trust',
+  418078113: 'Credefi',
+  512512512: 'PetProof',
+  544841000: 'Thallo Two-Way Carbon Bridge',
+  567567567: 'StaykX',
+  589589589: 'Guardians of the Reefs',
+  666999666: 'TKTZ',
+  719719719: 'Wallery.me',
+  732946831: 'Lightsource Games (XRPL4GD)',
+  902978157: 'Poof XRPL Payments',
+  936618804: 'RandX',
+  999999007: 'MetaCarbon',
+  1160305145: 'Ap0cene',
+  2310819306: 'Indicator Success Rate',
+  2323232323: 'Chimoney & Unispend'
+}
+
+export const dappNameBySourceTag = (sourceTag) => {
+  if (!sourceTag) return null
+  const tag = String(sourceTag)
+  return DAPPS_META[0]?.[tag]?.name || LEGACY_DAPP_NAMES[tag] || null
+}
 
 export const dappsApiUrl = (convertCurrency, period) => {
   let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true&previousPeriodMode=calendar-1`
