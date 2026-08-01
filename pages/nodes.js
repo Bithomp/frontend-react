@@ -1,10 +1,12 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useState } from 'react'
 import { useWidth, ledgerName } from '../utils'
 import { axiosServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { shortHash, duration, timeFromNow } from '../utils/format'
+import { duration, timeFromNow } from '../utils/format'
 import { shortServerVersion } from '../utils/serverVersion'
+import { nodesPage } from '../styles/pages/nodes.module.scss'
 
 export async function getServerSideProps(context) {
   const { locale, req } = context
@@ -38,6 +40,52 @@ import CopyButton from '../components/UI/CopyButton'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 import CountryWithFlag from '../components/UI/CountryWithFlag'
 
+const DISTRIBUTION_PREVIEW_ROWS = 5
+
+function NodeDistribution({ title, rows, total, renderLabel, t }) {
+  const [expanded, setExpanded] = useState(false)
+  const sortedRows = [...(rows || [])].sort((a, b) => b.count - a.count)
+  const visibleRows = expanded ? sortedRows : sortedRows.slice(0, DISTRIBUTION_PREVIEW_ROWS)
+  const hasMore = sortedRows.length > DISTRIBUTION_PREVIEW_ROWS
+
+  return (
+    <section className="nodeDistributionCard">
+      <div className="nodeDistributionHeader">
+        <h4>{title}</h4>
+        <span>{sortedRows.length}</span>
+      </div>
+      <div className={`nodeDistributionList${expanded ? ' nodeDistributionListExpanded' : ''}`}>
+        {visibleRows.map((row, index) => {
+          const percentage = total > 0 ? (row.count / total) * 100 : 0
+          return (
+            <div className="nodeDistributionRow" key={renderLabel(row, true)}>
+              <span className="nodeDistributionRank">{index + 1}</span>
+              <span className="nodeDistributionLabel">{renderLabel(row)}</span>
+              <strong>{row.count}</strong>
+              <span className="nodeDistributionPercent">{percentage.toFixed(1)}%</span>
+              <span className="nodeDistributionBar" aria-hidden="true">
+                <span style={{ width: `${Math.min(percentage, 100)}%` }} />
+              </span>
+            </div>
+          )
+        })}
+      </div>
+      {hasMore ? (
+        <button
+          type="button"
+          className="button-action thin nodeDistributionToggle"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((current) => !current)}
+        >
+          {expanded
+            ? t('table.text.hide')
+            : `${t('table.text.show')} (+${sortedRows.length - DISTRIBUTION_PREVIEW_ROWS})`}
+        </button>
+      ) : null}
+    </section>
+  )
+}
+
 export default function Nodes({ initialData, initialErrorMessage }) {
   const { t, i18n } = useTranslation()
 
@@ -55,7 +103,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
           'Explore the list of ' + ledgerName + ' nodes. View up-to-date statistics on node versions and countries.'
         }
       />
-      <div className="content-text">
+      <div className={`content-text ${nodesPage}`}>
         <h1 className="center">
           {data?.summary?.total} {ledgerName} nodes
         </h1>
@@ -66,115 +114,35 @@ export default function Nodes({ initialData, initialErrorMessage }) {
           {data?.crawl_time && <> (updated {timeFromNow(data.crawl_time, i18n)}).</>}
         </p>
 
-        <div className="flex-container flex-center">
-          <div className="div-with-table">
-            <h4 className="center">Versions</h4>
-            {data?.summary?.versions?.length > 0 && (
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>{t('table.version')}</th>
-                    <th className="right">Count</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <br />
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                        <br />
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {!errorMessage ? (
-                        <>
-                          {data.summary.versions.map((a, i) => (
-                            <tr key={i}>
-                              <td className="center">{i + 1}</td>
-                              <td>{shortServerVersion(a.version)}</td>
-                              <td className="right">{a.count}</td>
-                              <td className="right">{Math.ceil((a.count / data.summary.total) * 10000) / 100}%</td>
-                            </tr>
-                          ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center orange bold">
-                            {errorMessage}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            )}
+        {!errorMessage && (data?.summary?.versions?.length > 0 || data?.summary?.countryCodes?.length > 0) ? (
+          <div className="nodeDistributionGrid">
+            {data.summary.versions?.length > 0 ? (
+              <NodeDistribution
+                title="Versions"
+                rows={data.summary.versions}
+                total={data.summary.total}
+                renderLabel={(row, keyOnly) => (keyOnly ? row.version : shortServerVersion(row.version))}
+                t={t}
+              />
+            ) : null}
+            {data.summary.countryCodes?.length > 0 ? (
+              <NodeDistribution
+                title="Countries"
+                rows={data.summary.countryCodes}
+                total={data.summary.total}
+                renderLabel={(row, keyOnly) =>
+                  keyOnly ? row.countryCode : <CountryWithFlag countryCode={row.countryCode} />
+                }
+                t={t}
+              />
+            ) : null}
           </div>
-          <div className="div-with-table">
-            <h4 className="center">Countries</h4>
-            {data?.summary?.countryCodes?.length > 0 && (
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>Country</th>
-                    <th className="right">Count</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <br />
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                        <br />
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {!errorMessage ? (
-                        <>
-                          {data.summary.countryCodes.map((a, i) => (
-                            <tr key={i}>
-                              <td className="center">{i + 1}</td>
-                              <td>
-                                <CountryWithFlag countryCode={a.countryCode} />
-                              </td>
-                              <td className="right">{a.count}</td>
-                              <td className="right">{Math.ceil((a.count / data.summary.total) * 10000) / 100}%</td>
-                            </tr>
-                          ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center orange bold">
-                            {errorMessage}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </div>
+        ) : null}
 
         <h4 className="center">Nodes</h4>
 
         {!windowWidth || windowWidth > 1230 ? (
-          <table className="table-large shrink">
+          <table className="table-large nodesTable">
             <thead>
               <tr>
                 <th className="center">{t('table.index')}</th>
@@ -210,8 +178,10 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                             <td>
                               <CountryWithFlag countryCode={a.country_code} type="code" />
                             </td>
-                            <td className="right">
-                              {windowWidth > 1560 ? a.node_public_key : shortHash(a.node_public_key)}{' '}
+                            <td className="right nodePublicKeyCell">
+                              <span className="nodePublicKeyValue" title={a.node_public_key}>
+                                {a.node_public_key}
+                              </span>{' '}
                               <CopyButton text={a.node_public_key} />
                             </td>
                             <td className="right">{a.ip}</td>
@@ -260,8 +230,11 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                           <p>
                             <CountryWithFlag countryCode={a.country_code} />
                           </p>
-                          <p>
-                            Public key: {windowWidth > 540 ? a.node_public_key : shortHash(a.node_public_key)}{' '}
+                          <p className="nodePublicKeyRow">
+                            <span>Public key:</span>
+                            <span className="nodePublicKeyValue" title={a.node_public_key}>
+                              {a.node_public_key}
+                            </span>{' '}
                             <CopyButton text={a.node_public_key} />
                           </p>
                           <p>IP: {a.ip}</p>

@@ -2098,13 +2098,16 @@ export default function TokenPage({
     )
   )
   const blackholedPermissionText = tt('tooltips.blackholedPermission')
-  const blackholedIssuerBadge = (
-    <span className="tokenIssuerBlackholed tooltip">
-      <FaLock aria-hidden="true" />
-      <span>{tt('values.blackholedIssuer')}</span>
-      <span className="tooltiptext no-brake">{tt('tooltips.blackholedIssuer')}</span>
-    </span>
+  const blackholedIssuerNotice = (
+    <div className="tokenIssuerBlackholedNotice">
+      <span className="tokenIssuerBlackholed">
+        <FaLock aria-hidden="true" />
+        <span>{tt('values.blackholedIssuer')}</span>
+      </span>
+      <span className="tokenIssuerBlackholedDescription">{tt('tooltips.blackholedIssuer')}</span>
+    </div>
   )
+  const iouIssuerControlledPermissions = new Set(['authorization', 'clawback', 'freeze'])
   const mptIssuerControlledFlags = new Set(['canLock', 'requireAuth', 'canClawback'])
   const mptFlags = token.flags
     ? Object.keys(token.flags).filter((flag) => token.flags[flag])
@@ -2119,13 +2122,19 @@ export default function TokenPage({
             className={`tokenMptFlag${unavailable ? ' tokenPermissionUnavailable tooltip' : ''}`}
           >
             <span>{flag}</span>
-            {unavailable && <span className="tooltiptext no-brake">{blackholedPermissionText}</span>}
+            {unavailable && <span className="tooltiptext">{blackholedPermissionText}</span>}
           </span>
         )
       })}
     </span>
   ) : (
     tt('values.noneSet')
+  )
+  const flagsWithBlackholedNotice = (flags) => (
+    <div className="tokenFlagsWithNotice">
+      {issuerBlackholed ? blackholedIssuerNotice : null}
+      {flags}
+    </div>
   )
 
   const tokenInfoItems = [
@@ -2236,7 +2245,7 @@ export default function TokenPage({
     {
       key: 'flags',
       label: tt('fields.flags'),
-      value: token.flags ? mptFlagsValue : tt('values.none'),
+      value: flagsWithBlackholedNotice(token.flags ? mptFlagsValue : tt('values.none')),
       show: isMptToken
     }
   ]
@@ -2305,7 +2314,7 @@ export default function TokenPage({
           show: isIouToken,
           className: 'tokenMetricFlags',
           wide: true,
-          value: (
+          value: flagsWithBlackholedNotice(
             <span className="tokenPermissionList">
               {[
                 {
@@ -2355,17 +2364,19 @@ export default function TokenPage({
                 }
               ].map(({ key, Icon, value, enabledKey, disabledKey, enabledTone, disabledTone }) => {
                 const tone = typeof value === 'boolean' ? (value ? enabledTone : disabledTone) : 'unknown'
+                const unavailable =
+                  issuerBlackholed && value === true && iouIssuerControlledPermissions.has(key)
                 return (
                   <span
                     key={key}
                     className={`tokenPermission tokenPermission-${tone}${
-                      issuerBlackholed ? ' tokenPermissionUnavailable tooltip' : ''
+                      unavailable ? ' tokenPermissionUnavailable tooltip' : ''
                     }`}
                   >
                     <Icon aria-hidden="true" />
                     <span>{iouPermissionStatus(value, enabledKey, disabledKey)}</span>
-                    {issuerBlackholed && (
-                      <span className="tooltiptext no-brake">{blackholedPermissionText}</span>
+                    {unavailable && (
+                      <span className="tooltiptext">{blackholedPermissionText}</span>
                     )}
                   </span>
                 )
@@ -2676,7 +2687,6 @@ export default function TokenPage({
                     </span>
                   )}
                 </span>
-                {issuerBlackholed ? blackholedIssuerBadge : null}
               </div>
 
               {((!isNativeToken && !isMptToken) || isMptToken) && (
