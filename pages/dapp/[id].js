@@ -20,7 +20,7 @@ import SimpleSelect from '../../components/UI/SimpleSelect'
 import Dialog from '../../components/UI/Dialog'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import { axiosServer, currencyServer, passHeaders } from '../../utils/axios'
-import { explorerName, nativeCurrency, normalizeLocale } from '../../utils'
+import { explorerName, nativeCurrency, normalizeLocale, server } from '../../utils'
 import { apexAxisLabelStyle, apexChartTheme } from '../../utils/apexCharts'
 import {
   DAPPS_META,
@@ -454,6 +454,17 @@ export default function DappDetails({
   )
 
   const logo = identity.meta?.logo ? `/images/dapps/${identity.meta.logo}` : ''
+  const previewParams = {
+    name: identity.name,
+    sourceTag,
+    ...(logo ? { image: `${server}${logo}` } : {}),
+    v: '1'
+  }
+  const previewImage = {
+    width: 1200,
+    height: 630,
+    file: `${server}/nextapi/dapp-preview?${new URLSearchParams(previewParams).toString()}`
+  }
   const website = absoluteUrl(identity.meta?.url)
   const socialLinks = DAPP_SOCIAL_LINKS.filter(({ key }) => identity.meta?.[key]).map(({ key, label, href, Icon }) => ({
     key,
@@ -479,7 +490,11 @@ export default function DappDetails({
 
   return (
     <main className={styles.page}>
-      <SEO title={t('detail.seoTitle', { name: identity.name })} description={t('detail.seoDescription', { name: identity.name, explorerName })} />
+      <SEO
+        title={t('detail.seoTitle', { name: identity.name })}
+        description={t('detail.seoDescription', { name: identity.name, explorerName })}
+        image={previewImage}
+      />
 
       <DappSelect sourceTag={sourceTag} />
 

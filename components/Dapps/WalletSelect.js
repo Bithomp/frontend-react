@@ -1,38 +1,31 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import Select from 'react-select'
-
-const WALLET_LOGOS = {
-  xaman: 'xaman.png',
-  gemwallet: 'gemwallet.png',
-  crossmark: 'crossmark.png',
-  joey: 'joey.png',
-  bifrost: 'bifrost.png',
-  girin: 'girin.png',
-  metamask: 'metamask.png',
-  ledger: 'ledger.png',
-  dcent: 'dcent.png',
-  xyra: 'xyra.svg'
-}
-
-const WALLET_NAMES = {
-  xaman: 'Xaman',
-  gemwallet: 'GemWallet',
-  crossmark: 'Crossmark',
-  joey: 'Joey',
-  bifrost: 'Bifrost',
-  girin: 'Girin',
-  metamask: 'MetaMask',
-  ledger: 'Ledger',
-  dcent: 'Dcent',
-  xyra: 'Xyra'
-}
+import { DAPP_WALLETS } from '../../utils/dapps'
 
 const iconStyle = { width: 16, height: 16, borderRadius: 4, display: 'block' }
 
 function WalletIcon({ id }) {
-  const logo = WALLET_LOGOS[id] || `${id}.png`
-  return <img src={`/images/wallets/square-logos/${logo}`} alt={WALLET_NAMES[id] || id} style={iconStyle} />
+  const wallet = DAPP_WALLETS[id]
+  if (!wallet?.logo) {
+    return (
+      <span
+        style={{
+          ...iconStyle,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--accent-icon)',
+          color: 'var(--background-main)',
+          fontSize: 10,
+          fontWeight: 800
+        }}
+      >
+        {(wallet?.name || id).charAt(0).toUpperCase()}
+      </span>
+    )
+  }
+  return <img src={`/images/wallets/square-logos/${wallet.logo}`} alt={wallet.name || id} style={iconStyle} />
 }
 
 export default function WalletSelect({
@@ -49,11 +42,11 @@ export default function WalletSelect({
 
   const options = useMemo(() => {
     const uniq = Array.from(new Set((walletsList || []).filter(Boolean).map((w) => String(w).toLowerCase())))
-    uniq.sort((a, b) => (WALLET_NAMES[a] || a).localeCompare(WALLET_NAMES[b] || b))
+    uniq.sort((a, b) => (DAPP_WALLETS[a]?.name || a).localeCompare(DAPP_WALLETS[b]?.name || b))
 
     const list = uniq.map((id) => ({
       value: id,
-      label: WALLET_NAMES[id] || id,
+      label: DAPP_WALLETS[id]?.name || id,
       id
     }))
 

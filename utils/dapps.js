@@ -106,6 +106,22 @@ export const DAPPS_META = [
       x: 'letseffinggo',
       logo: 'lfg.png'
     },
+    1894970120: {
+      name: 'XRPL Request',
+      url: 'xrplre.quest',
+      wallets: ['xyra', 'xaman', 'crossmark', 'gemwallet', 'otsu'],
+      walletconnect: ['joey'],
+      x: 'ledgercraftdev',
+      discord: 'invite/UaEDuN5eJm',
+      logo: 'xrplrequest.svg'
+    },
+    1349481331: {
+      name: 'XRPL Awesome Possum',
+      url: 'possumtails.ca',
+      wallets: ['xaman'],
+      x: 'xrppossum',
+      logo: 'xpossum.png'
+    },
     89898989: {
       name: 'Axelar Bridge',
       url: 'axelar.foundation',
@@ -395,6 +411,20 @@ export const dappNameBySourceTag = (sourceTag) => {
   if (!sourceTag) return null
   const tag = String(sourceTag)
   return DAPPS_META[0]?.[tag]?.name || LEGACY_DAPP_NAMES[tag] || null
+}
+
+export const DAPP_WALLETS = {
+  xaman: { name: 'Xaman', logo: 'xaman.png' },
+  gemwallet: { name: 'GemWallet', logo: 'gemwallet.png' },
+  crossmark: { name: 'Crossmark', logo: 'crossmark.png' },
+  joey: { name: 'Joey', logo: 'joey.png' },
+  bifrost: { name: 'Bifrost', logo: 'bifrost.png' },
+  girin: { name: 'Girin', logo: 'girin.png' },
+  metamask: { name: 'MetaMask', logo: 'metamask.png' },
+  ledger: { name: 'Ledger', logo: 'ledger.png' },
+  dcent: { name: 'Dcent', logo: 'dcent.png' },
+  xyra: { name: 'Xyra', logo: 'xyra.svg' },
+  otsu: { name: 'Otsu' }
 }
 
 export const dappsApiUrl = (convertCurrency, period) => {

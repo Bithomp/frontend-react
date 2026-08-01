@@ -1,34 +1,8 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import Image from 'next/image'
 import { useIsMobile } from '../../utils/mobile'
-import { WALLET_POPULARITY } from '../../utils/dapps'
+import { DAPP_WALLETS, WALLET_POPULARITY } from '../../utils/dapps'
 import styles from '../../styles/components/walletsCell.module.scss'
-
-const WALLET_LOGOS = {
-  xaman: 'xaman.png',
-  gemwallet: 'gemwallet.png',
-  crossmark: 'crossmark.png',
-  joey: 'joey.png',
-  bifrost: 'bifrost.png',
-  girin: 'girin.png',
-  metamask: 'metamask.png',
-  ledger: 'ledger.png',
-  dcent: 'dcent.png',
-  xyra: 'xyra.svg'
-}
-
-const WALLET_NAMES = {
-  xaman: 'Xaman',
-  gemwallet: 'GemWallet',
-  crossmark: 'Crossmark',
-  joey: 'Joey',
-  bifrost: 'Bifrost',
-  girin: 'Girin',
-  metamask: 'MetaMask',
-  ledger: 'Ledger',
-  dcent: 'Dcent',
-  xyra: 'Xyra'
-}
 
 function WalletTooltip({ x, y, name }) {
   if (!name) return null
@@ -73,7 +47,7 @@ export default function WalletsCell({ wallets = [], walletconnect = [], singleRo
   if (!allWallets.length) return null
 
   const showTip = (x, y, w) => {
-    const name = WALLET_NAMES[w] || w
+    const name = DAPP_WALLETS[w]?.name || w
     setTip({ x, y, name })
 
     // Auto-hide tip on mobile (no hover)
@@ -90,7 +64,7 @@ export default function WalletsCell({ wallets = [], walletconnect = [], singleRo
 
   const handleMouseMove = (e, w) => {
     if (isMobile) return
-    const name = WALLET_NAMES[w] || w
+    const name = DAPP_WALLETS[w]?.name || w
     if (tip && tip.name === name) setTip({ x: e.clientX, y: e.clientY, name })
   }
 
@@ -113,8 +87,8 @@ export default function WalletsCell({ wallets = [], walletconnect = [], singleRo
   }
 
   const renderIcon = (w) => {
-    const logo = WALLET_LOGOS[w] || `${w}.png`
-    const name = WALLET_NAMES[w] || w
+    const logo = DAPP_WALLETS[w]?.logo
+    const name = DAPP_WALLETS[w]?.name || w
     return (
       <span
         key={w}
@@ -129,14 +103,20 @@ export default function WalletsCell({ wallets = [], walletconnect = [], singleRo
         }}
         style={{ display: 'inline-flex', flex: '0 0 auto' }}
       >
-        <Image
-          src={`/images/wallets/square-logos/${logo}`}
-          alt=""
-          width={iconSize}
-          height={iconSize}
-          style={{ borderRadius: Math.max(4, Math.round(iconSize / 4)) }}
-          draggable={false}
-        />
+        {logo ? (
+          <Image
+            src={`/images/wallets/square-logos/${logo}`}
+            alt=""
+            width={iconSize}
+            height={iconSize}
+            style={{ borderRadius: Math.max(4, Math.round(iconSize / 4)) }}
+            draggable={false}
+          />
+        ) : (
+          <span className={styles.walletFallback} style={{ width: iconSize, height: iconSize }} aria-hidden="true">
+            {name.charAt(0).toUpperCase()}
+          </span>
+        )}
       </span>
     )
   }

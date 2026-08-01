@@ -19,6 +19,17 @@
   white-space: nowrap;
 }
 
+.walletFallback {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 4px;
+  background: var(--accent-icon);
+  color: var(--background-main);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
 .singleRow,
 .mobileRow {
   display: flex;
