@@ -109,7 +109,7 @@ export const DAPPS_META = [
     1894970120: {
       name: 'XRPL Request',
       url: 'xrplre.quest',
-      wallets: ['xyra', 'xaman', 'crossmark', 'gemwallet', 'otsu'],
+      wallets: ['xyra', 'xaman', 'crossmark', 'gemwallet'],
       walletconnect: ['joey'],
       x: 'ledgercraftdev',
       discord: 'invite/UaEDuN5eJm',
@@ -423,8 +423,7 @@ export const DAPP_WALLETS = {
   metamask: { name: 'MetaMask', logo: 'metamask.png' },
   ledger: { name: 'Ledger', logo: 'ledger.png' },
   dcent: { name: 'Dcent', logo: 'dcent.png' },
-  xyra: { name: 'Xyra', logo: 'xyra.svg' },
-  otsu: { name: 'Otsu' }
+  xyra: { name: 'Xyra', logo: 'xyra.svg' }
 }
 
 export const dappsApiUrl = (convertCurrency, period) => {
