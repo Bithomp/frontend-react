@@ -16,5 +16,6 @@
   },
   "domain-legacy": "Domain (old verification)",
   "run-validator-guide": "How to run a validator",
+  "statistics-scope": { "label": "Validator statistics scope", "all": "All validators" },
   "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}.<br/>It includes {{validatorCount}} validators which are listed below."
 }

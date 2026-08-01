@@ -2,105 +2,9 @@
   .nodeDistributionGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-    margin: 18px auto 24px;
-  }
-
-  .nodeDistributionCard {
-    display: grid;
     gap: 10px;
-    min-width: 0;
-    padding: 14px;
-    border: 1px solid var(--card-border);
-    border-radius: 8px;
-    background: var(--card-bg);
-    box-shadow: var(--card-shadow);
-  }
-
-  .nodeDistributionHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    h4 {
-      margin: 0;
-    }
-
-    > span {
-      min-width: 28px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: var(--background-secondary);
-      color: var(--text-secondary);
-      font-size: 12px;
-      text-align: center;
-    }
-  }
-
-  .nodeDistributionList {
-    display: grid;
-    gap: 5px;
-  }
-
-  .nodeDistributionListExpanded {
-    max-height: 360px;
-    padding-right: 4px;
-    overflow-y: auto;
-  }
-
-  .nodeDistributionRow {
-    position: relative;
-    display: grid;
-    grid-template-columns: 22px minmax(0, 1fr) auto 48px;
-    gap: 8px;
-    align-items: center;
-    min-width: 0;
-    min-height: 34px;
-    padding: 5px 7px 8px;
-    border-radius: 6px;
-    background: color-mix(in srgb, var(--background-secondary) 55%, transparent);
-    font-size: 13px;
-  }
-
-  .nodeDistributionRank,
-  .nodeDistributionPercent {
-    color: var(--text-secondary);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .nodeDistributionLabel {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .nodeDistributionPercent {
-    text-align: right;
-  }
-
-  .nodeDistributionBar {
-    position: absolute;
-    right: 7px;
-    bottom: 4px;
-    left: 37px;
-    height: 2px;
-    overflow: hidden;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--button-additional) 45%, transparent);
-
-    > span {
-      display: block;
-      height: 100%;
-      border-radius: inherit;
-      background: var(--link-color);
-    }
-  }
-
-  .nodeDistributionToggle {
-    width: 100%;
-    margin: 0;
-    text-transform: capitalize;
+    align-items: start;
+    margin: 12px auto 18px;
   }
 
   .nodesTable {
@@ -122,17 +26,22 @@
   }
 
   .nodePublicKeyRow {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 4px;
     align-items: baseline;
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
+    overflow: hidden;
 
     > span:first-child {
-      flex: 0 0 auto;
+      white-space: nowrap;
     }
 
     .nodePublicKeyValue {
-      flex: 1 1 auto;
+      width: 100%;
+      max-width: none;
       min-width: 0;
     }
   }
@@ -143,8 +52,9 @@
       gap: 10px;
     }
 
-    .nodeDistributionCard {
-      padding: 12px;
+    .nodePublicKeyRow {
+      max-width: calc(100vw - 72px);
     }
+
   }
 }

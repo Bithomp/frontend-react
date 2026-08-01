@@ -1,6 +1,5 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useState } from 'react'
 import { useWidth, ledgerName } from '../utils'
 import { axiosServer, logServerSideError, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -39,52 +38,7 @@ import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 import CountryWithFlag from '../components/UI/CountryWithFlag'
-
-const DISTRIBUTION_PREVIEW_ROWS = 5
-
-function NodeDistribution({ title, rows, total, renderLabel, t }) {
-  const [expanded, setExpanded] = useState(false)
-  const sortedRows = [...(rows || [])].sort((a, b) => b.count - a.count)
-  const visibleRows = expanded ? sortedRows : sortedRows.slice(0, DISTRIBUTION_PREVIEW_ROWS)
-  const hasMore = sortedRows.length > DISTRIBUTION_PREVIEW_ROWS
-
-  return (
-    <section className="nodeDistributionCard">
-      <div className="nodeDistributionHeader">
-        <h4>{title}</h4>
-        <span>{sortedRows.length}</span>
-      </div>
-      <div className={`nodeDistributionList${expanded ? ' nodeDistributionListExpanded' : ''}`}>
-        {visibleRows.map((row, index) => {
-          const percentage = total > 0 ? (row.count / total) * 100 : 0
-          return (
-            <div className="nodeDistributionRow" key={renderLabel(row, true)}>
-              <span className="nodeDistributionRank">{index + 1}</span>
-              <span className="nodeDistributionLabel">{renderLabel(row)}</span>
-              <strong>{row.count}</strong>
-              <span className="nodeDistributionPercent">{percentage.toFixed(1)}%</span>
-              <span className="nodeDistributionBar" aria-hidden="true">
-                <span style={{ width: `${Math.min(percentage, 100)}%` }} />
-              </span>
-            </div>
-          )
-        })}
-      </div>
-      {hasMore ? (
-        <button
-          type="button"
-          className="button-action thin nodeDistributionToggle"
-          aria-expanded={expanded}
-          onClick={() => setExpanded((current) => !current)}
-        >
-          {expanded
-            ? t('table.text.hide')
-            : `${t('table.text.show')} (+${sortedRows.length - DISTRIBUTION_PREVIEW_ROWS})`}
-        </button>
-      ) : null}
-    </section>
-  )
-}
+import DistributionCard from '../components/Network/DistributionCard'
 
 export default function Nodes({ initialData, initialErrorMessage }) {
   const { t, i18n } = useTranslation()
@@ -117,23 +71,34 @@ export default function Nodes({ initialData, initialErrorMessage }) {
         {!errorMessage && (data?.summary?.versions?.length > 0 || data?.summary?.countryCodes?.length > 0) ? (
           <div className="nodeDistributionGrid">
             {data.summary.versions?.length > 0 ? (
-              <NodeDistribution
+              <DistributionCard
                 title="Versions"
                 rows={data.summary.versions}
                 total={data.summary.total}
-                renderLabel={(row, keyOnly) => (keyOnly ? row.version : shortServerVersion(row.version))}
-                t={t}
+                renderLabel={(row) => shortServerVersion(row.version)}
+                getLabel={(row) => shortServerVersion(row.version)}
+                getKey={(row) => row.version}
+                showLabel={t('table.text.show')}
+                hideLabel={t('table.text.hide')}
+                totalLabel={t('receipt.total')}
+                previewRows={3}
+                compact
               />
             ) : null}
             {data.summary.countryCodes?.length > 0 ? (
-              <NodeDistribution
+              <DistributionCard
                 title="Countries"
                 rows={data.summary.countryCodes}
                 total={data.summary.total}
-                renderLabel={(row, keyOnly) =>
-                  keyOnly ? row.countryCode : <CountryWithFlag countryCode={row.countryCode} />
-                }
-                t={t}
+                renderLabel={(row) => <CountryWithFlag countryCode={row.countryCode} />}
+                renderTooltipLabel={(row) => <CountryWithFlag countryCode={row.countryCode} />}
+                getLabel={(row) => row.countryCode || 'Unknown'}
+                getKey={(row) => row.countryCode || 'unknown'}
+                showLabel={t('table.text.show')}
+                hideLabel={t('table.text.hide')}
+                totalLabel={t('receipt.total')}
+                previewRows={3}
+                compact
               />
             ) : null}
           </div>
@@ -181,7 +146,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                             <td className="right nodePublicKeyCell">
                               <span className="nodePublicKeyValue" title={a.node_public_key}>
                                 {a.node_public_key}
-                              </span>{' '}
+                              </span>
                               <CopyButton text={a.node_public_key} />
                             </td>
                             <td className="right">{a.ip}</td>
@@ -234,7 +199,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                             <span>Public key:</span>
                             <span className="nodePublicKeyValue" title={a.node_public_key}>
                               {a.node_public_key}
-                            </span>{' '}
+                            </span>
                             <CopyButton text={a.node_public_key} />
                           </p>
                           <p>IP: {a.ip}</p>

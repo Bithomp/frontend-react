@@ -15,7 +15,6 @@ import { useTheme } from '../components/Layout/ThemeContext'
 import { useRouter } from 'next/router'
 
 import SEO from '../components/SEO'
-import CheckBox from '../components/UI/CheckBox'
 import Avatar from '../components/UI/Avatar'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
@@ -26,6 +25,7 @@ import { shortServerVersion } from '../utils/serverVersion'
 
 import CopyButton from '../components/UI/CopyButton'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
+import DistributionCard from '../components/Network/DistributionCard'
 
 import VerifiedIcon from '../public/images/verified.svg'
 import Link from 'next/link'
@@ -401,7 +401,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
   const router = useRouter()
   const [validators, setValidators] = useState(initialProcessed?.validators || null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(initialProcessed?.unlValidatorsCount || 0)
-  const [developerMode, setDeveloperMode] = useState(false)
+  const [distributionScope, setDistributionScope] = useState('unl')
   const [serverVersions, setServerVersions] = useState(
     initialProcessed?.serverVersions || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
   )
@@ -633,16 +633,41 @@ export default function Validators({ amendment, initialData, initialProcessed, i
     )
   }
 
-  const checkBoxStyles = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    lineHeight: 1.2,
-    marginTop: isMobileView ? '8px' : '8px',
-    marginBottom: isMobileView ? '8px' : '20px',
-    marginRight: isMobileView ? 0 : '20px',
-    marginLeft: isMobileView ? 0 : '20px'
-  }
+  const distributionKey = distributionScope === 'all' ? 'validators' : 'unl'
+  const distributionCards = [
+    {
+      key: 'versions',
+      title: 'Versions',
+      rows: serverVersions[distributionKey],
+      total: serverVersions.count[distributionKey],
+      value: 'version',
+      format: shortServerVersion
+    },
+    {
+      key: 'reserve',
+      title: t('last-ledger-information.base-reserve'),
+      rows: baseReserves[distributionKey],
+      total: baseReserves.count[distributionKey],
+      value: 'reserve',
+      format: amountFormat
+    },
+    {
+      key: 'increment',
+      title: t('last-ledger-information.increment-reserve'),
+      rows: reserveIncrements[distributionKey],
+      total: reserveIncrements.count[distributionKey],
+      value: 'increment',
+      format: amountFormat
+    },
+    {
+      key: 'fee',
+      title: t('last-ledger-information.base-fee'),
+      rows: baseFees[distributionKey],
+      total: baseFees.count[distributionKey],
+      value: 'fee',
+      format: amountFormat
+    }
+  ]
 
   return (
     <>
@@ -683,262 +708,47 @@ export default function Validators({ amendment, initialData, initialProcessed, i
           )}
         </section>
 
-        <div className="flex-container flex-center">
-          {developerMode && (
-            <div className="div-with-table">
-              <h4 className="center">Versions</h4>
-
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>{t('table.version')}</th>
-                    <th className="right">Votes</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {serverVersions?.count?.validators
-                    ? serverVersions.validators.map((v, i) => (
-                        <tr key={i}>
-                          <td className="center">{i + 1}</td>
-                          <td>{shortServerVersion(v.version)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">
-                            {Math.ceil((v.count / serverVersions.count.validators) * 10000) / 100}%
-                          </td>
-                        </tr>
-                      ))
-                    : ''}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">Versions (UNL)</h4>
-            <table className="table-large shrink">
-              <thead>
-                <tr>
-                  <th className="center">{t('table.index')}</th>
-                  <th>{t('table.version')}</th>
-                  <th className="right">Votes</th>
-                  <th className="right">%%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {serverVersions?.count?.unl
-                  ? (() => {
-                      const maxCount = Math.max(...serverVersions.unl.map((v) => v.count))
-                      return serverVersions.unl.map((v, i) => (
-                        <tr
-                          key={i}
-                          style={{ fontWeight: v.count === maxCount ? 'bold' : 'normal' }}
-                          className={v.count === maxCount ? 'green' : ''}
-                        >
-                          <td className="center">{i + 1}</td>
-                          <td>{shortServerVersion(v.version)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">{Math.ceil((v.count / serverVersions.count.unl) * 10000) / 100}%</td>
-                        </tr>
-                      ))
-                    })()
-                  : ''}
-              </tbody>
-            </table>
-          </div>
-          {developerMode && (
-            <div className="div-with-table">
-              <h4 className="center">{t('last-ledger-information.base-reserve')}</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>{t('last-ledger-information.base-reserve')}</th>
-                    <th className="right">Votes</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {baseReserves?.count?.validators
-                    ? baseReserves.validators.map((v, i) => (
-                        <tr key={i}>
-                          <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v.reserve)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">
-                            {Math.ceil((v.count / baseReserves.count.validators) * 10000) / 100}%
-                          </td>
-                        </tr>
-                      ))
-                    : ''}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">{t('last-ledger-information.base-reserve')} (UNL)</h4>
-            <table className="table-large shrink">
-              <thead>
-                <tr>
-                  <th className="center">{t('table.index')}</th>
-                  <th>{t('last-ledger-information.base-reserve')}</th>
-                  <th className="right">Votes</th>
-                  <th className="right">%%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {baseReserves?.count?.unl
-                  ? (() => {
-                      const maxCount = Math.max(...baseReserves.unl.map((v) => v.count))
-                      return baseReserves.unl.map((v, i) => (
-                        <tr
-                          key={i}
-                          style={{ fontWeight: v.count === maxCount ? 'bold' : 'normal' }}
-                          className={v.count === maxCount ? 'green' : ''}
-                        >
-                          <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v.reserve)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">{Math.ceil((v.count / baseReserves.count.unl) * 10000) / 100}%</td>
-                        </tr>
-                      ))
-                    })()
-                  : ''}
-              </tbody>
-            </table>
-          </div>
-          {developerMode && (
-            <div className="div-with-table">
-              <h4 className="center">{t('last-ledger-information.increment-reserve')}</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>{t('last-ledger-information.increment-reserve')}</th>
-                    <th className="right">Votes</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reserveIncrements?.count?.validators
-                    ? reserveIncrements.validators.map((v, i) => (
-                        <tr key={i}>
-                          <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v.increment)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">
-                            {Math.ceil((v.count / reserveIncrements.count.validators) * 10000) / 100}%
-                          </td>
-                        </tr>
-                      ))
-                    : ''}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">{t('last-ledger-information.increment-reserve')} (UNL)</h4>
-            <table className="table-large shrink">
-              <thead>
-                <tr>
-                  <th className="center">{t('table.index')}</th>
-                  <th>{t('last-ledger-information.increment-reserve')}</th>
-                  <th className="right">Votes</th>
-                  <th className="right">%%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reserveIncrements?.count?.unl
-                  ? (() => {
-                      const maxCount = Math.max(...reserveIncrements.unl.map((v) => v.count))
-                      return reserveIncrements.unl.map((v, i) => (
-                        <tr
-                          key={i}
-                          style={{ fontWeight: v.count === maxCount ? 'bold' : 'normal' }}
-                          className={v.count === maxCount ? 'green' : ''}
-                        >
-                          <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v.increment)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">{Math.ceil((v.count / reserveIncrements.count.unl) * 10000) / 100}%</td>
-                        </tr>
-                      ))
-                    })()
-                  : ''}
-              </tbody>
-            </table>
-          </div>
-          {developerMode && (
-            <div className="div-with-table">
-              <h4 className="center">{t('last-ledger-information.base-fee')}</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>{t('last-ledger-information.base-fee')}</th>
-                    <th className="right">Votes</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {baseFees?.count?.validators
-                    ? baseFees.validators.map((v, i) => (
-                        <tr key={i}>
-                          <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v.fee)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">{Math.ceil((v.count / baseFees.count.validators) * 10000) / 100}%</td>
-                        </tr>
-                      ))
-                    : ''}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">{t('last-ledger-information.base-fee')} (UNL)</h4>
-            <table className="table-large shrink">
-              <thead>
-                <tr>
-                  <th className="center">{t('table.index')}</th>
-                  <th>{t('last-ledger-information.base-fee')}</th>
-                  <th className="right">Votes</th>
-                  <th className="right">%%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {baseFees?.count?.unl
-                  ? (() => {
-                      const maxCount = Math.max(...baseFees.unl.map((v) => v.count))
-                      return baseFees.unl.map((v, i) => (
-                        <tr
-                          key={i}
-                          style={{ fontWeight: v.count === maxCount ? 'bold' : 'normal' }}
-                          className={v.count === maxCount ? 'green' : ''}
-                        >
-                          <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v.fee)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">{Math.ceil((v.count / baseFees.count.unl) * 10000) / 100}%</td>
-                        </tr>
-                      ))
-                    })()
-                  : ''}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <center>
-          <div
-            style={
-              isMobileView ? { display: 'flex', justifyContent: 'center', width: '100%' } : { display: 'inline-block' }
-            }
+        <div
+          className="validators-distribution-scope"
+          role="group"
+          aria-label={t('statistics-scope.label', { ns: 'validators' })}
+        >
+          <button
+            type="button"
+            className={distributionScope === 'unl' ? 'active' : ''}
+            aria-pressed={distributionScope === 'unl'}
+            onClick={() => setDistributionScope('unl')}
           >
-            <CheckBox checked={developerMode} setChecked={setDeveloperMode} style={checkBoxStyles}>
-              {t('general.developer-mode')}
-            </CheckBox>
-          </div>
-        </center>
+            UNL
+          </button>
+          <button
+            type="button"
+            className={distributionScope === 'all' ? 'active' : ''}
+            aria-pressed={distributionScope === 'all'}
+            onClick={() => setDistributionScope('all')}
+          >
+            {t('statistics-scope.all', { ns: 'validators' })}
+          </button>
+        </div>
+
+        <div className="validators-distribution-grid">
+          {distributionCards.map((card) => (
+            <DistributionCard
+              key={card.key}
+              title={card.title}
+              rows={card.rows || []}
+              total={card.total || 0}
+              renderLabel={(row) => card.format(row[card.value])}
+              getLabel={(row) => String(card.format(row[card.value]))}
+              getKey={(row) => `${card.key}-${row[card.value]}`}
+              showLabel={t('table.text.show')}
+              hideLabel={t('table.text.hide')}
+              totalLabel={t('receipt.total')}
+              previewRows={3}
+              compact
+            />
+          ))}
+        </div>
 
         {isMobileView ? (
           <table className="table-mobile">
@@ -994,7 +804,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                       <p>
                         {t('table.public-key')}:<br />
                         <span style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
-                          {developerMode ? v.publicKey : shortHash(v.publicKey)}
+                          {v.publicKey}
                         </span>{' '}
                         <CopyButton text={v.publicKey} />
                       </p>
@@ -1063,13 +873,11 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                           </p>
                         </>
                       )}
-                      {(xahauNetwork || developerMode) && (
-                        <p>
-                          {t('table.address')} <CopyButton text={v.address} />
-                          <br />
-                          {addressUsernameOrServiceLink(v, 'address')}
-                        </p>
-                      )}
+                      <p>
+                        {t('table.address')} <CopyButton text={v.address} />
+                        <br />
+                        {addressUsernameOrServiceLink(v, 'address')}
+                      </p>
                       <p>
                         {t('table.sequence')}: {v.sequence}
                       </p>
@@ -1094,19 +902,20 @@ export default function Validators({ amendment, initialData, initialProcessed, i
             </tbody>
           </table>
         ) : (
-          <table className="table-large clickable">
-            <thead>
-              <tr>
-                <th> </th>
-                <th>{t('table.validator', { ns: 'validators' })}</th>
-                <th className="center">UNL/nUNL</th>
-                {developerMode && <th className="center">{t('table.sequence')}</th>}
-                <th className="left">Server</th>
-                <th className="right">{t('table.last-seen', { ns: 'validators' })}</th>
-                {(xahauNetwork || (developerMode && windowWidth > 1560)) && <th>{t('table.address')}</th>}
-              </tr>
-            </thead>
-            <tbody>
+          <div className="validators-table-scroll">
+            <table className="table-large clickable validators-table">
+              <thead>
+                <tr>
+                  <th> </th>
+                  <th>{t('table.validator', { ns: 'validators' })}</th>
+                  <th className="center">UNL/nUNL</th>
+                  <th className="center">{t('table.sequence')}</th>
+                  <th className="left">Server</th>
+                  <th className="right">{t('table.last-seen', { ns: 'validators' })}</th>
+                  <th>{t('table.address')}</th>
+                </tr>
+              </thead>
+              <tbody>
               {!initialErrorMessage && validators?.validators?.length > 0 ? (
                 validators.validators.map((v, i) => (
                   <tr
@@ -1120,12 +929,11 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                       {i + 1}
                     </td>
                     <td>
-                      {developerMode && (
-                        <>
-                          <CopyButton text={v.publicKey} /> {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
-                          <br />
-                        </>
-                      )}
+                      <CopyButton text={v.publicKey} />{' '}
+                      <span className="validator-public-key" title={v.publicKey}>
+                        {v.publicKey}
+                      </span>
+                      <br />
                       {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}{' '}
                       {v.ownerCountry && ' '}
                       {v.principals?.map((p, i) => (
@@ -1149,8 +957,6 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                               </a>
                               {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
                             </>
-                          ) : !developerMode ? (
-                            <>{windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}</>
                           ) : (
                             ''
                           )}
@@ -1196,29 +1002,21 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                         ''
                       )}
                     </td>
-                    {developerMode && <td className="center">{v.sequence}</td>}
+                    <td className="center">{v.sequence}</td>
                     <td className="left">
                       {displayFlag(v.serverCountry, t('table.server-country', { ns: 'validators' }))}{' '}
                       {shortServerVersion(v.serverVersion)}
-                      {developerMode && (
+                      {v.serverLocation && (
                         <>
-                          {v.serverLocation && (
-                            <>
-                              <br />
-                              {v.serverLocation}{' '}
-                            </>
-                          )}
+                          <br />
+                          {v.serverLocation}{' '}
                         </>
                       )}
-                      {developerMode && (
-                        <>
-                          {(v.networkASN || v.serverCloud === true || v.serverCloud === false) && <br />}
-                          {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}>☁️</span>}
-                          {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}>🏠</span>}
-                          {v.networkASN && <> {v.networkASN}</>}
-                          {(v.networkASN || v.serverCloud === true || v.serverCloud === false) && <br />}
-                        </>
-                      )}
+                      {(v.networkASN || v.serverCloud === true || v.serverCloud === false) && <br />}
+                      {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}>☁️</span>}
+                      {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}>🏠</span>}
+                      {v.networkASN && <> {v.networkASN}</>}
+                      {(v.networkASN || v.serverCloud === true || v.serverCloud === false) && <br />}
                     </td>
                     <td className="right">
                       {v.lastSeenTime ? (
@@ -1227,11 +1025,9 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                         <span className="red bold">Long time ago</span>
                       )}
                     </td>
-                    {(xahauNetwork || (developerMode && windowWidth > 1560)) && (
-                      <td className="left">
-                        <CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}
-                      </td>
-                    )}
+                    <td className="left">
+                      <CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -1241,8 +1037,9 @@ export default function Validators({ amendment, initialData, initialProcessed, i
                   </td>
                 </tr>
               )}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
       <style jsx>{`
@@ -1295,6 +1092,65 @@ export default function Validators({ amendment, initialData, initialProcessed, i
           text-decoration: none;
         }
 
+        .validators-distribution-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 10px;
+          align-items: start;
+          margin: 12px auto 18px;
+        }
+
+        .validators-distribution-scope {
+          display: flex;
+          width: fit-content;
+          margin: 18px auto 0;
+          padding: 3px;
+          border: 1px solid var(--button-additional);
+          border-radius: 8px;
+          background: var(--background-secondary);
+        }
+
+        .validators-distribution-scope button {
+          min-height: 34px;
+          padding: 6px 14px;
+          border: 0;
+          border-radius: 6px;
+          background: transparent;
+          color: var(--text-secondary);
+          cursor: pointer;
+          font: inherit;
+          font-size: 13px;
+          font-weight: 700;
+        }
+
+        .validators-distribution-scope button.active {
+          background: var(--accent-link);
+          color: #fff;
+        }
+
+        .validators-table-scroll {
+          width: calc(100vw - 24px);
+          max-width: 1920px;
+          margin: 0 0 20px 50%;
+          overflow-x: auto;
+          transform: translateX(-50%);
+        }
+
+        .validators-table {
+          width: 100%;
+          min-width: 1280px;
+          margin: 0;
+        }
+
+        .validator-public-key {
+          display: inline-block;
+          max-width: 340px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: bottom;
+          white-space: nowrap;
+        }
+
         @media (max-width: 760px) {
           .validators-intro-card {
             align-items: stretch;
@@ -1304,6 +1160,17 @@ export default function Validators({ amendment, initialData, initialProcessed, i
 
           .validators-guide-link {
             width: 100%;
+          }
+
+          .validators-distribution-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+          }
+        }
+
+        @media (min-width: 761px) and (max-width: 1200px) {
+          .validators-distribution-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
       `}</style>
