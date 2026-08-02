@@ -4,6 +4,8 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
+import { axiosServer, passHeaders } from '../../utils/axios'
+
 import {
   fullDateAndTime,
   amountFormat,
@@ -19,28 +21,36 @@ import {
 import { getIsSsrMobile } from '../../utils/mobile'
 
 export async function getServerSideProps(context) {
-  const { locale, query } = context
+  const { locale, query, req } = context
   // keep params instead of query, anyway it is an array sometimes
   const id = query?.id ? (Array.isArray(query.id) ? query.id[0] : query.id) : ''
-  /*
-  let pageMeta = null
+  let initialData = null
+
   if (id) {
     try {
       const res = await axiosServer({
         method: 'get',
-        url: 'v2/nft/offer/' + id,
+        url: 'v2/nft/offer/' + id + '?offersValidate=true',
         headers: passHeaders(req)
       })
-      pageMeta = res?.data
-    } catch (error) {
-      console.error(error)
+      const responseData = res?.data
+
+      if (responseData?.error === 'Token information is not found') {
+        return { notFound: true }
+      }
+
+      if (responseData?.offerIndex) {
+        initialData = responseData
+      }
+    } catch (_) {
+      // Let the client retry temporary API failures instead of returning a false 404.
     }
   }
-  */
+
   return {
     props: {
       id,
-      //pageMeta,
+      initialData,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
@@ -55,10 +65,10 @@ import NftImageAndVideo from '../../components/NftPreview'
 import { nftName } from '../../utils/nft'
 import { LinkTx } from '../../utils/links'
 
-export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
+export default function NftOffer({ setSignRequest, refreshPage, account, id, initialData }) {
   const { t } = useTranslation()
 
-  const [data, setData] = useState({})
+  const [data, setData] = useState(initialData || {})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -185,7 +195,10 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
 
   return (
     <>
-      {data && <SEO title={t('nft-offer.header') + (data.offerIndex ? ' ' + data.offerIndex : '')} />}
+      <SEO
+        title={t('nft-offer.header') + (data.offerIndex ? ' ' + data.offerIndex : '')}
+        noindex={!!errorMessage}
+      />
       <h1 className="center" style={{ marginTop: '20px', marginBottom: '20px' }}>
         {t('nft-offer.header')} {shortHash(id)}
       </h1>

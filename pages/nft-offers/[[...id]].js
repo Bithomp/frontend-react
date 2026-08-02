@@ -311,7 +311,7 @@ export default function NftOffers({
 
   return (
     <>
-      <SEO title={t('nft-offers.header') + (id ? ' ' + id : '')} />
+      <SEO title={t('nft-offers.header') + (id ? ' ' + id : '')} noindex={router.asPath.includes('?')} />
       <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
         <h1 className="center">
           {id ? (

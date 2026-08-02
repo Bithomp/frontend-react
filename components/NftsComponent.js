@@ -708,6 +708,7 @@ export default function NftsComponent({
     <>
       {nftExplorer ? (
         <SEO
+          noindex={router.asPath.includes('?')}
           title={
             t('nft-explorer.header') +
             (issuerQuery ? ' ' + issuerQuery : '') +

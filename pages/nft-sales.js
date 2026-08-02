@@ -572,6 +572,7 @@ export default function NftSales({
   return (
     <>
       <SEO
+        noindex={router.asPath.includes('?')}
         title={
           t('nft-sales.header') +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
