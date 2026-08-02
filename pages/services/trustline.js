@@ -429,6 +429,7 @@ export default function TrustSet({
       <SEO
         title={ts('trustline.title')}
         description={ts('trustline.description')}
+        noindexQuery
         image={{
           width: 1200,
           height: 630,

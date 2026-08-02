@@ -425,7 +425,7 @@ export default function LedgerObject({
   return (
     <>
       <div className={object}>
-        <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" />
+        <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" noindexQuery />
         <div className="content-profile short-top">
           <h1 className="center">Object {shortHash(id)}</h1>
           {loading ? (

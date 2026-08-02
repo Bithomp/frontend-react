@@ -314,6 +314,7 @@ export default function NftVolumes({
   return (
     <>
       <SEO
+        noindexQuery
         title={
           t('header', { ns: 'nft-volumes' }) +
           ' ' +

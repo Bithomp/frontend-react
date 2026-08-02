@@ -32,7 +32,11 @@ export default function AMMCreate({
 
   return (
     <>
-      <SEO title={t('amm.deposit-title', { ns: 'services' })} description={t('amm.deposit-description', { ns: 'services' })} />
+      <SEO
+        title={t('amm.deposit-title', { ns: 'services' })}
+        description={t('amm.deposit-description', { ns: 'services' })}
+        noindexQuery
+      />
       <div className="page-services-amm content-center">
         <ServicesTabs category="amm" tab="deposit" />
         <h1 className="center">{t('amm.deposit-title', { ns: 'services' })}</h1>

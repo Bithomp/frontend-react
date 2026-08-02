@@ -218,6 +218,7 @@ export default function TomlCheckerPage() {
       <SEO
         title={tt('title', { explorerName })}
         description={tt('description', { explorerName, ledgerName, tomlName })}
+        noindexQuery
       />
       <div className="content-text">
         <ServicesTabs category={router.query.category === 'issuance' ? 'issuance' : 'identity'} tab="toml-checker" />

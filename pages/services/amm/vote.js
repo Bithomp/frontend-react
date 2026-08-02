@@ -32,7 +32,11 @@ export default function AMMCreate({
 
   return (
     <>
-      <SEO title={t('amm.vote-title', { ns: 'services' })} description={t('amm.vote-description', { ns: 'services' })} />
+      <SEO
+        title={t('amm.vote-title', { ns: 'services' })}
+        description={t('amm.vote-description', { ns: 'services' })}
+        noindexQuery
+      />
       <div className="page-services-amm content-center">
         <ServicesTabs category="amm" tab="vote" />
         <h1 className="center">{t('amm.vote-heading', { ns: 'services' })}</h1>

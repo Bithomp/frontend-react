@@ -417,6 +417,7 @@ export default function Amms({
   return (
     <>
       <SEO
+        noindexQuery
         title={t('menu.amm.pools')}
         image={
           xahauNetwork

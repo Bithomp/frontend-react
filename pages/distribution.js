@@ -575,6 +575,7 @@ export default function Distribution({
       <SEO
         title={t('menu.network.distribution', { currency })}
         canonicalPath={canonicalPath}
+        noindex={!isAssetToken && router.asPath.includes('?')}
         image={distributionPreviewImage}
       />
       <div className="content-center">

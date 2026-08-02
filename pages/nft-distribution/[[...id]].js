@@ -275,10 +275,16 @@ export default function NftDistribution({
   }
 
   const collectionPart = issuer && isValidTaxon(taxon) ? `issuer=${issuer}&taxon=${taxon}` : 'collection=' + collection
+  const canonicalPath = collection
+    ? `/nft-distribution?collection=${encodeURIComponent(collection)}`
+    : '/nft-distribution'
+  const noindexDistribution = !collection && (router.asPath.includes('?') || !!idQuery)
 
   return (
     <>
       <SEO
+        canonicalPath={canonicalPath}
+        noindex={noindexDistribution}
         title={
           t('header', { ns: 'nft-distribution' }) +
           (issuer ? ' ' + issuer : '') +

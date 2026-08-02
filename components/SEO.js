@@ -75,6 +75,7 @@ export default function SEO({
   page,
   websiteName,
   noindex,
+  noindexQuery,
   canonicalPath
 }) {
   const router = useRouter()
@@ -98,7 +99,9 @@ export default function SEO({
       : `${pageTitle} | ${explorerName}`
   const seoDescription = description
 
-  const cleanPath = (router.asPath || '/').split('#')[0].split('?')[0]
+  const currentPath = (router.asPath || '/').split('#')[0]
+  const hasQueryParameters = currentPath.includes('?')
+  const cleanPath = currentPath.split('?')[0]
   const cleanCanonicalPath = canonicalPath ? canonicalPath.split('#')[0] : cleanPath
   const normalizedPath = stripLeadingLocale(cleanPath)
   const currentLocale = normalizeLocale(router.locale)
@@ -164,7 +167,10 @@ export default function SEO({
   const isPrimaryIndexableNetwork = ['mainnet', 'xahau'].includes(network)
   const normalizedLandingPath = normalizedPath === '/' ? '/' : normalizedPath.replace(/\/+$/, '')
   const isNonMainnetLandingPage = ['', '/', '/faucet', '/explorer'].includes(normalizedLandingPath || '/')
-  const shouldNoindex = noindex || (!isPrimaryIndexableNetwork && !isNonMainnetLandingPage)
+  const shouldNoindex =
+    noindex ||
+    (noindexQuery && hasQueryParameters) ||
+    (!isPrimaryIndexableNetwork && !isNonMainnetLandingPage)
   const articleStructuredData = isLearnArticle
     ? {
         '@context': 'https://schema.org',

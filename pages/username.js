@@ -506,6 +506,7 @@ export default function Username({
   return (
     <>
       <SEO
+        noindexQuery
         title={
           t('menu.services.username') +
           (usernameQuery ? ' ' + usernameQuery : '') +
