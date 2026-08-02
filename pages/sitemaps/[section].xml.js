@@ -5,7 +5,8 @@ function SitemapSection() {
 }
 
 export async function getServerSideProps({ params, req, res }) {
-  const section = sitemapSections[params?.section]
+  const sectionName = String(params?.section || '').match(/^([a-z-]+)\.xml$/)?.[1]
+  const section = sitemapSections[sectionName]
 
   if (!section?.enabled) {
     return {
