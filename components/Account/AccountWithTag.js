@@ -179,7 +179,7 @@ export default function AccountWithTag({ data }) {
 
       <div className="content-profile account">
         <div className="account-tag-container">
-          <div className="account-tag-title">{data?.payId ? 'PAYSTRING ' : 'X-ADDRESS'} DETAILS</div>
+          <h1 className="account-tag-title">{data?.payId ? 'PAYSTRING ' : 'X-ADDRESS'} DETAILS</h1>
 
           <div className="account-tag-xaddress">
             <b>{data.xAddress}</b>

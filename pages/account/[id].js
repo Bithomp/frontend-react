@@ -3908,12 +3908,12 @@ export default function Account({
 
             {/* Basic Info */}
             <div className="account-info">
-              <h2 className="account-name">
+              <h1 className="account-name">
                 <span className="account-username">
                   {accountDisplayName}
                   {!accountAmmId && !!accountDisplayUsername && <CopyButton text={accountDisplayUsername} />}
                 </span>
-              </h2>
+              </h1>
               <div style={{ fontSize: '13px' }}>{accountStatusNode}</div>
               {data.service?.domain && (
                 <div className="account-domain grey">
