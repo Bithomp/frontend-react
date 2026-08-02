@@ -321,6 +321,11 @@
       "we-use-cookie": "Wir verwenden Cookies und ähnliche Technologien, um Ihr Erlebnis auf unserer Website zu verbessern."
     }
   },
+  "sitemap": {
+    "title": "Sitemap",
+    "description": "Die wichtigsten Explorer-Seiten, Dienste, Netzwerkdaten und Lernressourcen im Überblick.",
+    "sections": { "explore": "Entdecken", "services": "Dienste", "network": "Netzwerk", "resources": "Ressourcen" }
+  },
   "home": {
     "title": "{{homeExplorerName}} | Suche {{nativeCurrency}} Transaktionen, Konten, NFTs und Ledger-Daten",
     "description": "{{homeExplorerAttribution}}: Suche nach {{nativeCurrency}} Adressen, Transaktionen, Token, NFTs, Guthaben und On-Chain-Aktivität im {{ledgerName}}. Nutze Trading, NFT-Minting, AMMs, Transaktionen und Konto-Tools.",

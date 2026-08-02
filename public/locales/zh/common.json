@@ -321,6 +321,11 @@
       "we-use-cookie": "我们使用 cookies 和类似技术来改善您在我们网站上的体验。"
     }
   },
+  "sitemap": {
+    "title": "网站地图",
+    "description": "浏览主要的浏览器页面、服务、网络数据和学习资源。",
+    "sections": { "explore": "探索", "services": "服务", "network": "网络", "resources": "资源" }
+  },
   "home": {
     "title": "{{homeExplorerName}} |搜索 {{nativeCurrency}} 交易、账户、NFT 和账本数据",
     "description": "{{homeExplorerAttribution}} 可让您搜索和扫描 {{ledgerName}} 上的 {{nativeCurrency}} 地址、交易、代币、NFT、余额和链上活动。交易、铸造 NFT、管理 AMM、提交交易以及使用账户工具。",

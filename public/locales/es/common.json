@@ -321,6 +321,11 @@
       "we-use-cookie": "Utilizamos cookies y tecnologías similares para mejorar la experiencia de nuestro sitio."
     }
   },
+  "sitemap": {
+    "title": "Mapa del sitio",
+    "description": "Explora las principales páginas, servicios, datos de red y recursos educativos.",
+    "sections": { "explore": "Explorar", "services": "Servicios", "network": "Red", "resources": "Recursos" }
+  },
   "home": {
     "title": "{{homeExplorerName}} | Busca transacciones, cuentas, NFT y datos de {{nativeCurrency}}",
     "description": "{{homeExplorerAttribution}} te permite buscar y explorar direcciones {{nativeCurrency}}, transacciones, tokens, NFT, saldos y actividad on-chain en {{ledgerName}}. Opera, crea NFT, gestiona AMM, envía transacciones y usa herramientas de cuenta.",

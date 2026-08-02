@@ -321,6 +321,11 @@
       "we-use-cookie": "本サイトでは、お客様の当社サイトでの体験を向上させるために、クッキーと同様の技術を使用しています。"
     }
   },
+  "sitemap": {
+    "title": "サイトマップ",
+    "description": "主要なエクスプローラーページ、サービス、ネットワークデータ、学習リソースをご覧ください。",
+    "sections": { "explore": "探索", "services": "サービス", "network": "ネットワーク", "resources": "リソース" }
+  },
   "home": {
     "title": "{{homeExplorerName}} | {{nativeCurrency}} のトランザクション、アカウント、NFT、Ledgerデータを検索",
     "description": "{{homeExplorerAttribution}} では、{{ledgerName}} 上の {{nativeCurrency}} アドレス、トランザクション、トークン、NFT、残高、オンチェーン activity を検索できます。取引、NFT ミント、AMM 管理、トランザクション送信、アカウントツールも利用できます。",

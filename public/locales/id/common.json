@@ -321,6 +321,11 @@
       "we-use-cookie": "Kami menggunakan cookie dan teknologi serupa untuk meningkatkan pengalaman Anda di situs kami."
     }
   },
+  "sitemap": {
+    "title": "Peta situs",
+    "description": "Jelajahi halaman utama, layanan, data jaringan, dan sumber pembelajaran.",
+    "sections": { "explore": "Jelajahi", "services": "Layanan", "network": "Jaringan", "resources": "Sumber daya" }
+  },
   "home": {
     "title": "{{homeExplorerName}} | Cari transaksi, akun, NFT, dan data {{nativeCurrency}}",
     "description": "{{homeExplorerAttribution}} memungkinkan Anda mencari dan menelusuri alamat {{nativeCurrency}}, transaksi, token, NFT, saldo, dan aktivitas on-chain di {{ledgerName}}. Trading, mint NFT, kelola AMM, kirim transaksi, dan gunakan alat akun.",

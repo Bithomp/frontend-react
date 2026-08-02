@@ -18,6 +18,7 @@ const nonMainnetPageEntries = [
 ]
 
 const pageEntries = [
+  { loc: 'sitemap.html', changefreq: 'monthly', priority: '0.5' },
   { loc: 'dapps', changefreq: 'daily', priority: '1' },
   { loc: 'explorer', changefreq: 'weekly', priority: '1' },
   { loc: '', changefreq: 'always', priority: '1' },

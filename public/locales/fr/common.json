@@ -321,6 +321,11 @@
       "we-use-cookie": "Nous utilisons des cookies et des technologies similaires pour améliorer votre expérience sur notre site."
     }
   },
+  "sitemap": {
+    "title": "Plan du site",
+    "description": "Parcourez les principales pages, les services, les données du réseau et les ressources pédagogiques.",
+    "sections": { "explore": "Explorer", "services": "Services", "network": "Réseau", "resources": "Ressources" }
+  },
   "home": {
     "title": "{{homeExplorerName}} | Recherchez transactions, comptes, NFT et données {{nativeCurrency}}",
     "description": "{{homeExplorerAttribution}} vous permet de rechercher et explorer des adresses {{nativeCurrency}}, transactions, Tokens, NFT, soldes et activité on-chain sur {{ledgerName}}. Échangez, créez des NFT, gérez les AMM, envoyez des transactions et utilisez les outils de compte.",
