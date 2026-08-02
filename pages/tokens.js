@@ -505,11 +505,14 @@ export default function Tokens({
 
   // CSV headers for export
   const csvHeaders = [
-    { label: t('table.currency'), key: 'currency' },
+    { label: t('table.name'), key: 'name' },
+    { label: t('table.currency'), key: 'currencyDecoded' },
+    { label: tt('headers.currencyCode'), key: 'currency' },
     { label: t('table.issuer'), key: 'issuer' },
     { label: tt('headers.trustlines'), key: 'trustlines' },
     { label: tt('headers.holders'), key: 'holders' }
   ]
+  const csvData = data.map((token) => ({ ...token, currencyDecoded: niceCurrency(token.currency) }))
 
   const handleSetTrustline = (token) => {
     // Format supply to have at most 6 decimal places
@@ -739,7 +742,7 @@ export default function Tokens({
       <FiltersFrame
         count={data?.length}
         hasMore={marker}
-        data={data || []}
+        data={csvData}
         csvHeaders={csvHeaders}
         order={order}
         setOrder={setOrder}
