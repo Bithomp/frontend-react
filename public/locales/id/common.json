@@ -307,7 +307,15 @@
       "enter-nft-minter": "Masukkan alamat minter NFT",
       "avatar-url": "URL avatar",
       "enter-avatar-url": "Masukkan URL avatar",
-      "invalid-url": "URL tidak valid"
+      "invalid-url": "URL tidak valid",
+      "avatar-source": "Sumber avatar",
+      "from-url": "Melalui URL",
+      "upload-image": "Unggah gambar",
+      "upload-auth-required": "Masuk ke Bithomp untuk mengunggah gambar.",
+      "choose-image": "Pilih gambar",
+      "invalid-image": "Pilih file gambar",
+      "uploading-avatar": "Mengunggah gambar...",
+      "upload-failed": "Gagal mengunggah gambar"
     },
     "clear-token": {
       "checking-liquidity": "Memeriksa likuiditas yang tersedia…",

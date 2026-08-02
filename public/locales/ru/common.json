@@ -307,7 +307,15 @@
       "enter-nft-minter": "Введите адрес NFT-минтера",
       "avatar-url": "URL аватара",
       "enter-avatar-url": "Введите URL аватара",
-      "invalid-url": "Некорректный URL"
+      "invalid-url": "Некорректный URL",
+      "avatar-source": "Источник аватара",
+      "from-url": "По URL",
+      "upload-image": "Загрузить изображение",
+      "upload-auth-required": "Войдите в Bithomp, чтобы загрузить изображение.",
+      "choose-image": "Выберите изображение",
+      "invalid-image": "Выберите файл изображения",
+      "uploading-avatar": "Загрузка изображения...",
+      "upload-failed": "Не удалось загрузить изображение"
     },
     "clear-token": {
       "checking-liquidity": "Проверяем доступную ликвидность…",

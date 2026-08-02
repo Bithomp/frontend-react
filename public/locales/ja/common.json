@@ -307,7 +307,15 @@
       "enter-nft-minter": "NFTミンターのアドレスを入力",
       "avatar-url": "アバターURL",
       "enter-avatar-url": "アバターURLを入力",
-      "invalid-url": "無効なURL"
+      "invalid-url": "無効なURL",
+      "avatar-source": "アバターの取得元",
+      "from-url": "URLから",
+      "upload-image": "画像をアップロード",
+      "upload-auth-required": "画像をアップロードするにはBithompにサインインしてください。",
+      "choose-image": "画像を選択",
+      "invalid-image": "画像ファイルを選択してください",
+      "uploading-avatar": "画像をアップロード中...",
+      "upload-failed": "画像をアップロードできませんでした"
     },
     "clear-token": {
       "checking-liquidity": "利用可能な流動性を確認しています…",

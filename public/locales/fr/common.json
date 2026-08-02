@@ -307,7 +307,15 @@
       "enter-nft-minter": "Saisir l’adresse du minter NFT",
       "avatar-url": "URL de l’avatar",
       "enter-avatar-url": "Saisissez l’URL de l’avatar",
-      "invalid-url": "URL non valide"
+      "invalid-url": "URL non valide",
+      "avatar-source": "Source de l’avatar",
+      "from-url": "Par URL",
+      "upload-image": "Importer une image",
+      "upload-auth-required": "Connectez-vous à Bithomp pour importer une image.",
+      "choose-image": "Choisir une image",
+      "invalid-image": "Veuillez choisir un fichier image",
+      "uploading-avatar": "Importation de l’image...",
+      "upload-failed": "Échec de l’importation de l’image"
     },
     "clear-token": {
       "checking-liquidity": "Vérification de la liquidité disponible…",

@@ -205,7 +205,9 @@ export default function SignForm({
   wcSessions,
   setWcSessions,
   selectedCurrency,
-  fiatRate
+  fiatRate,
+  sessionToken,
+  openEmailLogin
 }) {
   const { t } = useTranslation(['common', 'amm'])
   const router = useRouter()
@@ -1732,6 +1734,8 @@ export default function SignForm({
                       signRequest={signRequest}
                       setStatus={setStatus}
                       setAgreedToRisks={setAgreedToRisks}
+                      sessionToken={sessionToken}
+                      openEmailLogin={openEmailLogin}
                     />
                   )}
 

@@ -307,7 +307,15 @@
       "enter-nft-minter": "Introduce la dirección del minter de NFT",
       "avatar-url": "URL del avatar",
       "enter-avatar-url": "Introduce la URL del avatar",
-      "invalid-url": "URL no válida"
+      "invalid-url": "URL no válida",
+      "avatar-source": "Origen del avatar",
+      "from-url": "Por URL",
+      "upload-image": "Subir imagen",
+      "upload-auth-required": "Inicia sesión en Bithomp para subir una imagen.",
+      "choose-image": "Elegir una imagen",
+      "invalid-image": "Selecciona un archivo de imagen",
+      "uploading-avatar": "Subiendo imagen...",
+      "upload-failed": "No se pudo subir la imagen"
     },
     "clear-token": {
       "checking-liquidity": "Comprobando la liquidez disponible…",

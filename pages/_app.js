@@ -1082,6 +1082,8 @@ const MyApp = ({ Component, pageProps }) => {
                   setWcSessions={setWcSessions}
                   selectedCurrency={effectiveSelectedCurrency}
                   fiatRate={liveFiatRate}
+                  sessionToken={clientSessionToken}
+                  openEmailLogin={openEmailLogin}
                 />
               )}
               {isEmailLoginOpen && (
