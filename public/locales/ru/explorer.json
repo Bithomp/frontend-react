@@ -14,6 +14,9 @@
       "title": "Поиск по XRPL Devnet — адреса, транзакции, токены, NFT",
       "description": "Ищите адреса XRPL Devnet, хэши транзакций, usernames, CTID, NFT, токены и объекты ledger. Нужны тестовые монеты? Используйте devnet faucet.",
       "heading": "Поиск по XRPL Devnet"
+    },
+    "network": {
+      "description": "Ищите и просматривайте транзакции, аккаунты, токены, NFT и объекты ledger в {{explorerName}}."
     }
   },
   "intro": {

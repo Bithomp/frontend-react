@@ -14,6 +14,9 @@
       "title": "搜索 XRPL Devnet — 账户、交易、代币、NFT",
       "description": "搜索 XRPL Devnet 地址、交易哈希、用户名、CTID、NFT、代币和账本对象。还需要金币吗？使用 devnet 水龙头。",
       "heading": "搜索 XRPL Devnet"
+    },
+    "network": {
+      "description": "在 {{explorerName}} 上搜索和浏览交易、账户、代币、NFT 与账本对象。"
     }
   },
   "intro": {

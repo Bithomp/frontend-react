@@ -14,6 +14,9 @@
       "title": "Rechercher sur XRPL Devnet — comptes, transactions, Tokens, NFT",
       "description": "Recherchez des adresses XRPL Devnet, des hashes de transaction, des noms d'utilisateur, des CTID, des NFT, des Tokens et des objets du registre. Besoin de coins ? Utilisez le faucet devnet.",
       "heading": "Rechercher sur XRPL Devnet"
+    },
+    "network": {
+      "description": "Recherchez et explorez les transactions, comptes, tokens, NFT et objets du registre sur {{explorerName}}."
     }
   },
   "intro": {

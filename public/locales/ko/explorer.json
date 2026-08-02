@@ -14,6 +14,9 @@
       "title": "XRPL Devnet 검색 — 계정, 거래, 토큰, NFT",
       "description": "XRPL Devnet 주소, 거래 해시, 사용자명, CTID, NFT, 토큰, 레저 객체를 검색하세요. 테스트 코인이 필요하신가요? Devnet faucet을 사용하세요.",
       "heading": "XRPL Devnet 검색"
+    },
+    "network": {
+      "description": "{{explorerName}}에서 거래, 계정, 토큰, NFT 및 레저 객체를 검색하고 탐색하세요."
     }
   },
   "intro": {

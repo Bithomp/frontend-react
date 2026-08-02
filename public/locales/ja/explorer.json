@@ -14,6 +14,9 @@
       "title": "XRPL Devnet を検索 — アカウント、トランザクション、トークン、NFT",
       "description": "XRPL Devnet のアドレス、トランザクションハッシュ、ユーザー名、CTID、NFT、トークン、Ledger オブジェクトを検索できます。テスト用コインが必要ですか？Devnet faucet をご利用ください。",
       "heading": "XRPL Devnet を検索"
+    },
+    "network": {
+      "description": "{{explorerName}} のトランザクション、アカウント、トークン、NFT、Ledger オブジェクトを検索して探索できます。"
     }
   },
   "intro": {

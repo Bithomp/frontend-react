@@ -142,7 +142,7 @@ export default function Explorer({ initialLocale, isSsrMobile, showAds, countryC
       ? tt('seo.testnet.description')
       : isEnglishDevnetExplorer
         ? tt('seo.devnet.description')
-        : tt('intro.subtitle', { nativeCurrency })
+        : tt('seo.network.description', { explorerName, nativeCurrency })
   const pageHeading = isPrimaryExplorer
     ? tt('seo.mainnet.heading', { ledgerName, nativeCurrency, siteName })
     : isEnglishTestnetExplorer

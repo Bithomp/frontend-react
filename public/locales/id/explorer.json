@@ -14,6 +14,9 @@
       "title": "Cari di XRPL Devnet — akun, transaksi, token, NFT",
       "description": "Cari alamat XRPL Devnet, hash transaksi, username, CTID, NFT, token, dan objek ledger. Butuh coin juga? Gunakan faucet devnet.",
       "heading": "Cari di XRPL Devnet"
+    },
+    "network": {
+      "description": "Cari dan jelajahi transaksi, akun, token, NFT, dan objek ledger di {{explorerName}}."
     }
   },
   "intro": {
