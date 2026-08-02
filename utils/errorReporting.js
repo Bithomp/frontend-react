@@ -8,6 +8,7 @@ export const knownClientErrorMessages = [
   "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
   'Node.removeChild: The node to be removed is not a child of this node',
   "Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.",
+  'Node.insertBefore: Child to insert before is not a child of this node',
   "Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
   'The operation is insecure.',
   'The object can not be found here.',
