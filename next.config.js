@@ -157,6 +157,10 @@ module.exports = withBundleAnalyzer({
   async rewrites() {
     return [
       {
+        source: '/sitemaps/:section.xml',
+        destination: '/api/sitemap-section?section=:section'
+      },
+      {
         source: '/robots.txt',
         destination: '/api/robots'
       },
