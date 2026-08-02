@@ -429,6 +429,10 @@ export async function getServerSideProps(context) {
       initialData = res?.data
 
       if (initialData?.error) {
+        if (initialData.error === 'Address is not valid') {
+          return { notFound: true }
+        }
+
         initialErrorMessage = initialData.error
         initialData = null
       } else {

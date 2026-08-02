@@ -451,7 +451,10 @@
   "press": "Ceci est le logo officiel de Bithomp à utiliser par les médias et les professionnels de la presse pour l'impression et le web (svg, png, eps, pdf, pour fonds sombres et clairs). Pour les demandes de médias, veuillez <2>nous contacter</2>.",
   "page-not-found": {
     "header": "La page demandée n'a pas été trouvée.",
-    "text": "Cliquez <2>ici</2> pour vérifier notre page d'accueil."
+    "text": "Le lien est peut-être obsolète, ou l'adresse ou le nom d'utilisateur n'existe pas. Utilisez la recherche ou choisissez une rubrique ci-dessous.",
+    "search-title": "Rechercher dans l'explorateur",
+    "popular": "Pages principales",
+    "home": "Accueil"
   },
   "receipt": {
     "quantity": "quantité",

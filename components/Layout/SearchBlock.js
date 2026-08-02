@@ -98,7 +98,14 @@ const normalizeSearchInputValue = (value) => {
   return String(value)
 }
 
-export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMobile, compact = false, type = '' }) {
+export default function SearchBlock({
+  searchPlaceholderText,
+  tab = null,
+  isSsrMobile,
+  compact = false,
+  contained = false,
+  type = ''
+}) {
   const { t, i18n } = useTranslation()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -114,7 +121,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   if (!searchPlaceholderText) {
-    searchPlaceholderText = isSsrMobile ? t('home.search-placeholder-short') : t('home.search-placeholder')
+    const useShortPlaceholder = isSsrMobile || (windowWidth > 0 && windowWidth < 730)
+    searchPlaceholderText = t(useShortPlaceholder ? 'home.search-placeholder-short' : 'home.search-placeholder')
   }
 
   // Clear search field on route change
@@ -361,7 +369,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
   return (
     <>
       <div
-        className={`search-block ${compact ? 'search-block-compact' : ''}`}
+        className={`search-block ${compact ? 'search-block-compact' : ''}${contained ? ' search-block-contained' : ''}`}
         style={type === 'explorer' || compact ? { backgroundColor: 'unset', height: compact ? 'auto' : 90 } : {}}
       >
         <div

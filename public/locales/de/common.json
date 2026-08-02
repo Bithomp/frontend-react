@@ -451,7 +451,10 @@
   "press": "Dies ist das offizielle Logo für Print und Web von Bithomp für mediale, profesionelle Pressezwecke (svg, png, eps, pdf, für dunkle und helle Hintergründe). Für mediale Anfragen <2>kontaktieren Sie uns</2> bitte.",
   "page-not-found": {
     "header": "Die angefragen Seite wurde nicht gefunden.",
-    "text": "Klicken Sie <2>hier</2> um unsere Landingpage zu überprüfen."
+    "text": "Der Link ist möglicherweise veraltet oder die Adresse bzw. der Benutzername existiert nicht. Nutzen Sie die Suche oder wählen Sie unten einen Bereich.",
+    "search-title": "Explorer durchsuchen",
+    "popular": "Wichtige Seiten",
+    "home": "Startseite"
   },
   "receipt": {
     "quantity": "Anz.",

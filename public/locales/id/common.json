@@ -451,7 +451,10 @@
   "press": "Ini adalah logo resmi Bithomp yang digunakan oleh profesional media dan pers untuk cetak dan web (svg, png, eps, pdf, untuk latar belakang gelap dan terang). Untuk pertanyaan media, silakan <2>hubungi kami</2>.",
   "page-not-found": {
     "header": "Halaman yang diminta tidak ditemukan.",
-    "text": "Klik <2>di sini</2> untuk memeriksa halaman utama kami."
+    "text": "Tautan mungkin sudah tidak berlaku, atau alamat maupun username tidak ada. Gunakan pencarian atau pilih bagian di bawah.",
+    "search-title": "Cari di explorer",
+    "popular": "Halaman utama",
+    "home": "Beranda"
   },
   "receipt": {
     "quantity": "jumlah.",
