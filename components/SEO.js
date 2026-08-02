@@ -162,7 +162,8 @@ export default function SEO({
   }
 
   const isPrimaryIndexableNetwork = ['mainnet', 'xahau'].includes(network)
-  const isNonMainnetLandingPage = ['', '/', '/faucet', '/explorer'].includes(normalizedPath || '/')
+  const normalizedLandingPath = normalizedPath === '/' ? '/' : normalizedPath.replace(/\/+$/, '')
+  const isNonMainnetLandingPage = ['', '/', '/faucet', '/explorer'].includes(normalizedLandingPath || '/')
   const shouldNoindex = noindex || (!isPrimaryIndexableNetwork && !isNonMainnetLandingPage)
   const articleStructuredData = isLearnArticle
     ? {

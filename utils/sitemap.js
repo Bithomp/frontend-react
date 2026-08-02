@@ -11,6 +11,12 @@ const BITHOMP_LANGUAGE_DOMAINS = {
   'x-default': 'https://bithomp.com'
 }
 
+const nonMainnetPageEntries = [
+  { loc: '', changefreq: 'always', priority: '1' },
+  { loc: 'explorer', changefreq: 'weekly', priority: '1' },
+  { loc: 'faucet', changefreq: 'monthly', priority: '1' }
+]
+
 const pageEntries = [
   { loc: 'dapps', changefreq: 'daily', priority: '1' },
   { loc: 'explorer', changefreq: 'weekly', priority: '1' },
@@ -366,10 +372,10 @@ ${sections
 export const sitemapSections = {
   pages: {
     enabled: true,
-    getEntries: () => pageEntries
+    getEntries: () => (isPublicMainnet ? pageEntries : nonMainnetPageEntries)
   },
   learn: {
-    enabled: learnEntries.length > 0,
+    enabled: isPublicMainnet && learnEntries.length > 0,
     getEntries: () => learnEntries
   },
   tokens: {
