@@ -19,6 +19,7 @@ import {
   nativeCurrency
 } from '../../../utils'
 import { addressUsernameOrServiceLink } from '../../../utils/format'
+import { canonicalAccountRedirect } from '../../../utils/seo'
 
 import SEO from '../../../components/SEO'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
@@ -147,6 +148,13 @@ export async function getServerSideProps(context) {
 
       const accountRes = await accountPromise
       canonicalAccount = accountRes?.data?.address || canonicalAccount
+      const canonicalRedirect = canonicalAccountRedirect({
+        requestedAccount: id,
+        resolvedAddress: canonicalAccount,
+        suffix: '/transactions',
+        query
+      })
+      if (canonicalRedirect) return canonicalRedirect
 
       if (isAddressValid(id) && (!initialData?.transactions || initialData?.transactions?.length === 0)) {
         if (!initialData?.marker) {

@@ -32,3 +32,22 @@ export const shouldIndexAccount = (account) => {
 
   return Boolean(username || serviceName)
 }
+
+export const canonicalAccountRedirect = ({ requestedAccount, resolvedAddress, suffix = '', query = {} }) => {
+  if (!requestedAccount || !resolvedAddress || requestedAccount === resolvedAddress) return null
+
+  const params = new URLSearchParams()
+  Object.entries(query).forEach(([key, value]) => {
+    if (key === 'id' || value === undefined || value === null || value === '') return
+    const values = Array.isArray(value) ? value : [value]
+    values.forEach((item) => params.append(key, String(item)))
+  })
+
+  const search = params.toString()
+  return {
+    redirect: {
+      destination: `/account/${encodeURIComponent(resolvedAddress)}${suffix}${search ? `?${search}` : ''}`,
+      permanent: true
+    }
+  }
+}

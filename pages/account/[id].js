@@ -34,7 +34,7 @@ import {
 import { TESTNET_RLUSD_CURRENCY, TESTNET_RLUSD_ISSUER } from '../../utils/faucet'
 import { socialAccountUrl } from '../../utils/socialAccounts'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
-import { shouldIndexAccount } from '../../utils/seo'
+import { canonicalAccountRedirect, shouldIndexAccount } from '../../utils/seo'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
 
 const TOKEN_PREVIEW_LIMIT = 5
@@ -374,6 +374,7 @@ export async function getServerSideProps(context) {
   const ledgerTimestampValue = Array.isArray(ledgerTimestamp) ? ledgerTimestamp[0] : ledgerTimestamp
   const isHistoricalLedger = !!ledgerIndex || !!ledgerTimestamp
   let account = id ? (Array.isArray(id) ? id[0] : id) : ''
+  const requestedAccount = account
   let accountWithTag = null
 
   if (isValidXAddress(account)) {
@@ -436,6 +437,13 @@ export async function getServerSideProps(context) {
         initialErrorMessage = initialData.error
         initialData = null
       } else {
+        const canonicalRedirect = canonicalAccountRedirect({
+          requestedAccount,
+          resolvedAddress: initialData?.address,
+          query
+        })
+        if (canonicalRedirect) return canonicalRedirect
+
         const networkPromise = axiosServer({
           method: 'get',
           url: 'v2/server',

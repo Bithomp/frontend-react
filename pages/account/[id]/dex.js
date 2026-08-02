@@ -17,7 +17,7 @@ import {
   addressUsernameOrServiceLink
 } from '../../../utils/format'
 import { avatarSrc, nativeCurrency, timestampExpired, useWidth, xahauNetwork } from '../../../utils'
-import { shouldIndexAccount } from '../../../utils/seo'
+import { canonicalAccountRedirect, shouldIndexAccount } from '../../../utils/seo'
 import { divide, multiply } from '../../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
 
@@ -45,6 +45,13 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       initialAccountData = accountRes?.data
+      const canonicalRedirect = canonicalAccountRedirect({
+        requestedAccount: account,
+        resolvedAddress: initialAccountData?.address,
+        suffix: '/dex',
+        query
+      })
+      if (canonicalRedirect) return canonicalRedirect
 
       // fetch DEX orders using the new API endpoint
       const res = await axiosServer({
