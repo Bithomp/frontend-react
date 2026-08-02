@@ -1,5 +1,13 @@
 {
   "desc": "Hier finden Sie die TOP 100 Konten nach {{currency}} Kontostand.",
+  "richlist": {
+    "title": "{{currency}} Rich List ({{currency}} Richlist) – größte {{currency}}-Inhaber",
+    "heading": "{{currency}} Rich List – größte {{currency}}-Inhaber",
+    "description": "Die {{currency}} Rich List ({{currency}} Richlist) zeigt die 100 größten {{currency}}-Inhaber, die Konzentration der Bestände und die Anzahl der {{currency}} auf Konten.",
+    "token-description": "Die {{currency}} Rich List ({{currency}} Richlist) zeigt die größten Inhaber, die Guthabenverteilung, den Gesamtbestand und die Konzentration der Bestände.",
+    "supply-heading": "Wie viele {{currency}} gibt es?",
+    "supply-answer": "Diese Seite erfasst derzeit {{totalCoins}} {{currency}} auf {{activeAccounts}} Konten mit {{currency}}-Bestand."
+  },
   "summary": "Es gibt <1>{{activeAccounts}}</1> aktive Konten. Insgesamt verfügbar: <3>{{totalCoins}}</3>",
   "chart": { "holders": "Verteilung der Inhaber", "top100": "Top 100", "other": "Andere" },
   "actions": { "token-page": "Token-Seite", "add-token": "Token hinzufügen", "authorize": "Autorisieren" }

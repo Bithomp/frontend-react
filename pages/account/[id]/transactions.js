@@ -19,7 +19,6 @@ import {
   nativeCurrency
 } from '../../../utils'
 import { addressUsernameOrServiceLink } from '../../../utils/format'
-import { shouldIndexAccount } from '../../../utils/seo'
 
 import SEO from '../../../components/SEO'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
@@ -106,7 +105,6 @@ export async function getServerSideProps(context) {
   const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order, filterSpam } = query
   let initialErrorMessage = ''
   let initialData = null
-  let isIndexableAccount = false
   let canonicalAccount = id || null
   let initialNoRelevantTransactions = false
   const selectedCurrencyServer = currencyServer(req) || 'usd'
@@ -149,7 +147,6 @@ export async function getServerSideProps(context) {
 
       const accountRes = await accountPromise
       canonicalAccount = accountRes?.data?.address || canonicalAccount
-      isIndexableAccount = shouldIndexAccount(accountRes?.data)
 
       if (isAddressValid(id) && (!initialData?.transactions || initialData?.transactions?.length === 0)) {
         if (!initialData?.marker) {
@@ -169,7 +166,6 @@ export async function getServerSideProps(context) {
     props: {
       id: id || null,
       initialData: initialData || null,
-      isIndexableAccount,
       canonicalAccount,
       initialErrorMessage,
       initialNoRelevantTransactions,
@@ -191,7 +187,6 @@ export async function getServerSideProps(context) {
 export default function AccountTransactions({
   id,
   initialData,
-  isIndexableAccount,
   canonicalAccount,
   initialErrorMessage,
   initialNoRelevantTransactions,
@@ -428,7 +423,7 @@ export default function AccountTransactions({
         description={`All transactions for address ${address}`}
         image={{ file: avatarSrc(address) }}
         canonicalPath={`/account/${canonicalAccount || address}/transactions`}
-        noindex={!isIndexableAccount}
+        noindex
       />
       <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
         <h1 className="center">

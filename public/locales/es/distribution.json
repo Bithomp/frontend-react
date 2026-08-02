@@ -1,5 +1,13 @@
 {
   "desc": "Aquí puedes encontrar el TOP 100 de cuentas por balance {{currency}}.",
+  "richlist": {
+    "title": "{{currency}} Rich List ({{currency}} Richlist) – mayores titulares",
+    "heading": "{{currency}} Rich List – mayores titulares de {{currency}}",
+    "description": "Consulta la {{currency}} Rich List ({{currency}} richlist), los 100 mayores titulares, su concentración y cuántas monedas {{currency}} hay en las cuentas.",
+    "token-description": "Consulta la {{currency}} Rich List ({{currency}} richlist), los principales titulares, la distribución de saldos, el suministro total y la concentración.",
+    "supply-heading": "¿Cuántas monedas {{currency}} hay?",
+    "supply-answer": "Esta página registra actualmente {{totalCoins}} {{currency}} en {{activeAccounts}} cuentas con {{currency}}."
+  },
   "summary": "Hay <1>{{activeAccounts}}</1> cuentas activas, total disponible: <3>{{totalCoins}}</3>",
   "chart": { "holders": "Concentración de titulares", "top100": "Top 100", "other": "Otros" },
   "actions": { "token-page": "Página del token", "add-token": "Añadir token", "authorize": "Autorizar" }

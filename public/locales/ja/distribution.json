@@ -1,5 +1,13 @@
 {
   "desc": "{{currency}}残高の上位100アカウントを見ることができます。",
+  "richlist": {
+    "title": "{{currency}} Rich List（{{currency}} Richlist）– 上位保有者",
+    "heading": "{{currency}} Rich List – {{currency}}上位保有者",
+    "description": "{{currency}} Rich List（{{currency}} richlist）で、上位100保有者、保有集中度、各アカウントが保有する{{currency}}数量を確認できます。",
+    "token-description": "{{currency}} Rich List（{{currency}} richlist）で、上位保有者、残高分布、総供給量、保有集中度を確認できます。",
+    "supply-heading": "{{currency}}コインはいくつありますか？",
+    "supply-answer": "このページでは現在、{{currency}}を保有する{{activeAccounts}}件のアカウントにある{{totalCoins}} {{currency}}を集計しています。"
+  },
   "summary": "<1>{{activeAccounts}}</1> のアクティブアカウント、合計 <3>{{totalCoins}}</3>です。",
   "chart": { "holders": "保有者の集中度", "top100": "上位100", "other": "その他" },
   "actions": { "token-page": "トークンページ", "add-token": "トークンを追加", "authorize": "承認" }

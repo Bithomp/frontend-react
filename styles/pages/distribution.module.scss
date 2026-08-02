@@ -21,7 +21,7 @@
     grid-template-columns: minmax(340px, 0.75fr) minmax(320px, 1fr);
     gap: 8px;
     align-items: stretch;
-    height: 250px;
+    min-height: 250px;
     margin-bottom: 12px;
     padding: 4px 12px 4px 6px;
     border: 1px solid var(--card-border);
@@ -50,6 +50,17 @@
     display: grid;
     gap: 3px;
     margin-top: 7px;
+  }
+
+  .distribution-richlist-copy {
+    p {
+      margin: 0;
+    }
+
+    h2 {
+      margin: 12px 0 4px;
+      font-size: 18px;
+    }
   }
 
   .distribution-chart-actions {

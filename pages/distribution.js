@@ -450,6 +450,8 @@ export default function Distribution({
   const isMptToken = !!selectedMptId
   const isIssuedToken = !!token?.issuer && !isMptToken
   const isAssetToken = isIssuedToken || isMptToken
+  const isXrpRichList = !isAssetToken && nativeCurrency === 'XRP'
+  const useRichListSeo = isXrpRichList || isAssetToken
   const currency = isMptToken
     ? token?.metadata?.name || token?.metadata?.n || token?.metadata?.ticker || token?.metadata?.t || 'MPT'
     : niceCurrency(token?.currency || nativeCurrency)
@@ -549,6 +551,18 @@ export default function Distribution({
     height: 630,
     file: `${server}/nextapi/distribution-preview?${new URLSearchParams(distributionPreviewParams).toString()}`
   }
+  const pageTitle = useRichListSeo
+    ? t('richlist.title', { ns: 'distribution', currency })
+    : t('menu.network.distribution', { currency })
+  const pageDescription = useRichListSeo
+    ? t(isXrpRichList ? 'richlist.description' : 'richlist.token-description', {
+        ns: 'distribution',
+        currency
+      })
+    : undefined
+  const pageHeading = useRichListSeo
+    ? t('richlist.heading', { ns: 'distribution', currency })
+    : t('menu.network.distribution', { currency })
   const distributionActions = (
     <div className="distribution-chart-actions">
       <Link href={tokenPageUrl} className="button-action">
@@ -573,13 +587,14 @@ export default function Distribution({
   return (
     <div className={distributionClass}>
       <SEO
-        title={t('menu.network.distribution', { currency })}
+        title={pageTitle}
+        description={pageDescription}
         canonicalPath={canonicalPath}
         noindex={!isAssetToken && router.asPath.includes('?')}
         image={distributionPreviewImage}
       />
       <div className="content-center">
-        <h1 className="center">{t('menu.network.distribution', { currency })}</h1>
+        <h1 className="center">{pageHeading}</h1>
       </div>
       <FiltersFrame data={data || []} navExtra={toolbarControls} withoutLeftFilters>
         <div className="page">
@@ -595,7 +610,22 @@ export default function Distribution({
             )}
             <div className="distribution-summary-card">
               <div className="distribution-summary-item">
-                {t('desc', { ns: 'distribution', currency })}
+                {isXrpRichList ? (
+                  <div className="distribution-richlist-copy">
+                    <p>{t('richlist.description', { ns: 'distribution', currency })}</p>
+                    <h2>{t('richlist.supply-heading', { ns: 'distribution', currency })}</h2>
+                    <p>
+                      {t('richlist.supply-answer', {
+                        ns: 'distribution',
+                        currency,
+                        totalCoins: niceNumber(distributionTotalCoins, null, null, 18),
+                        activeAccounts: niceNumber(rawData?.summary?.activeAccounts)
+                      })}
+                    </p>
+                  </div>
+                ) : (
+                  t(isAssetToken ? 'richlist.token-description' : 'desc', { ns: 'distribution', currency })
+                )}
                 {isIssuedToken && !loading && (
                   <div className="distribution-summary-details">
                     <div>
@@ -607,7 +637,7 @@ export default function Distribution({
                   </div>
                 )}
               </div>
-              <div className="distribution-summary-item">
+              {!isXrpRichList && <div className="distribution-summary-item">
                 {loading ? (
                   t('general.loading')
                 ) : isAssetToken ? (
@@ -632,7 +662,7 @@ export default function Distribution({
                     total available: <b>{{ totalCoins: amountFormat(distributionTotalCoins) }}</b>
                   </Trans>
                 )}
-              </div>
+              </div>}
             </div>
           </section>
           <table className="table-large hide-on-small-w800">

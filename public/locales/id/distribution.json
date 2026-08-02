@@ -1,5 +1,13 @@
 {
   "desc": "Di sini Anda dapat menemukan 100 akun TERATAS berdasarkan saldo {{currency}}.",
+  "richlist": {
+    "title": "{{currency}} Rich List ({{currency}} Richlist) – pemegang teratas",
+    "heading": "{{currency}} Rich List – pemegang {{currency}} teratas",
+    "description": "Lihat {{currency}} Rich List ({{currency}} richlist), 100 pemegang teratas, konsentrasi kepemilikan, dan jumlah koin {{currency}} di berbagai akun.",
+    "token-description": "Lihat {{currency}} Rich List ({{currency}} richlist), pemegang teratas, distribusi saldo, total pasokan, dan konsentrasi kepemilikan.",
+    "supply-heading": "Berapa banyak koin {{currency}} yang ada?",
+    "supply-answer": "Halaman ini saat ini melacak {{totalCoins}} {{currency}} di {{activeAccounts}} akun yang memiliki {{currency}}."
+  },
   "summary": "Terdapat <1>{{activeAccounts}}</1> akun aktif, total yang tersedia: <3>{{totalCoins}}</3>",
   "chart": { "holders": "Konsentrasi pemegang", "top100": "100 teratas", "other": "Lainnya" },
   "actions": { "token-page": "Halaman token", "add-token": "Tambahkan token", "authorize": "Otorisasi" }

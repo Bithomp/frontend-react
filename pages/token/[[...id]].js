@@ -9,9 +9,11 @@ import {
   FaHandshake,
   FaLock,
   FaLockOpen,
+  FaPlusCircle,
   FaSnowflake,
   FaUndoAlt,
   FaUserLock,
+  FaUsers,
   FaTrashAlt
 } from 'react-icons/fa'
 import axios from 'axios'
@@ -1493,6 +1495,9 @@ export default function TokenPage({
   const mptId = token?.mptokenIssuanceID
   const isMptToken = !!mptId
   const isIouToken = !!token?.issuer && !isMptToken
+  const tokenDistributionUrl = isMptToken
+    ? `/distribution?mptokenIssuanceID=${encodeURIComponent(mptId)}`
+    : `/distribution?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(token.issuer)}`
   const mptMetadata = token?.metadata && typeof token.metadata === 'object' && !Array.isArray(token.metadata) ? token.metadata : {}
   const mptMetadataTicker = mptMetadataValue(mptMetadata, 'ticker', 't')
   const mptMetadataName = mptMetadataValue(mptMetadata, 'name', 'n')
@@ -2691,17 +2696,32 @@ export default function TokenPage({
 
               {((!isNativeToken && !isMptToken) || isMptToken) && (
                 <div className="tokenProfileActions">
-                  {!isNativeToken && !isMptToken && (
-                    <button className="button-action wide center" onClick={handleSetTrustline}>
-                      {tt('actions.setTrustline')}
-                    </button>
-                  )}
-                  {isMptToken && !isMptIssuer && (
-                    <button className="button-action wide tokenProfileActionButton" onClick={handleAuthorizeMpt}>
-                      <FaHandshake aria-hidden="true" />
-                      <span>{tt('actions.authorize')}</span>
-                    </button>
-                  )}
+                  <div className="tokenProfilePrimaryActions">
+                    {!isNativeToken && !isMptToken && (
+                      <button
+                        type="button"
+                        className="button-action wide tokenProfileActionButton"
+                        onClick={handleSetTrustline}
+                      >
+                        <FaPlusCircle aria-hidden="true" />
+                        <span>{tt('actions.setTrustline')}</span>
+                      </button>
+                    )}
+                    {isMptToken && !isMptIssuer && (
+                      <button className="button-action wide tokenProfileActionButton" onClick={handleAuthorizeMpt}>
+                        <FaHandshake aria-hidden="true" />
+                        <span>{tt('actions.authorize')}</span>
+                      </button>
+                    )}
+                    <Link
+                      href={tokenDistributionUrl}
+                      prefetch={false}
+                      className="button-action wide tokenProfileActionButton"
+                    >
+                      <FaUsers aria-hidden="true" />
+                      <span>{tt('previews.holdersTitle')}</span>
+                    </Link>
+                  </div>
                   {canGloballyLockMpt && (
                     <button className="button-action wide tokenProfileActionButton" onClick={handleMptGlobalLock}>
                       {isMptGloballyLocked ? <FaLockOpen aria-hidden="true" /> : <FaLock aria-hidden="true" />}

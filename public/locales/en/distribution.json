@@ -1,5 +1,13 @@
 {
   "desc": "Here you can find the TOP 100 accounts by {{currency}} balance.",
+  "richlist": {
+    "title": "{{currency}} Rich List ({{currency}} Richlist) & Balance Distribution",
+    "heading": "{{currency}} Rich List – Holders & Balance Distribution",
+    "description": "Explore the {{currency}} Rich List ({{currency}} richlist), top 100 {{currency}} holders, {{currency}} balance distribution, and how many coins are held across accounts.",
+    "token-description": "Explore the {{currency}} Rich List ({{currency}} richlist), top {{currency}} holders, balance distribution, total supply, and holder concentration.",
+    "supply-heading": "How many {{currency}} coins are there?",
+    "supply-answer": "This page currently tracks {{totalCoins}} {{currency}} across {{activeAccounts}} accounts holding {{currency}}."
+  },
   "summary": "There are <1>{{activeAccounts}}</1> active accounts, total available: <3>{{totalCoins}}</3>",
   "chart": { "holders": "Holder concentration", "top100": "Top 100", "other": "Other" },
   "actions": { "token-page": "Token page", "add-token": "Add token", "authorize": "Authorize" }

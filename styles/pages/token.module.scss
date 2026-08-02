@@ -187,6 +187,33 @@
       max-width: 100%;
     }
 
+    .tokenProfilePrimaryActions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      width: 100%;
+
+      .button-action.wide {
+        width: 100%;
+        min-width: 0;
+        padding-right: 10px;
+        padding-left: 10px;
+        font-size: 14px;
+        justify-content: center;
+        gap: 7px;
+
+        span {
+          white-space: normal;
+        }
+
+        &:only-child {
+          grid-column: 1 / -1;
+          justify-self: start;
+          width: auto;
+        }
+      }
+    }
+
     .tokenProfileActionButton {
       display: inline-flex;
       gap: 10px;

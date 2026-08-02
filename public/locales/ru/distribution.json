@@ -1,5 +1,13 @@
 {
   "desc": "Здесь представлены ТОП 100 адресов по {{currency}} балансу.",
+  "richlist": {
+    "title": "{{currency}} Rich List ({{currency}} Richlist) — крупнейшие держатели",
+    "heading": "{{currency}} Rich List — крупнейшие держатели {{currency}}",
+    "description": "{{currency}} Rich List ({{currency}} richlist) показывает топ-100 держателей, концентрацию активов и количество монет {{currency}} на счетах.",
+    "token-description": "{{currency}} Rich List ({{currency}} richlist) показывает крупнейших держателей, распределение балансов, общее предложение и концентрацию токенов.",
+    "supply-heading": "Сколько существует монет {{currency}}?",
+    "supply-answer": "Сейчас на странице учитывается {{totalCoins}} {{currency}} на {{activeAccounts}} счетах, где хранится {{currency}}."
+  },
   "summary": "Всего существует <1>{{activeAccounts}}</1> активных адресов, общее сумма всех балансов и эксроу: <3>{{totalCoins}}</3>",
   "chart": { "holders": "Концентрация держателей", "top100": "Топ-100", "other": "Остальные" },
   "actions": { "token-page": "Страница токена", "add-token": "Добавить токен", "authorize": "Авторизовать" }

@@ -1,5 +1,13 @@
 {
   "desc": "Ici, vous pouvez trouver les 100 MEILLEURES comptes par solde de {{currency}}.",
+  "richlist": {
+    "title": "{{currency}} Rich List ({{currency}} Richlist) – principaux détenteurs",
+    "heading": "{{currency}} Rich List – principaux détenteurs de {{currency}}",
+    "description": "Consultez la {{currency}} Rich List ({{currency}} richlist), les 100 principaux détenteurs, leur concentration et le nombre de {{currency}} détenus sur les comptes.",
+    "token-description": "Consultez la {{currency}} Rich List ({{currency}} richlist), les principaux détenteurs, la répartition des soldes, l'offre totale et la concentration.",
+    "supply-heading": "Combien de pièces {{currency}} existe-t-il ?",
+    "supply-answer": "Cette page recense actuellement {{totalCoins}} {{currency}} répartis sur {{activeAccounts}} comptes détenant des {{currency}}."
+  },
   "summary": "Il y a <1>{{activeAccounts}}</1> comptes actifs, total disponible : <3>{{totalCoins}}</3>",
   "chart": { "holders": "Concentration des détenteurs", "top100": "Top 100", "other": "Autres" },
   "actions": { "token-page": "Page du token", "add-token": "Ajouter le token", "authorize": "Autoriser" }
