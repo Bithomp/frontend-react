@@ -36,7 +36,8 @@ import {
   showAmmPercents,
   tokenToFiat,
   timeFormat,
-  amountParced
+  amountParced,
+  amountFormat
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, logServerSideError, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
@@ -79,16 +80,28 @@ const REFRESH_COOLDOWN_MS = 30000
 const TOKEN_HOLDERS_PREVIEW_LIMIT = 100
 const TOKEN_AMMS_PREVIEW_LIMIT = 20
 
+const tokenIsNative = (token) =>
+  !!token && !token?.issuer && !token?.mptokenIssuanceID && token?.currency === nativeCurrency
+
 const tokenSupportsAmmsPreview = (token) =>
-  !!token?.issuer && !!token?.currency && !token?.mptokenIssuanceID && token?.currencyDetails?.type !== 'lp_token'
+  (tokenIsNative(token) && !xahauNetwork) ||
+  (!!token?.issuer &&
+    !!token?.currency &&
+    !token?.mptokenIssuanceID &&
+    token?.currencyDetails?.type !== 'lp_token')
 
 const tokenSupportsHoldersPreview = (token) =>
-  !!token?.mptokenIssuanceID || tokenSupportsAmmsPreview(token)
+  tokenIsNative(token) || !!token?.mptokenIssuanceID || tokenSupportsAmmsPreview(token)
 
 const tokenSupportsPreviews = tokenSupportsHoldersPreview
 
-const tokenHoldersPreviewUrl = (token, selectedCurrency) => {
+const tokenHoldersPreviewUrl = (token, selectedCurrency, escrowMode = 'none') => {
   if (!tokenSupportsHoldersPreview(token)) return ''
+  if (tokenIsNative(token)) {
+    return escrowMode !== 'none'
+      ? `v2/addresses/richlist?escrow=${encodeURIComponent(escrowMode)}`
+      : 'v2/addresses/richlist'
+  }
   if (token.mptokenIssuanceID) {
     return `v2/mptokens/richlist/${encodeURIComponent(
       token.mptokenIssuanceID
@@ -101,16 +114,29 @@ const tokenHoldersPreviewUrl = (token, selectedCurrency) => {
   )}`
 }
 
+const distributionUrlForToken = (token) => {
+  if (tokenIsNative(token)) return '/distribution'
+  if (token?.mptokenIssuanceID) {
+    return `/distribution?mptokenIssuanceID=${encodeURIComponent(token.mptokenIssuanceID)}`
+  }
+  if (token?.issuer && token?.currency) {
+    return `/distribution?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(token.issuer)}`
+  }
+  return ''
+}
+
 const tokenAmmsPreviewUrl = (token) => {
   if (!tokenSupportsAmmsPreview(token)) return ''
-  return `v2/amms?order=currencyHigh&limit=${TOKEN_AMMS_PREVIEW_LIMIT}&voteSlots=false&auctionSlot=false&holders=true&priceNativeCurrencySpot=true&currency=${encodeURIComponent(
-    token.currency
-  )}&currencyIssuer=${encodeURIComponent(token.issuer)}`
+  const currencyQuery = `&currency=${encodeURIComponent(token.currency)}`
+  const issuerQuery = token?.issuer ? `&currencyIssuer=${encodeURIComponent(token.issuer)}` : ''
+  return `v2/amms?order=currencyHigh&limit=${TOKEN_AMMS_PREVIEW_LIMIT}&voteSlots=false&auctionSlot=false&holders=true&priceNativeCurrencySpot=true${currencyQuery}${issuerQuery}`
 }
 
 const tokenPreviewDataKey = (token, selectedCurrency) =>
   tokenSupportsPreviews(token)
-    ? `${token.mptokenIssuanceID || `${token.issuer}:${token.currency}`}:${selectedCurrency || 'usd'}`
+    ? tokenIsNative(token)
+      ? `native:${token.currency}`
+      : `${token.mptokenIssuanceID || `${token.issuer}:${token.currency}`}:${selectedCurrency || 'usd'}`
     : ''
 
 const holderShare = (balance, total) => {
@@ -458,6 +484,9 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
   const chartTheme = useMemo(() => apexChartTheme(theme), [theme])
   const [activeHolderIndex, setActiveHolderIndex] = useState(null)
   const [showAllHolders, setShowAllHolders] = useState(false)
+  const [nativeEscrowMode, setNativeEscrowMode] = useState('none')
+  const [nativeEscrowData, setNativeEscrowData] = useState(null)
+  const [nativeEscrowLoading, setNativeEscrowLoading] = useState(false)
   const activeHolderIndexRef = useRef(null)
   const holderChartIdRef = useRef(
     apexSafeChartId(
@@ -472,28 +501,74 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
     activeHolderIndexRef.current = normalizedIndex
     setActiveHolderIndex(normalizedIndex)
   }, [])
-  const mptScale = Number(data?.summary?.scale ?? token?.scale)
+  const isNativeToken = tokenIsNative(token)
+  const previewData = isNativeToken && nativeEscrowMode !== 'none' ? nativeEscrowData : data
+  const previewLoading = loading || nativeEscrowLoading
+  const holderBalanceDisplay = (balance, short = false) =>
+    isNativeToken ? amountFormat(balance, short ? { short: true } : {}) : shortNiceNumber(balance, 2, 1)
+  const holderBalanceTitle = (balance) =>
+    isNativeToken
+      ? `${niceNumber(amountParced(balance).value, 0, null, 6)} ${nativeCurrency}`
+      : fullNiceNumber(balance)
+
+  useEffect(() => {
+    if (!isNativeToken || nativeEscrowMode === 'none') {
+      setNativeEscrowData(null)
+      setNativeEscrowLoading(false)
+      return
+    }
+
+    let cancelled = false
+    setNativeEscrowLoading(true)
+    axios(tokenHoldersPreviewUrl(token, selectedCurrency, nativeEscrowMode))
+      .then((response) => {
+        if (!cancelled) setNativeEscrowData(response?.data || null)
+      })
+      .catch(() => {
+        if (!cancelled) setNativeEscrowData(null)
+      })
+      .finally(() => {
+        if (!cancelled) setNativeEscrowLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [isNativeToken, nativeEscrowMode, selectedCurrency, token])
+
+  const mptScale = Number(previewData?.summary?.scale ?? token?.scale)
   const mptDivisor = token?.mptokenIssuanceID && Number.isFinite(mptScale) ? 10 ** mptScale : 1
-  const totalCoins = data?.summary?.totalCoins
-    ? Number(data.summary.totalCoins) / mptDivisor
+  const totalCoins = previewData?.summary?.totalCoins || previewData?.summary?.maxCoins
+    ? Number(previewData.summary.totalCoins || previewData.summary.maxCoins) / mptDivisor
     : token?.supply
-  const tokenFiatRate = data?.summary?.convertCurrencies?.[selectedCurrency?.toLowerCase?.() || selectedCurrency]
+  const tokenFiatRate = previewData?.summary?.convertCurrencies?.[selectedCurrency?.toLowerCase?.() || selectedCurrency]
   const rows = useMemo(
     () => {
-      const holderRows = Array.isArray(data?.trustlines)
-        ? data.trustlines
-        : Array.isArray(data?.mptokens)
-          ? data.mptokens.map((record) => ({
+      const holderRows = Array.isArray(previewData?.trustlines)
+        ? previewData.trustlines
+        : Array.isArray(previewData?.mptokens)
+          ? previewData.mptokens.map((record) => ({
               ...record,
               balance: Number(record.amount || 0) / mptDivisor
             }))
-          : []
+          : Array.isArray(previewData?.addresses)
+            ? previewData.addresses.map((record) => ({
+                ...record,
+                balance:
+                  Number(record.balance || 0) +
+                  (nativeEscrowMode === 'short'
+                    ? Number(record.escrowShortBalance || 0)
+                    : nativeEscrowMode === 'locked'
+                      ? Number(record.escrowLockedBalance || 0)
+                      : 0)
+              }))
+            : []
 
       return holderRows
         .filter((record) => Number(record.balance) > 0)
         .sort((a, b) => Number(b.balance) - Number(a.balance))
     },
-    [data, mptDivisor]
+    [mptDivisor, nativeEscrowMode, previewData]
   )
   const chartRows = rows.slice(0, TOKEN_HOLDERS_PREVIEW_LIMIT)
   const listRows = rows.slice(0, TOKEN_HOLDERS_PREVIEW_LIMIT)
@@ -522,9 +597,7 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
   const topShare = holderShare(topBalance, totalCoins)
   const activeHolder =
     activeHolderIndex !== null && activeHolderIndex !== undefined ? chartItems[activeHolderIndex] : null
-  const distributionUrl = token?.mptokenIssuanceID
-    ? `/distribution?mptokenIssuanceID=${encodeURIComponent(token.mptokenIssuanceID)}`
-    : `/distribution?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(token.issuer)}`
+  const distributionUrl = distributionUrlForToken(token)
   const chartOptions = useMemo(
     () => ({
       chart: {
@@ -600,19 +673,48 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
         <div>
           <h2>
             {t('previews.holdersTitle')}
-            {data?.summary?.holders !== undefined && data?.summary?.holders !== null ? (
-              <span className="ammContributorsCount">{niceNumber(data.summary.holders)}</span>
+            {previewData?.summary?.holders !== undefined || previewData?.summary?.activeAccounts !== undefined ? (
+              <span className="ammContributorsCount">
+                {niceNumber(previewData.summary.holders ?? previewData.summary.activeAccounts)}
+              </span>
             ) : null}
           </h2>
           <span>{t('previews.holdersSubtitle')}</span>
         </div>
-        {distributionUrl ? (
-          <Link href={distributionUrl} prefetch={false}>
-            {t('previews.viewAllHolders')}
-          </Link>
-        ) : null}
+        <div className="tokenHoldersHeaderActions">
+          {isNativeToken && (
+            <div
+              className={homeTeaserStyles.cardHeaderActions}
+              role="group"
+              aria-label={t('previews.balanceMode')}
+            >
+              {[
+                { value: 'none', label: t('previews.availableBalance') },
+                { value: 'short', label: t('previews.expectedEscrows') },
+                { value: 'locked', label: t('previews.lockedEscrows') }
+              ].map((mode) => (
+                <button
+                  key={mode.value}
+                  type="button"
+                  className={`${homeTeaserStyles.cardHeaderActionButton} ${
+                    nativeEscrowMode === mode.value ? homeTeaserStyles.cardHeaderActionButtonActive : ''
+                  }`.trim()}
+                  aria-pressed={nativeEscrowMode === mode.value}
+                  onClick={() => setNativeEscrowMode(mode.value)}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+          )}
+          {distributionUrl ? (
+            <Link href={distributionUrl} prefetch={false}>
+              {t('previews.viewAllHolders')}
+            </Link>
+          ) : null}
+        </div>
       </div>
-      {loading ? (
+      {previewLoading ? (
         <div className="tokenChartEmpty">
           <span className="waiting"></span>
         </div>
@@ -655,7 +757,7 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
                       </span>
                       <span>
                         <span>{t('previews.balance')}</span>
-                        <strong>{shortNiceNumber(activeHolder.balance, 2, 1)}</strong>
+                        <strong>{holderBalanceDisplay(activeHolder.balance)}</strong>
                       </span>
                     </div>
                   </div>
@@ -715,8 +817,8 @@ function TokenHoldersPreview({ token, data, loading, selectedCurrency }) {
                     />
                   </span>
                   <strong className="ammContributorShare">{share !== null ? `${share.toFixed(2)}%` : '-'}</strong>
-                  <span className="ammContributorLp" title={fullNiceNumber(record.balance)}>
-                    <span>{shortNiceNumber(record.balance, 2, 1)}</span>
+                  <span className="ammContributorLp" title={holderBalanceTitle(record.balance)}>
+                    <span>{holderBalanceDisplay(record.balance, true)}</span>
                     {tokenFiatRate ? (
                       <span className="ammContributorFiat">
                         {tokenToFiat({
@@ -755,7 +857,9 @@ function TokenAmmsPreview({ token, data, loading, selectedCurrency, fiatRate }) 
   const { t } = useTranslation('token')
   const rows = Array.isArray(data?.amms) ? data.amms.slice(0, TOKEN_AMMS_PREVIEW_LIMIT) : []
   const totalPools = token?.statistics?.ammPools ?? data?.summary?.ammPools ?? data?.summary?.total ?? data?.total
-  const ammsUrl = `/amms?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(token.issuer)}`
+  const ammsUrl = tokenIsNative(token)
+    ? `/amms?currency=${encodeURIComponent(token.currency)}`
+    : `/amms?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(token.issuer)}`
   const renderAssets = (amm) => (
     <span className="tokenTopAmmAssets">
       <AmountWithIcon amount={amm.amount} options={{ short: true, maxFractionDigits: 6 }} />
@@ -937,7 +1041,7 @@ export default function TokenPage({
     fiatRate = fiatRateApp
     selectedCurrency = selectedCurrencyApp
   }
-  const isNativeToken = !!token && !token.issuer && token.currency === nativeCurrency
+  const isNativeToken = tokenIsNative(token)
   const showTokenPreviews = tokenSupportsPreviews(token)
   const showHoldersPreview = tokenSupportsHoldersPreview(token)
   const showAmmsPreview = tokenSupportsAmmsPreview(token)
@@ -1495,9 +1599,7 @@ export default function TokenPage({
   const mptId = token?.mptokenIssuanceID
   const isMptToken = !!mptId
   const isIouToken = !!token?.issuer && !isMptToken
-  const tokenDistributionUrl = isMptToken
-    ? `/distribution?mptokenIssuanceID=${encodeURIComponent(mptId)}`
-    : `/distribution?currency=${encodeURIComponent(token.currency)}&currencyIssuer=${encodeURIComponent(token.issuer)}`
+  const tokenDistributionUrl = distributionUrlForToken(token)
   const mptMetadata = token?.metadata && typeof token.metadata === 'object' && !Array.isArray(token.metadata) ? token.metadata : {}
   const mptMetadataTicker = mptMetadataValue(mptMetadata, 'ticker', 't')
   const mptMetadataName = mptMetadataValue(mptMetadata, 'name', 'n')
@@ -2068,12 +2170,12 @@ export default function TokenPage({
     </div>
   )
 
-  const holdersLink = isNativeToken ? (
-    <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
-  ) : showHoldersPreview ? (
+  const holdersLink = showHoldersPreview ? (
     <a href="#token-holders" className="ammMetricQuietLink">
       {fullNiceNumber(token.holders)}
     </a>
+  ) : isNativeToken ? (
+    <Link href="/distribution">{fullNiceNumber(token.holders)}</Link>
   ) : (
     <Link
       href={
@@ -2694,8 +2796,7 @@ export default function TokenPage({
                 </span>
               </div>
 
-              {((!isNativeToken && !isMptToken) || isMptToken) && (
-                <div className="tokenProfileActions">
+              <div className="tokenProfileActions">
                   <div className="tokenProfilePrimaryActions">
                     {!isNativeToken && !isMptToken && (
                       <button
@@ -2745,8 +2846,7 @@ export default function TokenPage({
                       {!canDestroyMpt && <span className="tooltiptext">{tt('destroy.holdersRequired')}</span>}
                     </span>
                   )}
-                </div>
-              )}
+              </div>
 
               <div className="tokenProfileInfo">
                 {renderProfileRows(tokenInfoItems)}

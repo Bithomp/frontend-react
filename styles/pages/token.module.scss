@@ -2009,6 +2009,13 @@
     }
   }
 
+  .tokenHoldersHeaderActions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+    align-items: center;
+  }
+
   .ammContributorsBody {
     display: grid;
     grid-template-columns: minmax(170px, 260px) minmax(0, 1fr);
@@ -3940,6 +3947,16 @@
     .tokenTopAmmsCard .ammContributorsHeader > div > span {
       font-size: 11px;
       line-height: 1.22;
+    }
+
+    .tokenHoldersPreview .ammContributorsHeader {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .tokenHoldersHeaderActions {
+      justify-content: space-between;
+      width: 100%;
     }
 
     .tokenTopAmmHeader {
