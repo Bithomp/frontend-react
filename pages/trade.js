@@ -277,13 +277,15 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
   const addReceiveToken = () => {
     if (!receiveTrustlineMissing) return
     setSignRequest({
+      action: 'setTrustline',
       request: {
         TransactionType: 'TrustSet',
         LimitAmount: {
           currency: receiveAsset.currency,
           issuer: receiveAsset.issuer
         }
-      }
+      },
+      callback: () => {}
     })
   }
 
@@ -316,12 +318,28 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
               </div>
               <div>
                 <span className={styles.selectorLabel}>{t('pair.base')}</span>
-                <TokenSelector value={baseAsset} onChange={changeBaseAsset} destinationAddress={account?.address || null} senderAddress={account?.address || null} excludeLPtokens />
+                <TokenSelector
+                  value={baseAsset}
+                  onChange={changeBaseAsset}
+                  destinationAddress={account?.address || null}
+                  senderAddress={account?.address || null}
+                  excludeLPtokens
+                  modalTitle={t('pair.selectAsset')}
+                  allowAllTokens
+                />
                 {account?.address && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${baseBalance === null ? '—' : bookNumber(baseBalance, baseAmountDecimals, true)} ${tokenName(baseAsset)}`}</span>}
               </div>
               <div>
                 <span className={styles.selectorLabel}>{t('pair.quote')}</span>
-                <TokenSelector value={quoteAsset} onChange={changeQuoteAsset} destinationAddress={account?.address || null} senderAddress={account?.address || null} excludeLPtokens />
+                <TokenSelector
+                  value={quoteAsset}
+                  onChange={changeQuoteAsset}
+                  destinationAddress={account?.address || null}
+                  senderAddress={account?.address || null}
+                  excludeLPtokens
+                  modalTitle={t('pair.selectAsset')}
+                  allowAllTokens
+                />
                 {account?.address && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${quoteBalance === null ? '—' : bookNumber(quoteBalance, quoteAmountDecimals, true)} ${tokenName(quoteAsset)}`}</span>}
               </div>
             </section>

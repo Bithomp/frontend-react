@@ -871,11 +871,6 @@ const MyApp = ({ Component, pageProps }) => {
       await ledgerwalletDisconnect()
     }
 
-    const remainingWallets = normalized.wallets.filter((wallet) => wallet.id !== targetWallet.id)
-    const nextActiveWallet =
-      remainingWallets.find((wallet) => wallet.id === normalized.activeWalletId) ||
-      getMostRecentlyConnectedWallet(remainingWallets)
-
     setAccount((previousAccount) => {
       const currentAccount = normalizeAccountState(previousAccount)
       const wallets = currentAccount.wallets.filter((wallet) => wallet.id !== targetWallet.id)
@@ -907,10 +902,6 @@ const MyApp = ({ Component, pageProps }) => {
         })
         return nextSessions
       })
-    }
-
-    if (nextActiveWallet?.address && !router.pathname.startsWith('/services')) {
-      router.push('/account/' + nextActiveWallet.address)
     }
   }
 

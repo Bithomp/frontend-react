@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 import { IoCheckmark, IoChevronDown, IoSearch } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
 import axios from 'axios'
+import BigNumber from 'bignumber.js'
 import { nativeCurrency, useWidth, setTabParams } from '../../utils'
 import { CurrencyWithIcon, niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
 import RadioOptions from './RadioOptions'
@@ -85,6 +86,8 @@ const tokenKey = (token) =>
   token?.token ||
   (token?.issuer && token?.currency ? `${token.issuer}:${token.currency}` : token?.currency || '')
 
+const assetBalanceKey = (issuer, currency) => `${issuer}:${niceCurrency(currency)}`
+
 const mptDisplayName = (token) =>
   token?.metadata?.name || token?.metadata?.n || token?.metadata?.ticker || token?.metadata?.t || token?.currency || 'MPT'
 
@@ -132,7 +135,9 @@ export default function TokenSelector({
   includeMPTokens = false,
   canLock = false,
   multiple = false,
-  multipleType = 'tokens'
+  multipleType = 'tokens',
+  modalTitle = null,
+  allowAllTokens = false
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -142,13 +147,19 @@ export default function TokenSelector({
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [showAllTokens, setShowAllTokens] = useState(false)
+  const [userAssetBalances, setUserAssetBalances] = useState({})
+  const [userBalancesAddress, setUserBalancesAddress] = useState(null)
   const [searchTimeout, setSearchTimeout] = useState(null)
   const selectedTokens = multiple ? multipleValue : []
   const [tokenType, setTokenType] = useState(() =>
     mptIssuanceId(multiple ? selectedTokens[0] : value) ? 'mpts' : 'tokens'
   )
   const searchMPTokens = onlyMPTokens || (includeMPTokens && tokenType === 'mpts')
-  const searchScope = `${searchMPTokens ? 'mpts' : 'tokens'}:${canLock ? 'canLock' : 'all'}`
+  const filterByDestination = !!destinationAddress && !showAllTokens
+  const searchScope = `${searchMPTokens ? 'mpts' : 'tokens'}:${canLock ? 'canLock' : 'all'}:${
+    filterByDestination ? destinationAddress : 'all-assets'
+  }`
 
   // Cache for search results to prevent unnecessary reloads
   const [lastSearchQuery, setLastSearchQuery] = useState('')
@@ -190,7 +201,39 @@ export default function TokenSelector({
     setLastSearchQuery('')
     setCachedSearchResults([])
     setCachedSearchScope('')
+    setUserAssetBalances({})
+    setUserBalancesAddress(null)
   }, [destinationAddress])
+
+  useEffect(() => {
+    if (!isOpen || !filterByDestination || userBalancesAddress === destinationAddress) return
+
+    let ignore = false
+    axios(`v2/trustlines/${encodeURIComponent(destinationAddress)}`)
+      .then((response) => {
+        if (ignore) return
+        const trustlines = Array.isArray(response?.data)
+          ? response.data
+          : response?.data?.trustlines || response?.data?.tokens || response?.data?.lines || []
+        const balances = {}
+
+        trustlines.forEach((trustline) => {
+          const issuer = trustline?.counterparty || trustline?.issuer
+          const currency = trustline?.currency
+          const balance = new BigNumber(trustline?.balance ?? trustline?.Balance?.value ?? 0).abs()
+          if (issuer && currency && balance.isFinite()) balances[assetBalanceKey(issuer, currency)] = balance
+        })
+        setUserAssetBalances(balances)
+        setUserBalancesAddress(destinationAddress)
+      })
+      .catch(() => {
+        if (!ignore) setUserAssetBalances({})
+      })
+
+    return () => {
+      ignore = true
+    }
+  }, [destinationAddress, filterByDestination, isOpen, userBalancesAddress])
 
   useEffect(() => {
     setSearchQuery('')
@@ -233,7 +276,7 @@ export default function TokenSelector({
         try {
           let tokens = []
 
-          if (destinationAddress) {
+          if (filterByDestination) {
             tokens = await fetchAcceptedTokensForDestination(
               destinationAddress,
               '',
@@ -296,7 +339,7 @@ export default function TokenSelector({
 
       setIsLoading(true)
       try {
-        if (destinationAddress) {
+        if (filterByDestination) {
           const tokens = await fetchAcceptedTokensForDestination(
             destinationAddress,
             searchQuery,
@@ -342,7 +385,7 @@ export default function TokenSelector({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, isOpen, destinationAddress, searchMPTokens, canLock])
+  }, [searchQuery, isOpen, destinationAddress, searchMPTokens, canLock, filterByDestination])
 
   const handleSelect = (token) => {
     if (multiple) {
@@ -473,14 +516,33 @@ export default function TokenSelector({
                   <div className="token-selector-modal-container">
                     <div className="token-selector-modal-header">
                       <h3 className="token-selector-modal-title">
-                        {destinationAddress
+                        {modalTitle || (destinationAddress
                           ? t('token-selector.select-token-destination')
-                          : t(multiple ? `token-selector.select-${multipleType}` : 'token-selector.select-token')}
+                          : t(multiple ? `token-selector.select-${multipleType}` : 'token-selector.select-token'))}
                       </h3>
                       <IoMdClose className="token-selector-modal-close" onClick={closeSelector} />
                     </div>
 
-                    {includeMPTokens && !destinationAddress && (
+                    {allowAllTokens && destinationAddress && (
+                      <div className="token-selector-type-switch" role="group" aria-label={t('token-selector.scope')}>
+                        <button
+                          type="button"
+                          className={!showAllTokens ? 'active' : ''}
+                          onClick={() => setShowAllTokens(false)}
+                        >
+                          {t('token-selector.your-assets')}
+                        </button>
+                        <button
+                          type="button"
+                          className={showAllTokens ? 'active' : ''}
+                          onClick={() => setShowAllTokens(true)}
+                        >
+                          {t('token-selector.all-assets')}
+                        </button>
+                      </div>
+                    )}
+
+                    {includeMPTokens && !filterByDestination && (
                       <div className="token-selector-type-switch" role="group" aria-label={t('token-selector.search-in')}>
                         <button
                           type="button"
@@ -524,6 +586,13 @@ export default function TokenSelector({
                         <div className="token-selector-modal-items">
                           {searchResults.map((token, index) => {
                             const secondaryText = secondaryTokenText(token)
+                            const tokenBalance = filterByDestination
+                              ? token.issuer
+                                ? userAssetBalances[assetBalanceKey(token.issuer, token.currency)]
+                                : token.balance !== undefined
+                                  ? new BigNumber(token.balance).dividedBy(1_000_000)
+                                  : null
+                              : null
                             const isSelected =
                               multiple &&
                               selectedTokens.some((selectedToken) => tokenKey(selectedToken) === tokenKey(token))
@@ -541,7 +610,20 @@ export default function TokenSelector({
                                   <div className="token-selector-modal-item-name">
                                     <span>
                                       {mptIssuanceId(token) ? mptDropdownName(token) : getTokenDisplayName(token)}
-                                      {token.holders !== undefined && (
+                                      {tokenBalance?.isFinite() && (
+                                        <span
+                                          style={{
+                                            marginLeft: '8px',
+                                            fontSize: '0.85em',
+                                            color: 'var(--text-secondary)'
+                                          }}
+                                        >
+                                          {t('token-selector.balance', {
+                                            value: shortNiceNumber(tokenBalance.toFixed(), 6)
+                                          })}
+                                        </span>
+                                      )}
+                                      {!filterByDestination && token.holders !== undefined && (
                                         <span
                                           style={{
                                             marginLeft: '8px',
@@ -566,7 +648,7 @@ export default function TokenSelector({
                               </div>
                             )
                           })}
-                          {!destinationAddress && searchResults.length >= limit && (
+                          {!filterByDestination && searchResults.length >= limit && (
                             <p className="center orange">
                               {t(
                                 searchMPTokens
@@ -579,7 +661,7 @@ export default function TokenSelector({
                         </div>
                       ) : searchQuery ? (
                         <div className="token-selector-modal-empty">{t('general.no-data')}</div>
-                      ) : destinationAddress ? (
+                      ) : filterByDestination ? (
                         <div className="token-selector-modal-empty">
                           {t('token-selector.no-destination-trustlines')}
                         </div>

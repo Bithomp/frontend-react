@@ -5,7 +5,7 @@
   },
   "title": "Trade on the DEX",
   "description": "Choose a pair, compare live prices, and place a limit order with your preferred wallet.",
-  "pair": { "title": "Trading pair", "base": "You trade", "quote": "Priced in", "switch": "Switch trading pair" },
+  "pair": { "title": "Trading pair", "base": "You trade", "quote": "Priced in", "switch": "Switch trading pair", "selectAsset": "Select asset" },
   "form": {
     "buy": "Buy {{asset}}", "sell": "Sell {{asset}}", "price": "Limit price", "per": "per {{base}}", "amount": "Amount",
     "total": "Total", "orderType": "Order type", "swap": "Swap", "limit": "Limit", "review-buy": "Review buy order", "review-sell": "Review sell order", "reviewSwap": "Review swap",

@@ -9,7 +9,8 @@
     "title": "Trading pair",
     "base": "You trade",
     "quote": "Priced in",
-    "switch": "Switch trading pair"
+    "switch": "Switch trading pair",
+    "selectAsset": "Vermögenswert auswählen"
   },
   "form": {
     "buy": "Buy {{asset}}",
