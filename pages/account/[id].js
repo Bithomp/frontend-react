@@ -160,6 +160,30 @@ const checkNativeValue = (check) => {
   return Math.abs(amount * priceNativeCurrencySpot)
 }
 
+const receivedChecksNativeWorth = (checks, issuerNativeBalances, accountAddress) => {
+  const nativeChecksByIssuer = new Map()
+  let tokenChecksNativeValue = 0
+
+  checks.forEach((check) => {
+    if (typeof check?.SendMax === 'object') {
+      tokenChecksNativeValue += checkNativeValue(check)
+      return
+    }
+
+    const issuer = check?.Account
+    if (!issuer || issuer === accountAddress) return
+    nativeChecksByIssuer.set(issuer, (nativeChecksByIssuer.get(issuer) || 0) + checkNativeValue(check))
+  })
+
+  const nativeChecksValue = [...nativeChecksByIssuer].reduce((sum, [issuer, checksValue]) => {
+    const issuerBalance = issuerNativeBalances[issuer]
+    if (typeof issuerBalance !== 'number' || !Number.isFinite(issuerBalance) || issuerBalance <= 0) return sum
+    return sum + Math.min(checksValue, issuerBalance)
+  }, 0)
+
+  return tokenChecksNativeValue + nativeChecksValue
+}
+
 const bestNftBuyOfferValue = (nft, { tokenList } = {}) => {
   const validBuyOffers = Array.isArray(nft?.buyOffers) ? nft.buyOffers.filter((offer) => offer?.valid !== false) : null
   const bestBid = bestNftOffer(validBuyOffers, null, 'buy')
@@ -904,6 +928,7 @@ export default function Account({
   const [expandedIssuedToken, setExpandedIssuedToken] = useState(null)
   const [showIssuerSettingsDetails, setShowIssuerSettingsDetails] = useState(false)
   const [receivedChecks, setReceivedChecks] = useState([])
+  const [checkIssuerNativeBalances, setCheckIssuerNativeBalances] = useState({})
   const [sentChecks, setSentChecks] = useState([])
   const [receivedEscrows, setReceivedEscrows] = useState([])
   const [sentEscrows, setSentEscrows] = useState([])
@@ -1491,7 +1516,11 @@ export default function Account({
     return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
   }, 0)
   const nftsFiatValue = nftsNativeValue * (tokenFiatRate || pageFiatRate || 0)
-  const receivedChecksNativeValue = receivedChecks.reduce((sum, check) => sum + checkNativeValue(check), 0)
+  const receivedChecksNativeValue = receivedChecksNativeWorth(
+    receivedChecks,
+    checkIssuerNativeBalances,
+    data?.address
+  )
   const receivedChecksFiatValue = receivedChecksNativeValue * (tokenFiatRate || pageFiatRate || 0)
   const accountReserveWorthDrops =
     reserveIncrementDrops > 0 ? Math.max(0, nativeReservedDrops - reserveIncrementDrops) : 0
@@ -2608,6 +2637,7 @@ export default function Account({
 
   useEffect(() => {
     setExpandedIssuedToken(null)
+    setCheckIssuerNativeBalances({})
     setExpandedCheckKey(null)
     setExpandedEscrowKey(null)
     setExpandedPaychannelKey(null)
@@ -2618,6 +2648,47 @@ export default function Account({
     setShowTxSettingsDetails(false)
     setShowAccountControlDetails(false)
   }, [data?.address, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    if (effectiveLedgerTimestamp) {
+      setCheckIssuerNativeBalances({})
+      return
+    }
+
+    const issuers = [
+      ...new Set(
+        receivedChecks
+          .filter((check) => typeof check?.SendMax !== 'object' && check?.Account && check.Account !== data?.address)
+          .map((check) => check.Account)
+      )
+    ]
+
+    if (issuers.length === 0) {
+      setCheckIssuerNativeBalances({})
+      return
+    }
+
+    let ignore = false
+    setCheckIssuerNativeBalances({})
+
+    Promise.all(
+      issuers.map(async (issuer) => {
+        try {
+          const response = await axios.get(`v2/account/${encodeURIComponent(issuer)}/descendants?depth=1`)
+          const balance = Number(response?.data?.balance)
+          return [issuer, Number.isFinite(balance) && balance > 0 ? balance : 0]
+        } catch {
+          return [issuer, null]
+        }
+      })
+    ).then((balances) => {
+      if (!ignore) setCheckIssuerNativeBalances(Object.fromEntries(balances))
+    })
+
+    return () => {
+      ignore = true
+    }
+  }, [receivedChecks, data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
     if (!showChecksTabs && checksTab === 'sent' && !hasSentChecks) {
@@ -9827,6 +9898,17 @@ export default function Account({
                           absolute: true
                         })
                         const isReceivedCheck = activeChecksTab === 'received'
+                        const senderNativeBalance =
+                          isReceivedCheck && !isSendMaxTokenObject
+                            ? checkIssuerNativeBalances[check?.Account]
+                            : null
+                        const hasSenderNativeBalance =
+                          typeof senderNativeBalance === 'number' && Number.isFinite(senderNativeBalance)
+                        const isSenderBalanceInsufficient =
+                          hasSenderNativeBalance && senderNativeBalance < sendMaxDisplayValue
+                        const senderNativeBalanceText = hasSenderNativeBalance
+                          ? fullNiceNumber(senderNativeBalance)
+                          : null
                         const collapsedSendMaxText = isReceivedCheck
                           ? `+${shortNiceNumber(sendMaxDisplayValue)}`
                           : sendMaxAmountOnly
@@ -9884,6 +9966,10 @@ export default function Account({
                                 </div>
                                 {isExpired ? (
                                   <div className="asset-fiat red">{ta('tabs.expired')}</div>
+                                ) : isSenderBalanceInsufficient ? (
+                                  <div className="asset-fiat orange">
+                                    {ta('worth.sender-balance')}: {senderNativeBalanceText} {nativeCurrency}
+                                  </div>
                                 ) : sendMaxFiatText ? (
                                   <div className="asset-fiat" suppressHydrationWarning>
                                     {sendMaxFiatText}
@@ -9930,6 +10016,17 @@ export default function Account({
                                     )}
                                   </span>
                                 </div>
+                                {isSenderBalanceInsufficient && (
+                                  <div className="detail-row">
+                                    <span>{ta('worth.sender-balance')}:</span>
+                                    <span className="amount-with-fiat">
+                                      <span className="orange no-brake">
+                                        {senderNativeBalanceText} {nativeCurrency}
+                                      </span>
+                                      <span className="fiat-line orange">{ta('worth.check-insufficient-balance')}</span>
+                                    </span>
+                                  </div>
+                                )}
                                 <div className="detail-row">
                                   <span>{ta('tabs.sent')}:</span>
                                   <span>{sentAtText}</span>

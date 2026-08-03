@@ -512,7 +512,9 @@
       "account-reserve": "Cadangan yang dapat dipulihkan",
       "lp-tokens-count": "Token LP ({{count}})",
       "tokens-count": "Token ({{count}})",
-      "received-checks-count": "Check diterima ({{count}})"
+      "received-checks-count": "Check diterima ({{count}})",
+      "sender-balance": "Saldo pengirim",
+      "check-insufficient-balance": "Check penuh saat ini tidak dapat ditebus"
     },
     "empty": {
       "no-signer-addresses": "Tidak ada alamat ditemukan tempat akun ini menjadi penanda tangan.",

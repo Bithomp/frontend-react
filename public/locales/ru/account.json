@@ -514,7 +514,9 @@
       "account-reserve": "Возвращаемый резерв",
       "lp-tokens-count": "LP-токены ({{count}})",
       "tokens-count": "Токены ({{count}})",
-      "received-checks-count": "Полученные чеки ({{count}})"
+      "received-checks-count": "Полученные чеки ({{count}})",
+      "sender-balance": "Баланс отправителя",
+      "check-insufficient-balance": "Сейчас чек нельзя получить полностью"
     },
     "empty": {
       "no-signer-addresses": "Не найдено адресов, где этот аккаунт является подписантом.",

@@ -512,7 +512,9 @@
       "account-reserve": "回収可能なリザーブ",
       "lp-tokens-count": "LPトークン（{{count}}）",
       "tokens-count": "トークン（{{count}}）",
-      "received-checks-count": "受信Check（{{count}}）"
+      "received-checks-count": "受信Check（{{count}}）",
+      "sender-balance": "送信者の残高",
+      "check-insufficient-balance": "現在、Checkの全額を換金できません"
     },
     "empty": {
       "no-signer-addresses": "このアカウントが署名者になっているアドレスは見つかりません。",

@@ -512,7 +512,9 @@
       "account-reserve": "Réserve récupérable",
       "lp-tokens-count": "Tokens LP ({{count}})",
       "tokens-count": "Tokens ({{count}})",
-      "received-checks-count": "Checks reçus ({{count}})"
+      "received-checks-count": "Checks reçus ({{count}})",
+      "sender-balance": "Solde de l’émetteur",
+      "check-insufficient-balance": "Le check ne peut pas être encaissé en totalité actuellement"
     },
     "empty": {
       "no-signer-addresses": "Aucune adresse trouvée où ce compte est signataire.",

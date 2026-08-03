@@ -512,7 +512,9 @@
       "account-reserve": "Reserva recuperable",
       "lp-tokens-count": "Tokens LP ({{count}})",
       "tokens-count": "Tokens ({{count}})",
-      "received-checks-count": "Cheques recibidos ({{count}})"
+      "received-checks-count": "Cheques recibidos ({{count}})",
+      "sender-balance": "Saldo del remitente",
+      "check-insufficient-balance": "Actualmente no se puede canjear el cheque completo"
     },
     "empty": {
       "no-signer-addresses": "No se encontraron direcciones donde esta cuenta sea firmante.",

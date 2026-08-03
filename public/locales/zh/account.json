@@ -512,7 +512,9 @@
       "account-reserve": "可回收储备",
       "lp-tokens-count": "LP 代币（{{count}}）",
       "tokens-count": "代币（{{count}}）",
-      "received-checks-count": "收到的 Check（{{count}}）"
+      "received-checks-count": "收到的 Check（{{count}}）",
+      "sender-balance": "发送方余额",
+      "check-insufficient-balance": "目前无法兑现全部 Check 金额"
     },
     "empty": {
       "no-signer-addresses": "未找到此账户作为签名者的地址。",

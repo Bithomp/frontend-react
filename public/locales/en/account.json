@@ -507,7 +507,9 @@
       "account-reserve": "Recoverable reserve",
       "lp-tokens-count": "LP tokens ({{count}})",
       "tokens-count": "Tokens ({{count}})",
-      "received-checks-count": "Received checks ({{count}})"
+      "received-checks-count": "Received checks ({{count}})",
+      "sender-balance": "Sender balance",
+      "check-insufficient-balance": "The full check cannot currently be redeemed"
     },
     "empty": {
       "no-signer-addresses": "No addresses found where this account is a signer.",

@@ -512,7 +512,9 @@
       "account-reserve": "Rückholbare Reserve",
       "lp-tokens-count": "LP-Tokens ({{count}})",
       "tokens-count": "Tokens ({{count}})",
-      "received-checks-count": "Empfangene Checks ({{count}})"
+      "received-checks-count": "Empfangene Checks ({{count}})",
+      "sender-balance": "Guthaben des Absenders",
+      "check-insufficient-balance": "Der vollständige Check kann derzeit nicht eingelöst werden"
     },
     "empty": {
       "no-signer-addresses": "Keine Adressen gefunden, bei denen dieses Konto Signer ist.",

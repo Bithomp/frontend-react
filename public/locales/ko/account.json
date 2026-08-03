@@ -512,7 +512,9 @@
       "account-reserve": "회수 가능한 준비금",
       "lp-tokens-count": "LP 토큰 ({{count}})",
       "tokens-count": "토큰 ({{count}})",
-      "received-checks-count": "받은 Check ({{count}})"
+      "received-checks-count": "받은 Check ({{count}})",
+      "sender-balance": "송신자 잔액",
+      "check-insufficient-balance": "현재 Check 전액을 상환할 수 없습니다"
     },
     "empty": {
       "no-signer-addresses": "이 계정이 서명자인 주소를 찾을 수 없습니다.",
