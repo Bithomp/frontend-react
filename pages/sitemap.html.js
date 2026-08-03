@@ -37,6 +37,7 @@ export default function HumanSitemap() {
         { href: '/', label: t('home.h1', { homeExplorerName: xahauNetwork ? 'Xahau Explorer' : 'XRP Explorer' }) },
         { href: '/explorer', label: t('menu.search-accounts-transactions', { nativeCurrency }) },
         { href: '/tokens', label: t('menu.tokens') },
+        { href: '/trade', label: t('menu.trade') },
         { href: '/distribution', label: t('menu.network.distribution', { currency: nativeCurrency }) },
         ...(!xahauNetwork ? [{ href: '/amms', label: t('menu.amm.pools') }] : []),
         { href: '/nft-explorer', label: t('nft-explorer.header') },

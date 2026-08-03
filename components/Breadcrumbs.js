@@ -30,6 +30,7 @@ const LABELS = {
   services: 'Services',
   token: 'Token',
   tokens: 'Tokens',
+  trade: 'Trade',
   tx: 'Transaction',
   validator: 'Validator',
   validators: 'Validators'
@@ -51,6 +52,7 @@ const TRANSLATION_KEYS = {
   'nft-offers': 'explorer.header.nft-offers',
   services: 'menu.services.services',
   tokens: 'menu.tokens',
+  trade: 'menu.trade',
   tx: 'explorer.header.transaction',
   validators: 'menu.network.validators'
 }
@@ -123,6 +125,7 @@ const ROUTE_TRANSLATIONS = {
   '/services/toml-checker': 'menu.services.toml-checker',
   '/terms-and-conditions': 'menu.terms-and-conditions',
   '/tokens': 'menu.tokens',
+  '/trade': 'menu.trade',
   '/transaction': 'explorer.header.transaction',
   '/tx': 'explorer.header.transaction',
   '/unl-report': 'menu.network.unl-report',

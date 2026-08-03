@@ -786,6 +786,18 @@ const WssServer = () => {
 }
 export const wssServer = WssServer()
 
+const ledgerWebsocketServers = {
+  mainnet: 'wss://xrplcluster.com/',
+  staging: 'wss://xrplcluster.com/',
+  testnet: 'wss://s.altnet.rippletest.net:51233/',
+  devnet: 'wss://s.devnet.rippletest.net:51233/',
+  xahau: 'wss://xahau.network/',
+  'xahau-testnet': 'wss://xahau-test.net/'
+}
+
+// Public ledger endpoints are used only for read-only requests such as the DEX order book.
+export const ledgerWebsocketServer = ledgerWebsocketServers[network] || ''
+
 export const networkMinimumDate = (type = 'ledger') => {
   let minDate = null
 
