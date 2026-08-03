@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import Link from 'next/link'
 import BigNumber from 'bignumber.js'
 
+import { HomeTeaserRefreshButton } from '../Home/HomeTeaser'
 import { tradePairAmounts } from './useTradeHistory'
 
 const ROW_LIMIT = 8
@@ -11,7 +12,7 @@ const formatNumber = (value, decimals) => {
   return number.toFormat(decimals, BigNumber.ROUND_DOWN)
 }
 
-export default function RecentTrades({ swaps, loading, error, account, baseAsset, quoteAsset, baseName, quoteName, baseDecimals, quoteDecimals, priceDecimals, labels, className }) {
+export default function RecentTrades({ swaps, loading, error, onRefresh, account, baseAsset, quoteAsset, baseName, quoteName, baseDecimals, quoteDecimals, priceDecimals, labels, className, headerClassName }) {
   const trades = useMemo(() => swaps.map((swap) => {
     const { base, quote } = tradePairAmounts(swap, baseAsset, quoteAsset)
     const baseAmount = new BigNumber(base?.value || 0)
@@ -30,8 +31,11 @@ export default function RecentTrades({ swaps, loading, error, account, baseAsset
 
   return (
     <section className={className}>
-      <h2>{labels.title} <span>{trades.length}</span></h2>
-      {loading ? <p>{labels.loading}</p> : error ? <p>{labels.error}</p> : !trades.length ? <p>{labels.empty}</p> : (
+      <div className={headerClassName}>
+        <h2>{labels.title} <span>{trades.length}</span></h2>
+        <HomeTeaserRefreshButton onRefresh={onRefresh} isRefreshing={loading} />
+      </div>
+      {loading && !trades.length ? <p>{labels.loading}</p> : error && !trades.length ? <p>{labels.error}</p> : !trades.length ? <p>{labels.empty}</p> : (
         <div role="table" aria-label={labels.title}>
           <div role="row">
             <span>{labels.time}</span><span>{labels.price}</span><span>{labels.amount}</span><span>{labels.total}</span><span>{labels.transaction}</span>

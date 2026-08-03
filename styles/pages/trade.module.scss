@@ -126,6 +126,8 @@
 .ammStats strong { overflow: hidden; font-size: 12px; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
 .userOrders h2,
 .recentTrades h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 18px; }
+.recentTradesHeader { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.recentTradesHeader h2 { margin-bottom: 0; }
 .userOrders h2 span,
 .recentTrades h2 span { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding-inline: 6px; border-radius: 999px; background: var(--background-secondary); color: var(--text-secondary); font-size: 12px; }
 .userOrders > p,

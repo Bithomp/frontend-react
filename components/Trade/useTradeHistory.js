@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
 
@@ -90,18 +90,26 @@ export const candleData = (swaps, baseAsset, quoteAsset, candleSeconds) => {
 }
 
 export default function useTradeHistory(baseAsset, quoteAsset) {
-  const [state, setState] = useState({ swaps: [], loading: false, error: false })
+  const pairKey = `${tokenPath(baseAsset)}:${tokenPath(quoteAsset)}`
+  const [state, setState] = useState({ pairKey: '', swaps: [], loading: false, error: false })
+  const [requestVersion, setRequestVersion] = useState(0)
+  const refresh = useCallback(() => setRequestVersion((version) => version + 1), [])
 
   useEffect(() => {
     if (!baseAsset?.currency || !quoteAsset?.currency) {
-      setState({ swaps: [], loading: false, error: false })
+      setState({ pairKey: '', swaps: [], loading: false, error: false })
       return
     }
 
     let cancelled = false
     const historyAsset = baseAsset.issuer ? baseAsset : quoteAsset.issuer ? quoteAsset : baseAsset
     const load = async () => {
-      setState({ swaps: [], loading: true, error: false })
+      setState((current) => ({
+        pairKey,
+        swaps: current.pairKey === pairKey ? current.swaps : [],
+        loading: true,
+        error: false
+      }))
       try {
         const swaps = []
         let marker = ''
@@ -113,9 +121,9 @@ export default function useTradeHistory(baseAsset, quoteAsset) {
           marker = response.data?.marker || ''
           if (!marker) break
         }
-        if (!cancelled) setState({ swaps, loading: false, error: false })
+        if (!cancelled) setState({ pairKey, swaps, loading: false, error: false })
       } catch {
-        if (!cancelled) setState({ swaps: [], loading: false, error: true })
+        if (!cancelled) setState((current) => ({ pairKey, swaps: current.swaps, loading: false, error: true }))
       }
     }
 
@@ -123,7 +131,7 @@ export default function useTradeHistory(baseAsset, quoteAsset) {
     return () => {
       cancelled = true
     }
-  }, [baseAsset, quoteAsset])
+  }, [baseAsset, quoteAsset, pairKey, requestVersion])
 
-  return state
+  return { swaps: state.swaps, loading: state.loading, error: state.error, refresh }
 }

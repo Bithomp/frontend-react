@@ -54,7 +54,7 @@ export default function UserOrders({ account, baseAsset, quoteAsset, baseName, q
 
   return (
     <section className={className}>
-      <h2>{labels.title} <span>{pairOffers.length}</span></h2>
+      <h2>{labels.title} {pairOffers.length > 0 ? <span>{pairOffers.length}</span> : null}</h2>
       {!account?.address ? <p>{labels.signIn}</p> : state.loading ? <p>{labels.loading}</p> : !pairOffers.length ? <p>{labels.empty}</p> : <div role="table" aria-label={labels.title}>
         <div role="row">
           <span>{labels.side}</span><span>{labels.amount}</span><span>{labels.price}</span><span>{labels.action}</span>

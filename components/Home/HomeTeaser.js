@@ -41,9 +41,6 @@ export default function HomeTeaser({
   className = ''
 }) {
   const { t } = useTranslation()
-  const refreshTitle = isRefreshHidden
-    ? t('home.teaser.refresh-in', { count: refreshCooldownSeconds })
-    : t('home.teaser.refresh')
 
   return (
     <div className={`${styles.teaser} ${className}`.trim()}>
@@ -58,25 +55,12 @@ export default function HomeTeaser({
         <div className={styles.cardHeaderControls}>
           {headerActions ? <div className={styles.cardHeaderActions}>{headerActions}</div> : null}
           {onRefresh ? (
-            <span
-              className={`${styles.cardRefreshControl} ${isRefreshHidden ? 'tooltip' : ''}`.trim()}
-              tabIndex={isRefreshHidden ? 0 : undefined}
-            >
-              <button
-                type="button"
-                className={`${styles.cardRefreshButton} ${isRefreshHidden ? styles.cardRefreshButtonHidden : ''}`.trim()}
-                onClick={isRefreshHidden ? undefined : onRefresh}
-                aria-label={refreshTitle}
-                aria-disabled={isRefreshing || isRefreshHidden}
-                title={isRefreshHidden ? undefined : refreshTitle}
-                disabled={isRefreshing && !isRefreshHidden}
-              >
-                <FaArrowsRotate
-                  className={`${styles.cardRefreshIcon} ${isRefreshing ? styles.cardRefreshIconSpinning : ''}`.trim()}
-                />
-              </button>
-              {isRefreshHidden ? <span className={`tooltiptext below left no-brake ${styles.cardRefreshTooltip}`}>{refreshTitle}</span> : null}
-            </span>
+            <HomeTeaserRefreshButton
+              onRefresh={onRefresh}
+              isRefreshing={isRefreshing}
+              isRefreshHidden={isRefreshHidden}
+              refreshCooldownSeconds={refreshCooldownSeconds}
+            />
           ) : null}
           {href ? (
             <Link href={href} className={styles.cardHeaderLink} prefetch={false}>
@@ -100,6 +84,40 @@ export default function HomeTeaser({
         <div className={styles.content}>{children}</div>
       )}
     </div>
+  )
+}
+
+export function HomeTeaserRefreshButton({
+  onRefresh,
+  isRefreshing = false,
+  isRefreshHidden = false,
+  refreshCooldownSeconds = 0
+}) {
+  const { t } = useTranslation()
+  const refreshTitle = isRefreshHidden
+    ? t('home.teaser.refresh-in', { count: refreshCooldownSeconds })
+    : t('home.teaser.refresh')
+
+  return (
+    <span
+      className={`${styles.cardRefreshControl} ${isRefreshHidden ? 'tooltip' : ''}`.trim()}
+      tabIndex={isRefreshHidden ? 0 : undefined}
+    >
+      <button
+        type="button"
+        className={`${styles.cardRefreshButton} ${isRefreshHidden ? styles.cardRefreshButtonHidden : ''}`.trim()}
+        onClick={isRefreshHidden ? undefined : onRefresh}
+        aria-label={refreshTitle}
+        aria-disabled={isRefreshing || isRefreshHidden}
+        title={isRefreshHidden ? undefined : refreshTitle}
+        disabled={isRefreshing && !isRefreshHidden}
+      >
+        <FaArrowsRotate
+          className={`${styles.cardRefreshIcon} ${isRefreshing ? styles.cardRefreshIconSpinning : ''}`.trim()}
+        />
+      </button>
+      {isRefreshHidden ? <span className={`tooltiptext below left no-brake ${styles.cardRefreshTooltip}`}>{refreshTitle}</span> : null}
+    </span>
   )
 }
 

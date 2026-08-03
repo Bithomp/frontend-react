@@ -433,6 +433,7 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
               swaps={tradeHistory.swaps}
               loading={tradeHistory.loading}
               error={tradeHistory.error}
+              onRefresh={tradeHistory.refresh}
               account={account}
               baseAsset={baseAsset}
               quoteAsset={quoteAsset}
@@ -442,6 +443,7 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
               quoteDecimals={quoteAmountDecimals}
               priceDecimals={priceDecimals}
               className={styles.recentTrades}
+              headerClassName={styles.recentTradesHeader}
               labels={{
                 title: t('trades.title', { defaultValue: 'Recent trades' }),
                 loading: t('trades.loading', { defaultValue: 'Loading recent trades…' }),
