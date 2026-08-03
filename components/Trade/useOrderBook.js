@@ -14,6 +14,21 @@ const amountValue = (amount) => {
   return new BigNumber(amount.value)
 }
 
+const amountAsset = (amount) => typeof amount === 'string'
+  ? { currency: nativeCurrency }
+  : { currency: amount?.currency, issuer: amount?.issuer }
+
+const normalizeAmm = (amm, baseAsset) => {
+  if (!amm?.amount || !amm?.amount2 || amm.asset_frozen || amm.asset2_frozen) return null
+  const amountIsBase = sameAsset(amountAsset(amm.amount), baseAsset)
+  const base = amountIsBase ? amm.amount : amm.amount2
+  const quote = amountIsBase ? amm.amount2 : amm.amount
+  const baseValue = amountValue(base)
+  const quoteValue = amountValue(quote)
+  if (!baseValue?.gt(0) || !quoteValue?.gt(0)) return null
+  return { account: amm.account, base: baseValue, quote: quoteValue, tradingFee: Number(amm.trading_fee || 0) }
+}
+
 const normalizeOffers = (offers, side) =>
   (offers || [])
     .map((offer) => {
@@ -37,15 +52,15 @@ const sameAsset = (left, right) =>
   left?.currency === right?.currency && (left?.issuer || '') === (right?.issuer || '')
 
 export default function useOrderBook(baseAsset, quoteAsset) {
-  const [state, setState] = useState({ bids: [], asks: [], status: 'idle', error: '' })
+  const [state, setState] = useState({ bids: [], asks: [], amm: null, status: 'idle', error: '' })
 
   useEffect(() => {
     if (!baseAsset?.currency || !quoteAsset?.currency || sameAsset(baseAsset, quoteAsset)) {
-      setState({ bids: [], asks: [], status: 'idle', error: '' })
+      setState({ bids: [], asks: [], amm: null, status: 'idle', error: '' })
       return
     }
     if (!ledgerWebsocketServer) {
-      setState({ bids: [], asks: [], status: 'error', error: 'unsupported-network' })
+      setState({ bids: [], asks: [], amm: null, status: 'error', error: 'unsupported-network' })
       return
     }
 
@@ -69,6 +84,9 @@ export default function useOrderBook(baseAsset, quoteAsset) {
         responses.set(id, side)
         socket.send(JSON.stringify({ id, command: 'book_offers', ledger_index: 'validated', limit: REQUEST_LIMIT, ...book }))
       })
+      const ammId = `trade-${++requestId}-amm`
+      responses.set(ammId, 'amm')
+      socket.send(JSON.stringify({ id: ammId, command: 'amm_info', ledger_index: 'validated', asset: requestAsset(baseAsset), asset2: requestAsset(quoteAsset) }))
     }
 
     const connect = () => {
@@ -89,6 +107,10 @@ export default function useOrderBook(baseAsset, quoteAsset) {
         const side = responses.get(String(message.id))
         if (!side) return
         responses.delete(String(message.id))
+        if (side === 'amm') {
+          setState((previous) => ({ ...previous, amm: message.status === 'error' || message.error ? null : normalizeAmm(message.result?.amm, baseAsset), status: responses.size ? 'loading' : 'ready' }))
+          return
+        }
         if (message.status === 'error' || message.error) {
           setState((previous) => ({ ...previous, status: 'error', error: message.error_message || message.error }))
           return

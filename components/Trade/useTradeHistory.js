@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
 
@@ -8,7 +8,7 @@ const PAGE_LIMIT = 100
 const MAX_PAGES = 5
 const CHART_PERIOD_SECONDS = 24 * 60 * 60
 
-const sameAsset = (amount, asset) =>
+export const sameTradeAsset = (amount, asset) =>
   amount?.currency === asset?.currency && (amount?.issuer || '') === (asset?.issuer || '')
 
 const tokenPath = (asset) =>
@@ -16,19 +16,23 @@ const tokenPath = (asset) =>
     ? `${encodeURIComponent(asset.issuer)}/${encodeURIComponent(asset.currency)}`
     : encodeURIComponent(nativeCurrency)
 
-const candleData = (swaps, baseAsset, quoteAsset, candleSeconds) => {
+export const tradePairAmounts = (swap, baseAsset, quoteAsset) => ({
+  base: sameTradeAsset(swap.amount1, baseAsset)
+    ? swap.amount1
+    : sameTradeAsset(swap.amount2, baseAsset)
+      ? swap.amount2
+      : null,
+  quote: sameTradeAsset(swap.amount1, quoteAsset)
+    ? swap.amount1
+    : sameTradeAsset(swap.amount2, quoteAsset)
+      ? swap.amount2
+      : null
+})
+
+export const candleData = (swaps, baseAsset, quoteAsset, candleSeconds) => {
   const trades = swaps
     .map((swap) => {
-      const base = sameAsset(swap.amount1, baseAsset)
-        ? swap.amount1
-        : sameAsset(swap.amount2, baseAsset)
-          ? swap.amount2
-          : null
-      const quote = sameAsset(swap.amount1, quoteAsset)
-        ? swap.amount1
-        : sameAsset(swap.amount2, quoteAsset)
-          ? swap.amount2
-          : null
+      const { base, quote } = tradePairAmounts(swap, baseAsset, quoteAsset)
       const baseValue = new BigNumber(base?.value || 0)
       const quoteValue = new BigNumber(quote?.value || 0)
       const timestamp = Number(swap.timestamp)
@@ -85,12 +89,8 @@ const candleData = (swaps, baseAsset, quoteAsset, candleSeconds) => {
   return series
 }
 
-export default function useTradeHistory(baseAsset, quoteAsset, candleSeconds) {
+export default function useTradeHistory(baseAsset, quoteAsset) {
   const [state, setState] = useState({ swaps: [], loading: false, error: false })
-  const candles = useMemo(
-    () => candleData(state.swaps, baseAsset, quoteAsset, candleSeconds),
-    [state.swaps, baseAsset, quoteAsset, candleSeconds]
-  )
 
   useEffect(() => {
     if (!baseAsset?.currency || !quoteAsset?.currency) {
@@ -125,5 +125,5 @@ export default function useTradeHistory(baseAsset, quoteAsset, candleSeconds) {
     }
   }, [baseAsset, quoteAsset])
 
-  return { candles, loading: state.loading, error: state.error }
+  return state
 }

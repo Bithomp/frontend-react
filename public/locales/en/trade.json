@@ -8,10 +8,11 @@
   "pair": { "title": "Trading pair", "base": "You trade", "quote": "Priced in", "switch": "Switch trading pair" },
   "form": {
     "buy": "Buy {{asset}}", "sell": "Sell {{asset}}", "price": "Limit price", "per": "per {{base}}", "amount": "Amount",
-    "total": "Total", "orderType": "Order type", "market": "Market", "limit": "Limit", "review-buy": "Review buy order", "review-sell": "Review sell order",
+    "total": "Total", "orderType": "Order type", "swap": "Swap", "limit": "Limit", "review-buy": "Review buy order", "review-sell": "Review sell order", "reviewSwap": "Review swap",
     "selectPair": "Select both assets to start trading.", "sameAsset": "Choose two different assets.",
-    "insufficientLiquidity": "Not enough visible liquidity to fill this market order.", "marketCushion": "Estimated total · includes 2% price protection.",
-    "walletHint": "You will review and sign the order in your wallet. Bithomp never has access to your keys."
+    "insufficientLiquidity": "Not enough visible liquidity for this swap.", "insufficientBalance": "Insufficient available balance.", "swapProtection": "Estimated result · protected against more than 2% slippage.", "ammEstimate": "Estimated using AMM liquidity.",
+    "available": "Available", "balance": "Balance", "balanceLoading": "Loading balance…", "max": "Max", "youPay": "You pay", "youReceive": "You receive", "minimumReceived": "Minimum received", "signInToSwap": "Sign in to swap",
+    "walletHint": "You will review and sign the transaction in your wallet. Bithomp never has access to your keys."
   },
   "book": {
     "title": "Order book", "price": "Price ({{quote}})", "amount": "Amount ({{base}})", "total": "Total", "cumulative": "Total ({{quote}})", "cumulativeAmountHint": "Cumulative base amount through this price level", "cumulativeHint": "Cumulative quote amount through this price level", "levelAmount": "This level", "levelTotal": "This level", "spread": "Spread",
@@ -28,5 +29,16 @@
     "loading": "Loading trades…",
     "empty": "No recent trades for this pair",
     "error": "Price history is temporarily unavailable"
+  },
+  "orders": {
+    "title": "Your open orders", "side": "Side", "amount": "Amount", "price": "Price", "action": "Action",
+    "buy": "Buy", "sell": "Sell", "cancel": "Cancel", "signIn": "Sign in to view your open orders.", "loading": "Loading your open orders…", "empty": "You have no open orders for this pair."
+  },
+  "trades": {
+    "title": "Recent trades", "loading": "Loading recent trades…", "empty": "No recent trades for this pair.", "error": "Recent trades are temporarily unavailable.",
+    "time": "Time", "price": "Price", "amount": "Amount", "total": "Total", "transaction": "Transaction", "yours": "Yours"
+  },
+  "amm": {
+    "title": "AMM liquidity", "available": "Available for this pair", "unavailable": "No AMM pool for this pair", "fee": "Trading fee", "routingNote": "A swap can use this pool even when the order book has no matching offers."
   }
 }

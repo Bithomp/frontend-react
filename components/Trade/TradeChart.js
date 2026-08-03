@@ -1,17 +1,21 @@
 import dynamic from 'next/dynamic'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useTheme } from '../Layout/ThemeContext'
-import useTradeHistory from './useTradeHistory'
+import { candleData } from './useTradeHistory'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 const CANDLE_INTERVALS = { '5m': 5 * 60, '15m': 15 * 60, '1h': 60 * 60 }
 
-export default function TradeChart({ baseAsset, quoteAsset, baseName, quoteName, labels, className, headerClassName, controlsClassName, periodClassName, activePeriodClassName }) {
+export default function TradeChart({ baseAsset, quoteAsset, baseName, quoteName, history, labels, className, headerClassName, controlsClassName, periodClassName, activePeriodClassName }) {
   const { theme } = useTheme()
   const [interval, setInterval] = useState('5m')
   const [chartType, setChartType] = useState('candlestick')
-  const { candles, loading, error } = useTradeHistory(baseAsset, quoteAsset, CANDLE_INTERVALS[interval])
+  const { swaps, loading, error } = history
+  const candles = useMemo(
+    () => candleData(swaps, baseAsset, quoteAsset, CANDLE_INTERVALS[interval]),
+    [swaps, baseAsset, quoteAsset, interval]
+  )
   const isDark = theme === 'dark'
   const categoricalAxis = interval !== '5m' && candles.length > 0
   const chartCandles = categoricalAxis
