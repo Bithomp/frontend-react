@@ -884,15 +884,7 @@ export default function Header({
                                 ? ' wallet-switch-active'
                                 : '')
                             }
-                            onClick={
-                              isActiveWallet
-                                ? router.asPath.startsWith('/account/' + walletItem.address)
-                                  ? undefined
-                                  : router.pathname.startsWith('/services')
-                                    ? undefined
-                                    : () => router.push('/account/' + walletItem.address)
-                                : () => setActiveWallet(walletItem.id)
-                            }
+                            onClick={() => setActiveWallet(walletItem.id)}
                           >
                             <img
                               alt="avatar"

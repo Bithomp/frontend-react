@@ -850,9 +850,7 @@ const MyApp = ({ Component, pageProps }) => {
       }
     })
 
-    if (!router.pathname.startsWith('/services')) {
-      router.push('/account/' + activeWallet.address)
-    }
+    router.push('/account/' + activeWallet.address)
   }
 
   const signOut = async (walletId) => {

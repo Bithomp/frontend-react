@@ -111,15 +111,6 @@ export default function MobileMenu({
   const handleWalletSwitch = (walletItem) => {
     if (!walletItem?.id) return
 
-    const isActiveWallet = walletItem.id === activeWalletId
-    if (isActiveWallet) {
-      if (!router.asPath.startsWith('/account/' + walletItem.address) && !router.pathname.startsWith('/services')) {
-        router.push('/account/' + walletItem.address)
-        mobileMenuToggle()
-      }
-      return
-    }
-
     setActiveWallet?.(walletItem.id)
     mobileMenuToggle()
   }

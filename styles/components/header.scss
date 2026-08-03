@@ -248,7 +248,7 @@ header {
           }
 
           &.wallet-switch-active {
-            cursor: default;
+            cursor: pointer;
             color: var(--text-contrast);
 
             &:hover {
