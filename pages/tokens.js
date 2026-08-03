@@ -390,6 +390,9 @@ export default function Tokens({
         setLoading(false) //keep here for fast tab clickers
         if (newdata.tokens) {
           let list = newdata.tokens
+          if (selectedTokenIds.length && canEscrow) {
+            list = list.filter((token) => token?.canLock === true)
+          }
           if (list.length > 0) {
             setErrorMessage('')
             setMarker(newdata.marker || null)
