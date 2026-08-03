@@ -235,6 +235,7 @@
     "signin": "登录",
     "signout": "退出",
     "choose-app": "选择签名应用程序",
+    "legal-consent": "连接钱包或登录即表示您同意<termsLink>条款和条件</termsLink>、<privacyLink>隐私政策</privacyLink>和<disclaimerLink>免责声明</disclaimerLink>。",
     "open-app-to-sign": "打开 {{appName}} 进行签名",
     "sign-in-with-another-wallet": "使用其他钱包登录",
     "login-with": "使用 {{appName}} 登录",

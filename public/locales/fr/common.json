@@ -235,6 +235,7 @@
     "signin": "Se connecter",
     "signout": "Se déconnecter",
     "choose-app": "Choisir une app de signature",
+    "legal-consent": "En connectant un portefeuille ou en vous connectant, vous acceptez les <termsLink>Conditions générales</termsLink>, la <privacyLink>Politique de confidentialité</privacyLink> et la <disclaimerLink>Clause de non-responsabilité</disclaimerLink>.",
     "open-app-to-sign": "Ouvrir {{appName}} pour signer",
     "sign-in-with-another-wallet": "Se connecter avec un autre portefeuille",
     "login-with": "Connexion avec {{appName}}",

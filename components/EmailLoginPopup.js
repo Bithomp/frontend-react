@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useTheme } from './Layout/ThemeContext'
 import Link from 'next/link'
@@ -20,7 +20,6 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [step, setStep] = useState(0)
-  const [termsAccepted, setTermsAccepted] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
   const checkApi = async () => {
@@ -45,7 +44,6 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
       setEmail('')
       setPassword('')
       setToken('')
-      setTermsAccepted(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
@@ -267,13 +265,16 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
                 <CheckBox checked={rememberMe} setChecked={setRememberMe}>
                   {t('email-login.remember-me')}
                 </CheckBox>
-                <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
-                  {t('email-login.agree-with')}{' '}
-                  <Link href="/terms-and-conditions" onClick={handleClose}>
-                    {t('menu.terms-and-conditions')}
-                  </Link>
-                  {t('email-login.period')}
-                </CheckBox>
+                <p className="email-login-legal-consent">
+                  <Trans
+                    i18nKey="signin.legal-consent"
+                    components={{
+                      termsLink: <Link href="/terms-and-conditions" target="_blank" />,
+                      privacyLink: <Link href="/privacy-policy" target="_blank" />,
+                      disclaimerLink: <Link href="/disclaimer" target="_blank" />
+                    }}
+                  />
+                </p>
               </div>
             </>
           )}
@@ -299,7 +300,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
             <button
               className="button-action email-login-submit-button"
               onClick={onLogin}
-              disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
+              disabled={!token || !email || !isEmailValid(email)}
             >
               {t('email-login.submit')}
             </button>

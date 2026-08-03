@@ -235,6 +235,7 @@
     "signin": "Conectar",
     "signout": "Desconectar",
     "choose-app": "Elige una app para conectarte.",
+    "legal-consent": "Al conectar una cartera o iniciar sesión, aceptas los <termsLink>Términos y condiciones</termsLink>, la <privacyLink>Política de privacidad</privacyLink> y el <disclaimerLink>Aviso legal</disclaimerLink>.",
     "open-app-to-sign": "Abrir {{appName}} para firmar",
     "sign-in-with-another-wallet": "Iniciar sesión con otra billetera",
     "login-with": "Conectarse con {{appName}}",

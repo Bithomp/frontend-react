@@ -235,6 +235,7 @@
     "signin": "Sign in",
     "signout": "Sign out",
     "choose-app": "Choose a signing app",
+    "legal-consent": "By connecting a wallet or signing in, you agree to the <termsLink>Terms and conditions</termsLink>, <privacyLink>Privacy policy</privacyLink>, and <disclaimerLink>Disclaimer</disclaimerLink>.",
     "open-app-to-sign": "Open {{appName}} app to sign",
     "sign-in-with-another-wallet": "Sign in with another wallet",
     "login-with": "Login with {{appName}}",

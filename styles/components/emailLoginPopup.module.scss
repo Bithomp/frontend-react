@@ -128,6 +128,14 @@
     }
   }
 
+  .email-login-legal-consent {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
+  }
+
   .email-login-message {
     display: flex;
     min-height: 42px;

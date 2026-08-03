@@ -235,6 +235,7 @@
     "signin": "サインイン",
     "signout": "サインアウト",
     "choose-app": "サインインするアプリを選択",
+    "legal-consent": "ウォレットを接続またはサインインすることで、<termsLink>利用規約</termsLink>、<privacyLink>プライバシーポリシー</privacyLink>、および<disclaimerLink>免責事項</disclaimerLink>に同意したものとみなされます。",
     "open-app-to-sign": "{{appName}}を開いて署名",
     "sign-in-with-another-wallet": "別のウォレットでログイン",
     "login-with": "{{appName}}でログイン",

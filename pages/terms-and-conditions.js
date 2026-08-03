@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: February 19, 2026</p>
+        <p>Last updated: August 3, 2026</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
@@ -102,8 +102,8 @@ export default function TermsAndConditions() {
           </li>
           <li>
             <p>
-              <strong>Token</strong> means a fungible or non-fungable token or similar digital item implemented on the
-              XRP Ledger, which associated with certain content or data, includes IOUs, NFTs.
+              <strong>Token</strong> means a fungible or non-fungable token or similar digital item implemented on the{' '}
+              {ledgerName}, which is associated with certain content or data, including IOUs and NFTs.
             </p>
           </li>
         </ul>
@@ -127,27 +127,31 @@ export default function TermsAndConditions() {
         <p>You represent and warrant that you acknowledge, understand, and accept the risk of the following:</p>
         <ul>
           <li>
-            The XRP Ledger and its built-in decentralized exchange is independently maintained by a decentralized
-            network of thousands of nodes who are not under the control of any single entity or groups of entities.
+            The {ledgerName} and its built-in decentralized exchange are maintained by a distributed network of
+            independent validators and nodes that are not under the control of any single entity or group of entities.
           </li>
           <li>
             Service is not a wallet provider, exchange, financial institution, money services business, or creditor.
             Service provides a peer-to-peer web3 service that helps users discover and directly interact with each other
-            and tokens available on the public XRP Ledger. Company does not have custody or control over the Tokens and
+            and tokens available on the public {ledgerName}. Company does not have custody or control over the Tokens and
             we do not execute or effectuate purchases, transfers, or sales of Tokens. To use our Service, you must use a
-            third-party wallet which allows you to engage in transactions on the XRP Ledger.
+            third-party wallet which allows you to engage in transactions on the {ledgerName}.
           </li>
-          <li>Service doesn't hold anyones assets, tokens, private keys, have any order books or trading system.</li>
           <li>
-            By using XUMM or a Hardware wallet within Our Service you're interacting directly with the XRP Ledger. All
-            your actions are settled directly on the XRP Ledger.
+            The Service does not hold anyone&apos;s assets, tokens, or private keys and does not operate a custodial
+            exchange or matching engine. It may display public {ledgerName} order-book and AMM data and provide an
+            interface for You to prepare transaction instructions that only You can approve through Your wallet.
+          </li>
+          <li>
+            By using Xaman or a hardware wallet within Our Service, you&apos;re interacting directly with the{' '}
+            {ledgerName}. All your actions are settled directly on the {ledgerName}.
           </li>
           <li>
             Company makes no representations or guarantees of accessibility at any time and for any length of time.
           </li>
           <li>
             Company does not manually curate the lists of assets that are displayed on Our Service. Any asset or token
-            that is created on the XRP Ledger can be displayed.
+            that is created on the {ledgerName} can be displayed.
           </li>
           <li>
             The value of Tokens is subjective. Prices of Tokens are subject to volatility and fluctuations in the price
@@ -766,8 +770,8 @@ export default function TermsAndConditions() {
         </p>
         <h2>Bithomp Usernames</h2>
         <p>
-          A Bithomp username is a public identifier linked to a specific XRPL address. Usernames are registered on the
-          XRPL mainnet and are used across all Bithomp explorers.
+          A Bithomp username is a public identifier linked to a specific supported ledger address. Usernames are
+          registered through Bithomp&apos;s mainnet registration service and are used across all Bithomp explorers.
         </p>
         <p>
           Upon successful registration, your username will be publicly visible on the Bithomp explorer and may appear in
@@ -779,13 +783,13 @@ export default function TermsAndConditions() {
           <li>https://xahauexplorer.com/account/username/</li>
         </ul>
         <p>
-          Only <strong>one username</strong> may be registered per XRPL address. You may only register an address that
-          you fully control — meaning you have access to its private key or recovery phrase. Usernames cannot be
-          registered for custodial, hosted, or third-party-controlled accounts, including exchange accounts requiring a
-          destination tag.
+          Only <strong>one username</strong> may be registered per supported ledger address. You may only register an
+          address that you fully control — meaning you have access to its private key or recovery phrase. Usernames
+          cannot be registered for custodial, hosted, or third-party-controlled accounts, including exchange accounts
+          requiring a destination tag.
         </p>
         <p>
-          To verify control over an XRPL address, the registration fee must be paid{' '}
+          To verify control over a supported ledger address, the registration fee must be paid{' '}
           <strong>directly from that address</strong>. Payments from any other address will be treated as voluntary
           donations and are <strong>non-refundable</strong>.
         </p>
@@ -906,6 +910,55 @@ export default function TermsAndConditions() {
         <p>
           We reserve the right to suspend or restrict access to NFT minting features at its sole discretion, including
           in response to abuse, legal requests, or technical issues.
+        </p>
+        <h2>Non-Custodial DEX, Swap, and Trading Interface</h2>
+        <p>
+          The Service provides a user interface to public decentralized exchange and automated market maker functions
+          of the {ledgerName}. The Company does not take custody of Your assets, control Your private keys, match orders,
+          act as Your counterparty, or execute transactions on Your behalf. A transaction is submitted only after You
+          approve it in a third-party wallet, and the {ledgerName} network determines whether and how it is validated and
+          settled.
+        </p>
+        <p>
+          Market swaps may use circular payments, pathfinding, auto-bridging, order-book offers, AMM liquidity, or a
+          combination of available liquidity. Routes and counterparties may be selected by {ledgerName} protocol rules
+          and can differ from the liquidity displayed by the Service. Limit orders remain on the public ledger until
+          filled, cancelled, expired, or otherwise removed under {ledgerName} rules.
+        </p>
+        <p>
+          Quotes, charts, prices, order books, estimated outputs, minimum received amounts, routes, balances, and other
+          market data are informational estimates. They may be delayed, incomplete, incorrectly decoded, affected by
+          rounding, or change before validation. The Company does not guarantee execution, best execution, a particular
+          price or route, available liquidity, transaction success, or that an order will be filled or cancelled.
+        </p>
+        <p>You accept all risks associated with using these features, including:</p>
+        <ul>
+          <li>price volatility, slippage, price impact, insufficient or disappearing liquidity, and partial execution;</li>
+          <li>
+            transaction ordering, competing transactions, arbitrage, stale market data, network congestion, failed or
+            delayed transactions, and network or wallet fees;
+          </li>
+          <li>
+            AMM imbalance and impermanent loss, transfer fees, trustline limits, authorization requirements, freezes,
+            clawbacks, issuer default or blackholing, and other token or issuer settings;
+          </li>
+          <li>
+            counterfeit, misleading, malicious, illiquid, restricted, or worthless tokens and inaccurate token names,
+            symbols, icons, metadata, issuer information, or third-party content; and
+          </li>
+          <li>third-party wallet, API, network, software, hardware, or connectivity failures and security incidents.</li>
+        </ul>
+        <p>
+          Before signing, You are solely responsible for checking the transaction type, network, sending and receiving
+          assets (including currency code and issuer), direction, amount, price, minimum received amount, destination,
+          tags, fees, flags, and every other field presented by Your wallet. Blockchain transactions are generally
+          irreversible. The Company cannot cancel, reverse, recover, refund, freeze, or replace assets or transactions.
+        </p>
+        <p>
+          The Service does not endorse any token or issuer and does not provide financial, investment, legal, tax, or
+          trading advice. You are solely responsible for determining whether a transaction is suitable and lawful for
+          You, performing Your own due diligence, paying applicable taxes, and complying with sanctions and all other
+          laws and restrictions applicable to You.
         </p>
         <h2>Sending Payments, Issuing Checks, Creating Escrows - Terms of Use</h2>
         <p>

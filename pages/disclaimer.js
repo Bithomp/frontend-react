@@ -25,7 +25,7 @@ export default function Disclaimer() {
       <SEO title={t('menu.disclaimer')} noindex={true} />
       <div className="content-text">
         <h1>Disclaimer</h1>
-        <p>Last updated: September 20, 2024</p>
+        <p>Last updated: August 3, 2026</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
         <p>
@@ -61,6 +61,25 @@ export default function Disclaimer() {
           make additions, deletions, or modifications to the contents on the Service at any time without prior notice.
         </p>
         <p>The Company does not warrant that the Service is free of viruses or other harmful components.</p>
+        <h2>Digital Assets and Non-Custodial Transactions</h2>
+        <p>
+          The Service is an informational and technical interface to public blockchain networks. It is not a wallet,
+          custodian, broker, investment adviser, or guarantor. The Company does not possess Your private keys, hold Your
+          funds, approve transactions for You, act as Your counterparty, or control blockchain validation or settlement.
+        </p>
+        <p>
+          Order books, AMM liquidity, routes, charts, prices, balances, token metadata, estimated outputs, and other
+          blockchain data may be delayed, incomplete, inaccurate, or change before a transaction is validated. Nothing
+          displayed by the Service is a guarantee of execution, best execution, liquidity, value, authenticity,
+          legality, or future performance and nothing is financial, investment, legal, or tax advice.
+        </p>
+        <p>
+          Digital asset transactions are generally irreversible and may involve total loss. You are solely responsible
+          for verifying every transaction field in Your wallet, safeguarding Your wallet and credentials, researching
+          tokens and issuers, understanding trustlines, freezes, clawbacks, transfer fees, slippage, partial execution,
+          AMM and liquidity risks, and complying with applicable laws, sanctions, and taxes. The Company cannot cancel,
+          reverse, recover, freeze, refund, or replace Your assets or transactions.
+        </p>
         <h2>External Links Disclaimer</h2>
         <p>
           The Service may contain links to external websites that are not provided or maintained by or in any way

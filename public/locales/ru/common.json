@@ -235,6 +235,7 @@
     "signin": "Войти",
     "signout": "Выйти",
     "choose-app": "Выберите ваше приложение",
+    "legal-consent": "Подключая кошелёк или входя в аккаунт, вы принимаете <termsLink>Условия использования</termsLink>, <privacyLink>Политику конфиденциальности</privacyLink> и <disclaimerLink>Отказ от ответственности</disclaimerLink>.",
     "open-app-to-sign": "Открыть {{appName}} для подписи",
     "sign-in-with-another-wallet": "Войти с другим кошельком",
     "login-with": "Вход с {{appName}}",

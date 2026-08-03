@@ -34,18 +34,18 @@ const nativeBalance = (addressData, serverData) => {
   return BigNumber.maximum(0, balanceDrops.minus(reservedDrops).dividedBy(1_000_000).minus(NATIVE_FEE_BUFFER))
 }
 
-export default function useTradeBalances(accountAddress, assets) {
-  const [state, setState] = useState({ balances: {}, loading: false })
+export default function useTradeBalances(accountAddress, assets, refreshPage) {
+  const [state, setState] = useState({ balances: {}, trustlines: {}, loading: false })
   const assetIds = assets.map(tradeBalanceKey).join('|')
 
   useEffect(() => {
     if (!accountAddress || !assets.some((asset) => asset?.currency)) {
-      setState({ balances: {}, loading: false })
+      setState({ balances: {}, trustlines: {}, loading: false })
       return
     }
 
     let ignore = false
-    setState({ balances: {}, loading: true })
+    setState({ balances: {}, trustlines: {}, loading: true })
     const needsNative = assets.some((asset) => asset?.currency && !asset.issuer)
     const needsTokens = assets.some((asset) => asset?.issuer)
 
@@ -57,16 +57,20 @@ export default function useTradeBalances(accountAddress, assets) {
       .then(([addressResult, serverResult, trustlinesResult]) => {
         if (ignore) return
         const balances = {}
+        const trustlinesByAsset = {}
         if (needsNative) balances[nativeCurrency] = nativeBalance(addressResult?.data, serverResult?.data)
         const data = trustlinesResult?.data
         const trustlines = Array.isArray(data) ? data : data?.trustlines || data?.tokens || data?.lines || []
         assets.filter((asset) => asset?.issuer).forEach((asset) => {
-          balances[tradeBalanceKey(asset)] = tokenBalance(trustlines.find((token) => assetMatches(token, asset, accountAddress)))
+          const key = tradeBalanceKey(asset)
+          const trustline = trustlines.find((token) => assetMatches(token, asset, accountAddress))
+          balances[key] = tokenBalance(trustline)
+          trustlinesByAsset[key] = !!trustline
         })
-        setState({ balances, loading: false })
+        setState({ balances, trustlines: trustlinesByAsset, loading: false })
       })
       .catch(() => {
-        if (!ignore) setState({ balances: {}, loading: false })
+        if (!ignore) setState({ balances: {}, trustlines: {}, loading: false })
       })
 
     return () => {
@@ -74,7 +78,7 @@ export default function useTradeBalances(accountAddress, assets) {
     }
     // Asset display metadata is irrelevant; ledger identifiers define balances.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountAddress, assetIds])
+  }, [accountAddress, assetIds, refreshPage])
 
   return state
 }

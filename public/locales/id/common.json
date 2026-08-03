@@ -235,6 +235,7 @@
     "signin": "Masuk",
     "signout": "Keluar",
     "choose-app": "Pilih aplikasi masuk",
+    "legal-consent": "Dengan menghubungkan dompet atau masuk, Anda menyetujui <termsLink>Syarat dan ketentuan</termsLink>, <privacyLink>Kebijakan privasi</privacyLink>, dan <disclaimerLink>Penafian</disclaimerLink>.",
     "open-app-to-sign": "Buka {{appName}} untuk menandatangani",
     "sign-in-with-another-wallet": "Masuk dengan wallet lain",
     "login-with": "Masuk dengan {{appName}}",

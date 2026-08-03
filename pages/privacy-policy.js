@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: Apr 2, 2026</p>
+        <p>Last updated: August 3, 2026</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -152,6 +152,20 @@ export default function PrivacyPolicy() {
         <p>
           We may also collect information that Your browser sends whenever You visit our Service or when You access the
           Service by or through a mobile device.
+        </p>
+        <h3>Wallet and Blockchain Data</h3>
+        <p>
+          When You connect a wallet or use blockchain features, We may process public wallet addresses, public keys and
+          non-secret wallet metadata, network selection, transaction instructions, signatures or signed transaction
+          blobs supplied by Your wallet, transaction hashes, and public ledger results. We use this information to
+          connect Your selected wallet, prepare or broadcast transactions at Your request, display transaction status,
+          prevent abuse, diagnose errors, and provide the Service.
+        </p>
+        <p>
+          We never request or intentionally collect Your wallet seed phrase or private keys. Blockchain addresses and
+          validated transactions are public by design and may be permanently visible, copied, analysed, and processed
+          by independent network participants and third parties outside Our control. Blockchain records generally
+          cannot be altered or deleted by Us.
         </p>
         <h3>Tracking Technologies and Cookies</h3>
         <p>

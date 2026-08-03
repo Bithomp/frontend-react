@@ -5,6 +5,12 @@ import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
 import Select from 'react-select'
+import {
+  IoHardwareChipOutline,
+  IoPhonePortraitOutline,
+  IoGlobeOutline,
+  IoBrowsersOutline
+} from 'react-icons/io5'
 
 import { useIsMobile } from '../utils/mobile'
 import {
@@ -109,8 +115,17 @@ const wcWalletIcons = [
 
 const mobileWallets = ['xaman', 'walletconnect', 'xyra']
 
+const walletTypeIcons = {
+  mobile: IoPhonePortraitOutline,
+  hardware: IoHardwareChipOutline,
+  browser: IoGlobeOutline,
+  popup: IoBrowsersOutline
+}
+
 const WalletTile = memo(function WalletTile({
   name,
+  description,
+  type,
   alt,
   src,
   onClick,
@@ -121,7 +136,8 @@ const WalletTile = memo(function WalletTile({
   iconsOnly,
   isMobile
 }) {
-  const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
+  const iconSize = iconsOnly ? (isMobile ? 22 : 30) : 16
+  const WalletTypeIcon = walletTypeIcons[type]
 
   return (
     <div
@@ -154,7 +170,17 @@ const WalletTile = memo(function WalletTile({
           </div>
         )}
 
-        <div className="signin-app-name">{name}</div>
+        <div className="signin-app-copy">
+          <div className="signin-app-title">
+            <div className="signin-app-name">{name}</div>
+            {WalletTypeIcon && (
+              <span className="signin-app-type" title={`${type} wallet`} aria-label={`${type} wallet`}>
+                <WalletTypeIcon aria-hidden="true" />
+              </span>
+            )}
+          </div>
+          {description && <div className="signin-app-description">{description}</div>}
+        </div>
       </div>
     </div>
   )
@@ -209,6 +235,7 @@ export default function SignForm({
     !signRequest?.connectAnotherWallet &&
     signRequest?.request?.TransactionType !== 'SignIn'
   const showMobileWallet = (wallet) => !limitMobileWalletChoice || account.wallet === wallet
+  const isLoginRequest = !signRequest?.request || signRequest.request.TransactionType === 'SignIn'
 
   useEffect(() => {
     if (!signFormOpen) return
@@ -1890,104 +1917,127 @@ export default function SignForm({
                         </button>
                       </div>
                     ) : (
-                      <div className="signin-apps">
-                        {showMobileWallet('xaman') && (
-                          <WalletTile
-                            name="Xaman (Mobile app)"
-                            alt="xaman"
-                            src="/images/wallets/xaman-large.svg"
-                            width={110}
-                            height={48}
-                            onClick={() => txSend({ wallet: 'xaman' })}
-                            disabled={false}
-                          />
-                        )}
+                      <>
+                        <div className="signin-apps">
+                          {showMobileWallet('xaman') && (
+                            <WalletTile
+                              name="Xaman"
+                              type="mobile"
+                              alt="xaman"
+                              src="/images/wallets/square-logos/xaman.png"
+                              width={44}
+                              height={44}
+                              onClick={() => txSend({ wallet: 'xaman' })}
+                              disabled={false}
+                            />
+                          )}
 
-                        {!isMobile && (
-                          <WalletTile
-                            name="Ledger (Hardware wallet)"
-                            alt="Ledger Wallet"
-                            src="/images/wallets/ledgerwallet-large.svg"
-                            width={110}
-                            height={48}
-                            onClick={() => txSend({ wallet: 'ledgerwallet' })}
-                            disabled={false}
-                          />
-                        )}
+                          {!isMobile && (
+                            <WalletTile
+                              name="Ledger"
+                              type="hardware"
+                              alt="Ledger Wallet"
+                              src="/images/wallets/square-logos/ledger.png"
+                              width={44}
+                              height={44}
+                              onClick={() => txSend({ wallet: 'ledgerwallet' })}
+                              disabled={false}
+                            />
+                          )}
 
-                        {/* available only for mainnet and testnet */}
-                        {(networkId === 0 || networkId === 1) && showMobileWallet('walletconnect') && (
-                          <WalletTile
-                            name={isMobile ? 'WalletConnect' : 'Joey, Bifrost, Girin'}
-                            alt="WalletConnect"
-                            onClick={() => txSend({ wallet: 'walletconnect' })}
-                            disabled={false}
-                            extraIcons={wcWalletIcons}
-                            iconsOnly={true}
-                            isMobile={isMobile}
-                          />
-                        )}
+                          {/* available only for mainnet and testnet */}
+                          {(networkId === 0 || networkId === 1) && showMobileWallet('walletconnect') && (
+                            <WalletTile
+                              name="WalletConnect"
+                              description={isMobile ? 'Mobile wallets' : 'Joey, Bifrost, Girin'}
+                              type="mobile"
+                              alt="WalletConnect"
+                              onClick={() => txSend({ wallet: 'walletconnect' })}
+                              disabled={false}
+                              extraIcons={wcWalletIcons}
+                              iconsOnly={true}
+                              isMobile={isMobile}
+                            />
+                          )}
 
-                        {!isMobile && (
-                          <WalletTile
-                            name="D'Cent (Hardware wallet)"
-                            alt="D'Cent"
-                            src="/images/wallets/square-logos/dcent.png"
-                            width={48}
-                            height={48}
-                            onClick={() => txSend({ wallet: 'dcent' })}
-                            disabled={!supportedByDcent}
-                          />
-                        )}
+                          {!isMobile && (
+                            <WalletTile
+                              name="D'Cent"
+                              type="hardware"
+                              alt="D'Cent"
+                              src="/images/wallets/square-logos/dcent.png"
+                              width={48}
+                              height={48}
+                              onClick={() => txSend({ wallet: 'dcent' })}
+                              disabled={!supportedByDcent}
+                            />
+                          )}
 
-                        {!isMobile && (
-                          <WalletTile
-                            name="MetaMask (Browser wallet)"
-                            alt="Metamask"
-                            src="/images/wallets/metamask.svg"
-                            width={44}
-                            height={44}
-                            onClick={() => txSend({ wallet: 'metamask' })}
-                            disabled={!supportedByMetamask}
-                          />
-                        )}
+                          {showMobileWallet('xyra') && (
+                            <WalletTile
+                              name="Xyra"
+                              type="popup"
+                              alt="Xyra"
+                              src="/images/wallets/xyra.svg"
+                              width={48}
+                              height={48}
+                              onClick={() => txSend({ wallet: 'xyra' })}
+                              disabled={false}
+                            />
+                          )}
 
-                        {!isMobile && (
-                          <WalletTile
-                            name="Crossmark (Browser wallet)"
-                            alt="Crossmark"
-                            src="/images/wallets/crossmark-large.png"
-                            width={110}
-                            height={48}
-                            onClick={() => txSend({ wallet: 'crossmark' })}
-                            disabled={!supportedByCrossmark}
-                          />
-                        )}
+                          {!isMobile && (
+                            <WalletTile
+                              name="MetaMask"
+                              type="browser"
+                              alt="Metamask"
+                              src="/images/wallets/metamask.svg"
+                              width={44}
+                              height={44}
+                              onClick={() => txSend({ wallet: 'metamask' })}
+                              disabled={!supportedByMetamask}
+                            />
+                          )}
 
-                        {!isMobile && (
-                          <WalletTile
-                            name="Gem (Browser wallet)"
-                            alt="GemWallet"
-                            src="/images/wallets/gemwallet.svg"
-                            width={44}
-                            height={44}
-                            onClick={() => txSend({ wallet: 'gemwallet' })}
-                            disabled={false}
-                          />
-                        )}
+                          {!isMobile && (
+                            <WalletTile
+                              name="Gem"
+                              type="browser"
+                              alt="GemWallet"
+                              src="/images/wallets/gemwallet.svg"
+                              width={44}
+                              height={44}
+                              onClick={() => txSend({ wallet: 'gemwallet' })}
+                              disabled={false}
+                            />
+                          )}
 
-                        {showMobileWallet('xyra') && (
-                          <WalletTile
-                            name="Xyra (Popup wallet)"
-                            alt="Xyra"
-                            src="/images/wallets/xyra.svg"
-                            width={48}
-                            height={48}
-                            onClick={() => txSend({ wallet: 'xyra' })}
-                            disabled={false}
-                          />
+                          {!isMobile && (
+                            <WalletTile
+                              name="Crossmark"
+                              type="browser"
+                              alt="Crossmark"
+                              src="/images/wallets/square-logos/crossmark.png"
+                              width={44}
+                              height={44}
+                              onClick={() => txSend({ wallet: 'crossmark' })}
+                              disabled={!supportedByCrossmark}
+                            />
+                          )}
+                        </div>
+                        {isLoginRequest && (
+                          <p className="signin-legal-consent">
+                            <Trans
+                              i18nKey="signin.legal-consent"
+                              components={{
+                                termsLink: <Link href="/terms-and-conditions" target="_blank" />,
+                                privacyLink: <Link href="/privacy-policy" target="_blank" />,
+                                disclaimerLink: <Link href="/disclaimer" target="_blank" />
+                              }}
+                            />
+                          </p>
                         )}
-                      </div>
+                      </>
                     )}
                   </>
                 ) : screen === 'ledgerwallet-addresses' ? (

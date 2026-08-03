@@ -417,40 +417,153 @@
     }
 
     &.choose-app {
+      width: min(620px, calc(100vw - 32px));
+
       .header {
-        padding-top: 42px;
-        font-size: 26px;
+        padding: 42px 64px 0;
+        font-size: 28px;
       }
 
       .signin-apps {
         display: grid;
-        grid-template-columns: repeat(2, 190px);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         justify-content: center;
-        gap: 10px 16px;
-        margin-top: 28px;
-        padding-bottom: 32px;
+        gap: 12px;
+        margin: 28px 32px 0;
+        padding-bottom: 28px;
 
         .signin-app-logo {
-          display: block;
-          width: auto;
-          height: 74px;
+          display: flex;
+          position: relative;
+          box-sizing: border-box;
+          width: 100%;
+          min-width: 0;
+          height: 82px;
           margin: 0;
-          padding: 12px;
+          padding: 14px 16px;
+          border: 1px solid var(--card-border);
+          border-radius: 16px;
+          background: color-mix(in srgb, var(--background-secondary) 68%, var(--background-main));
+          box-shadow: none;
+          cursor: pointer;
+          transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease,
+            transform 0.16s ease;
+
+          &:hover,
+          &:focus-visible {
+            border-color: var(--accent-link);
+            background: color-mix(in srgb, var(--accent-link) 8%, var(--background-secondary));
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            outline: none;
+            transform: translateY(-1px);
+          }
+
+          &.disabled {
+            background: var(--background-secondary);
+            opacity: 0.48;
+
+            &:hover {
+              border-color: var(--card-border);
+              background: var(--background-secondary);
+              box-shadow: none;
+              transform: none;
+            }
+          }
         }
 
         .signin-app-inner {
-          gap: 5px;
+          display: flex;
+          height: 100%;
+          align-items: center;
+          width: 100%;
+          min-width: 0;
+          flex-direction: row;
+          justify-content: flex-start;
+          gap: 13px;
+
+          > img {
+            flex: 0 0 auto;
+            border-radius: 12px;
+          }
         }
 
         .signin-app-wallets.icons-only {
-          margin-bottom: 4px;
-          min-height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex: 0 0 auto;
+          gap: 0;
+          min-height: 0;
+          margin: 0;
+
+          img {
+            border: 2px solid var(--background-secondary);
+            border-radius: 50%;
+
+            + img {
+              margin-left: -7px;
+            }
+          }
+        }
+
+        .signin-app-copy {
+          flex: 1 1 auto;
+          min-width: 0;
+          text-align: left;
+        }
+
+        .signin-app-title {
+          display: flex;
+          min-width: 0;
+          align-items: center;
+          padding-right: 24px;
+        }
+
+        .signin-app-type {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          border-radius: 8px;
+          background: color-mix(in srgb, var(--background-main) 70%, transparent);
+          color: color-mix(in srgb, var(--text-secondary) 82%, var(--text-main));
+          font-size: 16px;
+          line-height: 1;
         }
 
         .signin-app-name {
-          line-height: 1.15;
-          white-space: normal;
+          overflow: hidden;
+          color: var(--text-main);
+          font-size: 15px;
+          font-weight: 650;
+          line-height: 1.25;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
+
+        .signin-app-description {
+          margin-top: 3px;
+          overflow: hidden;
+          color: var(--text-secondary);
+          font-size: 12px;
+          line-height: 1.25;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+      }
+
+      .signin-legal-consent {
+        width: min(520px, calc(100% - 40px));
+        margin: -8px auto 26px;
+        color: var(--text-secondary);
+        font-size: 13px;
+        line-height: 1.45;
+        text-align: center;
       }
 
       .mobile-wallet-sign-actions {
@@ -620,20 +733,44 @@
       }
 
       &.choose-app {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border: 0;
+        border-radius: 0;
+
         .header {
-          padding-top: 60px;
+          padding: 60px 52px 0;
           font-size: clamp(18px, 5vw, 22px);
         }
 
         .signin-apps {
-          grid-template-columns: repeat(2, 140px);
+          grid-template-columns: minmax(0, 1fr);
           gap: 10px;
-          margin-top: 35px;
+          margin: 28px 20px 0;
+          padding-bottom: 22px;
 
           .signin-app-logo {
-            height: 60px;
-            padding: 10px;
+            height: 76px;
+            padding: 12px 16px;
           }
+
+          .signin-app-inner {
+            gap: 9px;
+          }
+
+          .signin-app-name {
+            font-size: 15px;
+          }
+
+          .signin-app-description {
+            font-size: 12px;
+          }
+        }
+
+        .signin-legal-consent {
+          width: calc(100% - 40px);
+          margin: 0 auto calc(24px + env(safe-area-inset-bottom));
         }
       }
     }
@@ -1123,122 +1260,6 @@
       }
     }
 
-    .signin-apps {
-      margin-top: 35px;
-
-      .signin-app-logo {
-        display: inline-block;
-        width: 169px;
-        height: 80px;
-        box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-        margin: 10px 5px;
-        padding: 15px;
-        background-color: var(--background-main);
-        cursor: pointer;
-        text-align: center;
-        vertical-align: top;
-
-        @media only screen and (max-width: 480px) {
-          width: 120px;
-          height: 60px;
-          padding: 10px;
-        }
-
-        &:hover {
-          background-color: var(--background-secondary);
-          box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
-        }
-
-        // Inner layout: icon + name (safe in fixed tile size)
-        .signin-app-inner {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-          gap: 6px;
-
-          @media only screen and (max-width: 480px) {
-            gap: 4px;
-          }
-        }
-
-        .signin-app-wallets {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          flex-wrap: wrap;
-          margin-bottom: 6px;
-
-          // default (non iconsOnly)
-          img {
-            border-radius: 8px;
-            box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
-          }
-
-          // WalletConnect tile: desktop
-          &.icons-only {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 10px;
-            margin-bottom: 8px;
-            min-height: 38px;
-          }
-        }
-
-        .signin-app-name {
-          font-size: 12px;
-          font-weight: 600;
-          color: #000;
-          line-height: 1;
-          white-space: nowrap;
-
-          @media only screen and (max-width: 480px) {
-            font-size: 11px;
-          }
-        }
-
-        // Disabled state (no click + no hover highlight)
-        &.disabled {
-          cursor: not-allowed;
-          opacity: 0.55;
-
-          &:hover {
-            background-color: var(--background-main);
-            box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-          }
-        }
-      }
-
-      // Desktop sizes (default)
-      .signin-app-wallets.icons-only img {
-        width: 28px !important;
-        height: 28px !important;
-      }
-
-      // Mobile override
-      @media only screen and (max-width: 480px) {
-        .signin-app-logo {
-          .signin-app-wallets.icons-only {
-            gap: 6px;
-            margin-bottom: 4px;
-            min-height: 42px;
-          }
-
-          .signin-app-wallets.icons-only img {
-            width: 18px !important;
-            height: 18px !important;
-            border-radius: 6px;
-          }
-
-          .signin-app-inner {
-            gap: 3px;
-          }
-        }
-      }
-    }
-
     .signin-actions-list {
       display: inline-block;
       margin: 20px 0;
@@ -1253,29 +1274,11 @@
   }
 }
 
-body.dark {
-  .sign-in-form {
-    background: rgba(0, 0, 0, 0.72);
+body.dark .sign-in-form {
+  background: rgba(0, 0, 0, 0.72);
 
-    .sign-in-body {
-      border-color: color-mix(in srgb, var(--card-border) 72%, #fff 28%);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
-
-      .signin-apps {
-        .signin-app-logo {
-          background-color: #f9f9f9;
-
-          &:hover {
-            background-color: #c7c7c7;
-          }
-
-          &.disabled {
-            &:hover {
-              background-color: #f9f9f9;
-            }
-          }
-        }
-      }
-    }
+  .sign-in-body {
+    border-color: color-mix(in srgb, var(--card-border) 72%, #fff 28%);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
   }
 }

@@ -142,12 +142,13 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
   const [aggregationLevel, setAggregationLevel] = useState(0)
   const { bids, asks, amm, status, error } = useOrderBook(baseAsset, quoteAsset)
   const tradeHistory = useTradeHistory(baseAsset, quoteAsset)
-  const { balances, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset])
+  const { balances, trustlines, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
   const baseBalance = balances[tradeBalanceKey(baseAsset)] ?? null
   const quoteBalance = balances[tradeBalanceKey(quoteAsset)] ?? null
   const spendAsset = side === 'sell' ? baseAsset : quoteAsset
   const receiveAsset = side === 'sell' ? quoteAsset : baseAsset
   const spendBalance = side === 'sell' ? baseBalance : quoteBalance
+  const receiveTrustlineMissing = !!account?.address && !!receiveAsset?.issuer && receiveAsset.issuer !== account.address && trustlines[tradeBalanceKey(receiveAsset)] === false
   const limitTotal = useMemo(() => {
     if (!validNumber(price) || !validNumber(amount)) return ''
     return new BigNumber(price).multipliedBy(amount).toFixed()
@@ -187,7 +188,7 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
   const swapReady = orderType === 'swap' && swapEstimate?.complete && swapEstimate.output.gt(0)
   const requiredSpend = orderType === 'swap' || side === 'sell' ? new BigNumber(amount || 0) : new BigNumber(total || 0)
   const spendWithinBalance = !account?.address || spendBalance === null || requiredSpend.lte(spendBalance)
-  const formReady = pairReady && !samePair && spendWithinBalance && (
+  const formReady = pairReady && !samePair && !receiveTrustlineMissing && spendWithinBalance && (
     orderType === 'swap'
       ? !!account?.address && validAssetAmount(spendAsset, amount) && validAssetAmount(receiveAsset, total) && swapReady
       : validAssetAmount(baseAsset, amount) && validAssetAmount(quoteAsset, total) && validNumber(price)
@@ -273,6 +274,19 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
     setAmount(maxAmount.toFixed(amountAsset.issuer ? 15 : 6, BigNumber.ROUND_DOWN).replace(/\.?0+$/, ''))
   }
 
+  const addReceiveToken = () => {
+    if (!receiveTrustlineMissing) return
+    setSignRequest({
+      request: {
+        TransactionType: 'TrustSet',
+        LimitAmount: {
+          currency: receiveAsset.currency,
+          issuer: receiveAsset.issuer
+        }
+      }
+    })
+  }
+
   const renderRows = (offers, offerSide) =>
     offers.map((offer, index) => (
       <div className={`${styles.row} ${styles[offerSide]}`} key={`${offerSide}-${index}`} onClick={() => selectOffer(offer, offerSide)}>
@@ -302,12 +316,12 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
               </div>
               <div>
                 <span className={styles.selectorLabel}>{t('pair.base')}</span>
-                <TokenSelector value={baseAsset} onChange={changeBaseAsset} excludeLPtokens />
+                <TokenSelector value={baseAsset} onChange={changeBaseAsset} destinationAddress={account?.address || null} senderAddress={account?.address || null} excludeLPtokens />
                 {account?.address && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${baseBalance === null ? '—' : bookNumber(baseBalance, baseAmountDecimals, true)} ${tokenName(baseAsset)}`}</span>}
               </div>
               <div>
                 <span className={styles.selectorLabel}>{t('pair.quote')}</span>
-                <TokenSelector value={quoteAsset} onChange={changeQuoteAsset} excludeLPtokens />
+                <TokenSelector value={quoteAsset} onChange={changeQuoteAsset} destinationAddress={account?.address || null} senderAddress={account?.address || null} excludeLPtokens />
                 {account?.address && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${quoteBalance === null ? '—' : bookNumber(quoteBalance, quoteAmountDecimals, true)} ${tokenName(quoteAsset)}`}</span>}
               </div>
             </section>
@@ -338,7 +352,9 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
               </div>
               {orderType === 'swap' && !account?.address
                 ? <button type="button" className={`button-action ${styles.submit}`} onClick={() => setSignRequest({ request: { TransactionType: 'SignIn' } })}>{t('form.signInToSwap', { defaultValue: 'Sign in to swap' })}</button>
-                : <button type="button" className={`button-action ${styles.submit}`} disabled={!formReady} onClick={submit}>{orderType === 'swap' ? t('form.reviewSwap', { defaultValue: 'Review swap' }) : t(`form.review-${side}`)}</button>}
+                : receiveTrustlineMissing
+                  ? <button type="button" className={`button-action ${styles.submit}`} onClick={addReceiveToken}>{t('menu.services.add-token', { ns: 'common' })}: {tokenName(receiveAsset)}</button>
+                  : <button type="button" className={`button-action ${styles.submit}`} disabled={!formReady} onClick={submit}>{orderType === 'swap' ? t('form.reviewSwap', { defaultValue: 'Review swap' }) : t(`form.review-${side}`)}</button>}
               {!pairReady && <p className={styles.hint}>{t('form.selectPair')}</p>}
               {samePair && <p className={styles.error}>{t('form.sameAsset')}</p>}
               {account?.address && spendBalance !== null && requiredSpend.gt(spendBalance) && <p className={styles.error}>{t('form.insufficientBalance', { defaultValue: 'Insufficient available balance.' })}</p>}
