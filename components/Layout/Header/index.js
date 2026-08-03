@@ -78,7 +78,8 @@ import {
   IoRocketOutline,
   IoNotificationsOutline,
   IoCopyOutline,
-  IoAddOutline
+  IoAddOutline,
+  IoSwapHorizontalOutline
 } from 'react-icons/io5'
 import { RiPuzzleLine } from 'react-icons/ri'
 import SearchBlock from '../SearchBlock'
@@ -484,6 +485,11 @@ export default function Header({
             <Link href="/tokens">
               <IoCashOutline className="menu-item-icon" />
               {t('menu.tokens')}
+            </Link>
+            <Link href="/trade">
+              <IoSwapHorizontalOutline className="menu-item-icon" />
+              {t('menu.trade')}
+              <span className="menu-item-badge">{t('menu.badges.new')}</span>
             </Link>
             <Link href="/distribution">
               <IoTrophyOutline className="menu-item-icon" />

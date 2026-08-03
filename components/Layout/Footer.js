@@ -116,14 +116,7 @@ export default function Footer(
         <div className="footer-logo">
           <LogoAnimated />
         </div>
-        <div className="footer-brand-text" suppressHydrationWarning>
-          Copyright © {new Date().getFullYear()} <b>Bithomp AB</b>
-          <br />
-          Kivra 559342-2867
-          <br />
-          106 31, Stockholm, Sweden
-          <br />
-          <br />
+        <div className="footer-brand-text">
           <b>Ledger Explorer Ltd</b>
           <br />
           Suite 9, Ansuya Estate, Royal street,

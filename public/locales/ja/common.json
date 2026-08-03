@@ -64,6 +64,7 @@
   },
   "menu": {
     "tokens": "トークン",
+    "trade": "取引",
     "badges": {
       "new": "新規"
     },

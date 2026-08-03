@@ -64,6 +64,7 @@
   },
   "menu": {
     "tokens": "Token",
+    "trade": "Handeln",
     "badges": {
       "new": "NEU"
     },

@@ -57,7 +57,8 @@ import {
   IoRocketOutline,
   IoNotificationsOutline,
   IoCopyOutline,
-  IoAddOutline
+  IoAddOutline,
+  IoSwapHorizontalOutline
 } from 'react-icons/io5'
 import { FaSignOutAlt, FaEye, FaUserCheck, FaUserFriends } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
@@ -372,6 +373,11 @@ export default function MobileMenu({
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoCashOutline style={itemIconStyle} />
             {t('menu.tokens')}
+          </Link>
+          <Link href="/trade" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <IoSwapHorizontalOutline style={itemIconStyle} />
+            {t('menu.trade')}
+            <span className="menu-item-badge">{t('menu.badges.new')}</span>
           </Link>
           <Link href="/distribution" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <IoTrophyOutline style={itemIconStyle} />

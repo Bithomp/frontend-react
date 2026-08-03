@@ -64,6 +64,7 @@
   },
   "menu": {
     "tokens": "토큰",
+    "trade": "거래",
     "badges": {
       "new": "신규"
     },

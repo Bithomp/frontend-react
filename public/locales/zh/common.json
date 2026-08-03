@@ -64,6 +64,7 @@
   },
   "menu": {
     "tokens": "代币",
+    "trade": "交易",
     "badges": {
       "new": "新"
     },
