@@ -90,7 +90,7 @@ export default function SetTrustline({ setSignRequest, signRequest, setStatus, s
   return (
     <div className="center">
       <br />
-      <div style={{ margin: '0 auto', width: '360px', maxWidth: 'calc(100% - 80px)', textAlign: 'left' }}>
+      <div className="trustline-form-control">
         <span className="input-title">
           Token
           {tokenSupply && selectedToken?.currency && (

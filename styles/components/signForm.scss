@@ -1252,11 +1252,26 @@
       }
     }
 
+    .trustline-form-control,
     .terms-checkbox-trustline {
-      width: min(100%, 520px);
+      width: 360px;
+      max-width: calc(100% - 80px);
 
       @media only screen and (max-width: 480px) {
-        width: 100%;
+        width: calc(100% - 32px);
+        max-width: none;
+      }
+    }
+
+    .trustline-form-control {
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .terms-checkbox-trustline {
+
+      @media only screen and (max-width: 480px) {
+        margin-top: 18px;
       }
     }
 

@@ -238,6 +238,11 @@ export default function SignForm({
   const isLoginRequest = !signRequest?.request || signRequest.request.TransactionType === 'SignIn'
 
   useEffect(() => {
+    if (screen !== 'setTrustline') return
+    setAgreedToRisks(!!account?.address)
+  }, [screen, account?.address])
+
+  useEffect(() => {
     if (!signFormOpen) return
 
     const scrollY = window.scrollY || window.pageYOffset || 0
@@ -1856,7 +1861,7 @@ export default function SignForm({
                     </div>
                   )}
 
-                  {!noCheckboxScreens.includes(screen) && (
+                  {!noCheckboxScreens.includes(screen) && !(screen === 'setTrustline' && account?.address) && (
                     <div className={`terms-checkbox ${screen === 'setTrustline' ? 'terms-checkbox-trustline' : ''}`}>
                       <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks}>
                         {checkBoxText(screen, signRequest)}
