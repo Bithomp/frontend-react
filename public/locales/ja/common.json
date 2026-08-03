@@ -273,6 +273,7 @@
     "confirm": {
       "set-did": "Seting a DID",
       "set-domain": "ドメインの設定",
+      "set-nft-minter": "NFTミンターを変更",
       "set-avatar": "アバターの設定",
       "payment-header": "送信",
       "payment": "ブロックチェーン取引は取り消せないことを理解し、資金を失う可能性があるため、送信前に受取人のアドレス、必要な場合は宛先タグ、およびすべての支払い情報を確認したことを認めます。また、<termsLink>利用規約</termsLink>に同意します。",
@@ -290,6 +291,8 @@
     "set-account": {
       "domain": "ドメイン",
       "enter-domain": "ドメインを入力",
+      "nft-minter": "NFTミンター",
+      "enter-nft-minter": "NFTミンターのアドレスを入力",
       "avatar-url": "アバターURL",
       "enter-avatar-url": "アバターURLを入力",
       "invalid-url": "無効なURL"

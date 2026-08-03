@@ -273,6 +273,7 @@
     "confirm": {
       "set-did": "Setting a DID",
       "set-domain": "Setting a Domain",
+      "set-nft-minter": "Change NFT minter",
       "set-avatar": "Setting an Avatar",
       "payment-header": "Send",
       "payment": "I understand that blockchain transactions are irreversible, and I confirm that I have verified the recipient address, destination tag if required, and all payment details before sending, as funds can be lost. I also agree to the <termsLink>Terms and conditions</termsLink>.",
@@ -290,6 +291,8 @@
     "set-account": {
       "domain": "Domain",
       "enter-domain": "Enter domain",
+      "nft-minter": "NFT minter",
+      "enter-nft-minter": "Enter NFT minter address",
       "avatar-url": "Avatar URL",
       "enter-avatar-url": "Enter avatar URL",
       "invalid-url": "Invalid URL"

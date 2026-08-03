@@ -273,6 +273,7 @@
     "confirm": {
       "set-did": "Menyetel DID",
       "set-domain": "Mengatur Domain",
+      "set-nft-minter": "Ubah minter NFT",
       "set-avatar": "Mengatur Avatar",
       "payment-header": "Kirim",
       "payment": "Saya memahami bahwa transaksi blockchain tidak dapat dibatalkan, dan saya mengonfirmasi bahwa saya telah memeriksa alamat penerima, tag tujuan jika diperlukan, serta semua detail pembayaran sebelum mengirim karena dana dapat hilang. Saya juga menyetujui <termsLink>Syarat dan ketentuan</termsLink>.",
@@ -290,6 +291,8 @@
     "set-account": {
       "domain": "Domain",
       "enter-domain": "Masukkan domain",
+      "nft-minter": "Minter NFT",
+      "enter-nft-minter": "Masukkan alamat minter NFT",
       "avatar-url": "URL avatar",
       "enter-avatar-url": "Masukkan URL avatar",
       "invalid-url": "URL tidak valid"

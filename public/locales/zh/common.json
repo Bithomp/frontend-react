@@ -273,6 +273,7 @@
     "confirm": {
       "set-did": "设置DID",
       "set-domain": "设置域名",
+      "set-nft-minter": "更改 NFT 铸造者",
       "set-avatar": "设置头像",
       "payment-header": "发送",
       "payment": "我了解区块链交易不可撤销，并确认已在发送前核对收款地址、必要时的目标标签以及所有付款信息，否则资金可能会丢失。我也同意<termsLink>条款和条件</termsLink>。",
@@ -290,6 +291,8 @@
     "set-account": {
       "domain": "域名",
       "enter-domain": "输入域名",
+      "nft-minter": "NFT 铸造者",
+      "enter-nft-minter": "输入 NFT 铸造者地址",
       "avatar-url": "头像 URL",
       "enter-avatar-url": "输入头像 URL",
       "invalid-url": "无效的 URL"

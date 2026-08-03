@@ -1235,6 +1235,7 @@ export default function Account({
     !!data?.ledgerInfo?.flags?.disallowXRP
   const canManageDomain =
     data?.address === account?.address && !!setSignRequest && !effectiveLedgerTimestamp && !!data?.ledgerInfo?.activated
+  const canManageNftMinter = canManageDomain && !xahauNetwork
   const disabledSetDomainTooltip = (() => {
     if (canManageDomain) return ''
     if (!setSignRequest || !account?.address) return ta('tooltips.login-required')
@@ -4852,6 +4853,50 @@ export default function Account({
                             <span onClick={(event) => event.stopPropagation()}>
                               <CopyButton text={data.ledgerInfo.nftokenMinter} />
                             </span>
+                            {canManageNftMinter && (
+                              <span className="nft-minter-actions no-brake" onClick={(event) => event.stopPropagation()}>
+                                <span className="tooltip tooltip-icon">
+                                  <button
+                                    type="button"
+                                    className="nft-minter-action"
+                                    onClick={() =>
+                                      setSignRequest({
+                                        action: 'setNftMinter',
+                                        redirect: 'account',
+                                        request: {
+                                          TransactionType: 'AccountSet',
+                                          Account: data.address
+                                        }
+                                      })
+                                    }
+                                    aria-label={ta('actions.edit')}
+                                  >
+                                    <FaPencil />
+                                  </button>
+                                  <span className="tooltiptext no-brake">{ta('actions.edit')}</span>
+                                </span>{' '}
+                                <span className="tooltip tooltip-icon">
+                                  <button
+                                    type="button"
+                                    className="nft-minter-action red"
+                                    onClick={() =>
+                                      setSignRequest({
+                                        redirect: 'account',
+                                        request: {
+                                          TransactionType: 'AccountSet',
+                                          Account: data.address,
+                                          ClearFlag: 10
+                                        }
+                                      })
+                                    }
+                                    aria-label={ta('actions.remove')}
+                                  >
+                                    <MdDeleteForever />
+                                  </button>
+                                  <span className="tooltiptext no-brake">{ta('actions.remove')}</span>
+                                </span>
+                              </span>
+                            )}
                           </span>
                         </div>
                       )}
@@ -7620,6 +7665,21 @@ export default function Account({
                               }
                             }
                           : null
+                      const swapPairToken =
+                        isSelfPayment && collapsedPrimaryChange && collapsedSecondaryChange
+                          ? {
+                              currency: 'SWAP',
+                              currencyDetails: {
+                                type: 'lp_token',
+                                currency: `${niceCurrency(collapsedPrimaryChange.currency)}/${niceCurrency(
+                                  collapsedSecondaryChange.currency
+                                )}`,
+                                asset: collapsedPrimaryChange,
+                                asset2: collapsedSecondaryChange
+                              }
+                            }
+                          : null
+                      const collapsedPairToken = ammPairToken || swapPairToken
                       const resolvedCounterpartyAddress = isAccountDeleteTx
                         ? isSource
                           ? removedAccountDestinationAddress
@@ -8229,10 +8289,10 @@ export default function Account({
                                       {dexCollapsedSequences.join(', ')}
                                     </span>
                                   )}
-                                  {ammPairToken && (
+                                  {collapsedPairToken && (
                                     <span className="tx-amm-token-meta">
                                       <CurrencyWithIcon
-                                        token={ammPairToken}
+                                        token={collapsedPairToken}
                                         hideIssuer
                                         options={{ disableTokenLink: true }}
                                       />
@@ -12175,7 +12235,7 @@ export default function Account({
         .tx-type-main {
           display: inline-flex;
           align-items: center;
-          gap: 2px;
+          gap: 6px;
           font-size: 14px;
           font-weight: 600;
           color: var(--text);
@@ -13304,7 +13364,8 @@ export default function Account({
         }
 
         .signer-row {
-          display: flex;
+          display: grid;
+          grid-template-columns: 30px minmax(0, 1fr) max-content max-content;
           align-items: center;
           gap: 8px;
           padding: 12px 0;
@@ -13331,18 +13392,29 @@ export default function Account({
         }
 
         .signer-row-role {
-          flex: 0 1 auto;
-          min-width: 0;
-          white-space: normal;
-          overflow-wrap: anywhere;
+          white-space: nowrap;
           padding: 0 8px;
           text-align: right;
         }
 
         .signer-row-action {
-          flex: 0 0 auto;
           display: flex;
           justify-content: flex-end;
+        }
+
+        @media (max-width: 600px) {
+          .signer-row {
+            grid-template-columns: 24px minmax(0, 1fr) max-content max-content;
+            gap: 6px;
+          }
+
+          .signer-row-index {
+            width: 24px;
+          }
+
+          .signer-row-role {
+            padding: 0 2px;
+          }
         }
 
         .asset-details {
@@ -14436,6 +14508,29 @@ export default function Account({
           align-items: flex-start;
           gap: 6px;
           justify-content: flex-end;
+        }
+
+        .nft-minter-actions {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .nft-minter-action {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          border: 0;
+          background: transparent;
+          color: inherit;
+          font-size: 16px;
+          line-height: 1;
+          cursor: pointer;
+        }
+
+        .nft-minter-action.red {
+          font-size: 18px;
         }
 
         .id-inline {

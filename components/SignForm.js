@@ -46,6 +46,7 @@ import { submitProAddressToVerify } from '../utils/pro'
 import { setAvatar } from '../utils/blobVerifications'
 import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
+import SetNftMinter from './SignForms/SetNftMinter'
 import SetDid from './SignForms/SetDid'
 import SetTrustline from './SignForms/SetTrustline'
 import Payment from './SignForms/Payment'
@@ -72,6 +73,7 @@ const askInfoScreens = [
   'NFTokenCreateOffer',
   'NFTokenBurn',
   'setDomain',
+  'setNftMinter',
   'setDid',
   'setAvatar',
   'setTrustline',
@@ -95,6 +97,7 @@ const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
   if (tx.TransactionType === 'NFTokenBurn') return 'NFTokenBurn'
   if (tx.TransactionType === 'NFTokenModify') return 'NFTokenModify'
   if (signRequest.action === 'setDomain') return 'setDomain'
+  if (signRequest.action === 'setNftMinter') return 'setNftMinter'
   if (signRequest.action === 'setDid') return 'setDid'
   if (signRequest.action === 'setAvatar') return 'setAvatar'
   if (signRequest.action === 'setTrustline') return 'setTrustline'
@@ -103,7 +106,7 @@ const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
   if (signRequest.action && voteTxs.includes(signRequest.action)) return signRequest.action
   return null
 }
-const noCheckboxScreens = [...voteTxs, ...ammTxs, 'setDomain', 'setDid', 'setAvatar']
+const noCheckboxScreens = [...voteTxs, ...ammTxs, 'setDomain', 'setNftMinter', 'setDid', 'setAvatar']
 
 let transactionFetchTries = 0
 
@@ -1587,6 +1590,7 @@ export default function SignForm({
                         : t('signin.confirm.nft-create-buy-offer-header'))}
                     {screen === 'nftTransfer' && t('signin.confirm.nft-create-transfer-offer-header')}
                     {screen === 'setDomain' && t('signin.confirm.set-domain')}
+                    {screen === 'setNftMinter' && t('signin.confirm.set-nft-minter')}
                     {screen === 'setDid' && t('signin.confirm.set-did')}
                     {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
                     {screen === 'setTrustline' && 'Add a token'}
@@ -1634,6 +1638,14 @@ export default function SignForm({
                     <SetDomain
                       setSignRequest={setSignRequest}
                       signRequest={signRequest}
+                      setStatus={setStatus}
+                      setAgreedToRisks={setAgreedToRisks}
+                    />
+                  )}
+
+                  {screen === 'setNftMinter' && (
+                    <SetNftMinter
+                      setSignRequest={setSignRequest}
                       setStatus={setStatus}
                       setAgreedToRisks={setAgreedToRisks}
                     />
