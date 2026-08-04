@@ -7735,17 +7735,31 @@ export default function Account({
                               }
                             }
                           : null
+                      const intendedSwapSourceAsset =
+                        tx?.SendMax && typeof tx.SendMax === 'object'
+                          ? tx.SendMax
+                          : tx?.SendMax !== undefined
+                            ? { currency: nativeCurrency }
+                            : null
+                      const intendedSwapDestinationAsset =
+                        tx?.Amount && typeof tx.Amount === 'object'
+                          ? tx.Amount
+                          : tx?.Amount !== undefined
+                            ? { currency: nativeCurrency }
+                            : null
+                      const swapSourceAsset = collapsedPrimaryChange || intendedSwapSourceAsset
+                      const swapDestinationAsset = collapsedSecondaryChange || intendedSwapDestinationAsset
                       const swapPairToken =
-                        isSelfPayment && collapsedPrimaryChange && collapsedSecondaryChange
+                        isSelfPayment && swapSourceAsset && swapDestinationAsset
                           ? {
                               currency: 'SWAP',
                               currencyDetails: {
                                 type: 'lp_token',
-                                currency: `${niceCurrency(collapsedPrimaryChange.currency)}/${niceCurrency(
-                                  collapsedSecondaryChange.currency
+                                currency: `${niceCurrency(swapSourceAsset.currency)}/${niceCurrency(
+                                  swapDestinationAsset.currency
                                 )}`,
-                                asset: collapsedPrimaryChange,
-                                asset2: collapsedSecondaryChange
+                                asset: swapSourceAsset,
+                                asset2: swapDestinationAsset
                               }
                             }
                           : null
@@ -8372,7 +8386,7 @@ export default function Account({
                                     <span className="tx-trustset-inline">
                                       <CurrencyWithIcon
                                         token={{ ...trustSetToken }}
-                                        options={{ disableTokenLink: true }}
+                                        options={{ disableTokenLink: true, issuerLength: 6 }}
                                       />
                                     </span>
                                   )}
@@ -12266,6 +12280,7 @@ export default function Account({
           display: flex;
           align-items: flex-start;
           min-width: 0;
+          overflow: hidden;
         }
 
         .tx-collapsed-body {
@@ -12442,6 +12457,10 @@ export default function Account({
         .tx-nft-counterparty-inline {
           overflow: visible;
           text-overflow: clip;
+        }
+
+        .tx-counterparty-label {
+          margin-right: 4px;
         }
 
         .tx-trustset-inline {

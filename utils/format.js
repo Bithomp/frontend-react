@@ -264,7 +264,13 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
               {!doubleIcon && !hideIssuer && (
                 <>
                   <br />
-                  <span className="grey text-xs"><ServiceUsernameOrAddress data={token} name="issuer" /></span>
+                  <span className="grey text-xs">
+                    <ServiceUsernameOrAddress
+                      data={token}
+                      name="issuer"
+                      length={options?.issuerLength ?? 17}
+                    />
+                  </span>
                 </>
               )}
             </td>
