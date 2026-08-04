@@ -1,4 +1,5 @@
 import axios from 'axios'
+import BigNumber from 'bignumber.js'
 import { errorCodeDescription } from './transaction'
 
 export const broadcastTransaction = async ({
@@ -68,4 +69,77 @@ export const getNextTransactionParams = async (tx) => {
   }
 
   return params
+}
+
+const normalizedCurrency = (currency) => String(currency || '').toUpperCase()
+
+export const prepareTransactionWithFundingCheck = async (tx, { checkFunding = false } = {}) => {
+  const params = await getNextTransactionParams(tx)
+  if (!params) return null
+
+  const transaction = {
+    ...tx,
+    Sequence: params.Sequence,
+    Fee: params.Fee,
+    LastLedgerSequence: params.LastLedgerSequence
+  }
+
+  if (!checkFunding || !transaction.Account) return { transaction, funding: null }
+
+  const limitAmount = transaction.TransactionType === 'TrustSet' ? transaction.LimitAmount : null
+  const trustlineLimit = new BigNumber(limitAmount?.value || 0)
+  const mayCreateTrustline = trustlineLimit.isFinite() && !trustlineLimit.isZero()
+  const [addressResponse, serverResponse, trustlinesResponse] = await Promise.all([
+    axios(`/v2/address/${encodeURIComponent(transaction.Account)}?ledgerInfo=true`),
+    axios('/v2/server'),
+    mayCreateTrustline ? axios(`/v2/trustlines/${encodeURIComponent(transaction.Account)}`) : Promise.resolve(null)
+  ])
+
+  const ledgerInfo = addressResponse?.data?.ledgerInfo
+  const serverInfo = serverResponse?.data
+  const balanceDrops = new BigNumber(ledgerInfo?.balance ?? NaN)
+  const reserveBaseDrops = new BigNumber(serverInfo?.reserveBase ?? NaN)
+  const reserveIncrementDrops = new BigNumber(serverInfo?.reserveIncrement ?? NaN)
+  const ownerCount = new BigNumber(ledgerInfo?.ownerCount || 0)
+  const feeDrops = new BigNumber(transaction.Fee ?? NaN)
+
+  if (
+    !balanceDrops.isFinite() ||
+    !reserveBaseDrops.isFinite() ||
+    !reserveIncrementDrops.isFinite() ||
+    !ownerCount.isFinite() ||
+    !feeDrops.isFinite()
+  ) {
+    throw new Error('Invalid account funding data')
+  }
+
+  const reservedDrops = BigNumber.minimum(balanceDrops, reserveBaseDrops.plus(ownerCount.multipliedBy(reserveIncrementDrops)))
+  const availableDrops = BigNumber.maximum(0, balanceDrops.minus(reservedDrops))
+  let additionalReserveDrops = new BigNumber(0)
+
+  if (mayCreateTrustline) {
+    const trustlinesData = trustlinesResponse?.data
+    const trustlines = Array.isArray(trustlinesData)
+      ? trustlinesData
+      : trustlinesData?.trustlines || trustlinesData?.tokens || trustlinesData?.lines || []
+    const trustlineExists = trustlines.some(
+      (trustline) =>
+        trustline?.counterparty === limitAmount.issuer &&
+        normalizedCurrency(trustline?.currency) === normalizedCurrency(limitAmount.currency)
+    )
+    if (!trustlineExists) additionalReserveDrops = reserveIncrementDrops
+  }
+
+  const requiredDrops = feeDrops.plus(additionalReserveDrops)
+
+  return {
+    transaction,
+    funding: {
+      sufficient: availableDrops.gte(requiredDrops),
+      availableDrops: availableDrops.toFixed(0),
+      requiredDrops: requiredDrops.toFixed(0),
+      feeDrops: feeDrops.toFixed(0),
+      additionalReserveDrops: additionalReserveDrops.toFixed(0)
+    }
+  }
 }

@@ -13,8 +13,8 @@ import {
   IoStatsChart,
   IoWallet,
   IoLogOutOutline,
-  IoPersonOutline,
-  IoListOutline,
+  IoCheckmarkCircle,
+  IoCheckmarkCircleOutline,
   IoPaperPlaneOutline,
   IoSettingsOutline,
   IoAtOutline,
@@ -95,7 +95,9 @@ export default function MobileMenu({
   account,
   //countryCode,
   sessionToken,
-  openEmailLogin
+  openEmailLogin,
+  walletNativeBalances,
+  openWalletSend
 }) {
   const { t } = useTranslation('common')
   const router = useRouter()
@@ -107,6 +109,11 @@ export default function MobileMenu({
   const orderedWallets = [...wallets].sort((a, b) => (b?.connectedAt || 0) - (a?.connectedAt || 0))
   const activeWallet = wallets.find((w) => w?.id === account?.activeWalletId) || wallets[0] || null
   const activeWalletId = activeWallet?.id || account?.activeWalletId || null
+  const walletNativeBalanceText = (walletAddress) => {
+    const balance = walletNativeBalances?.[walletAddress]?.total
+    if (!Number.isFinite(balance)) return null
+    return `${balance.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${nativeCurrency}`
+  }
 
   const handleWalletSwitch = (walletItem) => {
     if (!walletItem?.id) return
@@ -124,6 +131,11 @@ export default function MobileMenu({
     mobileMenuToggle()
   }
 
+  const handleWalletSend = () => {
+    openWalletSend?.()
+    mobileMenuToggle()
+  }
+
   const connectedWalletsBlock = !!orderedWallets.length && (
     <div className="mobile-wallets-block">
       <div className="wallets-title center">{t('menu.wallet.connected-wallets')}</div>
@@ -133,14 +145,15 @@ export default function MobileMenu({
 
         return (
           <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
-            <span
+            <Link
+              href={'/account/' + walletItem.address}
               className={
                 'link wallet-switch' +
                 (isActiveWallet && router.asPath.startsWith('/account/' + walletItem.address)
                   ? ' wallet-switch-active'
                   : '')
               }
-              onClick={() => handleWalletSwitch(walletItem)}
+              onClick={mobileMenuToggle}
             >
               <img
                 alt="avatar"
@@ -149,11 +162,13 @@ export default function MobileMenu({
                 height="20"
                 className="wallet-row-avatar"
               />
-              <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
-            </span>
-            <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>
-              {isActiveWallet && '●'}
-            </span>
+              <span className="wallet-switch-info">
+                <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
+                {walletNativeBalanceText(walletItem.address) && (
+                  <span className="wallet-native-balance">{walletNativeBalanceText(walletItem.address)}</span>
+                )}
+              </span>
+            </Link>
             <span className="wallet-provider-icon" aria-label={providerName} tabIndex={0}>
               <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} showFallback />
               <span className="wallet-provider-tooltip">{providerName}</span>
@@ -173,15 +188,29 @@ export default function MobileMenu({
                 <IoCopyOutline aria-hidden="true" />
               </CopyButton>
             </span>
-            <span
-              className="link wallet-disconnect"
-              onClick={(event) => {
-                event.stopPropagation()
-                signOut(walletItem.id)
-              }}
+            <button
+              type="button"
+              className={'wallet-icon-action wallet-active-action' + (isActiveWallet ? ' is-active' : '')}
+              onClick={() => !isActiveWallet && handleWalletSwitch(walletItem)}
+              disabled={isActiveWallet}
+              aria-label={t(isActiveWallet ? 'menu.wallet.active' : 'menu.wallet.make-active')}
+              title={t(isActiveWallet ? 'menu.wallet.active' : 'menu.wallet.make-active')}
             >
-              <IoLogOutOutline aria-label={t('menu.wallet.disconnect')} />
-            </span>
+              {isActiveWallet ? <IoCheckmarkCircle /> : <IoCheckmarkCircleOutline />}
+              <span className="wallet-action-tooltip">
+                {t(isActiveWallet ? 'menu.wallet.active' : 'menu.wallet.make-active')}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="wallet-icon-action wallet-disconnect"
+              onClick={() => signOut(walletItem.id)}
+              aria-label={t('menu.wallet.disconnect')}
+              title={t('menu.wallet.disconnect')}
+            >
+              <IoLogOutOutline aria-hidden="true" />
+              <span className="wallet-action-tooltip">{t('menu.wallet.disconnect')}</span>
+            </button>
           </div>
         )
       })}
@@ -191,6 +220,17 @@ export default function MobileMenu({
         </span>
         {t('menu.wallet.connect-another-wallet')}
       </span>
+      <button
+        type="button"
+        className="wallet-send-row"
+        onClick={handleWalletSend}
+        disabled={!orderedWallets.some((item) => walletNativeBalances?.[item.address]?.available > 0)}
+      >
+        <span className="wallet-connect-icon" aria-hidden="true">
+          <IoPaperPlaneOutline />
+        </span>
+        {t('menu.wallet.send')}
+      </button>
     </div>
   )
 
@@ -220,26 +260,6 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           {displayName ? (
             <>
-              <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <IoPersonOutline style={itemIconStyle} />
-                {t('signin.actions.view')}
-              </Link>
-              <Link
-                href={'/account/' + address + '/transactions'}
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
-                <IoListOutline style={itemIconStyle} />
-                {t('signin.actions.my-transactions')}
-              </Link>
-              <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <IoPaperPlaneOutline style={itemIconStyle} />
-                {t('menu.services.send')}
-              </Link>
-              <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <IoSettingsOutline style={itemIconStyle} />
-                {t('menu.wallet.my-account-settings')}
-              </Link>
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                   <IoAtOutline style={itemIconStyle} />
@@ -276,6 +296,10 @@ export default function MobileMenu({
 
           {proLoggedIn && (
             <>
+              <Link href="/admin/notifications" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <IoNotificationsOutline style={iconStyle} /> {t('menu.pro.alerts')}
+              </Link>
+
               <Link href="/admin/watchlist" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> {t('menu.pro.watchlist')}
               </Link>
@@ -284,16 +308,12 @@ export default function MobileMenu({
                 <FaUserFriends style={iconStyle} /> {t('menu.pro.referrals')}
               </Link>
 
-              <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> {t('menu.pro.my-addresses')}
-              </Link>
-
-              <Link href="/admin/notifications" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <IoNotificationsOutline style={iconStyle} /> {t('menu.pro.alerts')}
-              </Link>
-
               <Link href="/admin/api" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoStatsChart style={iconStyle} /> {t('menu.pro.api-management')}
+              </Link>
+
+              <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> {t('menu.pro.my-addresses')}
               </Link>
 
               <span onClick={signOutPro} className="mobile-menu-item">

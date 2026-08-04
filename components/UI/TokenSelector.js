@@ -243,6 +243,19 @@ export default function TokenSelector({
     setCachedSearchScope('')
   }, [canLock])
 
+  const balanceForToken = (token) => {
+    if (!filterByDestination) return null
+    if (token?.issuer) {
+      const balance = userAssetBalances[assetBalanceKey(token.issuer, token.currency)]
+      return balance?.isFinite() ? balance.toFixed() : null
+    }
+    if (token?.balance !== undefined) {
+      const balance = new BigNumber(token.balance).dividedBy(1_000_000)
+      return balance.isFinite() ? balance.toFixed() : null
+    }
+    return null
+  }
+
   // Handle search with debounce
   useEffect(() => {
     if (!isOpen) {
@@ -397,7 +410,8 @@ export default function TokenSelector({
       )
       return
     }
-    onChange(token)
+    const selectedBalance = balanceForToken(token)
+    onChange(selectedBalance === null ? token : { ...token, selectedBalance })
     setIsOpen(false)
   }
 

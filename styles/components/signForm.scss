@@ -947,6 +947,69 @@
       text-align: left;
     }
 
+    .payment-source-account-select {
+      width: 100%;
+
+      .react-select__control {
+        min-height: 52px;
+      }
+
+      .react-select__value-container {
+        min-width: 0;
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+    }
+
+    .payment-source-option {
+      display: flex;
+      min-width: 0;
+      width: 100%;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+
+      &.is-selected {
+        gap: 10px;
+      }
+    }
+
+    .payment-source-avatar {
+      flex-shrink: 0;
+      border-radius: 50%;
+    }
+
+    .payment-source-details {
+      display: flex;
+      min-width: 0;
+      flex: 1;
+      flex-direction: column;
+    }
+
+    .payment-source-name,
+    .payment-source-address {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .payment-source-name {
+      line-height: 1.25;
+    }
+
+    .payment-source-address {
+      color: var(--text-secondary);
+      font-size: 11px;
+    }
+
+    .payment-source-balance {
+      flex-shrink: 0;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
     .paymentAmountTitle,
     .paymentAmountReceive,
     .paymentAmountFee {

@@ -162,7 +162,9 @@
       "my-account-settings": "Paramètres de mon compte",
       "connected-wallets": "Portefeuilles connectés",
       "active": "Actif",
-      "disconnect": "Déconnecter",
+      "make-active": "Activer",
+      "send": "Envoyer un paiement",
+      "disconnect": "Retirer",
       "connect-another-wallet": "Connecter un autre portefeuille"
     },
     "pro": {
@@ -252,6 +254,12 @@
     "target-table": "Table cible",
     "statuses": {
       "check-app": "Veuillez suivre les instructions dans l'application {{appName}}."
+    },
+    "funding-check": {
+      "checking": "Vérification des frais réseau et du solde disponible…",
+      "error": "Impossible de vérifier les frais réseau ou le solde disponible. Veuillez réessayer.",
+      "insufficient-fee": "Solde disponible en {{nativeCurrency}} insuffisant pour payer les frais réseau. Disponible : {{available}} {{nativeCurrency}}. Requis : {{required}} {{nativeCurrency}}.",
+      "insufficient-reserve": "Solde disponible en {{nativeCurrency}} insuffisant pour ajouter ce token. Disponible : {{available}} {{nativeCurrency}}. La nouvelle trustline et les frais nécessitent {{required}} {{nativeCurrency}}."
     },
     "xaman": {
       "open-app": "Ouvrez l'application Xaman sur votre téléphone.",
@@ -626,6 +634,7 @@
     "day": "Pour les 24 dernières heures"
   },
   "table": {
+    "from": "De",
     "ledger": "Ledger",
     "no-value": "sans valeur",
     "updated": "Mis à jour",

@@ -162,7 +162,9 @@
       "my-account-settings": "Pengaturan akun saya",
       "connected-wallets": "Wallet terhubung",
       "active": "Aktif",
-      "disconnect": "Putuskan",
+      "make-active": "Aktifkan",
+      "send": "Kirim pembayaran",
+      "disconnect": "Keluar",
       "connect-another-wallet": "Hubungkan wallet lain"
     },
     "pro": {
@@ -252,6 +254,12 @@
     "target-table": "Tabel sasaran",
     "statuses": {
       "check-app": "Ikuti petunjuk di aplikasi {{appName}}."
+    },
+    "funding-check": {
+      "checking": "Memeriksa biaya jaringan dan saldo yang tersedia…",
+      "error": "Biaya jaringan atau saldo yang tersedia tidak dapat diperiksa. Silakan coba lagi.",
+      "insufficient-fee": "{{nativeCurrency}} yang tersedia tidak cukup untuk membayar biaya jaringan. Tersedia: {{available}} {{nativeCurrency}}. Diperlukan: {{required}} {{nativeCurrency}}.",
+      "insufficient-reserve": "{{nativeCurrency}} yang tersedia tidak cukup untuk menambahkan token ini. Tersedia: {{available}} {{nativeCurrency}}. Trustline baru dan biaya jaringan memerlukan {{required}} {{nativeCurrency}}."
     },
     "xaman": {
       "open-app": "Buka aplikasi Xaman di ponsel Anda.",
@@ -626,6 +634,7 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "from": "Dari",
     "ledger": "Ledger",
     "no-value": "tidak ada nilai",
     "updated": "Diperbarui",

@@ -162,7 +162,9 @@
       "my-account-settings": "Mi configuración de cuenta",
       "connected-wallets": "Billeteras conectadas",
       "active": "Activa",
-      "disconnect": "Desconectar",
+      "make-active": "Activar",
+      "send": "Enviar pago",
+      "disconnect": "Salir",
       "connect-another-wallet": "Conectar otra billetera"
     },
     "pro": {
@@ -252,6 +254,12 @@
     "target-table": "Tabla de objetivos",
     "statuses": {
       "check-app": "Por favor, sigue las siguientes instrucciones en tu app {{appName}}."
+    },
+    "funding-check": {
+      "checking": "Comprobando la comisión de red y el saldo disponible…",
+      "error": "No se pudo comprobar la comisión de red o el saldo disponible. Inténtalo de nuevo.",
+      "insufficient-fee": "No hay suficiente {{nativeCurrency}} disponible para pagar la comisión de red. Disponible: {{available}} {{nativeCurrency}}. Necesario: {{required}} {{nativeCurrency}}.",
+      "insufficient-reserve": "No hay suficiente {{nativeCurrency}} disponible para añadir este token. Disponible: {{available}} {{nativeCurrency}}. La nueva línea de confianza y la comisión requieren {{required}} {{nativeCurrency}}."
     },
     "xaman": {
       "open-app": "Abre la app Xaman en tu teléfono.",
@@ -626,6 +634,7 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "from": "De",
     "ledger": "Ledger",
     "no-value": "sin valor",
     "updated": "Actualizado",

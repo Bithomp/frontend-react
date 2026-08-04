@@ -162,6 +162,8 @@
       "my-account-settings": "自分のアカウント設定",
       "connected-wallets": "接続済みウォレット",
       "active": "有効",
+      "make-active": "有効にする",
+      "send": "支払いを送信",
       "disconnect": "切断",
       "connect-another-wallet": "別のウォレットを接続"
     },
@@ -252,6 +254,12 @@
     "target-table": "対象テーブル",
     "statuses": {
       "check-app": "{{appName}}アプリの指示に従ってください。"
+    },
+    "funding-check": {
+      "checking": "ネットワーク手数料と利用可能残高を確認しています…",
+      "error": "ネットワーク手数料または利用可能残高を確認できませんでした。もう一度お試しください。",
+      "insufficient-fee": "ネットワーク手数料を支払うための利用可能な{{nativeCurrency}}が不足しています。利用可能：{{available}} {{nativeCurrency}}。必要：{{required}} {{nativeCurrency}}。",
+      "insufficient-reserve": "このトークンを追加するための利用可能な{{nativeCurrency}}が不足しています。利用可能：{{available}} {{nativeCurrency}}。新しいトラストラインと手数料には{{required}} {{nativeCurrency}}が必要です。"
     },
     "xaman": {
       "open-app": "スマートフォンでXamanアプリを開きます。",
@@ -626,6 +634,7 @@
     "day": "直近24時間"
   },
   "table": {
+    "from": "送信元",
     "ledger": "レジャー",
     "no-value": "値なし",
     "updated": "最終更新",

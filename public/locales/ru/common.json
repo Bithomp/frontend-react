@@ -162,7 +162,9 @@
       "my-account-settings": "Настройки моего аккаунта",
       "connected-wallets": "Подключенные кошельки",
       "active": "Активный",
-      "disconnect": "Отключить",
+      "make-active": "Активировать",
+      "send": "Отправить платёж",
+      "disconnect": "Выйти",
       "connect-another-wallet": "Подключить другой кошелек"
     },
     "pro": {
@@ -252,6 +254,12 @@
     "target-table": "Выберите стол",
     "statuses": {
       "check-app": "Следуйте инструкциям в {{appName}} приложении."
+    },
+    "funding-check": {
+      "checking": "Проверяем комиссию сети и доступный баланс…",
+      "error": "Не удалось проверить комиссию сети или доступный баланс. Попробуйте ещё раз.",
+      "insufficient-fee": "Недостаточно доступных {{nativeCurrency}} для комиссии сети. Доступно: {{available}} {{nativeCurrency}}. Необходимо: {{required}} {{nativeCurrency}}.",
+      "insufficient-reserve": "Недостаточно доступных {{nativeCurrency}}, чтобы добавить токен. Доступно: {{available}} {{nativeCurrency}}. Для новой trustline и комиссии необходимо {{required}} {{nativeCurrency}}."
     },
     "xaman": {
       "open-app": "Откройте Xaman приложение на телефоне",
@@ -626,6 +634,7 @@
     "day": "За последние 24 часа"
   },
   "table": {
+    "from": "Отправитель",
     "ledger": "Леджер",
     "no-value": "без цены",
     "updated": "Обновлено",

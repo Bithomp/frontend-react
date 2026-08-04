@@ -7562,7 +7562,20 @@ export default function Account({
                       }) => {
                         if (amount === null || typeof amount === 'undefined') return null
 
-                        const displayAmount = typeof sign === 'number' ? toSignedDexAmount(amount, sign) : amount
+                        const amountIssuer = typeof amount === 'object' ? amount?.issuer : null
+                        const knownIssuerDetails = amountIssuer
+                          ? [txdata?.specification?.source, txdata?.specification?.destination].find(
+                              (accountData) => accountData?.address === amountIssuer
+                            )?.addressDetails
+                          : null
+                        const amountWithIssuerDetails =
+                          amountIssuer && knownIssuerDetails && !amount?.issuerDetails
+                            ? { ...amount, issuerDetails: knownIssuerDetails }
+                            : amount
+                        const displayAmount =
+                          typeof sign === 'number'
+                            ? toSignedDexAmount(amountWithIssuerDetails, sign)
+                            : amountWithIssuerDetails
                         if (!displayAmount) return null
 
                         const displayAmountFiat = tokenToFiat({

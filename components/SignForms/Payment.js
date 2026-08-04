@@ -3,8 +3,18 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 
 import AddressInput from '../UI/AddressInput'
+import SimpleSelect from '../UI/SimpleSelect'
+import TokenSelector from '../UI/TokenSelector'
 import PaymentAmountMode from './PaymentAmountMode'
-import { encode, isAddressValid, isNativeCurrency, isTagValid, nativeCurrency } from '../../utils'
+import {
+  avatarSrc,
+  encode,
+  isAddressValid,
+  isNativeCurrency,
+  isTagValid,
+  nativeCurrency,
+  retinaImageSize
+} from '../../utils'
 import { divide, multiply, subtract, toPlainDecimal } from '../../utils/calc'
 import { formatXDigits, niceCurrency, transferRateToPercent } from '../../utils/format'
 import { amountWithValue, PAYMENT_AMOUNT_MODE, transferFeeAmounts } from '../../utils/paymentTransferFee'
@@ -29,24 +39,56 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   const { t } = useTranslation(['common', 'services'])
   const ts = useCallback((key, options) => t(key, { ns: 'services', ...options }), [t])
   const initialRequest = signRequest?.request || {}
+  const allowAssetSelection = !!signRequest?.data?.allowAssetSelection
+  const sourceWallets = useMemo(
+    () => (Array.isArray(signRequest?.data?.sourceWallets) ? signRequest.data.sourceWallets : []),
+    [signRequest?.data?.sourceWallets]
+  )
+  const [sourceAddress, setSourceAddress] = useState(initialRequest.Account || sourceWallets[0]?.address || '')
+  const sourceWalletOptions = useMemo(
+    () =>
+      sourceWallets.map((wallet) => ({
+        value: wallet.address,
+        label: wallet.username || wallet.address,
+        ...wallet
+      })),
+    [sourceWallets]
+  )
+  const [selectedAsset, setSelectedAsset] = useState(() => ({
+    currency: signRequest?.data?.currencyCode || initialRequest.Amount?.currency || nativeCurrency,
+    issuer: signRequest?.data?.issuer || initialRequest.Amount?.issuer,
+    mptokenIssuanceID:
+      signRequest?.data?.mptokenIssuanceID ||
+      (typeof initialRequest.Amount === 'object' ? initialRequest.Amount?.mpt_issuance_id : ''),
+    selectedBalance: signRequest?.data?.balance
+  }))
   const mptokenIssuanceID =
-    signRequest?.data?.mptokenIssuanceID ||
-    (typeof initialRequest.Amount === 'object' ? initialRequest.Amount?.mpt_issuance_id : '')
+    selectedAsset?.mptokenIssuanceID || selectedAsset?.MPTokenIssuanceID || selectedAsset?.mpt_issuance_id || ''
   const isMptPayment = !!mptokenIssuanceID
-  const mptAssetScale = Math.min(255, Math.max(0, Math.floor(Number(signRequest?.data?.mptAssetScale) || 0)))
+  const mptAssetScale = Math.min(
+    255,
+    Math.max(
+      0,
+      Math.floor(
+        Number(selectedAsset?.scale ?? selectedAsset?.AssetScale ?? signRequest?.data?.mptAssetScale) || 0
+      )
+    )
+  )
   const mptScaleMultiplier = `1${'0'.repeat(mptAssetScale)}`
   const currencyCode = useMemo(() => {
+    if (allowAssetSelection && selectedAsset?.currency) return selectedAsset.currency
     if (signRequest?.data?.currencyCode) return signRequest.data.currencyCode
     if (typeof initialRequest.Amount === 'object' && initialRequest.Amount?.currency)
       return initialRequest.Amount.currency
     return nativeCurrency
-  }, [initialRequest.Amount, signRequest?.data?.currencyCode])
+  }, [allowAssetSelection, initialRequest.Amount, selectedAsset?.currency, signRequest?.data?.currencyCode])
 
   const issuer = useMemo(() => {
+    if (allowAssetSelection) return selectedAsset?.issuer || selectedAsset?.account || ''
     if (signRequest?.data?.issuer) return signRequest.data.issuer
     if (typeof initialRequest.Amount === 'object' && initialRequest.Amount?.issuer) return initialRequest.Amount.issuer
     return ''
-  }, [initialRequest.Amount, signRequest?.data?.issuer])
+  }, [allowAssetSelection, initialRequest.Amount, selectedAsset?.account, selectedAsset?.issuer, signRequest?.data?.issuer])
 
   const isTokenPayment = isMptPayment || !isNativeCurrency({ currency: currencyCode })
   const currencyLabel = useMemo(
@@ -54,9 +96,10 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     [currencyCode, isTokenPayment]
   )
   const balance = useMemo(() => {
-    if (signRequest?.data?.balance === undefined || signRequest?.data?.balance === null) return ''
-    return toPlainDecimal(signRequest.data.balance)
-  }, [signRequest?.data?.balance])
+    const selectedBalance = allowAssetSelection ? selectedAsset?.selectedBalance : signRequest?.data?.balance
+    if (selectedBalance === undefined || selectedBalance === null) return ''
+    return toPlainDecimal(selectedBalance)
+  }, [allowAssetSelection, selectedAsset?.selectedBalance, signRequest?.data?.balance])
 
   const [destination, setDestination] = useState(initialRequest.Destination || '')
   const [amount, setAmount] = useState(toInitialAmount(initialRequest.Amount))
@@ -70,6 +113,60 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   const [destinationTokenError, setDestinationTokenError] = useState('')
   const [destinationTokenTransferFee, setDestinationTokenTransferFee] = useState(signRequest?.data?.transferFee || null)
   const [amountMode, setAmountMode] = useState(PAYMENT_AMOUNT_MODE.DELIVER)
+
+  const selectAsset = (asset) => {
+    const isNativeAsset = !asset?.issuer && !asset?.account && !mptIssuanceId(asset)
+    const sourceWallet = sourceWallets.find((item) => item.address === sourceAddress)
+    setSelectedAsset(
+      isNativeAsset && sourceWallet?.nativeAvailableBalance !== undefined
+        ? { ...asset, selectedBalance: sourceWallet.nativeAvailableBalance }
+        : asset
+    )
+    setAmount('')
+    setAmountMode(PAYMENT_AMOUNT_MODE.DELIVER)
+  }
+
+  const selectSourceWallet = (walletAddress) => {
+    const wallet = sourceWallets.find((item) => item.address === walletAddress)
+    if (!wallet) return
+
+    setSourceAddress(wallet.address)
+    signRequest?.data?.onSourceWalletChange?.(wallet.id)
+    signRequest.data.nativeAvailableBalance = String(wallet.nativeAvailableBalance ?? '')
+    signRequest.data.source = {
+      address: wallet.address,
+      addressDetails: { username: wallet.username || null }
+    }
+    setSelectedAsset({
+      currency: nativeCurrency,
+      selectedBalance: wallet.nativeAvailableBalance
+    })
+    setAmount('')
+    setAmountMode(PAYMENT_AMOUNT_MODE.DELIVER)
+  }
+
+  const formatSourceWalletOption = (wallet, { context }) => (
+    <span className={`payment-source-option ${context === 'value' ? 'is-selected' : 'is-menu-option'}`}>
+      <img
+        src={avatarSrc(wallet.address, { size: retinaImageSize(24), hashIconZoom: 12 })}
+        width="24"
+        height="24"
+        alt=""
+        className="payment-source-avatar"
+      />
+      <span className="payment-source-details">
+        <span className="payment-source-name">{wallet.username || wallet.address}</span>
+        {context === 'menu' && wallet.username ? (
+          <span className="payment-source-address">{wallet.address}</span>
+        ) : null}
+      </span>
+      {Number.isFinite(wallet.nativeBalance) ? (
+        <span className="payment-source-balance">
+          {wallet.nativeBalance.toLocaleString(undefined, { maximumFractionDigits: 2 })} {nativeCurrency}
+        </span>
+      ) : null}
+    </span>
+  )
 
   useEffect(() => {
     const checkDestinationRequirements = async () => {
@@ -98,7 +195,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       try {
         const response = await acceptedTokensForAddress({
           destination: destinationValue,
-          sender: signRequest?.request?.Account,
+          sender: sourceAddress,
           stopWhen: (token) =>
             isMptPayment
               ? mptIssuanceId(token) === mptokenIssuanceID
@@ -120,7 +217,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     }
 
     checkDestinationRequirements()
-  }, [currencyCode, currencyLabel, destination, isMptPayment, isTokenPayment, issuer, mptokenIssuanceID, signRequest?.data?.transferFee, signRequest?.request?.Account, ts])
+  }, [currencyCode, currencyLabel, destination, isMptPayment, isTokenPayment, issuer, mptokenIssuanceID, signRequest?.data?.transferFee, sourceAddress, ts])
 
   const applyMaxAmount = (event) => {
     event.preventDefault()
@@ -135,7 +232,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   const mptAmountValue = isMptPayment ? multiply(String(amount).trim(), mptScaleMultiplier) : ''
   const hasMptPrecisionError = isMptPayment && hasValidAmount && !/^\d+$/.test(mptAmountValue)
   const transferFeeNumber = Number(destinationTokenTransferFee)
-  const isIssuerTransfer = !!issuer && (signRequest?.request?.Account === issuer || destination.trim() === issuer)
+  const isIssuerTransfer = !!issuer && (sourceAddress === issuer || destination.trim() === issuer)
   const hasIssuerFee = isTokenPayment && !isIssuerTransfer && Number.isFinite(transferFeeNumber) && transferFeeNumber > 0
   const feeAmounts = useMemo(
     () =>
@@ -226,6 +323,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     nextSignRequest.request = {
       ...nextSignRequest?.request,
       TransactionType: 'Payment',
+      Account: sourceAddress,
       Destination: destinationValue,
       Amount: nextAmount
     }
@@ -264,6 +362,8 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
       ...nextSignRequest?.data,
       currencyCode,
       issuer,
+      balance,
+      mptokenIssuanceID: mptokenIssuanceID || undefined,
       transferFee: destinationTokenTransferFee || undefined
     }
 
@@ -271,6 +371,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   }, [
     amount,
     amountMode,
+    balance,
     currencyCode,
     destination,
     destinationTag,
@@ -281,6 +382,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     mptScaleMultiplier,
     mptokenIssuanceID,
     requireDestTag,
+    sourceAddress,
     destinationTokenError,
     destinationTokenTransferFee,
     feeAmounts,
@@ -294,6 +396,34 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   return (
     <div className="center">
       <br />
+      {allowAssetSelection && (
+        <>
+          <span className="halv">
+            <span className="input-title">{t('table.from')}</span>
+            <SimpleSelect
+              value={sourceAddress}
+              setValue={selectSourceWallet}
+              optionsList={sourceWalletOptions}
+              className="payment-source-account-select"
+              instanceId="payment-source-wallet-select"
+              formatOptionLabel={formatSourceWalletOption}
+            />
+          </span>
+          <br />
+          <span className="halv">
+            <span className="input-title">{ts('shared.currency')}</span>
+            <TokenSelector
+              value={selectedAsset}
+              onChange={selectAsset}
+              destinationAddress={sourceAddress}
+              senderAddress={sourceAddress}
+              includeMPTokens
+              modalTitle={t('token-selector.select-token')}
+            />
+          </span>
+          <br />
+        </>
+      )}
       <span className="halv">
         <AddressInput
           title={t('table.destination')}

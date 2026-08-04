@@ -61,7 +61,7 @@ import { WalletConnect } from './Walletconnect'
 import NFTokenModify from './SignForms/NFTokenModify'
 import AddressSelectionPanel from './SignForms/AddressSelectionPanel'
 import { errorCodeDescription } from '../utils/transaction'
-import { broadcastTransaction, getNextTransactionParams } from '../utils/user'
+import { broadcastTransaction, getNextTransactionParams, prepareTransactionWithFundingCheck } from '../utils/user'
 import { partnerMarketplaces } from '../utils/nft'
 
 const qr = '/images/qr.gif'
@@ -246,6 +246,66 @@ export default function SignForm({
   const showMobileWallet = (wallet) => !limitMobileWalletChoice || account.wallet === wallet
   const isLoginRequest = !signRequest?.request || signRequest.request.TransactionType === 'SignIn'
 
+  const formatFundingDrops = (drops) =>
+    (Number(drops || 0) / 1_000_000).toLocaleString(undefined, { maximumFractionDigits: 6 })
+
+  const prepareTransactionForWallet = async (transaction, wallet) => {
+    if (
+      !transaction ||
+      transaction.TransactionType === 'SignIn' ||
+      signRequest?.data?.signOnly
+    ) {
+      return transaction
+    }
+
+    const transactionWithAccount = {
+      ...transaction,
+      Account: transaction.Account || account?.address
+    }
+    const shouldCheckFunding =
+      !!account?.address && transactionWithAccount.Account === account.address
+
+    setAwaiting(true)
+    setStatus(t('signin.funding-check.checking'))
+
+    try {
+      const prepared = await prepareTransactionWithFundingCheck(transactionWithAccount, {
+        checkFunding: shouldCheckFunding
+      })
+      setAwaiting(false)
+
+      if (!prepared) {
+        setScreen(askInfoScreens.includes(screen) ? screen : wallet)
+        setStatus(t('signin.funding-check.error'))
+        return null
+      }
+
+      if (prepared.funding && !prepared.funding.sufficient) {
+        const translationKey = Number(prepared.funding.additionalReserveDrops) > 0
+          ? 'signin.funding-check.insufficient-reserve'
+          : 'signin.funding-check.insufficient-fee'
+        setScreen(askInfoScreens.includes(screen) ? screen : wallet)
+        setStatus(
+          t(translationKey, {
+            nativeCurrency,
+            available: formatFundingDrops(prepared.funding.availableDrops),
+            required: formatFundingDrops(prepared.funding.requiredDrops)
+          })
+        )
+        return null
+      }
+
+      setStatus('')
+      return prepared.transaction
+    } catch (error) {
+      console.error(error)
+      setAwaiting(false)
+      setScreen(askInfoScreens.includes(screen) ? screen : wallet)
+      setStatus(t('signin.funding-check.error'))
+      return null
+    }
+  }
+
   useEffect(() => {
     if (screen !== 'setTrustline') return
     setAgreedToRisks(!!account?.address)
@@ -330,35 +390,11 @@ export default function SignForm({
                 return
               }
 
-              const needsParams =
-                baseTx.TransactionType !== 'SignIn' &&
-                !signRequest?.data?.signOnly &&
-                (!baseTx.Fee || !baseTx.Sequence || !baseTx.LastLedgerSequence)
-
-              if (!needsParams) {
-                setAwaiting(false)
-                setStatus('Click “Open Xyra” to sign.')
-                setXyraPreparedTx(baseTx)
-                setXyraNeedsClick(true)
-                return
-              }
-
               // Ensure Account for params fetch
               const txWithAccount = { ...baseTx }
               if (!txWithAccount.Account) txWithAccount.Account = account.address
-
-              const params = await getNextTransactionParams(txWithAccount)
-
-              if (!params) {
-                setAwaiting(false)
-                setStatus('Error getting transaction fee.')
-                return
-              }
-
-              const prepared = { ...txWithAccount }
-              prepared.Sequence = params.Sequence
-              prepared.Fee = params.Fee
-              prepared.LastLedgerSequence = params.LastLedgerSequence
+              const prepared = await prepareTransactionForWallet(txWithAccount, 'xyra')
+              if (!prepared) return
 
               setAwaiting(false)
               setStatus('Click “Open Xyra” to sign.')
@@ -591,6 +627,9 @@ export default function SignForm({
     if (networkId === 21337 || networkId === 21338 || networkId === 31338) {
       tx.NetworkID = networkId
     }
+
+    tx = await prepareTransactionForWallet(tx, wallet)
+    if (!tx) return
 
     if (wallet === 'xaman') {
       xamanTxSending(tx)

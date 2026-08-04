@@ -1,4 +1,6 @@
 import NextLink from 'next/link'
+import axios from 'axios'
+import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useState, useEffect, useRef } from 'react'
@@ -32,8 +34,8 @@ import LogoAnimated from '../LogoAnimated'
 import {
   IoWalletOutline,
   IoLogOutOutline,
-  IoPersonOutline,
-  IoListOutline,
+  IoCheckmarkCircle,
+  IoCheckmarkCircleOutline,
   IoPaperPlaneOutline,
   IoSettingsOutline,
   IoAtOutline,
@@ -211,6 +213,7 @@ export default function Header({
   const [rendered, setRendered] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const [walletNativeBalances, setWalletNativeBalances] = useState({})
 
   const [hoverStates, setHoverStates] = useState({}) //{ dropdown7: true }
   const [headerCollapsed, setHeaderCollapsed] = useState(false)
@@ -300,15 +303,15 @@ export default function Header({
   }
   if (account && account.pro) {
     pro = account.pro
-    //split email before @ and after
+    // Keep the account recognizable without exposing the full email in the header.
     const emailParts = pro.split('@')
     let emailPart1 = emailParts[0]
     let emailPart2 = emailParts[1]
-    if (emailPart1?.length > 10) {
-      emailPart1 = emailPart1.substr(0, 7) + '**'
+    if (emailPart1?.length > 3) {
+      emailPart1 = emailPart1.slice(0, 2) + '***' + emailPart1.slice(-1)
     }
-    if (emailPart2?.length > 10) {
-      emailPart2 = '**' + emailPart2.substr(-7)
+    if (emailPart2?.length > 18) {
+      emailPart2 = emailPart2.slice(0, 2) + '***' + emailPart2.slice(-7)
     }
     proName = emailPart1 + '@' + emailPart2
   }
@@ -317,6 +320,113 @@ export default function Header({
   const wallets = Array.isArray(account?.wallets) ? account.wallets : []
   const orderedWallets = [...wallets].sort((a, b) => (b?.connectedAt || 0) - (a?.connectedAt || 0))
   const activeWalletId = account?.activeWalletId || null
+  const walletAddressesKey = [...new Set(wallets.map((walletItem) => walletItem?.address).filter(Boolean))]
+    .sort()
+    .join('|')
+
+  useEffect(() => {
+    const addresses = walletAddressesKey ? walletAddressesKey.split('|') : []
+    if (addresses.length === 0) {
+      setWalletNativeBalances({})
+      return
+    }
+
+    let ignore = false
+    setWalletNativeBalances({})
+
+    Promise.all([
+      axios('/v2/server'),
+      Promise.all(
+        addresses.map(async (walletAddress) => {
+          try {
+            const response = await axios(`/v2/address/${encodeURIComponent(walletAddress)}?ledgerInfo=true`)
+            return [walletAddress, response?.data?.ledgerInfo || null]
+          } catch {
+            return [walletAddress, null]
+          }
+        })
+      )
+    ])
+      .then(([serverResponse, accounts]) => {
+        if (ignore) return
+
+        const reserveBase = new BigNumber(serverResponse?.data?.reserveBase ?? NaN)
+        const reserveIncrement = new BigNumber(serverResponse?.data?.reserveIncrement ?? NaN)
+        const balances = accounts.map(([walletAddress, ledgerInfo]) => {
+          const balanceDrops = new BigNumber(ledgerInfo?.balance ?? NaN)
+          const ownerCount = new BigNumber(ledgerInfo?.ownerCount || 0)
+          if (!balanceDrops.isFinite() || !reserveBase.isFinite() || !reserveIncrement.isFinite()) {
+            return [walletAddress, null]
+          }
+
+          const reservedDrops = BigNumber.minimum(
+            balanceDrops,
+            reserveBase.plus(ownerCount.multipliedBy(reserveIncrement))
+          )
+          return [
+            walletAddress,
+            {
+              total: balanceDrops.dividedBy(1_000_000).toNumber(),
+              available: BigNumber.maximum(0, balanceDrops.minus(reservedDrops)).dividedBy(1_000_000).toNumber()
+            }
+          ]
+        })
+        setWalletNativeBalances(Object.fromEntries(balances))
+      })
+      .catch(() => {
+        if (!ignore) setWalletNativeBalances({})
+      })
+
+    return () => {
+      ignore = true
+    }
+  }, [walletAddressesKey])
+
+  const walletNativeBalanceText = (walletAddress) => {
+    const balance = walletNativeBalances[walletAddress]?.total
+    if (!Number.isFinite(balance)) return null
+    return `${balance.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${nativeCurrency}`
+  }
+
+  const openWalletSend = () => {
+    const activeWalletItem = orderedWallets.find((item) => item.id === activeWalletId)
+    const walletItem =
+      (walletNativeBalances[activeWalletItem?.address]?.available > 0 && activeWalletItem) ||
+      orderedWallets.find((item) => walletNativeBalances[item.address]?.available > 0)
+    const availableBalance = walletNativeBalances[walletItem?.address]?.available
+    if (!walletItem?.address || !Number.isFinite(availableBalance) || availableBalance <= 0) return
+    if (walletItem.id !== activeWalletId) setActiveWallet(walletItem.id)
+
+    setSignRequest({
+      action: 'payment',
+      redirect: 'account',
+      request: {
+        TransactionType: 'Payment',
+        Account: walletItem.address,
+        Amount: '0'
+      },
+      data: {
+        currencyCode: nativeCurrency,
+        balance: String(availableBalance),
+        nativeAvailableBalance: String(availableBalance),
+        allowAssetSelection: true,
+        sourceWallets: orderedWallets.map((item) => ({
+          id: item.id,
+          address: item.address,
+          username: item.username || null,
+          nativeBalance: walletNativeBalances[item.address]?.total,
+          nativeAvailableBalance: walletNativeBalances[item.address]?.available
+        })),
+        onSourceWalletChange: (walletId) => setActiveWallet(walletId),
+        source: {
+          address: walletItem.address,
+          addressDetails: {
+            username: walletItem.username || null
+          }
+        }
+      }
+    })
+  }
 
   const walletDisplayName = (walletItem) =>
     serviceUsernameOrAddressText(
@@ -833,7 +943,6 @@ export default function Header({
             style={{ width: '100%', justifyContent: 'flex-end' }}
             containerStyle={{ minWidth: 215, textAlign: 'right' }}
           >
-            {(displayName || proLoggedIn) && <div className="account-dropdown-spacer"></div>}
             {!displayName && (
               <span
                 onClick={() => {
@@ -847,29 +956,8 @@ export default function Header({
             )}
             {displayName && (
               <>
-                <Link href={'/account/' + address}>
-                  <IoPersonOutline className="menu-item-icon" />
-                  {t('signin.actions.view')}
-                </Link>
-                <Link href={'/account/' + address + '/transactions'}>
-                  <IoListOutline className="menu-item-icon" />
-                  {t('signin.actions.my-transactions')}
-                </Link>
-                <Link href="/services/send">
-                  <IoPaperPlaneOutline className="menu-item-icon" />
-                  {t('menu.services.send')}
-                </Link>
-                <Link href="/services/account-settings/">
-                  <IoSettingsOutline className="menu-item-icon" />
-                  {t('menu.services.account-settings')}
-                </Link>
-                <Link href="/submit-account-information">
-                  <IoInformationCircleOutline className="menu-item-icon" />
-                  {t('menu.services.submit-account-information')}
-                </Link>
                 {!!wallets.length && (
                   <>
-                    <hr className="hr" />
                     <div className="wallets-title center">{t('menu.wallet.connected-wallets')}</div>
                     {orderedWallets.map((walletItem) => {
                       const isActiveWallet = walletItem.id === activeWalletId
@@ -877,14 +965,14 @@ export default function Header({
 
                       return (
                         <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
-                          <span
+                          <Link
+                            href={'/account/' + walletItem.address}
                             className={
                               'link wallet-switch' +
                               (isActiveWallet && router.asPath.startsWith('/account/' + walletItem.address)
                                 ? ' wallet-switch-active'
                                 : '')
                             }
-                            onClick={() => setActiveWallet(walletItem.id)}
                           >
                             <img
                               alt="avatar"
@@ -893,15 +981,15 @@ export default function Header({
                               height="20"
                               className="wallet-row-avatar"
                             />
-                            <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
-                            <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>
-                              {isActiveWallet && (
-                                <>
-                                  ●<span className="wallet-active-tooltip">{t('menu.wallet.active')}</span>
-                                </>
+                            <span className="wallet-switch-info">
+                              <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
+                              {walletNativeBalanceText(walletItem.address) && (
+                                <span className="wallet-native-balance">
+                                  {walletNativeBalanceText(walletItem.address)}
+                                </span>
                               )}
                             </span>
-                          </span>
+                          </Link>
                           <span className="wallet-provider-icon" aria-label={providerName} tabIndex={0}>
                             <WalletProviderIcon provider={walletItem.provider} walletItem={walletItem} />
                             <span className="wallet-provider-tooltip">{providerName}</span>
@@ -916,10 +1004,29 @@ export default function Header({
                               <IoCopyOutline aria-hidden="true" />
                             </CopyButton>
                           </span>
-                          <span className="link wallet-disconnect" onClick={() => signOut(walletItem.id)}>
-                            <IoLogOutOutline aria-label={t('menu.wallet.disconnect')} />
-                            <span className="wallet-disconnect-tooltip">{t('menu.wallet.disconnect')}</span>
-                          </span>
+                          <button
+                            type="button"
+                            className={'wallet-icon-action wallet-active-action' + (isActiveWallet ? ' is-active' : '')}
+                            onClick={() => !isActiveWallet && setActiveWallet(walletItem.id)}
+                            disabled={isActiveWallet}
+                            aria-label={t(isActiveWallet ? 'menu.wallet.active' : 'menu.wallet.make-active')}
+                            title={t(isActiveWallet ? 'menu.wallet.active' : 'menu.wallet.make-active')}
+                          >
+                            {isActiveWallet ? <IoCheckmarkCircle /> : <IoCheckmarkCircleOutline />}
+                            <span className="wallet-action-tooltip">
+                              {t(isActiveWallet ? 'menu.wallet.active' : 'menu.wallet.make-active')}
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            className="wallet-icon-action wallet-disconnect"
+                            onClick={() => signOut(walletItem.id)}
+                            aria-label={t('menu.wallet.disconnect')}
+                            title={t('menu.wallet.disconnect')}
+                          >
+                            <IoLogOutOutline aria-hidden="true" />
+                            <span className="wallet-action-tooltip">{t('menu.wallet.disconnect')}</span>
+                          </button>
                         </div>
                       )
                     })}
@@ -938,6 +1045,17 @@ export default function Header({
                       </span>
                       {t('menu.wallet.connect-another-wallet')}
                     </span>
+                    <button
+                      type="button"
+                      className="wallet-send-row"
+                      onClick={openWalletSend}
+                      disabled={!orderedWallets.some((item) => walletNativeBalances[item.address]?.available > 0)}
+                    >
+                      <span className="wallet-connect-icon" aria-hidden="true">
+                        <IoPaperPlaneOutline />
+                      </span>
+                      {t('menu.wallet.send')}
+                    </button>
                   </>
                 )}
                 {!username && (
@@ -953,15 +1071,17 @@ export default function Header({
             )}
 
             <hr className="hr" />
-            <Link href="/admin">
-              <IoIosRocket className="menu-item-icon" /> Bithomp Pro
+            <Link href="/admin" className="pro-menu-row">
+              <IoIosRocket className="menu-item-icon" />
+              <span>Bithomp Pro</span>
+              {proLoggedIn ? <span className="pro-menu-email">{proName}</span> : null}
             </Link>
             {proLoggedIn && (
               <>
                 <hr />
-                <Link href="/admin">
-                  <IoPersonOutline className="menu-item-icon" />
-                  {displayName ? proName : t('menu.pro.profile')}
+                <Link href="/admin/notifications">
+                  <IoNotificationsOutline className="menu-item-icon" />
+                  {t('menu.pro.alerts')}
                 </Link>
                 <Link href="/admin/watchlist">
                   <IoStarOutline className="menu-item-icon" />
@@ -971,17 +1091,13 @@ export default function Header({
                   <IoPeopleOutline className="menu-item-icon" />
                   {t('menu.pro.referrals')}
                 </Link>
-                <Link href="/admin/pro">
-                  <IoLocationOutline className="menu-item-icon" />
-                  {t('menu.pro.my-addresses')}
-                </Link>
-                <Link href="/admin/notifications">
-                  <IoNotificationsOutline className="menu-item-icon" />
-                  {t('menu.pro.alerts')}
-                </Link>
                 <Link href="/admin/api">
                   <IoKeyOutline className="menu-item-icon" />
                   {t('menu.pro.api-management')}
+                </Link>
+                <Link href="/admin/pro">
+                  <IoLocationOutline className="menu-item-icon" />
+                  {t('menu.pro.my-addresses')}
                 </Link>
                 <span onClick={signOutPro} className="link">
                   <IoLogOutOutline className="menu-item-icon" />
@@ -1061,6 +1177,8 @@ export default function Header({
           signOutPro={signOutPro}
           username={username}
           isCopied={isCopied}
+          walletNativeBalances={walletNativeBalances}
+          openWalletSend={openWalletSend}
           copyToClipboard={copyToClipboard}
           account={account}
           countryCode={countryCode}

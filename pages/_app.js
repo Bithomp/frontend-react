@@ -850,7 +850,6 @@ const MyApp = ({ Component, pageProps }) => {
       }
     })
 
-    router.push('/account/' + activeWallet.address)
   }
 
   const signOut = async (walletId) => {

@@ -162,6 +162,8 @@
       "my-account-settings": "我的账户设置",
       "connected-wallets": "连接钱包",
       "active": "活跃",
+      "make-active": "设为活跃",
+      "send": "发送付款",
       "disconnect": "断开连接",
       "connect-another-wallet": "连接另一个钱包"
     },
@@ -252,6 +254,12 @@
     "target-table": "目标表",
     "statuses": {
       "check-app": "请按照 {{appName}} 应用程序中的说明进行操作。"
+    },
+    "funding-check": {
+      "checking": "正在检查网络费用和可用余额…",
+      "error": "无法检查网络费用或可用余额。请重试。",
+      "insufficient-fee": "可用的 {{nativeCurrency}} 不足以支付网络费用。可用：{{available}} {{nativeCurrency}}。需要：{{required}} {{nativeCurrency}}。",
+      "insufficient-reserve": "可用的 {{nativeCurrency}} 不足以添加此代币。可用：{{available}} {{nativeCurrency}}。新信任线和网络费用需要 {{required}} {{nativeCurrency}}。"
     },
     "xaman": {
       "open-app": "打开手机上的 Xaman 应用程序。",
@@ -626,6 +634,7 @@
     "day": "过去 24 小时"
   },
   "table": {
+    "from": "发送方",
     "ledger": "账本",
     "no-value": "没有值",
     "updated": "已更新",
