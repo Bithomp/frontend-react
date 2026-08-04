@@ -6,7 +6,10 @@ import { nativeCurrency } from '../../utils'
 import { niceCurrency } from '../../utils/format'
 
 const NATIVE_FEE_BUFFER = new BigNumber('0.0001')
-export const tradeBalanceKey = (asset) => asset?.issuer ? `${asset.issuer}:${asset.currency}` : nativeCurrency
+export const tradeBalanceKey = (asset) => {
+  if (!asset?.currency) return null
+  return asset.issuer ? `${asset.issuer}:${asset.currency}` : nativeCurrency
+}
 
 const assetMatches = (token, asset, accountAddress) => {
   const currency = token?.currency || token?.Balance?.currency || token?.HighLimit?.currency || token?.LowLimit?.currency

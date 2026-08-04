@@ -20,6 +20,7 @@ import {
   validTradeNumber
 } from '../components/Trade/swap'
 import { nativeCurrency, explorerName, network } from '../utils'
+import { getIsSsrMobile } from '../utils/mobile'
 import { rlusdToken } from '../utils/issuedTokens'
 import { niceCurrency } from '../utils/format'
 import styles from '../styles/pages/trade.module.scss'
@@ -96,8 +97,11 @@ const withCumulativeTotal = (offers) => {
   })
 }
 
-export const getServerSideProps = async ({ locale }) => ({
-  props: { ...(await serverSideTranslations(locale, ['common', 'trade'])) }
+export const getServerSideProps = async (context) => ({
+  props: {
+    isSsrMobile: getIsSsrMobile(context),
+    ...(await serverSideTranslations(context.locale, ['common', 'trade']))
+  }
 })
 
 export default function Trade({ setSignRequest, account, refreshPage }) {
@@ -112,8 +116,8 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
   const { bids, asks, amm, status, error } = useOrderBook(baseAsset, quoteAsset)
   const tradeHistory = useTradeHistory(baseAsset, quoteAsset)
   const { balances, trustlines, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
-  const baseBalance = balances[tradeBalanceKey(baseAsset)] ?? null
-  const quoteBalance = balances[tradeBalanceKey(quoteAsset)] ?? null
+  const baseBalance = baseAsset?.currency ? balances[tradeBalanceKey(baseAsset)] ?? null : null
+  const quoteBalance = quoteAsset?.currency ? balances[tradeBalanceKey(quoteAsset)] ?? null : null
   const spendAsset = side === 'sell' ? baseAsset : quoteAsset
   const receiveAsset = side === 'sell' ? quoteAsset : baseAsset
   const spendBalance = side === 'sell' ? baseBalance : quoteBalance
@@ -290,7 +294,7 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
                   modalTitle={t('pair.selectAsset')}
                   allowAllTokens
                 />
-                {account?.address && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${baseBalance === null ? '—' : bookNumber(baseBalance, baseAmountDecimals, true)} ${tokenName(baseAsset)}`}</span>}
+                {account?.address && baseAsset?.currency && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${baseBalance === null ? '—' : bookNumber(baseBalance, baseAmountDecimals, true)} ${tokenName(baseAsset)}`}</span>}
               </div>
               <div>
                 <span className={styles.selectorLabel}>{t('pair.quote')}</span>
@@ -303,7 +307,7 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
                   modalTitle={t('pair.selectAsset')}
                   allowAllTokens
                 />
-                {account?.address && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${quoteBalance === null ? '—' : bookNumber(quoteBalance, quoteAmountDecimals, true)} ${tokenName(quoteAsset)}`}</span>}
+                {account?.address && quoteAsset?.currency && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${quoteBalance === null ? '—' : bookNumber(quoteBalance, quoteAmountDecimals, true)} ${tokenName(quoteAsset)}`}</span>}
               </div>
             </section>
 
