@@ -20,7 +20,9 @@ export const knownClientErrorMessages = [
   `can't access property "resetSeries", this.series is null`,
   `can't access dead object`,
   'out of memory',
-  'Content-Length header of network response exceeds response Body.'
+  'Content-Length header of network response exceeds response Body.',
+  'The operation was aborted.',
+  'This operation was aborted'
 ]
 
 const knownClientErrorPatterns = [
