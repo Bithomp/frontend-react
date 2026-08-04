@@ -14,6 +14,7 @@
     "sales": "penjualan"
   },
   "shared": {
+    "currency": "Mata uang",
     "enter-memo-optional": "Masukkan komentar (opsional)",
     "it-will-be-public": "Ini akan bersifat publik"
   },

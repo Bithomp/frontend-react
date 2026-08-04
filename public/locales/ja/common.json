@@ -14,6 +14,7 @@
     "sales": "販売"
   },
   "shared": {
+    "currency": "通貨",
     "enter-memo-optional": "コメントを入力（任意）",
     "it-will-be-public": "公開されます"
   },

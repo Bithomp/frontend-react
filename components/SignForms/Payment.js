@@ -430,7 +430,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
           </span>
           <br />
           <span className="halv">
-            <span className="input-title">{ts('shared.currency')}</span>
+            <span className="input-title">{t('shared.currency')}</span>
             <TokenSelector
               value={selectedAsset}
               onChange={selectAsset}

@@ -14,6 +14,7 @@
     "sales": "продажи"
   },
   "shared": {
+    "currency": "Валюта",
     "enter-memo-optional": "Введите комментарий (необязательно)",
     "it-will-be-public": "Будет публичным"
   },

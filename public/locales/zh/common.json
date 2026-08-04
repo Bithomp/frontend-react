@@ -14,6 +14,7 @@
     "sales": "销售"
   },
   "shared": {
+    "currency": "货币",
     "enter-memo-optional": "输入备注（可选）",
     "it-will-be-public": "将会公开"
   },

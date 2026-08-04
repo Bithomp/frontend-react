@@ -14,6 +14,7 @@
     "sales": "총기보 식"
   },
   "shared": {
+    "currency": "통화",
     "enter-memo-optional": "메시지 입력(선택 사항)",
     "it-will-be-public": "공개됩니다"
   },
