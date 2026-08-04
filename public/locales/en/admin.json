@@ -4,9 +4,11 @@
     "profile": "Profile",
     "watchlist": "Watchlist",
     "my-addresses": "My addresses",
+    "tax-exports": "Transaction exports",
     "subscriptions": "Subscriptions",
     "referrals": "Referrals",
     "alerts": "Alerts",
+    "activity-alerts": "Activity Alerts",
     "alerts-bot": "Alerts bot",
     "api": {
       "information": "Information",
@@ -138,7 +140,7 @@
       "profile": "Manage your profile and subscriptions.",
       "security": "Sign in to access account tools and private settings.",
       "pro": "Manage Pro subscription and benefits.",
-      "history": "Enable balance history and tax exports.",
+      "history": "Export transactions for tax reports.",
       "api": "Create API keys and view usage.",
       "watchlist": "Keep private address and NFT watchlists.",
       "alerts": "Configure alerts for accounts and NFTs."
@@ -223,20 +225,21 @@
   },
   "pro": {
     "verified-addresses": "Verified addresses",
+    "wallets-intro": "Verify wallets you own to export transactions for tax reports, set animated avatars, and use supported automation.",
     "verification-intro": "A verified address prepares that wallet for Pro services. Wallet sign-in for verified addresses will be available later.",
     "features-intro": "With a verified address and an active Bithomp Pro subscription, you can enable:",
     "features-note": "Verification saves the setup; reports and automatic actions start working after Bithomp Pro is active.",
     "features": {
-      "history": "Balance history and tax export.",
+      "history": "Transaction exports for tax reports.",
       "escrows": "Auto-finish escrows.",
       "escrows-note": "when the address has enough reserve and the escrow can be finished",
       "nft-offers": "Auto-cancel NFT offers.",
       "nft-offers-note": "when the offer becomes invalid or expired"
     },
-    "balance-history": "Balance history",
+    "balance-history": "Transaction exports",
     "bot-settings": "Bot settings",
     "no-verified-addresses": "No verified addresses yet.",
-    "activate-analysis-before": "Enable balance history by subscribing to",
+    "activate-analysis-before": "Enable transaction exports for tax reports by subscribing to",
     "purchase-pro-link": "Bithomp Pro",
     "add-limit": "You reached the address limit for your plan.",
     "add-limit-pro": "To add up to {{count}} addresses, subscribe to",
@@ -246,7 +249,7 @@
     "address-name-placeholder": "Private address name",
     "guest": {
       "verify": "Verify ownership of your addresses.",
-      "history": "Enable balance history, exports, and bot settings."
+      "history": "Enable transaction exports for tax reports and bot settings."
     },
     "errors": {
       "no-email": "Add an email to your profile before verification."
@@ -258,11 +261,11 @@
       "cancel-nft": "Cancel NFT offers automatically"
     },
     "history": {
-      "seo": "Balance history",
-      "title": "Balance history",
+      "seo": "Transaction exports",
+      "title": "Transaction exports",
       "sample-title": "Sample data",
       "sample-text": "This is a sample export. Sign in and add a Pro address to load your own history.",
-      "sign-in-pro": "Open My addresses",
+      "sign-in-pro": "Open profile",
       "sample-unavailable": "Sample data is not available right now.",
       "order": {
         "latest": "Latest first",
@@ -306,9 +309,8 @@
       "why-title": "Why Bithomp Pro?",
       "intro": "Bithomp Pro unlocks extra account tools and removes several limits.",
       "benefits": {
-        "reports-title": "Reports",
-        "reports-link": "Balance history",
-        "reports-text": "tax export and account activity tools.",
+        "reports-title": "Transaction exports",
+        "reports-text": "Download transaction history as CSV formatted for supported tax reporting platforms.",
         "services-title": "Services",
         "services": {
           "advanced-prefix": "Advanced options in",
@@ -317,18 +319,20 @@
         },
         "scroll-title": "More data",
         "scroll-text": "More rows and deeper scrolling on",
+        "scroll-dapp-transactions": "individual DApp transaction histories",
         "limits-title": "Higher limits",
         "limits-text": "More items in",
         "avatars-title": "Avatars",
         "avatars-text": "Set animated avatars for verified addresses in",
-        "ads-title": "No ads",
-        "ads-text": "Use the explorer without advertisements.",
+        "ads-title": "Ad-free experience",
+        "ads-text": "Stay focused on what matters, with no ads or distractions.",
         "support-title": "Priority support",
         "support-text": "Get faster help from support.",
         "project-title": "Support the project",
         "project-text": "Your subscription helps us keep building."
       },
-      "subscribe": "Choose a subscription period."
+      "subscribe": "Choose a subscription period.",
+      "more-benefits": "More benefits"
     },
     "api": {
       "why-title": "API access",
@@ -506,7 +510,7 @@
     "delete-rule-note": "This action cannot be undone.",
     "open-alerts": "Open Alerts",
     "pro-required-before": "This filter requires",
-    "enable-history-before": "Enable balance history in",
+    "enable-history-before": "Enable transaction exports for tax reports in",
     "enable-history-after": "before using this filter",
     "loading-addresses": "Loading addresses...",
     "choose-address": "Choose address",
@@ -725,8 +729,8 @@
       "event-invalid-short": "Choose a supported event.",
       "choose-field": "Choose {{field}}.",
       "pro-required": "Bithomp Pro is required for this filter.",
-      "enable-history-first": "Enable balance history for at least one address first.",
-      "choose-history-address": "Choose a balance history address.",
+      "enable-history-first": "Enable transaction exports for tax reports for at least one address first.",
+      "choose-history-address": "Choose an address enabled for transaction exports.",
       "valid-address": "Enter a valid address.",
       "valid-number": "Enter a valid number.",
       "tx-type-supported": "Choose a supported transaction type.",

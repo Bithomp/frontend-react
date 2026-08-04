@@ -173,7 +173,8 @@
       "subscriptions": "Langganan",
       "referrals": "Referral",
       "my-addresses": "Alamat saya",
-      "alerts": "Peringatan",
+      "tax-exports": "Ekspor transaksi",
+      "alerts": "Peringatan aktivitas",
       "api-management": "Manajemen API"
     },
     "legal": "Hukum",

@@ -166,9 +166,9 @@ export default function BillingCountry({
           width: min(100%, 760px);
           margin: 0 auto 22px;
           padding: 16px;
-          border: 1px solid var(--button-additional);
+          border: 1px solid var(--surface-nested-border);
           border-radius: 12px;
-          background: color-mix(in srgb, var(--background-secondary) 88%, transparent);
+          background: var(--surface-nested-bg);
           text-align: left;
         }
 

@@ -173,7 +173,8 @@
       "subscriptions": "订阅",
       "referrals": "推荐",
       "my-addresses": "我的地址",
-      "alerts": "提醒",
+      "tax-exports": "交易导出",
+      "alerts": "活动提醒",
       "api-management": "API管理"
     },
     "legal": "法律",

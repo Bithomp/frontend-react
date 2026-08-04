@@ -60,7 +60,7 @@ import {
   IoAddOutline,
   IoSwapHorizontalOutline
 } from 'react-icons/io5'
-import { FaSignOutAlt, FaEye, FaUserCheck, FaUserFriends } from 'react-icons/fa'
+import { FaSignOutAlt, FaEye, FaUserFriends } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
 import { MdMiscellaneousServices } from 'react-icons/md'
 import { LuCoins } from 'react-icons/lu'
@@ -296,6 +296,10 @@ export default function MobileMenu({
 
           {proLoggedIn && (
             <>
+              <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <IoDocumentTextOutline style={iconStyle} /> {t('menu.pro.tax-exports')}
+              </Link>
+
               <Link href="/admin/notifications" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoNotificationsOutline style={iconStyle} /> {t('menu.pro.alerts')}
               </Link>
@@ -312,9 +316,6 @@ export default function MobileMenu({
                 <IoStatsChart style={iconStyle} /> {t('menu.pro.api-management')}
               </Link>
 
-              <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> {t('menu.pro.my-addresses')}
-              </Link>
 
               <span onClick={signOutPro} className="mobile-menu-item">
                 <FaSignOutAlt style={{ ...iconStyle, marginTop: '3px' }} /> {t('signin.signout')}

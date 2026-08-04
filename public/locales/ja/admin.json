@@ -4,9 +4,11 @@
     "profile": "プロフィール",
     "watchlist": "ウォッチリスト",
     "my-addresses": "自分のアドレス",
+    "tax-exports": "取引エクスポート",
     "subscriptions": "サブスクリプション",
     "referrals": "紹介",
     "alerts": "アラート",
+    "activity-alerts": "アクティビティアラート",
     "alerts-bot": "アラートボット",
     "api": {
       "information": "情報",
@@ -138,7 +140,7 @@
       "profile": "プロフィールと購読を管理します。",
       "security": "サインインしてアカウント ツールとプライベート設定にアクセスします。",
       "pro": "Proサブスクリプションと特典を管理します。",
-      "history": "残高履歴と税務エクスポートを有効にします。",
+      "history": "税務レポート用に取引をエクスポートします。",
       "api": "APIキーを作成し、利用状況を確認します。",
       "watchlist": "非公開のアドレスとNFTのウォッチリストを管理します。",
       "alerts": "アカウントとNFTのアラートを設定します。"
@@ -223,17 +225,18 @@
   },
   "pro": {
     "verified-addresses": "確認済みの住所",
+    "wallets-intro": "所有するウォレットを確認すると、税務レポート用の取引エクスポート、アニメーションアバター、対応する自動化を利用できます。",
     "verification-intro": "確認済みアドレスは、そのウォレットを Pro サービス用に準備します。確認済みウォレットでのログインは後日利用可能になります。",
     "features-intro": "確認済みアドレスと有効な Bithomp Pro サブスクリプションがあると、次を有効にできます。",
     "features-note": "確認により設定が保存されます。レポートと自動処理は Bithomp Pro が有効になると動作します。",
     "features": {
-      "history": "履歴と税輸出のバランスをとる。",
+      "history": "税務レポート用取引エクスポート。",
       "escrows": "自動終了Escrow。",
       "escrows-note": "アドレスに十分な余裕があり、Escrowを完了できる場合",
       "nft-offers": "NFTオファーの自動キャンセル。",
       "nft-offers-note": "オファーが無効または期限切れになったとき"
     },
-    "balance-history": "残高履歴",
+    "balance-history": "取引エクスポート",
     "bot-settings": "ボットの設定",
     "no-verified-addresses": "確認されたアドレスはまだありません。",
     "activate-analysis-before": "残高履歴を有効にするには登録してください",
@@ -246,7 +249,7 @@
     "address-name-placeholder": "プライベートアドレス名",
     "guest": {
       "verify": "アドレスの所有権を確認します。",
-      "history": "残高履歴、エクスポート、ボット設定を有効にします。"
+      "history": "税務レポート用取引エクスポートとボット設定を有効にします。"
     },
     "errors": {
       "no-email": "確認する前に、プロフィールに電子メールを追加してください。"
@@ -258,11 +261,11 @@
       "cancel-nft": "NFTオファーを自動的にキャンセルする"
     },
     "history": {
-      "seo": "残高履歴",
-      "title": "残高履歴",
+      "seo": "取引エクスポート",
+      "title": "取引エクスポート",
       "sample-title": "サンプルデータ",
       "sample-text": "これはサンプルのエクスポートです。サインインして Pro アドレスを追加し、自分の履歴をロードします。",
-      "sign-in-pro": "私のアドレスを開く",
+      "sign-in-pro": "プロフィールを開く",
       "sample-unavailable": "現在サンプルデータは入手できません。",
       "order": {
         "latest": "最新順",
@@ -306,9 +309,8 @@
       "why-title": "なぜ Bithomp Pro?",
       "intro": "Bithomp Pro は追加のアカウントツールを利用可能にし、いくつかの制限を解除します。",
       "benefits": {
-        "reports-title": "レポート",
-        "reports-link": "残高履歴",
-        "reports-text": "税輸出および口座活動ツール。",
+        "reports-title": "取引エクスポート",
+        "reports-text": "対応する税務プラットフォーム向けのCSV形式で取引履歴をダウンロードできます。",
         "services-title": "サービス",
         "services": {
           "advanced-prefix": "高度なオプション:",
@@ -317,18 +319,20 @@
         },
         "scroll-title": "さらなるデータ",
         "scroll-text": "より多くの行とより深いスクロール",
+        "scroll-dapp-transactions": "各DAppの取引履歴",
         "limits-title": "上限値",
         "limits-text": "その他のアイテム",
         "avatars-title": "アバター",
         "avatars-text": "確認済みアドレスのアニメーションアバターを設定:",
-        "ads-title": "広告なし",
-        "ads-text": "広告なしでエクスプローラーを使用してください。",
+        "ads-title": "広告なしの快適な体験",
+        "ads-text": "広告や気を散らす要素をなくし、大切なことに集中できます。",
         "support-title": "優先サポート",
         "support-text": "サポートから迅速なサポートを受けられます。",
         "project-title": "プロジェクトをサポートする",
         "project-text": "あなたのサブスクリプションは、私たちが構築を続けるのに役立ちます。"
       },
-      "subscribe": "サブスクリプション期間を選択します。"
+      "subscribe": "サブスクリプション期間を選択します。",
+      "more-benefits": "その他の特典"
     },
     "api": {
       "why-title": "APIアクセス",

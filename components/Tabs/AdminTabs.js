@@ -9,9 +9,9 @@ export default function AdminTabs({ name, tab }) {
 
   const mainTabs = [
     { value: 'profile', label: t('tabs.profile') },
+    { value: 'pro', label: t('tabs.tax-exports') },
+    { value: 'notifications', label: t('tabs.activity-alerts') },
     { value: 'watchlist', label: t('tabs.watchlist') },
-    { value: 'pro', label: t('tabs.my-addresses') },
-    { value: 'notifications', label: t('tabs.alerts') },
     { value: 'api', label: 'API' }
   ]
 

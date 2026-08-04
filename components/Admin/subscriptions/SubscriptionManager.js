@@ -143,7 +143,9 @@ export default function SubscriptionManager({
   setProExpire,
   id,
   title,
+  embedded = false,
   initiallyExpanded = false,
+  openRequest = 0,
   externalBillingCountry,
   externalChoosingCountry,
   showExpired = true
@@ -177,6 +179,12 @@ export default function SubscriptionManager({
     setCheckoutOpen(initiallyExpanded)
     setCheckoutTouched(false)
   }, [initiallyExpanded, packageType])
+
+  useEffect(() => {
+    if (!openRequest) return
+    setCheckoutTouched(true)
+    setCheckoutOpen((open) => !open)
+  }, [openRequest])
 
   useEffect(() => {
     if (sessionToken) {
@@ -448,26 +456,33 @@ export default function SubscriptionManager({
   const titleText = title || bidTypeToName(packageType)
   const showPlan = checkoutOpen
 
+  if (embedded && !showPlan) return null
+
   return (
-    <section className={`admin-subscription-manager ${hasActivePackage ? 'has-active' : 'needs-subscription'}`} id={id}>
-      <div className="admin-subscription-manager-header">
-        <div>
-          <span>{t('tabs.subscriptions', { ns: 'admin' })}</span>
-          <h3>{titleText}</h3>
+    <section
+      className={`admin-subscription-manager ${hasActivePackage ? 'has-active' : 'needs-subscription'}${embedded ? ' is-embedded' : ''}`}
+      id={id}
+    >
+      {!embedded && (
+        <div className="admin-subscription-manager-header">
+          <div>
+            <span>{t('tabs.subscriptions', { ns: 'admin' })}</span>
+            <h3>{titleText}</h3>
+          </div>
+          {(hasActivePackage || !checkoutOpen) && (
+            <button
+              className="button-action thin"
+              onClick={() => {
+                setCheckoutTouched(true)
+                setCheckoutOpen((open) => !open)
+              }}
+              type="button"
+            >
+              {t('api.manage-subscription', { ns: 'admin' })}
+            </button>
+          )}
         </div>
-        {(hasActivePackage || !checkoutOpen) && (
-          <button
-            className="button-action thin"
-            onClick={() => {
-              setCheckoutTouched(true)
-              setCheckoutOpen((open) => !open)
-            }}
-            type="button"
-          >
-            {t('api.manage-subscription', { ns: 'admin' })}
-          </button>
-        )}
-      </div>
+      )}
 
       {loading && (
         <div className="center subscription-loading">
@@ -476,7 +491,7 @@ export default function SubscriptionManager({
         </div>
       )}
 
-      {!loading && activePackages?.length > 0 && (
+      {!embedded && !loading && activePackages?.length > 0 && (
         <SubscriptionPackageSummary
           i18n={i18n}
           packages={activePackages}
@@ -720,10 +735,22 @@ export default function SubscriptionManager({
           max-width: 900px;
           margin: 18px auto 26px;
           padding: 16px;
-          border: 1px solid color-mix(in srgb, var(--accent-link) 24%, var(--table-frame));
+          border: 1px solid var(--surface-panel-border);
           border-radius: 12px;
-          background: color-mix(in srgb, var(--background-secondary) 42%, transparent);
+          background: var(--surface-panel-bg);
+          box-shadow: var(--surface-panel-shadow);
           text-align: left;
+        }
+
+        .admin-subscription-manager.is-embedded {
+          max-width: none;
+          margin: 16px 0 0;
+          padding: 16px 0 0;
+          border: 0;
+          border-top: 1px solid var(--surface-nested-border);
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
         }
 
         .admin-subscription-manager-header {
@@ -775,9 +802,9 @@ export default function SubscriptionManager({
         .subscription-summary-card {
           display: block;
           padding: 0;
-          border: 1px solid color-mix(in srgb, var(--accent-link) 20%, var(--table-frame));
+          border: 1px solid var(--surface-nested-border);
           border-radius: 10px;
-          background: color-mix(in srgb, var(--background-secondary) 74%, transparent);
+          background: var(--surface-nested-bg);
           overflow: hidden;
         }
 
@@ -908,6 +935,12 @@ export default function SubscriptionManager({
           border-top: 1px solid color-mix(in srgb, var(--accent-link) 18%, transparent);
         }
 
+        .admin-subscription-manager.is-embedded .subscription-checkout {
+          margin-top: 0;
+          padding-top: 0;
+          border-top: 0;
+        }
+
         .subscription-offer-section {
           max-width: 1180px;
           margin: 0 auto 20px;
@@ -928,9 +961,9 @@ export default function SubscriptionManager({
           max-width: 520px;
           margin: 18px auto;
           padding: 16px;
-          border: 1px solid color-mix(in srgb, var(--accent-link) 24%, var(--table-frame));
+          border: 1px solid var(--surface-nested-border);
           border-radius: 12px;
-          background: color-mix(in srgb, var(--background-secondary) 90%, transparent);
+          background: var(--surface-nested-bg);
         }
 
         .subscription-transactions {

@@ -4,9 +4,11 @@
     "profile": "Perfil",
     "watchlist": "Lista de seguimiento",
     "my-addresses": "Mis direcciones",
+    "tax-exports": "Exportación de transacciones",
     "subscriptions": "Suscripciones",
     "referrals": "Referidos",
     "alerts": "Alertas",
+    "activity-alerts": "Alertas de actividad",
     "alerts-bot": "Bot de alertas",
     "api": {
       "information": "Información",
@@ -138,7 +140,7 @@
       "profile": "Gestiona tu perfil y suscripciones.",
       "security": "Inicie sesión para acceder a las herramientas de la cuenta y a la configuración privada.",
       "pro": "Gestiona la suscripción Pro y sus ventajas.",
-      "history": "Activa el historial de saldos y exportaciones fiscales.",
+      "history": "Exporta transacciones para informes fiscales.",
       "api": "Crea claves API y consulta el uso.",
       "watchlist": "Mantén listas privadas de direcciones y NFT.",
       "alerts": "Configura alertas para cuentas y NFT."
@@ -223,17 +225,18 @@
   },
   "pro": {
     "verified-addresses": "Direcciones verificadas",
+    "wallets-intro": "Verifica tus monederos para exportar transacciones para informes fiscales, usar avatares animados y automatizaciones compatibles.",
     "verification-intro": "Una dirección verificada prepara esa billetera para los servicios Pro. El inicio de sesión con billeteras verificadas estará disponible más adelante.",
     "features-intro": "Con una dirección verificada y una suscripción activa a Bithomp Pro, puedes habilitar:",
     "features-note": "La verificación guarda la configuración; los informes y las acciones automáticas empiezan a funcionar cuando Bithomp Pro está activo.",
     "features": {
-      "history": "Historial de saldos y exportación de impuestos.",
+      "history": "Exportación de transacciones para informes fiscales.",
       "escrows": "Escrow de finalización automática.",
       "escrows-note": "cuando la dirección tiene suficiente reserva y el Escrow puede finalizarse",
       "nft-offers": "Cancelación automática de ofertas NFT.",
       "nft-offers-note": "cuando la oferta deja de ser válida o expira"
     },
-    "balance-history": "Historial de saldo",
+    "balance-history": "Exportación de transacciones",
     "bot-settings": "Configuración de robots",
     "no-verified-addresses": "Aún no hay direcciones verificadas.",
     "activate-analysis-before": "Habilita el historial de saldo suscribiéndote a",
@@ -246,7 +249,7 @@
     "address-name-placeholder": "Nombre de dirección privada",
     "guest": {
       "verify": "Verifique la propiedad de sus direcciones.",
-      "history": "Habilite el historial de saldo, las exportaciones y la configuración del bot."
+      "history": "Habilite la exportación de transacciones para informes fiscales y la configuración del bot."
     },
     "errors": {
       "no-email": "Agregue un correo electrónico a su perfil antes de la verificación."
@@ -258,11 +261,11 @@
       "cancel-nft": "Cancelar ofertas NFT automáticamente"
     },
     "history": {
-      "seo": "Historial de saldo",
-      "title": "Historial de saldo",
+      "seo": "Exportación de transacciones",
+      "title": "Exportación de transacciones",
       "sample-title": "Datos de muestra",
       "sample-text": "Esta es una exportación de muestra. Inicia sesión y agrega una dirección Pro para cargar tu propio historial.",
-      "sign-in-pro": "Abrir Mis direcciones",
+      "sign-in-pro": "Abrir perfil",
       "sample-unavailable": "Los datos de muestra no están disponibles en este momento.",
       "order": {
         "latest": "Lo último primero",
@@ -306,9 +309,8 @@
       "why-title": "¿Por qué Bithomp Pro?",
       "intro": "Bithomp Pro desbloquea herramientas adicionales de la cuenta y elimina varios límites.",
       "benefits": {
-        "reports-title": "Informes",
-        "reports-link": "Historial de saldo",
-        "reports-text": "herramientas de exportación de impuestos y actividad de cuentas.",
+        "reports-title": "Exportación de transacciones",
+        "reports-text": "Descarga el historial de transacciones como CSV para plataformas fiscales compatibles.",
         "services-title": "Servicios",
         "services": {
           "advanced-prefix": "Opciones avanzadas en",
@@ -317,18 +319,20 @@
         },
         "scroll-title": "Más datos",
         "scroll-text": "Más filas y desplazamiento más profundo",
+        "scroll-dapp-transactions": "historiales de transacciones de cada DApp",
         "limits-title": "Límites más altos",
         "limits-text": "Más artículos en",
         "avatars-title": "avatares",
         "avatars-text": "Establecer avatares animados para direcciones verificadas en",
-        "ads-title": "Sin anuncios",
-        "ads-text": "Utilice el explorador sin publicidad.",
+        "ads-title": "Experiencia sin anuncios",
+        "ads-text": "Concéntrate en lo importante, sin anuncios ni distracciones.",
         "support-title": "Apoyo prioritario",
         "support-text": "Obtenga ayuda más rápida del soporte.",
         "project-title": "Apoya el proyecto",
         "project-text": "Tu suscripción nos ayuda a seguir construyendo."
       },
-      "subscribe": "Elija un período de suscripción."
+      "subscribe": "Elija un período de suscripción.",
+      "more-benefits": "Más ventajas"
     },
     "api": {
       "why-title": "Acceso API",

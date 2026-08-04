@@ -4,9 +4,11 @@
     "profile": "个人资料",
     "watchlist": "关注列表",
     "my-addresses": "我的地址",
+    "tax-exports": "交易导出",
     "subscriptions": "订阅",
     "referrals": "推荐",
     "alerts": "提醒",
+    "activity-alerts": "活动提醒",
     "alerts-bot": "提醒机器人",
     "api": {
       "information": "信息",
@@ -138,7 +140,7 @@
       "profile": "管理你的个人资料和订阅。",
       "security": "登录后可访问账户工具和私密设置。",
       "pro": "管理 Pro 订阅和权益。",
-      "history": "启用余额历史和税务导出。",
+      "history": "导出用于税务报告的交易。",
       "api": "创建 API 密钥并查看使用情况。",
       "watchlist": "维护私密地址和 NFT 关注列表。",
       "alerts": "配置账户和 NFT 提醒。"
@@ -223,17 +225,18 @@
   },
   "pro": {
     "verified-addresses": "已验证地址",
+    "wallets-intro": "验证您拥有的钱包，即可导出用于税务报告的交易、使用动态头像和受支持的自动化功能。",
     "verification-intro": "已验证地址会让该钱包为 Pro 服务做好准备。使用已验证钱包登录的功能稍后推出。",
     "features-intro": "拥有已验证地址和有效的 Bithomp Pro 订阅后，你可以启用：",
     "features-note": "验证会保存设置；报告和自动操作会在 Bithomp Pro 生效后开始工作。",
     "features": {
-      "history": "余额历史和税务导出。",
+      "history": "税务报告交易导出。",
       "escrows": "自动完成Escrow。",
       "escrows-note": "当地址有足够储备且Escrow可完成时",
       "nft-offers": "自动取消 NFT 报价。",
       "nft-offers-note": "当报价无效或过期时"
     },
-    "balance-history": "余额历史",
+    "balance-history": "交易导出",
     "bot-settings": "机器人设置",
     "no-verified-addresses": "还没有已验证地址。",
     "activate-analysis-before": "订阅以下服务以启用余额历史",
@@ -246,7 +249,7 @@
     "address-name-placeholder": "私密地址名称",
     "guest": {
       "verify": "验证你的地址所有权。",
-      "history": "启用余额历史、导出和机器人设置。"
+      "history": "启用税务报告交易导出和机器人设置。"
     },
     "errors": {
       "no-email": "验证前请先在资料中添加邮箱。"
@@ -258,11 +261,11 @@
       "cancel-nft": "自动取消 NFT 报价"
     },
     "history": {
-      "seo": "余额历史",
-      "title": "余额历史",
+      "seo": "交易导出",
+      "title": "交易导出",
       "sample-title": "示例数据",
       "sample-text": "这是示例导出。登录并添加 Pro 地址后可加载你的历史。",
-      "sign-in-pro": "打开我的地址",
+      "sign-in-pro": "打开个人资料",
       "sample-unavailable": "示例数据暂不可用。",
       "order": {
         "latest": "最新优先",
@@ -306,9 +309,8 @@
       "why-title": "为什么选择 Bithomp Pro？",
       "intro": "Bithomp Pro 可解锁更多账户工具并取消多项限制。",
       "benefits": {
-        "reports-title": "报告",
-        "reports-link": "余额历史",
-        "reports-text": "税务导出和账户活动工具。",
+        "reports-title": "交易导出",
+        "reports-text": "下载适用于受支持税务平台的 CSV 格式交易历史。",
         "services-title": "服务",
         "services": {
           "advanced-prefix": "高级选项：",
@@ -317,18 +319,20 @@
         },
         "scroll-title": "更多数据",
         "scroll-text": "更多行和更深滚动：",
+        "scroll-dapp-transactions": "每个 DApp 的交易历史",
         "limits-title": "更高限制",
         "limits-text": "更多项目：",
         "avatars-title": "头像",
         "avatars-text": "为已验证地址设置动态头像：",
-        "ads-title": "无广告",
-        "ads-text": "使用无广告的浏览器。",
+        "ads-title": "无广告体验",
+        "ads-text": "没有广告和干扰，专注于真正重要的内容。",
         "support-title": "优先支持",
         "support-text": "更快获得支持帮助。",
         "project-title": "支持项目",
         "project-text": "你的订阅帮助我们持续建设。"
       },
-      "subscribe": "选择订阅周期。"
+      "subscribe": "选择订阅周期。",
+      "more-benefits": "更多权益"
     },
     "api": {
       "why-title": "API 访问",

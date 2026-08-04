@@ -87,7 +87,7 @@ export default function ServicesPage() {
         },
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: LuFileCheck2 },
         {
-          href: '/admin/pro/history',
+          href: '/admin/pro',
           title: t('services-page.try-tax-reports', { ns: 'services' }),
           icon: LuFileCheck2
         },

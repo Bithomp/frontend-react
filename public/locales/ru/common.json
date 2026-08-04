@@ -173,7 +173,8 @@
       "subscriptions": "Подписки",
       "referrals": "Рефералы",
       "my-addresses": "Мои адреса",
-      "alerts": "Алерты",
+      "tax-exports": "Экспорт транзакций",
+      "alerts": "Алерты активности",
       "api-management": "Управление API"
     },
     "legal": "Документы",

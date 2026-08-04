@@ -173,7 +173,8 @@
       "subscriptions": "サブスクリプション",
       "referrals": "紹介",
       "my-addresses": "自分のアドレス",
-      "alerts": "アラート",
+      "tax-exports": "取引エクスポート",
+      "alerts": "アクティビティアラート",
       "api-management": "API管理"
     },
     "legal": "法務",

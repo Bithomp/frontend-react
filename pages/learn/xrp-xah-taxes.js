@@ -69,14 +69,14 @@ export default function XRPXAHTaxes() {
           On our platform you can get the most comprehensive XRPL and XAHAU transaction exports for your tax reports:
           <div className="links">
             <a
-              href={'https://bithomp.com' + localePath('/admin/pro/history', i18n.language)}
+              href={'https://bithomp.com' + localePath('/admin/pro', i18n.language)}
               target="_blank"
               rel="noopener noreferrer"
             >
               XRPL
             </a>
             <a
-              href={'https://xahauexplorer.com' + localePath('/admin/pro/history', i18n.language)}
+              href={'https://xahauexplorer.com' + localePath('/admin/pro', i18n.language)}
               target="_blank"
               rel="noopener noreferrer"
             >

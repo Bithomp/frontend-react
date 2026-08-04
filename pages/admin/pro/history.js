@@ -1,9 +1,7 @@
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../../utils/axios'
 
@@ -17,7 +15,6 @@ import {
   niceNumber,
   shortNiceNumber
 } from '../../../utils/format'
-import ProTabs from '../../../components/Tabs/ProTabs'
 import { crawlerStatus } from '../../../utils/pro'
 import CheckBox from '../../../components/UI/CheckBox'
 import Link from 'next/link'
@@ -47,13 +44,12 @@ const sampleVerifiedAddresses = sampleHistoryAddresses.map((address, index) => (
 }))
 
 export const getServerSideProps = async (context) => {
-  const { locale, query } = context
+  const { query } = context
   const { address } = query
   return {
-    props: {
-      queryAddress: address || '',
-      isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'admin']))
+    redirect: {
+      destination: `/admin/pro${address ? `?address=${encodeURIComponent(address)}` : ''}`,
+      permanent: true
     }
   }
 }
@@ -929,18 +925,16 @@ export default function History({
 
   return (
     <>
-      <SEO title={t('pro.history.seo', { ns: 'admin' })} />
+      <SEO title={t('tabs.tax-exports', { ns: 'admin' })} />
       <div className="page-pro-history">
-        <h1 className="center">{t('pro.history.title', { ns: 'admin' })}</h1>
+        <h1 className="center">{t('tabs.tax-exports', { ns: 'admin' })}</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
 
-        <div className="tabs-inline tabs-with-action">
-          <ProTabs tab="balance-changes" />
-
+        <div className="center">
           <Link
             href="/learn/xrp-xah-taxes"
-            className="button-action thin narrow secondary tabs-inline-action"
+            className="button-action thin narrow secondary"
             target="_blank"
             rel="noreferrer"
           >
@@ -953,7 +947,7 @@ export default function History({
             <b>{t('pro.history.sample-title', { ns: 'admin' })}</b>
             <span>
               {t('pro.history.sample-text', { ns: 'admin' })}{' '}
-              <Link href="/admin/pro">{t('pro.history.sign-in-pro', { ns: 'admin' })}</Link>.
+              <Link href="/admin">{t('pro.history.sign-in-pro', { ns: 'admin' })}</Link>.
             </span>
           </div>
         )}
@@ -1035,7 +1029,7 @@ export default function History({
                     ))}
                     {sampleMode && (
                       <div className="pro-history-add-wallet">
-                        <Link href="/admin/pro" className="button-action narrow thin secondary">
+                        <Link href="/admin" className="button-action narrow thin secondary">
                           {t('pro.history.add-wallet', { ns: 'admin' })}
                         </Link>
                       </div>
@@ -1048,7 +1042,7 @@ export default function History({
                     ) : (
                       <div>
                         <br />
-                        <Link href="/admin/pro" className="button-action narrow thin">
+                        <Link href="/admin" className="button-action narrow thin">
                           {t('button.add', { ns: 'admin' })}
                         </Link>
                       </div>

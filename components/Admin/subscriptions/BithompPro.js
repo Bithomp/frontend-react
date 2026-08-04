@@ -31,11 +31,10 @@ export default function Pro({ setPayPeriod }) {
 
       <div className="pro-benefit-grid">
         <article>
-          <h5>{t('subscriptions.pro.benefits.reports-title')}</h5>
-          <p>
-            <Link href="/admin/pro">{t('subscriptions.pro.benefits.reports-link')}</Link>,{' '}
-            {t('subscriptions.pro.benefits.reports-text')}
-          </p>
+          <h5>
+            <Link href="/admin/pro">{t('subscriptions.pro.benefits.reports-title')}</Link>
+          </h5>
+          <p>{t('subscriptions.pro.benefits.reports-text')}</p>
         </article>
         <article>
           <h5>{t('subscriptions.pro.benefits.services-title')}</h5>
@@ -61,6 +60,7 @@ export default function Pro({ setPayPeriod }) {
                 <Link href="/amms">AMM Explorer</Link>,{' '}
               </>
             )}
+            <Link href="/dapps">{t('subscriptions.pro.benefits.scroll-dapp-transactions')}</Link>,{' '}
             <Link href="/nft-explorer">NFT Explorer</Link>, <Link href="/nft-sales">NFT Sales</Link>,{' '}
             <Link href="/nft-distribution">NFT holders</Link>,{' '}
             {!xahauNetwork && (
@@ -77,25 +77,31 @@ export default function Pro({ setPayPeriod }) {
             {t('subscriptions.pro.benefits.limits-text')} <Link href="/admin/watchlist">{t('tabs.watchlist')}</Link>.
           </p>
         </article>
-        <article>
-          <h5>{t('subscriptions.pro.benefits.avatars-title')}</h5>
-          <p>
-            {t('subscriptions.pro.benefits.avatars-text')} <Link href="/admin/pro">{t('tabs.my-addresses')}</Link>.
-          </p>
-        </article>
-        <article>
-          <h5>{t('subscriptions.pro.benefits.ads-title')}</h5>
-          <p>{t('subscriptions.pro.benefits.ads-text')}</p>
-        </article>
-        <article>
-          <h5>{t('subscriptions.pro.benefits.support-title')}</h5>
-          <p>{t('subscriptions.pro.benefits.support-text')}</p>
-        </article>
-        <article>
-          <h5>{t('subscriptions.pro.benefits.project-title')}</h5>
-          <p>{t('subscriptions.pro.benefits.project-text')}</p>
-        </article>
       </div>
+
+      <details className="pro-more-benefits">
+        <summary>{t('subscriptions.pro.more-benefits')}</summary>
+        <div className="pro-benefit-grid">
+          <article>
+            <h5>{t('subscriptions.pro.benefits.avatars-title')}</h5>
+            <p>
+              {t('subscriptions.pro.benefits.avatars-text')} <Link href="/admin">{t('pro.verified-addresses')}</Link>.
+            </p>
+          </article>
+          <article>
+            <h5>{t('subscriptions.pro.benefits.ads-title')}</h5>
+            <p>{t('subscriptions.pro.benefits.ads-text')}</p>
+          </article>
+          <article>
+            <h5>{t('subscriptions.pro.benefits.support-title')}</h5>
+            <p>{t('subscriptions.pro.benefits.support-text')}</p>
+          </article>
+          <article>
+            <h5>{t('subscriptions.pro.benefits.project-title')}</h5>
+            <p>{t('subscriptions.pro.benefits.project-text')}</p>
+          </article>
+        </div>
+      </details>
 
       <div className="pro-subscription-purchase">
         <div>
@@ -146,9 +152,9 @@ export default function Pro({ setPayPeriod }) {
         .pro-benefit-grid article {
           min-width: 0;
           padding: 14px;
-          border: 1px solid color-mix(in srgb, var(--accent-link) 18%, transparent);
+          border: 1px solid var(--surface-nested-border);
           border-radius: 10px;
-          background: color-mix(in srgb, var(--background-secondary) 58%, transparent);
+          background: var(--surface-nested-bg);
         }
 
         .pro-benefit-grid h5 {
@@ -161,6 +167,24 @@ export default function Pro({ setPayPeriod }) {
           color: var(--text-secondary);
           font-size: 15px;
           line-height: 1.45;
+        }
+
+        .pro-more-benefits {
+          border: 1px solid var(--surface-nested-border);
+          border-radius: 10px;
+          background: var(--surface-nested-bg);
+        }
+
+        .pro-more-benefits summary {
+          padding: 12px 14px;
+          color: var(--accent-link);
+          cursor: pointer;
+          font-weight: 700;
+          text-align: center;
+        }
+
+        .pro-more-benefits .pro-benefit-grid {
+          padding: 0 12px 12px;
         }
 
         .pro-subscription-purchase {

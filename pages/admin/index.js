@@ -2,47 +2,52 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import Mailto from 'react-protected-mailto'
-import Link from 'next/link'
 
 import SEO from '../../components/SEO'
 
 import { getIsSsrMobile } from '../../utils/mobile'
-import { fullDateAndTime } from '../../utils/format'
+import { dateFormat } from '../../utils/format'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
 import styles from '@/styles/pages/admin.module.scss'
 import BillingCountry from '../../components/Admin/BillingCountry'
 import SubscriptionManager from '../../components/Admin/subscriptions/SubscriptionManager'
 import BithompProSubscription from '../../components/Admin/subscriptions/BithompPro'
+import { VerifiedAddresses } from './pro'
+
+const subscriptionRemaining = (expiredAt, language) => {
+  const remainingDays = Math.max(1, Math.round((expiredAt * 1000 - Date.now()) / 86400000))
+  const unit = remainingDays >= 365 ? 'year' : remainingDays >= 30 ? 'month' : 'day'
+  const divisor = unit === 'year' ? 365 : unit === 'month' ? 30 : 1
+  const value = Math.max(1, Math.round(remainingDays / divisor))
+
+  return new Intl.NumberFormat(language || 'en', {
+    style: 'unit',
+    unit,
+    unitDisplay: 'long'
+  }).format(value)
+}
 
 const AdminProfileSkeleton = ({ t }) => (
   <>
-    <table className={`table-large no-hover shrink ${styles.profileTable}`} aria-hidden="true">
-      <tbody>
-        <tr>
-          <td className="left">{t('profile.email', { ns: 'admin' })}</td>
-          <td className="left">
-            <span className={`${styles.skeletonLine} ${styles.wide}`}></span>
-          </td>
-        </tr>
-        <tr>
-          <td className="left">{t('billing.country', { ns: 'admin' })}</td>
-          <td className="left">
-            <span className={`${styles.skeletonLine} ${styles.small}`}></span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <br />
-    <br />
-    <div style={{ display: 'inline-flex', gap: '12px', alignItems: 'center', justifyContent: 'center' }}>
-      <span className={`button-action ${styles.skeletonAction}`}>
-        <span className={`${styles.skeletonLine} ${styles.buttonSkeletonLine}`}></span>
-      </span>
-      <span className={`button-action ${styles.skeletonAction}`}>
-        <span className={`${styles.skeletonLine} ${styles.buttonSkeletonLine}`}></span>
-      </span>
-    </div>
+    <section className={styles.profileCard} aria-hidden="true">
+      <div className={styles.profileCardHeader}>
+        <div className={styles.profileIdentity}>
+          <span>{t('tabs.profile', { ns: 'admin' })}</span>
+          <h2><span className={`${styles.skeletonLine} ${styles.wide}`}></span></h2>
+        </div>
+        <span className={`${styles.skeletonLine} ${styles.small}`}></span>
+      </div>
+      <div className={styles.profileCardFooter}>
+        <div className={styles.profileCountry}>
+          <span>{t('billing.country', { ns: 'admin' })}</span>
+          <span className={`${styles.skeletonLine} ${styles.small}`}></span>
+        </div>
+        <span className={`button-action ${styles.skeletonAction}`}>
+          <span className={`${styles.skeletonLine} ${styles.buttonSkeletonLine}`}></span>
+        </span>
+      </div>
+    </section>
   </>
 )
 
@@ -68,19 +73,21 @@ export default function Admin({
   setSessionToken,
   signOutPro,
   openEmailLogin,
-  clientReady
+  clientReady,
+  refreshPage,
+  subscriptionExpired
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const [loggedUserData, setLoggedUserData] = useState(null)
   const [partnerData, setPartnerData] = useState(null)
-  const [checkedPackageData, setCheckedPackageData] = useState(false)
   const [packageData, setPackageData] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [showPrioritySupport, setShowPrioritySupport] = useState(false)
   const [profileLoaded, setProfileLoaded] = useState(false)
   const [billingCountry, setBillingCountry] = useState('')
   const [choosingBillingCountry, setChoosingBillingCountry] = useState(false)
+  const [subscriptionOpenRequest, setSubscriptionOpenRequest] = useState(0)
   const proSubscriptionActive = !!packageData && (!packageData.expiredAt || packageData.expiredAt * 1000 > Date.now())
 
   useEffect(() => {
@@ -197,13 +204,9 @@ export default function Admin({
           setPackageData(packageData.data)
           setProExpire(JSON.stringify(packageData.data.expiredAt * 1000))
         }
-        setCheckedPackageData(true)
       } else {
         setProExpire('0')
-        setCheckedPackageData(true)
       }
-    } else {
-      setCheckedPackageData(true)
     }
     setProfileLoaded(true)
   }
@@ -214,7 +217,6 @@ export default function Admin({
     setLoggedUserData(null)
     setPartnerData(null)
     setPackageData(null)
-    setCheckedPackageData(false)
     setShowPrioritySupport(false)
     setProfileLoaded(false)
     setBillingCountry('')
@@ -234,68 +236,78 @@ export default function Admin({
             <AdminProfileSkeleton t={t} />
           ) : sessionToken && loggedUserData ? (
             <>
-              <table className={`table-large no-hover shrink ${styles.profileTable}`}>
-                <tbody>
-                  <tr>
-                    <td className="left">{t('profile.email', { ns: 'admin' })}</td>
-                    <td className="left">
-                      <b>{loggedUserData.email}</b>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="left">{t('billing.country', { ns: 'admin' })}</td>
-                    <td className="left">
-                      <BillingCountry
-                        billingCountry={billingCountry}
-                        compact={true}
-                        setBillingCountry={setBillingCountry}
-                        choosingCountry={choosingBillingCountry}
-                        setChoosingCountry={setChoosingBillingCountry}
-                        showLabel={false}
-                        onSaved={(country) => setPartnerData((prev) => ({ ...(prev || {}), country }))}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="left">{t('profile.subscription-status', { ns: 'admin' })}</td>
-                    <td className="left">
-                      <b className={proSubscriptionActive ? 'green' : 'orange'}>
-                        {proSubscriptionActive
-                          ? t('profile.subscription-active', { ns: 'admin' })
-                          : t('profile.subscription-inactive', { ns: 'admin' })}
-                      </b>
-                      {proSubscriptionActive && packageData?.expiredAt && (
-                        <>
-                          {' '}
-                          {t('profile.until', { ns: 'admin' })}{' '}
-                          <span className="no-brake">{fullDateAndTime(packageData.expiredAt + 1, 'expiration')}</span>
-                        </>
-                      )}
-                      {!proSubscriptionActive && (
-                        <>
-                          {' '}
-                          <Link href="#bithomp-pro-subscription">
-                            {t('profile.subscription-buy', { ns: 'admin' })}
-                          </Link>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <SubscriptionManager
-                id="bithomp-pro-subscription"
-                initiallyExpanded={checkedPackageData && !packageData}
-                openEmailLogin={openEmailLogin}
-                packageType="bithomp_pro"
-                PlanComponent={BithompProSubscription}
-                sessionToken={sessionToken}
-                setProExpire={setProExpire}
+              <section className={styles.profileCard}>
+                <div className={styles.profileCardHeader}>
+                  <div className={styles.profileIdentity}>
+                    <span>{t('tabs.profile', { ns: 'admin' })}</span>
+                    <h2>{loggedUserData.email}</h2>
+                  </div>
+                  <div className={styles.profileStatus}>
+                    <b className={proSubscriptionActive ? styles.active : styles.inactive}>
+                      {t('profile.subscription-status', { ns: 'admin' })}:{' '}
+                      {proSubscriptionActive
+                        ? t('profile.subscription-active', { ns: 'admin' })
+                        : t('profile.subscription-inactive', { ns: 'admin' })}
+                    </b>
+                    {proSubscriptionActive && packageData?.expiredAt ? (
+                      <small>
+                        {t('profile.until', { ns: 'admin' })}{' '}
+                        {dateFormat(packageData.expiredAt + 1)}{' '}
+                        (<span suppressHydrationWarning>{subscriptionRemaining(packageData.expiredAt + 1, i18n.language)}</span>)
+                      </small>
+                    ) : null}
+                  </div>
+                </div>
+                <div className={styles.profileCardFooter}>
+                  <div className={styles.profileCountry}>
+                    <span>{t('billing.country', { ns: 'admin' })}</span>
+                    <BillingCountry
+                      billingCountry={billingCountry}
+                      compact={true}
+                      setBillingCountry={setBillingCountry}
+                      choosingCountry={choosingBillingCountry}
+                      setChoosingCountry={setChoosingBillingCountry}
+                      showLabel={false}
+                      onSaved={(country) => setPartnerData((prev) => ({ ...(prev || {}), country }))}
+                    />
+                  </div>
+                  <button
+                    className={`button-action thin ${styles.profileSubscriptionAction}`}
+                    onClick={() => {
+                      setSubscriptionOpenRequest((request) => request + 1)
+                    }}
+                    type="button"
+                  >
+                    {proSubscriptionActive
+                      ? t('api.manage-subscription', { ns: 'admin' })
+                      : t('profile.subscription-buy', { ns: 'admin' })}
+                  </button>
+                </div>
+                <SubscriptionManager
+                  embedded={true}
+                  id="bithomp-pro-subscription"
+                  initiallyExpanded={false}
+                  openEmailLogin={openEmailLogin}
+                  packageType="bithomp_pro"
+                  PlanComponent={BithompProSubscription}
+                  sessionToken={sessionToken}
+                  setProExpire={setProExpire}
+                  setSignRequest={setSignRequest}
+                  setSubscriptionExpired={setSubscriptionExpired}
+                  title="Bithomp Pro"
+                  externalBillingCountry={billingCountry}
+                  externalChoosingCountry={choosingBillingCountry}
+                  openRequest={subscriptionOpenRequest}
+                  showExpired={false}
+                />
+              </section>
+              <VerifiedAddresses
+                account={account}
                 setSignRequest={setSignRequest}
-                setSubscriptionExpired={setSubscriptionExpired}
-                title="Bithomp Pro"
-                externalBillingCountry={billingCountry}
-                externalChoosingCountry={choosingBillingCountry}
+                refreshPage={refreshPage}
+                subscriptionExpired={subscriptionExpired}
+                sessionToken={sessionToken}
+                openEmailLogin={openEmailLogin}
               />
               <br />
               <br />

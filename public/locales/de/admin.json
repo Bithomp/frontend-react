@@ -4,9 +4,11 @@
     "profile": "Profil",
     "watchlist": "Beobachtungsliste",
     "my-addresses": "Meine Adressen",
+    "tax-exports": "Transaktionsexporte",
     "subscriptions": "Abonnements",
     "referrals": "Empfehlungen",
     "alerts": "Benachrichtigungen",
+    "activity-alerts": "Aktivitätsalarme",
     "alerts-bot": "Benachrichtigungs-Bot",
     "api": {
       "information": "Informationen",
@@ -138,7 +140,7 @@
       "profile": "Verwalten Sie Ihr Profil und Ihre Abonnements.",
       "security": "Melden Sie sich an, um auf Konto-Tools und private Einstellungen zuzugreifen.",
       "pro": "Pro-Abonnement und Vorteile verwalten.",
-      "history": "Saldoverlauf und Steuerexporte aktivieren.",
+      "history": "Transaktionen für Steuerberichte exportieren.",
       "api": "API-Schlüssel erstellen und Nutzung ansehen.",
       "watchlist": "Private Adress- und NFT-Beobachtungslisten führen.",
       "alerts": "Alerts für Konten und NFTs konfigurieren."
@@ -223,17 +225,18 @@
   },
   "pro": {
     "verified-addresses": "Verifizierte Adressen",
+    "wallets-intro": "Verifiziere deine Wallets, um Transaktionen für Steuerberichte zu exportieren, animierte Avatare festzulegen und unterstützte Automatisierungen zu nutzen.",
     "verification-intro": "Eine verifizierte Adresse bereitet diese Wallet für Pro-Dienste vor. Die Anmeldung mit verifizierten Wallets wird später verfügbar sein.",
     "features-intro": "Mit einer verifizierten Adresse und einem aktiven Bithomp Pro-Abonnement können Sie Folgendes aktivieren:",
     "features-note": "Die Verifizierung speichert die Einrichtung; Berichte und automatische Aktionen funktionieren, sobald Bithomp Pro aktiv ist.",
     "features": {
-      "history": "Saldenhistorie und Steuerexport.",
+      "history": "Transaktionsexporte für Steuerberichte.",
       "escrows": "Escrow automatisch fertigstellen.",
       "escrows-note": "wenn die Adresse über genügend Reserven verfügt und die Escrow abgeschlossen werden kann",
       "nft-offers": "NFT-Angebote automatisch stornieren.",
       "nft-offers-note": "wenn das Angebot ungültig wird oder abgelaufen ist"
     },
-    "balance-history": "Bilanzverlauf",
+    "balance-history": "Transaktionsexporte",
     "bot-settings": "Bot-Einstellungen",
     "no-verified-addresses": "Noch keine verifizierten Adressen.",
     "activate-analysis-before": "Aktivieren Sie den Saldoverlauf durch ein Abonnement von",
@@ -246,7 +249,7 @@
     "address-name-placeholder": "Privater Adressname",
     "guest": {
       "verify": "Überprüfen Sie den Besitz Ihrer Adressen.",
-      "history": "Aktivieren Sie den Kontostandverlauf, Exporte und Bot-Einstellungen."
+      "history": "Aktivieren Sie Transaktionsexporte für Steuerberichte und Bot-Einstellungen."
     },
     "errors": {
       "no-email": "Fügen Sie vor der Bestätigung eine E-Mail zu Ihrem Profil hinzu."
@@ -258,11 +261,11 @@
       "cancel-nft": "NFT-Angebote automatisch stornieren"
     },
     "history": {
-      "seo": "Bilanzverlauf",
-      "title": "Bilanzverlauf",
+      "seo": "Transaktionsexporte",
+      "title": "Transaktionsexporte",
       "sample-title": "Beispieldaten",
       "sample-text": "Dies ist ein Beispielexport. Melden Sie sich an und fügen Sie eine Pro-Adresse hinzu, um Ihren eigenen Verlauf zu laden.",
-      "sign-in-pro": "Öffnen Sie Meine Adressen",
+      "sign-in-pro": "Profil öffnen",
       "sample-unavailable": "Beispieldaten sind derzeit nicht verfügbar.",
       "order": {
         "latest": "Das Neueste zuerst",
@@ -306,9 +309,8 @@
       "why-title": "Warum Bithomp Pro?",
       "intro": "Bithomp Pro schaltet zusätzliche Kontotools frei und hebt mehrere Beschränkungen auf.",
       "benefits": {
-        "reports-title": "Berichte",
-        "reports-link": "Bilanzverlauf",
-        "reports-text": "Steuerexport- und Kontoaktivitätstools.",
+        "reports-title": "Transaktionsexporte",
+        "reports-text": "Laden Sie den Transaktionsverlauf als CSV für unterstützte Steuerplattformen herunter.",
         "services-title": "Dienstleistungen",
         "services": {
           "advanced-prefix": "Erweiterte Optionen in",
@@ -317,18 +319,20 @@
         },
         "scroll-title": "Weitere Daten",
         "scroll-text": "Mehr Zeilen und tieferes Scrollen",
+        "scroll-dapp-transactions": "Transaktionsverläufe einzelner DApps",
         "limits-title": "Höhere Grenzwerte",
         "limits-text": "Weitere Artikel in",
         "avatars-title": "Avatare",
         "avatars-text": "Legen Sie animierte Avatare für verifizierte Adressen fest in",
-        "ads-title": "Keine Werbung",
-        "ads-text": "Nutzen Sie den Explorer ohne Werbung.",
+        "ads-title": "Werbefreies Erlebnis",
+        "ads-text": "Konzentrieren Sie sich ohne Werbung oder Ablenkungen auf das Wesentliche.",
         "support-title": "Vorrangiger Support",
         "support-text": "Erhalten Sie schneller Hilfe vom Support.",
         "project-title": "Unterstützen Sie das Projekt",
         "project-text": "Ihr Abonnement hilft uns, weiterzuentwickeln."
       },
-      "subscribe": "Wählen Sie einen Abonnementzeitraum."
+      "subscribe": "Wählen Sie einen Abonnementzeitraum.",
+      "more-benefits": "Weitere Vorteile"
     },
     "api": {
       "why-title": "API-Zugriff",

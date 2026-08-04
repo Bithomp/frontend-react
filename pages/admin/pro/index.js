@@ -4,10 +4,8 @@ import { useTranslation } from 'next-i18next'
 import Mailto from 'react-protected-mailto'
 
 import { getIsSsrMobile } from '../../../utils/mobile'
-import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../../utils/axios'
 
-import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
 import { avatarSrc, devNet, encode, useWidth, xahauNetwork } from '../../../utils'
 import { removeProAddress, activateAddressCrawler, crawlerStatus, updateProAddress } from '../../../utils/pro'
@@ -17,16 +15,18 @@ import Avatar from '../../../components/UI/Avatar'
 
 import { MdDelete } from 'react-icons/md'
 import Link from 'next/link'
-import ProTabs from '../../../components/Tabs/ProTabs'
 import CheckBox from '../../../components/UI/CheckBox'
+import TaxExports from './history'
+import styles from '@/styles/pages/admin.module.scss'
 
 const PRO_ADDRESS_LIMIT = 5
 const FREE_ADDRESS_LIMIT = 1
 
 export const getServerSideProps = async (context) => {
-  const { locale } = context
+  const { locale, query } = context
   return {
     props: {
+      queryAddress: query.address || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin']))
     }
@@ -34,16 +34,16 @@ export const getServerSideProps = async (context) => {
 }
 
 const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired, t }) => {
-  let styles = {}
+  let checkboxStyle = {}
   if (mobile) {
-    styles = { ...styles, lineHeight: '1.8em', fontSize: '1.1em' }
+    checkboxStyle = { ...checkboxStyle, lineHeight: '1.8em', fontSize: '1.1em' }
   }
 
   const [escrowsExecution, setEscrowsExecution] = useState(a.settings?.escrowsExecution)
   const [nftokensOffersCancellation, setNftokensOffersCancellation] = useState(a.settings?.nftokensOffersCancellation)
 
   return (
-    <>
+    <div className={styles.botSettings}>
       <CheckBox
         checked={subscriptionExpired ? false : escrowsExecution}
         setChecked={() => {
@@ -52,10 +52,10 @@ const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired, t }) => {
           })
           setEscrowsExecution(!escrowsExecution)
         }}
-        style={{ ...styles, marginTop: 0 }}
+        style={{ ...checkboxStyle, marginTop: 0 }}
         disabled={subscriptionExpired}
       >
-        {mobile ? t('pro.settings.auto-escrow', { ns: 'admin' }) : t('pro.settings.execute-escrows', { ns: 'admin' })}
+        {t('pro.settings.auto-escrow', { ns: 'admin' })}
       </CheckBox>
       {!xahauNetwork && (
         <CheckBox
@@ -66,19 +66,17 @@ const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired, t }) => {
             })
             setNftokensOffersCancellation(!nftokensOffersCancellation)
           }}
-          style={{ ...styles, marginTop: 10 }}
+          style={{ ...checkboxStyle, marginTop: 0 }}
           disabled={subscriptionExpired}
         >
-          {mobile
-            ? t('pro.settings.auto-cancel-nft', { ns: 'admin' })
-            : t('pro.settings.cancel-nft', { ns: 'admin' })}
+          {t('pro.settings.auto-cancel-nft', { ns: 'admin' })}
         </CheckBox>
       )}
-    </>
+    </div>
   )
 }
 
-export default function Pro({
+export function VerifiedAddresses({
   account,
   setSignRequest,
   refreshPage,
@@ -234,7 +232,7 @@ export default function Pro({
     return (
       <div className={`pro-address-actions${options?.mobile ? ' mobile' : ''}`}>
         {address.crawler && (
-          <Link className="button-action narrow thin" href={'/admin/pro/history?address=' + address.address}>
+          <Link className="button-action narrow thin" href={'/admin/pro?address=' + address.address}>
             {options?.mobile ? t('button.view-history', { ns: 'admin' }) : t('button.view', { ns: 'admin' })}
           </Link>
         )}
@@ -254,103 +252,61 @@ export default function Pro({
   }
 
   return (
-    <>
-      <SEO title={t('tabs.my-addresses', { ns: 'admin' })} />
-      <div className="page-admin content-center">
-        <h1 className="center">{t('tabs.my-addresses', { ns: 'admin' })}</h1>
-
-        <AdminTabs name="mainTabs" tab="pro" />
-
-        <div className="tabs-inline tabs-with-action">
-          <ProTabs tab="addresses" />
-
-          <Link
-            href="/learn/xrp-xah-taxes"
-            className="button-action thin narrow secondary tabs-inline-action"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {t('button.view-guide', { ns: 'admin' })}
-          </Link>
-        </div>
+    <section className={styles.addressSection}>
+        <h2 className="center">{t('pro.verified-addresses', { ns: 'admin' })}</h2>
 
         {sessionToken ? (
           <>
-            <h4 className="center">{t('pro.verified-addresses', { ns: 'admin' })}</h4>
-            <div>
-              <p>{t('pro.verification-intro', { ns: 'admin' })}</p>
-              <p>{t('pro.features-intro', { ns: 'admin' })}</p>
-              <ul>
-                <li>{t('pro.features.history', { ns: 'admin' })}</li>
-                <li>
-                  {t('pro.features.escrows', { ns: 'admin' })}
-                  <br />
-                  ({t('pro.features.escrows-note', { ns: 'admin' })})
-                </li>
-                {!xahauNetwork && (
-                  <li>
-                    {t('pro.features.nft-offers', { ns: 'admin' })}
-                    <br />
-                    ({t('pro.features.nft-offers-note', { ns: 'admin' })})
-                  </li>
-                )}
-              </ul>
-              <p>{t('pro.features-note', { ns: 'admin' })}</p>
-            </div>
-            <br />
+            <p className={styles.addressIntro}>{t('pro.wallets-intro', { ns: 'admin' })}</p>
 
             {rendered && (
               <>
                 {!width || width > 750 ? (
-                  <table className="table-large no-hover">
-                    <thead>
-                      <tr>
-                        <th className="center">#</th>
-                        <th className="left">{t('table.address', { ns: 'admin' })}</th>
-                        <th className="right">{t('pro.balance-history', { ns: 'admin' })}</th>
-                        <th className="left">{t('pro.bot-settings', { ns: 'admin' })}</th>
-                        <th className="center">{t('button.remove', { ns: 'admin' })}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <div className={styles.addressTableWrap}>
+                    <table className={`table-large no-hover ${styles.addressTable}`}>
+                      <thead>
+                        <tr>
+                          <th className="center">#</th>
+                          <th className="left">{t('table.address', { ns: 'admin' })}</th>
+                          <th className="right">{t('pro.balance-history', { ns: 'admin' })}</th>
+                          <th className="left">{t('pro.bot-settings', { ns: 'admin' })}</th>
+                          <th className="center">{t('button.remove', { ns: 'admin' })}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
                       {verifiedAddresses?.length > 0 ? (
                         <>
                           {verifiedAddresses.map((a, i) => (
                             <tr key={i}>
                               <td className="center">{i + 1}</td>
                               <td className="left">
-                                <table>
-                                  <tbody>
-                                    <tr>
-                                      <td style={{ padding: 0 }}>
-                                        <Avatar src={avatarSrc(a.address, { refreshPage })} size={40} />
-                                      </td>
-                                      <td style={{ padding: '0 0 0 10px' }}>
-                                        <b className="orange">{a.name}</b> - {addressLink(a.address, { short: true })}
-                                        <br />
-                                        {!devNet && (
-                                          <a
-                                            onClick={() =>
-                                              setSignRequest({
-                                                action: 'setAvatar',
-                                                request: {
-                                                  TransactionType: 'AccountSet',
-                                                  Account: a.address
-                                                },
-                                                data: {
-                                                  signOnly: true,
-                                                  action: 'set-avatar'
-                                                }
-                                              })
+                                <div className={styles.addressIdentity}>
+                                  <Avatar src={avatarSrc(a.address, { refreshPage })} size={40} />
+                                  <div className={styles.addressIdentityText}>
+                                    <div>
+                                      <b className="orange">{a.name}</b> - {addressLink(a.address, { short: true })}
+                                    </div>
+                                    {!devNet && (
+                                      <a
+                                        onClick={() =>
+                                          setSignRequest({
+                                            action: 'setAvatar',
+                                            request: {
+                                              TransactionType: 'AccountSet',
+                                              Account: a.address
+                                            },
+                                            data: {
+                                              signOnly: true,
+                                              action: 'set-avatar'
                                             }
-                                          >
-                                            {t('button.set-avatar', { ns: 'admin' })}
-                                          </a>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
+                                          })
+                                        }
+                                      >
+                                        {t('button.set-avatar', { ns: 'admin' })}
+                                      </a>
+                                    )}
+                                  </div>
+                                </div>
                               </td>
                               <td className="center pro-balance-history-cell">
                                 <div className="pro-crawler-status">{crawlerStatus(a.crawler)}</div>
@@ -379,8 +335,9 @@ export default function Pro({
                           </td>
                         </tr>
                       )}
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
+                  </div>
                 ) : (
                   <table className="table-mobile">
                     <tbody>
@@ -495,49 +452,40 @@ export default function Pro({
                     <>{t('pro.verify-first', { ns: 'admin' })}</>
                   )}
                   {canAddAddress && (
-                    <>
-                      <br />
-                      <br />
-                      <div className="flex-container flex-center">
-                        <span
-                          style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}
-                        >
-                          <AddressInput
-                            title={t('table.address', { ns: 'admin' })}
-                            placeholder={t('pro.address-placeholder', { ns: 'admin' })}
-                            setInnerValue={setAddressToVerify}
-                            hideButton={true}
-                            rawData={rawData}
-                            type="address"
-                          />
-                        </span>
-                        <span style={{ width: width > 851 ? '30%' : '100%' }}>
-                          <FormInput
-                            title={t('watchlist.private-name', { ns: 'admin' })}
-                            placeholder={t('pro.address-name-placeholder', { ns: 'admin' })}
-                            setInnerValue={setAddressName}
-                            defaultValue={rawData?.addressDetails?.username}
-                            hideButton={true}
-                          />
-                        </span>
+                    <div className={styles.addAddressForm}>
+                      <div>
+                        <AddressInput
+                          title={t('table.address', { ns: 'admin' })}
+                          placeholder={t('pro.address-placeholder', { ns: 'admin' })}
+                          setInnerValue={setAddressToVerify}
+                          hideButton={true}
+                          rawData={rawData}
+                          type="address"
+                        />
                       </div>
-                      <br />
-                      <center>
-                        <button
-                          className="button-action"
-                          onClick={addAddressClicked}
-                          disabled={!addressToVerify || !addressName}
-                        >
-                          {t('button.verify', { ns: 'admin' })}
-                        </button>
-                      </center>
-                    </>
+                      <div>
+                        <FormInput
+                          title={t('watchlist.private-name', { ns: 'admin' })}
+                          placeholder={t('pro.address-name-placeholder', { ns: 'admin' })}
+                          setInnerValue={setAddressName}
+                          defaultValue={rawData?.addressDetails?.username}
+                          hideButton={true}
+                        />
+                      </div>
+                      <button
+                        className={`button-action ${styles.verifyAddressButton}`}
+                        onClick={addAddressClicked}
+                        disabled={!addressToVerify || !addressName}
+                        type="button"
+                      >
+                        {t('button.verify', { ns: 'admin' })}
+                      </button>
+                    </div>
                   )}
                 </div>
               </>
             )}
-            <br />
-            {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+            {errorMessage ? <div className={`center orange bold ${styles.addressError}`}>{errorMessage}</div> : null}
           </>
         ) : (
           <div className="center">
@@ -553,7 +501,10 @@ export default function Pro({
             </center>
           </div>
         )}
-      </div>
-    </>
+    </section>
   )
+}
+
+export default function TaxExportsPage(props) {
+  return <TaxExports {...props} />
 }

@@ -41,7 +41,6 @@ import {
   IoAtOutline,
   IoStarOutline,
   IoPeopleOutline,
-  IoLocationOutline,
   IoKeyOutline,
   IoCompassOutline,
   IoAddCircleOutline,
@@ -1079,6 +1078,10 @@ export default function Header({
             {proLoggedIn && (
               <>
                 <hr />
+                <Link href="/admin/pro">
+                  <IoDocumentTextOutline className="menu-item-icon" />
+                  {t('menu.pro.tax-exports')}
+                </Link>
                 <Link href="/admin/notifications">
                   <IoNotificationsOutline className="menu-item-icon" />
                   {t('menu.pro.alerts')}
@@ -1094,10 +1097,6 @@ export default function Header({
                 <Link href="/admin/api">
                   <IoKeyOutline className="menu-item-icon" />
                   {t('menu.pro.api-management')}
-                </Link>
-                <Link href="/admin/pro">
-                  <IoLocationOutline className="menu-item-icon" />
-                  {t('menu.pro.my-addresses')}
                 </Link>
                 <span onClick={signOutPro} className="link">
                   <IoLogOutOutline className="menu-item-icon" />

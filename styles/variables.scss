@@ -29,17 +29,21 @@ body {
   --green: #0D742F;
   --orange: #e38203;
   --purple: #800080;
-  // Card variables
+  // Surface hierarchy: page -> panel/card -> nested group. Do not recreate
+  // these levels with transparent background mixes in component styles.
   --card-shadow: var(--color-gray-800);
-  --card-border: var(--color-gray-200);
-  --card-bg: white;
+  --card-border: var(--surface-panel-border);
+  --card-bg: var(--surface-panel-bg);
   --card-text: var(--color-gray-950);
   --hero-aura-bg: radial-gradient(circle at 20% 20%, rgba(11, 143, 181, 0.18), transparent 34%),
     radial-gradient(circle at 80% 10%, rgba(255, 159, 67, 0.16), transparent 26%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.24));
-  --surface-panel-bg: color-mix(in srgb, var(--background-main) 80%, white 20%);
-  --surface-panel-border: color-mix(in srgb, var(--accent-link) 18%, transparent);
+  --surface-panel-bg: #ffffff;
+  --surface-panel-border: #cbd8da;
   --surface-panel-shadow: 0 18px 46px rgba(0, 0, 0, 0.08);
+  --surface-nested-bg: #f0f4f5;
+  --surface-nested-border: #bccdd0;
+  --surface-inset-bg: #e5edef;
   --surface-card-bg: linear-gradient(160deg, color-mix(in srgb, var(--background-main) 92%, white 8%), color-mix(in srgb, var(--background-secondary) 82%, white 18%));
   --surface-card-border: color-mix(in srgb, var(--accent-link) 24%, transparent);
   --surface-card-shadow: 0 22px 44px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.45);
@@ -93,17 +97,20 @@ body.dark {
   --green: #62C683;
   --orange: #FAD29E;
   --purple: #EE82EE;
-  // Card variables
+  // Keep the same surface hierarchy in dark mode with visible luminance steps.
   --card-shadow: var(--color-gray-800);
-  --card-border: var(--color-gray-800);
-  --card-bg: black;
+  --card-border: var(--surface-panel-border);
+  --card-bg: var(--surface-panel-bg);
   --card-text: var(--color-gray-100);
   --hero-aura-bg: radial-gradient(circle at 18% 18%, rgba(26, 115, 126, 0.24), transparent 34%),
     radial-gradient(circle at 82% 8%, rgba(168, 132, 94, 0.18), transparent 28%),
     linear-gradient(180deg, rgba(41, 52, 54, 0.58), rgba(8, 11, 11, 0.16));
-  --surface-panel-bg: rgba(32, 34, 34, 0.92);
-  --surface-panel-border: rgba(102, 208, 218, 0.2);
+  --surface-panel-bg: #1c2021;
+  --surface-panel-border: #405154;
   --surface-panel-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+  --surface-nested-bg: #272c2d;
+  --surface-nested-border: #536467;
+  --surface-inset-bg: #313839;
   --surface-card-bg: linear-gradient(160deg, rgba(34, 37, 38, 0.98), rgba(24, 33, 35, 0.94));
   --surface-card-border: rgba(102, 208, 218, 0.24);
   --surface-card-shadow: 0 20px 42px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.08);

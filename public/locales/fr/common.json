@@ -173,7 +173,8 @@
       "subscriptions": "Abonnements",
       "referrals": "Parrainages",
       "my-addresses": "Mes adresses",
-      "alerts": "Alertes",
+      "tax-exports": "Exports de transactions",
+      "alerts": "Alertes d’activité",
       "api-management": "Gestion de l’API"
     },
     "legal": "Légal",

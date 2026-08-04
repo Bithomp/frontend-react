@@ -173,7 +173,8 @@
       "subscriptions": "Subscriptions",
       "referrals": "Referrals",
       "my-addresses": "My addresses",
-      "alerts": "Alerts",
+      "tax-exports": "Transaction exports",
+      "alerts": "Activity Alerts",
       "api-management": "API management"
     },
     "legal": "Legal",

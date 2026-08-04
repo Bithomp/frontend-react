@@ -4,9 +4,11 @@
     "profile": "Profil",
     "watchlist": "Daftar pantau",
     "my-addresses": "Alamat saya",
+    "tax-exports": "Ekspor transaksi",
     "subscriptions": "Langganan",
     "referrals": "Referensi",
     "alerts": "Peringatan",
+    "activity-alerts": "Peringatan aktivitas",
     "alerts-bot": "Bot peringatan",
     "api": {
       "information": "Informasi",
@@ -138,7 +140,7 @@
       "profile": "Kelola profil dan langganan Anda.",
       "security": "Masuk untuk mengakses alat akun dan pengaturan pribadi.",
       "pro": "Kelola langganan Pro dan manfaatnya.",
-      "history": "Aktifkan riwayat saldo dan ekspor pajak.",
+      "history": "Ekspor transaksi untuk laporan pajak.",
       "api": "Buat kunci API dan lihat penggunaan.",
       "watchlist": "Simpan daftar pantau alamat dan NFT pribadi.",
       "alerts": "Atur alert untuk akun dan NFT."
@@ -223,17 +225,18 @@
   },
   "pro": {
     "verified-addresses": "Alamat terverifikasi",
+    "wallets-intro": "Verifikasi dompet Anda untuk mengekspor transaksi bagi laporan pajak, menggunakan avatar animasi, dan otomatisasi yang didukung.",
     "verification-intro": "Alamat terverifikasi menyiapkan dompet tersebut untuk layanan Pro. Login dengan dompet terverifikasi akan tersedia nanti.",
     "features-intro": "Dengan alamat terverifikasi dan langganan Bithomp Pro aktif, Anda dapat mengaktifkan:",
     "features-note": "Verifikasi menyimpan pengaturan; laporan dan tindakan otomatis mulai berjalan setelah Bithomp Pro aktif.",
     "features": {
-      "history": "Saldo sejarah dan pajak ekspor.",
+      "history": "Ekspor transaksi untuk laporan pajak.",
       "escrows": "Escrow yang diselesaikan secara otomatis.",
       "escrows-note": "ketika alamat memiliki cadangan yang cukup dan escrow dapat diselesaikan",
       "nft-offers": "Batalkan penawaran NFT secara otomatis.",
       "nft-offers-note": "ketika tawaran menjadi tidak sah atau habis masa berlakunya"
     },
-    "balance-history": "Saldo sejarah",
+    "balance-history": "Ekspor transaksi",
     "bot-settings": "Pengaturan bot",
     "no-verified-addresses": "Belum ada alamat terverifikasi.",
     "activate-analysis-before": "Aktifkan riwayat saldo dengan berlangganan",
@@ -246,7 +249,7 @@
     "address-name-placeholder": "Nama alamat pribadi",
     "guest": {
       "verify": "Verifikasi kepemilikan alamat Anda.",
-      "history": "Aktifkan riwayat saldo, ekspor, dan pengaturan bot."
+      "history": "Aktifkan ekspor transaksi untuk laporan pajak dan pengaturan bot."
     },
     "errors": {
       "no-email": "Tambahkan email ke profil Anda sebelum verifikasi."
@@ -258,11 +261,11 @@
       "cancel-nft": "Batalkan penawaran NFT secara otomatis"
     },
     "history": {
-      "seo": "Saldo sejarah",
-      "title": "Saldo sejarah",
+      "seo": "Ekspor transaksi",
+      "title": "Ekspor transaksi",
       "sample-title": "Contoh data",
       "sample-text": "Ini adalah contoh ekspor. Masuk dan tambahkan alamat Pro untuk memuat riwayat Anda sendiri.",
-      "sign-in-pro": "Buka Alamat saya",
+      "sign-in-pro": "Buka profil",
       "sample-unavailable": "Data sampel tidak tersedia saat ini.",
       "order": {
         "latest": "Terbaru dulu",
@@ -306,9 +309,8 @@
       "why-title": "Mengapa Bithomp Pro?",
       "intro": "Bithomp Pro membuka alat akun tambahan dan menghapus beberapa batasan.",
       "benefits": {
-        "reports-title": "Laporan",
-        "reports-link": "Saldo sejarah",
-        "reports-text": "ekspor pajak dan alat aktivitas akun.",
+        "reports-title": "Ekspor transaksi",
+        "reports-text": "Unduh riwayat transaksi sebagai CSV untuk platform pajak yang didukung.",
         "services-title": "Layanan",
         "services": {
           "advanced-prefix": "Opsi lanjutan di",
@@ -317,18 +319,20 @@
         },
         "scroll-title": "Lebih banyak data",
         "scroll-text": "Lebih banyak baris dan pengguliran lebih dalam",
+        "scroll-dapp-transactions": "riwayat transaksi setiap DApp",
         "limits-title": "Batas yang lebih tinggi",
         "limits-text": "Lebih banyak item masuk",
         "avatars-title": "Avatar",
         "avatars-text": "Tetapkan avatar animasi untuk alamat terverifikasi di",
-        "ads-title": "Tidak ada iklan",
-        "ads-text": "Gunakan penjelajah tanpa iklan.",
+        "ads-title": "Pengalaman bebas iklan",
+        "ads-text": "Tetap fokus pada hal terpenting tanpa iklan atau gangguan.",
         "support-title": "Dukungan prioritas",
         "support-text": "Dapatkan bantuan lebih cepat dari dukungan.",
         "project-title": "Dukung proyek ini",
         "project-text": "Langganan Anda membantu kami terus mengembangkan."
       },
-      "subscribe": "Pilih periode berlangganan."
+      "subscribe": "Pilih periode berlangganan.",
+      "more-benefits": "Manfaat lainnya"
     },
     "api": {
       "why-title": "akses API",

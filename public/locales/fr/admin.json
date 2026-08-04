@@ -4,9 +4,11 @@
     "profile": "Profil",
     "watchlist": "Liste de suivi",
     "my-addresses": "Mes adresses",
+    "tax-exports": "Exports de transactions",
     "subscriptions": "Abonnements",
     "referrals": "Parrainages",
     "alerts": "Alertes",
+    "activity-alerts": "Alertes d’activité",
     "alerts-bot": "Bot d’alertes",
     "api": {
       "information": "Informations",
@@ -138,7 +140,7 @@
       "profile": "Gérez votre profil et vos abonnements.",
       "security": "Connectez-vous pour accéder aux outils du compte et aux réglages privés.",
       "pro": "Gérer l’abonnement Pro et ses avantages.",
-      "history": "Activer l’historique des soldes et les exports fiscaux.",
+      "history": "Exportez les transactions pour les rapports fiscaux.",
       "api": "Créer des clés API et consulter l’utilisation.",
       "watchlist": "Garder des listes privées d’adresses et de NFT.",
       "alerts": "Configurer des alertes pour les comptes et les NFT."
@@ -223,17 +225,18 @@
   },
   "pro": {
     "verified-addresses": "Adresses vérifiées",
+    "wallets-intro": "Vérifiez vos portefeuilles pour exporter les transactions destinées aux rapports fiscaux, utiliser les avatars animés et les automatisations prises en charge.",
     "verification-intro": "Une adresse vérifiée prépare ce wallet pour les services Pro. La connexion avec les wallets vérifiés sera disponible plus tard.",
     "features-intro": "Avec une adresse vérifiée et un abonnement Bithomp Pro actif, vous pouvez activer :",
     "features-note": "La vérification enregistre la configuration ; les rapports et actions automatiques fonctionnent lorsque Bithomp Pro est actif.",
     "features": {
-      "history": "Historique des soldes et export fiscal.",
+      "history": "Exports de transactions pour rapports fiscaux.",
       "escrows": "Finalisation automatique des escrows.",
       "escrows-note": "lorsque l’adresse a assez de réserve et que l’escrow peut être finalisé",
       "nft-offers": "Annulation automatique des offres NFT.",
       "nft-offers-note": "lorsque l’offre devient invalide ou expire"
     },
-    "balance-history": "Historique des soldes",
+    "balance-history": "Exports de transactions",
     "bot-settings": "Paramètres du bot",
     "no-verified-addresses": "Aucune adresse vérifiée pour le moment.",
     "activate-analysis-before": "Activez l’historique des soldes en vous abonnant à",
@@ -246,7 +249,7 @@
     "address-name-placeholder": "Nom privé de l’adresse",
     "guest": {
       "verify": "Vérifiez la propriété de vos adresses.",
-      "history": "Activez l’historique des soldes, les exports et les paramètres du bot."
+      "history": "Activez les exports de transactions pour rapports fiscaux et les paramètres du bot."
     },
     "errors": {
       "no-email": "Ajoutez un e-mail à votre profil avant la vérification."
@@ -258,11 +261,11 @@
       "cancel-nft": "Annuler automatiquement les offres NFT"
     },
     "history": {
-      "seo": "Historique des soldes",
-      "title": "Historique des soldes",
+      "seo": "Exports de transactions",
+      "title": "Exports de transactions",
       "sample-title": "Données d’exemple",
       "sample-text": "Ceci est un export d’exemple. Connectez-vous et ajoutez une adresse Pro pour charger votre historique.",
-      "sign-in-pro": "Ouvrir Mes adresses",
+      "sign-in-pro": "Ouvrir le profil",
       "sample-unavailable": "Les données d’exemple ne sont pas disponibles pour le moment.",
       "order": {
         "latest": "Plus récent d’abord",
@@ -306,9 +309,8 @@
       "why-title": "Pourquoi Bithomp Pro ?",
       "intro": "Bithomp Pro débloque des outils de compte supplémentaires et supprime plusieurs limites.",
       "benefits": {
-        "reports-title": "Rapports",
-        "reports-link": "Historique des soldes",
-        "reports-text": "export fiscal et outils d’activité du compte.",
+        "reports-title": "Exports de transactions",
+        "reports-text": "Téléchargez l’historique des transactions au format CSV pour les plateformes fiscales prises en charge.",
         "services-title": "Prestations",
         "services": {
           "advanced-prefix": "Options avancées dans",
@@ -317,18 +319,20 @@
         },
         "scroll-title": "Plus de données",
         "scroll-text": "Plus de lignes et un défilement plus profond sur",
+        "scroll-dapp-transactions": "historiques des transactions de chaque DApp",
         "limits-title": "Limites plus élevées",
         "limits-text": "Plus d’éléments dans",
         "avatars-title": "Avatars",
         "avatars-text": "Définissez des avatars animés pour les adresses vérifiées dans",
-        "ads-title": "Sans publicité",
-        "ads-text": "Utilisez l’explorateur sans publicité.",
+        "ads-title": "Expérience sans publicité",
+        "ads-text": "Restez concentré sur l’essentiel, sans publicité ni distraction.",
         "support-title": "Support prioritaire",
         "support-text": "Obtenez une aide plus rapide du support.",
         "project-title": "Soutenir le projet",
         "project-text": "Votre abonnement nous aide à continuer le développement."
       },
-      "subscribe": "Choisissez une période d’abonnement."
+      "subscribe": "Choisissez une période d’abonnement.",
+      "more-benefits": "Plus d’avantages"
     },
     "api": {
       "why-title": "Accès API",
