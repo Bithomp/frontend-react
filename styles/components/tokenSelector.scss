@@ -247,10 +247,32 @@
       }
 
       &-name {
+        flex: 1 1 auto;
         font-weight: 500;
         display: flex;
         flex-direction: column;
         text-align: left;
+        min-width: 0;
+
+        > span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+
+      &-secondary {
+        color: var(--text-secondary);
+        font-size: 0.9em;
+      }
+
+      &-price {
+        flex-shrink: 0;
+        margin-left: auto;
+        padding-left: 8px;
+        color: var(--text-secondary);
+        font-size: 0.85em;
+        font-weight: 600;
       }
 
       &-issuer {

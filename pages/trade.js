@@ -104,7 +104,7 @@ export const getServerSideProps = async (context) => ({
   }
 })
 
-export default function Trade({ setSignRequest, account, refreshPage }) {
+export default function Trade({ setSignRequest, account, refreshPage, selectedCurrency, fiatRate }) {
   const { t } = useTranslation('trade')
   const [baseAsset, setBaseAsset] = useState(nativeAsset)
   const [quoteAsset, setQuoteAsset] = useState(defaultQuoteAsset)
@@ -293,6 +293,8 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
                   excludeLPtokens
                   modalTitle={t('pair.selectAsset')}
                   allowAllTokens
+                  selectedCurrency={selectedCurrency}
+                  fiatRate={fiatRate}
                 />
                 {account?.address && baseAsset?.currency && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${baseBalance === null ? '—' : bookNumber(baseBalance, baseAmountDecimals, true)} ${tokenName(baseAsset)}`}</span>}
               </div>
@@ -306,6 +308,8 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
                   excludeLPtokens
                   modalTitle={t('pair.selectAsset')}
                   allowAllTokens
+                  selectedCurrency={selectedCurrency}
+                  fiatRate={fiatRate}
                 />
                 {account?.address && quoteAsset?.currency && <span className={styles.pairBalance}>{balanceLoading ? t('form.balanceLoading', { defaultValue: 'Loading balance…' }) : `${t('form.balance', { defaultValue: 'Balance' })}: ${quoteBalance === null ? '—' : bookNumber(quoteBalance, quoteAmountDecimals, true)} ${tokenName(quoteAsset)}`}</span>}
               </div>

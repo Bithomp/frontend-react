@@ -8,7 +8,7 @@ import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
-import { divide, multiply } from '../../utils/calc'
+import { divide, multiply, subtract, toPlainDecimal } from '../../utils/calc'
 import {
   typeNumberOnly,
   isAddressValid,
@@ -26,7 +26,9 @@ import {
   amountFormat,
   shortHash,
   transferRateToPercent,
-  formatXDigits
+  formatXDigits,
+  tokenToFiat,
+  niceCurrency
 } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -37,6 +39,9 @@ import TokenSelector from '../../components/UI/TokenSelector'
 import ServicesTabs from '../../components/Tabs/ServicesTabs'
 import PaymentAmountMode from '../../components/SignForms/PaymentAmountMode'
 import { amountWithValue, PAYMENT_AMOUNT_MODE, transferFeeAmounts } from '../../utils/paymentTransferFee'
+import useTradeBalances, { tradeBalanceKey } from '../../components/Trade/useTradeBalance'
+import useAssetFiatRate from '../../components/SignForms/useAssetFiatRate'
+import AmountMeta from '../../components/UI/AmountMeta'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -75,7 +80,10 @@ export default function Send({
   subscriptionExpired,
   openEmailLogin,
   currencyQuery,
-  currencyIssuerQuery
+  currencyIssuerQuery,
+  selectedCurrency,
+  fiatRate,
+  refreshPage
 }) {
   const { t } = useTranslation(['common', 'services'])
   const ts = (key, options) => t(key, { ns: 'services', ...options })
@@ -114,6 +122,12 @@ export default function Send({
 
   const selectedMptId =
     selectedToken?.mptokenIssuanceID || selectedToken?.MPTokenIssuanceID || selectedToken?.mpt_issuance_id
+  const balanceAssets = selectedMptId ? [] : [selectedToken]
+  const { balances: accountBalances } = useTradeBalances(account?.address, balanceAssets, refreshPage)
+  const selectedBalance = selectedMptId ? null : accountBalances[tradeBalanceKey(selectedToken)]
+  const availableBalance = selectedBalance?.isFinite() ? toPlainDecimal(selectedBalance.toFixed()) : ''
+  const currencyLabel = niceCurrency(selectedToken?.currency || nativeCurrency)
+  const selectedTokenFiatRate = useAssetFiatRate(selectedToken, selectedCurrency, fiatRate)
   const isMptPayment = !!selectedMptId
   const selectedTokenIssuer = selectedToken?.issuer || selectedToken?.account
   const isIssuerTransfer =
@@ -146,6 +160,29 @@ export default function Send({
       ? divide(feeAmounts.spend, mptScaleMultiplier)
       : feeAmounts.spend
     : ''
+  const spendAmount = feeAmounts && amountMode === PAYMENT_AMOUNT_MODE.DELIVER ? feeSpendDisplay : amount
+  const remainingAmount =
+    availableBalance !== '' && Number(spendAmount) > 0 ? subtract(availableBalance, spendAmount) : ''
+  const isRemainingNegative = remainingAmount !== '' && Number(remainingAmount) < 0
+  const fiatSpendEstimate =
+    Number(spendAmount) > 0
+      ? tokenToFiat({
+          amount: { ...selectedToken, value: spendAmount },
+          selectedCurrency,
+          fiatRate,
+          tokenFiatRate: selectedTokenFiatRate,
+          absolute: true,
+          asText: true
+        })
+      : ''
+
+  const applyMaxAmount = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    if (!availableBalance || Number(availableBalance) <= 0) return
+    if (hasIssuerFee) setAmountMode(PAYMENT_AMOUNT_MODE.SPEND)
+    setAmount(availableBalance)
+  }
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
@@ -648,7 +685,32 @@ export default function Send({
           <div className="flex flex-col gap-x-4 sm:flex-row">
             <div className="flex-1">
               <FormInput
-                title={t('table.amount')}
+                title={
+                  <span className="flex items-baseline justify-between gap-2">
+                    <span>{t('table.amount')}</span>
+                    {availableBalance !== '' ? (
+                      <span className="grey text-sm">
+                        {ts('shared.max')}:{' '}
+                        {Number(availableBalance) > 0 ? (
+                          <span
+                            className="link"
+                            role="button"
+                            tabIndex={0}
+                            onMouseDown={applyMaxAmount}
+                            onClick={applyMaxAmount}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter' || event.key === ' ') applyMaxAmount(event)
+                            }}
+                          >
+                            {availableBalance} {currencyLabel}
+                          </span>
+                        ) : (
+                          <>0 {currencyLabel}</>
+                        )}
+                      </span>
+                    ) : null}
+                  </span>
+                }
                 placeholder={ts('shared.enter-amount')}
                 setInnerValue={setAmount}
                 hideButton={true}
@@ -659,18 +721,34 @@ export default function Send({
                 inputMode="decimal"
                 type="text"
                 textUnder={
-                  feeAmounts ? (
-                    <span className="grey">
-                      {amountMode === PAYMENT_AMOUNT_MODE.DELIVER
-                        ? ts('shared.to-spend', { amount: formatXDigits(Number(feeSpendDisplay), 11) })
-                        : ts('shared.to-receive', { amount: formatXDigits(Number(feeDeliverDisplay), 11) })}
-                    </span>
-                  ) : null
+                  <>
+                    <AmountMeta
+                      remainingLabel={ts('shared.remaining')}
+                      remainingAmount={remainingAmount}
+                      currencyLabel={currencyLabel}
+                      negative={isRemainingNegative}
+                      reserveFiatSpace={false}
+                    />
+                    {feeAmounts ? (
+                      <span className="grey">
+                        {amountMode === PAYMENT_AMOUNT_MODE.DELIVER
+                          ? ts('shared.to-spend', { amount: formatXDigits(Number(feeSpendDisplay), 11) })
+                          : ts('shared.to-receive', { amount: formatXDigits(Number(feeDeliverDisplay), 11) })}
+                      </span>
+                    ) : null}
+                  </>
                 }
               />
             </div>
             <div className="flex-1" style={{ marginBottom: 20 }}>
-              <span className="input-title">{ts('shared.currency')}</span>
+              <span className="input-title">
+                <span className="flex items-baseline justify-between gap-2">
+                  <span>{ts('shared.currency')}</span>
+                  <span className="grey text-sm" suppressHydrationWarning>
+                    {fiatSpendEstimate || '\u00A0'}
+                  </span>
+                </span>
+              </span>
               <TokenSelector
                 value={selectedToken}
                 onChange={onTokenChange}
@@ -678,6 +756,8 @@ export default function Send({
                 currencyQueryName="currency"
                 senderAddress={account?.address || null}
                 includeMPTokens
+                selectedCurrency={selectedCurrency}
+                fiatRate={fiatRate}
               />
               {hasIssuerFee ? (
                 <div style={{ marginTop: 8 }}>

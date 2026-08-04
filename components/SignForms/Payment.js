@@ -16,9 +16,11 @@ import {
   retinaImageSize
 } from '../../utils'
 import { divide, multiply, subtract, toPlainDecimal } from '../../utils/calc'
-import { formatXDigits, niceCurrency, transferRateToPercent } from '../../utils/format'
+import { formatXDigits, niceCurrency, tokenToFiat, transferRateToPercent } from '../../utils/format'
 import { amountWithValue, PAYMENT_AMOUNT_MODE, transferFeeAmounts } from '../../utils/paymentTransferFee'
 import { acceptedTokensForAddress, mptIssuanceId } from '../../utils/acceptedTokens'
+import useAssetFiatRate from './useAssetFiatRate'
+import AmountMeta from '../UI/AmountMeta'
 
 const toInitialAmount = (amountValue) => {
   if (!amountValue) return ''
@@ -35,7 +37,7 @@ const toInitialAmount = (amountValue) => {
   return String(numericAmount / 1000000)
 }
 
-export default function Payment({ setSignRequest, signRequest, setStatus, setFormError }) {
+export default function Payment({ setSignRequest, signRequest, setStatus, setFormError, selectedCurrency, fiatRate }) {
   const { t } = useTranslation(['common', 'services'])
   const ts = useCallback((key, options) => t(key, { ns: 'services', ...options }), [t])
   const initialRequest = signRequest?.request || {}
@@ -91,6 +93,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   }, [allowAssetSelection, initialRequest.Amount, selectedAsset?.account, selectedAsset?.issuer, signRequest?.data?.issuer])
 
   const isTokenPayment = isMptPayment || !isNativeCurrency({ currency: currencyCode })
+  const selectedAssetFiatRate = useAssetFiatRate(selectedAsset, selectedCurrency, fiatRate)
   const currencyLabel = useMemo(
     () => (isTokenPayment ? niceCurrency(currencyCode) : currencyCode),
     [currencyCode, isTokenPayment]
@@ -252,6 +255,22 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
   const spendAmountText = feeSpendAmount ? formatXDigits(Number(feeSpendAmount), 11) : ''
   const effectiveSpendAmount =
     amountMode === PAYMENT_AMOUNT_MODE.DELIVER && feeSpendAmount ? feeSpendAmount : String(amount).trim()
+  const fiatSpendEstimate =
+    Number(effectiveSpendAmount) > 0
+      ? tokenToFiat({
+          amount: {
+            ...selectedAsset,
+            currency: currencyCode,
+            issuer,
+            value: effectiveSpendAmount
+          },
+          selectedCurrency,
+          fiatRate,
+          tokenFiatRate: selectedAssetFiatRate,
+          absolute: true,
+          asText: true
+        })
+      : ''
   const remainingAmount = useMemo(() => {
     if (!balance || !effectiveSpendAmount) return ''
     const numericAmount = Number(effectiveSpendAmount)
@@ -419,6 +438,8 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
               senderAddress={sourceAddress}
               includeMPTokens
               modalTitle={t('token-selector.select-token')}
+              selectedCurrency={selectedCurrency}
+              fiatRate={fiatRate}
             />
           </span>
           <br />
@@ -489,13 +510,6 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
                   {balance} {currencyLabel}
                 </span>
               </span>
-              <span
-                className={`paymentAmountRemaining ${isRemainingNegative ? 'red' : 'grey'}`}
-                style={{ visibility: remainingAmount ? 'visible' : 'hidden' }}
-                title={remainingAmount ? `${ts('shared.remaining')}: ${remainingAmount} ${currencyLabel}` : undefined}
-              >
-                {ts('shared.remaining')}: {remainingAmount || '0'} {currencyLabel}
-              </span>
             </span>
           ) : null}
         </span>
@@ -506,6 +520,13 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
           spellCheck="false"
           value={amount}
           inputMode="decimal"
+        />
+        <AmountMeta
+          fiatEstimate={fiatSpendEstimate}
+          remainingLabel={ts('shared.remaining')}
+          remainingAmount={remainingAmount}
+          currencyLabel={currencyLabel}
+          negative={isRemainingNegative}
         />
         {hasMptPrecisionError && (
           <div style={{ marginTop: 6, textAlign: 'left' }}>

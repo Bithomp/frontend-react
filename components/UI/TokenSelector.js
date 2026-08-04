@@ -137,7 +137,9 @@ export default function TokenSelector({
   multiple = false,
   multipleType = 'tokens',
   modalTitle = null,
-  allowAllTokens = false
+  allowAllTokens = false,
+  selectedCurrency = null,
+  fiatRate = null
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -276,6 +278,9 @@ export default function TokenSelector({
           : '&currencyDetails=true'
       if (canLock) {
         urlPart += '&canLock=true'
+      }
+      if (!searchMPTokens) {
+        urlPart += '&priceNativeCurrencySpot=true'
       }
 
       if (!searchQuery.trim()) {
@@ -462,8 +467,10 @@ export default function TokenSelector({
     const mptId = mptIssuanceId(token)
     if (mptId) return shortAddress(mptId, width > 1100 ? 10 : 6)
     if (!token?.issuer) return ''
-    return width > 1100 ? token.issuer : shortAddress(token.issuer)
+    return shortAddress(token.issuer, width > 600 ? 10 : 6)
   }
+
+  const secondaryTokenTitle = (token) => mptIssuanceId(token) || token?.issuer || ''
 
   return (
     <>
@@ -600,6 +607,11 @@ export default function TokenSelector({
                         <div className="token-selector-modal-items">
                           {searchResults.map((token, index) => {
                             const secondaryText = secondaryTokenText(token)
+                            const priceInNative = token?.issuer
+                              ? new BigNumber(token.priceNativeCurrencySpot || 0)
+                              : new BigNumber(1)
+                            const fiatPrice = priceInNative.multipliedBy(fiatRate || 0)
+                            const hasFiatPrice = !!selectedCurrency && fiatPrice.isFinite() && fiatPrice.gt(0)
                             const tokenBalance = filterByDestination
                               ? token.issuer
                                 ? userAssetBalances[assetBalanceKey(token.issuer, token.currency)]
@@ -651,8 +663,20 @@ export default function TokenSelector({
                                         </span>
                                       )}
                                     </span>
-                                    {secondaryText ? <span>{secondaryText}</span> : null}
+                                    {secondaryText ? (
+                                      <span className="token-selector-modal-item-secondary" title={secondaryTokenTitle(token)}>
+                                        {secondaryText}
+                                      </span>
+                                    ) : null}
                                   </div>
+                                  {hasFiatPrice && (
+                                    <span
+                                      className="token-selector-modal-item-price"
+                                      title={`1 ${getTokenDisplayName(token)} ≈ ${fiatPrice.toFixed()} ${selectedCurrency.toUpperCase()}`}
+                                    >
+                                      ≈ {shortNiceNumber(fiatPrice.toFixed(), 4, 2, selectedCurrency)}
+                                    </span>
+                                  )}
                                   {multiple && (
                                     <span className="token-selector-modal-item-check" aria-hidden="true">
                                       {isSelected && <IoCheckmark />}

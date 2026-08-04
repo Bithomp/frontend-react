@@ -1712,6 +1712,8 @@ export default function SignForm({
                       setStatus={setStatus}
                       setAgreedToRisks={setAgreedToRisks}
                       account={account}
+                      selectedCurrency={selectedCurrency}
+                      fiatRate={fiatRate}
                     />
                   )}
 
@@ -1749,6 +1751,8 @@ export default function SignForm({
                       signRequest={signRequest}
                       setStatus={setStatus}
                       setFormError={setFormError}
+                      selectedCurrency={selectedCurrency}
+                      fiatRate={fiatRate}
                     />
                   )}
 

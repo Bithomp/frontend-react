@@ -940,9 +940,9 @@
 
     .paymentAmountHeader {
       display: flex;
-      align-items: stretch;
-      flex-direction: column;
-      gap: 4px;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
       min-height: 22px;
       text-align: left;
     }
@@ -1021,6 +1021,91 @@
 
     .paymentAmountTitle {
       display: block;
+    }
+
+    .swapTokenAmountTitle,
+    .swapTokenSourceAsset {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .swapTokenSourceAsset {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .swapTokenQuote {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 58px;
+
+      p {
+        margin: 10px 0;
+      }
+    }
+
+    .swapTokenQuoteResult {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 5px;
+      max-width: 100%;
+    }
+
+    .swapTokenQuoteValue {
+      display: inline-block;
+      min-width: 145px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      animation: swap-token-quote-update 220ms ease-out;
+    }
+
+    .swapTokenQuoteFiat {
+      min-width: 105px;
+      text-align: left;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .swapTokenRefreshing {
+      display: inline-flex;
+      width: 16px;
+      height: 16px;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      color: var(--accent-link);
+
+      &.active {
+        visibility: visible;
+
+        > svg {
+          animation: spin 800ms linear infinite;
+        }
+      }
+    }
+
+    @keyframes swap-token-quote-update {
+      from {
+        opacity: 0.45;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media only screen and (max-width: 460px) {
+      .swapTokenQuoteResult {
+        flex-wrap: wrap;
+      }
+
+      .swapTokenQuoteValue,
+      .swapTokenQuoteFiat {
+        min-width: 0;
+        text-align: center;
+      }
     }
 
     .paymentAmountMeta {
