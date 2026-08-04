@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 import { nativeCurrency, tokenImageSrc } from '..'
 import { niceCurrency, shortHash, shortNiceNumber } from '../format'
 import { nftUrl } from '../nft'
@@ -47,9 +49,23 @@ const currencyName = (amountOrCurrency) => {
   return amountOrCurrency.currencyDetails?.currency || niceCurrency(amountOrCurrency.currency || nativeCurrency)
 }
 
+const isMptAmount = (amount) =>
+  !!(
+    amount?.mpt_issuance_id ||
+    amount?.mptokenIssuanceID ||
+    amount?.MPTokenIssuanceID ||
+    amount?.mptokenIssuanceId
+  )
+
 const amountValue = (amount) => {
   if (!amount && amount !== 0) return null
   if (typeof amount === 'string' || typeof amount === 'number') return Number(amount) / 1000000
+  if (isMptAmount(amount)) {
+    const rawValue = new BigNumber(amount.value)
+    const scale = Number(amount.currencyDetails?.scale ?? amount.scale ?? amount.AssetScale ?? 0)
+    if (!rawValue.isFinite() || !Number.isInteger(scale) || scale < 0) return null
+    return rawValue.shiftedBy(-scale).toNumber()
+  }
   return Number(amount.value)
 }
 
@@ -78,6 +94,7 @@ const amountTokenImage = (amount) => {
 
 const fiatAmount = (amount, selectedCurrency, fiatRate) => {
   if (!amount || !selectedCurrency) return ''
+  if (isMptAmount(amount)) return ''
 
   const currencyKey = selectedCurrency.toLowerCase()
   const precomputed = typeof amount === 'object' ? Number(amount.valueInConvertCurrencies?.[currencyKey]) : null
@@ -86,7 +103,11 @@ const fiatAmount = (amount, selectedCurrency, fiatRate) => {
   const value = amountValue(amount)
   if (!Number.isFinite(value) || !fiatRate) return ''
 
-  const isNativeObject = typeof amount === 'object' && (!amount.currency || amount.currency === nativeCurrency) && !amount.issuer
+  const isNativeObject =
+    typeof amount === 'object' &&
+    !isMptAmount(amount) &&
+    (!amount.currency || amount.currency === nativeCurrency) &&
+    !amount.issuer
   const isNativeDrops = typeof amount === 'string' || typeof amount === 'number'
   if (!isNativeObject && !isNativeDrops) return ''
 
