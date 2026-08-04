@@ -274,6 +274,8 @@
       "set-did": "Añadir un DID",
       "set-domain": "Añadir un dominio",
       "set-nft-minter": "Cambiar minter de NFT",
+      "clear-token-balance": "Vaciar saldo del token",
+      "swap-token": "Intercambiar token",
       "set-avatar": "Añadir un avatar",
       "payment-header": "Enviar",
       "payment": "Entiendo que las transacciones de blockchain son irreversibles y confirmo que he verificado la dirección del destinatario, la etiqueta de destino si es necesaria y todos los datos del pago antes de enviarlo, ya que los fondos pueden perderse. También acepto los <termsLink>Términos y condiciones</termsLink>.",
@@ -296,6 +298,28 @@
       "avatar-url": "URL del avatar",
       "enter-avatar-url": "Introduce la URL del avatar",
       "invalid-url": "URL no válida"
+    },
+    "clear-token": {
+      "checking-liquidity": "Comprobando la liquidez disponible…",
+      "checking-issuer": "Comprobando si el emisor puede recibir el saldo restante…",
+      "liquidity-error": "No se pudo comprobar la liquidez. No se preparó ninguna transacción.",
+      "issuer-check-error": "No se pudo comprobar la cuenta del emisor. No se preparó ninguna transacción.",
+      "issuer-deposit-auth": "Este saldo no se puede intercambiar y el emisor solo acepta depósitos autorizados. El saldo restante no se puede eliminar automáticamente.",
+      "issuer-requires-tag": "Este saldo no se puede intercambiar y el emisor requiere una etiqueta de destino. El saldo restante no se puede eliminar automáticamente.",
+      "amount-too-small": "La cantidad esperada es inferior a un drop de {{nativeCurrency}}, por lo que no puede intercambiarse. Todo el saldo restante se enviará al emisor.",
+      "swap-to-native": "Todo el saldo restante se cambiará por {{nativeCurrency}}.",
+      "send-to-issuer": "No se encontró liquidez. Todo el saldo restante se enviará al emisor y no podrá recuperarse."
+    },
+    "swap-token": {
+      "amount": "Cantidad",
+      "receive-in": "Recibir en",
+      "select-asset": "Seleccionar activo de recepción",
+      "same-asset": "Selecciona un activo de recepción diferente.",
+      "max": "Máx.",
+      "you-receive": "Recibirás aproximadamente",
+      "checking-liquidity": "Comprobando la liquidez disponible…",
+      "liquidity-error": "No se pudo comprobar la liquidez.",
+      "no-liquidity": "No hay suficiente liquidez para este intercambio."
     },
     "connection": {
       "select-address": "Selecciona al menos una dirección para conectar.",

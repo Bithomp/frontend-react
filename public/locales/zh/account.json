@@ -263,6 +263,7 @@
     "actions": {
       "edit": "编辑",
       "remove": "移除",
+      "clear-balance": "清空余额",
       "view-toml": "查看 TOML",
       "verify": "验证",
       "go-home": "返回首页",
@@ -273,6 +274,7 @@
       "update": "更新",
       "reset": "重置",
       "send": "发送",
+      "swap": "兑换",
       "make-buy-offer": "创建购买报价",
       "burn": "销毁",
       "list-for-sale": "上架出售",

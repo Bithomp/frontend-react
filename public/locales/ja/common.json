@@ -274,6 +274,8 @@
       "set-did": "Seting a DID",
       "set-domain": "ドメインの設定",
       "set-nft-minter": "NFTミンターを変更",
+      "clear-token-balance": "トークン残高をゼロにする",
+      "swap-token": "トークンをスワップ",
       "set-avatar": "アバターの設定",
       "payment-header": "送信",
       "payment": "ブロックチェーン取引は取り消せないことを理解し、資金を失う可能性があるため、送信前に受取人のアドレス、必要な場合は宛先タグ、およびすべての支払い情報を確認したことを認めます。また、<termsLink>利用規約</termsLink>に同意します。",
@@ -296,6 +298,28 @@
       "avatar-url": "アバターURL",
       "enter-avatar-url": "アバターURLを入力",
       "invalid-url": "無効なURL"
+    },
+    "clear-token": {
+      "checking-liquidity": "利用可能な流動性を確認しています…",
+      "checking-issuer": "発行者が残高を受け取れるか確認しています…",
+      "liquidity-error": "流動性を確認できませんでした。トランザクションは準備されていません。",
+      "issuer-check-error": "発行者アカウントを確認できませんでした。トランザクションは準備されていません。",
+      "issuer-deposit-auth": "この残高は交換できず、発行者は承認済みの入金のみ受け付けています。残高を自動的に削除することはできません。",
+      "issuer-requires-tag": "この残高は交換できず、発行者は宛先タグを必須としています。残高を自動的に削除することはできません。",
+      "amount-too-small": "受取予定額が{{nativeCurrency}}の1 drop未満のため交換できません。残りの全残高は発行者に送付されます。",
+      "swap-to-native": "残りの全残高を{{nativeCurrency}}に交換します。",
+      "send-to-issuer": "流動性が見つかりません。残りの全残高は発行者に送付され、取り戻すことはできません。"
+    },
+    "swap-token": {
+      "amount": "数量",
+      "receive-in": "受取通貨",
+      "select-asset": "受取資産を選択",
+      "same-asset": "別の受取資産を選択してください。",
+      "max": "最大",
+      "you-receive": "受取予定額",
+      "checking-liquidity": "利用可能な流動性を確認しています…",
+      "liquidity-error": "流動性を確認できませんでした。",
+      "no-liquidity": "このスワップには十分な流動性がありません。"
     },
     "connection": {
       "select-address": "接続するアドレスを1つ以上選択してください。",

@@ -263,6 +263,7 @@
     "actions": {
       "edit": "Ubah",
       "remove": "Hapus",
+      "clear-balance": "Kosongkan saldo",
       "view-toml": "Lihat TOML",
       "verify": "Verifikasi",
       "go-home": "Ke beranda",
@@ -273,6 +274,7 @@
       "update": "Perbarui",
       "reset": "Atur ulang",
       "send": "Kirim",
+      "swap": "Tukar",
       "make-buy-offer": "Buat penawaran beli",
       "burn": "Hapus",
       "list-for-sale": "Tawarkan untuk dijual",

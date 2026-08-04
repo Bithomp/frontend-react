@@ -263,6 +263,7 @@
     "actions": {
       "edit": "編集",
       "remove": "削除",
+      "clear-balance": "残高をゼロにする",
       "view-toml": "TOMLを表示",
       "verify": "検証",
       "go-home": "ホームへ",
@@ -273,6 +274,7 @@
       "update": "更新",
       "reset": "リセット",
       "send": "送信",
+      "swap": "スワップ",
       "make-buy-offer": "購入オファーを作成",
       "burn": "バーン",
       "list-for-sale": "販売に出す",

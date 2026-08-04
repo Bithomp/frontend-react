@@ -274,6 +274,8 @@
       "set-did": "Menyetel DID",
       "set-domain": "Mengatur Domain",
       "set-nft-minter": "Ubah minter NFT",
+      "clear-token-balance": "Kosongkan saldo token",
+      "swap-token": "Tukar token",
       "set-avatar": "Mengatur Avatar",
       "payment-header": "Kirim",
       "payment": "Saya memahami bahwa transaksi blockchain tidak dapat dibatalkan, dan saya mengonfirmasi bahwa saya telah memeriksa alamat penerima, tag tujuan jika diperlukan, serta semua detail pembayaran sebelum mengirim karena dana dapat hilang. Saya juga menyetujui <termsLink>Syarat dan ketentuan</termsLink>.",
@@ -296,6 +298,28 @@
       "avatar-url": "URL avatar",
       "enter-avatar-url": "Masukkan URL avatar",
       "invalid-url": "URL tidak valid"
+    },
+    "clear-token": {
+      "checking-liquidity": "Memeriksa likuiditas yang tersedia…",
+      "checking-issuer": "Memeriksa apakah penerbit dapat menerima sisa saldo…",
+      "liquidity-error": "Likuiditas tidak dapat diperiksa. Tidak ada transaksi yang disiapkan.",
+      "issuer-check-error": "Akun penerbit tidak dapat diperiksa. Tidak ada transaksi yang disiapkan.",
+      "issuer-deposit-auth": "Saldo ini tidak dapat ditukar dan penerbit hanya menerima deposit yang diotorisasi. Sisa saldo tidak dapat dihapus secara otomatis.",
+      "issuer-requires-tag": "Saldo ini tidak dapat ditukar dan penerbit mewajibkan tag tujuan. Sisa saldo tidak dapat dihapus secara otomatis.",
+      "amount-too-small": "Jumlah yang diperkirakan kurang dari satu drop {{nativeCurrency}}, sehingga tidak dapat ditukar. Seluruh saldo tersisa akan dikirim ke penerbit.",
+      "swap-to-native": "Seluruh saldo tersisa akan ditukar ke {{nativeCurrency}}.",
+      "send-to-issuer": "Likuiditas tidak ditemukan. Seluruh saldo tersisa akan dikirim ke penerbit dan tidak dapat dipulihkan."
+    },
+    "swap-token": {
+      "amount": "Jumlah",
+      "receive-in": "Terima dalam",
+      "select-asset": "Pilih aset penerimaan",
+      "same-asset": "Pilih aset penerimaan yang berbeda.",
+      "max": "Maks.",
+      "you-receive": "Anda akan menerima sekitar",
+      "checking-liquidity": "Memeriksa likuiditas yang tersedia…",
+      "liquidity-error": "Likuiditas tidak dapat diperiksa.",
+      "no-liquidity": "Likuiditas tidak mencukupi untuk pertukaran ini."
     },
     "connection": {
       "select-address": "Pilih setidaknya satu alamat untuk dihubungkan.",

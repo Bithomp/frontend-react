@@ -274,6 +274,8 @@
       "set-did": "Festlegen einer DID",
       "set-domain": "Eine Domain definieren",
       "set-nft-minter": "NFT-Minter ändern",
+      "clear-token-balance": "Token-Guthaben leeren",
+      "swap-token": "Token tauschen",
       "set-avatar": "Ein Avatar definieren",
       "payment-header": "Senden",
       "payment": "Ich verstehe, dass Blockchain-Transaktionen unumkehrbar sind, und bestätige, dass ich die Empfängeradresse, falls erforderlich das Destination Tag und alle Zahlungsdetails vor dem Senden überprüft habe, da Gelder verloren gehen können. Ich stimme außerdem den <termsLink>Allgemeinen Geschäftsbedingungen</termsLink> zu.",
@@ -296,6 +298,28 @@
       "avatar-url": "Avatar-URL",
       "enter-avatar-url": "Avatar-URL eingeben",
       "invalid-url": "Ungültige URL"
+    },
+    "clear-token": {
+      "checking-liquidity": "Verfügbare Liquidität wird geprüft…",
+      "checking-issuer": "Es wird geprüft, ob der Emittent das Restguthaben empfangen kann…",
+      "liquidity-error": "Die Liquidität konnte nicht geprüft werden. Es wurde keine Transaktion vorbereitet.",
+      "issuer-check-error": "Das Emittentenkonto konnte nicht geprüft werden. Es wurde keine Transaktion vorbereitet.",
+      "issuer-deposit-auth": "Dieses Guthaben kann nicht getauscht werden und der Emittent akzeptiert nur autorisierte Einzahlungen. Das Restguthaben kann nicht automatisch entfernt werden.",
+      "issuer-requires-tag": "Dieses Guthaben kann nicht getauscht werden und der Emittent verlangt einen Destination Tag. Das Restguthaben kann nicht automatisch entfernt werden.",
+      "amount-too-small": "Der erwartete Betrag ist kleiner als ein Drop von {{nativeCurrency}} und kann daher nicht getauscht werden. Das gesamte Restguthaben wird an den Emittenten gesendet.",
+      "swap-to-native": "Das gesamte Restguthaben wird in {{nativeCurrency}} getauscht.",
+      "send-to-issuer": "Keine Liquidität gefunden. Das gesamte Restguthaben wird unwiderruflich an den Emittenten gesendet."
+    },
+    "swap-token": {
+      "amount": "Betrag",
+      "receive-in": "Erhalten in",
+      "select-asset": "Empfangs-Asset auswählen",
+      "same-asset": "Wählen Sie ein anderes Empfangs-Asset.",
+      "max": "Max.",
+      "you-receive": "Sie erhalten ungefähr",
+      "checking-liquidity": "Verfügbare Liquidität wird geprüft…",
+      "liquidity-error": "Die Liquidität konnte nicht geprüft werden.",
+      "no-liquidity": "Für diesen Tausch ist nicht genügend Liquidität vorhanden."
     },
     "connection": {
       "select-address": "Bitte wählen Sie mindestens eine Adresse zum Verbinden aus.",

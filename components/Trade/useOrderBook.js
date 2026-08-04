@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { ledgerWebsocketServer, nativeCurrency } from '../../utils'
 
 const REQUEST_LIMIT = 200
+const TRANSIENT_LEDGER_ERRORS = new Set(['noNetwork', 'notSynced', 'tooBusy'])
 
 const requestAsset = (asset) =>
   asset?.issuer ? { currency: asset.currency, issuer: asset.issuer } : { currency: nativeCurrency }
@@ -67,6 +68,7 @@ export default function useOrderBook(baseAsset, quoteAsset) {
     let socket
     let reconnectTimer
     let refreshTimer
+    let retryTimer
     let disposed = false
     let requestId = 0
     const responses = new Map()
@@ -89,6 +91,13 @@ export default function useOrderBook(baseAsset, quoteAsset) {
       socket.send(JSON.stringify({ id: ammId, command: 'amm_info', ledger_index: 'validated', asset: requestAsset(baseAsset), asset2: requestAsset(quoteAsset) }))
     }
 
+    const retryBook = () => {
+      responses.clear()
+      setState((previous) => ({ ...previous, status: 'connecting', error: '' }))
+      window.clearTimeout(retryTimer)
+      retryTimer = window.setTimeout(loadBook, 1000)
+    }
+
     const connect = () => {
       if (disposed) return
       setState((previous) => ({ ...previous, status: 'connecting', error: '' }))
@@ -107,6 +116,11 @@ export default function useOrderBook(baseAsset, quoteAsset) {
         const side = responses.get(String(message.id))
         if (!side) return
         responses.delete(String(message.id))
+        const responseError = message.error || message.error_message
+        if (TRANSIENT_LEDGER_ERRORS.has(responseError)) {
+          retryBook()
+          return
+        }
         if (side === 'amm') {
           setState((previous) => ({ ...previous, amm: message.status === 'error' || message.error ? null : normalizeAmm(message.result?.amm, baseAsset), status: responses.size ? 'loading' : 'ready' }))
           return
@@ -123,10 +137,16 @@ export default function useOrderBook(baseAsset, quoteAsset) {
           error: ''
         }))
       }
-      socket.onerror = () => setState((previous) => ({ ...previous, status: 'error', error: 'connection-error' }))
+      socket.onerror = () => {
+        if (!disposed) setState((previous) => ({ ...previous, status: 'connecting', error: '' }))
+      }
       socket.onclose = () => {
         window.clearInterval(refreshTimer)
-        if (!disposed) reconnectTimer = window.setTimeout(connect, 3000)
+        window.clearTimeout(retryTimer)
+        if (!disposed) {
+          setState((previous) => ({ ...previous, status: 'connecting', error: '' }))
+          reconnectTimer = window.setTimeout(connect, 3000)
+        }
       }
     }
 
@@ -134,6 +154,7 @@ export default function useOrderBook(baseAsset, quoteAsset) {
     return () => {
       disposed = true
       window.clearTimeout(reconnectTimer)
+      window.clearTimeout(retryTimer)
       window.clearInterval(refreshTimer)
       socket?.close()
     }

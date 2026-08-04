@@ -555,7 +555,7 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import AccountWithTag from '../../components/Account/AccountWithTag'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
-import { fetchHistoricalRate } from '../../utils/common'
+import { fetchCurrentFiatRate, fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
 import FullHash from '../../components/UI/FullHash'
 import { CurrencyWithIcon } from '../../utils/format'
@@ -604,9 +604,11 @@ import { isRipplingOnIssuer } from '../../utils/transaction/payment'
 import {
   FaArrowsRotate,
   FaFacebook,
+  FaFire,
   FaPencil,
   FaGear,
   FaInstagram,
+  FaRightLeft,
   FaLinkedin,
   FaMedium,
   FaReddit,
@@ -862,6 +864,8 @@ export default function Account({
   const ta = (key, values) => t(`detail.${key}`, { ns: 'account', nativeCurrency, ...values })
   const formatCountText = (count) => Number(count || 0).toLocaleString(i18n.language || undefined)
   const router = useRouter()
+  const initialSelectedCurrency = fiatRateApp ? selectedCurrencyApp : selectedCurrencyServer
+  const initialFiatRate = fiatRateApp || fiatRateServer || null
   const { Canvas } = useQRCode()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
   const [showReserveDetails, setShowReserveDetails] = useState(false)
@@ -1016,6 +1020,9 @@ export default function Account({
   const refreshPageRef = useRef(refreshPage)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
+  const [usdFiatRate, setUsdFiatRate] = useState(
+    !ledgerTimestampQuery && initialSelectedCurrency === 'usd' ? initialFiatRate : null
+  )
   const [nftsNativeValue, setNftsNativeValue] = useState(0)
   const [nftsWorthCount, setNftsWorthCount] = useState(0)
 
@@ -2402,6 +2409,11 @@ export default function Account({
     setTokenFiatRate(pageFiatRate)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    if (effectiveLedgerTimestamp || usdFiatRate) return
+    fetchCurrentFiatRate('usd', setUsdFiatRate).catch(() => {})
+  }, [effectiveLedgerTimestamp, usdFiatRate])
 
   useEffect(() => {
     if (!effectiveLedgerTimestamp) return
@@ -5749,6 +5761,8 @@ export default function Account({
               const issuer = token.HighLimit?.issuer === data?.address ? token.LowLimit : token.HighLimit
               const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
               const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
+              const tokenNativePrice = Number(token.priceNativeCurrencySpot)
+              const dustUsdValue = tokenNativePrice * Number(balance) * Number(usdFiatRate)
               const tokenUniqueKey = `${token.Balance?.currency || 'token'}-${issuer?.issuer || 'issuer'}-${index}`
               const isExpanded = expandedToken === tokenUniqueKey
               const isLpToken = isLpTrustlineToken(token)
@@ -5799,6 +5813,14 @@ export default function Account({
                 Number(balance) === 0 &&
                 !!issuer?.issuer &&
                 !!trustlineCurrencyCode
+              const canClearDustBalance =
+                canSendToken &&
+                !isLpToken &&
+                Number.isFinite(dustUsdValue) &&
+                dustUsdValue > 0 &&
+                dustUsdValue < 0.01
+              const dustValuePending = tokenNativePrice > 0 && !(Number(usdFiatRate) > 0)
+              const canSwapToken = canSendToken && !isLpToken && !canClearDustBalance && !dustValuePending
               const disabledRemoveTrustlineTooltip = (() => {
                 if (canRemoveTrustline) return ''
                 if (isLpToken) return ta('tooltips.lp-trustline-remove-unavailable')
@@ -6162,22 +6184,26 @@ export default function Account({
                       )}
                       {!isLpToken && (
                         <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                          {tokenPageUrl && (
+                          {canSwapToken && (
                             <button
                               type="button"
-                              className="card-action-btn token-page"
-                              onClick={() => router.push(tokenPageUrl)}
+                              className="card-action-btn swap"
+                              onClick={() =>
+                                setSignRequest({
+                                  action: 'swapToken',
+                                  redirect: 'account',
+                                  request: { Account: data.address },
+                                  data: {
+                                    asset: {
+                                      currency: trustlineCurrencyCode,
+                                      issuer: issuer.issuer
+                                    },
+                                    balance: String(balance)
+                                  }
+                                })
+                              }
                             >
-                              <MdOpenInNew style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.token-page')}
-                            </button>
-                          )}
-                          {tokenPoolsUrl && (
-                            <button
-                              type="button"
-                              className="card-action-btn pools"
-                              onClick={() => router.push(tokenPoolsUrl)}
-                            >
-                              <TbBinaryTree style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.pools')}
+                              <FaRightLeft /> {ta('actions.swap')}
                             </button>
                           )}
                           <span className={disabledSendTokenTooltip ? 'tooltip' : ''}>
@@ -6224,34 +6250,78 @@ export default function Account({
                               {ta('actions.get-more-token', { amount: 1, token: 'RLUSD' })}
                             </button>
                           )}
-                          <span className={disabledRemoveTrustlineTooltip ? 'tooltip' : ''}>
+                          {tokenPageUrl && (
                             <button
                               type="button"
-                              className={`card-action-btn ${canRemoveTrustline ? 'cancel' : 'disabled'}`}
-                              disabled={!canRemoveTrustline}
-                              onClick={() => {
-                                if (!canRemoveTrustline) return
+                              className="card-action-btn token-page"
+                              onClick={() => router.push(tokenPageUrl)}
+                            >
+                              <MdOpenInNew style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.token-page')}
+                            </button>
+                          )}
+                          {tokenPoolsUrl && (
+                            <button
+                              type="button"
+                              className="card-action-btn pools"
+                              onClick={() => router.push(tokenPoolsUrl)}
+                            >
+                              <TbBinaryTree style={{ fontSize: 15, marginBottom: -2 }} /> {ta('actions.pools')}
+                            </button>
+                          )}
+                          {canClearDustBalance && (
+                            <button
+                              type="button"
+                              className="card-action-btn cancel"
+                              onClick={() =>
                                 setSignRequest({
+                                  action: 'clearTokenBalance',
                                   redirect: 'account',
                                   request: {
-                                    TransactionType: 'TrustSet',
-                                    Flags: 2228224, // tfClearNoRipple clearNoFreeze
-                                    Account: data?.address,
-                                    LimitAmount: {
+                                    Account: data.address
+                                  },
+                                  data: {
+                                    asset: {
                                       currency: trustlineCurrencyCode,
-                                      issuer: issuer?.issuer,
-                                      value: '0'
-                                    }
+                                      issuer: issuer.issuer
+                                    },
+                                    balance: String(balance)
                                   }
                                 })
-                              }}
+                              }
                             >
-                              <MdDeleteForever /> {ta('actions.remove')}
+                              <FaFire /> {ta('actions.clear-balance')}
                             </button>
-                            {!!disabledRemoveTrustlineTooltip && (
-                              <span className="tooltiptext left">{disabledRemoveTrustlineTooltip}</span>
-                            )}
-                          </span>
+                          )}
+                          {!canClearDustBalance && (
+                            <span className={disabledRemoveTrustlineTooltip ? 'tooltip' : ''}>
+                              <button
+                                type="button"
+                                className={`card-action-btn ${canRemoveTrustline ? 'cancel' : 'disabled'}`}
+                                disabled={!canRemoveTrustline}
+                                onClick={() => {
+                                  if (!canRemoveTrustline) return
+                                  setSignRequest({
+                                    redirect: 'account',
+                                    request: {
+                                      TransactionType: 'TrustSet',
+                                      Flags: 2228224, // tfClearNoRipple clearNoFreeze
+                                      Account: data?.address,
+                                      LimitAmount: {
+                                        currency: trustlineCurrencyCode,
+                                        issuer: issuer?.issuer,
+                                        value: '0'
+                                      }
+                                    }
+                                  })
+                                }}
+                              >
+                                <MdDeleteForever /> {ta('actions.remove')}
+                              </button>
+                              {!!disabledRemoveTrustlineTooltip && (
+                                <span className="tooltiptext left">{disabledRemoveTrustlineTooltip}</span>
+                              )}
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>
@@ -14232,6 +14302,17 @@ export default function Account({
         .card-action-btn.redeem:hover {
           border-color: color-mix(in srgb, var(--green) 60%, var(--border-color));
           background: color-mix(in srgb, var(--green) 18%, var(--background-input));
+        }
+
+        .card-action-btn.swap {
+          color: var(--orange);
+          border-color: color-mix(in srgb, var(--orange) 56%, var(--border-color));
+          background: color-mix(in srgb, var(--orange) 14%, var(--background-input));
+        }
+
+        .card-action-btn.swap:hover {
+          border-color: color-mix(in srgb, var(--orange) 76%, var(--border-color));
+          background: color-mix(in srgb, var(--orange) 22%, var(--background-input));
         }
 
         .card-action-btn.cancel {

@@ -274,6 +274,8 @@
       "set-did": "设置DID",
       "set-domain": "设置域名",
       "set-nft-minter": "更改 NFT 铸造者",
+      "clear-token-balance": "清空代币余额",
+      "swap-token": "兑换代币",
       "set-avatar": "设置头像",
       "payment-header": "发送",
       "payment": "我了解区块链交易不可撤销，并确认已在发送前核对收款地址、必要时的目标标签以及所有付款信息，否则资金可能会丢失。我也同意<termsLink>条款和条件</termsLink>。",
@@ -296,6 +298,28 @@
       "avatar-url": "头像 URL",
       "enter-avatar-url": "输入头像 URL",
       "invalid-url": "无效的 URL"
+    },
+    "clear-token": {
+      "checking-liquidity": "正在检查可用流动性…",
+      "checking-issuer": "正在检查发行方能否接收剩余余额…",
+      "liquidity-error": "无法检查流动性。尚未准备交易。",
+      "issuer-check-error": "无法检查发行方账户。尚未准备交易。",
+      "issuer-deposit-auth": "此余额无法兑换，并且发行方仅接受已授权的存款。无法自动清除剩余余额。",
+      "issuer-requires-tag": "此余额无法兑换，并且发行方要求填写目标标签。无法自动清除剩余余额。",
+      "amount-too-small": "预计金额低于一个 {{nativeCurrency}} drop，因此无法兑换。全部剩余余额将发送给发行方。",
+      "swap-to-native": "全部剩余余额将兑换为 {{nativeCurrency}}。",
+      "send-to-issuer": "未找到流动性。全部剩余余额将发送给发行方且无法恢复。"
+    },
+    "swap-token": {
+      "amount": "数量",
+      "receive-in": "接收币种",
+      "select-asset": "选择接收资产",
+      "same-asset": "请选择不同的接收资产。",
+      "max": "最大",
+      "you-receive": "预计收到",
+      "checking-liquidity": "正在检查可用流动性…",
+      "liquidity-error": "无法检查流动性。",
+      "no-liquidity": "此兑换的流动性不足。"
     },
     "connection": {
       "select-address": "请至少选择一个要连接的地址。",

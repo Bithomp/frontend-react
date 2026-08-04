@@ -258,6 +258,7 @@
     "actions": {
       "edit": "Edit",
       "remove": "Remove",
+      "clear-balance": "Clear balance",
       "view-toml": "View TOML",
       "verify": "Verify",
       "go-home": "Go Home",
@@ -268,6 +269,7 @@
       "update": "Update",
       "reset": "Reset",
       "send": "Send",
+      "swap": "Swap",
       "make-buy-offer": "Make a buy offer",
       "burn": "Burn",
       "list-for-sale": "List for sale",

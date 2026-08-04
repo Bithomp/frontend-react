@@ -274,6 +274,8 @@
       "set-did": "Setting a DID",
       "set-domain": "Setting a Domain",
       "set-nft-minter": "Change NFT minter",
+      "clear-token-balance": "Clear token balance",
+      "swap-token": "Swap token",
       "set-avatar": "Setting an Avatar",
       "payment-header": "Send",
       "payment": "I understand that blockchain transactions are irreversible, and I confirm that I have verified the recipient address, destination tag if required, and all payment details before sending, as funds can be lost. I also agree to the <termsLink>Terms and conditions</termsLink>.",
@@ -296,6 +298,28 @@
       "avatar-url": "Avatar URL",
       "enter-avatar-url": "Enter avatar URL",
       "invalid-url": "Invalid URL"
+    },
+    "clear-token": {
+      "checking-liquidity": "Checking available liquidity…",
+      "checking-issuer": "Checking whether the issuer can receive the remaining balance…",
+      "liquidity-error": "Liquidity could not be checked. No transaction has been prepared.",
+      "issuer-check-error": "The issuer account could not be checked. No transaction has been prepared.",
+      "issuer-deposit-auth": "This balance cannot be swapped, and the issuer only accepts authorized deposits. The remaining balance cannot be cleared automatically.",
+      "issuer-requires-tag": "This balance cannot be swapped, and the issuer requires a destination tag. The remaining balance cannot be cleared automatically.",
+      "amount-too-small": "The expected amount is less than one drop of {{nativeCurrency}}, so it cannot be swapped. The full remaining balance will be sent to the issuer.",
+      "swap-to-native": "The full remaining balance will be swapped to {{nativeCurrency}}.",
+      "send-to-issuer": "No liquidity was found. The full remaining balance will be sent to the issuer and cannot be recovered."
+    },
+    "swap-token": {
+      "amount": "Amount",
+      "receive-in": "Receive in",
+      "select-asset": "Select receive asset",
+      "same-asset": "Select a different receive asset.",
+      "max": "Max",
+      "you-receive": "You receive approximately",
+      "checking-liquidity": "Checking available liquidity…",
+      "liquidity-error": "Liquidity could not be checked.",
+      "no-liquidity": "There is not enough liquidity for this swap."
     },
     "connection": {
       "select-address": "Please select at least one address to connect.",

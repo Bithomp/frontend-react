@@ -263,6 +263,7 @@
     "actions": {
       "edit": "편집",
       "remove": "삭제",
+      "clear-balance": "잔액 비우기",
       "view-toml": "TOML 보기",
       "verify": "인증",
       "go-home": "홈으로 이동",
@@ -273,6 +274,7 @@
       "update": "업데이트",
       "reset": "재설정",
       "send": "보내기",
+      "swap": "스왑",
       "make-buy-offer": "구매 제안 만들기",
       "burn": "소각",
       "list-for-sale": "판매 등록",

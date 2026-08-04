@@ -263,6 +263,7 @@
     "actions": {
       "edit": "Editar",
       "remove": "Eliminar",
+      "clear-balance": "Vaciar saldo",
       "view-toml": "Ver TOML",
       "verify": "Verificar",
       "go-home": "Ir al inicio",
@@ -273,6 +274,7 @@
       "update": "Actualizar",
       "reset": "Restablecer",
       "send": "Enviar",
+      "swap": "Intercambiar",
       "make-buy-offer": "Hacer una oferta de compra",
       "burn": "Quemar",
       "list-for-sale": "Poner a la venta",

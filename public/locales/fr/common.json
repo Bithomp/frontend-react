@@ -274,6 +274,8 @@
       "set-did": "Définir un DID",
       "set-domain": "Définir un domaine",
       "set-nft-minter": "Modifier le minter NFT",
+      "clear-token-balance": "Vider le solde du token",
+      "swap-token": "Échanger le token",
       "set-avatar": "Définir un avatar",
       "payment-header": "Envoyer",
       "payment": "Je comprends que les transactions sur la blockchain sont irréversibles et je confirme avoir vérifié l’adresse du destinataire, le tag de destination si nécessaire et toutes les informations du paiement avant l’envoi, car les fonds peuvent être perdus. J’accepte également les <termsLink>Conditions générales</termsLink>.",
@@ -296,6 +298,28 @@
       "avatar-url": "URL de l’avatar",
       "enter-avatar-url": "Saisissez l’URL de l’avatar",
       "invalid-url": "URL non valide"
+    },
+    "clear-token": {
+      "checking-liquidity": "Vérification de la liquidité disponible…",
+      "checking-issuer": "Vérification de la capacité de l’émetteur à recevoir le solde restant…",
+      "liquidity-error": "La liquidité n’a pas pu être vérifiée. Aucune transaction n’a été préparée.",
+      "issuer-check-error": "Le compte de l’émetteur n’a pas pu être vérifié. Aucune transaction n’a été préparée.",
+      "issuer-deposit-auth": "Ce solde ne peut pas être échangé et l’émetteur n’accepte que les dépôts autorisés. Le solde restant ne peut pas être supprimé automatiquement.",
+      "issuer-requires-tag": "Ce solde ne peut pas être échangé et l’émetteur exige un tag de destination. Le solde restant ne peut pas être supprimé automatiquement.",
+      "amount-too-small": "Le montant attendu est inférieur à un drop de {{nativeCurrency}} et ne peut donc pas être échangé. La totalité du solde restant sera envoyée à l’émetteur.",
+      "swap-to-native": "La totalité du solde restant sera échangée contre {{nativeCurrency}}.",
+      "send-to-issuer": "Aucune liquidité trouvée. La totalité du solde restant sera envoyée à l’émetteur sans possibilité de récupération."
+    },
+    "swap-token": {
+      "amount": "Montant",
+      "receive-in": "Recevoir en",
+      "select-asset": "Sélectionner l’actif à recevoir",
+      "same-asset": "Sélectionnez un autre actif à recevoir.",
+      "max": "Max",
+      "you-receive": "Vous recevrez environ",
+      "checking-liquidity": "Vérification de la liquidité disponible…",
+      "liquidity-error": "La liquidité n’a pas pu être vérifiée.",
+      "no-liquidity": "La liquidité est insuffisante pour cet échange."
     },
     "connection": {
       "select-address": "Sélectionnez au moins une adresse à connecter.",

@@ -274,6 +274,8 @@
       "set-did": "DID 설정",
       "set-domain": "도메인을 설정합니다",
       "set-nft-minter": "NFT 민터 변경",
+      "clear-token-balance": "토큰 잔액 비우기",
+      "swap-token": "토큰 스왑",
       "set-avatar": "아바타를 설정",
       "payment-header": "보내기",
       "payment": "블록체인 거래는 되돌릴 수 없으며 자금이 손실될 수 있음을 이해합니다. 전송하기 전에 수신자 주소, 필요한 경우 대상 태그 및 모든 결제 정보를 확인했음을 인정하며, <termsLink>이용 약관</termsLink>에도 동의합니다.",
@@ -296,6 +298,28 @@
       "avatar-url": "아바타 URL",
       "enter-avatar-url": "아바타 URL을 입력하세요",
       "invalid-url": "유효하지 않은 URL"
+    },
+    "clear-token": {
+      "checking-liquidity": "사용 가능한 유동성을 확인하는 중…",
+      "checking-issuer": "발행자가 남은 잔액을 받을 수 있는지 확인하는 중…",
+      "liquidity-error": "유동성을 확인하지 못했습니다. 트랜잭션이 준비되지 않았습니다.",
+      "issuer-check-error": "발행자 계정을 확인할 수 없습니다. 트랜잭션이 준비되지 않았습니다.",
+      "issuer-deposit-auth": "이 잔액은 교환할 수 없고 발행자는 승인된 입금만 허용합니다. 남은 잔액을 자동으로 제거할 수 없습니다.",
+      "issuer-requires-tag": "이 잔액은 교환할 수 없고 발행자는 대상 태그를 요구합니다. 남은 잔액을 자동으로 제거할 수 없습니다.",
+      "amount-too-small": "예상 금액이 {{nativeCurrency}} 1 drop보다 작아 교환할 수 없습니다. 남은 전체 잔액은 발행자에게 전송됩니다.",
+      "swap-to-native": "남은 전체 잔액을 {{nativeCurrency}}로 교환합니다.",
+      "send-to-issuer": "유동성이 없습니다. 남은 전체 잔액이 발행자에게 전송되며 복구할 수 없습니다."
+    },
+    "swap-token": {
+      "amount": "수량",
+      "receive-in": "수령 통화",
+      "select-asset": "수령 자산 선택",
+      "same-asset": "다른 수령 자산을 선택하세요.",
+      "max": "최대",
+      "you-receive": "예상 수령액",
+      "checking-liquidity": "사용 가능한 유동성을 확인하는 중…",
+      "liquidity-error": "유동성을 확인하지 못했습니다.",
+      "no-liquidity": "이 스왑에 필요한 유동성이 부족합니다."
     },
     "connection": {
       "select-address": "연결할 주소를 하나 이상 선택하세요.",

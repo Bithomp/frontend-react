@@ -12,6 +12,13 @@ import RecentTrades from '../components/Trade/RecentTrades'
 import UserOrders from '../components/Trade/UserOrders'
 import useTradeBalances, { tradeBalanceKey } from '../components/Trade/useTradeBalance'
 import useTradeHistory from '../components/Trade/useTradeHistory'
+import {
+  estimateSwap,
+  MARKET_CUSHION,
+  TF_PARTIAL_PAYMENT,
+  transactionAmount,
+  validTradeNumber
+} from '../components/Trade/swap'
 import { nativeCurrency, explorerName, network } from '../utils'
 import { rlusdToken } from '../utils/issuedTokens'
 import { niceCurrency } from '../utils/format'
@@ -20,18 +27,9 @@ import styles from '../styles/pages/trade.module.scss'
 const nativeAsset = { currency: nativeCurrency }
 const defaultQuoteAsset = rlusdToken(network)
 const BOOK_ROWS_PER_SIDE = 6
-const MARKET_CUSHION = new BigNumber(0.02)
-const TF_PARTIAL_PAYMENT = 131072
 const tokenName = (token) => (token?.currency ? niceCurrency(token.currency) : '—')
-const validNumber = (value) => {
-  const number = new BigNumber(value || 0)
-  return number.isFinite() && number.gt(0)
-}
+const validNumber = validTradeNumber
 const validAssetAmount = (asset, value) => validNumber(value) && (asset?.issuer || new BigNumber(value).gte(0.000001))
-const transactionAmount = (asset, value) =>
-  asset.issuer
-    ? { currency: asset.currency, issuer: asset.issuer, value: new BigNumber(value).precision(16).toFixed() }
-    : new BigNumber(value).multipliedBy(1_000_000).integerValue(BigNumber.ROUND_DOWN).toFixed(0)
 const displayNumber = (value, decimals = 8) => {
   const number = BigNumber.isBigNumber(value) ? value : new BigNumber(value ?? NaN)
   if (!number.isFinite()) return '—'
@@ -98,35 +96,6 @@ const withCumulativeTotal = (offers) => {
   })
 }
 
-const swapFill = (offers, inputAmount, side) => {
-  if (!validNumber(inputAmount)) return null
-  let remainingInput = new BigNumber(inputAmount)
-  let output = new BigNumber(0)
-  for (const offer of offers) {
-    if (!remainingInput.gt(0)) break
-    if (side === 'buy') {
-      const spent = BigNumber.minimum(remainingInput, offer.total)
-      output = output.plus(spent.dividedBy(offer.price))
-      remainingInput = remainingInput.minus(spent)
-    } else {
-      const spent = BigNumber.minimum(remainingInput, offer.amount)
-      output = output.plus(spent.multipliedBy(offer.price))
-      remainingInput = remainingInput.minus(spent)
-    }
-  }
-  return { output, complete: !remainingInput.gt(0) }
-}
-
-const ammSwapFill = (amm, inputAmount, side) => {
-  if (!amm || !validNumber(inputAmount)) return null
-  const reserveIn = side === 'buy' ? amm.quote : amm.base
-  const reserveOut = side === 'buy' ? amm.base : amm.quote
-  const feeMultiplier = new BigNumber(1).minus(new BigNumber(amm.tradingFee || 0).dividedBy(100000))
-  const effectiveInput = new BigNumber(inputAmount).multipliedBy(feeMultiplier)
-  const output = reserveOut.multipliedBy(effectiveInput).dividedBy(reserveIn.plus(effectiveInput))
-  return output.gt(0) ? { output, complete: true, source: 'amm' } : null
-}
-
 export const getServerSideProps = async ({ locale }) => ({
   props: { ...(await serverSideTranslations(locale, ['common', 'trade'])) }
 })
@@ -154,13 +123,7 @@ export default function Trade({ setSignRequest, account, refreshPage }) {
     return new BigNumber(price).multipliedBy(amount).toFixed()
   }, [price, amount])
   const swapEstimate = useMemo(
-    () => {
-      const bookEstimate = swapFill(side === 'buy' ? asks : bids, amount, side)
-      const ammEstimate = ammSwapFill(amm, amount, side)
-      if (!bookEstimate?.complete) return ammEstimate || bookEstimate
-      if (!ammEstimate || bookEstimate.output.gte(ammEstimate.output)) return { ...bookEstimate, source: 'book' }
-      return ammEstimate
-    },
+    () => estimateSwap({ bids, asks, amm, inputAmount: amount, side }),
     [side, asks, bids, amm, amount]
   )
   const total = orderType === 'swap' && swapEstimate?.complete ? swapEstimate.output.toFixed() : limitTotal
