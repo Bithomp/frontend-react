@@ -359,6 +359,13 @@ export default function SignForm({
       return
     }
 
+    const completedInfoScreen = askInfoScreens.includes(screen) && !getRequiredInfoScreen({ signRequest, agreedToRisks })
+    if (completedInfoScreen) {
+      setStatus('')
+      setAwaiting(false)
+      return
+    }
+
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile) {
       const w = signRequest?.wallet || account?.wallet || choosenWallet

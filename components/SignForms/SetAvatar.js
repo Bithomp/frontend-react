@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { encode, isUrlValid } from '../../utils'
+import { encode, isUrlValid, webSiteName } from '../../utils'
+import Tabs from '../Tabs'
 import styles from '../../styles/components/setAvatar.module.scss'
+
+const AVATAR_CDN_ORIGIN = `https://cdn.${webSiteName}`
 
 const fileSha256 = async (file) => {
   const hash = await crypto.subtle.digest('SHA-256', await file.arrayBuffer())
@@ -19,7 +22,7 @@ export default function SetAvatar({
   openEmailLogin
 }) {
   const { t } = useTranslation('common')
-  const [mode, setMode] = useState('url')
+  const [mode, setMode] = useState('upload')
   const [file, setFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState('')
   const [uploading, setUploading] = useState(false)
@@ -87,26 +90,46 @@ export default function SetAvatar({
     setPreviewUrl(nextFile ? URL.createObjectURL(nextFile) : '')
     setStatus('')
     setAgreedToRisks(false)
+    if (nextFile) uploadAvatar(nextFile)
   }
 
-  const uploadAvatar = async () => {
-    if (!file || !sessionToken || uploading) return
+  const uploadAvatar = async (selectedFile) => {
+    const address = signRequest?.request?.Account
+    if (!selectedFile || !sessionToken || !address || uploading) return
 
     setUploading(true)
-    setStatus(t('signin.set-account.uploading-avatar'))
     try {
-      const digest = await fileSha256(file)
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('digest', digest)
-
-      const response = await axios.post('v2/avatar/upload', formData, {
-        headers: { Authorization: `Bearer ${sessionToken}` }
-      })
+      const digest = await fileSha256(selectedFile)
+      const response = await axios.post(
+        'v2/avatar/upload',
+        {
+          digest,
+          deleteAfter: ['SetAvatar', '10m'],
+          SetAvatar: address
+        },
+        {
+          headers: { Authorization: `Bearer ${sessionToken}` }
+        }
+      )
       const uploadUrl = response?.data?.uploadUrl
       if (!isUrlValid(uploadUrl)) throw new Error(response?.data?.error || 'Invalid upload URL')
 
-      prepareAvatarRequest(uploadUrl)
+      const formData = new FormData()
+      formData.append('file', selectedFile)
+
+      const uploadResponse = await fetch(uploadUrl, {
+        method: 'POST',
+        body: formData
+      })
+      const uploadResult = await uploadResponse.json().catch(() => null)
+      const avatarPath = typeof uploadResult?.path === 'string' ? uploadResult.path.trim() : ''
+      const avatarUrl = avatarPath ? `${AVATAR_CDN_ORIGIN}/${avatarPath.replace(/^\/+/, '')}` : ''
+
+      if (!uploadResponse.ok || uploadResult?.result !== 'success' || !isUrlValid(avatarUrl)) {
+        throw new Error(uploadResult?.error || 'Invalid CDN upload response')
+      }
+
+      prepareAvatarRequest(avatarUrl)
     } catch (error) {
       setStatus(error?.response?.data?.error || error?.message || t('signin.set-account.upload-failed'))
       setAgreedToRisks(false)
@@ -117,26 +140,16 @@ export default function SetAvatar({
 
   return (
     <div className={`center ${styles.avatarForm}`}>
-      <div className={styles.modeSwitch} role="tablist" aria-label={t('signin.set-account.avatar-source')}>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === 'url'}
-          className={mode === 'url' ? styles.active : ''}
-          onClick={() => selectMode('url')}
-        >
-          {t('signin.set-account.from-url')}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === 'upload'}
-          className={mode === 'upload' ? styles.active : ''}
-          onClick={() => selectMode('upload')}
-        >
-          {t('signin.set-account.upload-image')}
-        </button>
-      </div>
+      <Tabs
+        tabList={[
+          { value: 'upload', label: t('signin.set-account.upload-image') },
+          { value: 'url', label: t('signin.set-account.from-url') }
+        ]}
+        tab={mode}
+        setTab={selectMode}
+        name="avatarSource"
+        style={{ margin: '0 0 22px' }}
+      />
 
       <div className={styles.modeContent}>
         {mode === 'url' ? (
@@ -159,13 +172,14 @@ export default function SetAvatar({
         ) : (
           <div className={styles.uploadPanel}>
             <label className={styles.filePicker}>
-              <input type="file" accept="image/*" onChange={onFileChange} />
-              <span>{file?.name || t('signin.set-account.choose-image')}</span>
+              <input type="file" accept="image/*" onChange={onFileChange} disabled={uploading} />
+              <span>
+                {uploading
+                  ? t('signin.set-account.uploading-avatar')
+                  : file?.name || t('signin.set-account.choose-image')}
+              </span>
             </label>
             {previewUrl ? <img className={styles.preview} src={previewUrl} alt="" /> : null}
-            <button type="button" className="button-action" disabled={!file || uploading} onClick={uploadAvatar}>
-              {uploading ? t('signin.set-account.uploading-avatar') : t('signin.set-account.upload-image')}
-            </button>
           </div>
         )}
       </div>

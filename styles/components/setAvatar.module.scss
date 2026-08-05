@@ -3,39 +3,6 @@
   margin: 18px auto 0;
 }
 
-.modeSwitch {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
-  margin-bottom: 18px;
-  padding: 4px;
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  background: var(--background-input);
-
-  button {
-    min-height: 42px;
-    padding: 8px 12px;
-    border: 0;
-    border-radius: 9px;
-    background: var(--background-secondary);
-    color: inherit;
-    font: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.16s ease, color 0.16s ease;
-
-    &:not(.active):hover {
-      background: color-mix(in srgb, var(--accent-icon) 10%, var(--background-secondary));
-    }
-  }
-}
-
-.modeSwitch .active {
-  background: var(--accent-icon);
-  color: var(--background-main);
-}
-
 .modeContent {
   width: 100%;
   min-height: 116px;
@@ -76,11 +43,4 @@
   height: 128px;
   border-radius: 18px;
   object-fit: cover;
-}
-
-@media (max-width: 480px) {
-  .modeSwitch button {
-    padding-inline: 8px;
-    font-size: 14px;
-  }
 }
