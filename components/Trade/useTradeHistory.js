@@ -7,7 +7,7 @@ import { nativeCurrency } from '../../utils'
 const PAGE_LIMIT = 100
 const MAX_PAGES = 5
 const CHART_PERIOD_SECONDS = 24 * 60 * 60
-const MIN_NATIVE_CHART_AMOUNT = new BigNumber('0.000001')
+const MIN_NATIVE_CHART_AMOUNT = new BigNumber('0.001')
 
 export const sameTradeAsset = (amount, asset) =>
   amount?.currency === asset?.currency && (amount?.issuer || '') === (asset?.issuer || '')
@@ -39,7 +39,7 @@ export const candleData = (swaps, baseAsset, quoteAsset, candleSeconds) => {
   const trades = swaps
     .map((swap) => {
       const { base, quote } = tradePairAmounts(swap, baseAsset, quoteAsset)
-      // A one-drop fill can be a rounding remainder and must not set the market OHLC price.
+      // Tiny native fills can be rounding remainders and must not set the market OHLC price.
       if (isNativeDustTrade(base, quote)) return null
       const baseValue = new BigNumber(base?.value || 0)
       const quoteValue = new BigNumber(quote?.value || 0)
