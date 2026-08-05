@@ -111,6 +111,11 @@ const TRANSACTION_TYPE_LABELS = {
   NFTokenAcceptOffer: 'NFT offer acceptance',
   NFTokenModify: 'NFT modification',
 
+  MPTokenAuthorize: 'MPT authorization',
+  MPTokenIssuanceCreate: 'MPT issuance creation',
+  MPTokenIssuanceDestroy: 'MPT issuance deletion',
+  MPTokenIssuanceSet: 'MPT issuance update',
+
   AMMCreate: 'AMM Creation',
   AMMDeposit: 'AMM Deposit',
   AMMWithdraw: 'AMM Withdrawal',

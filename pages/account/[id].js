@@ -531,7 +531,15 @@ export async function getServerSideProps(context) {
         initialSignerAccountsData,
         initialNftMinterAccountsData,
         initialActivatedAccountsData,
-        ...(await serverSideTranslations(locale, ['common', 'account', 'amm', 'services', 'transaction-errors']))
+        ...(await serverSideTranslations(locale, [
+          'common',
+          'account',
+          'amm',
+          'services',
+          'token',
+          'transaction',
+          'transaction-errors'
+        ]))
       }
     }
   } else {
@@ -546,7 +554,15 @@ export async function getServerSideProps(context) {
         initialSignerAccountsData,
         initialNftMinterAccountsData,
         initialActivatedAccountsData,
-        ...(await serverSideTranslations(locale, ['common', 'account', 'amm', 'services', 'transaction-errors']))
+        ...(await serverSideTranslations(locale, [
+          'common',
+          'account',
+          'amm',
+          'services',
+          'token',
+          'transaction',
+          'transaction-errors'
+        ]))
       }
     }
   }
@@ -613,6 +629,7 @@ import {
   FaMedium,
   FaReddit,
   FaTelegram,
+  FaUserTag,
   FaWallet,
   FaYoutube,
   FaXTwitter
@@ -8208,7 +8225,10 @@ export default function Account({
                         outgoingSellOfferDisplay ||
                         createNftBuyOfferDisplay ||
                         nftMintSellOfferDisplay
-                      const fallbackTxTypeLabel = getTransactionTypeLabel(txType)
+                      const fallbackTxTypeLabel = t(`labels.${txType}`, {
+                        ns: 'transaction',
+                        defaultValue: getTransactionTypeLabel(txType)
+                      })
                       const escrowCreateCollapsedLabel =
                         txType === 'EscrowCreate' ? ta('transactions.escrow-created') : null
                       const checkCreateCollapsedLabel =
@@ -8442,6 +8462,16 @@ export default function Account({
                             </div>
 
                             <div className="asset-value tx-collapsed-change">
+                              {isTagValid(tx?.DestinationTag) && (
+                                <span
+                                  className="tx-destination-tag"
+                                  title={`${ta('labels.destination-tag')}: ${tx.DestinationTag}`}
+                                  aria-label={`${ta('labels.destination-tag')}: ${tx.DestinationTag}`}
+                                >
+                                  <FaUserTag aria-hidden="true" />
+                                  <span>{tx.DestinationTag}</span>
+                                </span>
+                              )}
                               {failedStatusShort ? (
                                 <span className="tx-inline-status orange">{failedStatusShort}</span>
                               ) : tx?.TransactionType === 'TrustSet' ? (
@@ -8660,7 +8690,10 @@ export default function Account({
                               {isTagValid(tx?.DestinationTag) && (
                                 <div className="detail-row">
                                   <span>{ta('labels.destination-tag')}:</span>
-                                  <span>{tx.DestinationTag}</span>
+                                  <strong className="tx-destination-tag-expanded">
+                                    <FaUserTag aria-hidden="true" />
+                                    <span>{tx.DestinationTag}</span>
+                                  </strong>
                                 </div>
                               )}
 
@@ -9607,8 +9640,10 @@ export default function Account({
                       : null
                     const issuanceId = mptId(mptNode)
                     const remainingSupply = maxSupply === null ? null : subtract(maxSupply, outstanding)
+                    const isIssuedMptIssuer = !!account?.address && account.address === mptNode?.Issuer
                     const canSendIssuedMpt =
                       !!setSignRequest && !!account?.address && isOwnAccount && !effectiveLedgerTimestamp && !!issuanceId
+                    const canDestroyIssuedMpt = isIssuedMptIssuer && canSendIssuedMpt && Number(outstanding) === 0
                     const disabledSendIssuedMptTooltip = canSendIssuedMpt
                       ? ''
                       : !setSignRequest || !account?.address
@@ -9706,6 +9741,44 @@ export default function Account({
                                     <span className="tooltiptext left">{disabledSendIssuedMptTooltip}</span>
                                   )}
                                 </span>
+                                {isIssuedMptIssuer && (
+                                  <span className={canDestroyIssuedMpt ? '' : 'tooltip'}>
+                                    <button
+                                      type="button"
+                                      className={`card-action-btn ${canDestroyIssuedMpt ? 'cancel' : 'disabled'}`}
+                                      disabled={!canDestroyIssuedMpt}
+                                      onClick={() => {
+                                        if (!canDestroyIssuedMpt) return
+                                        setSignRequest({
+                                          action: 'mptDestroy',
+                                          redirect: 'account',
+                                          request: {
+                                            TransactionType: 'MPTokenIssuanceDestroy',
+                                            Account: data?.address,
+                                            MPTokenIssuanceID: issuanceId
+                                          },
+                                          data: {
+                                            tokenName:
+                                              mptNode?.metadata?.n ||
+                                              mptNode?.metadata?.name ||
+                                              mptNode?.metadata?.t ||
+                                              mptNode?.metadata?.ticker ||
+                                              'MPT'
+                                          }
+                                        })
+                                      }}
+                                    >
+                                      <MdDeleteForever /> {t('actions.destroyIssuance', { ns: 'token' })}
+                                    </button>
+                                    {!canDestroyIssuedMpt && (
+                                      <span className="tooltiptext left">
+                                        {effectiveLedgerTimestamp
+                                          ? ta('tooltips.historical-unavailable')
+                                          : t('destroy.holdersRequired', { ns: 'token' })}
+                                      </span>
+                                    )}
+                                  </span>
+                                )}
                               </div>
                             )}
                           </div>
@@ -12506,6 +12579,35 @@ export default function Account({
           flex-wrap: nowrap;
           text-align: right;
           padding-top: 20px;
+        }
+
+        .tx-destination-tag,
+        .tx-destination-tag-expanded {
+          display: inline-flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 5px;
+          color: var(--accent-link);
+          font-variant-numeric: tabular-nums;
+          white-space: nowrap;
+        }
+
+        .tx-destination-tag {
+          max-width: 100%;
+          font-size: 12px;
+          font-weight: 700;
+          line-height: 1.2;
+        }
+
+        .tx-destination-tag-expanded {
+          font-weight: 700;
+        }
+
+        .tx-destination-tag :global(svg),
+        .tx-destination-tag-expanded :global(svg) {
+          flex: 0 0 auto;
+          width: 14px;
+          height: 14px;
         }
 
         .tx-inline-change {

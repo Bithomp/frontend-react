@@ -240,7 +240,8 @@
       &:hover:not(:disabled),
       &:focus-visible:not(:disabled) {
         border-color: var(--red);
-        background: color-mix(in srgb, var(--red) 14%, var(--background-input));
+        background: var(--red);
+        color: #fff !important;
       }
     }
   }
