@@ -46,6 +46,7 @@ const NFT_SEARCH_MIN_LENGTH = 3
 const NFT_SEARCH_LOCATIONS = 'metadata.name,metadata.description,metadata.collection'
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
+const NFT_OFFERS_CANCEL_LIMIT = 500
 const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
 const SIGNER_ACCOUNTS_FETCH_LIMIT = 10
 const NFT_MINTER_ACCOUNTS_FETCH_LIMIT = 200
@@ -71,6 +72,40 @@ const uniqueNftsById = (nfts) => {
     seen.add(nftId)
     return true
   })
+}
+
+const nftOfferIndexesForAccount = (offers, address, sellToken) => [
+  ...new Set(
+    offers
+      .filter(
+        (offer) =>
+          offer?.valid !== false &&
+          (offer?.owner || offer?.account) === address &&
+          !!offer?.flags?.sellToken === sellToken
+      )
+      .map((offer) => offer?.offerIndex)
+      .filter(Boolean)
+  )
+]
+
+const fetchNftOfferIndexesForAccount = async (address, sellToken) => {
+  const offerIndexes = new Set()
+  let marker = ''
+
+  while (offerIndexes.size < NFT_OFFERS_CANCEL_LIMIT) {
+    const params = new URLSearchParams({ nftoken: 'false', offersValidate: 'true', limit: '100' })
+    if (marker) params.set('marker', marker)
+
+    const response = await axios.get(`v2/nft-offers/${address}?${params.toString()}`)
+    const offers = Array.isArray(response?.data?.nftOffers) ? response.data.nftOffers : []
+    nftOfferIndexesForAccount(offers, address, sellToken).forEach((offerIndex) => offerIndexes.add(offerIndex))
+
+    const nextMarker = response?.data?.marker || ''
+    if (!nextMarker || nextMarker === marker || offers.length === 0) break
+    marker = nextMarker
+  }
+
+  return [...offerIndexes].slice(0, NFT_OFFERS_CANCEL_LIMIT)
 }
 
 const enrichNftsWithLoadedDetails = (nfts, loadedNfts) => {
@@ -944,6 +979,7 @@ export default function Account({
     created: null,
     owned: null
   })
+  const [nftOffersCancelLoading, setNftOffersCancelLoading] = useState(false)
   const [showNftDataDetails, setShowNftDataDetails] = useState(false)
   const [expandedToken, setExpandedToken] = useState(null)
   const [expandedIssuedToken, setExpandedIssuedToken] = useState(null)
@@ -1816,6 +1852,53 @@ export default function Account({
     nftOffersTab === 'received'
       ? `/nft-offers/${data?.address}?offerList=privately-offered-to-address`
       : `/nft-offers/${data?.address}`
+  const cancelNftOfferSellToken =
+    nftOffersTab === 'createdSelling' ? true : nftOffersTab === 'createdBuying' ? false : null
+  const createdNftOfferIndexes = nftOfferIndexesForAccount(
+    createdNftOffers,
+    account?.address,
+    cancelNftOfferSellToken
+  ).slice(
+    0,
+    NFT_OFFERS_CANCEL_LIMIT
+  )
+  const canCancelAllNftOffers =
+    !!setSignRequest &&
+    !xahauNetwork &&
+    !effectiveLedgerTimestamp &&
+    isOwnAccount &&
+    cancelNftOfferSellToken !== null &&
+    createdNftOfferIndexes.length > 0
+
+  const cancelAllNftOffers = async () => {
+    if (!canCancelAllNftOffers || nftOffersCancelLoading) return
+
+    setNftOffersCancelLoading(true)
+    try {
+      let offerIndexes = createdNftOfferIndexes
+
+      if (createdNftOffers.length >= NFT_OFFERS_FETCH_LIMIT) {
+        offerIndexes = await fetchNftOfferIndexesForAccount(account.address, cancelNftOfferSellToken)
+      }
+
+      if (!offerIndexes.length) return
+
+      setSignRequest({
+        request: {
+          TransactionType: 'NFTokenCancelOffer',
+          Account: account.address,
+          NFTokenOffers: offerIndexes
+        }
+      })
+    } catch (error) {
+      setNftOffersError((current) => ({
+        ...current,
+        created: error?.message || ta('tooltips.offer-cannot-cancel')
+      }))
+    } finally {
+      setNftOffersCancelLoading(false)
+    }
+  }
   const hasReceivedChecks = receivedChecks.length > 0
   const hasSentChecks = sentChecks.length > 0
   const showChecksTabs = hasReceivedChecks && hasSentChecks
@@ -8121,6 +8204,9 @@ export default function Account({
                         }
 
                         if (isCancelNftOfferTx) {
+                          if (nftOfferIds.length > 1) {
+                            return ta('transactions.cancel-nft-offers', { count: nftOfferIds.length })
+                          }
                           return ta('transactions.cancel-nft-offer')
                         }
 
@@ -10758,6 +10844,21 @@ export default function Account({
                     <Link className="section-link" href={activeNftOffersViewAllHref}>
                       {ta('actions.view-all')}
                     </Link>
+                  )}
+                  {canCancelAllNftOffers && (
+                    <button
+                      type="button"
+                      className="section-link cancel nft-cancel-all"
+                      disabled={nftOffersCancelLoading}
+                      onClick={cancelAllNftOffers}
+                    >
+                      <MdMoneyOff />{' '}
+                      {nftOffersCancelLoading
+                        ? ta('states.loading')
+                        : cancelNftOfferSellToken
+                          ? ta('actions.cancel-all-nft-sell-offers')
+                          : ta('actions.cancel-all-nft-buy-offers')}
+                    </button>
                   )}
                 </div>
 

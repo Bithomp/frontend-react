@@ -129,6 +129,35 @@
     }
   }
 
+  button.section-link.cancel {
+    gap: 5px;
+    color: var(--red);
+    border-color: color-mix(in srgb, var(--red) 55%, var(--border-color));
+    background: color-mix(in srgb, var(--red) 10%, var(--background-input));
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      color: var(--red);
+      border-color: color-mix(in srgb, var(--red) 78%, var(--border-color));
+      background: color-mix(in srgb, var(--red) 18%, var(--background-input));
+    }
+
+    &:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+  }
+
+  .nft-section-header-row {
+    flex-wrap: wrap;
+  }
+
+  button.section-link.nft-cancel-all {
+    flex: 1 0 100%;
+    width: 100%;
+    max-width: none;
+  }
+
   @media (max-width: 560px) {
     .transactions-section .section-link {
       max-width: 34vw;
