@@ -492,6 +492,17 @@
     }
   },
   "press": "This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png, eps, pdf, for dark and light backgrounds). For media inquiries, please <2>contact us</2>.",
+  "pressAssets": {
+    "title": "Official Bithomp logos",
+    "squareLight": "Bithomp square logo for light backgrounds",
+    "squareDark": "Bithomp square logo for dark backgrounds",
+    "rectangleWithDarkBackground": "Bithomp rectangular logo with dark background",
+    "rectangleLight": "Bithomp rectangular logo for light backgrounds",
+    "rectangleDark": "Bithomp rectangular logo for dark backgrounds",
+    "transparentBackground": "Transparent background",
+    "darkBackgroundIncluded": "Dark background included",
+    "downloadAll": "Download all formats (ZIP)"
+  },
   "page-not-found": {
     "header": "The requested page wasn't found.",
     "text": "The link may be outdated, or the address or username may not exist. Try searching or choose a section below.",

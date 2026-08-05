@@ -492,6 +492,17 @@
     }
   },
   "press": "这是 Bithomp 的官方徽标，供媒体和新闻专业人士用于印刷和网页（svg、png、eps、pdf，用于深色和浅色背景）。如需媒体垂询，请<2>联系我们</2>。",
+  "pressAssets": {
+    "title": "Bithomp 官方徽标",
+    "squareLight": "适用于浅色背景的 Bithomp 方形徽标",
+    "squareDark": "适用于深色背景的 Bithomp 方形徽标",
+    "rectangleWithDarkBackground": "带深色背景的 Bithomp 矩形徽标",
+    "rectangleLight": "适用于浅色背景的 Bithomp 矩形徽标",
+    "rectangleDark": "适用于深色背景的 Bithomp 矩形徽标",
+    "transparentBackground": "透明背景",
+    "darkBackgroundIncluded": "包含深色背景",
+    "downloadAll": "下载所有格式（ZIP）"
+  },
   "page-not-found": {
     "header": "找不到请求的页面。",
     "text": "链接可能已过期，或者该地址或用户名不存在。请尝试搜索或选择下方的页面。",

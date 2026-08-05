@@ -492,6 +492,17 @@
     }
   },
   "press": "Ini adalah logo resmi Bithomp yang digunakan oleh profesional media dan pers untuk cetak dan web (svg, png, eps, pdf, untuk latar belakang gelap dan terang). Untuk pertanyaan media, silakan <2>hubungi kami</2>.",
+  "pressAssets": {
+    "title": "Logo resmi Bithomp",
+    "squareLight": "Logo persegi Bithomp untuk latar terang",
+    "squareDark": "Logo persegi Bithomp untuk latar gelap",
+    "rectangleWithDarkBackground": "Logo persegi panjang Bithomp dengan latar gelap",
+    "rectangleLight": "Logo persegi panjang Bithomp untuk latar terang",
+    "rectangleDark": "Logo persegi panjang Bithomp untuk latar gelap",
+    "transparentBackground": "Latar transparan",
+    "darkBackgroundIncluded": "Latar gelap disertakan",
+    "downloadAll": "Unduh semua format (ZIP)"
+  },
   "page-not-found": {
     "header": "Halaman yang diminta tidak ditemukan.",
     "text": "Tautan mungkin sudah tidak berlaku, atau alamat maupun username tidak ada. Gunakan pencarian atau pilih bagian di bawah.",

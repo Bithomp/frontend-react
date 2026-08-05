@@ -492,6 +492,17 @@
     }
   },
   "press": "Ceci est le logo officiel de Bithomp à utiliser par les médias et les professionnels de la presse pour l'impression et le web (svg, png, eps, pdf, pour fonds sombres et clairs). Pour les demandes de médias, veuillez <2>nous contacter</2>.",
+  "pressAssets": {
+    "title": "Logos officiels de Bithomp",
+    "squareLight": "Logo carré Bithomp pour fonds clairs",
+    "squareDark": "Logo carré Bithomp pour fonds sombres",
+    "rectangleWithDarkBackground": "Logo rectangulaire Bithomp avec fond sombre",
+    "rectangleLight": "Logo rectangulaire Bithomp pour fonds clairs",
+    "rectangleDark": "Logo rectangulaire Bithomp pour fonds sombres",
+    "transparentBackground": "Fond transparent",
+    "darkBackgroundIncluded": "Fond sombre inclus",
+    "downloadAll": "Télécharger tous les formats (ZIP)"
+  },
   "page-not-found": {
     "header": "La page demandée n'a pas été trouvée.",
     "text": "Le lien est peut-être obsolète, ou l'adresse ou le nom d'utilisateur n'existe pas. Utilisez la recherche ou choisissez une rubrique ci-dessous.",

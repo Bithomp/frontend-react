@@ -492,6 +492,17 @@
     }
   },
   "press": "これはメディアやプレス関係者が印刷物やウェブで使用可能なBithompの公式ロゴです(svg、png、eps、pdf、ダーク背景用、ライト背景用)。メディアからのお問い合わせは<2>カスタマサポート</2>まで。",
+  "pressAssets": {
+    "title": "Bithomp公式ロゴ",
+    "squareLight": "明るい背景用のBithomp正方形ロゴ",
+    "squareDark": "暗い背景用のBithomp正方形ロゴ",
+    "rectangleWithDarkBackground": "暗い背景付きのBithomp長方形ロゴ",
+    "rectangleLight": "明るい背景用のBithomp長方形ロゴ",
+    "rectangleDark": "暗い背景用のBithomp長方形ロゴ",
+    "transparentBackground": "透明背景",
+    "darkBackgroundIncluded": "暗い背景付き",
+    "downloadAll": "すべての形式をダウンロード（ZIP）"
+  },
   "page-not-found": {
     "header": "リクエストされたページが見つかりません。",
     "text": "リンクが古いか、アドレスまたはユーザー名が存在しない可能性があります。検索するか、以下のセクションを選択してください。",

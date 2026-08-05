@@ -492,6 +492,17 @@
     }
   },
   "press": "Dies ist das offizielle Logo für Print und Web von Bithomp für mediale, profesionelle Pressezwecke (svg, png, eps, pdf, für dunkle und helle Hintergründe). Für mediale Anfragen <2>kontaktieren Sie uns</2> bitte.",
+  "pressAssets": {
+    "title": "Offizielle Bithomp-Logos",
+    "squareLight": "Quadratisches Bithomp-Logo für helle Hintergründe",
+    "squareDark": "Quadratisches Bithomp-Logo für dunkle Hintergründe",
+    "rectangleWithDarkBackground": "Rechteckiges Bithomp-Logo mit dunklem Hintergrund",
+    "rectangleLight": "Rechteckiges Bithomp-Logo für helle Hintergründe",
+    "rectangleDark": "Rechteckiges Bithomp-Logo für dunkle Hintergründe",
+    "transparentBackground": "Transparenter Hintergrund",
+    "darkBackgroundIncluded": "Dunkler Hintergrund enthalten",
+    "downloadAll": "Alle Formate herunterladen (ZIP)"
+  },
   "page-not-found": {
     "header": "Die angefragen Seite wurde nicht gefunden.",
     "text": "Der Link ist möglicherweise veraltet oder die Adresse bzw. der Benutzername existiert nicht. Nutzen Sie die Suche oder wählen Sie unten einen Bereich.",
