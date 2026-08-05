@@ -205,7 +205,9 @@ export default function SignForm({
   wcSessions,
   setWcSessions,
   selectedCurrency,
-  fiatRate
+  fiatRate,
+  sessionToken,
+  openEmailLogin
 }) {
   const { t } = useTranslation(['common', 'amm'])
   const router = useRouter()
@@ -352,6 +354,13 @@ export default function SignForm({
 
     if (connectAnotherWallet) {
       setScreen('choose-app')
+      setStatus('')
+      setAwaiting(false)
+      return
+    }
+
+    const completedInfoScreen = askInfoScreens.includes(screen) && !getRequiredInfoScreen({ signRequest, agreedToRisks })
+    if (completedInfoScreen) {
       setStatus('')
       setAwaiting(false)
       return
@@ -1732,6 +1741,8 @@ export default function SignForm({
                       signRequest={signRequest}
                       setStatus={setStatus}
                       setAgreedToRisks={setAgreedToRisks}
+                      sessionToken={sessionToken}
+                      openEmailLogin={openEmailLogin}
                     />
                   )}
 

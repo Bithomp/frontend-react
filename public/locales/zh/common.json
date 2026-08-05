@@ -307,7 +307,15 @@
       "enter-nft-minter": "输入 NFT 铸造者地址",
       "avatar-url": "头像 URL",
       "enter-avatar-url": "输入头像 URL",
-      "invalid-url": "无效的 URL"
+      "invalid-url": "无效的 URL",
+      "avatar-source": "头像来源",
+      "from-url": "通过 URL",
+      "upload-image": "上传图片",
+      "upload-auth-required": "请登录 Bithomp 以上传图片。",
+      "choose-image": "选择图片",
+      "invalid-image": "请选择图片文件",
+      "uploading-avatar": "正在上传图片...",
+      "upload-failed": "图片上传失败"
     },
     "clear-token": {
       "checking-liquidity": "正在检查可用流动性…",

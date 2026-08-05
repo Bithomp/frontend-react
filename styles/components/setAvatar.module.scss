@@ -1,0 +1,46 @@
+.avatarForm {
+  width: min(100%, 520px);
+  margin: 18px auto 0;
+}
+
+.modeContent {
+  width: 100%;
+  min-height: 116px;
+}
+
+.uploadPanel,
+.authRequired {
+  display: grid;
+  width: 100%;
+  justify-items: center;
+  gap: 14px;
+}
+
+.authRequired p {
+  margin: 0;
+}
+
+.filePicker {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px;
+  border: 1px dashed var(--accent-icon);
+  border-radius: 12px;
+  cursor: pointer;
+
+  input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+.preview {
+  width: 128px;
+  height: 128px;
+  border-radius: 18px;
+  object-fit: cover;
+}

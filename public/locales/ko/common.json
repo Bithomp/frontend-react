@@ -307,7 +307,15 @@
       "enter-nft-minter": "NFT 민터 주소를 입력하세요",
       "avatar-url": "아바타 URL",
       "enter-avatar-url": "아바타 URL을 입력하세요",
-      "invalid-url": "유효하지 않은 URL"
+      "invalid-url": "유효하지 않은 URL",
+      "avatar-source": "아바타 소스",
+      "from-url": "URL로 설정",
+      "upload-image": "이미지 업로드",
+      "upload-auth-required": "이미지를 업로드하려면 Bithomp에 로그인하세요.",
+      "choose-image": "이미지 선택",
+      "invalid-image": "이미지 파일을 선택하세요",
+      "uploading-avatar": "이미지 업로드 중...",
+      "upload-failed": "이미지를 업로드하지 못했습니다"
     },
     "clear-token": {
       "checking-liquidity": "사용 가능한 유동성을 확인하는 중…",
