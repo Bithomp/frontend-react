@@ -467,6 +467,14 @@ export default function NftCollection({
           ? marketData.sales
           : nftList
   const marketType = ['listing', 'bid', 'sale'].includes(marketTab) ? marketTab : 'new'
+  const marketView =
+    marketTab === 'listing'
+      ? { href: listedHref, label: 'View all listed NFTs' }
+      : marketTab === 'bid'
+        ? { href: bidsHref, label: 'View all NFTs with bids' }
+        : marketTab === 'sale'
+          ? { href: salesHref, label: 'View all collection sales' }
+          : { href: allNftsHref, label: 'View all collection NFTs' }
   const effectiveCurrency = selectedCurrency || initialCurrency
   const dayVolumeValue = marketData.dayVolume?.volumesInConvertCurrencies?.[effectiveCurrency]
   const totalNfts = holdersSummary?.totalNfts || statistics?.nfts || 0
@@ -678,20 +686,22 @@ export default function NftCollection({
                       : 'Newest NFTs'}
               </h2>
             </div>
-            <Link
-              className="button-action secondary thin narrow nft-collection-section-action"
-              href={
-                marketTab === 'sale'
-                  ? salesHref
-                  : marketTab === 'listing'
-                    ? listedHref
-                    : marketTab === 'bid'
-                      ? bidsHref
-                      : allNftsHref
-              }
-            >
-              {marketTab === 'listing' ? 'View all listed NFTs' : 'View all'}
-            </Link>
+            <div className="nft-collection-section-actions">
+              <Link
+                className="button-action secondary thin narrow nft-collection-section-action"
+                href={marketView.href}
+              >
+                {marketView.label}
+              </Link>
+              {marketTab !== 'new' && (
+                <Link
+                  className="button-action secondary thin narrow nft-collection-section-action"
+                  href={allNftsHref}
+                >
+                  All collection NFTs
+                </Link>
+              )}
+            </div>
           </div>
           <div className="nft-collection-market-toolbar" role="tablist" aria-label="Collection inventory">
             <button

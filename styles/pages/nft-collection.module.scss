@@ -282,12 +282,21 @@
       font-weight: 700;
     }
 
-    > .nft-collection-section-action {
+    .nft-collection-section-action {
       min-width: 0;
       min-height: 34px;
       padding-inline: 12px;
       white-space: nowrap;
     }
+  }
+
+  .nft-collection-section-actions {
+    display: flex !important;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    gap: 7px !important;
+    align-items: center;
+    justify-content: flex-end;
   }
 
   .nft-collection-market-toolbar {
@@ -999,6 +1008,19 @@
   @media only screen and (max-width: 600px) {
     .nft-collection-detail-page {
       gap: 11px;
+    }
+
+    .nft-collection-section-heading {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .nft-collection-section-actions {
+      justify-content: flex-start;
+
+      .nft-collection-section-action {
+        flex: 1 1 auto;
+      }
     }
 
     .nft-collection-hero {
