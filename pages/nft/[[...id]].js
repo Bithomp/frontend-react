@@ -827,6 +827,8 @@ export default function Nft({
                     hideAmount: true
                   })}
                 </div>
+              ) : tradeButton ? (
+                <div className="nft-offer-card-trade">{tradeButton}</div>
               ) : (
                 status && <span className={`nft-offer-status is-${status.tone}`}>{status.text}</span>
               )}
@@ -889,11 +891,6 @@ export default function Nft({
               )}
             </div>
 
-            {tradeButton && (
-              <div className="nft-offer-card-actions">
-                {tradeButton}
-              </div>
-            )}
           </article>
         )
       })

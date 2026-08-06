@@ -1551,7 +1551,8 @@
       }
     }
 
-    .nft-offer-card-cancel {
+    .nft-offer-card-cancel,
+    .nft-offer-card-trade {
       display: flex;
       justify-content: flex-end;
       min-width: 0;
@@ -1563,6 +1564,15 @@
         margin: 0;
         padding: 6px 11px;
         font-size: 12px;
+      }
+    }
+
+    .nft-offer-card-trade {
+      max-width: 62%;
+
+      .button-action {
+        width: auto;
+        white-space: normal;
       }
     }
 
@@ -1620,24 +1630,6 @@
         color: var(--text-secondary);
         font-size: 12px;
         font-weight: 400;
-      }
-    }
-
-    .nft-offer-card-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: flex-end;
-      padding-top: 12px;
-      border-top: 1px solid var(--card-border);
-
-      .button-action {
-        width: auto;
-        height: auto;
-        min-height: 38px;
-        margin: 0;
-        padding: 7px 12px;
-        font-size: 13px;
       }
     }
 
@@ -2310,7 +2302,8 @@
         grid-template-columns: minmax(0, 1fr);
       }
 
-      .nft-offer-card-cancel {
+      .nft-offer-card-cancel,
+      .nft-offer-card-trade {
         max-width: 62%;
 
         .button-action {
@@ -2322,10 +2315,6 @@
 
       .nft-offer-status {
         max-width: 62%;
-      }
-
-      .nft-offer-card-actions .button-action {
-        flex: 1 1 100%;
       }
     }
   }
