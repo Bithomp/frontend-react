@@ -5451,6 +5451,13 @@ export default function Account({
                 </div>
               )}
 
+              <div className="account-guide-link account-guide-link-desktop">
+                <Link href="/learn/account-page">
+                  <span>{ta('actions.account-page-guide')}</span>
+                  <MdOpenInNew aria-hidden="true" />
+                </Link>
+              </div>
+
               {permissionedDomains.length > 0 && (
                 <div className="time-machine-card tx-settings-card">
                   <button
@@ -12002,6 +12009,13 @@ export default function Account({
             )}
           </div>
         </div>
+
+        <div className="account-guide-link account-guide-link-mobile">
+          <Link href="/learn/account-page">
+            <span>{ta('actions.account-page-guide')}</span>
+            <MdOpenInNew aria-hidden="true" />
+          </Link>
+        </div>
       </div>
 
       <style jsx>{`
@@ -13162,6 +13176,66 @@ export default function Account({
           border: 0;
           border-radius: 0;
           padding: 0;
+        }
+
+        .account-guide-link {
+          position: relative;
+          display: flex;
+          width: 100%;
+          box-sizing: border-box;
+          align-items: center;
+          justify-content: center;
+          min-height: 38px;
+          padding: 8px 32px 8px 10px;
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--background-input);
+          color: var(--text-secondary);
+          font-size: 13px;
+          font-weight: 600;
+          line-height: 1.25;
+          text-align: center;
+          text-decoration: none;
+          transition: all 0.16s ease;
+        }
+
+        .account-guide-link:hover {
+          border-color: var(--accent-link);
+          background: color-mix(in srgb, var(--accent-link) 12%, transparent);
+          text-decoration: none;
+        }
+
+        .account-guide-link > :global(a) {
+          display: flex;
+          gap: 8px;
+          width: 100%;
+          align-items: center;
+          justify-content: center;
+          color: inherit;
+          text-decoration: none;
+        }
+
+        .account-guide-link :global(svg) {
+          flex: 0 0 auto;
+          font-size: 16px;
+          opacity: 0.55;
+        }
+
+        .account-guide-link-mobile {
+          display: none;
+        }
+
+        @media (max-width: 768px) {
+          .account-guide-link-desktop {
+            display: none;
+          }
+
+          .account-guide-link-mobile {
+            display: flex;
+            width: min(100%, 420px);
+            box-sizing: border-box;
+            margin: 16px auto 0;
+          }
         }
 
         .info-cards-list {

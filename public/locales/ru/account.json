@@ -330,7 +330,8 @@
       "show-more-paychannels": "Показать ещё {{count}} paychannel",
       "show-all-paychannels": "Показать все paychannel",
       "show-fewer-paychannels": "Показать меньше paychannel",
-      "load-more-activated-accounts": "Загрузить ещё {{count}} активированных аккаунтов"
+      "load-more-activated-accounts": "Загрузить ещё {{count}} активированных аккаунтов",
+      "account-page-guide": "Руководство по странице аккаунта"
     },
     "button": {
       "set-did": "Установить DID",

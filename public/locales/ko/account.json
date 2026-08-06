@@ -330,7 +330,8 @@
       "show-more-paychannels": "결제 채널 {{count}}개 더 보기",
       "show-all-paychannels": "모든 결제 채널 보기",
       "show-fewer-paychannels": "결제 채널 적게 보기",
-      "load-more-activated-accounts": "활성화된 계정 {{count}}개 더 로드"
+      "load-more-activated-accounts": "활성화된 계정 {{count}}개 더 로드",
+      "account-page-guide": "계정 페이지 가이드"
     },
     "button": {
       "set-did": "DID 설정",

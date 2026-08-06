@@ -330,7 +330,8 @@
       "show-more-paychannels": "{{count}}件のPayment Channelをさらに表示",
       "show-all-paychannels": "すべてのPayment Channelを表示",
       "show-fewer-paychannels": "Payment Channelの表示を減らす",
-      "load-more-activated-accounts": "{{count}}件の有効化済みアカウントをさらに読み込む"
+      "load-more-activated-accounts": "{{count}}件の有効化済みアカウントをさらに読み込む",
+      "account-page-guide": "アカウントページガイド"
     },
     "button": {
       "set-did": "DIDを設定",

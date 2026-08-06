@@ -330,7 +330,8 @@
       "show-more-paychannels": "Mostrar {{count}} canales de pago más",
       "show-all-paychannels": "Mostrar todos los canales de pago",
       "show-fewer-paychannels": "Mostrar menos canales de pago",
-      "load-more-activated-accounts": "Cargar {{count}} cuentas activadas más"
+      "load-more-activated-accounts": "Cargar {{count}} cuentas activadas más",
+      "account-page-guide": "Guía de la página de cuenta"
     },
     "button": {
       "set-did": "Establecer DID",

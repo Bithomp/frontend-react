@@ -330,7 +330,8 @@
       "show-more-paychannels": "{{count}} weitere Zahlungskanäle anzeigen",
       "show-all-paychannels": "Alle Zahlungskanäle anzeigen",
       "show-fewer-paychannels": "Weniger Zahlungskanäle anzeigen",
-      "load-more-activated-accounts": "{{count}} weitere aktivierte Konten laden"
+      "load-more-activated-accounts": "{{count}} weitere aktivierte Konten laden",
+      "account-page-guide": "Leitfaden zur Kontoseite"
     },
     "button": {
       "set-did": "DID festlegen",

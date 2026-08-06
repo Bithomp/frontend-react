@@ -330,7 +330,8 @@
       "show-more-paychannels": "再显示 {{count}} 个支付通道",
       "show-all-paychannels": "显示全部支付通道",
       "show-fewer-paychannels": "显示更少支付通道",
-      "load-more-activated-accounts": "再加载 {{count}} 个已激活账户"
+      "load-more-activated-accounts": "再加载 {{count}} 个已激活账户",
+      "account-page-guide": "账户页面指南"
     },
     "button": {
       "set-did": "设置 DID",

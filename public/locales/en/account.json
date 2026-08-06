@@ -325,7 +325,8 @@
       "show-more-paychannels": "Show {{count}} more paychannels",
       "show-all-paychannels": "Show all paychannels",
       "show-fewer-paychannels": "Show fewer paychannels",
-      "load-more-activated-accounts": "Load {{count}} more activated accounts"
+      "load-more-activated-accounts": "Load {{count}} more activated accounts",
+      "account-page-guide": "Account page guide"
     },
     "button": {
       "set-did": "Set DID",

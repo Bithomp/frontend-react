@@ -330,7 +330,8 @@
       "show-more-paychannels": "Tampilkan {{count}} kanal pembayaran lagi",
       "show-all-paychannels": "Tampilkan semua kanal pembayaran",
       "show-fewer-paychannels": "Tampilkan lebih sedikit kanal pembayaran",
-      "load-more-activated-accounts": "Muat {{count}} akun aktif lagi"
+      "load-more-activated-accounts": "Muat {{count}} akun aktif lagi",
+      "account-page-guide": "Panduan halaman akun"
     },
     "button": {
       "set-did": "Atur DID",
