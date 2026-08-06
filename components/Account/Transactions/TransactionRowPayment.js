@@ -25,8 +25,8 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency, 
   const iouPayment = isIOUpayment(data)
   const isInsufFee = outcome?.result === 'tecINSUFF_FEE'
   const showExchangeRate = !sourceBalanceChangesList?.some(isXls14NftAmount)
-  const fallbackSwapDestinationAmount = outcome?.deliveredAmount
-  const fallbackSwapSourceAmount = tx?.Amount
+  const fallbackSwapDestinationAmount = data?.service?.receivedAmount || outcome?.deliveredAmount
+  const fallbackSwapSourceAmount = data?.service?.sentAmount || tx?.SendMax || specification?.source?.maxAmount || tx?.Amount
   const fallbackSwapSourceToken =
     fallbackSwapSourceAmount && typeof fallbackSwapSourceAmount !== 'object'
       ? { currency: nativeCurrency, value: String(Number(fallbackSwapSourceAmount) / 1000000) }
@@ -133,7 +133,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency, 
               />
               {' '}
               {tokenToFiat({
-                amount: fallbackSwapSourceAmount,
+                amount: fallbackSwapDestinationAmount,
                 selectedCurrency,
                 fiatRate
               })}
