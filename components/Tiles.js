@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { forbid18Plus, xahauNetwork } from '../utils'
 import { bestNftOffer, mpUrl, needNftAgeCheck, nftName, partnerMarketplaces } from '../utils/nft'
@@ -42,6 +42,9 @@ export default function Tiles({
   const router = useRouter()
 
   const [showAgeCheck, setShowAgeCheck] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => setIsHydrated(true), [])
 
   /*
     {
@@ -87,7 +90,7 @@ export default function Tiles({
 
   const clickOnTile = async (e, nft) => {
     e.preventDefault()
-    if (needNftAgeCheck(nft)) {
+    if (needNftAgeCheck(nft, isHydrated)) {
       const forbid = await forbid18Plus()
       if (forbid) return
       setShowAgeCheck(true)
@@ -105,7 +108,7 @@ export default function Tiles({
                 <li className="hex" key={nft.nftokenID || i}>
                   <div className="hexIn">
                     <Link
-                      href={needNftAgeCheck(nft) ? '#' : '/nft/' + nft.nftokenID}
+                      href={needNftAgeCheck(nft, isHydrated) ? '#' : '/nft/' + nft.nftokenID}
                       className="hexLink"
                       onClick={(e) => clickOnTile(e, nft)}
                     >
@@ -163,7 +166,7 @@ export default function Tiles({
                 <li className="hex" key={nft.nftoken?.nftokenID || i}>
                   <div className="hexIn">
                     <Link
-                      href={needNftAgeCheck(nft.nftoken) ? '#' : '/nft/' + nft.nftoken.nftokenID}
+                      href={needNftAgeCheck(nft.nftoken, isHydrated) ? '#' : '/nft/' + nft.nftoken.nftokenID}
                       className="hexLink"
                       onClick={(e) => clickOnTile(e, nft.nftoken)}
                     >

@@ -62,6 +62,11 @@ const DETAIL_PARENTS = {
   amendment: { href: '/amendments', label: 'Amendments', translationKey: 'menu.network.amendments' },
   dapp: { href: '/dapps', label: 'Dapps', translationKey: 'menu.network.dapps' },
   nft: { href: '/nft-explorer', label: 'NFTs', translationKey: 'explorer.header.nfts' },
+  'nft-collection': {
+    href: '/nft-volumes?period=week',
+    label: 'Top NFT Collections',
+    translationKey: 'explorer.header.topNftCollections'
+  },
   token: { href: '/tokens', label: 'Tokens', translationKey: 'menu.tokens' },
   validator: { href: '/validators', label: 'Validators', translationKey: 'menu.network.validators' }
 }
@@ -259,6 +264,11 @@ const nftLabel = (pageProps) => {
   return nftName(nft) || null
 }
 
+const nftCollectionLabel = (pageProps) => {
+  const collection = pageProps?.data?.collection
+  return collection?.name || collection?.issuerDetails?.service || collection?.collection || null
+}
+
 const displayLabel = (item, pageProps, t) => {
   if (item.href === '/distribution') {
     return t('menu.network.distribution', { currency: distributionCurrency(pageProps) })
@@ -293,6 +303,7 @@ const displayLabel = (item, pageProps, t) => {
   if (item.parent === 'dapp') return pageProps?.dappName || item.label
   if (item.parent === 'ledger' && /^\d+$/.test(item.segment)) return `#${item.segment}`
   if (item.parent === 'nft') return nftLabel(pageProps) || item.label
+  if (item.parent === 'nft-collection') return nftCollectionLabel(pageProps) || item.label
   if (item.parent === 'validator') return validatorLabel(pageProps) || item.label
   return item.label
 }

@@ -792,6 +792,7 @@ body.dark {
   font-size: 13px;
   font-weight: 700;
   line-height: 1.2;
+  text-shadow: none;
   transition: all 0.16s ease;
   outline: none;
 
@@ -827,7 +828,6 @@ body.dark {
     background: color-mix(in srgb, var(--accent-link) 66%, #000 34%);
     border-color: color-mix(in srgb, var(--accent-link) 58%, #000 42%);
     color: #f6fbff;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
   }
 
   .dark &:hover {
@@ -928,13 +928,19 @@ body.dark {
 
 .waiting {
   display: inline-block;
-  width: 50px;
-  height: 52px;
-  background: url('/images/bithomp-loader.svg') center / contain no-repeat;
+  width: 300px;
+  min-width: 300px;
+  height: 300px;
+  min-height: 300px;
+  flex: 0 0 300px;
+  background: url('/images/bithomp-loader.svg') center / 100% 100% no-repeat;
 
   &.inline {
     width: 18px;
+    min-width: 18px;
     height: 19px;
+    min-height: 19px;
+    flex-basis: 18px;
     vertical-align: middle;
     margin-left: 5px;
   }
@@ -1450,7 +1456,6 @@ body.dark .flag {
 //pages
 @include meta.load-css("pages/index.scss");
 @include meta.load-css("pages/account.scss");
-@include meta.load-css("pages/nft-offer.scss");
 @include meta.load-css("pages/alerts.scss");
 @include meta.load-css("pages/username.scss");
 @include meta.load-css("pages/genesis.scss");

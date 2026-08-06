@@ -94,6 +94,7 @@ export async function getServerSideProps(context) {
     props: {
       id: nftId,
       pageMeta: pageMeta || {},
+      isOver18: req.cookies?.isOver18 === 'true',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft', 'popups']))
     }
@@ -329,7 +330,16 @@ function DescriptionWithShowMore({ text, maxLength = 400 }) {
   )
 }
 
-export default function Nft({ setSignRequest, account, pageMeta, id, selectedCurrency, refreshPage, fiatRate }) {
+export default function Nft({
+  setSignRequest,
+  account,
+  pageMeta,
+  id,
+  selectedCurrency,
+  refreshPage,
+  fiatRate,
+  isOver18
+}) {
   const { t, i18n } = useTranslation()
   const isFirstRender = useRef(true)
   const accountAddress = account?.address
@@ -1580,6 +1590,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                   nft={data}
                                   compact
                                   maxHeight="var(--nft-preview-max-height, min(68vh, 720px))"
+                                  initialIsOver18={isOver18}
                                 />
                               ) : (
                                 <div className="nft-media-poster">

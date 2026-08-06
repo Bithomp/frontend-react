@@ -110,7 +110,7 @@ const HeaderShell = ({ onActivate, selectedCurrency, fiatRate }) => {
 
   return (
     <div className="home-header-shell">
-      <header>
+      <header className="site-header">
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" prefetch={false} aria-label={t('aria.main-page')} className="header-shell-logo-link">
             {isBithomp ? (

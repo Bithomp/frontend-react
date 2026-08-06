@@ -301,6 +301,9 @@ export default function PrivacyPolicy() {
             <strong>xamanBuyPro</strong> - save the status of the last check of Xaman Pro limits for 10 minutes.
           </li>
           <li>
+            <strong>isOver18</strong> - show or hide explicit content depending on the confirmed age.
+          </li>
+          <li>
             <strong>_ga</strong> - the main cookie used by Google Analytics, enables a service to distinguish one
             visitor from another and lasts for 2 years.
           </li>
@@ -332,9 +335,6 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             <strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").
-          </li>
-          <li>
-            <strong>isOver18</strong> - show or hide explicit content depending on the age
           </li>
         </ul>
         <h4>Session storage</h4>

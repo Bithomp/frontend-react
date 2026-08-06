@@ -1,12 +1,15 @@
 import { useTranslation } from 'react-i18next'
+import Cookies from 'universal-cookie'
 
 import styles from '../../styles/components/ageCheck.module.scss'
+import { cookieParams } from '../../utils'
 
-export default function AgeCheck({ setShowAgeCheck }) {
+export default function AgeCheck({ setShowAgeCheck, onConfirm }) {
   const { t } = useTranslation()
 
   const confirmAgeClick = () => {
-    localStorage.setItem('isOver18', true)
+    new Cookies().set('isOver18', true, cookieParams)
+    onConfirm?.()
     setShowAgeCheck(false)
   }
 

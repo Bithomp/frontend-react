@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { nftImageStyle, nftUrl, nftName } from '../utils/nft'
 
@@ -8,6 +8,9 @@ export default function NftImageOrVideo({ nft }) {
 
   const [loaded, setLoaded] = useState(false)
   const [errored, setErrored] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => setIsHydrated(true), [])
 
   const playMovie = (e) => {
     e.target.querySelector('video').play()
@@ -15,7 +18,7 @@ export default function NftImageOrVideo({ nft }) {
 
   if (!nft) return ''
 
-  let imageStyle = nftImageStyle(nft)
+  let imageStyle = nftImageStyle(nft, {}, isHydrated)
 
   if (Object.keys(imageStyle).length === 0) {
     const nftVideoUrl = nftUrl(nft, 'video')

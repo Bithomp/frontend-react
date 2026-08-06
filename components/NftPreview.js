@@ -35,7 +35,7 @@ const isPanorama = (metadata) => {
   return hasPanoramaKeyword || hasPanoramaCamera
 }
 
-export default function NftPreview({ nft, compact = false, maxHeight = '420px' }) {
+export default function NftPreview({ nft, compact = false, maxHeight = '420px', initialIsOver18 = false }) {
   const { t } = useTranslation()
   const imageRef = useRef(null)
   const [contentTab, setContentTab] = useState('image')
@@ -43,6 +43,7 @@ export default function NftPreview({ nft, compact = false, maxHeight = '420px' }
   const [displayedImageIndex, setDisplayedImageIndex] = useState(0)
   const [isSwitchingImage, setIsSwitchingImage] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [isOver18, setIsOver18] = useState(initialIsOver18)
   const [errored, setErrored] = useState(false)
   const [useImageFallback, setUseImageFallback] = useState(false)
   const [isPanoramic, setIsPanoramic] = useState(false)
@@ -317,7 +318,7 @@ export default function NftPreview({ nft, compact = false, maxHeight = '420px' }
         </div>
       )}
 
-      {needNftAgeCheck(nft) ? (
+      {needNftAgeCheck(nft, true, isOver18) ? (
         <img
           src="/images/nft/18plus.jpg"
           style={{ width: '100%', height: 'auto' }}
@@ -509,7 +510,7 @@ export default function NftPreview({ nft, compact = false, maxHeight = '420px' }
         </>
       )}
       {!compact && <div style={{ height: '15px' }} />}
-      {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
+      {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} onConfirm={() => setIsOver18(true)} />}
     </>
   )
 }

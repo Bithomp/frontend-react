@@ -3,6 +3,7 @@ import { stripText, shortName, webSiteName } from '.'
 import { encodeAccountID } from 'ripple-address-codec'
 
 import Link from 'next/link'
+import Cookies from 'universal-cookie'
 import LinkIcon from '../public/images/link.svg'
 import { amountFormat, shortHash } from './format'
 
@@ -692,17 +693,21 @@ export const isNftExplicit = (nft) => {
   return false
 }
 
-export const needNftAgeCheck = (nft) => {
-  const isOver18 = localStorage.getItem('isOver18')
+export const needNftAgeCheck = (nft, isHydrated = false, serverAgeConfirmed) => {
+  // Keep SSR and the first client render identical. Pages that do not pass the
+  // request cookie read the global cookie after hydration.
+  if (!isHydrated) return !serverAgeConfirmed && isNftExplicit(nft)
+  const cookieValue = serverAgeConfirmed ?? new Cookies().get('isOver18')
+  const isOver18 = cookieValue === true || cookieValue === 'true'
   return !isOver18 && isNftExplicit(nft)
 }
 
-export const nftImageStyle = (nft, style = {}) => {
+export const nftImageStyle = (nft, style = {}, isHydrated = false) => {
   if (!nft) {
     return {}
   }
 
-  if (needNftAgeCheck(nft)) {
+  if (needNftAgeCheck(nft, isHydrated)) {
     return { backgroundImage: "url('/images/nft/18plus.jpg')" }
   }
 
@@ -766,6 +771,11 @@ export const NftImage = ({ nft, style, sourceSize }) => {
   }
   return (
     <img
+      ref={(image) => {
+        if (image?.complete && image.naturalWidth === 0 && image.src !== placeholder) {
+          image.src = placeholder
+        }
+      }}
       src={imageSrc || placeholder}
       alt={nftName(nft?.nftoken || nft) || 'NFT thumbnail'}
       style={{ marginRight: '5px', ...(imageSrc?.startsWith('data:image') && { imageRendering: 'pixelated' }), ...style }}

@@ -484,7 +484,7 @@ export default function Header({
         (headerCollapsed ? 'header-collapsed ' : '')
       }
     >
-      <header>
+      <header className="site-header">
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" aria-label={t('aria.main-page')} style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
             {showLargeLogo ? (

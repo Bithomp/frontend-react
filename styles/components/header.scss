@@ -8,7 +8,7 @@
   display: inline-block;
 }
 
-header {
+header.site-header {
   position: fixed;
   min-height: 55px;
   width: 100%;
@@ -858,7 +858,7 @@ header {
 }
 
 @media only screen and (max-width: 460px) {
-  header {
+  header.site-header {
     .header-logo {
       .header-fiat-rate.xahau-rate {
         display: none;
@@ -868,7 +868,7 @@ header {
 }
 
 @media only screen and (max-width: 305px) {
-  header {
+  header.site-header {
     .header-logo {
       .header-fiat-rate.default-rate {
         display: none;
@@ -1278,7 +1278,7 @@ header {
 }
 
 .mobile-menu-open {
-  header {
+  header.site-header {
     .header-menu-right {
       margin-right: 55px;
 
@@ -1300,7 +1300,7 @@ header {
 }
 
 .home-header-shell {
-  header {
+  header.site-header {
     .header-shell-logo-link {
       display: inline-block;
       width: auto;
@@ -1374,7 +1374,7 @@ header {
 
 /* Collapse the second-line search row while scrolling (only where it becomes a 2nd row) */
 .header-collapsed {
-  header {
+  header.site-header {
     /* keep the main bar visible; collapse only the second row area */
     .header-search-inline {
       transition: max-height 0.25s ease, padding 0.25s ease, opacity 0.2s ease, margin 0.25s ease,
@@ -1384,7 +1384,7 @@ header {
 }
 
 @media only screen and (max-width: 1370px) {
-  header {
+  header.site-header {
     min-height: 55px;
     height: auto;
 
@@ -1438,7 +1438,7 @@ header {
 }
 
 @media only screen and (max-width: 1050px) {
-  header {
+  header.site-header {
     .header-search-inline {
       order: 3;
       flex: 1 1 100%;
@@ -1466,7 +1466,7 @@ header {
   }
 
   .header-collapsed {
-    header {
+    header.site-header {
       .header-search-inline {
         max-height: 0 !important;
         padding-top: 0 !important;
@@ -1485,7 +1485,7 @@ header {
 
 @media only screen and (max-width: 600px) {
   .mobile-menu-open {
-    header {
+    header.site-header {
       .header-menu-right {
         left: 32px;
         right: unset;
@@ -1496,14 +1496,14 @@ header {
 }
 
 @media only screen and (max-width: 830px) {
-  header {
+  header.site-header {
     .header-menu-right {
       display: none;
     }
   }
 
   .mobile-menu-open {
-    header {
+    header.site-header {
       .header-logo {
         display: none !important;
       }
@@ -1516,7 +1516,7 @@ header {
 }
 
 @media only screen and (max-width: 1760px) and (min-width: 1370px) {
-  header {
+  header.site-header {
     justify-content: flex-start;
 
     .header-menu-right {
@@ -1553,7 +1553,7 @@ header {
     }
   }
     .header-collapsed {
-    header {
+    header.site-header {
       .header-search-inline {
         max-height: 0 !important;
         padding-top: 0 !important;
@@ -1572,22 +1572,22 @@ header {
 
 /* Desktop: keep logo left, right menu right, equal internal gaps */
 @media only screen and (min-width: 1760px) {
-  header {
+  header.site-header {
     justify-content: flex-start;
     padding: 0 20px;
   }
 
-  header .header-logo {
+  header.site-header .header-logo {
     margin-left: 0;
   }
 
-  header .header-search-inline {
+  header.site-header .header-search-inline {
     z-index: 11;
     margin-left: 0;
     margin-right: 0;
   }
 
-  header .header-menu-right {
+  header.site-header .header-menu-right {
     margin-left: 0;
     margin-right: 0;
   }
@@ -1599,7 +1599,7 @@ header {
    -> Solution: raise header above menu, hide search-inline while menu is open (only on small screens where it becomes 2nd row)
 */
 .mobile-menu-open {
-  header {
+  header.site-header {
     z-index: 30; /* > .mobile-menu (20) */
 
     /* Make sure dropdown popups are also above everything */
@@ -1615,7 +1615,7 @@ header {
 
   /* Only on layouts where search-inline becomes the 2nd line */
   @media only screen and (max-width: 1050px) {
-    header {
+    header.site-header {
       .header-search-inline {
         display: none !important; /* keeps it from overlapping the menu */
       }
