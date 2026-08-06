@@ -928,17 +928,13 @@ body.dark {
 
 .waiting {
   display: inline-block;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid var(--background-menu);
-  width: 80px;
-  height: 80px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
+  width: 50px;
+  height: 52px;
+  background: url('/images/bithomp-loader.svg') center / contain no-repeat;
+
   &.inline {
-    width: 12px;
-    height: 12px;
-    border-width: 3px;
+    width: 18px;
+    height: 19px;
     vertical-align: middle;
     margin-left: 5px;
   }

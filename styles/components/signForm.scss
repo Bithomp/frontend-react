@@ -269,6 +269,10 @@
       }
     }
 
+    .wallet-sign-retry {
+      margin-top: 14px;
+    }
+
     &.wallet-sign-screen:not(.xaman-sign-screen) {
       width: min(560px, calc(100vw - 32px));
       min-height: 300px;
@@ -286,11 +290,19 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 16px;
         margin: 18px 0 0;
         padding: 0 10px;
         line-height: 1.35;
         text-wrap: balance;
       }
+
+      .waiting {
+        width: 80px;
+        height: 84px;
+        flex: 0 0 auto;
+      }
+
     }
 
     &.xaman-sign-screen {
@@ -382,6 +394,13 @@
         justify-content: center;
         gap: 18px;
       }
+
+      .waiting {
+        width: 80px;
+        height: 84px;
+        flex: 0 0 auto;
+      }
+
 
       .progress-bar {
         position: relative;
@@ -1431,8 +1450,11 @@
     }
 
     .signin-status {
-      margin: 20px;
+      min-height: 38px;
+      margin: 16px 20px;
+      line-height: 1.35;
       text-align: center;
+      text-wrap: balance;
     }
   }
 }

@@ -7,6 +7,22 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { Buffer } from 'buffer'
+import {
+  IoCartOutline,
+  IoChevronDownOutline,
+  IoChevronUpOutline,
+  IoCloseCircleOutline,
+  IoCreateOutline,
+  IoFlameOutline,
+  IoGlobeOutline,
+  IoImagesOutline,
+  IoPeopleOutline,
+  IoPersonOutline,
+  IoPricetagOutline,
+  IoSendOutline,
+  IoStorefrontOutline,
+  IoTrendingUpOutline
+} from 'react-icons/io5'
 
 import {
   stripText,
@@ -19,28 +35,27 @@ import {
   devNet,
   encode
 } from '../../utils'
-import { AddressWithIconFilled, convertedAmount, tokenToFiat, timeFromNow, usernameOrAddress } from '../../utils/format'
+import { AddressWithIconInline, convertedAmount, tokenToFiat, timeFromNow, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
   nftName,
   bestNftOffer,
   nftSellOfferPurchase,
+  mpUrl,
   nftUrl,
   partnerMarketplaces,
   ipfsUrl,
   isNftExplicit,
-  collectionNameText,
-  isValidTaxon
+  isValidTaxon,
+  NftImage
 } from '../../utils/nft'
 import {
   shortHash,
-  trWithFlags,
   fullDateAndTime,
   amountFormat,
   expirationExpired,
   nftOfferLink,
   codeHighlight,
-  trStatus,
   cancelNftOfferButton,
   cancelNftOfferButtons,
   acceptNftSellOfferButton,
@@ -98,6 +113,34 @@ const EvernodeRegistartion = dynamic(() => import('../../components/Nft/Evernode
 
 const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
+}
+
+const nftAttributeName = (attribute) => attribute?.trait_type ?? attribute?.name ?? attribute?.traitType
+const nftAttributeValue = (attribute) => attribute?.value ?? attribute?.traitValue
+const nftAttributeText = (value) => (typeof value === 'object' ? JSON.stringify(value) : stripText(value))
+
+const nftFloorAssetKey = (floor) => {
+  const amount = floor?.amount
+  return typeof amount === 'object' && amount !== null ? `${amount.currency}:${amount.issuer}` : 'XRP'
+}
+
+const lowestComparableNftFloor = (floorPrices) => {
+  for (const floor of floorPrices || []) {
+    const knownMarketplaceFloor = floor?.private?.destinationDetails?.service ? floor.private : null
+    const candidates = [floor?.open, knownMarketplaceFloor].filter(Boolean)
+    if (!candidates.length) continue
+
+    const assetKey = nftFloorAssetKey(candidates[0])
+    return candidates
+      .filter((candidate) => nftFloorAssetKey(candidate) === assetKey)
+      .reduce((lowest, candidate) => {
+        const amount = typeof candidate.amount === 'object' ? candidate.amount.value : candidate.amount
+        const lowestAmount = typeof lowest.amount === 'object' ? lowest.amount.value : lowest.amount
+        return Number(amount) < Number(lowestAmount) ? candidate : lowest
+      })
+  }
+
+  return null
 }
 
 const remarkLink = (value) => {
@@ -272,6 +315,7 @@ function RemarksTable({ remarks }) {
 
 // Show more/less for long descriptions
 function DescriptionWithShowMore({ text, maxLength = 400 }) {
+  const { t } = useTranslation(['common', 'nft'])
   const [expanded, setExpanded] = useState(false)
   if (!text || text.length <= maxLength) return <span>{text}</span>
   return (
@@ -279,7 +323,7 @@ function DescriptionWithShowMore({ text, maxLength = 400 }) {
       <span>{expanded ? text : text.slice(0, maxLength) + '... '}</span>
       <span className="link" onClick={() => setExpanded(!expanded)}>
         {' '}
-        {expanded ? 'show less' : 'show more'}
+        {expanded ? t('show-less', { ns: 'nft' }) : t('show-more', { ns: 'nft' })}
       </span>
     </>
   )
@@ -306,6 +350,16 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   const [isValidDigest, setIsValidDigest] = useState(false)
   const [warnings, setWarnings] = useState([])
   const [rendered, setRendered] = useState(false)
+  const [sameCollectionNfts, setSameCollectionNfts] = useState([])
+  const [sameCollectionLoading, setSameCollectionLoading] = useState(false)
+  const [collectionMarketData, setCollectionMarketData] = useState(null)
+  const [showAllHistory, setShowAllHistory] = useState(false)
+  const [productCardHeight, setProductCardHeight] = useState(null)
+  const productCardRef = useRef(null)
+
+  useEffect(() => {
+    setShowAllHistory(false)
+  }, [id])
 
   useEffect(() => {
     if (!data || !hasJsonMeta(data) || !data.digest) return
@@ -483,16 +537,63 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, selectedCurrency])
 
+  useEffect(() => {
+    if (data?.type !== 'xls20' || !data?.issuer || !isValidTaxon(data?.nftokenTaxon)) {
+      setSameCollectionNfts([])
+      setCollectionMarketData(null)
+      return
+    }
+
+    let canceled = false
+    const loadSameCollectionNfts = async () => {
+      setSameCollectionLoading(true)
+      setCollectionMarketData(null)
+      try {
+        const params = new URLSearchParams({
+          issuer: data.issuer,
+          taxon: String(data.nftokenTaxon),
+          limit: '9',
+          order: 'mintedNew',
+          hasMedia: 'true'
+        })
+        const collectionId = data.collection || `${data.issuer}:${data.nftokenTaxon}`
+        const [nftsResponse, collectionResponse] = await Promise.all([
+          axios(`/v2/nfts?${params.toString()}`).catch(() => null),
+          axios(`/v2/nft-collection/${encodeURIComponent(collectionId)}?floorPrice=true&statistics=true`).catch(
+            () => null
+          )
+        ])
+        const nfts = Array.isArray(nftsResponse?.data?.nfts) ? nftsResponse.data.nfts : []
+        if (!canceled) {
+          setSameCollectionNfts(nfts.filter((nft) => nft?.nftokenID !== id).slice(0, 8))
+          setCollectionMarketData(collectionResponse?.data?.collection || null)
+        }
+      } catch {
+        if (!canceled) {
+          setSameCollectionNfts([])
+          setCollectionMarketData(null)
+        }
+      } finally {
+        if (!canceled) setSameCollectionLoading(false)
+      }
+    }
+
+    loadSameCollectionNfts()
+    return () => {
+      canceled = true
+    }
+  }, [data?.collection, data?.issuer, data?.nftokenTaxon, data?.type, id])
+
   const externalUrl = (meta) => {
     let url =
       meta.external_url ||
       meta.external_link ||
       meta.externalUrl ||
       meta.externalURL ||
-      (meta.minter?.includes('https://') && meta.minter) ||
+      (typeof meta.minter === 'string' && meta.minter.includes('https://') && meta.minter) ||
       meta.External_Link
-    if (url) {
-      url = stripText(url)
+    if (typeof url === 'string' && url.trim()) {
+      url = stripText(url).trim()
       let urlText = url
       if (url.toLowerCase().slice(0, 7) === 'ipfs://') {
         urlText = url.slice(7)
@@ -529,7 +630,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       }
     } else {
       //if there is URI then it's URI modified, otherwise burned
-      if (event.uri) {
+      if (event.uri || event.url) {
         return t('table.updated')
       }
       return <span className="red">{t('table.burned')}</span>
@@ -568,70 +669,98 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       ],
     */
     if (history) {
-      return history.map((nftEvent, i) => (
-        <tbody key={i}>
-          <tr>
-            <td className="bold">{eventType(nftEvent)}</td>
-            <td>
-              {timeFromNow(nftEvent.changedAt, i18n)} ({fullDateAndTime(nftEvent.changedAt)}){' '}
-              <LinkTx tx={nftEvent.txHash} icon={true} />
-            </td>
-          </tr>
-          {nftEvent.uri && (
-            <tr>
-              <td>{t('table.uri')}</td>
-              <td className="brake">
-                {nftEvent.url ? nftEvent.url : decode(nftEvent.uri)}{' '}
-                <CopyButton text={nftEvent.url ? nftEvent.url : decode(nftEvent.uri)} />
-              </td>
-            </tr>
-          )}
-          {nftEvent.amount && nftEvent.amount !== '0' && (
-            <tr>
-              <td>{t('table.price')}</td>
-              <td>
-                {amountFormat(nftEvent.amount, { tooltip: 'right' })}
-                {nftEvent.amountInConvertCurrencies?.[selectedCurrency] && (
-                  <> (≈ {convertedAmount(nftEvent, selectedCurrency)})</>
-                )}
-              </td>
-            </tr>
-          )}
-          {nftEvent.owner && (
-            <tr>
-              <td>{ownerName(nftEvent)}</td>
-              <td>
-                <AddressWithIconFilled data={nftEvent} name={nftEvent.minter ? 'minter' : 'owner'} />
-              </td>
-            </tr>
-          )}
-          {nftEvent.marketplace && (
-            <tr>
-              <td>{marketPlaceUsage(nftEvent)}</td>
-              <td>{nftEvent.marketplace}</td>
-            </tr>
-          )}
-          {i !== history.length - 1 && (
-            <tr>
-              <td colSpan="100">
-                <hr />
-              </td>
-            </tr>
-          )}
-        </tbody>
-      ))
+      const visibleHistory = showAllHistory ? history : history.slice(0, 5)
+      return visibleHistory.map((nftEvent, i) => {
+        const marketplaceUrl = nftEvent.marketplace
+          ? mpUrl({
+              destination: 'marketplace',
+              destinationDetails: { service: nftEvent.marketplace },
+              nftokenID: dataId,
+              issuer: data?.issuer,
+              nftokenTaxon: data?.nftokenTaxon,
+              owner: nftEvent.owner
+            })
+          : ''
+        const eventUri = nftEvent.url || (nftEvent.uri ? decode(nftEvent.uri) : '')
+        const hasAmount = nftEvent.amount !== undefined && nftEvent.amount !== null && nftEvent.amount !== ''
+        const isSale = hasAmount && String(nftEvent.amount) !== '0'
+
+        return (
+          <article className="nft-history-event" key={nftEvent.txHash || `${nftEvent.changedAt}-${i}`}>
+            <div className="nft-history-event-type">
+              <strong>{eventType(nftEvent)}</strong>
+            </div>
+            <div className="nft-history-participant">
+              {nftEvent.owner && (
+                <>
+                  <small>{ownerName(nftEvent)}</small>
+                  <AddressWithIconInline
+                    data={nftEvent}
+                    name={!nftEvent.amount && nftEvent.minter ? 'minter' : 'owner'}
+                    options={{ short: 8 }}
+                  />
+                </>
+              )}
+            </div>
+            <div className="nft-history-value">
+              {isSale && (
+                <div className="nft-history-price">
+                  <strong>{amountFormat(nftEvent.amount, { tooltip: 'right' })}</strong>
+                  {nftEvent.amountInConvertCurrencies?.[selectedCurrency] && (
+                    <small>≈ {convertedAmount(nftEvent, selectedCurrency)}</small>
+                  )}
+                </div>
+              )}
+              {nftEvent.marketplace && (
+                <small>
+                  {marketPlaceUsage(nftEvent)}{' '}
+                  {marketplaceUrl ? (
+                    <a href={marketplaceUrl} target="_blank" rel="noreferrer">
+                      {nftEvent.marketplace}
+                    </a>
+                  ) : (
+                    nftEvent.marketplace
+                  )}
+                </small>
+              )}
+            </div>
+            <div className="nft-history-date">
+              <span>
+                {timeFromNow(nftEvent.changedAt, i18n)}
+                {nftEvent.txHash && <LinkTx tx={nftEvent.txHash} icon={true} />}
+              </span>
+              <small>{fullDateAndTime(nftEvent.changedAt)}</small>
+            </div>
+            {eventUri && (
+              <div className="nft-history-uri">
+                <small>{t('table.uri')}</small>
+                <span title={eventUri}>{eventUri}</span>
+                <CopyButton text={eventUri} />
+              </div>
+            )}
+          </article>
+        )
+      })
     }
+  }
+
+  const nftOfferStatus = (offer) => {
+    if (offer.validationErrors?.length) {
+      return {
+        text: offer.validationErrors.map((error) => t('table.text-status.' + error)).join(', '),
+        tone: 'danger'
+      }
+    }
+    if (offer.canceledAt) return { text: t('table.canceled'), tone: 'danger' }
+    if (offer.acceptedAt) return { text: t('table.accepted'), tone: 'success' }
+    if (offer.valid === true) return { text: t('table.filter.valid'), tone: 'success' }
+    if (offer.valid === false) return { text: t('table.filter.invalid'), tone: 'danger' }
+    return null
   }
 
   const nftOffers = (offers, type) => {
     if (type !== 'sell' && type !== 'buy') {
-      return (
-        <tbody>
-          <tr>
-            <td colSpan="100">Error, no offer type</td>
-          </tr>
-        </tbody>
-      )
+      return <div className="nft-offers-empty">Error, no offer type</div>
     }
     /*
       {
@@ -650,118 +779,117 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     const buyerOrSeller = type === 'sell' ? t('table.seller') : t('table.buyer')
 
     if (offers.length > 0) {
-      return offers.map((offer, i) => (
-        <tbody key={i}>
-          {offer.offerIndex && (
-            <tr>
-              <td>{t('table.offer')}</td>
-              <td>{nftOfferLink(offer.offerIndex)}</td>
-            </tr>
-          )}
-          {trStatus(t, offer)}
-          <tr>
-            <td>{buyerOrSeller}</td>
-            <td>
-              <AddressWithIconFilled data={offer} name="owner" />
-            </td>
-          </tr>
-          <tr>
-            <td>{t('table.amount')}</td>
-            <td>
-              {amountFormat(offer.amount, { withIssuer: true })}
-              {/* only show the current prices, add to show historical for accepted/canceled*/}
-              {!offer.canceledAt && !offer.acceptedAt && fiatRate > 0 && (
-                <span className="grey">
-                  {tokenToFiat({
-                    amount: offer.amount,
-                    selectedCurrency,
-                    fiatRate
+      return offers.map((offer, i) => {
+        const tradeButton = offer.valid
+          ? type === 'sell'
+            ? buyButton([offer])
+            : sellButton([offer])
+          : null
+        const canCancelOffer =
+          !offer.canceledAt &&
+          !offer.acceptedAt &&
+          ((accountAddress && offer.owner && accountAddress === offer.owner) ||
+            offer.validationErrors?.includes('Offer is expired') ||
+            (accountAddress && offer.destination === accountAddress))
+        const status = nftOfferStatus(offer)
+
+        return (
+          <article className="nft-offer-card" key={offer.offerIndex || i}>
+            <div className="nft-offer-card-top">
+              <div className="nft-offer-card-price">
+                <span>{t('table.amount')}</span>
+                <div>
+                  <strong>{amountFormat(offer.amount, { withIssuer: true })}</strong>
+                  {!offer.canceledAt && !offer.acceptedAt && fiatRate > 0 && (
+                    <small>
+                      {tokenToFiat({
+                        amount: offer.amount,
+                        selectedCurrency,
+                        fiatRate
+                      })}
+                    </small>
+                  )}
+                </div>
+              </div>
+              {canCancelOffer ? (
+                <div className="nft-offer-card-cancel">
+                  {cancelNftOfferButton(t, setSignRequest, accountAddress, offer, type, data.type, id, {
+                    hideAmount: true
                   })}
-                </span>
+                </div>
+              ) : (
+                status && <span className={`nft-offer-status is-${status.tone}`}>{status.text}</span>
               )}
-            </td>
-          </tr>
-          {offer.createdAt && (
-            <tr>
-              <td>{t('table.placed')}</td>
-              <td>
-                {fullDateAndTime(offer.createdAt)} <LinkTx tx={offer.createdTxHash} icon={true} />
-              </td>
-            </tr>
-          )}
-          {offer.acceptedAt && (
-            <tr>
-              <td>{t('table.accepted')}</td>
-              <td>
-                {fullDateAndTime(offer.acceptedAt)} <LinkTx tx={offer.acceptedTxHash} icon={true} />
-              </td>
-            </tr>
-          )}
-          {offer.canceledAt && (
-            <tr>
-              <td>{t('table.canceled')}</td>
-              <td>
-                {fullDateAndTime(offer.canceledAt)} <LinkTx tx={offer.canceledTxHash} icon={true} />
-              </td>
-            </tr>
-          )}
-          {offer.expiration && (
-            <tr>
-              <td>{expirationExpired(t, offer.expiration)}</td>
-              <td>{fullDateAndTime(offer.expiration, 'expiration')}</td>
-            </tr>
-          )}
-          {offer.destination && (
-            <tr>
-              <td>{t('table.destination')}</td>
-              <td>
-                <AddressWithIconFilled data={offer} name="destination" />
-              </td>
-            </tr>
-          )}
-          {offer.valid && (
-            <>
-              {type === 'sell' && (
-                <tr>
-                  <td colSpan="2">{buyButton([offer])}</td>
-                </tr>
-              )}
-              {type === 'buy' && (
-                <tr>
-                  <td colSpan="2">{sellButton([offer])}</td>
-                </tr>
-              )}
-            </>
-          )}
-          {!offer.canceledAt &&
-            !offer.acceptedAt &&
-            ((accountAddress && offer.owner && accountAddress === offer.owner) ||
-              offer.validationErrors?.includes('Offer is expired') ||
-              (accountAddress && offer.destination === accountAddress)) && (
-              <tr>
-                <td colSpan="2">
-                  {cancelNftOfferButton(t, setSignRequest, accountAddress, offer, type, data.type, id)}
-                </td>
-              </tr>
+            </div>
+
+            {offer.offerIndex && (
+              <div className="nft-offer-card-id">
+                <span>{t('table.offer')}</span>
+                <strong>{nftOfferLink(offer.offerIndex, 12)}</strong>
+              </div>
             )}
-          {i !== offers.length - 1 && (
-            <tr>
-              <td colSpan="100">
-                <hr />
-              </td>
-            </tr>
-          )}
-        </tbody>
-      ))
-    } else {
-      return (
-        <tbody>
-          <tr>
-            <td colSpan="100">{t('table.text.no-offers')}</td>
-          </tr>
-        </tbody>
-      )
+
+            <div className="nft-offer-card-details">
+              <div>
+                <span>{buyerOrSeller}</span>
+                <strong>
+                  <AddressWithIconInline data={offer} name="owner" options={{ short: 8 }} />
+                </strong>
+              </div>
+              {offer.createdAt && (
+                <div>
+                  <span>{t('table.placed')}</span>
+                  <strong className="nft-offer-date">
+                    <span>{timeFromNow(offer.createdAt, i18n)}</span>
+                    <small>
+                      {fullDateAndTime(offer.createdAt)} <LinkTx tx={offer.createdTxHash} icon={true} />
+                    </small>
+                  </strong>
+                </div>
+              )}
+              {offer.acceptedAt && (
+                <div>
+                  <span>{t('table.accepted')}</span>
+                  <strong>
+                    {fullDateAndTime(offer.acceptedAt)} <LinkTx tx={offer.acceptedTxHash} icon={true} />
+                  </strong>
+                </div>
+              )}
+              {offer.canceledAt && (
+                <div>
+                  <span>{t('table.canceled')}</span>
+                  <strong>
+                    {fullDateAndTime(offer.canceledAt)} <LinkTx tx={offer.canceledTxHash} icon={true} />
+                  </strong>
+                </div>
+              )}
+              {offer.expiration && (
+                <div>
+                  <span>{expirationExpired(t, offer.expiration)}</span>
+                  <strong>{fullDateAndTime(offer.expiration, 'expiration')}</strong>
+                </div>
+              )}
+              {offer.destination && (
+                <div>
+                  <span>{t('table.destination')}</span>
+                  <strong>
+                    <AddressWithIconInline data={offer} name="destination" options={{ short: 8 }} />
+                  </strong>
+                </div>
+              )}
+            </div>
+
+            {tradeButton && (
+              <div className="nft-offer-card-actions">
+                {tradeButton}
+              </div>
+            )}
+          </article>
+        )
+      })
     }
+
+    return <div className="nft-offers-empty">{t('table.text.no-offers')}</div>
   }
 
   const offerHistoryFilters = (type, defaultOption = false) => {
@@ -919,13 +1047,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
     if (data.type === 'xls35') {
       if (!best.destination || (accountAddress && accountAddress === best.destination)) {
-        return (
-          <>
-            {acceptNftSellOfferButton(t, setSignRequest, best, data.type)}
-            <br />
-            <br />
-          </>
-        )
+        return acceptNftSellOfferButton(t, setSignRequest, best, data.type, { icon: <IoCartOutline /> })
       }
       return ''
     }
@@ -941,27 +1063,23 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
     if (purchase.type === 'external') {
       return (
-        <>
-          <a className="button-action wide center" href={purchase.url} target="_blank" rel="noreferrer">
+        <a className="button-action wide center" href={purchase.url} target="_blank" rel="noreferrer">
+          <IoCartOutline aria-hidden="true" />
+          <span>
             {t('button.nft.buy-for-amount-on', {
               amount: amountFormat(purchase.displayAmount),
               service: purchase.service
             })}
-          </a>
-          <br />
-          <br />
-        </>
+          </span>
+        </a>
       )
     }
 
     return (
-      <>
-        <button className="button-action wide center" onClick={() => setSignRequest(purchase.signRequest)}>
-          {t('button.nft.buy-for-amount', { amount: amountFormat(purchase.displayAmount) })}
-        </button>
-        <br />
-        <br />
-      </>
+      <button className="button-action wide center" onClick={() => setSignRequest(purchase.signRequest)}>
+        <IoCartOutline aria-hidden="true" />
+        <span>{t('button.nft.buy-for-amount', { amount: amountFormat(purchase.displayAmount) })}</span>
+      </button>
     )
   }
 
@@ -1019,38 +1137,31 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         }
 
         return (
-          <>
-            <button
-              className="button-action wide center"
-              onClick={() =>
-                setSignRequest({
-                  request,
-                  broker: {
-                    name,
-                    fee: Math.ceil(best.amount > 0 ? best.amount * fee : 1),
-                    nftPrice: best.amount,
-                    feeText
-                  }
-                })
-              }
-            >
+          <button
+            className="button-action wide center"
+            onClick={() =>
+              setSignRequest({
+                request,
+                broker: {
+                  name,
+                  fee: Math.ceil(best.amount > 0 ? best.amount * fee : 1),
+                  nftPrice: best.amount,
+                  feeText
+                }
+              })
+            }
+          >
+            <IoStorefrontOutline aria-hidden="true" />
+            <span>
               {t('button.nft.sell-for-amount', {
                 amount: amountFormat(best.amount?.value ? sellAmount : parseInt(sellAmount))
               })}
-            </button>
-            <br />
-            <br />
-          </>
+            </span>
+          </button>
         )
       }
 
-      return (
-        <>
-          {acceptNftBuyOfferButton(t, setSignRequest, best, data.type)}
-          <br />
-          <br />
-        </>
-      )
+      return acceptNftBuyOfferButton(t, setSignRequest, best, { icon: <IoStorefrontOutline /> })
     }
 
     return ''
@@ -1061,7 +1172,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     // if not transferable, do not show button to create offers unless the issuer is logged in.
     if (!id || data.deletedAt || (!data.flags.transferable && (!accountAddress || accountAddress !== data.issuer)))
       return ''
-    //if signed in and user is the nft's owner -> make a sell offer or a transfer, otherwise make a buy offer (no flag)
+    //if signed in and user is the nft's owner -> make a sell offer, otherwise make a buy offer (no flag)
     const sell = data?.owner && accountAddress && accountAddress === data.owner
 
     let request = {
@@ -1087,41 +1198,23 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     }
 
     return (
-      <>
-        <button
-          className="button-action wide center"
-          onClick={() =>
-            setSignRequest({
-              request
-            })
-          }
-        >
+      <button
+        className={`button-action wide center${hasAValidSellOffer ? ' nft-secondary-action' : ''}`}
+        onClick={() =>
+          setSignRequest({
+            request
+          })
+        }
+      >
+        <IoPricetagOutline aria-hidden="true" />
+        <span>
           {sell
             ? hasAValidSellOffer
               ? t('button.nft.add-another-sell-offer')
               : t('button.nft.list-for-sale')
             : t('button.nft.make-offer')}
-        </button>
-        <br />
-        <br />
-        {sell && (
-          <>
-            <button
-              className="button-action wide center"
-              onClick={() =>
-                setSignRequest({
-                  request,
-                  action: 'nftTransfer'
-                })
-              }
-            >
-              {t('button.nft.transfer')}
-            </button>
-            <br />
-            <br />
-          </>
-        )}
-      </>
+        </span>
+      </button>
     )
   }
 
@@ -1137,34 +1230,53 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     }
 
     return (
-      <>
-        <button
-          className="button-action wide center"
-          onClick={() =>
-            setSignRequest({
-              request
-            })
-          }
-        >
+      <button
+        className="button-action wide center"
+        onClick={() =>
+          setSignRequest({
+            request
+          })
+        }
+      >
+        <IoPricetagOutline aria-hidden="true" />
+        <span>
           {countSellOffers?.['active-valid'] > 0 ? t('button.nft.update-sell-offer') : t('button.nft.list-for-sale')}
-        </button>
-        <br />
-        <br />
+        </span>
+      </button>
+    )
+  }
 
-        <button
-          className="button-action wide center"
-          onClick={() =>
-            setSignRequest({
-              request,
-              action: 'nftTransfer'
-            })
+  const transferButton = () => {
+    if (!id || data.deletedAt || !data?.owner || !accountAddress || accountAddress !== data.owner) return ''
+    if (data.type === 'xls20' && !data.flags?.transferable && accountAddress !== data.issuer) return ''
+
+    const request =
+      data.type === 'xls35'
+        ? {
+            Account: data.owner,
+            TransactionType: 'URITokenCreateSellOffer',
+            URITokenID: id
           }
-        >
-          {t('button.nft.transfer')}
-        </button>
-        <br />
-        <br />
-      </>
+        : {
+            TransactionType: 'NFTokenCreateOffer',
+            Account: data.owner,
+            NFTokenID: id,
+            Flags: 1
+          }
+
+    return (
+      <button
+        className="button-action wide center"
+        onClick={() =>
+          setSignRequest({
+            request,
+            action: 'nftTransfer'
+          })
+        }
+      >
+        <IoSendOutline aria-hidden="true" />
+        <span>{t('button.nft.transfer')}</span>
+      </button>
     )
   }
 
@@ -1182,6 +1294,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     let request = null
 
     if (data.type === 'xls35') {
+      if (accountAddress !== data.owner) return ''
       request = {
         Account: data.owner,
         TransactionType: 'URITokenBurn',
@@ -1206,20 +1319,17 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     }
 
     return (
-      <>
-        <button
-          className="button-action wide center"
-          onClick={() =>
-            setSignRequest({
-              request
-            })
-          }
-        >
-          {t('button.nft.burn')} ️‍🔥
-        </button>
-        <br />
-        <br />
-      </>
+      <button
+        className="button-action wide center nft-danger-action"
+        onClick={() =>
+          setSignRequest({
+            request
+          })
+        }
+      >
+        <IoFlameOutline aria-hidden="true" />
+        <span>{t('button.nft.burn')}</span>
+      </button>
     )
   }
 
@@ -1240,20 +1350,17 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     }
 
     return (
-      <>
-        <button
-          className="button-action wide center"
-          onClick={() =>
-            setSignRequest({
-              request
-            })
-          }
-        >
-          Modify URI 📝
-        </button>
-        <br />
-        <br />
-      </>
+      <button
+        className="button-action wide center"
+        onClick={() =>
+          setSignRequest({
+            request
+          })
+        }
+      >
+        <IoCreateOutline aria-hidden="true" />
+        <span>{t('modify-uri', { ns: 'nft' })}</span>
+      </button>
     )
   }
 
@@ -1264,8 +1371,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
     if (!imageUrl) return '' //if there is no image, do not offer to set as avatar
 
-    //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
-    if (devNet || !accountAddress || (accountAddress !== data.owner && accountAddress !== data.issuer)) return ''
+    //Only the current owner can set this NFT as their avatar.
+    if (devNet || !accountAddress || accountAddress !== data.owner) return ''
 
     const command = {
       action: 'setAvatar',
@@ -1287,32 +1394,22 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     }
 
     return (
-      <>
-        <button
-          className="button-action wide center"
-          onClick={() =>
-            setSignRequest({
-              request,
-              data: {
-                signOnly: true,
-                action: 'set-avatar',
-                redirect: 'account'
-              }
-            })
-          }
-          disabled={data.owner !== accountAddress}
-        >
-          Set as Avatar 😎
-        </button>
-        {data.owner !== accountAddress && (
-          <>
-            <br />
-            <span className="grey">{t('set-avatar-description', { ns: 'nft' })}</span>
-          </>
-        )}
-        <br />
-        <br />
-      </>
+      <button
+        className="button-action wide center"
+        onClick={() =>
+          setSignRequest({
+            request,
+            data: {
+              signOnly: true,
+              action: 'set-avatar',
+              redirect: 'account'
+            }
+          })
+        }
+      >
+        <IoPersonOutline aria-hidden="true" />
+        <span>{t('set-as-avatar', { ns: 'nft' })}</span>
+      </button>
     )
   }
 
@@ -1347,6 +1444,97 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   const dataId = data?.nftokenID || data?.uritokenID
   const hasCurrentData = dataId === id
   const showPageLoading = loading && !hasCurrentData
+  const pageNft = hasCurrentData ? data : pageMeta
+  const pageTitle = nftName(pageNft) || `NFT ${shortHash(id)}`
+  const pageDescription = pageNft?.metadata ? nftDescription(pageNft.metadata) : null
+  const collectionDescription = stripText(pageNft?.collectionDetails?.description).trim()
+  const descriptionsMatch = collectionDescription && collectionDescription === stripText(pageDescription).trim()
+  const heroDescription = descriptionsMatch ? null : pageDescription
+  const collectionLabel =
+    pageNft?.metadata?.collection?.name ||
+    pageNft?.collectionDetails?.name ||
+    pageNft?.collectionDetails?.family ||
+    null
+  const collectionHref = pageNft?.collection
+    ? `/nft-collection/${pageNft.collection}`
+    : pageNft?.issuer && isValidTaxon(pageNft?.nftokenTaxon)
+      ? `/nft-explorer?issuer=${pageNft.issuer}&taxon=${pageNft.nftokenTaxon}`
+      : null
+  const validSellOffers = (pageNft?.sellOffers || []).filter((offer) => offer?.valid)
+  const validBuyOffers = (pageNft?.buyOffers || []).filter((offer) => offer?.valid)
+  const bestListing = bestNftOffer(validSellOffers, accountAddress, 'sell')
+  const bestBid = bestNftOffer(validBuyOffers, accountAddress, 'buy')
+  const currentOwnerEvent = pageNft?.history?.find(
+    (event) => event?.owner === pageNft?.owner && event?.changedAt === pageNft?.ownerChangedAt
+  )
+  const mintEvent = pageNft?.history?.find((event) => event?.owner && !event?.amount)
+  const mintMarketplaceUrl = mintEvent?.marketplace
+    ? mpUrl({
+        destination: 'marketplace',
+        destinationDetails: { service: mintEvent.marketplace },
+        nftokenID: dataId,
+        issuer: pageNft?.issuer,
+        nftokenTaxon: pageNft?.nftokenTaxon,
+        owner: mintEvent.owner
+      })
+    : ''
+  const lastSale = pageNft?.history?.find((event) => event?.amount && event.amount !== '0')
+  const lastSaleFiat = lastSale ? convertedAmount(lastSale, selectedCurrency, { short: true }) : null
+  const lastSaleMarketplaceUrl = lastSale?.marketplace
+    ? mpUrl({
+        destination: 'marketplace',
+        destinationDetails: { service: lastSale.marketplace },
+        nftokenID: dataId,
+        issuer: pageNft?.issuer,
+        nftokenTaxon: pageNft?.nftokenTaxon,
+        owner: pageNft?.owner
+      })
+    : ''
+  const metadataAttributes = Array.isArray(pageNft?.metadata?.attributes)
+    ? pageNft.metadata.attributes.filter(
+        (attribute) => nftAttributeName(attribute) != null && nftAttributeValue(attribute) != null
+      )
+    : []
+  const nftExternalLink = pageNft?.metadata ? externalUrl(pageNft.metadata) : null
+  const collectionFloor = lowestComparableNftFloor(collectionMarketData?.floorPrices)
+  const collectionFloorHref =
+    pageNft?.issuer && isValidTaxon(pageNft?.nftokenTaxon)
+      ? `/nft-explorer?issuer=${pageNft.issuer}&taxon=${pageNft.nftokenTaxon}&list=onSale&saleDestination=publicAndKnownBrokers`
+      : collectionHref
+  const hasCancelableOffers = Boolean(accountAddress) &&
+    [...(pageNft?.sellOffers || []), ...(pageNft?.buyOffers || [])].some(
+      (offer) => !offer.acceptedAt && !offer.canceledAt && offer.owner === accountAddress
+    )
+  const canManageNft =
+    accountAddress &&
+    !pageNft?.deletedAt &&
+    (accountAddress === pageNft?.owner || (pageNft?.type === 'xls20' && accountAddress === pageNft?.issuer))
+  const hasSecondaryNftActions = Boolean(hasCancelableOffers || canManageNft)
+  const hasNftOffers = Boolean(countSellOffers?.all || countBuyOffers?.all)
+
+  useEffect(() => {
+    const productCard = productCardRef.current
+    if (!productCard || typeof ResizeObserver === 'undefined') return
+
+    setProductCardHeight(null)
+    let updateTimer = null
+    const updateHeight = () => {
+      const nextHeight = Math.ceil(productCard.getBoundingClientRect().height)
+      clearTimeout(updateTimer)
+      updateTimer = setTimeout(() => {
+        setProductCardHeight((currentHeight) => (currentHeight === nextHeight ? currentHeight : nextHeight))
+      }, 120)
+    }
+
+    updateHeight()
+    const observer = new ResizeObserver(updateHeight)
+    observer.observe(productCard)
+
+    return () => {
+      clearTimeout(updateTimer)
+      observer.disconnect()
+    }
+  }, [dataId])
 
   return (
     <div className={nftClass}>
@@ -1364,10 +1552,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         }
         image={{ file: imageUrl }}
       />
-      <h1 className="center" style={{ marginTop: '20px', marginBottom: '20px' }}>
-        NFT information {shortHash(id)}
-      </h1>
-      <div className="content-profile">
+      <div className="content-profile nft-detail-page">
         {id ? (
           <>
             {showPageLoading ? (
@@ -1384,61 +1569,461 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                   <>
                     {hasCurrentData && data.flags && (
                       <>
-                        <div className="column-left">
-                          {!notFoundInTheNetwork ? (
-                            <>
-                              {rendered && <NftPreview nft={data} />}
-                              {setAsAvatarButton(data)}
-                              {sellButton(data.buyOffers)}
-                              {buyButton(data.sellOffers)}
-                              {cancelNftOfferButtons(t, setSignRequest, accountAddress, data)}
-                              {data.type === 'xls20' && makeOfferButton(data.sellOffers)}
-                              {data.type === 'xls35' && xls35SellOfferButton()}
-                              {updateUriButton()}
-                              {burnButton()}
-                            </>
-                          ) : (
-                            <div className="orange">
-                              <Trans i18nKey="nft-not-found-on-that-network" ns="nft">
-                                This NFT wasn't found on the <b>{{ network }}</b> network.
-                              </Trans>
-                              <br />
-                              <br />
-                            </div>
-                          )}
-                          <div>
-                            {data.projectMetadata && (
-                              <ProjectMetadata data={data.projectMetadata} updatedAt={data.projectMetadataUpdatedAt} />
+                        <section
+                          className="nft-overview"
+                          style={productCardHeight ? { '--nft-product-height': `${productCardHeight}px` } : undefined}
+                        >
+                          <aside className={`nft-media-card${productCardHeight ? ' is-measured' : ''}`}>
+                            {!notFoundInTheNetwork ? (
+                              rendered ? (
+                                <NftPreview
+                                  nft={data}
+                                  compact
+                                  maxHeight="var(--nft-preview-max-height, min(68vh, 720px))"
+                                />
+                              ) : (
+                                <div className="nft-media-poster">
+                                  <NftImage
+                                    nft={data}
+                                    sourceSize={960}
+                                    style={{ width: '100%', height: 'auto', marginRight: 0 }}
+                                  />
+                                </div>
+                              )
+                            ) : (
+                              <div className="orange">
+                                <Trans i18nKey="nft-not-found-on-that-network" ns="nft">
+                                  This NFT wasn't found on the <b>{{ network }}</b> network.
+                                </Trans>
+                              </div>
                             )}
-                            {data.metadata?.attributes &&
-                              data.metadata?.attributes[0] &&
-                              (data.metadata?.attributes[0].trait_type ||
-                                data.metadata?.attributes[0].name ||
-                                data.metadata?.attributes[0].traitType) && (
-                                <table className="table-details autowidth">
-                                  <thead>
-                                    <tr>
-                                      <th colSpan="100">{t('table.attributes')}</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {data.metadata.attributes.map((attr, i) => (
-                                      <tr key={i}>
-                                        <td>{stripText(attr.trait_type || attr.name || attr.traitType)}</td>
-                                        <td>{stripText(attr.value || attr.traitValue)}</td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                          </aside>
+
+                          <section ref={productCardRef} className="nft-product-card">
+                              <div className="nft-product-heading">
+                                {collectionHref && (
+                                  <Link href={collectionHref} className="nft-product-collection">
+                                    <IoImagesOutline aria-hidden="true" />
+                                    <span>{collectionLabel || t('view-all-collection', { ns: 'nft' })}</span>
+                                  </Link>
+                                )}
+                                <h1>{pageTitle}</h1>
+                                {heroDescription && (
+                                  <p>
+                                    <DescriptionWithShowMore text={heroDescription} maxLength={220} />
+                                  </p>
+                                )}
+                                {data.owner && (
+                                  <div className="nft-product-owner">
+                                    <div className="nft-product-owner-identity">
+                                      <span>{t('table.owner')}</span>
+                                      <AddressWithIconInline data={data} name="owner" />
+                                    </div>
+                                    {data.ownerChangedAt && (
+                                      <div className="nft-product-owner-since">
+                                        <span>{t('since', { ns: 'nft' })}</span>
+                                        <strong>{timeFromNow(data.ownerChangedAt, i18n)}</strong>
+                                        <small>
+                                          {fullDateAndTime(data.ownerChangedAt)}
+                                          {currentOwnerEvent?.txHash && <LinkTx tx={currentOwnerEvent.txHash} icon={true} />}
+                                        </small>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className={`nft-purchase-panel${bestListing ? '' : ' is-empty'}`}>
+                                <div className="nft-listing-price">
+                                  <span>
+                                    {t('table.price')}
+                                    {bestListing && (
+                                      <span className="nft-listing-visibility">
+                                        {' ('}
+                                        {bestListing.destinationDetails?.service ||
+                                          (bestListing.destination ? t('table.text.private-offer') : t('tabs.public'))}
+                                        {')'}
+                                      </span>
+                                    )}
+                                  </span>
+                                  <strong>
+                                    {bestListing?.offerIndex ? (
+                                      <Link href={`/nft-offer/${bestListing.offerIndex}`}>
+                                        {amountFormat(bestListing.amount, { short: true })}
+                                      </Link>
+                                    ) : bestListing ? (
+                                      amountFormat(bestListing.amount, { short: true })
+                                    ) : (
+                                      t('table.text.no-offers')
+                                    )}
+                                  </strong>
+                                  {bestListing && validSellOffers.length > 1 && (
+                                    <small>
+                                      <a className="nft-offer-count-link" href="#nft-sell-offers">
+                                        {t('sell-offers-count', {
+                                          ns: 'nft',
+                                          count: validSellOffers.length
+                                        })}
+                                      </a>
+                                    </small>
+                                  )}
+                                </div>
+                                <div className="nft-primary-actions">
+                                  {buyButton(data.sellOffers)}
+                                  {sellButton(data.buyOffers)}
+                                  {data.type === 'xls20' && makeOfferButton(data.sellOffers)}
+                                  {data.type === 'xls35' && xls35SellOfferButton()}
+                                </div>
+                              </div>
+
+                              {hasSecondaryNftActions && (
+                                <div className="nft-secondary-actions">
+                                  {transferButton()}
+                                  {cancelNftOfferButtons(t, setSignRequest, accountAddress, data, {
+                                    icon: <IoCloseCircleOutline aria-hidden="true" />
+                                  })}
+                                  {updateUriButton()}
+                                  {setAsAvatarButton(data)}
+                                  {burnButton()}
+                                </div>
                               )}
-                            {data.metadata?.evernodeLease && <EvernodeLease data={data.metadata.evernodeLease} />}
-                            {data.metadata?.evernodeRegistration && (
-                              <EvernodeRegistartion data={data.metadata.evernodeRegistration} />
+
+                              <div className="nft-facts-grid">
+                                <div>
+                                  <span>{t('table.buy-offers')}</span>
+                                  <strong>
+                                    {bestBid?.offerIndex ? (
+                                      <Link href={`/nft-offer/${bestBid.offerIndex}`}>
+                                        {amountFormat(bestBid.amount, { short: true })}
+                                      </Link>
+                                    ) : bestBid ? (
+                                      amountFormat(bestBid.amount, { short: true })
+                                    ) : (
+                                      t('table.text.no-offers')
+                                    )}
+                                  </strong>
+                                  {validBuyOffers.length > 1 && <small>{validBuyOffers.length}</small>}
+                                </div>
+                                <div>
+                                  <span>{t('last-sale', { ns: 'nft' })}</span>
+                                  <div className="nft-last-sale-value">
+                                    <strong>
+                                      {lastSale?.txHash ? (
+                                        <LinkTx tx={lastSale.txHash}>
+                                          {amountFormat(lastSale.amount, { short: true })}
+                                        </LinkTx>
+                                      ) : lastSale ? (
+                                        amountFormat(lastSale.amount, { short: true })
+                                      ) : (
+                                        '—'
+                                      )}
+                                    </strong>
+                                    {lastSale && (
+                                      <small>
+                                        {lastSaleFiat && <span>≈ {lastSaleFiat}</span>}
+                                        {lastSale.marketplace && (
+                                          <span className="nft-marketplace-link">
+                                            <IoStorefrontOutline aria-hidden="true" />
+                                          {lastSaleMarketplaceUrl ? (
+                                            <a href={lastSaleMarketplaceUrl} target="_blank" rel="noreferrer">
+                                              {lastSale.marketplace}
+                                            </a>
+                                          ) : (
+                                            lastSale.marketplace
+                                          )}
+                                          </span>
+                                        )}
+                                      </small>
+                                    )}
+                                  </div>
+                                </div>
+                                <div>
+                                  <span>{t('table.transfer-fee')}</span>
+                                  <strong>{data.transferFee ? `${data.transferFee / 1000}%` : '0%'}</strong>
+                                </div>
+                                <div>
+                                  <span>NFT ID</span>
+                                  <strong className="nft-context-id" title={dataId}>
+                                    <span>{dataId}</span>
+                                    <CopyButton text={dataId} size={16} />
+                                  </strong>
+                                </div>
+                                <div>
+                                  <span>{t('table.serial')}</span>
+                                  <strong>{data.nftSerial ?? data.sequence ?? '—'}</strong>
+                                </div>
+                                <div className="nft-minted-metric">
+                                  <span>
+                                    {mintEvent?.marketplace ? (
+                                      <>
+                                        {t('table.minted-on')}{' '}
+                                        <span className="nft-marketplace-link">
+                                          <IoStorefrontOutline aria-hidden="true" />
+                                          {mintMarketplaceUrl ? (
+                                            <a href={mintMarketplaceUrl} target="_blank" rel="noreferrer">
+                                              {mintEvent.marketplace}
+                                            </a>
+                                          ) : (
+                                            mintEvent.marketplace
+                                          )}
+                                        </span>
+                                      </>
+                                    ) : (
+                                      t('table.minted')
+                                    )}
+                                  </span>
+                                  <strong className="nft-minted-date">
+                                    <span>{data.issuedAt ? timeFromNow(data.issuedAt, i18n) : '—'}</span>
+                                    {data.issuedAt && (
+                                      <small>
+                                        {fullDateAndTime(data.issuedAt)}{' '}
+                                        {mintEvent?.txHash && <LinkTx tx={mintEvent.txHash} icon={true} />}
+                                      </small>
+                                    )}
+                                  </strong>
+                                </div>
+                              </div>
+
+                              <div className="nft-badges">
+                                {data.deletedAt && <span className="danger">{t('table.burned')}</span>}
+                                {data.flags.burnable && <span>{t('nft-statistics.burnable')}</span>}
+                                {data.flags.onlyXRP && <span>{t('nft-statistics.only-xrp')}</span>}
+                                {data.flags.transferable && <span>{t('nft-statistics.transferable')}</span>}
+                                {!data.flags.mutable && <span>{t('table.immutable', { ns: 'nft' })}</span>}
+                              </div>
+                          </section>
+                        </section>
+
+                        <div className="nft-context-grid">
+                              {(data.type === 'xls20' || data.collectionDetails) && (
+                                <section className="nft-context-card collection-card">
+                                  <div className="nft-context-heading">
+                                    <span>{t('table.collection')}</span>
+                                    <div className="nft-collection-title-row">
+                                      <h2>
+                                        {collectionHref ? (
+                                          <Link href={collectionHref}>
+                                            {collectionLabel || `${t('table.taxon')} ${data.nftokenTaxon}`}
+                                          </Link>
+                                        ) : (
+                                          collectionLabel || t('table.collection')
+                                        )}
+                                      </h2>
+                                      {nftExternalLink && (
+                                        <div className="nft-collection-website">
+                                          <IoGlobeOutline aria-hidden="true" />
+                                          {nftExternalLink}
+                                        </div>
+                                      )}
+                                    </div>
+                                    {collectionDescription && (
+                                      <p>
+                                        <DescriptionWithShowMore text={collectionDescription} maxLength={120} />
+                                      </p>
+                                    )}
+                                  </div>
+                                  <div className="nft-collection-identity">
+                                    <div>
+                                      <span>{t('table.issuer')}</span>
+                                      <strong>
+                                        <AddressWithIconInline data={data} name="issuer" />
+                                      </strong>
+                                    </div>
+                                    {data.type === 'xls20' && isValidTaxon(data.nftokenTaxon) && (
+                                      <div>
+                                        <span>{t('table.taxon')}</span>
+                                        <strong>{data.nftokenTaxon}</strong>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="nft-context-metrics">
+                                    <div className={collectionFloor ? 'nft-floor-metric-with-fiat' : undefined}>
+                                      <span>{t('collection-floor', { ns: 'nft' })}</span>
+                                      <strong>
+                                        {collectionFloor ? (
+                                          amountFormat(collectionFloor.amount, { short: true })
+                                        ) : (
+                                          t('no-nfts-for-sale', { ns: 'nft' })
+                                        )}
+                                      </strong>
+                                      {collectionFloor && (
+                                        <small>
+                                          {tokenToFiat({
+                                            amount: collectionFloor.amount,
+                                            selectedCurrency,
+                                            fiatRate,
+                                            short: true
+                                          })}
+                                        </small>
+                                      )}
+                                      {collectionFloor &&
+                                        data.type === 'xls20' &&
+                                        isValidTaxon(data.nftokenTaxon) &&
+                                        collectionFloorHref && (
+                                        <Link className="nft-context-metric-action" href={collectionFloorHref}>
+                                          <IoPricetagOutline aria-hidden="true" />
+                                          <span>{t('view-listed-nfts', { ns: 'nft' })}</span>
+                                        </Link>
+                                        )}
+                                    </div>
+                                    <div>
+                                      <span>{t('table.nfts')}</span>
+                                      <strong>{collectionMarketData?.statistics?.nfts ?? '—'}</strong>
+                                      {collectionHref && (
+                                        <Link className="nft-context-metric-action" href={collectionHref}>
+                                          <IoImagesOutline aria-hidden="true" />
+                                          <span>{t('view-all-collection', { ns: 'nft' })}</span>
+                                        </Link>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <span>{t('table.owners-now')}</span>
+                                      <strong>{collectionMarketData?.statistics?.owners ?? '—'}</strong>
+                                      {data.type === 'xls20' && isValidTaxon(data.nftokenTaxon) && (
+                                        <Link
+                                          className="nft-context-metric-action"
+                                          href={
+                                            '/nft-distribution?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon
+                                          }
+                                        >
+                                          <IoPeopleOutline aria-hidden="true" />
+                                          <span>{t('view-nft-holders', { ns: 'nft' })}</span>
+                                        </Link>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <span>{t('table.traded-nfts')}</span>
+                                      <strong>{collectionMarketData?.statistics?.all?.tradedNfts ?? '—'}</strong>
+                                      {data.type === 'xls20' && isValidTaxon(data.nftokenTaxon) && (
+                                        <Link
+                                          className="nft-context-metric-action"
+                                          href={'/nft-sales?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
+                                        >
+                                          <IoTrendingUpOutline aria-hidden="true" />
+                                          <span>{t('view-sold-nfts', { ns: 'nft' })}</span>
+                                        </Link>
+                                      )}
+                                    </div>
+                                  </div>
+                                </section>
+                              )}
+
+                            </div>
+
+                        {metadataAttributes.length > 0 && (
+                          <div className="column-left">
+                            <section className="nft-attributes-section">
+                              <h2>{t('table.attributes')}</h2>
+                              <div className="nft-attributes-grid">
+                                {metadataAttributes.map((attribute, i) => (
+                                  <div key={`${nftAttributeName(attribute)}-${i}`}>
+                                    <span>{nftAttributeText(nftAttributeName(attribute))}</span>
+                                    <strong>{nftAttributeText(nftAttributeValue(attribute))}</strong>
+                                  </div>
+                                ))}
+                              </div>
+                            </section>
+                          </div>
+                        )}
+
+                        {!notFoundInTheNetwork && (hasNftOffers || data.history?.length > 0) && (
+                          <div className="nft-activity-grid">
+                            {hasNftOffers && (
+                              <section className="nft-offers-section">
+                                {countSellOffers?.all > 0 && (
+                                  <section id="nft-sell-offers" className="nft-offers-panel">
+                                    <div className="nft-activity-panel-heading">
+                                      <h2>{t('table.sell-offers')}</h2>
+                                      {offersFilter('sell')}
+                                    </div>
+                                    <div className="nft-offer-list">{nftOffers(filteredSellOffers, 'sell')}</div>
+                                  </section>
+                                )}
+
+                                {data.type === 'xls20' && countBuyOffers?.all > 0 && (
+                                  <section className="nft-offers-panel">
+                                    <div className="nft-activity-panel-heading">
+                                      <h2>{t('table.buy-offers')}</h2>
+                                      {offersFilter('buy')}
+                                    </div>
+                                    <div className="nft-offer-list">{nftOffers(filteredBuyOffers, 'buy')}</div>
+                                  </section>
+                                )}
+                              </section>
+                            )}
+
+                            {data.history?.length > 0 && (
+                              <section className="nft-history-panel">
+                                <div className="nft-activity-panel-heading">
+                                  <h2>{t('table.history')}</h2>
+                                </div>
+                                <div className="nft-history-list">{nftHistory(data.history)}</div>
+                                {data.history.length > 5 && (
+                                  <button
+                                    type="button"
+                                    className="nft-history-toggle"
+                                    onClick={() => setShowAllHistory(!showAllHistory)}
+                                  >
+                                    {showAllHistory ? (
+                                      <IoChevronUpOutline aria-hidden="true" />
+                                    ) : (
+                                      <IoChevronDownOutline aria-hidden="true" />
+                                    )}
+                                    <span>
+                                      {showAllHistory
+                                        ? t('show-recent-history', { ns: 'nft' })
+                                        : t('show-all-history', { ns: 'nft', count: data.history.length })}
+                                    </span>
+                                  </button>
+                                )}
+                              </section>
                             )}
                           </div>
-                        </div>
+                        )}
 
-                        <div className="column-right">
+                        {(sameCollectionLoading || sameCollectionNfts.length > 0) && (
+                          <section className="nft-related-section">
+                            <div className="nft-related-header">
+                              <div>
+                                <h2>{t('same-collection', { ns: 'nft' })}</h2>
+                                {collectionHref && <span>{collectionLabel || t('table.collection')}</span>}
+                              </div>
+                              {collectionHref && (
+                                <Link href={collectionHref} className="nft-related-link">
+                                  <IoImagesOutline aria-hidden="true" />
+                                  <span>{t('view-all-collection', { ns: 'nft' })}</span>
+                                </Link>
+                              )}
+                            </div>
+                            {sameCollectionLoading ? (
+                              <div className="nft-related-loading">
+                                <span className="waiting" />
+                              </div>
+                            ) : (
+                              <div className="nft-related-grid">
+                                {sameCollectionNfts.map((nft) => (
+                                  <Link href={`/nft/${nft.nftokenID}`} key={nft.nftokenID} className="nft-related-card">
+                                    <NftImage nft={nft} sourceSize={240} style={{ width: '100%', marginRight: 0 }} />
+                                    <span>{nftName(nft) || shortHash(nft.nftokenID)}</span>
+                                    <small>#{nft.nftSerial ?? nft.sequence}</small>
+                                  </Link>
+                                ))}
+                              </div>
+                            )}
+                          </section>
+                        )}
+
+                        <section className="column-right nft-technical-card">
+                          <div className="nft-advanced-heading">
+                            <h2>{t('technical-details', { ns: 'nft' })}</h2>
+                          </div>
+                          {data.projectMetadata && (
+                            <ProjectMetadata data={data.projectMetadata} updatedAt={data.projectMetadataUpdatedAt} />
+                          )}
+                          {data.metadata?.evernodeLease && <EvernodeLease data={data.metadata.evernodeLease} />}
+                          {data.metadata?.evernodeRegistration && (
+                            <EvernodeRegistartion data={data.metadata.evernodeRegistration} />
+                          )}
                           {warnings?.length > 0 && (
                             <table className="table-details">
                               <thead>
@@ -1458,194 +2043,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                             </table>
                           )}
 
-                          {data.metadata && !evernodeNft(data) && (
-                            <table className="table-details">
-                              <thead>
-                                <tr>
-                                  <th colSpan="100">{t('table.metadata')}</th>
-                                </tr>
-                              </thead>
+                          <table className="table-details nft-technical-table">
+                            {!notFoundInTheNetwork && (
                               <tbody>
-                                {nftName(data) && (
-                                  <tr>
-                                    <td>{t('table.name')}</td>
-                                    <td className="bold">{nftName(data)}</td>
-                                  </tr>
-                                )}
-                                {nftDescription(data.metadata) && (
-                                  <tr>
-                                    <td>{t('table.description')}</td>
-                                    <td>
-                                      <DescriptionWithShowMore text={nftDescription(data.metadata)} />
-                                    </td>
-                                  </tr>
-                                )}
-                                {externalUrl(data.metadata) && (
-                                  <tr>
-                                    <td>{t('table.external-url')}</td>
-                                    <td className="brake">{externalUrl(data.metadata)}</td>
-                                  </tr>
-                                )}
-                                <tr>
-                                  <td>{t('table.raw-data')}</td>
-                                  <td>
-                                    <span className="link" onClick={() => setShowRawMetadata(!showRawMetadata)}>
-                                      {showRawMetadata ? t('table.text.hide') : t('table.text.show')}
-                                    </span>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          )}
-
-                          <div className={'slide ' + (showRawMetadata ? 'opened' : 'closed')}>
-                            {showRawMetadata && codeHighlight(data.metadata)}
-                          </div>
-                          {xahauNetwork && data.remarks?.length > 0 && <RemarksTable remarks={data.remarks} />}
-                          {data.collectionDetails && (
-                            <table className="table-details">
-                              <thead>
-                                <tr>
-                                  <th colSpan="100">{t('table.collection')}</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>{t('table.name')}</td>
-                                  <td>
-                                    <span className="bold">{collectionNameText(data.collectionDetails)}</span>
-                                    {data.collection && (
-                                      <>
-                                        {' '}
-                                        (
-                                        <Link href={'/nft-collection/' + data.collection} className="bold">
-                                          View collection
-                                        </Link>
-                                        )
-                                      </>
-                                    )}
-                                  </td>
-                                </tr>
-                                {data.collectionDetails?.description && (
-                                  <tr>
-                                    <td>{t('table.description')}</td>
-                                    <td>{stripText(data.collectionDetails.description)}</td>
-                                  </tr>
-                                )}
-                                {data.collectionDetails?.family &&
-                                  data.collectionDetails?.family !== collectionNameText(data.collectionDetails) && (
-                                    <tr>
-                                      <td>Family</td>
-                                      <td>{stripText(data.collectionDetails?.family)}</td>
-                                    </tr>
-                                  )}
-
-                                {data.type === 'xls20' && isValidTaxon(data?.collectionDetails?.taxon) && (
-                                  <tr>
-                                    <td>View more</td>
-                                    <td>
-                                      <Link
-                                        href={'/nft-distribution?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
-                                      >
-                                        {t('holders', { ns: 'nft' })}
-                                      </Link>
-                                      ,{' '}
-                                      <Link
-                                        href={'/nft-explorer?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
-                                      >
-                                        {t('table.all-nfts')}
-                                      </Link>
-                                      ,{' '}
-                                      <Link href={'/nft-sales?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}>
-                                        {t('table.sold_few')}
-                                      </Link>
-                                      ,{' '}
-                                      <Link
-                                        href={
-                                          '/nft-explorer?issuer=' +
-                                          data.issuer +
-                                          '&taxon=' +
-                                          data.nftokenTaxon +
-                                          '&list=onSale&&saleDestination=publicAndKnownBrokers'
-                                        }
-                                      >
-                                        {t('table.listed')}
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </table>
-                          )}
-
-                          <table className="table-details">
-                            <thead>
-                              <tr>
-                                <th colSpan="100">
-                                  {notFoundInTheNetwork
-                                    ? t('nft-id-decoded-data', { ns: 'nft' })
-                                    : t('table.ledger-data')}
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>NFT ID</td>
-                                <td>
-                                  {shortHash(data.nftokenID, 10)} <CopyButton text={data.nftokenID} />
-                                </td>
-                              </tr>
-                              {data.type !== 'xls20' && (
-                                <tr>
-                                  <td>{t('table.type')}</td>
-                                  <td>{typeName(data.type)}</td>
-                                </tr>
-                              )}
-                              {data.issuer === data.owner ? (
-                                <tr>
-                                  <td>{t('table.issuer-owner')}</td>
-                                  <td>
-                                    <AddressWithIconFilled data={data} name="owner" />
-                                  </td>
-                                </tr>
-                              ) : (
-                                <>
-                                  {data?.owner && (
-                                    <tr>
-                                      <td>{t('table.owner')}</td>
-                                      <td>
-                                        <AddressWithIconFilled data={data} name="owner" />
-                                      </td>
-                                    </tr>
-                                  )}
-                                  <tr>
-                                    <td>{t('table.issuer')}</td>
-                                    <td>
-                                      <AddressWithIconFilled data={data} name="issuer" />
-                                    </td>
-                                  </tr>
-                                </>
-                              )}
-                              {data.type === 'xls20' && (
-                                <>
-                                  <tr>
-                                    <td>{t('table.taxon')}</td>
-                                    <td>{data.nftokenTaxon}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>{t('table.serial')}</td>
-                                    <td>{data.sequence}</td>
-                                  </tr>
-                                </>
-                              )}
-                              {!!data.transferFee && (
-                                <tr>
-                                  <td>{t('table.transfer-fee')}</td>
-                                  <td>{data.transferFee / 1000}%</td>
-                                </tr>
-                              )}
-                              {trWithFlags(t, data.flags)}
-                              {!notFoundInTheNetwork && (
                                 <tr>
                                   <td>{t('table.uri')}</td>
                                   <td className="brake">
@@ -1653,10 +2053,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                       <>
                                         {isValidJson(decodedUri) ? (
                                           <>
-                                            <span className="orange">JSON </span>
-                                            <span className="link" onClick={() => setShowRawMetadata(!showRawMetadata)}>
-                                              {showRawMetadata ? t('table.text.hide') : t('table.text.show')}
-                                            </span>
+                                            <span>JSON </span>
+                                            <CopyButton text={decodedUri} />
                                           </>
                                         ) : (
                                           <>
@@ -1668,6 +2066,26 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                       t('table.text.unspecified')
                                     )}
                                   </td>
+                                </tr>
+                              </tbody>
+                            )}
+                            {data.metadata && !evernodeNft(data) && (
+                              <tbody>
+                                <tr>
+                                  <td>{t('nft-metadata', { ns: 'nft' })}</td>
+                                  <td>
+                                    <span className="link" onClick={() => setShowRawMetadata(!showRawMetadata)}>
+                                      {showRawMetadata ? t('table.text.hide') : t('table.text.show')}
+                                    </span>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            )}
+                            <tbody>
+                              {data.type !== 'xls20' && (
+                                <tr>
+                                  <td>{t('table.type')}</td>
+                                  <td>{typeName(data.type)}</td>
                                 </tr>
                               )}
                               {data.digest && (
@@ -1739,137 +2157,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                             </tbody>
                           </table>
 
-                          {!notFoundInTheNetwork && (
-                            <>
-                              <table className="table-details">
-                                <thead>
-                                  <tr>
-                                    <th colSpan="100">{t('table.related-lists')}</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {data.type === 'xls20' && (
-                                    <tr>
-                                      <td>{t('table.by-taxon')}</td>
-                                      <td>
-                                        <Link
-                                          href={
-                                            '/nft-distribution?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon
-                                          }
-                                        >
-                                          {t('holders', { ns: 'nft' })}
-                                        </Link>
-                                        ,{' '}
-                                        <Link
-                                          href={'/nft-explorer?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
-                                        >
-                                          {t('table.all-nfts')}
-                                        </Link>
-                                        ,{' '}
-                                        <Link href={'/nft-sales?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}>
-                                          {t('table.sold_few')}
-                                        </Link>
-                                        ,{' '}
-                                        <Link
-                                          href={
-                                            '/nft-explorer?issuer=' +
-                                            data.issuer +
-                                            '&taxon=' +
-                                            data.nftokenTaxon +
-                                            '&list=onSale&saleDestination=publicAndKnownBrokers'
-                                          }
-                                        >
-                                          {t('table.listed')}
-                                        </Link>
-                                      </td>
-                                    </tr>
-                                  )}
-                                  <tr>
-                                    <td>{t('table.by-issuer')}</td>
-                                    <td>
-                                      <Link href={'/nft-distribution?issuer=' + data.issuer}>
-                                        {t('holders', { ns: 'nft' })}
-                                      </Link>
-                                      , <Link href={'/nft-explorer?issuer=' + data.issuer}>{t('table.all-nfts')}</Link>,{' '}
-                                      <Link href={'/nft-sales?issuer=' + data.issuer}>{t('table.sold_few')}</Link>
-                                      {data.type === 'xls20' && (
-                                        <>
-                                          ,{' '}
-                                          <Link href={'/nft-explorer?issuer=' + data.issuer + '&list=onSale'}>
-                                            {t('table.listed')}
-                                          </Link>
-                                          ,{' '}
-                                          <Link href={'/nft-volumes/' + data.issuer + '?period=year'}>
-                                            {t('table.volume')}
-                                          </Link>
-                                        </>
-                                      )}
-                                    </td>
-                                  </tr>
-                                  {data.owner && (
-                                    <tr>
-                                      <td>{t('table.by-owner')}</td>
-                                      <td>
-                                        <Link href={'/nft-explorer?owner=' + data.owner}>{t('table.all-nfts')}</Link>
-                                        {data.type === 'xls20' && (
-                                          <>
-                                            ,{' '}
-                                            <Link
-                                              href={
-                                                '/nft-explorer?owner=' +
-                                                data.owner +
-                                                '&list=onSale&saleDestination=publicAndKnownBrokers'
-                                              }
-                                            >
-                                              {t('table.listed')}
-                                            </Link>
-                                          </>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  )}
-                                </tbody>
-                              </table>
+                          <div className={'slide ' + (showRawMetadata ? 'opened' : 'closed')}>
+                            {showRawMetadata && codeHighlight(data.metadata)}
+                          </div>
+                          {xahauNetwork && data.remarks?.length > 0 && <RemarksTable remarks={data.remarks} />}
 
-                              {data.history?.length > 0 && (
-                                <table className="table-details">
-                                  <thead>
-                                    <tr>
-                                      <th colSpan="100">{t('table.history')}</th>
-                                    </tr>
-                                  </thead>
-                                  {nftHistory(data.history)}
-                                </table>
-                              )}
-
-                              <table className="table-details">
-                                <thead>
-                                  <tr>
-                                    <th colSpan="100">
-                                      {t('table.sell-offers')}
-                                      {countSellOffers && offersFilter('sell')}
-                                    </th>
-                                  </tr>
-                                </thead>
-                                {nftOffers(filteredSellOffers, 'sell')}
-                              </table>
-
-                              {data.type === 'xls20' && (
-                                <table className="table-details">
-                                  <thead>
-                                    <tr>
-                                      <th colSpan="100">
-                                        {t('table.buy-offers')}
-                                        {countBuyOffers && offersFilter('buy')}
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  {nftOffers(filteredBuyOffers, 'buy')}
-                                </table>
-                              )}
-                            </>
-                          )}
-                        </div>
+                        </section>
                       </>
                     )}
                   </>

@@ -145,10 +145,14 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
     // Mobile: render blocks instead of table
     if (isMobile) {
       return (
-        <table className="table-details">
+        <table className="table-details" style={{ width: '100%', tableLayout: 'fixed', marginBottom: '20px' }}>
+          <colgroup>
+            <col style={{ width: '32%' }} />
+            <col style={{ width: '68%' }} />
+          </colgroup>
           <thead>
             <tr>
-              <th colSpan="100">{title}</th>
+              <th colSpan={2}>{title}</th>
             </tr>
           </thead>
           <tbody>
@@ -157,7 +161,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
                 return (
                   <React.Fragment key={i}>
                     <tr>
-                      <td style={{ width: 70 }}>NFT</td>
+                      <td>NFT</td>
                       <td>
                         <NftImage nft={item} style={{ width: 20, height: 20, borderRadius: 4 }} />
                         <Link href={'/nft/' + item.nftokenID}>{nftName(item?.nftoken || item)}</Link>
@@ -238,7 +242,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
                     )}
                     {i !== items.length - 1 && (
                       <tr>
-                        <td colSpan="100">
+                        <td colSpan={2}>
                           <hr />
                         </td>
                       </tr>
@@ -248,7 +252,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
               })
             ) : (
               <tr>
-                <td colSpan="100">No information found</td>
+                <td colSpan={2}>No information found</td>
               </tr>
             )}
           </tbody>
@@ -257,13 +261,19 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
     }
 
     const nftImageSize = ['sales', 'listings'].includes(kind) ? 40 : 20
+    const columnWidths = kind === 'mints' ? ['30%', '45%', '25%'] : ['24%', '38%', '22%', '16%']
 
     // Desktop
     return (
-      <table className="table-details" style={{ marginBottom: '20px' }}>
+      <table className="table-details" style={{ width: '100%', tableLayout: 'fixed', marginBottom: '20px' }}>
+        <colgroup>
+          {columnWidths.map((width) => (
+            <col key={width} style={{ width }} />
+          ))}
+        </colgroup>
         <thead>
           <tr>
-            <th colSpan="100">{title}</th>
+            <th colSpan={headers.length}>{title}</th>
           </tr>
         </thead>
         <tbody>
@@ -648,22 +658,14 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
                             <tbody>
                               <tr>
                                 <td colSpan={100}>
-                                  <div>
+                                  <div className="nft-collection-preview-grid">
                                     {nftList.length === 0 && <span>No NFTs found</span>}
                                     {nftList?.map((nft, i) => (
                                       <Link href={`/nft/${nft.nftokenID}`} key={i}>
                                         <NftImage
                                           nft={nft}
-                                          style={
-                                            !isMobile
-                                              ? {
-                                                  width: 67.3,
-                                                  height: 67.3,
-                                                  borderRadius: 4,
-                                                  margin: 2
-                                                }
-                                              : { width: 80.5, height: 80.5, borderRadius: 4, margin: 2 }
-                                          }
+                                          sourceSize={180}
+                                          style={{ width: '100%', height: '100%', borderRadius: 8, margin: 0 }}
                                         />
                                       </Link>
                                     ))}

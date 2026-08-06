@@ -35,7 +35,7 @@ const isPanorama = (metadata) => {
   return hasPanoramaKeyword || hasPanoramaCamera
 }
 
-export default function NftPreview({ nft }) {
+export default function NftPreview({ nft, compact = false, maxHeight = '420px' }) {
   const { t } = useTranslation()
   const imageRef = useRef(null)
   const [contentTab, setContentTab] = useState('image')
@@ -56,7 +56,7 @@ export default function NftPreview({ nft }) {
 
   const mediaFrameStyle = {
     width: '100%',
-    minHeight: '420px',
+    minHeight: compact && loaded ? 0 : compact ? '240px' : '420px',
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
@@ -73,11 +73,22 @@ export default function NftPreview({ nft }) {
         </div>
       )
     } else if (!loaded) {
+      const previewUrl = compact ? nftUrl(nft, 'preview') : ''
       return (
         <div style={{ ...mediaFrameStyle, flexDirection: 'column' }}>
-          <span className="waiting"></span>
-          <br />
-          {t('general.loading')}
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt={nftName(nft)}
+              style={{ maxWidth: '100%', maxHeight, width: 'auto', height: 'auto', objectFit: 'contain' }}
+            />
+          ) : (
+            <>
+              <span className="waiting"></span>
+              <br />
+              {t('general.loading')}
+            </>
+          )}
         </div>
       )
     }
@@ -130,7 +141,7 @@ export default function NftPreview({ nft }) {
     contentTabList.push({ value: 'model', label: t('tabs.model') })
   }
 
-  let imageStyle = { maxWidth: '100%', maxHeight: '420px', width: 'auto', height: 'auto', objectFit: 'contain' }
+  let imageStyle = { maxWidth: '100%', maxHeight, width: 'auto', height: 'auto', objectFit: 'contain' }
   if (displayImageUrl) {
     if (displayImageUrl.slice(0, 10) === 'data:image') {
       imageStyle.width = '100%'
@@ -331,7 +342,7 @@ export default function NftPreview({ nft }) {
                 />
               ) : (
                 <>
-                  <div style={mediaFrameStyle}>
+                  <div style={{ ...mediaFrameStyle, minHeight: loaded ? mediaFrameStyle.minHeight : 0 }}>
                     <img
                       key={displayImageUrl}
                       ref={imageRef}
@@ -458,12 +469,9 @@ export default function NftPreview({ nft }) {
             </>
           )}
           {contentTabList.length < 2 && defaultUrl && (
-            <span style={{ padding: '4px 0px' }}>
+            <span className="nft-preview-download">
               <a href={defaultUrl} target="_blank" rel="noreferrer">
-                {t('tabs.' + defaultTab)}
-              </a>{' '}
-              <a href={defaultUrl} target="_blank" rel="noreferrer">
-                {downloadIcon}
+                {defaultTab === 'image' ? t('button.download-image') : t('tabs.' + defaultTab)} {downloadIcon}
               </a>
             </span>
           )}
@@ -500,7 +508,7 @@ export default function NftPreview({ nft }) {
           )}
         </>
       )}
-      <div style={{ height: '15px' }}></div>
+      {!compact && <div style={{ height: '15px' }} />}
       {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
     </>
   )

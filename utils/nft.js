@@ -56,7 +56,7 @@ export const mpUrl = (offer) => {
   if (!service) return ''
   service = service.trim()
   let url = ''
-  if (service === 'bidds') {
+  if (service === 'bidds' || service === 'bidds.com') {
     return biddsCollectionUrl(offer)
   } else if (service === 'xrp.cafe' || service === 'xrp.cafe (auction)') {
     url = 'https://xrp.cafe/nft/'
@@ -749,8 +749,8 @@ export const nftPriceData = (t, nftOffers, loggedInAddress, offerType = 'sell', 
   return t('table.text.private-offer') //shouldn't be the case
 }
 
-export const NftImage = ({ nft, style }) => {
-  const size = style?.width && typeof style.width !== 'string' && style.width > 0 ? style.width : 70
+export const NftImage = ({ nft, style, sourceSize }) => {
+  const size = sourceSize || (style?.width && typeof style.width !== 'string' && style.width > 0 ? style.width : 70)
   const imageSrc = nftUrl(nft?.nftoken || nft, size < 32 ? 'thumbnail' : 'preview')
   let text = size < 50 ? ';(' : 'No image'
   const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(

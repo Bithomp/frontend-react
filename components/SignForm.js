@@ -227,6 +227,7 @@ export default function SignForm({
   const [erase, setErase] = useState(false)
   const [awaiting, setAwaiting] = useState(false)
   const [preparedTx, setPreparedTx] = useState(null)
+  const [fundingCheckFailed, setFundingCheckFailed] = useState(false)
 
   const [xyraPreparedTx, setXyraPreparedTx] = useState(null)
   const [xyraNeedsClick, setXyraNeedsClick] = useState(false)
@@ -268,6 +269,7 @@ export default function SignForm({
       !!account?.address && transactionWithAccount.Account === account.address
 
     setAwaiting(true)
+    setFundingCheckFailed(false)
     setStatus(t('signin.funding-check.checking'))
 
     try {
@@ -278,6 +280,7 @@ export default function SignForm({
 
       if (!prepared) {
         setScreen(askInfoScreens.includes(screen) ? screen : wallet)
+        setFundingCheckFailed(true)
         setStatus(t('signin.funding-check.error'))
         return null
       }
@@ -303,6 +306,7 @@ export default function SignForm({
       console.error(error)
       setAwaiting(false)
       setScreen(askInfoScreens.includes(screen) ? screen : wallet)
+      setFundingCheckFailed(true)
       setStatus(t('signin.funding-check.error'))
       return null
     }
@@ -1352,6 +1356,7 @@ export default function SignForm({
     setSignRequest(null)
     setChoosenWallet(null)
     setAwaiting(false)
+    setFundingCheckFailed(false)
     setStatus('')
     setXamanReturnTxType(null)
     transactionFetchTries = 0
@@ -1960,11 +1965,9 @@ export default function SignForm({
                     </div>
                   )}
 
-                  {status && (
-                    <div className="signin-status">
-                      <b className="orange">{status}</b>
-                    </div>
-                  )}
+                  <div className="signin-status" aria-live="polite">
+                    <b className="orange">{status}</b>
+                  </div>
                 </div>
 
                 <div className="sign-in-actions">
@@ -1979,7 +1982,7 @@ export default function SignForm({
                       style={buttonStyle}
                       disabled={isSignDisabled}
                     >
-                      {t('button.sign')}
+                      {t(fundingCheckFailed ? 'button.try-again' : 'button.sign')}
                     </button>
                     {signDisabledTooltip && <span className="tooltiptext left">{signDisabledTooltip}</span>}
                   </span>
@@ -2239,11 +2242,7 @@ export default function SignForm({
                       <>
                         <div className="wallet-sign-status orange bold center">
                           {awaiting && (
-                            <>
-                              <span className="waiting"></span>
-                              <br />
-                              <br />
-                            </>
+                            <span className="waiting"></span>
                           )}
                           {status}
                         </div>
@@ -2263,6 +2262,13 @@ export default function SignForm({
                           </div>
                         )}
                       </>
+                    )}
+                    {fundingCheckFailed && (
+                      <div className="wallet-sign-retry">
+                        <button type="button" className="button-action" onClick={() => txSend()} style={buttonStyle}>
+                          {t('button.try-again')}
+                        </button>
+                      </div>
                     )}
                   </>
                 )}
