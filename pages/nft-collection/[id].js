@@ -428,6 +428,7 @@ export default function NftCollection({
   const allNftsHref = `/nft-explorer?${collectionPart}&includeWithoutMediaData=true`
   const listedHref = `${allNftsHref}&list=onSale&saleDestination=publicAndKnownBrokers`
   const salesHref = `/nft-sales?${collectionPart}&sale=primaryAndSecondary&includeWithoutMediaData=true&period=all&order=soldNew`
+  const daySalesHref = `/nft-sales?${collectionPart}&sale=primaryAndSecondary&includeWithoutMediaData=true&period=day&order=soldNew`
   const bidsHref = `${allNftsHref}&list=bids&order=priceHigh&currency=${nativeCurrency}&offersValidate=true`
   const holdersHref = `/nft-distribution?${collectionPart}`
 
@@ -532,10 +533,10 @@ export default function NftCollection({
     }
   }, [holderChartItems, holders.length, theme, topHoldersShare])
   const periodStats = [
-    { label: '24 hours', value: statistics?.day },
-    { label: '7 days', value: statistics?.week },
-    { label: '30 days', value: statistics?.month },
-    { label: 'All time', value: statistics?.all }
+    { label: '24 hours', period: 'day', value: statistics?.day },
+    { label: '7 days', period: 'week', value: statistics?.week },
+    { label: '30 days', period: 'month', value: statistics?.month },
+    { label: 'All time', period: 'all', value: statistics?.all }
   ]
 
   if (!id || data?.error || errorMessage) {
@@ -649,12 +650,12 @@ export default function NftCollection({
               {listedRatio == null ? '—' : `${niceNumber(listedRatio, 1)}% of supply`}
             </small>
           </Link>
-          <Link href={salesHref} className="nft-collection-kpi">
+          <Link href={daySalesHref} className="nft-collection-kpi">
             <span>24h NFTs traded</span>
             <strong><FormattedNumber value={statistics?.day?.tradedNfts} /></strong>
             <small>{statistics?.day?.buyers ?? 0} buyers</small>
           </Link>
-          <Link href={salesHref} className="nft-collection-kpi">
+          <Link href={daySalesHref} className="nft-collection-kpi">
             <span>24h volume</span>
             <strong suppressHydrationWarning>
               {dayVolumeValue == null ? '—' : shortNiceNumber(dayVolumeValue, 2, 1, effectiveCurrency)}
@@ -678,6 +679,7 @@ export default function NftCollection({
               </h2>
             </div>
             <Link
+              className="button-action secondary thin narrow nft-collection-section-action"
               href={
                 marketTab === 'sale'
                   ? salesHref
@@ -764,7 +766,12 @@ export default function NftCollection({
               </h2>
               <p>How the collection is distributed across its largest holders.</p>
             </div>
-            <Link href={holdersHref}>View all holders</Link>
+            <Link
+              href={holdersHref}
+              className="button-action secondary thin narrow nft-collection-section-action"
+            >
+              View all holders
+            </Link>
           </div>
           {holders.length > 0 ? (
             <div className="nft-collection-holders-layout">
@@ -843,20 +850,23 @@ export default function NftCollection({
           </div>
           <div className="nft-collection-period-grid">
             {periodStats.map((period) => (
-              <div key={period.label}>
+              <Link
+                href={`/nft-sales?${collectionPart}&sale=primaryAndSecondary&includeWithoutMediaData=true&period=${period.period}&order=soldNew`}
+                key={period.label}
+              >
                 <span>{period.label}</span>
                 <strong><FormattedNumber value={period.value?.tradedNfts} /></strong>
                 <small>traded NFTs</small>
                 <em><FormattedNumber value={period.value?.buyers} /> buyers</em>
-              </div>
+              </Link>
             ))}
           </div>
           <div className="nft-collection-market-summary">
-            <div>
+            <Link href={salesHref}>
               <IoSwapHorizontalOutline aria-hidden="true" />
               <span>Recorded sales</span>
               <strong><FormattedNumber value={(salesTotal?.primary || 0) + (salesTotal?.secondary || 0)} /></strong>
-            </div>
+            </Link>
             <div>
               <IoPeopleOutline aria-hidden="true" />
               <span>All-time buyers</span>
