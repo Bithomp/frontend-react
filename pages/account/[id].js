@@ -8550,21 +8550,25 @@ export default function Account({
                                         />
                                       </span>
                                     )}
+                                  {isTagValid(tx?.DestinationTag) && (
+                                    <span className="tx-destination-tag-row">
+                                      <span className="tx-counterparty-label">
+                                        {isSource ? ta('labels.destination-tag') : ta('labels.to')}
+                                      </span>
+                                      <span
+                                        className="tx-destination-tag"
+                                        title={`${ta('labels.destination-tag')}: ${tx.DestinationTag}`}
+                                      >
+                                        <FaUserTag aria-hidden="true" />
+                                        <span>{tx.DestinationTag}</span>
+                                      </span>
+                                    </span>
+                                  )}
                                 </div>
                               </div>
                             </div>
 
                             <div className="asset-value tx-collapsed-change">
-                              {isTagValid(tx?.DestinationTag) && (
-                                <span
-                                  className="tx-destination-tag"
-                                  title={`${ta('labels.destination-tag')}: ${tx.DestinationTag}`}
-                                  aria-label={`${ta('labels.destination-tag')}: ${tx.DestinationTag}`}
-                                >
-                                  <FaUserTag aria-hidden="true" />
-                                  <span>{tx.DestinationTag}</span>
-                                </span>
-                              )}
                               {failedStatusShort ? (
                                 <span className="tx-inline-status orange">{failedStatusShort}</span>
                               ) : tx?.TransactionType === 'TrustSet' ? (
@@ -12707,6 +12711,23 @@ export default function Account({
           white-space: nowrap;
         }
 
+        .tx-destination-tag-row {
+          display: flex;
+          flex: 1 0 100%;
+          gap: 5px;
+          align-items: center;
+          min-width: 0;
+          color: var(--text-secondary);
+        }
+
+        .tx-destination-tag-row .tx-counterparty-label {
+          margin-right: 0;
+        }
+
+        .tx-destination-tag-row .tx-destination-tag {
+          justify-content: flex-start;
+        }
+
         .tx-destination-tag {
           max-width: 100%;
           font-size: 12px;
@@ -12715,6 +12736,7 @@ export default function Account({
         }
 
         .tx-destination-tag-expanded {
+          color: var(--text);
           font-weight: 700;
         }
 
