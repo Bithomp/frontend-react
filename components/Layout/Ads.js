@@ -34,10 +34,8 @@ export default function Ads({ countryCode }) {
               alt=""
               aria-hidden="true"
             />
-            <div className="brand-item-title">
-              Earn up to 600% <span className="mexc-apr">APR</span>
-            </div>
-            <div className="brand-item-text">Hold your crypto and earn rewards.</div>
+            <div className="brand-item-title">Buy XRP with 0% Fees</div>
+            <div className="brand-item-text">Card, bank transfer, P2P, and more.</div>
           </div>
         </a>
       )}
