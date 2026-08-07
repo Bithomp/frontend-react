@@ -2,9 +2,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import Breadcrumbs from '../../components/Breadcrumbs'
 import SEO from '../../components/SEO'
-import ArticleMeta from '../../components/ArticleMeta'
-import { network } from '../../utils'
+import { explorerName, network, xahauNetwork, nativeCurrency } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AboutApiTabs from '../../components/Tabs/AboutApiTabs'
 
@@ -13,7 +13,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'learn']))
+      ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
@@ -22,17 +22,17 @@ export default function TheBithompAPI() {
   return (
     <>
       <SEO
-        title={'How to Use the Bithomp API – And Why It’s Unique Among XRPL and Xahau APIs'}
-        description="Why Bithomp XRPL and Xahau API Stands Out:"
+        title={'How to Use the Bithomp API – Features, Pricing & Documentation'}
+        description="Learn how to use the Bithomp API with detailed documentation, pricing, and developer features."
         noindex={network !== 'mainnet'}
       />
       <div className="max-w-4xl mx-auto px-4">
+        <Breadcrumbs />
 
         <AboutApiTabs tab="about" />
 
         <article className="prose sm:prose-lg dark:prose-invert mx-auto max-w-4xl my-10">
-          <h1>How to Use the Bithomp API – And Why It’s Unique Among XRPL and Xahau APIs</h1>
-          <ArticleMeta />
+          <h1>How to Use the Bithomp API: Features & Documentation</h1>
           <Image
             src="/images/pages/learn/the-bithomp-api/cover.jpg"
             alt="The Bithomp API"
@@ -42,20 +42,22 @@ export default function TheBithompAPI() {
             priority
           />
           <p>
-            The XRPL ecosystem (including the Xahau Ledger) is expanding rapidly, with developers and institutions
-            depending on robust APIs to access ledger data. Among them, the Bithomp API stands out as a unique and
-            user-friendly option—designed by a team deeply rooted in the XRPL community since 2015.
+            The {explorerName} ecosystem is expanding rapidly, with developers and institutions depending on robust APIs
+            to access ledger data. Among them, the Bithomp API stands out as a unique and user-friendly option—designed
+            by a team deeply rooted in the {explorerName} community since 2015.
           </p>
           <h2>What is Bithomp API?</h2>
           <p>
-            The Bithomp API is an advanced API built on top of the XRP and Xahau Ledgers, designed to deliver detailed,
+            The Bithomp API is an advanced API built on top of the {explorerName}, designed to deliver detailed,
             high-precision data for developers building wallets, blockchain explorers, tax tools, NFT marketplaces, and
-            XRPL/Xahau-powered apps. It offers real-world advantages in stability, performance, and data completeness.
+            {explorerName} apps. It offers real-world advantages in stability, performance, and data completeness.
           </p>
           <h2>Getting Started with the Bithomp API</h2>
           <strong> Step 1: Request Access</strong>
           <ul>
-            <li>Sign in <Link href="https://bithomp.com/admin/api">HERE</Link></li>
+            <li>
+              Sign in <Link href="https://bithomp.com/admin/api">HERE</Link>
+            </li>
             <li>Request your API key</li>
             <p>If you need to purchase or extend the paid plan:</p>
             <li>Press “Manage API Subscriptions”</li>
@@ -67,14 +69,14 @@ export default function TheBithompAPI() {
             simple, with clearly documented endpoints. All responses are in JSON format, and examples are provided
             throughout the docs.
           </p>
-          <h2>Bithomp API Pricing & Plans </h2>
+          <h2>Bithomp API Plans: Free & Paid Options </h2>
           <p>
-            We offer <strong>FREE</strong> access to the Bithomp API on test networks, making it easy to explore our
-            features at no cost.
+            We offer <strong>FREE</strong> access to the Bithomp API on <strong>test networks</strong>, making it easy
+            to explore our features at no cost.
           </p>
           <p>
-            For mainnet usage, we provide a range of subscription tiers suitable for individual developers, businesses,
-            and large-scale platforms:
+            <strong>Mainnet:</strong> available with both <strong>Free plan</strong> (limited for non-commercial use)
+            and paid subscription plans with higher limits and additional features.
           </p>
           <p>
             The <strong>Free plan</strong> allows up to 10 requests per minute and 2,000 requests per day. It is
@@ -94,7 +96,7 @@ export default function TheBithompAPI() {
           </p>
           <p>
             We also offer a flexible <strong>On-Demand</strong> option powered by Dhali, with per-request pricing
-            (starting at 0.001 XRP or 0.03 XAH).{' '}
+            (starting at {xahauNetwork ? '0.03 XAH' : '0.001 XRP'}).
           </p>
           For detailed limits and pricing, please refer to{' '}
           <>
@@ -131,9 +133,9 @@ export default function TheBithompAPI() {
               </Link>
             </>
           </p>
-          <h2>Why Bithomp API is Unique</h2>
+          <h2>Why Choose the Bithomp API</h2>
           <p>
-            Unlike many XRPL and Xahau APIs that simply proxy the ledger, Bithomp enriches and pre-processes data,
+            Unlike many {explorerName} APIs that simply proxy the ledger, Bithomp enriches and pre-processes data,
             offering a more developer-friendly experience.
           </p>
           <ol>
@@ -151,35 +153,54 @@ export default function TheBithompAPI() {
               <strong>NFT-Focused Endpoints</strong>
             </li>
             With deep NFT support (including issuer metadata, offer history, and cached media), it goes beyond standard
-            XRPL APIs that just return binary hex blobs.
+            {explorerName} APIs that just return binary hex blobs.
             <p>
               <Link href="https://docs.bithomp.com/#nft-xls-20">See NFT-related API documentation</Link>
             </p>
+            {!xahauNetwork && (
+              <>
+                <li>
+                  <strong>AMM-Focused Endpoints</strong>
+                </li>
+                <p>
+                  The Bithomp API includes full support for XRPL AMM (Automated Market Maker) data. AMM endpoints return
+                  the list of available AMM pools and allow you to retrieve detailed information about a specific AMM
+                  pool by its ID. These endpoints are useful for developers building DEX dashboards, liquidity pool
+                  analytics, or AMM trading interfaces.
+                </p>
+                <p>
+                  <Link href="https://docs.bithomp.com/#amm">See AMM endpoint documentation</Link>
+                </p>
+              </>
+            )}
             <li>
-              <strong>AMM-Focused Endpoints</strong>
-            </li>
-            The Bithomp API includes full support for XRPL AMM (Automated Market Maker) data. AMM endpoints return the
-            list of available AMM pools and allow you to retrieve detailed information about a specific AMM pool by its
-            ID. These endpoints are useful for developers building DEX dashboards, liquidity pool analytics, or AMM
-            trading interfaces.
-            <p>
-              <Link href="https://docs.bithomp.com/#amm">See AMM endpoint documentation</Link>
-            </p>
-            <li>
-              <strong> Powerful XRPL and Xahau Tokens API endpoints</strong>
+              <strong> Powerful {explorerName} Tokens API endpoints</strong>
             </li>
             <p>
               List of Tokens endpoint includes detailed live stats such as active holders, buy/sell volumes, unique
-              buyers and sellers, DEX activity, mint/burn/transfer volumes, unique accounts, market cap, XRP price, and
-              more. Tokens can also be sorted by number of holders, trustlines, or rating. Additionally, new Search
-              endpoints allow developers to find tokens by issuer, currency, or username; search for issuers using parts
-              of addresses, domains, or service names; and look up currencies by code or name.
+              buyers and sellers, DEX activity, mint/burn/transfer volumes, unique accounts, market cap,{' '}
+              {nativeCurrency} price, and more. Tokens can also be sorted by number of holders, trustlines, or rating.
+              Additionally, new Search endpoints allow developers to find tokens by issuer, currency, or username;
+              search for issuers using parts of addresses, domains, or service names; and look up currencies by code or
+              name.
             </p>
             <>
               <Link href="https://docs.bithomp.com/#tokens">See Tokens-related API documentation</Link>
             </>
             <li>
-              <strong>Profile Images for XRPL and Xahau Addresses.</strong>
+              <strong>Dapps Analytics Endpoints</strong>
+            </li>
+            <p>
+              The Bithomp API provides analytics for XRPL dapps identified by their source tags. These endpoints return
+              detailed statistics including transaction volume, successful transactions, unique users, total value
+              transferred, fees paid, swap counts, and transaction breakdowns by type and result code. Historical
+              comparisons are also available, making it easy to track dapp activity and growth over time.
+            </p>
+            <p>
+              <Link href="https://docs.bithomp.com/#dapps">See Dapps API documentation</Link>
+            </p>
+            <li>
+              <strong>Profile Images for {explorerName} Addresses.</strong>
             </li>
             <p>Free and no registration is required.</p>
             <p>Supported Image Types:</p>
@@ -202,17 +223,17 @@ export default function TheBithompAPI() {
             </li>
             <p>
               We are constantly adding new API endpoints and query parameters to expand functionality and meet the
-              evolving needs of XRPL developers, Xahau builders, and ecosystem partners.
+              evolving needs of {explorerName} developers, and ecosystem partners.
             </p>
           </ol>
-          <h2>Who Should Use the Bithomp XRPL and Xahau API?</h2>
+          <h2>Who Should Use the Bithomp API?</h2>
           <p>The Bithomp API is ideal for:</p>
           <ul>
             <li>Application developers (especially those supporting NFTs and tokens) </li>
             <li>Tax and reporting tools</li>
-            <li> XRPL and Xahau explorers </li>
+            <li> {explorerName} explorers </li>
             <li>NFT marketplaces </li>
-            <li>Builders looking for a reliable, enriched, and production-ready XRPL and Xahau API.</li>
+            <li>Builders looking for a reliable, enriched, and production-ready {explorerName} API.</li>
           </ul>
           <p>
             Whether you're exploring NFTs, building wallets, or launching decentralized apps, Bithomp’s API gives you
