@@ -56,7 +56,7 @@ export default function TradeChart({ baseAsset, quoteAsset, baseName, quoteName,
       <div className={headerClassName}>
         <div>
           <h2>{labels.title}</h2>
-          <span>{baseName} / {quoteName}</span>
+          <span>{baseName} / {quoteName} · {labels.scope}</span>
         </div>
         <div className={controlsClassName}>
           <div className={periodClassName} role="group" aria-label={labels.chartTypeLabel}>

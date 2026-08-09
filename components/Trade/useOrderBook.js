@@ -53,15 +53,15 @@ const sameAsset = (left, right) =>
   left?.currency === right?.currency && (left?.issuer || '') === (right?.issuer || '')
 
 export default function useOrderBook(baseAsset, quoteAsset) {
-  const [state, setState] = useState({ bids: [], asks: [], amm: null, status: 'idle', error: '' })
+  const [state, setState] = useState({ bids: [], asks: [], amm: null, status: 'idle', error: '', hasLoaded: false })
 
   useEffect(() => {
     if (!baseAsset?.currency || !quoteAsset?.currency || sameAsset(baseAsset, quoteAsset)) {
-      setState({ bids: [], asks: [], amm: null, status: 'idle', error: '' })
+      setState({ bids: [], asks: [], amm: null, status: 'idle', error: '', hasLoaded: false })
       return
     }
     if (!ledgerWebsocketServer) {
-      setState({ bids: [], asks: [], amm: null, status: 'error', error: 'unsupported-network' })
+      setState({ bids: [], asks: [], amm: null, status: 'error', error: 'unsupported-network', hasLoaded: false })
       return
     }
 
@@ -71,11 +71,18 @@ export default function useOrderBook(baseAsset, quoteAsset) {
     let retryTimer
     let disposed = false
     let requestId = 0
+    let pendingState = {}
     const responses = new Map()
+
+    const commitPendingState = () => {
+      if (responses.size) return
+      setState((previous) => ({ ...previous, ...pendingState, status: 'ready', error: '', hasLoaded: true }))
+    }
 
     const loadBook = () => {
       if (socket?.readyState !== WebSocket.OPEN) return
       responses.clear()
+      pendingState = {}
       setState((previous) => ({ ...previous, status: 'loading', error: '' }))
       const requests = [
         { side: 'ask', taker_gets: requestAsset(baseAsset), taker_pays: requestAsset(quoteAsset) },
@@ -122,20 +129,21 @@ export default function useOrderBook(baseAsset, quoteAsset) {
           return
         }
         if (side === 'amm') {
-          setState((previous) => ({ ...previous, amm: message.status === 'error' || message.error ? null : normalizeAmm(message.result?.amm, baseAsset), status: responses.size ? 'loading' : 'ready' }))
+          pendingState.amm = message.status === 'error' || message.error
+            ? null
+            : normalizeAmm(message.result?.amm, baseAsset)
+          commitPendingState()
           return
         }
         if (message.status === 'error' || message.error) {
+          responses.clear()
+          pendingState = {}
           setState((previous) => ({ ...previous, status: 'error', error: message.error_message || message.error }))
           return
         }
         const offers = normalizeOffers(message.result?.offers, side)
-        setState((previous) => ({
-          ...previous,
-          [side === 'ask' ? 'asks' : 'bids']: offers,
-          status: responses.size ? 'loading' : 'ready',
-          error: ''
-        }))
+        pendingState[side === 'ask' ? 'asks' : 'bids'] = offers
+        commitPendingState()
       }
       socket.onerror = () => {
         if (!disposed) setState((previous) => ({ ...previous, status: 'connecting', error: '' }))

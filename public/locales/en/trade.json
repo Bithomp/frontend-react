@@ -7,21 +7,22 @@
   "description": "Choose a pair, compare live prices, and place a limit order with your preferred wallet.",
   "pair": { "title": "Trading pair", "base": "You trade", "quote": "Priced in", "switch": "Switch trading pair", "selectAsset": "Select asset" },
   "form": {
-    "buy": "Buy {{asset}}", "sell": "Sell {{asset}}", "price": "Limit price", "per": "per {{base}}", "amount": "Amount",
-    "total": "Total", "orderType": "Order type", "swap": "Swap", "limit": "Limit", "review-buy": "Review buy order", "review-sell": "Review sell order", "reviewSwap": "Review swap",
+    "buy": "Buy {{asset}}", "sell": "Sell {{asset}}", "price": "Limit price", "per": "per {{base}}", "amount": "Amount", "rate": "Rate",
+    "total": "Total", "orderType": "Order type", "swap": "Swap", "limit": "Limit", "review-buy": "Review buy order", "review-sell": "Review sell order",
     "selectPair": "Select both assets to start trading.", "sameAsset": "Choose two different assets.",
-    "insufficientLiquidity": "Not enough visible liquidity for this swap.", "insufficientBalance": "Insufficient available balance.", "swapProtection": "Estimated result · protected against more than 2% slippage.", "ammEstimate": "Estimated using AMM liquidity.",
-    "available": "Available", "balance": "Balance", "balanceLoading": "Loading balance…", "max": "Max", "youPay": "You pay", "youReceive": "You receive", "minimumReceived": "Minimum received", "signInToSwap": "Sign in to swap",
+    "insufficientLiquidity": "Not enough liquidity in the direct order book.", "ammInsufficientLiquidity": "The direct AMM pool cannot fill this amount. Try a smaller amount.", "noRoute": "No executable XRPL route was found for your available balance. Try a smaller amount.", "quoteUnavailable": "The XRPL execution quote is temporarily unavailable. Please try again.", "insufficientBalance": "Insufficient available balance.", "swapProtection": "Estimated result · protected against more than 2% slippage.", "ammEstimate": "Estimated using AMM liquidity.",
+    "available": "Available", "balance": "Balance", "balanceLoading": "Loading balance…", "max": "Max", "youPay": "You pay", "youReceive": "You receive", "maximumPaid": "Maximum paid", "minimumReceived": "Minimum received", "signInToSwap": "Sign in to swap", "simulatingSwap": "Calculating XRPL quote…", "simulatedQuote": "Simulated across direct, XRP, and RLUSD routes using order books and AMMs · 2% slippage protection.",
     "walletHint": "You will review and sign the transaction in your wallet. Bithomp never has access to your keys."
   },
   "book": {
     "title": "Order book", "price": "Price ({{quote}})", "amount": "Amount ({{base}})", "total": "Total", "cumulative": "Total ({{quote}})", "cumulativeAmountHint": "Cumulative base amount through this price level", "cumulativeHint": "Cumulative quote amount through this price level", "levelAmount": "This level", "levelTotal": "This level", "spread": "Spread",
-    "selectPair": "Select a trading pair to see live bids and asks.", "empty": "There are no open orders for this pair.", "error": "The live order book is temporarily unavailable.",
-    "aggregation": "Aggregation", "finer": "Finer aggregation", "coarser": "Coarser aggregation",
+    "selectPair": "Select a trading pair to see live bids and asks.", "empty": "There are no open orders for this pair.", "emptyWithAmm": "There are no open orders for this pair. AMM liquidity is available below.", "error": "The live order book is temporarily unavailable.",
+    "aggregation": "Aggregation", "finer": "Finer aggregation", "coarser": "Coarser aggregation", "directOnly": "Direct pair",
     "status": { "idle": "Waiting for pair", "connecting": "Connecting", "loading": "Updating", "ready": "Live", "error": "Offline" }
   },
   "chart": {
     "title": "Price chart",
+    "directOnly": "Direct pair trades",
     "type": "Chart type",
     "candles": "Candles",
     "line": "Line",
@@ -39,6 +40,6 @@
     "time": "Time", "price": "Price", "amount": "Amount", "total": "Total", "transaction": "Transaction", "yours": "Yours"
   },
   "amm": {
-    "title": "AMM liquidity", "available": "Available for this pair", "unavailable": "No AMM pool for this pair", "fee": "Trading fee", "routingNote": "A swap can use this pool even when the order book has no matching offers."
+    "title": "AMM liquidity", "available": "Available for this pair", "unavailable": "No AMM pool for this pair", "fee": "Trading fee", "estimate": "AMM estimate", "payEstimate": "Pay ≈ {{value}} {{asset}}", "receiveEstimate": "Receive ≈ {{value}} {{asset}}", "routingNote": "A swap can use this pool even when the order book has no matching offers."
   }
 }

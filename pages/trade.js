@@ -12,17 +12,20 @@ import RecentTrades from '../components/Trade/RecentTrades'
 import UserOrders from '../components/Trade/UserOrders'
 import useTradeBalances, { tradeBalanceKey } from '../components/Trade/useTradeBalance'
 import useTradeHistory from '../components/Trade/useTradeHistory'
+import useSwapSimulationQuote from '../components/Trade/useSwapSimulationQuote'
+import useAssetFiatRate from '../components/SignForms/useAssetFiatRate'
 import {
   estimateSwap,
+  estimateSwapCost,
   MARKET_CUSHION,
   TF_PARTIAL_PAYMENT,
   transactionAmount,
   validTradeNumber
 } from '../components/Trade/swap'
-import { nativeCurrency, explorerName, network } from '../utils'
+import { nativeCurrency, explorerName, network, tradeSimulationRpcServer } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { rlusdToken } from '../utils/issuedTokens'
-import { niceCurrency } from '../utils/format'
+import { niceCurrency, tokenToFiat } from '../utils/format'
 import styles from '../styles/pages/trade.module.scss'
 
 const nativeAsset = { currency: nativeCurrency }
@@ -113,7 +116,7 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   const [price, setPrice] = useState('')
   const [amount, setAmount] = useState('')
   const [aggregationLevel, setAggregationLevel] = useState(0)
-  const { bids, asks, amm, status, error } = useOrderBook(baseAsset, quoteAsset)
+  const { bids, asks, amm, status, error, hasLoaded } = useOrderBook(baseAsset, quoteAsset)
   const tradeHistory = useTradeHistory(baseAsset, quoteAsset)
   const { balances, trustlines, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
   const baseBalance = baseAsset?.currency ? balances[tradeBalanceKey(baseAsset)] ?? null : null
@@ -121,25 +124,96 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   const spendAsset = side === 'sell' ? baseAsset : quoteAsset
   const receiveAsset = side === 'sell' ? quoteAsset : baseAsset
   const spendBalance = side === 'sell' ? baseBalance : quoteBalance
-  const receiveTrustlineMissing = !!account?.address && !!receiveAsset?.issuer && receiveAsset.issuer !== account.address && trustlines[tradeBalanceKey(receiveAsset)] === false
+  const baseAssetFiatRate = useAssetFiatRate(baseAsset, selectedCurrency, fiatRate)
+  const quoteAssetFiatRate = useAssetFiatRate(quoteAsset, selectedCurrency, fiatRate)
+  const missingTrustlineAssets = account?.address
+    ? [baseAsset, quoteAsset].filter((asset) =>
+        asset?.issuer &&
+        asset.issuer !== account.address &&
+        trustlines[tradeBalanceKey(asset)] === false
+      )
+    : []
+  const missingTrustlineAsset = missingTrustlineAssets[0] || null
   const limitTotal = useMemo(() => {
     if (!validNumber(price) || !validNumber(amount)) return ''
     return new BigNumber(price).multipliedBy(amount).toFixed()
   }, [price, amount])
-  const swapEstimate = useMemo(
-    () => estimateSwap({ bids, asks, amm, inputAmount: amount, side }),
+  const directSwapEstimate = useMemo(
+    () => side === 'buy'
+      ? estimateSwapCost({ bids, asks, amm, outputAmount: amount, side })
+      : estimateSwap({ bids, asks, amm, inputAmount: amount, side }),
     [side, asks, bids, amm, amount]
   )
-  const total = orderType === 'swap' && swapEstimate?.complete ? swapEstimate.output.toFixed() : limitTotal
-  const minimumReceived = orderType === 'swap' && swapEstimate?.complete
-    ? swapEstimate.output.multipliedBy(new BigNumber(1).minus(MARKET_CUSHION))
+  const swapSpendKnownInsufficient = !!account?.address &&
+    orderType === 'swap' &&
+    spendBalance !== null &&
+    validNumber(amount) &&
+    (!spendBalance.gt(0) || (side === 'sell' && new BigNumber(amount).gt(spendBalance)))
+  const simulationSupported = !!tradeSimulationRpcServer
+  const simulationEnabled = simulationSupported &&
+    !!account?.address &&
+    orderType === 'swap' &&
+    !balanceLoading &&
+    !missingTrustlineAsset &&
+    !swapSpendKnownInsufficient &&
+    baseAsset?.currency &&
+    quoteAsset?.currency &&
+    (baseAsset.currency !== quoteAsset.currency || (baseAsset.issuer || '') !== (quoteAsset.issuer || '')) &&
+    validNumber(amount)
+  const simulation = useSwapSimulationQuote({
+    account: account?.address,
+    spendAsset,
+    receiveAsset,
+    spendBalance,
+    side,
+    amount,
+    enabled: simulationEnabled
+  })
+  const simulationQuote = simulation.status === 'ready' ? simulation.quote : null
+  const simulationPending = simulationEnabled && simulation.status === 'loading'
+  const swapEstimate = simulationQuote
+    ? side === 'buy'
+      ? { input: simulationQuote.spend, complete: true, source: 'simulation' }
+      : { output: simulationQuote.receive, complete: true, source: 'simulation' }
+    : !simulationSupported || !account?.address
+      ? directSwapEstimate
+      : null
+  const ammEstimate = useMemo(
+    () => side === 'buy'
+      ? estimateSwapCost({ amm, outputAmount: amount, side })
+      : estimateSwap({ amm, inputAmount: amount, side }),
+    [side, amm, amount]
+  )
+  const ammQuoteAmount = ammEstimate?.complete
+    ? side === 'buy' ? ammEstimate.input : ammEstimate.output
     : null
+  const swapSpend = simulationQuote?.spend || (swapEstimate?.complete
+    ? side === 'buy' ? swapEstimate.input : new BigNumber(amount)
+    : null)
+  const swapReceive = simulationQuote?.receive || (swapEstimate?.complete
+    ? side === 'buy' ? new BigNumber(amount) : swapEstimate.output
+    : null)
+  const total = orderType === 'swap' && swapReceive ? swapReceive.toFixed() : limitTotal
+  const minimumReceived = orderType === 'swap' && swapReceive && side === 'sell'
+    ? swapReceive.multipliedBy(new BigNumber(1).minus(MARKET_CUSHION))
+    : null
+  const maximumReceived = orderType === 'swap' && swapReceive && side === 'sell'
+    ? swapReceive.multipliedBy(new BigNumber(1).plus(MARKET_CUSHION))
+    : null
+  const maximumSpent = orderType === 'swap' && swapSpend && side === 'buy'
+    ? swapSpend.multipliedBy(new BigNumber(1).plus(MARKET_CUSHION))
+    : swapSpend
   const bestBid = bids[0]?.price
   const bestAsk = asks[0]?.price
   const referencePrice = bestAsk || bestBid || (amm ? amm.quote.dividedBy(amm.base) : null)
   const baseAmountDecimals = assetDecimalsByRate(referencePrice, baseAsset)
   const quoteAmountDecimals = assetDecimalsByRate(referencePrice?.gt(0) ? new BigNumber(1).dividedBy(referencePrice) : null, quoteAsset)
   const priceDecimals = bookPriceDecimals(bids, asks)
+  const effectiveSwapRate = swapEstimate?.complete && swapSpend?.gt(0) && swapReceive?.gt(0)
+    ? side === 'buy'
+      ? swapSpend.dividedBy(swapReceive)
+      : swapReceive.dividedBy(swapSpend)
+    : null
   const defaultAggregationDecimals = Math.max(0, priceDecimals - 1)
   const aggregationStep = useMemo(
     () => new BigNumber(10).pow(aggregationLevel - defaultAggregationDecimals),
@@ -152,20 +226,85 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   const spread = bestBid && bestAsk ? bestAsk.minus(bestBid) : null
   const pairReady = baseAsset?.currency && quoteAsset?.currency
   const samePair = pairReady && baseAsset.currency === quoteAsset.currency && (baseAsset.issuer || '') === (quoteAsset.issuer || '')
-  const swapReady = orderType === 'swap' && swapEstimate?.complete && swapEstimate.output.gt(0)
-  const requiredSpend = orderType === 'swap' || side === 'sell' ? new BigNumber(amount || 0) : new BigNumber(total || 0)
-  const spendWithinBalance = !account?.address || spendBalance === null || requiredSpend.lte(spendBalance)
-  const formReady = pairReady && !samePair && !receiveTrustlineMissing && spendWithinBalance && (
+  const swapReady = orderType === 'swap' && !simulationPending && swapSpend?.gt(0) && swapReceive?.gt(0) && (
+    simulationSupported ? !!simulationQuote : !!swapEstimate?.complete
+  )
+  const requiredSpend = orderType === 'swap'
+    ? side === 'sell'
+      ? new BigNumber(amount || 0)
+      : maximumSpent || new BigNumber(0)
+    : side === 'sell' ? new BigNumber(amount || 0) : new BigNumber(total || 0)
+  const spendWithinBalance = !swapSpendKnownInsufficient && (
+    !account?.address || spendBalance === null || requiredSpend.lte(spendBalance)
+  )
+  const formReady = pairReady && !samePair && !balanceLoading && !missingTrustlineAsset && spendWithinBalance && (
     orderType === 'swap'
-      ? !!account?.address && validAssetAmount(spendAsset, amount) && validAssetAmount(receiveAsset, total) && swapReady
+      ? !!account?.address && validAssetAmount(baseAsset, amount) && validAssetAmount(spendAsset, swapSpend) && validAssetAmount(receiveAsset, swapReceive) && swapReady
       : validAssetAmount(baseAsset, amount) && validAssetAmount(quoteAsset, total) && validNumber(price)
   )
+  const spendSummaryAmount = side === 'buy' ? swapSpend : swapReceive
+  const spendSummaryFiat = tokenToFiat({
+    amount: { ...quoteAsset, value: spendSummaryAmount ? spendSummaryAmount.toFixed() : '0' },
+    selectedCurrency,
+    fiatRate,
+    tokenFiatRate: quoteAssetFiatRate,
+    absolute: true,
+    asText: true
+  })
+  const receiveSummaryAmount = side === 'buy' ? swapReceive : swapSpend
+  const receiveSummaryFiat = tokenToFiat({
+    amount: { ...baseAsset, value: receiveSummaryAmount ? receiveSummaryAmount.toFixed() : '0' },
+    selectedCurrency,
+    fiatRate,
+    tokenFiatRate: baseAssetFiatRate,
+    absolute: true,
+    asText: true
+  })
+  const amountFiat = tokenToFiat({
+    amount: { ...baseAsset, value: amount || '0' },
+    selectedCurrency,
+    fiatRate,
+    tokenFiatRate: baseAssetFiatRate,
+    absolute: true,
+    asText: true
+  })
+  const fiatPlaceholder = '\u00A0'
+  const limitTotalFiat = tokenToFiat({
+    amount: { ...quoteAsset, value: total || '0' },
+    selectedCurrency,
+    fiatRate,
+    tokenFiatRate: quoteAssetFiatRate,
+    absolute: true,
+    asText: true
+  })
+  const maximumOrMinimumFiat = side === 'buy'
+    ? tokenToFiat({
+      amount: { ...quoteAsset, value: maximumSpent ? maximumSpent.toFixed() : '0' },
+      selectedCurrency,
+      fiatRate,
+      tokenFiatRate: quoteAssetFiatRate,
+      absolute: true,
+      asText: true
+    })
+    : tokenToFiat({
+      amount: { ...quoteAsset, value: minimumReceived ? minimumReceived.toFixed() : '0' },
+      selectedCurrency,
+      fiatRate,
+      tokenFiatRate: quoteAssetFiatRate,
+      absolute: true,
+      asText: true
+    })
   const maxAmount = useMemo(() => {
     if (!spendBalance?.gt(0)) return null
+    if (orderType === 'swap' && side === 'buy') {
+      const protectedSpend = spendBalance.dividedBy(new BigNumber(1).plus(MARKET_CUSHION))
+      const estimate = estimateSwap({ bids, asks, amm, inputAmount: protectedSpend, side })
+      return estimate?.output || null
+    }
     if (orderType === 'swap') return spendBalance
     if (side === 'sell') return spendBalance
     return validNumber(price) ? spendBalance.dividedBy(price) : null
-  }, [spendBalance, side, orderType, price])
+  }, [spendBalance, side, orderType, price, bids, asks, amm])
 
   const swapPair = () => {
     setBaseAsset(quoteAsset || nativeAsset)
@@ -177,7 +316,6 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   const changeSide = (nextSide) => {
     if (nextSide === side) return
     setSide(nextSide)
-    if (orderType === 'swap') setAmount('')
   }
 
   const changeBaseAsset = (asset) => {
@@ -208,17 +346,26 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   const submit = () => {
     if (!formReady) return
     if (orderType === 'swap') {
-      const output = swapEstimate.output
+      const request = side === 'buy'
+        ? {
+            TransactionType: 'Payment',
+            Account: account.address,
+            Destination: account.address,
+            SendMax: transactionAmount(spendAsset, maximumSpent),
+            Amount: transactionAmount(receiveAsset, amount)
+          }
+        : {
+            TransactionType: 'Payment',
+            Account: account.address,
+            Destination: account.address,
+            SendMax: transactionAmount(spendAsset, amount),
+            Amount: transactionAmount(receiveAsset, maximumReceived),
+            DeliverMin: transactionAmount(receiveAsset, minimumReceived),
+            Flags: TF_PARTIAL_PAYMENT
+          }
+      if (simulationQuote?.paths.length) request.Paths = simulationQuote.paths
       setSignRequest({
-        request: {
-          TransactionType: 'Payment',
-          Account: account.address,
-          Destination: account.address,
-          SendMax: transactionAmount(spendAsset, amount),
-          Amount: transactionAmount(receiveAsset, output),
-          DeliverMin: transactionAmount(receiveAsset, minimumReceived),
-          Flags: TF_PARTIAL_PAYMENT
-        },
+        request,
         callback: () => {}
       })
       return
@@ -237,19 +384,19 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
 
   const applyMaxAmount = () => {
     if (!maxAmount?.gt(0)) return
-    const amountAsset = orderType === 'swap' ? spendAsset : baseAsset
+    const amountAsset = baseAsset
     setAmount(maxAmount.toFixed(amountAsset.issuer ? 15 : 6, BigNumber.ROUND_DOWN).replace(/\.?0+$/, ''))
   }
 
-  const addReceiveToken = () => {
-    if (!receiveTrustlineMissing) return
+  const addMissingTrustline = () => {
+    if (!missingTrustlineAsset) return
     setSignRequest({
       action: 'setTrustline',
       request: {
         TransactionType: 'TrustSet',
         LimitAmount: {
-          currency: receiveAsset.currency,
-          issuer: receiveAsset.issuer
+          currency: missingTrustlineAsset.currency,
+          issuer: missingTrustlineAsset.issuer
         }
       },
       callback: () => {}
@@ -326,43 +473,89 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
               </div>
               <label className={styles.field}>
                 <span className={styles.fieldHeader}>
-                  <span>{orderType === 'swap' ? t('form.youPay', { defaultValue: 'You pay' }) : t('form.amount')}</span>
+                  <span>{t('form.amount')}</span>
                   {account?.address && maxAmount?.gt(0) && <span className={styles.availableBalance}><button type="button" onClick={applyMaxAmount}>{t('form.max', { defaultValue: 'Max' })}</button></span>}
                 </span>
-                <span className={styles.inputWrap}><input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0" /><strong>{tokenName(orderType === 'swap' ? spendAsset : baseAsset)}</strong></span>
+                <span className={styles.inputWrap}><input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0" /><strong>{tokenName(baseAsset)}</strong></span>
+                <span className={styles.summaryFiat}>{amountFiat || fiatPlaceholder}</span>
               </label>
               {orderType === 'limit' && <label className={styles.field}>
                 <span className={styles.fieldHeader}><span>{t('form.price')}</span><span>{t('form.per', { base: tokenName(baseAsset) })}</span></span>
                 <span className={styles.inputWrap}><input inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0" /><strong>{tokenName(quoteAsset)}</strong></span>
               </label>}
               <div className={styles.summary}>
-                <div className={styles.summaryRow}><span>{orderType === 'swap' ? t('form.youReceive', { defaultValue: 'You receive' }) : t('form.total')}</span><strong>{total ? bookNumber(new BigNumber(total), orderType === 'swap' && side === 'buy' ? baseAmountDecimals : quoteAmountDecimals, true) : '0'} {tokenName(orderType === 'swap' ? receiveAsset : quoteAsset)}</strong></div>
-                {orderType === 'swap' && <div className={styles.summaryRow}><span>{t('form.minimumReceived', { defaultValue: 'Minimum received' })}</span><strong>{minimumReceived ? bookNumber(minimumReceived, side === 'buy' ? baseAmountDecimals : quoteAmountDecimals, true) : '0'} {tokenName(receiveAsset)}</strong></div>}
+                <div className={styles.summaryRow}>
+                  <span>{orderType === 'swap' ? t(side === 'buy' ? 'form.youPay' : 'form.youReceive', { defaultValue: side === 'buy' ? 'You pay' : 'You receive' }) : t('form.total')}</span>
+                  <div className={styles.summaryValue}>
+                    <strong>{orderType === 'swap'
+                      ? `${swapEstimate?.complete ? bookNumber(side === 'buy' ? swapSpend : swapReceive, quoteAmountDecimals, true) : '0'} ${tokenName(quoteAsset)}`
+                      : `${total ? bookNumber(new BigNumber(total), quoteAmountDecimals, true) : '0'} ${tokenName(quoteAsset)}`}</strong>
+                    <span className={styles.summaryFiat}>
+                      {orderType === 'swap' ? (spendSummaryFiat || fiatPlaceholder) : (limitTotalFiat || fiatPlaceholder)}
+                    </span>
+                  </div>
+                </div>
+                {orderType === 'swap' && <div className={styles.summaryRow}>
+                  <span>{side === 'buy' ? t('form.youReceive', { defaultValue: 'You receive' }) : t('form.youPay', { defaultValue: 'You pay' })}</span>
+                  <div className={styles.summaryValue}>
+                    <strong>{side === 'buy'
+                      ? `${swapReceive ? bookNumber(swapReceive, baseAmountDecimals, true) : '0'} ${tokenName(baseAsset)}`
+                      : `${swapSpend ? bookNumber(swapSpend, baseAmountDecimals, true) : '0'} ${tokenName(baseAsset)}`}</strong>
+                    <span className={styles.summaryFiat}>{receiveSummaryFiat || fiatPlaceholder}</span>
+                  </div>
+                </div>}
+                {orderType === 'swap' && <div className={styles.summaryRow}>
+                  <span>{side === 'buy' ? t('form.maximumPaid', { defaultValue: 'Maximum paid' }) : t('form.minimumReceived', { defaultValue: 'Minimum received' })}</span>
+                  <div className={styles.summaryValue}>
+                    <strong>{side === 'buy'
+                      ? `${maximumSpent ? bookNumber(maximumSpent, quoteAmountDecimals, true) : '0'} ${tokenName(quoteAsset)}`
+                      : `${minimumReceived ? bookNumber(minimumReceived, quoteAmountDecimals, true) : '0'} ${tokenName(quoteAsset)}`}</strong>
+                    <span className={styles.summaryFiat}>{maximumOrMinimumFiat || fiatPlaceholder}</span>
+                  </div>
+                </div>}
+                {orderType === 'swap' && <div className={styles.summaryRow}>
+                  <span>{t('form.rate', { defaultValue: 'Rate' })}</span>
+                  <strong>{effectiveSwapRate
+                    ? `1 ${tokenName(baseAsset)} ≈ ${bookNumber(effectiveSwapRate, priceDecimals, true)} ${tokenName(quoteAsset)}`
+                    : '—'}</strong>
+                </div>}
               </div>
               {orderType === 'swap' && !account?.address
                 ? <button type="button" className={`button-action ${styles.submit}`} onClick={() => setSignRequest({ request: { TransactionType: 'SignIn' } })}>{t('form.signInToSwap', { defaultValue: 'Sign in to swap' })}</button>
-                : receiveTrustlineMissing
-                  ? <button type="button" className={`button-action ${styles.submit}`} onClick={addReceiveToken}>{t('menu.services.add-token', { ns: 'common' })}: {tokenName(receiveAsset)}</button>
-                  : <button type="button" className={`button-action ${styles.submit}`} disabled={!formReady} onClick={submit}>{orderType === 'swap' ? t('form.reviewSwap', { defaultValue: 'Review swap' }) : t(`form.review-${side}`)}</button>}
+                : missingTrustlineAsset
+                  ? <button type="button" className={`button-action ${styles.submit}`} onClick={addMissingTrustline}>{t('menu.services.add-token', { ns: 'common' })}: {tokenName(missingTrustlineAsset)}{missingTrustlineAssets.length > 1 ? ` (1/${missingTrustlineAssets.length})` : ''}</button>
+                  : <button type="button" className={`button-action ${styles.submit}`} disabled={!formReady} onClick={submit}>{orderType === 'swap'
+                    ? simulationPending
+                      ? t('form.simulatingSwap', { defaultValue: 'Calculating XRPL quote…' })
+                      : t('form.swap', { defaultValue: 'Swap' })
+                    : t(`form.review-${side}`)}</button>}
               {!pairReady && <p className={styles.hint}>{t('form.selectPair')}</p>}
               {samePair && <p className={styles.error}>{t('form.sameAsset')}</p>}
-              {account?.address && spendBalance !== null && requiredSpend.gt(spendBalance) && <p className={styles.error}>{t('form.insufficientBalance', { defaultValue: 'Insufficient available balance.' })}</p>}
-              {orderType === 'swap' && validNumber(amount) && !swapEstimate?.complete && <p className={styles.error}>{t('form.insufficientLiquidity', { defaultValue: 'Not enough visible liquidity for this swap.' })}</p>}
-              {orderType === 'swap' && swapEstimate?.complete && <p className={styles.hint}>{t('form.swapProtection', { defaultValue: 'Estimated result · protected against more than 2% slippage.' })} {swapEstimate.source === 'amm' && t('form.ammEstimate', { defaultValue: 'Estimated using AMM liquidity.' })}</p>}
+              {account?.address && spendBalance !== null && !spendWithinBalance && <p className={styles.error}>{t('form.insufficientBalance', { defaultValue: 'Insufficient available balance.' })}</p>}
+              {simulationEnabled && <div className={styles.quoteStatus}>
+                {spendWithinBalance && !simulationPending && !simulationQuote && <p className={styles.error}>{simulation.status === 'empty'
+                  ? t('form.noRoute', { defaultValue: 'No executable XRPL route was found for your available balance. Try a smaller amount.' })
+                  : t('form.quoteUnavailable', { defaultValue: 'The XRPL execution quote is temporarily unavailable. Please try again.' })}</p>}
+                {spendWithinBalance && (simulationPending || simulationQuote) && <p className={styles.scopeNote}>{simulationPending
+                  ? t('form.simulatingSwap', { defaultValue: 'Calculating XRPL quote…' })
+                  : t('form.simulatedQuote', { defaultValue: 'Simulated across direct, XRP, and RLUSD routes using order books and AMMs · 2% slippage protection.' })}</p>}
+              </div>}
               <p className={styles.hint}>{t('form.walletHint')}</p>
             </section>
           </div>
 
           <div className={styles.bookColumn}>
           <section className={styles.book}>
-            <div className={styles.bookHeader}><h2>{t('book.title')}</h2><span className={styles.status}><i className={`${styles.dot} ${status === 'ready' ? styles.ready : ''}`} />{t(`book.status.${status}`)}</span></div>
+            <div className={styles.bookHeader}><div><h2>{t('book.title')}</h2><small>{t('book.directOnly', { defaultValue: 'Direct pair' })}</small></div><span className={styles.status}><i className={`${styles.dot} ${status === 'ready' ? styles.ready : ''}`} />{t(`book.status.${status}`)}</span></div>
             {!pairReady || samePair ? <div className={styles.empty}>{t('book.selectPair')}</div> : error ? <div className={styles.empty}>{t('book.error')}</div> : (
               <>
                 <div className={styles.tableHeader}><span>{t('book.price', { quote: tokenName(quoteAsset) })}</span><span title={t('book.cumulativeAmountHint', { defaultValue: 'Cumulative base amount through this price level' })}>{t('book.amount', { base: tokenName(baseAsset) })}</span><span title={t('book.cumulativeHint', { defaultValue: 'Cumulative quote amount through this price level' })}>{t('book.cumulative', { quote: tokenName(quoteAsset), defaultValue: `Total (${tokenName(quoteAsset)})` })}</span></div>
                 {renderRows([...cumulativeAsks].reverse(), 'ask')}
                 <div className={styles.spread}><span>{t('book.spread')}</span><strong>{spread ? `${bookNumber(spread, priceDecimals, true)} ${tokenName(quoteAsset)}` : '—'}</strong></div>
                 {renderRows(cumulativeBids, 'bid')}
-                {status === 'ready' && !asks.length && !bids.length && <div className={styles.empty}>{t('book.empty')}</div>}
+                {hasLoaded && !asks.length && !bids.length && <div className={styles.empty}>{amm
+                  ? t('book.emptyWithAmm', { defaultValue: 'There are no open orders for this pair. AMM liquidity is available below.' })
+                  : t('book.empty')}</div>}
                 <div className={styles.aggregation}>
                   <span>{t('book.aggregation', { defaultValue: 'Aggregation' })}</span>
                   <strong>{bookNumber(aggregationStep, priceDecimals)}</strong>
@@ -381,6 +574,12 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
                 <span><small>{tokenName(baseAsset)}</small><strong>{bookNumber(amm.base, baseAmountDecimals, true)}</strong></span>
                 <span><small>{tokenName(quoteAsset)}</small><strong>{bookNumber(amm.quote, quoteAmountDecimals, true)}</strong></span>
                 <span><small>{t('amm.fee', { defaultValue: 'Trading fee' })}</small><strong>{displayNumber(new BigNumber(amm.tradingFee).dividedBy(1000), 3)}%</strong></span>
+              </div>}
+              {orderType === 'swap' && validNumber(amount) && ammQuoteAmount && <div className={styles.ammEstimate}>
+                <span>{t('amm.estimate', { defaultValue: 'AMM estimate' })}</span>
+                <strong>{side === 'buy'
+                  ? t('amm.payEstimate', { value: bookNumber(ammQuoteAmount, quoteAmountDecimals, true), asset: tokenName(quoteAsset), defaultValue: `Pay ≈ ${bookNumber(ammQuoteAmount, quoteAmountDecimals, true)} ${tokenName(quoteAsset)}` })
+                  : t('amm.receiveEstimate', { value: bookNumber(ammQuoteAmount, quoteAmountDecimals, true), asset: tokenName(quoteAsset), defaultValue: `Receive ≈ ${bookNumber(ammQuoteAmount, quoteAmountDecimals, true)} ${tokenName(quoteAsset)}` })}</strong>
               </div>}
               {amm && <p>{t('amm.routingNote', { defaultValue: 'A swap can use this pool even when the order book has no matching offers.' })}</p>}
             </section>
@@ -425,6 +624,7 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
               activePeriodClassName={styles.activeChartPeriod}
               labels={{
                 title: t('chart.title', { defaultValue: 'Price chart' }),
+                scope: t('chart.directOnly', { defaultValue: 'Direct pair trades' }),
                 intervalLabel: t('chart.interval', { defaultValue: 'Candle interval' }),
                 chartTypeLabel: t('chart.type', { defaultValue: 'Chart type' }),
                 candles: t('chart.candles', { defaultValue: 'Candles' }),

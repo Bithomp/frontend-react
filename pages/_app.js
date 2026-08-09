@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation, useTranslation } from 'next-i18next'
@@ -17,6 +17,7 @@ import TopLinks from '../components/Layout/TopLinks'
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '@/utils/mobile'
+import { FiatContext } from '@/utils/fiat'
 import { getBackgroundImage } from '@/utils/backgroundImage'
 import {
   isValidUUID,
@@ -449,6 +450,10 @@ const MyApp = ({ Component, pageProps }) => {
   const pathname = router.pathname
   const queryFiatCurrency = normalizeFiatCurrency(getQueryValue(router.query.fiat))
   const effectiveSelectedCurrency = queryFiatCurrency || selectedCurrency
+  const fiatContextValue = useMemo(
+    () => ({ selectedCurrency: effectiveSelectedCurrency, fiatRate: liveFiatRate }),
+    [effectiveSelectedCurrency, liveFiatRate]
+  )
   const queryLocale = normalizeQueryLocale(getQueryValue(router.query.lang))
   const cookieLocale = new Cookies().get('NEXT_LOCALE')
   const preferredLocale = queryLocale || (currentLocales.includes(cookieLocale) ? cookieLocale : null)
@@ -1026,8 +1031,9 @@ const MyApp = ({ Component, pageProps }) => {
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
         {GA_ID && (pathname !== '/' || nonCriticalUiReady) && <GoogleAnalytics gaId={GA_ID} />}
-        <ThemeProvider>
-          <ErrorBoundary>
+        <FiatContext.Provider value={fiatContextValue}>
+          <ThemeProvider>
+            <ErrorBoundary>
             <div className="body" data-network={network} style={bodyBackgroundStyle}>
               {shouldDeferHomepageChrome ? (
                 <HeaderShell
@@ -1128,8 +1134,9 @@ const MyApp = ({ Component, pageProps }) => {
               </main>
               {(pathname !== '/' || nonCriticalUiReady) && <Footer countryCode={countryCode} />}
             </div>
-          </ErrorBoundary>
-        </ThemeProvider>
+            </ErrorBoundary>
+          </ThemeProvider>
+        </FiatContext.Provider>
       </IsSsrMobileContext.Provider>
     </>
   )

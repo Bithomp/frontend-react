@@ -40,8 +40,8 @@ export default function RecentTrades({ swaps, loading, error, onRefresh, account
           <div role="row">
             <span>{labels.time}</span><span>{labels.price}</span><span>{labels.amount}</span><span>{labels.total}</span><span>{labels.transaction}</span>
           </div>
-          {trades.map((trade) => (
-            <div role="row" key={trade.hash} data-mine={trade.mine || undefined}>
+          {trades.map((trade, index) => (
+            <div role="row" key={`${trade.hash}-${index}`} data-mine={trade.mine || undefined}>
               <time data-label={labels.time} dateTime={new Date(trade.timestamp * 1000).toISOString()}>{new Date(trade.timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}{trade.mine && <em>{labels.yours}</em>}</time>
               <span data-label={labels.price}>{formatNumber(trade.price, priceDecimals)} {quoteName}</span>
               <span data-label={labels.amount}>{formatNumber(trade.baseAmount, baseDecimals)} {baseName}</span>

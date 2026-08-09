@@ -798,6 +798,14 @@ const ledgerWebsocketServers = {
 // Public ledger endpoints are used only for read-only requests such as the DEX order book.
 export const ledgerWebsocketServer = ledgerWebsocketServers[network] || ''
 
+const tradeSimulationRpcServers = {
+  mainnet: 'https://mainnet.xrpl-rpc.com',
+  staging: 'https://mainnet.xrpl-rpc.com',
+  testnet: 'https://testnet.xrpl-rpc.com'
+}
+
+export const tradeSimulationRpcServer = tradeSimulationRpcServers[network] || ''
+
 export const networkMinimumDate = (type = 'ledger') => {
   let minDate = null
 

@@ -10,6 +10,8 @@ export const acceptedTokensForAddress = async ({
   destination,
   sender,
   canLock = false,
+  priceNativeCurrencySpot = false,
+  currencyDetails = false,
   stopWhen
 }) => {
   const tokens = []
@@ -21,6 +23,8 @@ export const acceptedTokensForAddress = async ({
     const params = new URLSearchParams()
     if (sender) params.set('sender', sender)
     if (canLock) params.set('canLock', 'true')
+    if (priceNativeCurrencySpot) params.set('priceNativeCurrencySpot', 'true')
+    if (currencyDetails) params.set('currencyDetails', 'true')
     if (marker) params.set('marker', marker)
 
     const response = await axios(

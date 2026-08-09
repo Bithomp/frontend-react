@@ -5,11 +5,12 @@ import { IoCheckmark, IoChevronDown, IoSearch } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
-import { nativeCurrency, useWidth, setTabParams } from '../../utils'
+import { nativeCurrency, useWidth, setTabParams, isNativeCurrency } from '../../utils'
 import { CurrencyWithIcon, niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
 import RadioOptions from './RadioOptions'
 import { useRouter } from 'next/router'
 import { acceptedTokensForAddress, mptIssuanceId } from '../../utils/acceptedTokens'
+import { useFiat } from '../../utils/fiat'
 
 const limit = 20
 
@@ -20,12 +21,15 @@ const fetchAcceptedTokensForDestination = async (
   canLock = false,
   includeMPTokens = false,
   onlyMPTokens = false,
-  excludeNative = false
+  excludeNative = false,
+  includeSpotPrice = false
 ) => {
   const response = await acceptedTokensForAddress({
     destination: destinationAddress,
     sender: senderAddress,
-    canLock
+    canLock,
+    priceNativeCurrencySpot: includeSpotPrice,
+    currencyDetails: includeSpotPrice
   })
   const tokens = response.tokens.filter((token) => {
     const isMpt = !!mptIssuanceId(token)
@@ -72,8 +76,9 @@ const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
 
   const trimmedQuery = searchQuery.trim()
   const shouldAddNative = !trimmedQuery || trimmedQuery.toUpperCase() === nativeCurrency.toUpperCase()
-  if (shouldAddNative) {
-    tokens.unshift({ currency: nativeCurrency, limit: null })
+  const hasNative = tokens.some((token) => token.currency === nativeCurrency && !token.issuer)
+  if (shouldAddNative && !hasNative) {
+    return [{ currency: nativeCurrency, limit: null }, ...tokens]
   }
 
   return tokens
@@ -102,6 +107,13 @@ const mptDropdownName = (token) => {
   return `${name} (${ticker})`
 }
 
+const tokenBalanceSymbol = (token) => {
+  if (!mptIssuanceId(token)) return niceCurrency(token?.currency)
+
+  const metadata = token?.metadata || token?.mptokenCurrencyDetails?.metadata
+  return metadata?.ticker || metadata?.t || 'MPT'
+}
+
 const tokenListUrl = (searchQuery, urlPart, onlyMPTokens) => {
   const trimmedQuery = searchQuery.trim()
 
@@ -120,6 +132,15 @@ const tokenListUrl = (searchQuery, urlPart, onlyMPTokens) => {
 
 const tokensFromResponse = (response, onlyMPTokens) =>
   onlyMPTokens ? response.data?.issuances || [] : response.data?.tokens || []
+
+const prioritizeTokens = (userTokens, allTokens) => {
+  const allTokensByKey = new Map(allTokens.map((token) => [tokenKey(token), token]))
+  const userTokenKeys = new Set(userTokens.map(tokenKey))
+  return [
+    ...userTokens.map((token) => ({ ...allTokensByKey.get(tokenKey(token)), ...token, selectorUserAsset: true })),
+    ...allTokens.filter((token) => !userTokenKeys.has(tokenKey(token)))
+  ]
+}
 
 export default function TokenSelector({
   value,
@@ -142,6 +163,7 @@ export default function TokenSelector({
   fiatRate = null
 }) {
   const { t } = useTranslation()
+  const appFiat = useFiat()
   const router = useRouter()
   const width = useWidth()
   const [isOpen, setIsOpen] = useState(false)
@@ -149,7 +171,6 @@ export default function TokenSelector({
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-  const [showAllTokens, setShowAllTokens] = useState(false)
   const [userAssetBalances, setUserAssetBalances] = useState({})
   const [userBalancesAddress, setUserBalancesAddress] = useState(null)
   const [searchTimeout, setSearchTimeout] = useState(null)
@@ -158,10 +179,15 @@ export default function TokenSelector({
     mptIssuanceId(multiple ? selectedTokens[0] : value) ? 'mpts' : 'tokens'
   )
   const searchMPTokens = onlyMPTokens || (includeMPTokens && tokenType === 'mpts')
-  const filterByDestination = !!destinationAddress && !showAllTokens
+  const displayCurrency = selectedCurrency || appFiat.selectedCurrency
+  const displayFiatRate = fiatRate ?? appFiat.fiatRate
+  const includeAcceptedTokenSpotPrice = !searchMPTokens
+  const prioritizeUserAssets = !!destinationAddress && allowAllTokens
+  const filterByDestination = !!destinationAddress && !allowAllTokens
+  const showUserBalances = filterByDestination || prioritizeUserAssets
   const searchScope = `${searchMPTokens ? 'mpts' : 'tokens'}:${canLock ? 'canLock' : 'all'}:${
-    filterByDestination ? destinationAddress : 'all-assets'
-  }`
+    filterByDestination ? destinationAddress : prioritizeUserAssets ? `prioritized:${destinationAddress}` : 'all-assets'
+  }:${includeAcceptedTokenSpotPrice ? 'priced' : 'unpriced'}`
 
   // Cache for search results to prevent unnecessary reloads
   const [lastSearchQuery, setLastSearchQuery] = useState('')
@@ -208,7 +234,7 @@ export default function TokenSelector({
   }, [destinationAddress])
 
   useEffect(() => {
-    if (!isOpen || !filterByDestination || userBalancesAddress === destinationAddress) return
+    if (!isOpen || !showUserBalances || userBalancesAddress === destinationAddress) return
 
     let ignore = false
     axios(`v2/trustlines/${encodeURIComponent(destinationAddress)}`)
@@ -235,7 +261,7 @@ export default function TokenSelector({
     return () => {
       ignore = true
     }
-  }, [destinationAddress, filterByDestination, isOpen, userBalancesAddress])
+  }, [destinationAddress, isOpen, showUserBalances, userBalancesAddress])
 
   useEffect(() => {
     setSearchQuery('')
@@ -246,7 +272,7 @@ export default function TokenSelector({
   }, [canLock])
 
   const balanceForToken = (token) => {
-    if (!filterByDestination) return null
+    if (!showUserBalances) return null
     if (token?.issuer) {
       const balance = userAssetBalances[assetBalanceKey(token.issuer, token.currency)]
       return balance?.isFinite() ? balance.toFixed() : null
@@ -302,15 +328,33 @@ export default function TokenSelector({
               canLock,
               includeMPTokens,
               onlyMPTokens,
-              excludeNative
+              excludeNative,
+              includeAcceptedTokenSpotPrice
             )
           } else {
-            // Fallback to original behavior if no destination address
-            // &statistics=true - shall we get USD prices and show them?
-            const response = await axios(tokenListUrl('', urlPart, searchMPTokens))
-            tokens = tokensFromResponse(response, searchMPTokens)
+            const [response, userTokens] = await Promise.all([
+              axios(tokenListUrl('', urlPart, searchMPTokens)),
+              prioritizeUserAssets
+                ? fetchAcceptedTokensForDestination(
+                    destinationAddress,
+                    '',
+                    senderAddress,
+                    canLock,
+                    includeMPTokens,
+                    onlyMPTokens,
+                    excludeNative,
+                    includeAcceptedTokenSpotPrice
+                  ).catch(() => [])
+                : Promise.resolve([])
+            ])
+            const allTokens = tokensFromResponse(response, searchMPTokens)
+            tokens = prioritizeUserAssets ? prioritizeTokens(userTokens, allTokens) : allTokens
             if (!excludeNative && !searchMPTokens) {
-              const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
+              const defaultTokens = addNativeCurrencyIfNeeded(tokens, excludeNative).map((token) =>
+                prioritizeUserAssets && token.currency === nativeCurrency && !token.issuer
+                  ? { ...token, selectorUserAsset: true }
+                  : token
+              )
               setSearchResults(defaultTokens)
               // Cache the default token list
               setLastSearchQuery('')
@@ -365,7 +409,8 @@ export default function TokenSelector({
             canLock,
             includeMPTokens,
             onlyMPTokens,
-            excludeNative
+            excludeNative,
+            includeAcceptedTokenSpotPrice
           )
           setSearchResults(tokens)
           // Cache the results
@@ -373,13 +418,30 @@ export default function TokenSelector({
           setCachedSearchResults(tokens)
           setCachedSearchScope(searchScope)
         } else {
-          // Fallback to original search behavior
-          // &statistics=true - shall we get USD prices and show them?
-          const response = await axios(tokenListUrl(searchQuery, urlPart, searchMPTokens))
-          const tokens = tokensFromResponse(response, searchMPTokens)
+          const [response, userTokens] = await Promise.all([
+            axios(tokenListUrl(searchQuery, urlPart, searchMPTokens)),
+            prioritizeUserAssets
+              ? fetchAcceptedTokensForDestination(
+                  destinationAddress,
+                  searchQuery,
+                  senderAddress,
+                  canLock,
+                  includeMPTokens,
+                  onlyMPTokens,
+                  excludeNative,
+                  includeAcceptedTokenSpotPrice
+                ).catch(() => [])
+              : Promise.resolve([])
+          ])
+          const allTokens = tokensFromResponse(response, searchMPTokens)
+          const prioritizedTokens = prioritizeUserAssets ? prioritizeTokens(userTokens, allTokens) : allTokens
           const tokensWithNative = searchMPTokens
-            ? tokens
-            : addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
+            ? prioritizedTokens
+            : addNativeCurrencyIfNeeded(prioritizedTokens, excludeNative, searchQuery).map((token) =>
+                prioritizeUserAssets && token.currency === nativeCurrency && !token.issuer
+                  ? { ...token, selectorUserAsset: true }
+                  : token
+              )
           setSearchResults(tokensWithNative)
           // Cache the results
           setLastSearchQuery(searchQuery)
@@ -403,7 +465,16 @@ export default function TokenSelector({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, isOpen, destinationAddress, searchMPTokens, canLock, filterByDestination])
+  }, [
+    searchQuery,
+    isOpen,
+    destinationAddress,
+    searchMPTokens,
+    canLock,
+    filterByDestination,
+    prioritizeUserAssets,
+    includeAcceptedTokenSpotPrice
+  ])
 
   const handleSelect = (token) => {
     if (multiple) {
@@ -416,7 +487,14 @@ export default function TokenSelector({
       return
     }
     const selectedBalance = balanceForToken(token)
-    onChange(selectedBalance === null ? token : { ...token, selectedBalance })
+    const selectedToken = { ...token }
+    delete selectedToken.selectorUserAsset
+    onChange(selectedBalance === null ? selectedToken : { ...selectedToken, selectedBalance })
+    setSearchQuery('')
+    setSearchResults([])
+    setLastSearchQuery('')
+    setCachedSearchResults([])
+    setCachedSearchScope('')
     setIsOpen(false)
   }
 
@@ -544,25 +622,6 @@ export default function TokenSelector({
                       <IoMdClose className="token-selector-modal-close" onClick={closeSelector} />
                     </div>
 
-                    {allowAllTokens && destinationAddress && (
-                      <div className="token-selector-type-switch" role="group" aria-label={t('token-selector.scope')}>
-                        <button
-                          type="button"
-                          className={!showAllTokens ? 'active' : ''}
-                          onClick={() => setShowAllTokens(false)}
-                        >
-                          {t('token-selector.your-assets')}
-                        </button>
-                        <button
-                          type="button"
-                          className={showAllTokens ? 'active' : ''}
-                          onClick={() => setShowAllTokens(true)}
-                        >
-                          {t('token-selector.all-assets')}
-                        </button>
-                      </div>
-                    )}
-
                     {includeMPTokens && !filterByDestination && (
                       <div className="token-selector-type-switch" role="group" aria-label={t('token-selector.search-in')}>
                         <button
@@ -606,26 +665,35 @@ export default function TokenSelector({
                       ) : searchResults.length > 0 ? (
                         <div className="token-selector-modal-items">
                           {searchResults.map((token, index) => {
+                            const mptId = mptIssuanceId(token)
                             const secondaryText = secondaryTokenText(token)
-                            const priceInNative = token?.issuer
-                              ? new BigNumber(token.priceNativeCurrencySpot || 0)
-                              : new BigNumber(1)
-                            const fiatPrice = priceInNative.multipliedBy(fiatRate || 0)
-                            const hasFiatPrice = !!selectedCurrency && fiatPrice.isFinite() && fiatPrice.gt(0)
-                            const tokenBalance = filterByDestination
+                            const priceInNative = mptId
+                              ? null
+                              : isNativeCurrency(token)
+                                ? new BigNumber(1)
+                                : new BigNumber(token.priceNativeCurrencySpot || 0)
+                            const fiatPrice = priceInNative?.multipliedBy(displayFiatRate || 0)
+                            const hasFiatPrice =
+                              !!displayCurrency && !!fiatPrice?.isFinite() && fiatPrice.gt(0)
+                            const tokenBalance = showUserBalances && token.selectorUserAsset !== false
                               ? token.issuer
                                 ? userAssetBalances[assetBalanceKey(token.issuer, token.currency)]
                                 : token.balance !== undefined
                                   ? new BigNumber(token.balance).dividedBy(1_000_000)
                                   : null
                               : null
+                            const fiatBalance =
+                              hasFiatPrice && tokenBalance?.isFinite()
+                                ? tokenBalance.multipliedBy(fiatPrice)
+                                : null
+                            const balanceSymbol = tokenBalanceSymbol(token)
                             const isSelected =
                               multiple &&
                               selectedTokens.some((selectedToken) => tokenKey(selectedToken) === tokenKey(token))
 
                             return (
                               <div
-                                key={`${mptIssuanceId(token) || token.currency}-${token.issuer || ''}-${index}`}
+                                key={`${mptId || token.currency}-${token.issuer || ''}-${index}`}
                                 className={`token-selector-modal-item${isSelected ? ' is-selected' : ''}`}
                                 onClick={() => handleSelect(token)}
                               >
@@ -634,48 +702,58 @@ export default function TokenSelector({
                                     <CurrencyWithIcon token={token} options={{ iconOnly: true }} />
                                   </div>
                                   <div className="token-selector-modal-item-name">
-                                    <span>
-                                      {mptIssuanceId(token) ? mptDropdownName(token) : getTokenDisplayName(token)}
-                                      {tokenBalance?.isFinite() && (
-                                        <span
-                                          style={{
-                                            marginLeft: '8px',
-                                            fontSize: '0.85em',
-                                            color: 'var(--text-secondary)'
-                                          }}
-                                        >
-                                          {t('token-selector.balance', {
-                                            value: shortNiceNumber(tokenBalance.toFixed(), 6)
-                                          })}
-                                        </span>
-                                      )}
-                                      {!filterByDestination && token.holders !== undefined && (
-                                        <span
-                                          style={{
-                                            marginLeft: '8px',
-                                            fontSize: '0.85em',
-                                            color: 'var(--text-secondary)'
-                                          }}
-                                        >
-                                          {t('token-selector.holders', {
-                                            value: shortNiceNumber(token.holders, 0)
-                                          })}
-                                        </span>
-                                      )}
-                                    </span>
-                                    {secondaryText ? (
-                                      <span className="token-selector-modal-item-secondary" title={secondaryTokenTitle(token)}>
-                                        {secondaryText}
+                                    <div className="token-selector-modal-item-heading">
+                                      <span className="token-selector-modal-item-title-text">
+                                        {mptId ? mptDropdownName(token) : getTokenDisplayName(token)}
                                       </span>
-                                    ) : null}
+                                      {hasFiatPrice && (
+                                        <span
+                                          className="token-selector-modal-item-price"
+                                          title={`1 ${balanceSymbol || getTokenDisplayName(token)} ≈ ${fiatPrice.toFixed()} ${String(
+                                            displayCurrency
+                                          ).toUpperCase()}`}
+                                        >
+                                          ≈ {shortNiceNumber(fiatPrice.toFixed(), 4, 2, displayCurrency)}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {(secondaryText || (!token.selectorUserAsset && token.holders !== undefined)) && (
+                                      <div className="token-selector-modal-item-meta">
+                                        {secondaryText ? (
+                                          <span
+                                            className="token-selector-modal-item-secondary"
+                                            title={secondaryTokenTitle(token)}
+                                          >
+                                            {secondaryText}
+                                          </span>
+                                        ) : null}
+                                        {!token.selectorUserAsset && token.holders !== undefined && (
+                                          <span className="token-selector-modal-item-holder-count">
+                                            {t('token-selector.holders', {
+                                              value: shortNiceNumber(token.holders, 0)
+                                            })}
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
                                   </div>
-                                  {hasFiatPrice && (
-                                    <span
-                                      className="token-selector-modal-item-price"
-                                      title={`1 ${getTokenDisplayName(token)} ≈ ${fiatPrice.toFixed()} ${selectedCurrency.toUpperCase()}`}
-                                    >
-                                      ≈ {shortNiceNumber(fiatPrice.toFixed(), 4, 2, selectedCurrency)}
-                                    </span>
+                                  {tokenBalance?.isFinite() && (
+                                    <div className="token-selector-modal-item-balance">
+                                      <span className="token-selector-modal-item-balance-amount">
+                                        {shortNiceNumber(tokenBalance.toFixed(), 6)}
+                                        {balanceSymbol ? ` ${balanceSymbol}` : ''}
+                                      </span>
+                                      {fiatBalance?.isFinite() && (
+                                        <span
+                                          className="token-selector-modal-item-balance-fiat"
+                                          title={`${tokenBalance.toFixed()} ${balanceSymbol} ≈ ${fiatBalance.toFixed()} ${String(
+                                            displayCurrency
+                                          ).toUpperCase()}`}
+                                        >
+                                          ≈ {shortNiceNumber(fiatBalance.toFixed(), 2, 1, displayCurrency)}
+                                        </span>
+                                      )}
+                                    </div>
                                   )}
                                   {multiple && (
                                     <span className="token-selector-modal-item-check" aria-hidden="true">
@@ -686,7 +764,7 @@ export default function TokenSelector({
                               </div>
                             )
                           })}
-                          {!filterByDestination && searchResults.length >= limit && (
+                          {!filterByDestination && searchResults.filter((token) => !token.selectorUserAsset).length >= limit && (
                             <p className="center orange">
                               {t(
                                 searchMPTokens

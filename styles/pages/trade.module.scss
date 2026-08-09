@@ -72,14 +72,25 @@
 .summaryRow { display: flex; justify-content: space-between; gap: 16px; }
 .summaryRow + .summaryRow { margin-top: 8px; }
 .summaryRow span { color: var(--text-secondary); }
+.summaryValue { display: flex; flex-direction: column; align-items: flex-end; min-width: 0; }
+.summaryFiat {
+  display: block;
+  min-height: 15px;
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
 .submit { width: 100%; }
 .hint,
 .error { margin: 12px 2px 0; font-size: 14px; }
 .hint { color: var(--text-secondary); }
 .error { color: #d04b4b; }
+.scopeNote { margin: 8px 2px 0; color: var(--text-secondary); font-size: 12px; }
+.quoteStatus { min-height: 66px; }
 
 .bookHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
 .bookHeader h2 { margin: 0; font-size: 22px; }
+.bookHeader small { color: var(--text-secondary); font-size: 12px; }
 .chartHeader { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding: 0 8px 4px; }
 .chartHeader h2 { margin: 0 0 3px; font-size: 22px; }
 .chartHeader span { color: var(--text-secondary); font-size: 13px; }
@@ -87,7 +98,7 @@
 .chartPeriods { display: flex; padding: 3px; border: 1px solid var(--unaccent-icon); border-radius: 8px; background: var(--background-secondary); }
 .chartPeriods button { min-width: 42px; padding: 5px 8px; border: 0; border-radius: 5px; background: transparent; color: var(--text-secondary); font-weight: 700; cursor: pointer; }
 .chartPeriods .activeChartPeriod { background: var(--accent-link); color: var(--background-main); }
-.status { display: flex; align-items: center; gap: 7px; color: var(--text-secondary); font-size: 13px; }
+.status { display: flex; flex: 0 0 104px; align-items: center; justify-content: flex-end; gap: 7px; width: 104px; color: var(--text-secondary); font-size: 13px; white-space: nowrap; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: #999; }
 .ready { background: #20a35a; }
 .tableHeader,
@@ -124,6 +135,9 @@
 .ammStats span { display: grid; min-width: 0; gap: 2px; padding: 7px 8px; border-radius: 8px; background: var(--background-secondary); }
 .ammStats small { overflow: hidden; color: var(--text-secondary); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .ammStats strong { overflow: hidden; font-size: 12px; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
+.ammEstimate { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 9px; padding: 8px; border-radius: 8px; background: var(--background-secondary); font-size: 12px; }
+.ammEstimate span { color: var(--text-secondary); }
+.ammEstimate strong { text-align: right; }
 .userOrders h2,
 .recentTrades h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 18px; }
 .recentTradesHeader { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
@@ -202,6 +216,7 @@
   .submit { min-height: 36px; padding-block: 7px; }
   .hint,
   .error { margin-top: 5px; font-size: 11px; line-height: 1.25; }
+  .quoteStatus { min-height: 58px; }
   .bookHeader { margin-bottom: 7px; }
   .bookHeader h2,
   .chartHeader h2 { font-size: 18px; }
