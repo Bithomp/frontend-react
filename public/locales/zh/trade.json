@@ -65,13 +65,16 @@
     "spread": "Spread",
     "selectPair": "Select a trading pair to see live bids and asks.",
     "empty": "There are no open orders for this pair.",
-    "emptyWithAmm": "There are no open orders for this pair. AMM liquidity is available below.",
     "error": "The live order book is temporarily unavailable.",
     "aggregation": "Aggregation",
     "finer": "Finer aggregation",
     "coarser": "Coarser aggregation",
     "directOnly": "Direct pair",
     "combined": "直接交易 + XRP 桥接",
+    "directWithAmm": "直接交易 + AMM",
+    "combinedWithAmm": "直接交易 + XRP 桥接 + AMM",
+    "ammIncluded": "已包含 AMM 流动性",
+    "ammFee": "资金池手续费 {{fee}}%",
     "status": {
       "idle": "Waiting for pair",
       "connecting": "Connecting",
@@ -115,15 +118,5 @@
     "total": "Total",
     "transaction": "Transaction",
     "yours": "Yours"
-  },
-  "amm": {
-    "title": "AMM liquidity",
-    "available": "Available for this pair",
-    "unavailable": "No AMM pool for this pair",
-    "fee": "Trading fee",
-    "estimate": "仅此 AMM",
-    "payEstimate": "Pay ≈ {{value}} {{asset}}",
-    "receiveEstimate": "Receive ≈ {{value}} {{asset}}",
-    "routingNote": "该池只是流动性来源之一。兑换报价还可使用订单簿和桥接路径。"
   }
 }

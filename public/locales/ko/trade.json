@@ -65,13 +65,16 @@
     "spread": "Spread",
     "selectPair": "Select a trading pair to see live bids and asks.",
     "empty": "There are no open orders for this pair.",
-    "emptyWithAmm": "There are no open orders for this pair. AMM liquidity is available below.",
     "error": "The live order book is temporarily unavailable.",
     "aggregation": "Aggregation",
     "finer": "Finer aggregation",
     "coarser": "Coarser aggregation",
     "directOnly": "Direct pair",
     "combined": "직접 거래 + XRP 브리지",
+    "directWithAmm": "직접 거래 + AMM",
+    "combinedWithAmm": "직접 거래 + XRP 브리지 + AMM",
+    "ammIncluded": "AMM 유동성 포함",
+    "ammFee": "풀 수수료 {{fee}}%",
     "status": {
       "idle": "Waiting for pair",
       "connecting": "Connecting",
@@ -115,15 +118,5 @@
     "total": "Total",
     "transaction": "Transaction",
     "yours": "Yours"
-  },
-  "amm": {
-    "title": "AMM liquidity",
-    "available": "Available for this pair",
-    "unavailable": "No AMM pool for this pair",
-    "fee": "Trading fee",
-    "estimate": "이 AMM만",
-    "payEstimate": "Pay ≈ {{value}} {{asset}}",
-    "receiveEstimate": "Receive ≈ {{value}} {{asset}}",
-    "routingNote": "이 풀은 유동성 공급원 중 하나입니다. 스왑 견적은 오더북과 브리지 경로도 사용할 수 있습니다."
   }
 }

@@ -7,6 +7,10 @@ const REQUEST_LIMIT = 200
 const SNAPSHOT_TIMEOUT = 6000
 const TRANSIENT_LEDGER_ERRORS = new Set(['noNetwork', 'notSynced', 'tooBusy'])
 const XRP_BRIDGE_CURRENCY = 'XRP'
+const AMM_DEPTH_MULTIPLIERS = Array.from({ length: 84 }, (_, index) =>
+  new BigNumber('0.0001').multipliedBy(new BigNumber('1.25').pow(index))
+)
+const OFFER_SOURCE_PRIORITY = { direct: 0, xrp: 1, amm: 2 }
 
 const requestAsset = (asset) =>
   asset?.issuer ? { currency: asset.currency, issuer: asset.issuer } : { currency: nativeCurrency }
@@ -109,6 +113,32 @@ const composeBridgeOffers = (firstLegOffers, secondLegOffers) => {
   return bridged
 }
 
+const ammBookOffers = (amm, side) => {
+  if (!amm) return []
+  const reserveIn = side === 'ask' ? amm.quote : amm.base
+  const reserveOut = side === 'ask' ? amm.base : amm.quote
+  const feeMultiplier = new BigNumber(1).minus(new BigNumber(amm.tradingFee || 0).dividedBy(100000))
+  if (!reserveIn?.gt(0) || !reserveOut?.gt(0) || !feeMultiplier.gt(0)) return []
+
+  let previousInput = new BigNumber(0)
+  let previousOutput = new BigNumber(0)
+  return AMM_DEPTH_MULTIPLIERS.map((multiplier) => {
+    const effectiveInput = reserveIn.multipliedBy(multiplier)
+    const input = effectiveInput.dividedBy(feeMultiplier)
+    const output = reserveOut.multipliedBy(effectiveInput).dividedBy(reserveIn.plus(effectiveInput))
+    const inputAmount = input.minus(previousInput)
+    const outputAmount = output.minus(previousOutput)
+    previousInput = input
+    previousOutput = output
+
+    const amount = side === 'ask' ? outputAmount : inputAmount
+    const total = side === 'ask' ? inputAmount : outputAmount
+    const price = total.dividedBy(amount)
+    if (!amount.gt(0) || !total.gt(0) || !price.isFinite() || !price.gt(0)) return null
+    return { price, amount, total, source: 'amm' }
+  }).filter(Boolean)
+}
+
 const mergeOffers = (directOffers, bridgedOffers, side) =>
   [...directOffers, ...bridgedOffers].sort((left, right) => {
     const priceOrder = side === 'ask'
@@ -116,7 +146,7 @@ const mergeOffers = (directOffers, bridgedOffers, side) =>
       : right.price.comparedTo(left.price)
     if (priceOrder !== 0) return priceOrder
     if (left.source === right.source) return 0
-    return left.source === 'direct' ? -1 : 1
+    return (OFFER_SOURCE_PRIORITY[left.source] ?? 3) - (OFFER_SOURCE_PRIORITY[right.source] ?? 3)
   })
 
 const sameAsset = (left, right) =>
@@ -127,6 +157,7 @@ export default function useOrderBook(baseAsset, quoteAsset) {
     bids: [],
     asks: [],
     amm: null,
+    hasAmmLiquidity: false,
     status: 'idle',
     error: '',
     hasLoaded: false
@@ -134,7 +165,7 @@ export default function useOrderBook(baseAsset, quoteAsset) {
 
   useEffect(() => {
     if (!baseAsset?.currency || !quoteAsset?.currency || sameAsset(baseAsset, quoteAsset)) {
-      setState({ bids: [], asks: [], amm: null, status: 'idle', error: '', hasLoaded: false })
+      setState({ bids: [], asks: [], amm: null, hasAmmLiquidity: false, status: 'idle', error: '', hasLoaded: false })
       return
     }
     if (!ledgerWebsocketServer) {
@@ -142,6 +173,7 @@ export default function useOrderBook(baseAsset, quoteAsset) {
         bids: [],
         asks: [],
         amm: null,
+        hasAmmLiquidity: false,
         status: 'error',
         error: 'unsupported-network',
         hasLoaded: false
@@ -164,17 +196,49 @@ export default function useOrderBook(baseAsset, quoteAsset) {
     const commitPendingState = () => {
       if (responses.size) return
       window.clearTimeout(snapshotTimer)
+      const directAmm = pendingState.amm || null
+      const baseXrpAmm = pendingState.baseXrpAmm || null
+      const xrpQuoteAmm = pendingState.xrpQuoteAmm || null
+      const baseXrpAsks = mergeOffers(
+        pendingState.baseXrpAsks || [],
+        ammBookOffers(baseXrpAmm, 'ask'),
+        'ask'
+      )
+      const baseXrpBids = mergeOffers(
+        pendingState.baseXrpBids || [],
+        ammBookOffers(baseXrpAmm, 'bid'),
+        'bid'
+      )
+      const xrpQuoteAsks = mergeOffers(
+        pendingState.xrpQuoteAsks || [],
+        ammBookOffers(xrpQuoteAmm, 'ask'),
+        'ask'
+      )
+      const xrpQuoteBids = mergeOffers(
+        pendingState.xrpQuoteBids || [],
+        ammBookOffers(xrpQuoteAmm, 'bid'),
+        'bid'
+      )
       const bridgedAsks = includeXrpBridge
-        ? composeBridgeOffers(pendingState.baseXrpAsks || [], pendingState.xrpQuoteAsks || [])
+        ? composeBridgeOffers(baseXrpAsks, xrpQuoteAsks)
         : []
       const bridgedBids = includeXrpBridge
-        ? composeBridgeOffers(pendingState.baseXrpBids || [], pendingState.xrpQuoteBids || [])
+        ? composeBridgeOffers(baseXrpBids, xrpQuoteBids)
         : []
       setState((previous) => ({
         ...previous,
-        asks: mergeOffers(pendingState.directAsks || [], bridgedAsks, 'ask'),
-        bids: mergeOffers(pendingState.directBids || [], bridgedBids, 'bid'),
-        amm: pendingState.amm || null,
+        asks: mergeOffers(
+          mergeOffers(pendingState.directAsks || [], ammBookOffers(directAmm, 'ask'), 'ask'),
+          bridgedAsks,
+          'ask'
+        ),
+        bids: mergeOffers(
+          mergeOffers(pendingState.directBids || [], ammBookOffers(directAmm, 'bid'), 'bid'),
+          bridgedBids,
+          'bid'
+        ),
+        amm: directAmm,
+        hasAmmLiquidity: !!(directAmm || baseXrpAmm || xrpQuoteAmm),
         status: 'ready',
         error: '',
         hasLoaded: true
@@ -208,20 +272,47 @@ export default function useOrderBook(baseAsset, quoteAsset) {
       }))
     }
 
+    const sendAmmRequest = ({ target, asset, asset2, ammBaseAsset, ledgerHash }) => {
+      const id = `trade-${++requestId}-${target}`
+      responses.set(id, { target, optional: true, ammBaseAsset })
+      socket.send(JSON.stringify({
+        id,
+        command: 'amm_info',
+        ledger_hash: ledgerHash,
+        asset,
+        asset2
+      }))
+    }
+
     const loadSnapshot = (ledgerHash) => {
       window.clearTimeout(snapshotTimer)
       snapshotTimer = window.setTimeout(finishTimedOutSnapshot, SNAPSHOT_TIMEOUT)
       snapshotBookRequests(baseAsset, quoteAsset, includeXrpBridge)
         .forEach((request) => sendBookRequest({ ...request, ledgerHash }))
-      const ammId = `trade-${++requestId}-amm`
-      responses.set(ammId, { target: 'amm', optional: true })
-      socket.send(JSON.stringify({
-        id: ammId,
-        command: 'amm_info',
-        ledger_hash: ledgerHash,
+      sendAmmRequest({
+        target: 'amm',
         asset: requestAsset(baseAsset),
-        asset2: requestAsset(quoteAsset)
-      }))
+        asset2: requestAsset(quoteAsset),
+        ammBaseAsset: baseAsset,
+        ledgerHash
+      })
+      if (includeXrpBridge) {
+        const xrp = { currency: XRP_BRIDGE_CURRENCY }
+        sendAmmRequest({
+          target: 'baseXrpAmm',
+          asset: requestAsset(baseAsset),
+          asset2: xrp,
+          ammBaseAsset: baseAsset,
+          ledgerHash
+        })
+        sendAmmRequest({
+          target: 'xrpQuoteAmm',
+          asset: xrp,
+          asset2: requestAsset(quoteAsset),
+          ammBaseAsset: xrp,
+          ledgerHash
+        })
+      }
     }
 
     const loadBook = () => {
@@ -297,10 +388,10 @@ export default function useOrderBook(baseAsset, quoteAsset) {
           loadSnapshot(ledgerHash)
           return
         }
-        if (request.target === 'amm') {
-          pendingState.amm = message.status === 'error' || message.error
+        if (request.ammBaseAsset) {
+          pendingState[request.target] = message.status === 'error' || message.error
             ? null
-            : normalizeAmm(message.result?.amm, baseAsset)
+            : normalizeAmm(message.result?.amm, request.ammBaseAsset)
           commitPendingState()
           return
         }

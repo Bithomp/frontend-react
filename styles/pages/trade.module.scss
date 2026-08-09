@@ -20,6 +20,7 @@
   border-radius: 18px;
   background: var(--background-main);
 }
+.book { display: flex; min-height: 650px; flex-direction: column; }
 .chart { border: 1px solid var(--unaccent-icon); border-radius: 18px; background: var(--background-main); padding: 18px 14px 8px; min-width: 0; }
 .bookColumn,
 .chartColumn { display: grid; gap: 10px; min-width: 0; }
@@ -122,22 +123,11 @@
 .aggregation strong { color: var(--text-main); font-variant-numeric: tabular-nums; }
 .aggregation button { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 1px solid var(--unaccent-icon); border-radius: 6px; background: var(--background-secondary); color: var(--text-main); font-size: 18px; line-height: 1; cursor: pointer; }
 .aggregation button:disabled { opacity: .35; cursor: default; }
-.empty { min-height: 260px; display: grid; place-content: center; text-align: center; color: var(--text-secondary); }
+.ammBookSummary { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; color: var(--text-secondary); font-size: 11px; }
+.ammBookSummary span:last-child { white-space: nowrap; }
+.empty { display: grid; flex: 1; min-height: 260px; place-content: center; text-align: center; color: var(--text-secondary); }
 .userOrders,
-.recentTrades,
-.ammLiquidity { overflow: hidden; border: 1px solid var(--unaccent-icon); border-radius: 18px; background: var(--background-main); padding: 14px; }
-.ammLiquidity > div:first-child { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-.ammLiquidity h2 { margin: 0; font-size: 16px; }
-.ammLiquidity > div:first-child > span,
-.ammLiquidity p { color: var(--text-secondary); font-size: 11px; }
-.ammLiquidity p { margin: 9px 0 0; }
-.ammStats { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; margin-top: 10px; }
-.ammStats span { display: grid; min-width: 0; gap: 2px; padding: 7px 8px; border-radius: 8px; background: var(--background-secondary); }
-.ammStats small { overflow: hidden; color: var(--text-secondary); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
-.ammStats strong { overflow: hidden; font-size: 12px; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
-.ammEstimate { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 9px; padding: 8px; border-radius: 8px; background: var(--background-secondary); font-size: 12px; }
-.ammEstimate span { color: var(--text-secondary); }
-.ammEstimate strong { text-align: right; }
+.recentTrades { overflow: hidden; border: 1px solid var(--unaccent-icon); border-radius: 18px; background: var(--background-main); padding: 14px; }
 .userOrders h2,
 .recentTrades h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 18px; }
 .recentTradesHeader { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
@@ -169,7 +159,7 @@
   .layout { grid-template-columns: 1fr; }
   .bookColumn,
   .chartColumn { grid-column: auto; }
-  .book { padding: 15px 10px; }
+  .book { min-height: 610px; padding: 15px 10px; }
   .panel { padding: 16px; }
   .row { font-size: 13px; }
   .userOrders [role="row"]:first-child { display: none; }
@@ -202,6 +192,7 @@
   .swapPair { width: 27px; height: 27px; border-radius: 7px; font-size: 16px; }
   .panel,
   .book { padding: 12px 14px; }
+  .book { min-height: 460px; }
   .chart { padding: 12px 10px 3px; }
   .sideTabs button { padding: 7px; border-radius: 9px; }
   .orderTypeTabs { margin-top: 7px; }

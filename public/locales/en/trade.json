@@ -16,8 +16,8 @@
   },
   "book": {
     "title": "Order book", "price": "Price ({{quote}})", "amount": "Amount ({{base}})", "total": "Total", "cumulative": "Total ({{quote}})", "cumulativeAmountHint": "Cumulative base amount through this price level", "cumulativeHint": "Cumulative quote amount through this price level", "levelAmount": "This level", "levelTotal": "This level", "spread": "Spread",
-    "selectPair": "Select a trading pair to see live bids and asks.", "empty": "There are no open orders for this pair.", "emptyWithAmm": "There are no open orders for this pair. AMM liquidity is available below.", "error": "The live order book is temporarily unavailable.",
-    "aggregation": "Aggregation", "finer": "Finer aggregation", "coarser": "Coarser aggregation", "directOnly": "Direct pair", "combined": "Direct + XRP bridge",
+    "selectPair": "Select a trading pair to see live bids and asks.", "empty": "There are no open orders for this pair.", "error": "The live order book is temporarily unavailable.",
+    "aggregation": "Aggregation", "finer": "Finer aggregation", "coarser": "Coarser aggregation", "directOnly": "Direct pair", "combined": "Direct + XRP bridge", "directWithAmm": "Direct + AMM", "combinedWithAmm": "Direct + XRP bridge + AMM", "ammIncluded": "AMM liquidity included", "ammFee": "{{fee}}% pool fee",
     "status": { "idle": "Waiting for pair", "connecting": "Connecting", "loading": "Updating", "ready": "Live", "error": "Offline" }
   },
   "chart": {
@@ -38,8 +38,5 @@
   "trades": {
     "title": "Recent trades", "loading": "Loading recent trades…", "empty": "No recent trades for this pair.", "error": "Recent trades are temporarily unavailable.",
     "time": "Time", "price": "Price", "amount": "Amount", "total": "Total", "transaction": "Transaction", "yours": "Yours"
-  },
-  "amm": {
-    "title": "AMM liquidity", "available": "Available for this pair", "unavailable": "No AMM pool for this pair", "fee": "Trading fee", "estimate": "This AMM only", "payEstimate": "Pay ≈ {{value}} {{asset}}", "receiveEstimate": "Receive ≈ {{value}} {{asset}}", "routingNote": "This pool is one liquidity source. The swap quote can also use order books and bridge routes."
   }
 }
