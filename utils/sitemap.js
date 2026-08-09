@@ -28,6 +28,7 @@ const pageEntries = [
   { loc: 'amendments', changefreq: 'always', priority: '1' },
   { loc: 'validators', changefreq: 'always', priority: '1' },
   { loc: 'amms', changefreq: 'always', priority: '1' },
+  { loc: 'trade', changefreq: 'daily', priority: '0.9' },
   { loc: 'whales', changefreq: 'always', priority: '1' },
 
   { loc: 'services', changefreq: 'monthly', priority: '0.9' },

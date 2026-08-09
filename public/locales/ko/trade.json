@@ -29,11 +29,16 @@
     "sameAsset": "Choose two different assets.",
     "insufficientLiquidity": "Not enough liquidity in the direct order book.",
     "ammInsufficientLiquidity": "The direct AMM pool cannot fill this amount. Try a smaller amount.",
-    "noRoute": "사용 가능한 잔액으로 실행할 수 있는 XRPL 경로를 찾지 못했습니다. 더 적은 금액을 시도하세요.",
+    "buyBalanceInsufficient": "이 수량을 구매하기에 {{asset}} 잔액 또는 시장 유동성이 부족합니다. 더 적은 수량을 입력하세요.",
+    "swapLiquidityInsufficient": "이 금액을 스왑하기에 시장 유동성이 부족합니다. 더 적은 금액을 입력하세요.",
+    "noRoute": "현재 이 페어에 사용할 수 있는 유동성 경로가 없습니다. 나중에 다시 시도하거나 다른 페어를 선택하세요.",
     "quoteUnavailable": "XRPL 실행 견적을 일시적으로 사용할 수 없습니다. 다시 시도하세요.",
-    "insufficientBalance": "Insufficient available balance.",
+    "insufficientBalance": "{{asset}} 잔액이 부족합니다. 약 {{required}} {{asset}}이 필요하며, 사용 가능한 잔액은 {{available}} {{asset}}입니다.",
+    "nativeBalanceInsufficient": "이 스왑을 완료하고 네트워크 수수료 또는 준비금을 충당할 수 있는 {{asset}}이 부족합니다.",
+    "swapFailed": "XRPL에서 이 스왑을 실행하지 못했습니다. 선택한 토큰이 제한되었거나 거래할 수 없는 상태일 수 있습니다.",
     "swapProtection": "Estimated result · protected against more than 2% slippage.",
     "ammEstimate": "Estimated using AMM liquidity.",
+    "marketEstimate": "참고용 시장 예상치이며, 실제 실행 가능한 XRPL 견적은 다를 수 있습니다.",
     "available": "Available",
     "balance": "Balance",
     "balanceLoading": "Loading balance…",
@@ -116,9 +121,9 @@
     "available": "Available for this pair",
     "unavailable": "No AMM pool for this pair",
     "fee": "Trading fee",
-    "estimate": "AMM estimate",
+    "estimate": "이 AMM만",
     "payEstimate": "Pay ≈ {{value}} {{asset}}",
     "receiveEstimate": "Receive ≈ {{value}} {{asset}}",
-    "routingNote": "A swap can use this pool even when the order book has no matching offers."
+    "routingNote": "이 풀은 유동성 공급원 중 하나입니다. 스왑 견적은 오더북과 브리지 경로도 사용할 수 있습니다."
   }
 }

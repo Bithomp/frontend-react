@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { IoSwapVertical } from 'react-icons/io5'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useRouter } from 'next/router'
 
 import SEO from '../components/SEO'
 import TokenSelector from '../components/UI/TokenSelector'
@@ -22,7 +23,14 @@ import {
   transactionAmount,
   validTradeNumber
 } from '../components/Trade/swap'
-import { nativeCurrency, explorerName, network, tradeSimulationRpcServer } from '../utils'
+import {
+  nativeCurrency,
+  explorerName,
+  network,
+  tradeSimulationRpcServer,
+  isAddressValid,
+  validateCurrencyCode
+} from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { rlusdToken } from '../utils/issuedTokens'
 import { niceCurrency, tokenToFiat } from '../utils/format'
@@ -31,9 +39,91 @@ import styles from '../styles/pages/trade.module.scss'
 const nativeAsset = { currency: nativeCurrency }
 const defaultQuoteAsset = rlusdToken(network)
 const BOOK_ROWS_PER_SIDE = 6
+const TRADE_PAIR_QUERY_NAMES = [
+  'baseCurrency',
+  'baseCurrencyIssuer',
+  'quoteCurrency',
+  'quoteCurrencyIssuer'
+]
+const queryValue = (value) => String(Array.isArray(value) ? value[0] || '' : value || '').trim()
+const hasTradePairQuery = (query) =>
+  TRADE_PAIR_QUERY_NAMES.some((name) => Object.prototype.hasOwnProperty.call(query, name))
+const sameTradeAsset = (left, right) =>
+  left?.currency === right?.currency && (left?.issuer || '') === (right?.issuer || '')
+const tradeAssetFromQuery = (currencyValue, issuerValue, fallback) => {
+  const currency = queryValue(currencyValue)
+  const issuer = queryValue(issuerValue)
+  if (!currency) return fallback
+  if (currency === nativeCurrency) return nativeAsset
+  if (!validateCurrencyCode(currency).valid || !isAddressValid(issuer)) return fallback
+  const asset = { currency, issuer }
+  return sameTradeAsset(asset, fallback) ? fallback : asset
+}
+const replaceTradePairQuery = (router, baseAsset, quoteAsset) => {
+  if (!router.isReady) return
+  const nextQuery = { ...router.query }
+  const setAssetQuery = (prefix, asset) => {
+    const currencyName = `${prefix}Currency`
+    const issuerName = `${prefix}CurrencyIssuer`
+    if (!asset?.currency) {
+      delete nextQuery[currencyName]
+      delete nextQuery[issuerName]
+      return
+    }
+    nextQuery[currencyName] = asset.currency
+    if (asset.issuer) nextQuery[issuerName] = asset.issuer
+    else delete nextQuery[issuerName]
+  }
+  setAssetQuery('base', baseAsset)
+  setAssetQuery('quote', quoteAsset)
+
+  const unchanged = TRADE_PAIR_QUERY_NAMES.every(
+    (name) =>
+      !Array.isArray(router.query[name]) &&
+      queryValue(router.query[name]) === queryValue(nextQuery[name])
+  )
+  if (!unchanged) {
+    router.replace({ pathname: router.pathname, query: nextQuery }, undefined, { shallow: true, scroll: false })
+  }
+}
 const tokenName = (token) => (token?.currency ? niceCurrency(token.currency) : '—')
 const validNumber = validTradeNumber
 const validAssetAmount = (asset, value) => validNumber(value) && (asset?.issuer || new BigNumber(value).gte(0.000001))
+const swapQuoteErrorText = (t, status, side, spendAsset) => {
+  const asset = tokenName(spendAsset)
+  if (status === 'nativeBalance') {
+    return t('form.nativeBalanceInsufficient', {
+      asset: nativeCurrency,
+      defaultValue: 'Not enough available {{asset}} to complete this swap and cover the network fee or reserve.'
+    })
+  }
+  if (status === 'partial') {
+    return side === 'buy'
+      ? t('form.buyBalanceInsufficient', {
+          asset,
+          defaultValue: 'Not enough {{asset}} balance or market liquidity to buy this amount. Enter a smaller amount.'
+        })
+      : t('form.swapLiquidityInsufficient', {
+          defaultValue: 'There is not enough market liquidity to swap this amount. Enter a smaller amount.'
+        })
+  }
+  if (status === 'empty') {
+    return t('form.noRoute', {
+      defaultValue: 'No liquidity route is currently available for this pair. Try again later or choose another pair.'
+    })
+  }
+  if (status === 'failed') {
+    return t('form.swapFailed', {
+      defaultValue: 'XRPL could not execute this swap. The selected token may be restricted or unavailable for trading.'
+    })
+  }
+  return t('form.quoteUnavailable', {
+    defaultValue: 'The XRPL execution quote is temporarily unavailable. Please try again.'
+  })
+}
+const estimateFromLiquidity = ({ side, bids, asks, amm, amount }) => side === 'buy'
+  ? estimateSwapCost({ bids, asks, amm, outputAmount: amount, side })
+  : estimateSwap({ bids, asks, amm, inputAmount: amount, side })
 const displayNumber = (value, decimals = 8) => {
   const number = BigNumber.isBigNumber(value) ? value : new BigNumber(value ?? NaN)
   if (!number.isFinite()) return '—'
@@ -100,22 +190,72 @@ const withCumulativeTotal = (offers) => {
   })
 }
 
-export const getServerSideProps = async (context) => ({
-  props: {
-    isSsrMobile: getIsSsrMobile(context),
-    ...(await serverSideTranslations(context.locale, ['common', 'trade']))
+export const getServerSideProps = async (context) => {
+  const { query } = context
+  return {
+    props: {
+      initialBaseAsset: tradeAssetFromQuery(
+        query.baseCurrency,
+        query.baseCurrencyIssuer,
+        nativeAsset
+      ),
+      initialQuoteAsset: tradeAssetFromQuery(
+        query.quoteCurrency,
+        query.quoteCurrencyIssuer,
+        defaultQuoteAsset
+      ),
+      isSsrMobile: getIsSsrMobile(context),
+      ...(await serverSideTranslations(context.locale, ['common', 'trade']))
+    }
   }
-})
+}
 
-export default function Trade({ setSignRequest, account, refreshPage, selectedCurrency, fiatRate }) {
+export default function Trade({
+  setSignRequest,
+  account,
+  refreshPage,
+  selectedCurrency,
+  fiatRate,
+  initialBaseAsset,
+  initialQuoteAsset
+}) {
   const { t } = useTranslation('trade')
-  const [baseAsset, setBaseAsset] = useState(nativeAsset)
-  const [quoteAsset, setQuoteAsset] = useState(defaultQuoteAsset)
+  const router = useRouter()
+  const [baseAsset, setBaseAsset] = useState(initialBaseAsset || nativeAsset)
+  const [quoteAsset, setQuoteAsset] = useState(initialQuoteAsset || defaultQuoteAsset)
   const [side, setSide] = useState('buy')
   const [orderType, setOrderType] = useState('swap')
   const [price, setPrice] = useState('')
   const [amount, setAmount] = useState('')
   const [aggregationLevel, setAggregationLevel] = useState(0)
+
+  useEffect(() => {
+    if (!router.isReady) return
+    const nextBaseAsset = tradeAssetFromQuery(
+      router.query.baseCurrency,
+      router.query.baseCurrencyIssuer,
+      nativeAsset
+    )
+    const nextQuoteAsset = tradeAssetFromQuery(
+      router.query.quoteCurrency,
+      router.query.quoteCurrencyIssuer,
+      defaultQuoteAsset
+    )
+    setBaseAsset((current) => sameTradeAsset(current, nextBaseAsset) ? current : nextBaseAsset)
+    setQuoteAsset((current) => sameTradeAsset(current, nextQuoteAsset) ? current : nextQuoteAsset)
+    setAmount('')
+    setPrice('')
+    if (hasTradePairQuery(router.query)) {
+      replaceTradePairQuery(router, nextBaseAsset, nextQuoteAsset)
+    }
+  }, [
+    router,
+    router.isReady,
+    router.query.baseCurrency,
+    router.query.baseCurrencyIssuer,
+    router.query.quoteCurrency,
+    router.query.quoteCurrencyIssuer
+  ])
   const { bids, asks, amm, status, error, hasLoaded } = useOrderBook(baseAsset, quoteAsset)
   // Synthetic bridge depth is indicative; only simulation confirms an executable multi-path quote.
   const directBookBids = useMemo(() => bids.filter((offer) => offer.source === 'direct'), [bids])
@@ -141,10 +281,18 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
     if (!validNumber(price) || !validNumber(amount)) return ''
     return new BigNumber(price).multipliedBy(amount).toFixed()
   }, [price, amount])
+  const marketSwapEstimate = useMemo(
+    () => estimateFromLiquidity({ side, bids, asks, amm, amount }),
+    [side, asks, bids, amm, amount]
+  )
   const directSwapEstimate = useMemo(
-    () => side === 'buy'
-      ? estimateSwapCost({ bids: directBookBids, asks: directBookAsks, amm, outputAmount: amount, side })
-      : estimateSwap({ bids: directBookBids, asks: directBookAsks, amm, inputAmount: amount, side }),
+    () => estimateFromLiquidity({
+      side,
+      bids: directBookBids,
+      asks: directBookAsks,
+      amm,
+      amount
+    }),
     [side, directBookAsks, directBookBids, amm, amount]
   )
   const swapSpendKnownInsufficient = !!account?.address &&
@@ -174,13 +322,13 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   })
   const simulationQuote = simulation.status === 'ready' ? simulation.quote : null
   const simulationPending = simulationEnabled && simulation.status === 'loading'
+  const simulationErrorMessage = swapQuoteErrorText(t, simulation.status, side, spendAsset)
+  const fallbackSwapEstimate = simulationSupported ? marketSwapEstimate : directSwapEstimate
   const swapEstimate = simulationQuote
     ? side === 'buy'
       ? { input: simulationQuote.spend, complete: true, source: 'simulation' }
       : { output: simulationQuote.receive, complete: true, source: 'simulation' }
-    : !simulationSupported || !account?.address
-      ? directSwapEstimate
-      : null
+    : fallbackSwapEstimate
   const ammEstimate = useMemo(
     () => side === 'buy'
       ? estimateSwapCost({ amm, outputAmount: amount, side })
@@ -228,7 +376,7 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   const cumulativeBids = useMemo(() => withCumulativeTotal(visibleBids), [visibleBids])
   const spread = bestBid && bestAsk ? bestAsk.minus(bestBid) : null
   const pairReady = baseAsset?.currency && quoteAsset?.currency
-  const samePair = pairReady && baseAsset.currency === quoteAsset.currency && (baseAsset.issuer || '') === (quoteAsset.issuer || '')
+  const samePair = pairReady && sameTradeAsset(baseAsset, quoteAsset)
   const usesXrpBridgeBook = nativeCurrency === 'XRP' && !!baseAsset?.issuer && !!quoteAsset?.issuer
   const swapReady = orderType === 'swap' && !simulationPending && swapSpend?.gt(0) && swapReceive?.gt(0) && (
     simulationSupported ? !!simulationQuote : !!swapEstimate?.complete
@@ -238,6 +386,7 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
       ? new BigNumber(amount || 0)
       : maximumSpent || new BigNumber(0)
     : side === 'sell' ? new BigNumber(amount || 0) : new BigNumber(total || 0)
+  const spendAmountDecimals = side === 'sell' ? baseAmountDecimals : quoteAmountDecimals
   const spendWithinBalance = !swapSpendKnownInsufficient && (
     !account?.address || spendBalance === null || requiredSpend.lte(spendBalance)
   )
@@ -298,13 +447,15 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
       absolute: true,
       asText: true
     })
+  const maxBookBids = simulationSupported ? bids : directBookBids
+  const maxBookAsks = simulationSupported ? asks : directBookAsks
   const maxAmount = useMemo(() => {
     if (!spendBalance?.gt(0)) return null
     if (orderType === 'swap' && side === 'buy') {
       const protectedSpend = spendBalance.dividedBy(new BigNumber(1).plus(MARKET_CUSHION))
       const estimate = estimateSwap({
-        bids: directBookBids,
-        asks: directBookAsks,
+        bids: maxBookBids,
+        asks: maxBookAsks,
         amm,
         inputAmount: protectedSpend,
         side
@@ -314,13 +465,16 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
     if (orderType === 'swap') return spendBalance
     if (side === 'sell') return spendBalance
     return validNumber(price) ? spendBalance.dividedBy(price) : null
-  }, [spendBalance, side, orderType, price, directBookBids, directBookAsks, amm])
+  }, [spendBalance, side, orderType, price, maxBookBids, maxBookAsks, amm])
 
   const swapPair = () => {
-    setBaseAsset(quoteAsset || nativeAsset)
-    setQuoteAsset(baseAsset)
+    const nextBaseAsset = quoteAsset || nativeAsset
+    const nextQuoteAsset = baseAsset
+    setBaseAsset(nextBaseAsset)
+    setQuoteAsset(nextQuoteAsset)
     setPrice('')
     setAmount('')
+    replaceTradePairQuery(router, nextBaseAsset, nextQuoteAsset)
   }
 
   const changeSide = (nextSide) => {
@@ -332,12 +486,14 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
     setBaseAsset(asset)
     setAmount('')
     setPrice('')
+    replaceTradePairQuery(router, asset, quoteAsset)
   }
 
   const changeQuoteAsset = (asset) => {
     setQuoteAsset(asset)
     setAmount('')
     setPrice('')
+    replaceTradePairQuery(router, baseAsset, asset)
   }
 
   const changeOrderType = (nextOrderType) => {
@@ -424,7 +580,12 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
 
   return (
     <>
-      <SEO title={t('seo.title')} description={t('seo.description', { explorerName })} noindexQuery />
+      <SEO
+        title={t('seo.title')}
+        description={t('seo.description', { explorerName })}
+        canonicalPath="/trade"
+        noindexQuery
+      />
       <div className={styles.page}>
         <div className={styles.intro}>
           <h1>{t('title')}</h1>
@@ -529,6 +690,9 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
                     ? `1 ${tokenName(baseAsset)} ≈ ${bookNumber(effectiveSwapRate, priceDecimals, true)} ${tokenName(quoteAsset)}`
                     : '—'}</strong>
                 </div>}
+                {orderType === 'swap' && swapEstimate?.complete && !simulationQuote && <p className={styles.scopeNote}>{t('form.marketEstimate', {
+                  defaultValue: 'Indicative market estimate; the executable XRPL quote may differ.'
+                })}</p>}
               </div>
               {orderType === 'swap' && !account?.address
                 ? <button type="button" className={`button-action ${styles.submit}`} onClick={() => setSignRequest({ request: { TransactionType: 'SignIn' } })}>{t('form.signInToSwap', { defaultValue: 'Sign in to swap' })}</button>
@@ -541,12 +705,15 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
                     : t(`form.review-${side}`)}</button>}
               {!pairReady && <p className={styles.hint}>{t('form.selectPair')}</p>}
               {samePair && <p className={styles.error}>{t('form.sameAsset')}</p>}
-              {account?.address && spendBalance !== null && !spendWithinBalance && <p className={styles.error}>{t('form.insufficientBalance', { defaultValue: 'Insufficient available balance.' })}</p>}
-              {simulationEnabled && <div className={styles.quoteStatus}>
-                {spendWithinBalance && !simulationPending && !simulationQuote && <p className={styles.error}>{simulation.status === 'empty'
-                  ? t('form.noRoute', { defaultValue: 'No executable XRPL route was found for your available balance. Try a smaller amount.' })
-                  : t('form.quoteUnavailable', { defaultValue: 'The XRPL execution quote is temporarily unavailable. Please try again.' })}</p>}
-                {spendWithinBalance && (simulationPending || simulationQuote) && <p className={styles.scopeNote}>{simulationPending
+              {account?.address && spendBalance !== null && !spendWithinBalance && <p className={styles.error}>{t('form.insufficientBalance', {
+                asset: tokenName(spendAsset),
+                required: bookNumber(requiredSpend, spendAmountDecimals),
+                available: bookNumber(spendBalance, spendAmountDecimals),
+                defaultValue: 'Not enough {{asset}}: approximately {{required}} {{asset}} required, {{available}} {{asset}} available.'
+              })}</p>}
+              {simulationEnabled && spendWithinBalance && <div className={styles.quoteStatus}>
+                {!simulationPending && !simulationQuote && <p className={styles.error}>{simulationErrorMessage}</p>}
+                {(simulationPending || simulationQuote) && <p className={styles.scopeNote}>{simulationPending
                   ? t('form.simulatingSwap', { defaultValue: 'Calculating XRPL quote…' })
                   : t('form.simulatedQuote', { defaultValue: 'Simulated across direct, XRP, and RLUSD routes using order books and AMMs · 2% slippage protection.' })}</p>}
               </div>}

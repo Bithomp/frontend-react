@@ -29,11 +29,16 @@
     "sameAsset": "Choose two different assets.",
     "insufficientLiquidity": "Not enough liquidity in the direct order book.",
     "ammInsufficientLiquidity": "The direct AMM pool cannot fill this amount. Try a smaller amount.",
-    "noRoute": "Tidak ditemukan rute XRPL yang dapat dieksekusi untuk saldo tersedia Anda. Coba jumlah yang lebih kecil.",
+    "buyBalanceInsufficient": "Saldo {{asset}} atau likuiditas pasar tidak cukup untuk membeli jumlah ini. Masukkan jumlah yang lebih kecil.",
+    "swapLiquidityInsufficient": "Likuiditas pasar tidak cukup untuk melakukan swap sejumlah ini. Masukkan jumlah yang lebih kecil.",
+    "noRoute": "Saat ini tidak tersedia rute likuiditas untuk pasangan ini. Coba lagi nanti atau pilih pasangan lain.",
     "quoteUnavailable": "Estimasi eksekusi XRPL untuk sementara tidak tersedia. Silakan coba lagi.",
-    "insufficientBalance": "Insufficient available balance.",
+    "insufficientBalance": "{{asset}} tidak cukup: diperlukan sekitar {{required}} {{asset}}, tersedia {{available}} {{asset}}.",
+    "nativeBalanceInsufficient": "{{asset}} yang tersedia tidak cukup untuk menyelesaikan swap ini dan menutupi biaya jaringan atau cadangan.",
+    "swapFailed": "XRPL tidak dapat mengeksekusi swap ini. Token yang dipilih mungkin dibatasi atau tidak tersedia untuk diperdagangkan.",
     "swapProtection": "Estimated result · protected against more than 2% slippage.",
     "ammEstimate": "Estimated using AMM liquidity.",
+    "marketEstimate": "Estimasi pasar indikatif; kuotasi XRPL yang dapat dieksekusi mungkin berbeda.",
     "available": "Available",
     "balance": "Balance",
     "balanceLoading": "Loading balance…",
@@ -116,9 +121,9 @@
     "available": "Available for this pair",
     "unavailable": "No AMM pool for this pair",
     "fee": "Trading fee",
-    "estimate": "AMM estimate",
+    "estimate": "Hanya AMM ini",
     "payEstimate": "Pay ≈ {{value}} {{asset}}",
     "receiveEstimate": "Receive ≈ {{value}} {{asset}}",
-    "routingNote": "A swap can use this pool even when the order book has no matching offers."
+    "routingNote": "Pool ini adalah salah satu sumber likuiditas. Kuotasi swap juga dapat menggunakan buku order dan rute jembatan."
   }
 }

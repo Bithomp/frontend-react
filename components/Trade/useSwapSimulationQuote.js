@@ -10,9 +10,23 @@ const REQUEST_TIMEOUT = 15000
 const REFRESH_INTERVAL = 8000
 const MAX_ISSUED_AMOUNT = '9999999999999999e80'
 const MAX_XRP_DROPS = '100000000000000000'
+const NATIVE_BALANCE_RESULTS = new Set([
+  'tecINSUFF_FEE',
+  'tecUNFUNDED',
+  'tecUNFUNDED_PAYMENT',
+  'telINSUF_FEE_P',
+  'terINSUF_FEE_B'
+])
 
 const sameAsset = (first, second) =>
   first?.currency === second?.currency && (first?.issuer || '') === (second?.issuer || '')
+
+const failedQuoteStatus = (engineResult) => {
+  if (NATIVE_BALANCE_RESULTS.has(engineResult)) return 'nativeBalance'
+  if (engineResult === 'tecPATH_PARTIAL') return 'partial'
+  if (engineResult === 'tecPATH_DRY') return 'empty'
+  return 'failed'
+}
 
 const rlusdBridge = () => {
   if (network === 'mainnet' || network === 'staging') {
@@ -191,7 +205,7 @@ export default function useSwapSimulationQuote({
           return
         }
         if (result.engine_result !== 'tesSUCCESS') {
-          const status = result.engine_result?.startsWith('tec') ? 'empty' : 'error'
+          const status = failedQuoteStatus(result.engine_result)
           setQuoteError(result.engine_result || 'simulation-failed', status)
           scheduleRefresh()
           return

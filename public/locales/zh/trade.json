@@ -29,11 +29,16 @@
     "sameAsset": "Choose two different assets.",
     "insufficientLiquidity": "Not enough liquidity in the direct order book.",
     "ammInsufficientLiquidity": "The direct AMM pool cannot fill this amount. Try a smaller amount.",
-    "noRoute": "未找到适用于您可用余额的可执行 XRPL 路径。请尝试更小的金额。",
+    "buyBalanceInsufficient": "{{asset}} 余额或市场流动性不足，无法买入此数量。请输入更小的数量。",
+    "swapLiquidityInsufficient": "市场流动性不足，无法兑换此金额。请输入更小的金额。",
+    "noRoute": "当前没有适用于此交易对的流动性路径。请稍后重试或选择其他交易对。",
     "quoteUnavailable": "XRPL 执行报价暂时不可用。请重试。",
-    "insufficientBalance": "Insufficient available balance.",
+    "insufficientBalance": "{{asset}} 不足：约需 {{required}} {{asset}}，当前可用 {{available}} {{asset}}。",
+    "nativeBalanceInsufficient": "可用的 {{asset}} 不足，无法完成此兑换并支付网络费用或满足储备金要求。",
+    "swapFailed": "XRPL 无法执行此兑换。所选代币可能受到限制或无法交易。",
     "swapProtection": "Estimated result · protected against more than 2% slippage.",
     "ammEstimate": "Estimated using AMM liquidity.",
+    "marketEstimate": "仅供参考的市场估算；实际可执行的 XRPL 报价可能有所不同。",
     "available": "Available",
     "balance": "Balance",
     "balanceLoading": "Loading balance…",
@@ -116,9 +121,9 @@
     "available": "Available for this pair",
     "unavailable": "No AMM pool for this pair",
     "fee": "Trading fee",
-    "estimate": "AMM estimate",
+    "estimate": "仅此 AMM",
     "payEstimate": "Pay ≈ {{value}} {{asset}}",
     "receiveEstimate": "Receive ≈ {{value}} {{asset}}",
-    "routingNote": "A swap can use this pool even when the order book has no matching offers."
+    "routingNote": "该池只是流动性来源之一。兑换报价还可使用订单簿和桥接路径。"
   }
 }

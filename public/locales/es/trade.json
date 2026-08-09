@@ -29,11 +29,16 @@
     "sameAsset": "Choose two different assets.",
     "insufficientLiquidity": "Not enough liquidity in the direct order book.",
     "ammInsufficientLiquidity": "The direct AMM pool cannot fill this amount. Try a smaller amount.",
-    "noRoute": "No se encontró una ruta XRPL ejecutable para tu saldo disponible. Prueba con un importe menor.",
+    "buyBalanceInsufficient": "No hay suficiente saldo de {{asset}} o liquidez de mercado para comprar esta cantidad. Introduce una cantidad menor.",
+    "swapLiquidityInsufficient": "No hay suficiente liquidez en el mercado para intercambiar este importe. Introduce un importe menor.",
+    "noRoute": "Actualmente no hay ninguna ruta de liquidez disponible para este par. Inténtalo de nuevo más tarde o elige otro par.",
     "quoteUnavailable": "La cotización de ejecución de XRPL no está disponible temporalmente. Inténtalo de nuevo.",
-    "insufficientBalance": "Insufficient available balance.",
+    "insufficientBalance": "No hay suficientes {{asset}}: se necesitan aproximadamente {{required}} {{asset}} y hay {{available}} {{asset}} disponibles.",
+    "nativeBalanceInsufficient": "No hay suficientes {{asset}} disponibles para completar este intercambio y cubrir la comisión de red o la reserva.",
+    "swapFailed": "XRPL no pudo ejecutar este intercambio. Es posible que el token seleccionado esté restringido o no esté disponible para operar.",
     "swapProtection": "Estimated result · protected against more than 2% slippage.",
     "ammEstimate": "Estimated using AMM liquidity.",
+    "marketEstimate": "Estimación orientativa del mercado; la cotización ejecutable de XRPL puede variar.",
     "available": "Available",
     "balance": "Balance",
     "balanceLoading": "Loading balance…",
@@ -116,9 +121,9 @@
     "available": "Available for this pair",
     "unavailable": "No AMM pool for this pair",
     "fee": "Trading fee",
-    "estimate": "AMM estimate",
+    "estimate": "Solo este AMM",
     "payEstimate": "Pay ≈ {{value}} {{asset}}",
     "receiveEstimate": "Receive ≈ {{value}} {{asset}}",
-    "routingNote": "A swap can use this pool even when the order book has no matching offers."
+    "routingNote": "Este pool es una fuente de liquidez. La cotización del swap también puede usar libros de órdenes y rutas puente."
   }
 }
