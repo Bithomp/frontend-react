@@ -66,6 +66,7 @@
     "finer": "Finer aggregation",
     "coarser": "Coarser aggregation",
     "directOnly": "Direct pair",
+    "combined": "직접 거래 + XRP 브리지",
     "status": {
       "idle": "Waiting for pair",
       "connecting": "Connecting",

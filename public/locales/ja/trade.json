@@ -66,6 +66,7 @@
     "finer": "Finer aggregation",
     "coarser": "Coarser aggregation",
     "directOnly": "Direct pair",
+    "combined": "直接取引 + XRPブリッジ",
     "status": {
       "idle": "Waiting for pair",
       "connecting": "Connecting",

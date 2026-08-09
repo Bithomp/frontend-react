@@ -17,7 +17,7 @@
   "book": {
     "title": "Order book", "price": "Price ({{quote}})", "amount": "Amount ({{base}})", "total": "Total", "cumulative": "Total ({{quote}})", "cumulativeAmountHint": "Cumulative base amount through this price level", "cumulativeHint": "Cumulative quote amount through this price level", "levelAmount": "This level", "levelTotal": "This level", "spread": "Spread",
     "selectPair": "Select a trading pair to see live bids and asks.", "empty": "There are no open orders for this pair.", "emptyWithAmm": "There are no open orders for this pair. AMM liquidity is available below.", "error": "The live order book is temporarily unavailable.",
-    "aggregation": "Aggregation", "finer": "Finer aggregation", "coarser": "Coarser aggregation", "directOnly": "Direct pair",
+    "aggregation": "Aggregation", "finer": "Finer aggregation", "coarser": "Coarser aggregation", "directOnly": "Direct pair", "combined": "Direct + XRP bridge",
     "status": { "idle": "Waiting for pair", "connecting": "Connecting", "loading": "Updating", "ready": "Live", "error": "Offline" }
   },
   "chart": {

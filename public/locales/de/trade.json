@@ -66,6 +66,7 @@
     "finer": "Finer aggregation",
     "coarser": "Coarser aggregation",
     "directOnly": "Direct pair",
+    "combined": "Direkt + XRP-Brücke",
     "status": {
       "idle": "Waiting for pair",
       "connecting": "Connecting",

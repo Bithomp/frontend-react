@@ -117,6 +117,9 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   const [amount, setAmount] = useState('')
   const [aggregationLevel, setAggregationLevel] = useState(0)
   const { bids, asks, amm, status, error, hasLoaded } = useOrderBook(baseAsset, quoteAsset)
+  // Synthetic bridge depth is indicative; only simulation confirms an executable multi-path quote.
+  const directBookBids = useMemo(() => bids.filter((offer) => offer.source === 'direct'), [bids])
+  const directBookAsks = useMemo(() => asks.filter((offer) => offer.source === 'direct'), [asks])
   const tradeHistory = useTradeHistory(baseAsset, quoteAsset)
   const { balances, trustlines, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
   const baseBalance = baseAsset?.currency ? balances[tradeBalanceKey(baseAsset)] ?? null : null
@@ -140,9 +143,9 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   }, [price, amount])
   const directSwapEstimate = useMemo(
     () => side === 'buy'
-      ? estimateSwapCost({ bids, asks, amm, outputAmount: amount, side })
-      : estimateSwap({ bids, asks, amm, inputAmount: amount, side }),
-    [side, asks, bids, amm, amount]
+      ? estimateSwapCost({ bids: directBookBids, asks: directBookAsks, amm, outputAmount: amount, side })
+      : estimateSwap({ bids: directBookBids, asks: directBookAsks, amm, inputAmount: amount, side }),
+    [side, directBookAsks, directBookBids, amm, amount]
   )
   const swapSpendKnownInsufficient = !!account?.address &&
     orderType === 'swap' &&
@@ -226,6 +229,7 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
   const spread = bestBid && bestAsk ? bestAsk.minus(bestBid) : null
   const pairReady = baseAsset?.currency && quoteAsset?.currency
   const samePair = pairReady && baseAsset.currency === quoteAsset.currency && (baseAsset.issuer || '') === (quoteAsset.issuer || '')
+  const usesXrpBridgeBook = nativeCurrency === 'XRP' && !!baseAsset?.issuer && !!quoteAsset?.issuer
   const swapReady = orderType === 'swap' && !simulationPending && swapSpend?.gt(0) && swapReceive?.gt(0) && (
     simulationSupported ? !!simulationQuote : !!swapEstimate?.complete
   )
@@ -298,13 +302,19 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
     if (!spendBalance?.gt(0)) return null
     if (orderType === 'swap' && side === 'buy') {
       const protectedSpend = spendBalance.dividedBy(new BigNumber(1).plus(MARKET_CUSHION))
-      const estimate = estimateSwap({ bids, asks, amm, inputAmount: protectedSpend, side })
+      const estimate = estimateSwap({
+        bids: directBookBids,
+        asks: directBookAsks,
+        amm,
+        inputAmount: protectedSpend,
+        side
+      })
       return estimate?.output || null
     }
     if (orderType === 'swap') return spendBalance
     if (side === 'sell') return spendBalance
     return validNumber(price) ? spendBalance.dividedBy(price) : null
-  }, [spendBalance, side, orderType, price, bids, asks, amm])
+  }, [spendBalance, side, orderType, price, directBookBids, directBookAsks, amm])
 
   const swapPair = () => {
     setBaseAsset(quoteAsset || nativeAsset)
@@ -546,7 +556,9 @@ export default function Trade({ setSignRequest, account, refreshPage, selectedCu
 
           <div className={styles.bookColumn}>
           <section className={styles.book}>
-            <div className={styles.bookHeader}><div><h2>{t('book.title')}</h2><small>{t('book.directOnly', { defaultValue: 'Direct pair' })}</small></div><span className={styles.status}><i className={`${styles.dot} ${status === 'ready' ? styles.ready : ''}`} />{t(`book.status.${status}`)}</span></div>
+            <div className={styles.bookHeader}><div><h2>{t('book.title')}</h2><small>{usesXrpBridgeBook
+              ? t('book.combined', { defaultValue: 'Direct + XRP bridge' })
+              : t('book.directOnly', { defaultValue: 'Direct pair' })}</small></div><span className={styles.status}><i className={`${styles.dot} ${status === 'ready' ? styles.ready : ''}`} />{t(`book.status.${status}`)}</span></div>
             {!pairReady || samePair ? <div className={styles.empty}>{t('book.selectPair')}</div> : error ? <div className={styles.empty}>{t('book.error')}</div> : (
               <>
                 <div className={styles.tableHeader}><span>{t('book.price', { quote: tokenName(quoteAsset) })}</span><span title={t('book.cumulativeAmountHint', { defaultValue: 'Cumulative base amount through this price level' })}>{t('book.amount', { base: tokenName(baseAsset) })}</span><span title={t('book.cumulativeHint', { defaultValue: 'Cumulative quote amount through this price level' })}>{t('book.cumulative', { quote: tokenName(quoteAsset), defaultValue: `Total (${tokenName(quoteAsset)})` })}</span></div>
