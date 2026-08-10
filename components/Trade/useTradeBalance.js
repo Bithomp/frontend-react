@@ -26,6 +26,24 @@ const tokenBalance = (token) => {
   return value.isFinite() && value.gt(0) ? value : new BigNumber(0)
 }
 
+const trustlineLimit = (token, accountAddress) => {
+  const normalizedLimit = token?.limit ?? token?.Limit?.value
+  if (normalizedLimit !== undefined) return new BigNumber(normalizedLimit)
+
+  const accountLimit = token?.HighLimit?.issuer === accountAddress
+    ? token.HighLimit.value
+    : token?.LowLimit?.issuer === accountAddress
+      ? token.LowLimit.value
+      : null
+  return accountLimit === null ? null : new BigNumber(accountLimit)
+}
+
+const trustlineCanReceive = (token, accountAddress) => {
+  if (!token) return false
+  const limit = trustlineLimit(token, accountAddress)
+  return limit === null || (limit.isFinite() && limit.gt(0))
+}
+
 const nativeBalance = (addressData, serverData) => {
   const ledgerInfo = addressData?.ledgerInfo
   const balanceDrops = new BigNumber(ledgerInfo?.balance ?? NaN)
@@ -68,7 +86,7 @@ export default function useTradeBalances(accountAddress, assets, refreshPage) {
           const key = tradeBalanceKey(asset)
           const trustline = trustlines.find((token) => assetMatches(token, asset, accountAddress))
           balances[key] = tokenBalance(trustline)
-          trustlinesByAsset[key] = !!trustline
+          trustlinesByAsset[key] = trustlineCanReceive(trustline, accountAddress)
         })
         setState({ balances, trustlines: trustlinesByAsset, loading: false })
       })
