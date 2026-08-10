@@ -10541,7 +10541,11 @@ export default function Account({
                         const isExpanded = expandedEscrowKey === escrowKey
                         const counterpartName = activeEscrowsTab === 'sent' ? 'Destination' : 'Account'
                         const counterpartAddress = activeEscrowsTab === 'sent' ? escrow?.Destination : escrow?.Account
-                        const amountCollapsed = amountFormat(escrow?.Amount, { short: true, maxFractionDigits: 2 })
+                        const amountCollapsed = amountFormat(escrow?.Amount, {
+                          short: true,
+                          maxFractionDigits: 2,
+                          icon: true
+                        })
                         const cancelAfterText = escrow?.CancelAfter
                           ? timeFromNow(escrow.CancelAfter, i18n, 'ripple')
                           : ta('states.not-set')
@@ -10725,7 +10729,7 @@ export default function Account({
                                 <div className="detail-row">
                                   <span>{ta('labels.amount')}:</span>
                                   <span>
-                                    {amountFormat(escrow?.Amount, { precise: 'nice' })}
+                                    {amountFormat(escrow?.Amount, { precise: 'nice', icon: true })}
                                     {!isSelfEscrow && expandedAmountFiatNode}
                                   </span>
                                 </div>
