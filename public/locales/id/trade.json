@@ -27,6 +27,8 @@
     "review-sell": "Review sell order",
     "selectPair": "Select both assets to start trading.",
     "sameAsset": "Choose two different assets.",
+    "accountGlobalFreeze": "This account has Global Freeze enabled and cannot receive or trade issued tokens.",
+    "accountGlobalFreezePermanent": "This account has permanent Global Freeze enabled and cannot receive or trade issued tokens. Use another account for this swap.",
     "insufficientLiquidity": "Not enough liquidity in the direct order book.",
     "ammInsufficientLiquidity": "The direct AMM pool cannot fill this amount. Try a smaller amount.",
     "buyBalanceInsufficient": "Saldo {{asset}} atau likuiditas pasar tidak cukup untuk membeli jumlah ini. Masukkan jumlah yang lebih kecil.",

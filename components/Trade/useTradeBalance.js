@@ -56,22 +56,22 @@ const nativeBalance = (addressData, serverData) => {
 }
 
 export default function useTradeBalances(accountAddress, assets, refreshPage) {
-  const [state, setState] = useState({ balances: {}, trustlines: {}, loading: false })
+  const [state, setState] = useState({ balances: {}, trustlines: {}, accountFlags: {}, loading: false })
   const assetIds = assets.map(tradeBalanceKey).join('|')
 
   useEffect(() => {
     if (!accountAddress || !assets.some((asset) => asset?.currency)) {
-      setState({ balances: {}, trustlines: {}, loading: false })
+      setState({ balances: {}, trustlines: {}, accountFlags: {}, loading: false })
       return
     }
 
     let ignore = false
-    setState({ balances: {}, trustlines: {}, loading: true })
+    setState({ balances: {}, trustlines: {}, accountFlags: {}, loading: true })
     const needsNative = assets.some((asset) => asset?.currency && !asset.issuer)
     const needsTokens = assets.some((asset) => asset?.issuer)
 
     Promise.all([
-      needsNative ? axios(`/v2/address/${encodeURIComponent(accountAddress)}?ledgerInfo=true`) : Promise.resolve(null),
+      axios(`/v2/address/${encodeURIComponent(accountAddress)}?ledgerInfo=true`),
       needsNative ? axios('/v2/server') : Promise.resolve(null),
       needsTokens ? axios(`v2/trustlines/${encodeURIComponent(accountAddress)}`) : Promise.resolve(null)
     ])
@@ -88,10 +88,11 @@ export default function useTradeBalances(accountAddress, assets, refreshPage) {
           balances[key] = tokenBalance(trustline)
           trustlinesByAsset[key] = trustlineCanReceive(trustline, accountAddress)
         })
-        setState({ balances, trustlines: trustlinesByAsset, loading: false })
+        const accountFlags = addressResult?.data?.ledgerInfo?.flags || {}
+        setState({ balances, trustlines: trustlinesByAsset, accountFlags, loading: false })
       })
       .catch(() => {
-        if (!ignore) setState({ balances: {}, trustlines: {}, loading: false })
+        if (!ignore) setState({ balances: {}, trustlines: {}, accountFlags: {}, loading: false })
       })
 
     return () => {

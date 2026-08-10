@@ -287,7 +287,7 @@ export default function Trade({
   const directBookBids = useMemo(() => bids.filter((offer) => offer.source === 'direct'), [bids])
   const directBookAsks = useMemo(() => asks.filter((offer) => offer.source === 'direct'), [asks])
   const tradeHistory = useTradeHistory(baseAsset, quoteAsset)
-  const { balances, trustlines, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
+  const { balances, trustlines, accountFlags, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
   const baseBalance = baseAsset?.currency ? balances[tradeBalanceKey(baseAsset)] ?? null : null
   const quoteBalance = quoteAsset?.currency ? balances[tradeBalanceKey(quoteAsset)] ?? null : null
   const spendAsset = side === 'sell' ? baseAsset : quoteAsset
@@ -303,6 +303,9 @@ export default function Trade({
       )
     : []
   const missingTrustlineAsset = missingTrustlineAssets[0] || null
+  const accountGlobalFreezeBlocksTrade = !!account?.address &&
+    accountFlags?.globalFreeze === true &&
+    (!!baseAsset?.issuer || !!quoteAsset?.issuer)
   const limitTotal = useMemo(() => {
     if (!validNumber(price) || !validNumber(amount)) return ''
     return new BigNumber(price).multipliedBy(amount).toFixed()
@@ -332,6 +335,7 @@ export default function Trade({
     orderType === 'swap' &&
     !balanceLoading &&
     !missingTrustlineAsset &&
+    !accountGlobalFreezeBlocksTrade &&
     !swapSpendKnownInsufficient &&
     baseAsset?.currency &&
     quoteAsset?.currency &&
@@ -430,7 +434,7 @@ export default function Trade({
   const spendWithinBalance = !swapSpendKnownInsufficient && (
     !account?.address || spendBalance === null || requiredSpend.lte(spendBalance)
   )
-  const formReady = pairReady && !samePair && !balanceLoading && !missingTrustlineAsset && spendWithinBalance && (
+  const formReady = pairReady && !samePair && !balanceLoading && !missingTrustlineAsset && !accountGlobalFreezeBlocksTrade && spendWithinBalance && (
     orderType === 'swap'
       ? !!account?.address && validAssetAmount(baseAsset, amount) && validAssetAmount(spendAsset, swapSpend) && validAssetAmount(receiveAsset, swapReceive) && swapReady
       : validAssetAmount(baseAsset, amount) && validAssetAmount(quoteAsset, total) && validNumber(price)
@@ -755,6 +759,13 @@ export default function Trade({
                 available: bookNumber(spendBalance, spendAmountDecimals),
                 defaultValue: 'Not enough {{asset}}: approximately {{required}} {{asset}} required, {{available}} {{asset}} available.'
               })}</p>}
+              {accountGlobalFreezeBlocksTrade && <p className={styles.error}>{accountFlags?.noFreeze
+                ? t('form.accountGlobalFreezePermanent', {
+                    defaultValue: 'This account has permanent Global Freeze enabled and cannot receive or trade issued tokens. Use another account for this swap.'
+                  })
+                : t('form.accountGlobalFreeze', {
+                    defaultValue: 'This account has Global Freeze enabled and cannot receive or trade issued tokens.'
+                  })}</p>}
               {simulationEnabled && spendWithinBalance && <div className={styles.quoteStatus}>
                 {!simulationPending && !simulationQuote && <p className={styles.error}>{simulationErrorMessage}</p>}
                 {(simulationPending || simulationQuote) && <p className={styles.scopeNote}>{simulationPending
