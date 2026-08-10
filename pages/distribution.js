@@ -11,6 +11,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../utils/mobile'
 
 const mptIssuanceId = (token) => token?.mptokenIssuanceID || token?.MPTokenIssuanceID || token?.mpt_issuance_id
+const XRP_RICH_LIST_LIMIT = 500
+
+const xrpRichListUrl = (escrowMode = 'none') => {
+  const params = new URLSearchParams()
+
+  if (escrowMode !== 'none') params.set('escrow', escrowMode)
+  if (escrowMode !== 'short') params.set('limit', XRP_RICH_LIST_LIMIT)
+
+  return `v2/addresses/richlist?${params.toString()}`
+}
 
 const normalizeMptRichlist = (richlist, token) => {
   const scale = Number(richlist?.summary?.scale ?? token?.scale)
@@ -72,7 +82,7 @@ export async function getServerSideProps(context) {
     if (currency && currencyIssuer) {
       url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}?summary=true&convertCurrencies=${serverCurrency}&currencyDetails=true`
     } else {
-      url = 'v2/addresses/richlist' + (initialEscrowMode !== 'none' ? `?escrow=${initialEscrowMode}` : '')
+      url = xrpRichListUrl(initialEscrowMode)
     }
 
     try {
@@ -330,12 +340,7 @@ export default function Distribution({
   )
 
   const checkApi = async () => {
-    let apiUrl = 'v2/addresses/richlist'
-
-    // Add escrow parameter if mode is selected
-    if (escrowMode !== 'none') {
-      apiUrl += `?escrow=${escrowMode}`
-    }
+    let apiUrl = xrpRichListUrl(escrowMode)
 
     const selectedMptId = mptIssuanceId(token)
     if (selectedMptId) {
