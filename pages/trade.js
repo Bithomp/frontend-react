@@ -39,7 +39,7 @@ const defaultQuoteAsset = rlusdToken(network)
 const BOOK_ROWS_PER_SIDE = 6
 const MIN_BOOK_LEVEL_FIAT_VALUE = new BigNumber('0.01')
 const MIN_AGGREGATION_LEVEL = -3
-const MAX_AGGREGATION_LEVEL = 3
+const MAX_AGGREGATION_LEVEL = 9
 const TRADE_PAIR_QUERY_NAMES = [
   'baseCurrency',
   'baseCurrencyIssuer',
@@ -166,7 +166,7 @@ const bookNumber = (value, decimals, fixed = false) => {
     groupSize: 3
   })
   if (fixed) return formatted
-  const trimmed = formatted.replace(/\.?0+$/, '')
+  const trimmed = formatted.replace(/(\.\d*?[1-9])0+$|\.0+$/, '$1')
   if (trimmed !== '0') return trimmed
   return value.gt(0) ? `<${new BigNumber(1).shiftedBy(-decimals).toFixed(decimals)}` : '0'
 }
@@ -219,7 +219,12 @@ const withCumulativeTotal = (offers) => {
   return offers.map((offer) => {
     cumulativeAmount = cumulativeAmount.plus(offer.amount)
     cumulativeTotal = cumulativeTotal.plus(offer.total)
-    return { ...offer, cumulativeAmount, cumulativeTotal }
+    return {
+      ...offer,
+      cumulativeAmount,
+      cumulativeTotal,
+      cumulativePrice: cumulativeTotal.dividedBy(cumulativeAmount)
+    }
   })
 }
 
@@ -428,18 +433,26 @@ export default function Trade({
   const visibleBids = useMemo(() => aggregateBook(bids, 'bid', aggregationStep), [bids, aggregationStep])
   const cumulativeAsks = useMemo(() => withCumulativeTotal(visibleAsks), [visibleAsks])
   const cumulativeBids = useMemo(() => withCumulativeTotal(visibleBids), [visibleBids])
+  const bookTotalDecimals = useMemo(
+    () => [...cumulativeAsks, ...cumulativeBids].reduce(
+      (decimals, offer) => Math.max(decimals, bookAmountDecimals(offer.cumulativeTotal, quoteAmountDecimals)),
+      quoteAmountDecimals
+    ),
+    [cumulativeAsks, cumulativeBids, quoteAmountDecimals]
+  )
   const spread = bestBid && bestAsk ? bestAsk.minus(bestBid) : null
   const pairReady = baseAsset?.currency && quoteAsset?.currency
   const samePair = pairReady && sameTradeAsset(baseAsset, quoteAsset)
   const usesXrpBridgeBook = nativeCurrency === 'XRP' && !!baseAsset?.issuer && !!quoteAsset?.issuer
   const displayedHasAmmLiquidity = matchesPair && status === 'ready' && !error && hasAmmLiquidity
-  const bookScope = displayedHasAmmLiquidity
+  const bookComposition = displayedHasAmmLiquidity
     ? usesXrpBridgeBook
       ? t('book.combinedWithAmm', { defaultValue: 'Direct + XRP bridge + AMM' })
       : t('book.directWithAmm', { defaultValue: 'Direct + AMM' })
     : usesXrpBridgeBook
       ? t('book.combined', { defaultValue: 'Direct + XRP bridge' })
       : t('book.directOnly', { defaultValue: 'Direct pair' })
+  const bookScope = t('book.indicative', { defaultValue: 'Indicative' }) + ' · ' + bookComposition
   const swapReady = orderType === 'swap' && !simulationPending && swapSpend?.gt(0) && swapReceive?.gt(0) && (
     simulationSupported ? !!simulationQuote : !!swapEstimate?.complete
   )
@@ -644,9 +657,9 @@ export default function Trade({
 
     return rows.map((offer, index) => offer ? (
       <div className={`${styles.row} ${styles[offerSide]}`} key={`${offerSide}-${index}`} onClick={() => selectOffer(offer, offerSide)}>
-        <span title={offer.price.toFixed()}>{bookNumber(offer.price, priceDecimals, true)}</span>
+        <span title={`${t('book.averagePriceHint', { defaultValue: 'Cumulative average price' })}: ${offer.cumulativePrice.toFixed()} · ${t('book.levelPriceHint', { defaultValue: 'Click to use level price' })}: ${offer.price.toFixed()}`}>{bookNumber(offer.cumulativePrice, priceDecimals, true)}</span>
         <span title={`${t('book.levelAmount', { defaultValue: 'This level' })}: ${offer.amount.toFixed()}`}>{bookNumber(offer.cumulativeAmount, baseAmountDecimals, true)}</span>
-        <span title={`${t('book.levelTotal', { defaultValue: 'This level' })}: ${offer.total.toFixed()}`}>{bookNumber(offer.cumulativeTotal, bookAmountDecimals(offer.cumulativeTotal, quoteAmountDecimals))}</span>
+        <span title={`${t('book.levelTotal', { defaultValue: 'This level' })}: ${offer.total.toFixed()}`}>{bookNumber(offer.cumulativeTotal, bookTotalDecimals, true)}</span>
       </div>
     ) : (
       <div className={`${styles.row} ${styles.placeholderRow}`} key={`${offerSide}-empty-${index}`} aria-hidden="true">
@@ -809,7 +822,7 @@ export default function Trade({
             <section className={styles.book}>
               <div className={styles.bookHeader}><div><h2>{t('book.title')}</h2><small>{bookScope}</small></div><span className={styles.status}><i className={`${styles.dot} ${status === 'ready' ? styles.ready : ''}`} />{t(`book.status.${status}`)}</span></div>
               <>
-                  <div className={styles.tableHeader}><span>{t('book.price', { quote: tokenName(quoteAsset) })}</span><span title={t('book.cumulativeAmountHint', { defaultValue: 'Cumulative base amount through this price level' })}>{t('book.amount', { base: tokenName(baseAsset) })}</span><span title={t('book.cumulativeHint', { defaultValue: 'Cumulative quote amount through this price level' })}>{t('book.cumulative', { quote: tokenName(quoteAsset), defaultValue: `Total (${tokenName(quoteAsset)})` })}</span></div>
+                  <div className={styles.tableHeader}><span title={t('book.averagePriceHint', { defaultValue: 'Cumulative average price' })}>{t('book.averagePrice', { quote: tokenName(quoteAsset), defaultValue: `Avg. price (${tokenName(quoteAsset)})` })}</span><span title={t('book.cumulativeAmountHint', { defaultValue: 'Cumulative base amount through this price level' })}>{t('book.amount', { base: tokenName(baseAsset) })}</span><span title={t('book.cumulativeHint', { defaultValue: 'Cumulative quote amount through this price level' })}>{t('book.cumulative', { quote: tokenName(quoteAsset), defaultValue: `Total (${tokenName(quoteAsset)})` })}</span></div>
                   {renderRows(matchesPair && status === 'ready' && !error ? [...cumulativeAsks].reverse() : [], 'ask')}
                   <div className={styles.spread}><span>{t('book.spread')}</span><strong>{matchesPair && status === 'ready' && !error && spread ? `${bookNumber(spread, priceDecimals, true)} ${tokenName(quoteAsset)}` : '—'}</strong></div>
                   {renderRows(matchesPair && status === 'ready' && !error ? cumulativeBids : [], 'bid')}

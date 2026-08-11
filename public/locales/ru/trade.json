@@ -57,6 +57,9 @@
   "book": {
     "title": "Стакан заявок",
     "price": "Цена ({{quote}})",
+    "averagePrice": "Средняя цена ({{quote}})",
+    "averagePriceHint": "Средняя цена для накопленного объёма",
+    "levelPriceHint": "Нажмите, чтобы использовать цену уровня",
     "amount": "Количество ({{base}})",
     "total": "Итого",
     "cumulative": "Итого ({{quote}})",
@@ -71,6 +74,7 @@
     "aggregation": "Агрегация",
     "finer": "Уменьшить шаг агрегации",
     "coarser": "Увеличить шаг агрегации",
+    "indicative": "Ориентировочно",
     "directOnly": "Прямая пара",
     "combined": "Прямые заявки + мост через XRP",
     "directWithAmm": "Прямые заявки + AMM",

@@ -57,6 +57,9 @@
   "book": {
     "title": "Order book",
     "price": "Price ({{quote}})",
+    "averagePrice": "Avg. price ({{quote}})",
+    "averagePriceHint": "Cumulative average price",
+    "levelPriceHint": "Click to use level price",
     "amount": "Amount ({{base}})",
     "total": "Total",
     "cumulative": "Total ({{quote}})",
@@ -71,6 +74,7 @@
     "aggregation": "Aggregation",
     "finer": "Finer aggregation",
     "coarser": "Coarser aggregation",
+    "indicative": "Indicative",
     "directOnly": "Direct pair",
     "combined": "Direct + pont XRP",
     "directWithAmm": "Direct + AMM",
