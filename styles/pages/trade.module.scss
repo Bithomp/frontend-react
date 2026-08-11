@@ -146,6 +146,8 @@
   .layout { grid-template-columns: 1fr; }
   .bookColumn,
   .chartColumn { grid-column: auto; }
+  .chartColumn .chart { order: 2; }
+  .chartColumn .userOrders { order: 1; }
   .book { min-height: 610px; padding: 15px 10px; }
   .panel { padding: 16px; }
   .chartHeader { flex-wrap: wrap; }

@@ -828,31 +828,6 @@ export default function Trade({
                   </div>}
                 </>
             </section>
-            <UserOrders
-              account={account}
-              baseAsset={baseAsset}
-              quoteAsset={quoteAsset}
-              baseName={tokenName(baseAsset)}
-              quoteName={tokenName(quoteAsset)}
-              baseDecimals={baseAmountDecimals}
-              priceDecimals={priceDecimals}
-              setSignRequest={setSignRequest}
-              refreshPage={refreshPage}
-              className={styles.userOrders}
-              labels={{
-                title: t('orders.title', { defaultValue: 'Your open orders' }),
-                side: t('orders.side', { defaultValue: 'Side' }),
-                amount: t('orders.amount', { defaultValue: 'Amount' }),
-                price: t('orders.price', { defaultValue: 'Price' }),
-                action: t('orders.action', { defaultValue: 'Action' }),
-                buy: t('orders.buy', { defaultValue: 'Buy' }),
-                sell: t('orders.sell', { defaultValue: 'Sell' }),
-                cancel: t('orders.cancel', { defaultValue: 'Cancel' }),
-                signIn: t('orders.signIn', { defaultValue: 'Sign in to view your open orders.' }),
-                loading: t('orders.loading', { defaultValue: 'Loading your open orders…' }),
-                empty: t('orders.empty', { defaultValue: 'You have no open orders for this pair.' })
-              }}
-            />
           </div>
 
           <div className={styles.chartColumn}>
@@ -879,6 +854,31 @@ export default function Trade({
                 loading: t('chart.priceLoading', { defaultValue: 'Loading price history…' }),
                 empty: t('chart.priceEmpty', { defaultValue: 'No price history for this pair' }),
                 error: t('chart.error', { defaultValue: 'Price history is temporarily unavailable' })
+              }}
+            />
+            <UserOrders
+              account={account}
+              baseAsset={baseAsset}
+              quoteAsset={quoteAsset}
+              baseName={tokenName(baseAsset)}
+              quoteName={tokenName(quoteAsset)}
+              baseDecimals={baseAmountDecimals}
+              priceDecimals={priceDecimals}
+              setSignRequest={setSignRequest}
+              refreshPage={refreshPage}
+              className={styles.userOrders}
+              labels={{
+                title: t('orders.title', { defaultValue: 'Your open orders' }),
+                side: t('orders.side', { defaultValue: 'Side' }),
+                amount: t('orders.amount', { defaultValue: 'Amount' }),
+                price: t('orders.price', { defaultValue: 'Price' }),
+                action: t('orders.action', { defaultValue: 'Action' }),
+                buy: t('orders.buy', { defaultValue: 'Buy' }),
+                sell: t('orders.sell', { defaultValue: 'Sell' }),
+                cancel: t('orders.cancel', { defaultValue: 'Cancel' }),
+                signIn: t('orders.signIn', { defaultValue: 'Sign in to view your open orders.' }),
+                loading: t('orders.loading', { defaultValue: 'Loading your open orders…' }),
+                empty: t('orders.empty', { defaultValue: 'You have no open orders for this pair.' })
               }}
             />
           </div>
