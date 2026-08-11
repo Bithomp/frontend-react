@@ -9,10 +9,8 @@ import SEO from '../components/SEO'
 import TokenSelector from '../components/UI/TokenSelector'
 import useOrderBook from '../components/Trade/useOrderBook'
 import TradeChart from '../components/Trade/TradeChart'
-import RecentTrades from '../components/Trade/RecentTrades'
 import UserOrders from '../components/Trade/UserOrders'
 import useTradeBalances, { tradeBalanceKey } from '../components/Trade/useTradeBalance'
-import useTradeHistory from '../components/Trade/useTradeHistory'
 import useSwapSimulationQuote from '../components/Trade/useSwapSimulationQuote'
 import useAssetFiatRate from '../components/SignForms/useAssetFiatRate'
 import {
@@ -301,7 +299,6 @@ export default function Trade({
     error,
     matchesPair
   } = useOrderBook(baseAsset, quoteAsset)
-  const tradeHistory = useTradeHistory(baseAsset, quoteAsset)
   const { balances, trustlines, accountFlags, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
   const baseBalance = baseAsset?.currency ? balances[tradeBalanceKey(baseAsset)] ?? null : null
   const quoteBalance = quoteAsset?.currency ? balances[tradeBalanceKey(quoteAsset)] ?? null : null
@@ -864,7 +861,6 @@ export default function Trade({
               quoteAsset={quoteAsset}
               baseName={tokenName(baseAsset)}
               quoteName={tokenName(quoteAsset)}
-              history={tradeHistory}
               className={styles.chart}
               headerClassName={styles.chartHeader}
               controlsClassName={styles.chartControls}
@@ -872,42 +868,17 @@ export default function Trade({
               activePeriodClassName={styles.activeChartPeriod}
               labels={{
                 title: t('chart.title', { defaultValue: 'Price chart' }),
-                scope: t('chart.directOnly', { defaultValue: 'Direct pair trades' }),
-                intervalLabel: t('chart.interval', { defaultValue: 'Candle interval' }),
-                chartTypeLabel: t('chart.type', { defaultValue: 'Chart type' }),
-                candles: t('chart.candles', { defaultValue: 'Candles' }),
-                line: t('chart.line', { defaultValue: 'Line' }),
-                loading: t('chart.loading', { defaultValue: 'Loading trades…' }),
-                empty: t('chart.empty', { defaultValue: 'No trades for this pair in the last 24 hours' }),
+                scope: t('chart.synthetic', {
+                  native: nativeCurrency,
+                  defaultValue: `Derived from ${nativeCurrency} price history`
+                }),
+                intervalLabel: t('chart.periodLabel', { defaultValue: 'Chart period' }),
+                week: t('chart.week', { defaultValue: 'Week' }),
+                month: t('chart.month', { defaultValue: 'Month' }),
+                year: t('chart.year', { defaultValue: 'Year' }),
+                loading: t('chart.priceLoading', { defaultValue: 'Loading price history…' }),
+                empty: t('chart.priceEmpty', { defaultValue: 'No price history for this pair' }),
                 error: t('chart.error', { defaultValue: 'Price history is temporarily unavailable' })
-              }}
-            />
-            <RecentTrades
-              swaps={tradeHistory.swaps}
-              loading={tradeHistory.loading}
-              error={tradeHistory.error}
-              onRefresh={tradeHistory.refresh}
-              account={account}
-              baseAsset={baseAsset}
-              quoteAsset={quoteAsset}
-              baseName={tokenName(baseAsset)}
-              quoteName={tokenName(quoteAsset)}
-              baseDecimals={baseAmountDecimals}
-              quoteDecimals={quoteAmountDecimals}
-              priceDecimals={priceDecimals}
-              className={styles.recentTrades}
-              headerClassName={styles.recentTradesHeader}
-              labels={{
-                title: t('trades.title', { defaultValue: 'Recent trades' }),
-                loading: t('trades.loading', { defaultValue: 'Loading recent trades…' }),
-                empty: t('trades.empty', { defaultValue: 'No recent trades for this pair.' }),
-                error: t('trades.error', { defaultValue: 'Recent trades are temporarily unavailable.' }),
-                time: t('trades.time', { defaultValue: 'Time' }),
-                price: t('trades.price', { defaultValue: 'Price' }),
-                amount: t('trades.amount', { defaultValue: 'Amount' }),
-                total: t('trades.total', { defaultValue: 'Total' }),
-                transaction: t('trades.transaction', { defaultValue: 'Transaction' }),
-                yours: t('trades.yours', { defaultValue: 'Yours' })
               }}
             />
           </div>
