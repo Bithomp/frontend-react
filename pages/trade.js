@@ -38,6 +38,9 @@ const nativeAsset = { currency: nativeCurrency }
 const defaultQuoteAsset = rlusdToken(network)
 const BOOK_ROWS_PER_SIDE = 7
 const MIN_BOOK_LEVEL_FIAT_VALUE = new BigNumber('0.01')
+const HIGH_VALUE_ASSET_FIAT_THRESHOLD = new BigNumber(10000)
+const HIGH_VALUE_AGGREGATION_DIVISOR = new BigNumber(250)
+const STANDARD_AGGREGATION_DIVISOR = new BigNumber(10000)
 const MIN_AGGREGATION_LEVEL = -3
 const MAX_AGGREGATION_LEVEL = 9
 const TRADE_PAIR_QUERY_NAMES = [
@@ -421,7 +424,11 @@ export default function Trade({
       ? knownBaseRate
       : inferredBaseRate
     const fiatStep = aggregationBaseRate?.isFinite() && aggregationBaseRate.gt(0)
-      ? BigNumber.minimum(1, aggregationBaseRate.dividedBy(10000))
+      ? aggregationBaseRate.dividedBy(
+        aggregationBaseRate.gte(HIGH_VALUE_ASSET_FIAT_THRESHOLD)
+          ? HIGH_VALUE_AGGREGATION_DIVISOR
+          : STANDARD_AGGREGATION_DIVISOR
+      )
       : new BigNumber(1)
     return niceAggregationStep(fiatStep.dividedBy(quoteRate)) || fallbackAggregationStep
   }, [baseAssetFiatRate, fallbackAggregationStep, quoteAssetFiatRate, referencePrice])
