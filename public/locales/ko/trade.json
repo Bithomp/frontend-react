@@ -91,6 +91,9 @@
   },
   "chart": {
     "title": "Price chart",
+    "scaleLabel": "Y축 눈금",
+    "log": "로그",
+    "linear": "선형",
     "directOnly": "Direct pair trades",
     "type": "Chart type",
     "candles": "Candles",

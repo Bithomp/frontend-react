@@ -91,6 +91,9 @@
   },
   "chart": {
     "title": "Price chart",
+    "scaleLabel": "Y 轴刻度",
+    "log": "对数",
+    "linear": "线性",
     "directOnly": "Direct pair trades",
     "type": "Chart type",
     "candles": "Candles",

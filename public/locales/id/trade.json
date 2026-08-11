@@ -91,6 +91,9 @@
   },
   "chart": {
     "title": "Price chart",
+    "scaleLabel": "Skala sumbu Y",
+    "log": "Logaritmik",
+    "linear": "Linear",
     "directOnly": "Direct pair trades",
     "type": "Chart type",
     "candles": "Candles",

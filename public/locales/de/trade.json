@@ -91,6 +91,9 @@
   },
   "chart": {
     "title": "Price chart",
+    "scaleLabel": "Y-Achsen-Skalierung",
+    "log": "Logarithmisch",
+    "linear": "Linear",
     "directOnly": "Direct pair trades",
     "type": "Chart type",
     "candles": "Candles",

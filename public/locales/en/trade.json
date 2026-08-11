@@ -22,6 +22,9 @@
   },
   "chart": {
     "title": "Price chart",
+    "scaleLabel": "Y-axis scale",
+    "log": "Log",
+    "linear": "Linear",
     "directOnly": "Direct pair trades",
     "type": "Chart type",
     "candles": "Candles",

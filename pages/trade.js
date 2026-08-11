@@ -885,6 +885,9 @@ export default function Trade({
                   defaultValue: `Derived from ${nativeCurrency} price history`
                 }),
                 intervalLabel: t('chart.periodLabel', { defaultValue: 'Chart period' }),
+                scaleLabel: t('chart.scaleLabel', { defaultValue: 'Y-axis scale' }),
+                log: t('chart.log', { defaultValue: 'Log' }),
+                linear: t('chart.linear', { defaultValue: 'Linear' }),
                 week: t('chart.week', { defaultValue: 'Week' }),
                 month: t('chart.month', { defaultValue: 'Month' }),
                 year: t('chart.year', { defaultValue: 'Year' }),

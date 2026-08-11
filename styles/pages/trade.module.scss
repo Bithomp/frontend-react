@@ -95,7 +95,7 @@
 .chartHeader { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding: 0 8px 4px; }
 .chartHeader h2 { margin: 0 0 3px; font-size: 22px; }
 .chartHeader span { color: var(--text-secondary); font-size: 13px; }
-.chartControls { display: flex; align-items: center; gap: 6px; }
+.chartControls { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
 .chartPeriods { display: flex; padding: 3px; border: 1px solid var(--unaccent-icon); border-radius: 8px; background: var(--background-secondary); }
 .chartPeriods button { min-width: 42px; padding: 5px 8px; border: 0; border-radius: 5px; background: transparent; color: var(--text-secondary); font-weight: 700; cursor: pointer; }
 .chartPeriods .activeChartPeriod { background: var(--accent-link); color: var(--background-main); }

@@ -91,6 +91,9 @@
   },
   "chart": {
     "title": "Price chart",
+    "scaleLabel": "Y軸スケール",
+    "log": "対数",
+    "linear": "線形",
     "directOnly": "Direct pair trades",
     "type": "Chart type",
     "candles": "Candles",
