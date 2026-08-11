@@ -51,7 +51,7 @@
     "minimumReceived": "Minimum received",
     "signInToSwap": "Sign in to swap",
     "simulatingSwap": "XRPLの見積もりを計算中…",
-    "simulatedQuote": "オーダーブックとAMMを使用し、直接、XRP、RLUSDの各ルートでシミュレーション · 2%のスリッページ保護。",
+    "simulatedQuote": "オーダーブックとAMMを使用し、直接およびXRPルートでシミュレーション · 2%のスリッページ保護。",
     "walletHint": "You will review and sign the order in your wallet. Bithomp never has access to your keys."
   },
   "book": {

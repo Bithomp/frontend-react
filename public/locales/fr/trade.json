@@ -51,7 +51,7 @@
     "minimumReceived": "Minimum received",
     "signInToSwap": "Sign in to swap",
     "simulatingSwap": "Calcul de l’estimation XRPL…",
-    "simulatedQuote": "Simulation via les itinéraires directs, XRP et RLUSD avec les carnets d’ordres et les AMM · protection contre un glissement de 2 %.",
+    "simulatedQuote": "Simulation via les itinéraires directs et XRP avec les carnets d’ordres et les AMM · protection contre un glissement de 2 %.",
     "walletHint": "You will review and sign the order in your wallet. Bithomp never has access to your keys."
   },
   "book": {

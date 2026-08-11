@@ -836,7 +836,7 @@ export default function Trade({
                 {!simulationPending && !simulationQuote && <p className={styles.error}>{simulationErrorMessage}</p>}
                 {(simulationPending || simulationQuote) && <p className={styles.scopeNote}>{simulationPending
                   ? t('form.simulatingSwap', { defaultValue: 'Calculating XRPL quote…' })
-                  : t('form.simulatedQuote', { defaultValue: 'Simulated across direct, XRP, and RLUSD routes using order books and AMMs · 2% slippage protection.' })}</p>}
+                  : t('form.simulatedQuote', { defaultValue: 'Simulated across direct and XRP routes using order books and AMMs · 2% slippage protection.' })}</p>}
               </div>}
               <p className={styles.hint}>{t('form.walletHint')}</p>
             </section>

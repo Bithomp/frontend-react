@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 
-import { nativeCurrency, network, tradeSimulationRpcServer } from '../../utils'
-import { MAINNET_RLUSD_ISSUER, RLUSD_CURRENCY, TESTNET_RLUSD_ISSUER } from '../../utils/issuedTokens'
+import { nativeCurrency, tradeSimulationRpcServer } from '../../utils'
 import { TF_PARTIAL_PAYMENT, transactionAmount, validTradeNumber } from './swap'
 
 const REQUEST_DELAY = 400
@@ -18,9 +17,6 @@ const NATIVE_BALANCE_RESULTS = new Set([
   'terINSUF_FEE_B'
 ])
 
-const sameAsset = (first, second) =>
-  first?.currency === second?.currency && (first?.issuer || '') === (second?.issuer || '')
-
 const failedQuoteStatus = (engineResult) => {
   if (NATIVE_BALANCE_RESULTS.has(engineResult)) return 'nativeBalance'
   if (engineResult === 'tecPATH_PARTIAL') return 'partial'
@@ -28,23 +24,9 @@ const failedQuoteStatus = (engineResult) => {
   return 'failed'
 }
 
-const rlusdBridge = () => {
-  if (network === 'mainnet' || network === 'staging') {
-    return { currency: RLUSD_CURRENCY, issuer: MAINNET_RLUSD_ISSUER }
-  }
-  if (network === 'testnet') {
-    return { currency: RLUSD_CURRENCY, issuer: TESTNET_RLUSD_ISSUER }
-  }
-  return null
-}
-
 const swapPaths = (spendAsset, receiveAsset) => {
-  if (nativeCurrency !== 'XRP') return []
-
-  const bridges = [{ currency: nativeCurrency }, rlusdBridge()].filter(Boolean)
-  return bridges
-    .filter((bridge) => !sameAsset(bridge, spendAsset) && !sameAsset(bridge, receiveAsset))
-    .map((bridge) => [bridge])
+  if (nativeCurrency !== 'XRP' || !spendAsset?.issuer || !receiveAsset?.issuer) return []
+  return [[{ currency: nativeCurrency }]]
 }
 
 const maximumAmount = (asset) =>

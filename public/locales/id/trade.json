@@ -51,7 +51,7 @@
     "minimumReceived": "Minimum received",
     "signInToSwap": "Sign in to swap",
     "simulatingSwap": "Menghitung estimasi XRPL…",
-    "simulatedQuote": "Disimulasikan melalui rute langsung, XRP, dan RLUSD menggunakan buku pesanan dan AMM · perlindungan slippage 2%.",
+    "simulatedQuote": "Disimulasikan melalui rute langsung dan XRP menggunakan buku pesanan dan AMM · perlindungan slippage 2%.",
     "walletHint": "You will review and sign the order in your wallet. Bithomp never has access to your keys."
   },
   "book": {

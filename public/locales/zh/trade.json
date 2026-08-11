@@ -51,7 +51,7 @@
     "minimumReceived": "Minimum received",
     "signInToSwap": "Sign in to swap",
     "simulatingSwap": "正在计算 XRPL 报价…",
-    "simulatedQuote": "使用订单簿和 AMM，通过直接、XRP 和 RLUSD 路径进行模拟 · 2% 滑点保护。",
+    "simulatedQuote": "使用订单簿和 AMM，通过直接和 XRP 路径进行模拟 · 2% 滑点保护。",
     "walletHint": "You will review and sign the order in your wallet. Bithomp never has access to your keys."
   },
   "book": {

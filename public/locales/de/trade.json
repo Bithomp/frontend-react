@@ -51,7 +51,7 @@
     "minimumReceived": "Minimum received",
     "signInToSwap": "Sign in to swap",
     "simulatingSwap": "XRPL-Kurs wird berechnet…",
-    "simulatedQuote": "Simuliert über direkte, XRP- und RLUSD-Routen mit Orderbüchern und AMMs · 2 % Slippage-Schutz.",
+    "simulatedQuote": "Simuliert über direkte und XRP-Routen mit Orderbüchern und AMMs · 2 % Slippage-Schutz.",
     "walletHint": "You will review and sign the order in your wallet. Bithomp never has access to your keys."
   },
   "book": {
