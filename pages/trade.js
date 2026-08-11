@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { IoSwapVertical } from 'react-icons/io5'
 import { useTranslation } from 'next-i18next'
@@ -36,7 +36,7 @@ import styles from '../styles/pages/trade.module.scss'
 
 const nativeAsset = { currency: nativeCurrency }
 const defaultQuoteAsset = rlusdToken(network)
-const BOOK_ROWS_PER_SIDE = 6
+const BOOK_ROWS_PER_SIDE = 7
 const MIN_BOOK_LEVEL_FIAT_VALUE = new BigNumber('0.01')
 const MIN_AGGREGATION_LEVEL = -3
 const MAX_AGGREGATION_LEVEL = 9
@@ -301,7 +301,7 @@ export default function Trade({
     amm,
     hasAmmLiquidity,
     status,
-    error,
+    hasLoaded,
     matchesPair
   } = useOrderBook(baseAsset, quoteAsset)
   const { balances, trustlines, accountFlags, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
@@ -400,17 +400,17 @@ export default function Trade({
   const bestBid = bids[0]?.price
   const bestAsk = asks[0]?.price
   const referencePrice = bestAsk || bestBid || (amm ? amm.quote.dividedBy(amm.base) : null)
-  const baseAmountDecimals = assetDecimalsByRate(referencePrice, baseAsset)
-  const quoteAmountDecimals = assetDecimalsByRate(referencePrice?.gt(0) ? new BigNumber(1).dividedBy(referencePrice) : null, quoteAsset)
-  const priceDecimals = bookPriceDecimals(bids, asks)
+  const baseAmountDecimalsCandidate = assetDecimalsByRate(referencePrice, baseAsset)
+  const quoteAmountDecimalsCandidate = assetDecimalsByRate(referencePrice?.gt(0) ? new BigNumber(1).dividedBy(referencePrice) : null, quoteAsset)
+  const priceDecimalsCandidate = bookPriceDecimals(bids, asks)
   const effectiveSwapRate = swapEstimate?.complete && swapSpend?.gt(0) && swapReceive?.gt(0)
     ? side === 'buy'
       ? swapSpend.dividedBy(swapReceive)
       : swapReceive.dividedBy(swapSpend)
     : null
   const fallbackAggregationStep = useMemo(
-    () => new BigNumber(10).pow(-Math.max(0, priceDecimals - 1)),
-    [priceDecimals]
+    () => new BigNumber(10).pow(-Math.max(0, priceDecimalsCandidate - 1)),
+    [priceDecimalsCandidate]
   )
   const automaticAggregationStep = useMemo(() => {
     const quoteRate = new BigNumber(quoteAssetFiatRate ?? NaN)
@@ -433,18 +433,35 @@ export default function Trade({
   const visibleBids = useMemo(() => aggregateBook(bids, 'bid', aggregationStep), [bids, aggregationStep])
   const cumulativeAsks = useMemo(() => withCumulativeTotal(visibleAsks), [visibleAsks])
   const cumulativeBids = useMemo(() => withCumulativeTotal(visibleBids), [visibleBids])
-  const bookTotalDecimals = useMemo(
+  const bookTotalDecimalsCandidate = useMemo(
     () => [...cumulativeAsks, ...cumulativeBids].reduce(
-      (decimals, offer) => Math.max(decimals, bookAmountDecimals(offer.cumulativeTotal, quoteAmountDecimals)),
-      quoteAmountDecimals
+      (decimals, offer) => Math.max(decimals, bookAmountDecimals(offer.cumulativeTotal, quoteAmountDecimalsCandidate)),
+      quoteAmountDecimalsCandidate
     ),
-    [cumulativeAsks, cumulativeBids, quoteAmountDecimals]
+    [cumulativeAsks, cumulativeBids, quoteAmountDecimalsCandidate]
   )
+  const bookPrecisionByPair = useRef(new Map())
+  const bookPrecisionKey = `${baseAsset?.currency || ''}:${baseAsset?.issuer || ''}/${quoteAsset?.currency || ''}:${quoteAsset?.issuer || ''}`
+  const hasVisibleBookRows = cumulativeAsks.length > 0 || cumulativeBids.length > 0
+  if (hasVisibleBookRows && !bookPrecisionByPair.current.has(bookPrecisionKey)) {
+    bookPrecisionByPair.current.set(bookPrecisionKey, {
+      price: priceDecimalsCandidate,
+      baseAmount: baseAmountDecimalsCandidate,
+      quoteAmount: quoteAmountDecimalsCandidate,
+      total: bookTotalDecimalsCandidate
+    })
+  }
+  const bookPrecision = bookPrecisionByPair.current.get(bookPrecisionKey)
+  const priceDecimals = bookPrecision?.price ?? priceDecimalsCandidate
+  const baseAmountDecimals = bookPrecision?.baseAmount ?? baseAmountDecimalsCandidate
+  const quoteAmountDecimals = bookPrecision?.quoteAmount ?? quoteAmountDecimalsCandidate
+  const bookTotalDecimals = bookPrecision?.total ?? bookTotalDecimalsCandidate
   const spread = bestBid && bestAsk ? bestAsk.minus(bestBid) : null
   const pairReady = baseAsset?.currency && quoteAsset?.currency
   const samePair = pairReady && sameTradeAsset(baseAsset, quoteAsset)
   const usesXrpBridgeBook = nativeCurrency === 'XRP' && !!baseAsset?.issuer && !!quoteAsset?.issuer
-  const displayedHasAmmLiquidity = matchesPair && status === 'ready' && !error && hasAmmLiquidity
+  const displaysLoadedBook = matchesPair && hasLoaded
+  const displayedHasAmmLiquidity = displaysLoadedBook && hasAmmLiquidity
   const bookComposition = displayedHasAmmLiquidity
     ? usesXrpBridgeBook
       ? t('book.combinedWithAmm', { defaultValue: 'Direct + XRP bridge + AMM' })
@@ -823,9 +840,9 @@ export default function Trade({
               <div className={styles.bookHeader}><div><h2>{t('book.title')}</h2><small>{bookScope}</small></div><span className={styles.status}><i className={`${styles.dot} ${status === 'ready' ? styles.ready : ''}`} />{t(`book.status.${status}`)}</span></div>
               <>
                   <div className={styles.tableHeader}><span title={t('book.averagePriceHint', { defaultValue: 'Cumulative average price' })}>{t('book.averagePrice', { quote: tokenName(quoteAsset), defaultValue: `Avg. price (${tokenName(quoteAsset)})` })}</span><span title={t('book.cumulativeAmountHint', { defaultValue: 'Cumulative base amount through this price level' })}>{t('book.amount', { base: tokenName(baseAsset) })}</span><span title={t('book.cumulativeHint', { defaultValue: 'Cumulative quote amount through this price level' })}>{t('book.cumulative', { quote: tokenName(quoteAsset), defaultValue: `Total (${tokenName(quoteAsset)})` })}</span></div>
-                  {renderRows(matchesPair && status === 'ready' && !error ? [...cumulativeAsks].reverse() : [], 'ask')}
-                  <div className={styles.spread}><span>{t('book.spread')}</span><strong>{matchesPair && status === 'ready' && !error && spread ? `${bookNumber(spread, priceDecimals, true)} ${tokenName(quoteAsset)}` : '—'}</strong></div>
-                  {renderRows(matchesPair && status === 'ready' && !error ? cumulativeBids : [], 'bid')}
+                  {renderRows(displaysLoadedBook ? [...cumulativeAsks].reverse() : [], 'ask')}
+                  <div className={styles.spread}><span>{t('book.spread')}</span><strong>{displaysLoadedBook && spread ? `${bookNumber(spread, priceDecimals, true)} ${tokenName(quoteAsset)}` : '—'}</strong></div>
+                  {renderRows(displaysLoadedBook ? cumulativeBids : [], 'bid')}
                   <div className={styles.aggregation}>
                     <span>{t('book.aggregation', { defaultValue: 'Aggregation' })}</span>
                     <strong>{bookNumber(aggregationStep, priceDecimals)}</strong>
