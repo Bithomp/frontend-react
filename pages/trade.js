@@ -39,6 +39,7 @@ import styles from '../styles/pages/trade.module.scss'
 const nativeAsset = { currency: nativeCurrency }
 const defaultQuoteAsset = rlusdToken(network)
 const BOOK_ROWS_PER_SIDE = 6
+const MIN_BOOK_LEVEL_FIAT_VALUE = new BigNumber('0.01')
 const MIN_AGGREGATION_LEVEL = -3
 const MAX_AGGREGATION_LEVEL = 3
 const TRADE_PAIR_QUERY_NAMES = [
@@ -126,6 +127,15 @@ const swapQuoteErrorText = (t, status, side, spendAsset) => {
 const estimateFromLiquidity = ({ side, bids, asks, amm, amount }) => side === 'buy'
   ? estimateSwapCost({ bids, asks, amm, outputAmount: amount, side })
   : estimateSwap({ bids, asks, amm, inputAmount: amount, side })
+const withoutFiatDust = (offers, quoteFiatRate) => {
+  const fiatRate = new BigNumber(quoteFiatRate ?? NaN)
+  if (!fiatRate.isFinite() || !fiatRate.gt(0)) return offers
+
+  return offers.filter((offer) => {
+    const fiatValue = new BigNumber(offer?.total ?? NaN).multipliedBy(fiatRate)
+    return fiatValue.isFinite() && fiatValue.gte(MIN_BOOK_LEVEL_FIAT_VALUE)
+  })
+}
 const displayNumber = (value, decimals = 8) => {
   const number = BigNumber.isBigNumber(value) ? value : new BigNumber(value ?? NaN)
   if (!number.isFinite()) return '—'
@@ -282,10 +292,15 @@ export default function Trade({
     router.query.quoteCurrency,
     router.query.quoteCurrencyIssuer
   ])
-  const { bids, asks, amm, hasAmmLiquidity, status, error, hasLoaded } = useOrderBook(baseAsset, quoteAsset)
-  // Synthetic bridge and AMM depth is indicative; only simulation confirms an executable multi-path quote.
-  const directBookBids = useMemo(() => bids.filter((offer) => offer.source === 'direct'), [bids])
-  const directBookAsks = useMemo(() => asks.filter((offer) => offer.source === 'direct'), [asks])
+  const {
+    bids: rawBids,
+    asks: rawAsks,
+    amm,
+    hasAmmLiquidity,
+    status,
+    error,
+    matchesPair
+  } = useOrderBook(baseAsset, quoteAsset)
   const tradeHistory = useTradeHistory(baseAsset, quoteAsset)
   const { balances, trustlines, accountFlags, loading: balanceLoading } = useTradeBalances(account?.address, [baseAsset, quoteAsset], refreshPage)
   const baseBalance = baseAsset?.currency ? balances[tradeBalanceKey(baseAsset)] ?? null : null
@@ -295,6 +310,11 @@ export default function Trade({
   const spendBalance = side === 'sell' ? baseBalance : quoteBalance
   const baseAssetFiatRate = useAssetFiatRate(baseAsset, selectedCurrency, fiatRate)
   const quoteAssetFiatRate = useAssetFiatRate(quoteAsset, selectedCurrency, fiatRate)
+  const bids = useMemo(() => withoutFiatDust(rawBids, quoteAssetFiatRate), [quoteAssetFiatRate, rawBids])
+  const asks = useMemo(() => withoutFiatDust(rawAsks, quoteAssetFiatRate), [quoteAssetFiatRate, rawAsks])
+  // Synthetic bridge and AMM depth is indicative; only simulation confirms an executable multi-path quote.
+  const directBookBids = useMemo(() => bids.filter((offer) => offer.source === 'direct'), [bids])
+  const directBookAsks = useMemo(() => asks.filter((offer) => offer.source === 'direct'), [asks])
   const missingTrustlineAssets = account?.address
     ? [baseAsset, quoteAsset].filter((asset) =>
         asset?.issuer &&
@@ -399,7 +419,7 @@ export default function Trade({
       ? knownBaseRate
       : inferredBaseRate
     const fiatStep = aggregationBaseRate?.isFinite() && aggregationBaseRate.gt(0)
-      ? BigNumber.minimum(1, aggregationBaseRate.dividedBy(100))
+      ? BigNumber.minimum(1, aggregationBaseRate.dividedBy(10000))
       : new BigNumber(1)
     return niceAggregationStep(fiatStep.dividedBy(quoteRate)) || fallbackAggregationStep
   }, [baseAssetFiatRate, fallbackAggregationStep, quoteAssetFiatRate, referencePrice])
@@ -415,7 +435,8 @@ export default function Trade({
   const pairReady = baseAsset?.currency && quoteAsset?.currency
   const samePair = pairReady && sameTradeAsset(baseAsset, quoteAsset)
   const usesXrpBridgeBook = nativeCurrency === 'XRP' && !!baseAsset?.issuer && !!quoteAsset?.issuer
-  const bookScope = hasAmmLiquidity
+  const displayedHasAmmLiquidity = matchesPair && status === 'ready' && !error && hasAmmLiquidity
+  const bookScope = displayedHasAmmLiquidity
     ? usesXrpBridgeBook
       ? t('book.combinedWithAmm', { defaultValue: 'Direct + XRP bridge + AMM' })
       : t('book.directWithAmm', { defaultValue: 'Direct + AMM' })
@@ -617,14 +638,25 @@ export default function Trade({
     })
   }
 
-  const renderRows = (offers, offerSide) =>
-    offers.map((offer, index) => (
+  const renderRows = (offers, offerSide) => {
+    const visibleOffers = offers.slice(0, BOOK_ROWS_PER_SIDE)
+    const emptyRows = Array(Math.max(BOOK_ROWS_PER_SIDE - visibleOffers.length, 0)).fill(null)
+    const rows = offerSide === 'ask'
+      ? [...emptyRows, ...visibleOffers]
+      : [...visibleOffers, ...emptyRows]
+
+    return rows.map((offer, index) => offer ? (
       <div className={`${styles.row} ${styles[offerSide]}`} key={`${offerSide}-${index}`} onClick={() => selectOffer(offer, offerSide)}>
         <span title={offer.price.toFixed()}>{bookNumber(offer.price, priceDecimals, true)}</span>
         <span title={`${t('book.levelAmount', { defaultValue: 'This level' })}: ${offer.amount.toFixed()}`}>{bookNumber(offer.cumulativeAmount, baseAmountDecimals, true)}</span>
         <span title={`${t('book.levelTotal', { defaultValue: 'This level' })}: ${offer.total.toFixed()}`}>{bookNumber(offer.cumulativeTotal, bookAmountDecimals(offer.cumulativeTotal, quoteAmountDecimals))}</span>
       </div>
+    ) : (
+      <div className={`${styles.row} ${styles.placeholderRow}`} key={`${offerSide}-empty-${index}`} aria-hidden="true">
+        <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span>
+      </div>
     ))
+  }
 
   return (
     <>
@@ -779,20 +811,18 @@ export default function Trade({
           <div className={styles.bookColumn}>
             <section className={styles.book}>
               <div className={styles.bookHeader}><div><h2>{t('book.title')}</h2><small>{bookScope}</small></div><span className={styles.status}><i className={`${styles.dot} ${status === 'ready' ? styles.ready : ''}`} />{t(`book.status.${status}`)}</span></div>
-              {!pairReady || samePair ? <div className={styles.empty}>{t('book.selectPair')}</div> : error ? <div className={styles.empty}>{t('book.error')}</div> : (
-                <>
+              <>
                   <div className={styles.tableHeader}><span>{t('book.price', { quote: tokenName(quoteAsset) })}</span><span title={t('book.cumulativeAmountHint', { defaultValue: 'Cumulative base amount through this price level' })}>{t('book.amount', { base: tokenName(baseAsset) })}</span><span title={t('book.cumulativeHint', { defaultValue: 'Cumulative quote amount through this price level' })}>{t('book.cumulative', { quote: tokenName(quoteAsset), defaultValue: `Total (${tokenName(quoteAsset)})` })}</span></div>
-                  {renderRows([...cumulativeAsks].reverse(), 'ask')}
-                  <div className={styles.spread}><span>{t('book.spread')}</span><strong>{spread ? `${bookNumber(spread, priceDecimals, true)} ${tokenName(quoteAsset)}` : '—'}</strong></div>
-                  {renderRows(cumulativeBids, 'bid')}
-                  {hasLoaded && !asks.length && !bids.length && <div className={styles.empty}>{t('book.empty')}</div>}
+                  {renderRows(matchesPair && status === 'ready' && !error ? [...cumulativeAsks].reverse() : [], 'ask')}
+                  <div className={styles.spread}><span>{t('book.spread')}</span><strong>{matchesPair && status === 'ready' && !error && spread ? `${bookNumber(spread, priceDecimals, true)} ${tokenName(quoteAsset)}` : '—'}</strong></div>
+                  {renderRows(matchesPair && status === 'ready' && !error ? cumulativeBids : [], 'bid')}
                   <div className={styles.aggregation}>
                     <span>{t('book.aggregation', { defaultValue: 'Aggregation' })}</span>
                     <strong>{bookNumber(aggregationStep, priceDecimals)}</strong>
                     <button type="button" onClick={() => setAggregationLevel((level) => Math.max(MIN_AGGREGATION_LEVEL, level - 1))} disabled={aggregationLevel === MIN_AGGREGATION_LEVEL} aria-label={t('book.finer', { defaultValue: 'Finer aggregation' })}>−</button>
                     <button type="button" onClick={() => setAggregationLevel((level) => Math.min(MAX_AGGREGATION_LEVEL, level + 1))} disabled={aggregationLevel === MAX_AGGREGATION_LEVEL} aria-label={t('book.coarser', { defaultValue: 'Coarser aggregation' })}>+</button>
                   </div>
-                  {hasAmmLiquidity && <div className={styles.ammBookSummary}>
+                  {displayedHasAmmLiquidity && <div className={styles.ammBookSummary}>
                     <span>{t('book.ammIncluded', { defaultValue: 'AMM liquidity included' })}</span>
                     {amm && !usesXrpBridgeBook && <span>{t('book.ammFee', {
                       fee: displayNumber(new BigNumber(amm.tradingFee).dividedBy(1000), 3),
@@ -800,7 +830,6 @@ export default function Trade({
                     })}</span>}
                   </div>}
                 </>
-              )}
             </section>
             <UserOrders
               account={account}

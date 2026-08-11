@@ -151,8 +151,10 @@ const mergeOffers = (directOffers, bridgedOffers, side) =>
 
 const sameAsset = (left, right) =>
   left?.currency === right?.currency && (left?.issuer || '') === (right?.issuer || '')
+const assetKey = (asset) => `${asset?.issuer || ''}:${asset?.currency || ''}`
 
 export default function useOrderBook(baseAsset, quoteAsset) {
+  const requestedPairKey = `${assetKey(baseAsset)}|${assetKey(quoteAsset)}`
   const [state, setState] = useState({
     bids: [],
     asks: [],
@@ -160,12 +162,13 @@ export default function useOrderBook(baseAsset, quoteAsset) {
     hasAmmLiquidity: false,
     status: 'idle',
     error: '',
-    hasLoaded: false
+    hasLoaded: false,
+    pairKey: ''
   })
 
   useEffect(() => {
     if (!baseAsset?.currency || !quoteAsset?.currency || sameAsset(baseAsset, quoteAsset)) {
-      setState({ bids: [], asks: [], amm: null, hasAmmLiquidity: false, status: 'idle', error: '', hasLoaded: false })
+      setState({ bids: [], asks: [], amm: null, hasAmmLiquidity: false, status: 'idle', error: '', hasLoaded: false, pairKey: requestedPairKey })
       return
     }
     if (!ledgerWebsocketServer) {
@@ -176,10 +179,22 @@ export default function useOrderBook(baseAsset, quoteAsset) {
         hasAmmLiquidity: false,
         status: 'error',
         error: 'unsupported-network',
-        hasLoaded: false
+        hasLoaded: false,
+        pairKey: requestedPairKey
       })
       return
     }
+
+    setState({
+      bids: [],
+      asks: [],
+      amm: null,
+      hasAmmLiquidity: false,
+      status: 'connecting',
+      error: '',
+      hasLoaded: false,
+      pairKey: requestedPairKey
+    })
 
     const includeXrpBridge = nativeCurrency === XRP_BRIDGE_CURRENCY && !!baseAsset.issuer && !!quoteAsset.issuer
 
@@ -241,7 +256,8 @@ export default function useOrderBook(baseAsset, quoteAsset) {
         hasAmmLiquidity: !!(directAmm || baseXrpAmm || xrpQuoteAmm),
         status: 'ready',
         error: '',
-        hasLoaded: true
+        hasLoaded: true,
+        pairKey: requestedPairKey
       }))
     }
 
@@ -437,5 +453,5 @@ export default function useOrderBook(baseAsset, quoteAsset) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [baseAsset?.currency, baseAsset?.issuer, quoteAsset?.currency, quoteAsset?.issuer])
 
-  return state
+  return { ...state, matchesPair: state.pairKey === requestedPairKey }
 }

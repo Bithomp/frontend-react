@@ -107,6 +107,8 @@
 .tableHeader { padding: 0 10px 8px; color: var(--text-secondary); font-size: 12px; }
 .row { position: relative; padding: 7px 10px; border-radius: 7px; cursor: pointer; overflow: hidden; font-variant-numeric: tabular-nums; }
 .row:hover { background: var(--background-secondary); }
+.placeholderRow { cursor: default; }
+.placeholderRow:hover { background: transparent; box-shadow: none; }
 .ask { color: #d75b5b; }
 .bid { color: #239b5b; }
 .ask:hover {
