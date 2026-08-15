@@ -4610,15 +4610,16 @@ export default function Account({
                       )}
 
                       {data?.ledgerInfo?.regularKey && (
-                        <div className="detail-row issuer-detail-row">
-                          <span>{ta('labels.regular-key')}:</span>
-                          <span className="control-address-wrap">
-                            <span className="copy-inline">
-                              <AddressWithIconInline data={data.ledgerInfo} name="regularKey" options={{ short: 6 }} />
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.regularKey} />
-                              </span>
-                            </span>
+                        <div className="detail-row issuer-detail-row account-control-regular-key-row">
+                          <span className="account-control-regular-key-label">{ta('labels.regular-key')}:</span>
+                          <span className="account-control-regular-key-address">
+                            <AddressWithIconInline data={data.ledgerInfo} name="regularKey" options={{ short: 6 }} />
+                          </span>
+                          <span
+                            className="account-control-regular-key-copy"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            <CopyButton text={data.ledgerInfo.regularKey} />
                           </span>
                         </div>
                       )}
@@ -13720,6 +13721,29 @@ export default function Account({
           display: inline-flex;
           align-items: center;
           max-width: none;
+        }
+
+        .account-control-regular-key-row {
+          display: grid;
+          grid-template-columns: max-content minmax(0, 1fr) max-content;
+          align-items: center;
+          gap: 6px;
+          width: 100%;
+        }
+
+        .account-control-regular-key-label {
+          white-space: nowrap;
+        }
+
+        .account-control-regular-key-address {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .account-control-regular-key-copy {
+          display: inline-flex;
         }
 
         .issuer-settings-actions {
