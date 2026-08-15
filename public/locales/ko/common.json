@@ -257,12 +257,6 @@
     "statuses": {
       "check-app": "{{appName}} app의 절차를 따라주세요."
     },
-    "funding-check": {
-      "checking": "네트워크 수수료와 사용 가능한 잔액을 확인하는 중…",
-      "error": "네트워크 수수료 또는 사용 가능한 잔액을 확인할 수 없습니다. 다시 시도해 주세요.",
-      "insufficient-fee": "네트워크 수수료를 지불할 사용 가능한 {{nativeCurrency}}가 부족합니다. 사용 가능: {{available}} {{nativeCurrency}}. 필요: {{required}} {{nativeCurrency}}.",
-      "insufficient-reserve": "이 토큰을 추가할 사용 가능한 {{nativeCurrency}}가 부족합니다. 사용 가능: {{available}} {{nativeCurrency}}. 새 트러스트라인과 네트워크 수수료에 {{required}} {{nativeCurrency}}가 필요합니다."
-    },
     "xaman": {
       "open-app": "Xaman 앱을 여세요",
       "change-settings": "설정에 가서 테스트넷 노드를 고르세요",

@@ -257,12 +257,6 @@
     "statuses": {
       "check-app": "Bitte folgen Sie den Instruktionen in der {{appName}} App."
     },
-    "funding-check": {
-      "checking": "Netzwerkgebühr und verfügbares Guthaben werden geprüft…",
-      "error": "Netzwerkgebühr oder verfügbares Guthaben konnten nicht geprüft werden. Bitte versuchen Sie es erneut.",
-      "insufficient-fee": "Nicht genügend verfügbare {{nativeCurrency}} für die Netzwerkgebühr. Verfügbar: {{available}} {{nativeCurrency}}. Erforderlich: {{required}} {{nativeCurrency}}.",
-      "insufficient-reserve": "Nicht genügend verfügbare {{nativeCurrency}}, um diesen Token hinzuzufügen. Verfügbar: {{available}} {{nativeCurrency}}. Die neue Trustline und Netzwerkgebühr erfordern {{required}} {{nativeCurrency}}."
-    },
     "xaman": {
       "open-app": "Öffnen Sie die Xaman App auf Ihrem Telefon.",
       "change-settings": "Gehen Sie in die Einstellungen und wählen Sie einen Testnetz Knoten.",

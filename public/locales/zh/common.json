@@ -257,12 +257,6 @@
     "statuses": {
       "check-app": "请按照 {{appName}} 应用程序中的说明进行操作。"
     },
-    "funding-check": {
-      "checking": "正在检查网络费用和可用余额…",
-      "error": "无法检查网络费用或可用余额。请重试。",
-      "insufficient-fee": "可用的 {{nativeCurrency}} 不足以支付网络费用。可用：{{available}} {{nativeCurrency}}。需要：{{required}} {{nativeCurrency}}。",
-      "insufficient-reserve": "可用的 {{nativeCurrency}} 不足以添加此代币。可用：{{available}} {{nativeCurrency}}。新信任线和网络费用需要 {{required}} {{nativeCurrency}}。"
-    },
     "xaman": {
       "open-app": "打开手机上的 Xaman 应用程序。",
       "change-settings": "转到设置并选择一个测试网节点。",

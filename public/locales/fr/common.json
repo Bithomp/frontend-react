@@ -257,12 +257,6 @@
     "statuses": {
       "check-app": "Veuillez suivre les instructions dans l'application {{appName}}."
     },
-    "funding-check": {
-      "checking": "Vérification des frais réseau et du solde disponible…",
-      "error": "Impossible de vérifier les frais réseau ou le solde disponible. Veuillez réessayer.",
-      "insufficient-fee": "Solde disponible en {{nativeCurrency}} insuffisant pour payer les frais réseau. Disponible : {{available}} {{nativeCurrency}}. Requis : {{required}} {{nativeCurrency}}.",
-      "insufficient-reserve": "Solde disponible en {{nativeCurrency}} insuffisant pour ajouter ce token. Disponible : {{available}} {{nativeCurrency}}. La nouvelle trustline et les frais nécessitent {{required}} {{nativeCurrency}}."
-    },
     "xaman": {
       "open-app": "Ouvrez l'application Xaman sur votre téléphone.",
       "change-settings": "Allez dans les paramètres et choisissez un nœud de test.",

@@ -257,12 +257,6 @@
     "statuses": {
       "check-app": "{{appName}}アプリの指示に従ってください。"
     },
-    "funding-check": {
-      "checking": "ネットワーク手数料と利用可能残高を確認しています…",
-      "error": "ネットワーク手数料または利用可能残高を確認できませんでした。もう一度お試しください。",
-      "insufficient-fee": "ネットワーク手数料を支払うための利用可能な{{nativeCurrency}}が不足しています。利用可能：{{available}} {{nativeCurrency}}。必要：{{required}} {{nativeCurrency}}。",
-      "insufficient-reserve": "このトークンを追加するための利用可能な{{nativeCurrency}}が不足しています。利用可能：{{available}} {{nativeCurrency}}。新しいトラストラインと手数料には{{required}} {{nativeCurrency}}が必要です。"
-    },
     "xaman": {
       "open-app": "スマートフォンでXamanアプリを開きます。",
       "change-settings": "設定からテストネットノードを選択してください。",

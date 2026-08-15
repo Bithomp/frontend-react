@@ -257,12 +257,6 @@
     "statuses": {
       "check-app": "Ikuti petunjuk di aplikasi {{appName}}."
     },
-    "funding-check": {
-      "checking": "Memeriksa biaya jaringan dan saldo yang tersedia…",
-      "error": "Biaya jaringan atau saldo yang tersedia tidak dapat diperiksa. Silakan coba lagi.",
-      "insufficient-fee": "{{nativeCurrency}} yang tersedia tidak cukup untuk membayar biaya jaringan. Tersedia: {{available}} {{nativeCurrency}}. Diperlukan: {{required}} {{nativeCurrency}}.",
-      "insufficient-reserve": "{{nativeCurrency}} yang tersedia tidak cukup untuk menambahkan token ini. Tersedia: {{available}} {{nativeCurrency}}. Trustline baru dan biaya jaringan memerlukan {{required}} {{nativeCurrency}}."
-    },
     "xaman": {
       "open-app": "Buka aplikasi Xaman di ponsel Anda.",
       "change-settings": "Buka pengaturan dan pilih node testnet.",

@@ -257,12 +257,6 @@
     "statuses": {
       "check-app": "Por favor, sigue las siguientes instrucciones en tu app {{appName}}."
     },
-    "funding-check": {
-      "checking": "Comprobando la comisión de red y el saldo disponible…",
-      "error": "No se pudo comprobar la comisión de red o el saldo disponible. Inténtalo de nuevo.",
-      "insufficient-fee": "No hay suficiente {{nativeCurrency}} disponible para pagar la comisión de red. Disponible: {{available}} {{nativeCurrency}}. Necesario: {{required}} {{nativeCurrency}}.",
-      "insufficient-reserve": "No hay suficiente {{nativeCurrency}} disponible para añadir este token. Disponible: {{available}} {{nativeCurrency}}. La nueva línea de confianza y la comisión requieren {{required}} {{nativeCurrency}}."
-    },
     "xaman": {
       "open-app": "Abre la app Xaman en tu teléfono.",
       "change-settings": "Vete a opciones y elige un nodo testnet.",

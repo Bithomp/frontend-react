@@ -257,12 +257,6 @@
     "statuses": {
       "check-app": "Please follow instructions in the {{appName}} app."
     },
-    "funding-check": {
-      "checking": "Checking the network fee and available balance…",
-      "error": "The network fee or available balance could not be checked. Please try again.",
-      "insufficient-fee": "Not enough available {{nativeCurrency}} to pay the network fee. Available: {{available}} {{nativeCurrency}}. Required: {{required}} {{nativeCurrency}}.",
-      "insufficient-reserve": "Not enough available {{nativeCurrency}} to add this token. Available: {{available}} {{nativeCurrency}}. The new trustline and network fee require {{required}} {{nativeCurrency}}."
-    },
     "xaman": {
       "open-app": "Open the Xaman app on your phone.",
       "change-settings": "Go to settings and choose a testnet node.",

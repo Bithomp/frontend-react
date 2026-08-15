@@ -269,10 +269,6 @@
       }
     }
 
-    .wallet-sign-retry {
-      margin-top: 14px;
-    }
-
     &.wallet-sign-screen:not(.xaman-sign-screen) {
       width: min(560px, calc(100vw - 32px));
       min-height: 300px;
