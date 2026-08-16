@@ -1239,7 +1239,7 @@ header.site-header {
     text-decoration: none;
 
     &.mobile-menu-directory-action {
-      width: auto;
+      width: calc(100% - var(--mobile-menu-gutter) - var(--mobile-menu-gutter));
       background: transparent;
       border-top: 0;
       border-right: 0;
