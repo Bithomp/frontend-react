@@ -169,7 +169,7 @@ const MenuDropDown = ({
       <div
         className={'menu-dropdown-button' + (type === 'top-switch' ? ' switch-container contrast' : '')}
         style={style}
-        onClick={() => setHoverStates((state) => ({ ...state, [id]: true }))}
+        onClick={() => handleMouseEnter(id)}
       >
         {titleHref ? (
           <Link href={titleHref} className="menu-dropdown-title" onClick={(event) => event.stopPropagation()}>

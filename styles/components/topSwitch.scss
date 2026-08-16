@@ -55,14 +55,44 @@
   }
 }
 
-@media only screen and (max-width: 600px) {
-  .top-switch {
+@media only screen and (max-width: 830px) {
+  .mobile-menu-open header.site-header .header-menu-right .top-switch {
     .menu-dropdown {
       .menu-dropdown-content {
         position: fixed;
-        width: 100%;
-        display: flex;
-        flex-flow: column nowrap;
+        top: 55px;
+        right: 0;
+        left: 0 !important;
+        display: block;
+        width: auto;
+        min-width: 0 !important;
+        max-width: none;
+        max-height: calc(100dvh - 55px);
+        padding-top: 0 !important;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: var(--background-header);
+        border-top: 1px solid var(--background-menu);
+        box-sizing: border-box;
+
+        &::after {
+          display: none;
+        }
+
+        table {
+          width: 100%;
+          table-layout: fixed;
+          background-color: var(--background-header);
+        }
+
+        td,
+        .link {
+          background-color: var(--background-header);
+        }
+
+        .link {
+          justify-content: center;
+        }
       }
     }
   }
