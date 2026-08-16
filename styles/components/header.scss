@@ -10,6 +10,7 @@
 
 header.site-header {
   position: fixed;
+  top: 0;
   min-height: 55px;
   width: 100%;
   background-color: var(--background-header);
@@ -22,6 +23,18 @@ header.site-header {
   box-sizing: border-box;
   padding: 0 15px;
   gap: 0 20px;
+
+  @media only screen and (max-width: 1050px) {
+    &::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      bottom: 100%;
+      left: 0;
+      height: 100vh;
+      background-color: var(--background-header);
+    }
+  }
 
   .header-logo {
     margin-top: 12px;
