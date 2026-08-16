@@ -72,17 +72,23 @@
         overflow-x: hidden;
         overflow-y: auto;
         background-color: var(--background-header);
-        border-top: 1px solid var(--background-menu);
+        border-top: 0;
+        border-right: 1px solid var(--background-menu);
+        border-left: 1px solid var(--background-menu);
         box-sizing: border-box;
 
         &::after {
-          display: none;
+          content: none !important;
         }
 
         table {
           width: 100%;
           table-layout: fixed;
           background-color: var(--background-header);
+
+          td + td {
+            border-left: 1px solid var(--background-menu);
+          }
         }
 
         td,
@@ -92,6 +98,8 @@
 
         .link {
           justify-content: center;
+          border-right: 0 !important;
+          border-left: 0;
         }
       }
     }
