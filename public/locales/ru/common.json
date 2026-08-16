@@ -169,6 +169,7 @@
       "connect-another-wallet": "Подключить другой кошелек"
     },
     "pro": {
+      "sign-in": "Войти в Bithomp Pro",
       "profile": "Профиль",
       "watchlist": "Список наблюдения",
       "subscriptions": "Подписки",

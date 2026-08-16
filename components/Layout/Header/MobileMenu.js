@@ -281,28 +281,16 @@ export default function MobileMenu({
           </Link>
         )}
 
-        <div className="mobile-menu-directory" data-expanded={proLoggedIn ? 'false' : 'true'}>
-          <IoIosRocket /> Bithomp Pro
-        </div>
-        <div className="mobile-menu__submenu">
-          {proLoggedIn ? (
-            <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              <FaUserLarge style={iconStyle} /> {proName}
-            </Link>
-          ) : (
-            <span
-              className="mobile-menu-item link"
-              onClick={() => {
-                mobileMenuToggle()
-                openEmailLogin?.()
-              }}
-            >
-              <FaUserLarge style={iconStyle} /> {t('signin.signin')}
-            </span>
-          )}
+        {proLoggedIn ? (
+          <>
+            <div className="mobile-menu-directory" data-expanded="false">
+              <IoIosRocket /> Bithomp Pro
+            </div>
+            <div className="mobile-menu__submenu">
+              <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <FaUserLarge style={iconStyle} /> {proName}
+              </Link>
 
-          {proLoggedIn && (
-            <>
               <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <IoDocumentTextOutline style={iconStyle} /> {t('menu.pro.tax-exports')}
               </Link>
@@ -323,13 +311,23 @@ export default function MobileMenu({
                 <IoStatsChart style={iconStyle} /> {t('menu.pro.api-management')}
               </Link>
 
-
               <span onClick={signOutPro} className="mobile-menu-item">
                 <FaSignOutAlt style={{ ...iconStyle, marginTop: '3px' }} /> {t('signin.signout')}
               </span>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="mobile-menu-directory mobile-menu-directory-action"
+            onClick={() => {
+              mobileMenuToggle()
+              openEmailLogin?.()
+            }}
+          >
+            <IoIosRocket /> {t('menu.pro.sign-in')}
+          </button>
+        )}
 
         <div className="mobile-menu-directory" data-expanded="false">
           <MdMiscellaneousServices style={{ marginBottom: '-2px' }} /> {t('menu.services.services')}

@@ -169,6 +169,7 @@
       "connect-another-wallet": "Conectar otra billetera"
     },
     "pro": {
+      "sign-in": "Iniciar sesión en Bithomp Pro",
       "profile": "Perfil",
       "watchlist": "Lista de seguimiento",
       "subscriptions": "Suscripciones",

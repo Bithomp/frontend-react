@@ -1238,6 +1238,16 @@ header.site-header {
     cursor: pointer;
     text-decoration: none;
 
+    &.mobile-menu-directory-action {
+      width: auto;
+      background: transparent;
+      border-top: 0;
+      border-right: 0;
+      border-left: 0;
+      font-family: inherit;
+      text-align: left;
+    }
+
     &[data-expanded]:after,
     &[data-expanded]::before {
       content: '';

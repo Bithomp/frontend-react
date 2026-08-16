@@ -169,6 +169,7 @@
       "connect-another-wallet": "Weitere Wallet verbinden"
     },
     "pro": {
+      "sign-in": "Bei Bithomp Pro anmelden",
       "profile": "Profil",
       "watchlist": "Beobachtungsliste",
       "subscriptions": "Abonnements",

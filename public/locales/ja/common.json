@@ -169,6 +169,7 @@
       "connect-another-wallet": "別のウォレットを接続"
     },
     "pro": {
+      "sign-in": "Bithomp Proにサインイン",
       "profile": "プロフィール",
       "watchlist": "ウォッチリスト",
       "subscriptions": "サブスクリプション",
