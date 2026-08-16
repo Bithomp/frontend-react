@@ -426,9 +426,10 @@ export const DAPP_WALLETS = {
   xyra: { name: 'Xyra', logo: 'xyra.svg' }
 }
 
-export const dappsApiUrl = (convertCurrency, period) => {
+export const dappsApiUrl = (convertCurrency, period, includeDetails = false) => {
   let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true&previousPeriodMode=calendar-1`
   if (period) apiUrl += `&period=${encodeURIComponent(period)}`
+  if (includeDetails) apiUrl += '&dappDetails=true'
   return apiUrl
 }
 

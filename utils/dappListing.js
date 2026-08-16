@@ -25,7 +25,7 @@ const walletsForEntry = (entry) =>
 
 export const filterDappsForListing = (
   list,
-  { includeAppsWithoutExternalSigning = false, wallet = '' } = {}
+  { includeAppsWithoutExternalSigning = false, wallet = '', useDappDetails = false } = {}
 ) => {
   const meta = DAPPS_META[0] || {}
   const walletFilter = String(wallet).toLowerCase()
@@ -34,9 +34,9 @@ export const filterDappsForListing = (
     const sourceTag = Number(dapp?.sourceTag)
     if (sourceTag < 100 || excludedSourceTags.has(sourceTag)) return false
 
-    const metadata = meta[String(dapp?.sourceTag)]
+    const metadata = useDappDetails ? dapp?.dappDetails : meta[String(dapp?.sourceTag)]
     const hasName =
-      dappBySourceTag(dapp?.sourceTag) || metadata?.name || generatedAgentNameBySourceTag(dapp?.sourceTag)
+      metadata?.name || dappBySourceTag(dapp?.sourceTag) || generatedAgentNameBySourceTag(dapp?.sourceTag)
     if (!hasName && Number(dapp?.uniqueSourceAddresses) <= 3) return false
     if (!includeAppsWithoutExternalSigning && !hasExternalSigning(metadata)) return false
     if (walletFilter && !walletsForEntry(metadata).includes(walletFilter)) return false

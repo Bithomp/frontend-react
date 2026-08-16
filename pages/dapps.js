@@ -14,7 +14,7 @@ import { setTabParams } from '../utils'
 import SEO from '../components/SEO'
 import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow, niceNumber } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
-import { DAPPS_META, buildPrevMapBySourceTag, dappsApiUrl, generatedAgentNameBySourceTag } from '../utils/dapps'
+import { buildPrevMapBySourceTag, dappsApiUrl, generatedAgentNameBySourceTag } from '../utils/dapps'
 import {
   DAPP_ORDER_VALUES,
   DEFAULT_DAPP_ORDER,
@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
   const convertCurrency = (selectedCurrencyServer || 'usd').toLowerCase()
 
   const effectivePeriod = period || 'day'
-  const apiUrl = dappsApiUrl(convertCurrency, effectivePeriod)
+  const apiUrl = dappsApiUrl(convertCurrency, effectivePeriod, true)
 
   try {
     const res = await axiosServer({
@@ -131,17 +131,25 @@ export default function Dapps({
 
   const abortControllerRef = useRef()
 
+  const dappsMeta = useMemo(() => {
+    const meta = {}
+    for (const dapp of rawData?.dapps || []) {
+      if (dapp?.sourceTag == null || !dapp?.dappDetails) continue
+      meta[String(dapp.sourceTag)] = dapp.dappDetails
+    }
+    return meta
+  }, [rawData?.dapps])
+
   const walletsOptionsList = useMemo(() => {
-    const metaObj = DAPPS_META[0] || {}
     const set = new Set()
 
-    Object.values(metaObj).forEach((entry) => {
+    Object.values(dappsMeta).forEach((entry) => {
       ;(entry?.wallets || []).forEach((w) => set.add(String(w).toLowerCase()))
       ;(entry?.walletconnect || []).forEach((w) => set.add(String(w).toLowerCase()))
     })
 
     return Array.from(set)
-  }, [])
+  }, [dappsMeta])
 
   useEffect(() => {
     if (walletFilter && !excludeNoWallets) {
@@ -163,7 +171,7 @@ export default function Dapps({
     const controller = new AbortController()
     abortControllerRef.current = controller
     axios
-      .get('/' + dappsApiUrl(convertCurrency, period), {
+      .get('/' + dappsApiUrl(convertCurrency, period, true), {
         signal: controller.signal
       })
       .then((res) => {
@@ -190,7 +198,8 @@ export default function Dapps({
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
     const filtered = filterDappsForListing(list, {
       includeAppsWithoutExternalSigning: !excludeNoWallets,
-      wallet: walletFilter
+      wallet: walletFilter,
+      useDappDetails: true
     })
 
     return sortDapps(filtered, order)
@@ -357,7 +366,6 @@ export default function Dapps({
           isMobile ? (
             <div style={{ width: '100%' }}>
               {(() => {
-                const metaObj = DAPPS_META[0] || {}
                 return data?.length ? (
                   data.map((d, idx) => (
                     <DappCard
@@ -366,7 +374,7 @@ export default function Dapps({
                       prevDapp={prevByTag ? prevByTag.get(String(d?.sourceTag)) : null}
                       index={idx}
                       convertCurrency={convertCurrency}
-                      dappsMeta={metaObj}
+                      dappsMeta={dappsMeta}
                       expandedRowKey={expandedRowKey}
                       setExpandedRowKey={setExpandedRowKey}
                     />
@@ -454,10 +462,9 @@ export default function Dapps({
                       }
                     }
 
-                    const metaObj = DAPPS_META[0] || {}
-                    const entry = metaObj && metaObj[String(d?.sourceTag)]
-                    const logo = entry?.logo ? `/images/dapps/${entry.logo}` : null
-                    const knownName = dappBySourceTag(d?.sourceTag) || entry?.name
+                    const entry = dappsMeta[String(d?.sourceTag)]
+                    const logo = entry?.logo || null
+                    const knownName = entry?.name || dappBySourceTag(d?.sourceTag)
                     const generatedName = knownName ? null : generatedAgentNameBySourceTag(d?.sourceTag)
 
                     return (

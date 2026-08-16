@@ -37,7 +37,7 @@ export default function DappCard({
   const isOpen = expandedRowKey === rowKey
 
   const entry = dappsMeta && dappsMeta[String(sourceTag)]
-  const logo = entry?.logo ? `/images/dapps/${entry.logo}` : null
+  const logo = entry?.logo || null
 
   const successByType = useMemo(() => {
     const map = getSuccessByType(dapp?.transactionTypesResults)
@@ -56,7 +56,7 @@ export default function DappCard({
     return map
   }, [dapp?.transactionTypesResults, dapp?.swaps])
 
-  const knownName = dappBySourceTag(sourceTag) || entry?.name
+  const knownName = entry?.name || dappBySourceTag(sourceTag)
   const generatedName = knownName ? null : generatedAgentNameBySourceTag(sourceTag)
   const name = knownName || generatedName || sourceTag
 
