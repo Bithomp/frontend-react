@@ -1301,7 +1301,6 @@ export default function SignForm({
     setSignRequest(null)
     setChoosenWallet(null)
     setAwaiting(false)
-    setFundingCheckFailed(false)
     setStatus('')
     setXamanReturnTxType(null)
     transactionFetchTries = 0
