@@ -1,5 +1,13 @@
 export const DAPPS_META = [
   {
+    9778477: {
+      name: 'XRPTips',
+      url: 'xrptips.puppy.tools',
+      wallets: ['xyra', 'xaman', 'crossmark', 'gemwallet'],
+      walletconnect: ['joey'],
+      x: 'iamshiffed',
+      logo: 'xrptips.png'
+    },
     10011010: {
       name: 'Magnetic',
       url: 'xmagnetic.org',
