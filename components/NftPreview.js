@@ -21,12 +21,14 @@ const isPanorama = (metadata) => {
   if (!metadata) return false
 
   // Check name and description for panorama keywords
-  const panoramaKeywords = ['360', 'panorama', 'panoramic', 'equirectangular']
+  const panoramaKeywords = ['panorama', 'panoramic', 'equirectangular']
   const name = metadata.name?.toString().toLowerCase() || ''
   const description = metadata.description?.toString().toLowerCase() || ''
 
   // Check if name or description contains panorama keywords
-  const hasPanoramaKeyword = panoramaKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword))
+  const has360Keyword = /(^|\D)360(?:°)?($|\D)/.test(name) || /(^|\D)360(?:°)?($|\D)/.test(description)
+  const hasPanoramaKeyword =
+    has360Keyword || panoramaKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword))
 
   // Check for specific camera types known for panoramas
   const panoramaCameras = ['gopro fusion', 'insta360', 'ricoh theta']
