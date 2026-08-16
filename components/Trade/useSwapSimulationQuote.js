@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 
 import { nativeCurrency, tradeSimulationRpcServer } from '../../utils'
+import { transferFeeAmounts } from '../../utils/paymentTransferFee'
 import { TF_PARTIAL_PAYMENT, transactionAmount, validTradeNumber } from './swap'
 
 const REQUEST_DELAY = 400
@@ -70,9 +71,9 @@ const simulatedXrpSpend = (result, account) => {
 }
 
 const simulatedIssuedSpend = (result, account, asset) => {
-  const trustLine = result?.meta?.AffectedNodes
+  const trustLines = result?.meta?.AffectedNodes
     ?.map(modifiedNode)
-    .find((node) => {
+    .filter((node) => {
       if (node?.LedgerEntryType !== 'RippleState') return false
       const fields = node.FinalFields
       const lowAccount = fields?.LowLimit?.issuer
@@ -82,13 +83,15 @@ const simulatedIssuedSpend = (result, account, asset) => {
         [lowAccount, highAccount].includes(account) &&
         [lowAccount, highAccount].includes(asset.issuer)
     })
-  if (!trustLine) return null
+  if (!trustLines?.length) return null
 
-  const previous = new BigNumber(trustLine.PreviousFields.Balance.value)
-  const final = new BigNumber(trustLine.FinalFields.Balance.value)
-  const accountIsLow = trustLine.FinalFields.LowLimit.issuer === account
-  const accountChange = accountIsLow ? final.minus(previous) : previous.minus(final)
-  const spend = accountChange.negated()
+  const spend = trustLines.reduce((total, trustLine) => {
+    const previous = new BigNumber(trustLine.PreviousFields.Balance.value)
+    const final = new BigNumber(trustLine.FinalFields.Balance.value)
+    const accountIsLow = trustLine.FinalFields.LowLimit.issuer === account
+    const accountChange = accountIsLow ? final.minus(previous) : previous.minus(final)
+    return total.minus(accountChange)
+  }, new BigNumber(0))
   return spend.isFinite() && spend.gt(0) ? spend : null
 }
 
@@ -97,13 +100,39 @@ const simulatedSpend = (result, account, asset) =>
     ? simulatedIssuedSpend(result, account, asset)
     : simulatedXrpSpend(result, account)
 
-const quoteFromResult = ({ result, account, spendAsset, receiveAsset, side, amount, paths }) => {
+const issuerOwnsAsset = (account, asset) => !!asset?.issuer && asset.issuer === account
+
+const issuerAdjustedAmount = (amount, transferRate, mode) => {
+  const amounts = transferFeeAmounts({ amount: amount.toFixed(), transferFee: transferRate })
+  return new BigNumber(amounts[mode])
+}
+
+const quoteFromResult = ({
+  result,
+  account,
+  spendAsset,
+  receiveAsset,
+  side,
+  amount,
+  paths,
+  issuerTransferRate
+}) => {
   if (result?.engine_result !== 'tesSUCCESS') return null
 
-  const spend = simulatedSpend(result, account, spendAsset)
-  const receive = side === 'buy'
-    ? new BigNumber(amount)
-    : amountValue(result.meta?.delivered_amount || result.meta?.DeliveredAmount, receiveAsset)
+  let spend = simulatedSpend(result, account, spendAsset)
+  const shouldReadDeliveredAmount = !!issuerTransferRate || side === 'sell'
+  let receive = shouldReadDeliveredAmount
+    ? amountValue(result.meta?.delivered_amount || result.meta?.DeliveredAmount, receiveAsset)
+    : new BigNumber(amount)
+
+  if (issuerTransferRate) {
+    if (issuerOwnsAsset(account, spendAsset)) {
+      spend = spend && issuerAdjustedAmount(spend, issuerTransferRate, 'spend')
+    }
+    if (issuerOwnsAsset(account, receiveAsset)) {
+      receive = receive && issuerAdjustedAmount(receive, issuerTransferRate, 'deliver')
+    }
+  }
   if (!spend?.isFinite() || !spend.gt(0) || !receive?.isFinite() || !receive.gt(0)) return null
 
   return { spend, receive, paths }
@@ -116,12 +145,13 @@ export default function useSwapSimulationQuote({
   spendBalance,
   side,
   amount,
-  enabled
+  enabled,
+  issuerTransferRate = null
 }) {
   const spendBalanceValue = spendBalance?.isFinite() && spendBalance.gt(0) ? spendBalance.toFixed() : ''
   const requestKey = `${account || ''}:${spendAsset?.issuer || ''}:${spendAsset?.currency || ''}:${
     receiveAsset?.issuer || ''}:${receiveAsset?.currency || ''}:${side}:${amount || ''}:${
-    side === 'buy' ? spendBalanceValue : ''}`
+    side === 'buy' ? spendBalanceValue : ''}:${issuerTransferRate || ''}`
   const [state, setState] = useState({ requestKey: '', status: 'idle', quote: null, error: '' })
   const isValidRequest = enabled && account && spendAsset?.currency && receiveAsset?.currency && validTradeNumber(amount)
 
@@ -148,14 +178,20 @@ export default function useSwapSimulationQuote({
     }
     const loadQuote = async () => {
       const paths = swapPaths(spendAsset, receiveAsset)
+      const requestedAmount = new BigNumber(amount)
+      const simulationAmount = issuerTransferRate && side === 'buy' && issuerOwnsAsset(account, receiveAsset)
+        ? issuerAdjustedAmount(requestedAmount, issuerTransferRate, 'spend')
+        : issuerTransferRate && side === 'sell' && issuerOwnsAsset(account, spendAsset)
+          ? issuerAdjustedAmount(requestedAmount, issuerTransferRate, 'deliver')
+          : requestedAmount
       const deliverMax = side === 'buy'
-        ? transactionAmount(receiveAsset, amount)
+        ? transactionAmount(receiveAsset, simulationAmount)
         : maximumAmount(receiveAsset)
       const sendMax = side === 'buy' && spendBalanceValue
         ? transactionAmount(spendAsset, spendBalanceValue)
         : side === 'buy'
           ? maximumAmount(spendAsset)
-          : transactionAmount(spendAsset, amount)
+          : transactionAmount(spendAsset, simulationAmount)
       const transaction = {
         TransactionType: 'Payment',
         Account: account,
@@ -200,7 +236,8 @@ export default function useSwapSimulationQuote({
           receiveAsset,
           side,
           amount,
-          paths
+          paths,
+          issuerTransferRate
         })
         if (!quote) {
           setQuoteError('invalid-simulation-result')
@@ -234,7 +271,8 @@ export default function useSwapSimulationQuote({
     requestKey,
     side,
     spendAsset,
-    spendBalanceValue
+    spendBalanceValue,
+    issuerTransferRate
   ])
 
   return useMemo(

@@ -12,6 +12,7 @@ import TradeChart from '../components/Trade/TradeChart'
 import UserOrders from '../components/Trade/UserOrders'
 import useTradeBalances, { tradeBalanceKey } from '../components/Trade/useTradeBalance'
 import useSwapSimulationQuote from '../components/Trade/useSwapSimulationQuote'
+import useIssuerTransferRate from '../components/Trade/useIssuerTransferRate'
 import useAssetFiatRate from '../components/SignForms/useAssetFiatRate'
 import {
   estimateSwap,
@@ -54,6 +55,12 @@ const hasTradePairQuery = (query) =>
   TRADE_PAIR_QUERY_NAMES.some((name) => Object.prototype.hasOwnProperty.call(query, name))
 const sameTradeAsset = (left, right) =>
   left?.currency === right?.currency && (left?.issuer || '') === (right?.issuer || '')
+const xrpTokenAsset = (left, right) => {
+  if (nativeCurrency !== 'XRP') return null
+  if (left?.issuer && right?.currency === nativeCurrency && !right?.issuer) return left
+  if (right?.issuer && left?.currency === nativeCurrency && !left?.issuer) return right
+  return null
+}
 const tradeAssetFromQuery = (currencyValue, issuerValue, fallback) => {
   const currency = queryValue(currencyValue)
   const issuer = queryValue(issuerValue)
@@ -313,6 +320,11 @@ export default function Trade({
   const spendAsset = side === 'sell' ? baseAsset : quoteAsset
   const receiveAsset = side === 'sell' ? quoteAsset : baseAsset
   const spendBalance = side === 'sell' ? baseBalance : quoteBalance
+  const issuerSimulationAsset = xrpTokenAsset(baseAsset, quoteAsset)
+  const issuerTransferRate = useIssuerTransferRate(
+    issuerSimulationAsset,
+    !!tradeSimulationRpcServer && orderType === 'swap'
+  )
   const baseAssetFiatRate = useAssetFiatRate(baseAsset, selectedCurrency, fiatRate)
   const quoteAssetFiatRate = useAssetFiatRate(quoteAsset, selectedCurrency, fiatRate)
   const bids = useMemo(() => withoutFiatDust(rawBids, quoteAssetFiatRate), [quoteAssetFiatRate, rawBids])
@@ -355,29 +367,53 @@ export default function Trade({
     validNumber(amount) &&
     (!spendBalance.gt(0) || (side === 'sell' && new BigNumber(amount).gt(spendBalance)))
   const simulationSupported = !!tradeSimulationRpcServer
-  const simulationEnabled = simulationSupported &&
-    !!account?.address &&
+  const simulationRequestReady = simulationSupported &&
     orderType === 'swap' &&
-    !balanceLoading &&
-    !missingTrustlineAsset &&
-    !accountGlobalFreezeBlocksTrade &&
-    !swapSpendKnownInsufficient &&
     baseAsset?.currency &&
     quoteAsset?.currency &&
     (baseAsset.currency !== quoteAsset.currency || (baseAsset.issuer || '') !== (quoteAsset.issuer || '')) &&
     validNumber(amount)
-  const simulation = useSwapSimulationQuote({
+  const accountSimulationEnabled = simulationRequestReady &&
+    !!account?.address &&
+    !balanceLoading &&
+    !missingTrustlineAsset &&
+    !accountGlobalFreezeBlocksTrade &&
+    !swapSpendKnownInsufficient
+  const accountSimulation = useSwapSimulationQuote({
     account: account?.address,
     spendAsset,
     receiveAsset,
     spendBalance,
     side,
     amount,
-    enabled: simulationEnabled
+    enabled: accountSimulationEnabled
   })
-  const simulationQuote = simulation.status === 'ready' ? simulation.quote : null
-  const simulationPending = simulationEnabled && simulation.status === 'loading'
-  const simulationErrorMessage = swapQuoteErrorText(t, simulation.status, side, spendAsset)
+  const accountSimulationQuote = accountSimulation.status === 'ready' ? accountSimulation.quote : null
+  const accountSimulationNeedsFallback = accountSimulation.status === 'nativeBalance' || accountSimulation.status === 'partial'
+  const issuerSimulationEnabled = simulationRequestReady &&
+    !!issuerSimulationAsset?.issuer &&
+    issuerTransferRate.status === 'ready' &&
+    (!account?.address || (
+      account.address !== issuerSimulationAsset.issuer &&
+      !balanceLoading &&
+      (!accountSimulationEnabled || accountSimulationNeedsFallback)
+    ))
+  const issuerSimulation = useSwapSimulationQuote({
+    account: issuerSimulationAsset?.issuer,
+    spendAsset,
+    receiveAsset,
+    spendBalance: null,
+    side,
+    amount,
+    enabled: issuerSimulationEnabled,
+    issuerTransferRate: issuerTransferRate.rate
+  })
+  const issuerSimulationQuote = issuerSimulation.status === 'ready' ? issuerSimulation.quote : null
+  const simulationQuote = accountSimulationQuote || issuerSimulationQuote
+  const accountSimulationPending = accountSimulationEnabled && accountSimulation.status === 'loading'
+  const issuerSimulationPending = issuerSimulationEnabled && issuerSimulation.status === 'loading'
+  const simulationPending = accountSimulationPending || issuerSimulationPending
+  const simulationErrorMessage = swapQuoteErrorText(t, accountSimulation.status, side, spendAsset)
   const fallbackSwapEstimate = simulationSupported ? marketSwapEstimate : directSwapEstimate
   const swapEstimate = simulationQuote
     ? side === 'buy'
@@ -478,7 +514,7 @@ export default function Trade({
       : t('book.directOnly', { defaultValue: 'Direct pair' })
   const bookScope = t('book.indicative', { defaultValue: 'Indicative' }) + ' · ' + bookComposition
   const swapReady = orderType === 'swap' && !simulationPending && swapSpend?.gt(0) && swapReceive?.gt(0) && (
-    simulationSupported ? !!simulationQuote : !!swapEstimate?.complete
+    simulationSupported ? !!accountSimulationQuote : !!swapEstimate?.complete
   )
   const requiredSpend = orderType === 'swap'
     ? side === 'sell'
@@ -632,7 +668,7 @@ export default function Trade({
             DeliverMin: transactionAmount(receiveAsset, minimumReceived),
             Flags: TF_PARTIAL_PAYMENT
           }
-      if (simulationQuote?.paths.length) request.Paths = simulationQuote.paths
+      if (accountSimulationQuote?.paths.length) request.Paths = accountSimulationQuote.paths
       setSignRequest({
         request,
         callback: () => {}
@@ -804,7 +840,7 @@ export default function Trade({
                     ? `1 ${tokenName(baseAsset)} ≈ ${bookNumber(effectiveSwapRate, priceDecimals, true)} ${tokenName(quoteAsset)}`
                     : '—'}</strong>
                 </div>}
-                {orderType === 'swap' && swapEstimate?.complete && !simulationQuote && <p className={styles.scopeNote}>{t('form.marketEstimate', {
+                {orderType === 'swap' && swapEstimate?.complete && (!simulationQuote || issuerSimulationQuote) && <p className={styles.scopeNote}>{t('form.marketEstimate', {
                   defaultValue: 'Indicative market estimate; the executable XRPL quote may differ.'
                 })}</p>}
               </div>
@@ -832,9 +868,9 @@ export default function Trade({
                 : t('form.accountGlobalFreeze', {
                     defaultValue: 'This account has Global Freeze enabled and cannot receive or trade issued tokens.'
                   })}</p>}
-              {simulationEnabled && spendWithinBalance && <div className={styles.quoteStatus}>
-                {!simulationPending && !simulationQuote && <p className={styles.error}>{simulationErrorMessage}</p>}
-                {(simulationPending || simulationQuote) && <p className={styles.scopeNote}>{simulationPending
+              {accountSimulationEnabled && spendWithinBalance && <div className={styles.quoteStatus}>
+                {!accountSimulationPending && !accountSimulationQuote && <p className={styles.error}>{simulationErrorMessage}</p>}
+                {(accountSimulationPending || accountSimulationQuote) && <p className={styles.scopeNote}>{accountSimulationPending
                   ? t('form.simulatingSwap', { defaultValue: 'Calculating XRPL quote…' })
                   : t('form.simulatedQuote', { defaultValue: 'Simulated across direct and XRP routes using order books and AMMs · 2% slippage protection.' })}</p>}
               </div>}
