@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer'
+import BigNumber from 'bignumber.js'
 import { stripText, shortName, webSiteName } from '.'
 import { encodeAccountID } from 'ripple-address-codec'
 
@@ -8,9 +9,53 @@ import LinkIcon from '../public/images/link.svg'
 import { amountFormat, shortHash } from './format'
 
 //partner market places (destinations)
+export const XRP_CAFE_BROKER_ADDRESS = 'rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC'
+export const BIDDS_BROKER_ADDRESS = 'rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC'
+const XRP_CAFE_MIN_BROKER_AMOUNT = '10000' // 0.01 XRP in drops; the bot only handles larger offers
+
 export const partnerMarketplaces = {
-  rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 }, //bidds mainnet
-  rhb5g4EHLHCiTAc8fJU5wk2jmsef2wNCxM: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 } //bidds testnet new
+  [XRP_CAFE_BROKER_ADDRESS]: {
+    name: 'xrp.cafe',
+    feeText: '1,589%',
+    fee: 0.01589
+  }, //xrp.cafe mainnet
+  [BIDDS_BROKER_ADDRESS]: { name: 'bidds', feeText: '1,5%', fee: 0.015 }, //bidds mainnet
+  rhb5g4EHLHCiTAc8fJU5wk2jmsef2wNCxM: { name: 'bidds', feeText: '1,5%', fee: 0.015 } //bidds testnet new
+}
+
+export const partnerFeeAmount = (amount, fee) => {
+  if (amount?.value) {
+    return {
+      value: new BigNumber(amount.value).times(fee).decimalPlaces(6, BigNumber.ROUND_CEIL).toFixed(6),
+      currency: amount.currency,
+      issuer: amount.issuer
+    }
+  }
+  return new BigNumber(amount).times(fee).decimalPlaces(0, BigNumber.ROUND_CEIL).toFixed(0)
+}
+
+export const partnerAmountAfterFee = (amount, fee) => {
+  const feeAmount = partnerFeeAmount(amount, fee)
+  if (amount?.value) {
+    return {
+      value: new BigNumber(amount.value).minus(feeAmount.value).toFixed(6),
+      currency: amount.currency,
+      issuer: amount.issuer
+    }
+  }
+  return new BigNumber(amount).minus(feeAmount).toFixed(0)
+}
+
+export const partnerAmountWithFee = (amount, fee) => {
+  const feeAmount = partnerFeeAmount(amount, fee)
+  if (amount?.value) {
+    return {
+      value: new BigNumber(amount.value).plus(feeAmount.value).toFixed(6),
+      currency: amount.currency,
+      issuer: amount.issuer
+    }
+  }
+  return new BigNumber(amount).plus(feeAmount).toFixed(0)
 }
 
 const parseNftokenId = (nftokenID) => {
@@ -107,16 +152,13 @@ export const nftSellOfferPurchase = ({ offer, nftId, owner, issuer, buyer }) => 
   if (marketplace) {
     if (!offer.amount || Number(offer.amount?.value || offer.amount) === 0) return null
 
-    const { multiplier, fee, name, feeText } = marketplace
+    const { fee, name, feeText } = marketplace
     if (name === 'bidds' && issuer === owner) return null
+    if (name === 'xrp.cafe' && !offer.amount?.value && new BigNumber(offer.amount).lte(XRP_CAFE_MIN_BROKER_AMOUNT)) {
+      return null
+    }
 
-    const amount = offer.amount?.value
-      ? {
-          value: Math.ceil(Number(offer.amount.value) * multiplier).toString(),
-          currency: offer.amount.currency,
-          issuer: offer.amount.issuer
-        }
-      : Math.ceil(Number(offer.amount) * multiplier).toString()
+    const amount = partnerAmountWithFee(offer.amount, fee)
 
     return {
       type: 'sign',
@@ -134,7 +176,7 @@ export const nftSellOfferPurchase = ({ offer, nftId, owner, issuer, buyer }) => 
         },
         broker: {
           name,
-          fee: Math.ceil(Number(offer.amount?.value || offer.amount) * fee || 1),
+          fee: partnerFeeAmount(offer.amount, fee),
           nftPrice: offer.amount,
           feeText
         }

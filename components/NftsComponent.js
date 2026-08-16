@@ -12,7 +12,15 @@ import {
   decode,
   nativeCurrency
 } from '../utils'
-import { isValidTaxon, nftThumbnail, nftNameLink, ipfsUrl, nftPriceData } from '../utils/nft'
+import {
+  BIDDS_BROKER_ADDRESS,
+  XRP_CAFE_BROKER_ADDRESS,
+  isValidTaxon,
+  nftThumbnail,
+  nftNameLink,
+  ipfsUrl,
+  nftPriceData
+} from '../utils/nft'
 import {
   nftLink,
   usernameOrAddress,
@@ -170,6 +178,12 @@ export default function NftsComponent({
       { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') },
       { value: 'public', label: t('tabs.public') },
       { value: 'knownBrokers', label: t('tabs.marketplaces') },
+      ...(listTab === 'onSale'
+        ? [
+            { value: XRP_CAFE_BROKER_ADDRESS, label: 'xrp.cafe' },
+            { value: BIDDS_BROKER_ADDRESS, label: 'Bidds' }
+          ]
+        : []),
       { value: 'all', label: t('tabs.all') }
     ]
   }
@@ -626,6 +640,12 @@ export default function NftsComponent({
     setCurrentOrderList(actualList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listTab])
+
+  useEffect(() => {
+    if (!isOfferList || saleDestinationTabList.some((option) => option.value === saleDestinationTab)) return
+    setSaleDestinationTab(listTab === 'bids' ? 'publicAndKnownBrokers' : xahauNetwork ? 'public' : 'buyNow')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOfferList, listTab, saleDestinationTab])
 
   useEffect(() => {
     const prevListTab = prevListTabRef.current

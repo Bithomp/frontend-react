@@ -43,6 +43,8 @@ import {
   nftSellOfferPurchase,
   mpUrl,
   nftUrl,
+  partnerAmountAfterFee,
+  partnerFeeAmount,
   partnerMarketplaces,
   ipfsUrl,
   isNftExplicit,
@@ -1122,17 +1124,8 @@ export default function Nft({
       if (best.destination && partnerMarketplaces[best.destination]) {
         const { fee, name, feeText } = partnerMarketplaces[best.destination]
 
-        // seller receives best.amount * (1 - fee) — floor ensures bidds gets at least fee%
-        let sellAmount
-        if (best.amount?.value) {
-          sellAmount = {
-            value: (parseFloat(best.amount.value) * (1 - fee)).toString(),
-            currency: best.amount.currency,
-            issuer: best.amount.issuer
-          }
-        } else {
-          sellAmount = Math.floor(parseInt(best.amount) * (1 - fee)).toString()
-        }
+        // Round the marketplace fee up so the broker receives at least the configured percentage.
+        const sellAmount = partnerAmountAfterFee(best.amount, fee)
 
         const request = {
           TransactionType: 'NFTokenCreateOffer',
@@ -1151,7 +1144,7 @@ export default function Nft({
                 request,
                 broker: {
                   name,
-                  fee: Math.ceil(best.amount > 0 ? best.amount * fee : 1),
+                  fee: partnerFeeAmount(best.amount, fee),
                   nftPrice: best.amount,
                   feeText
                 }
@@ -1657,10 +1650,10 @@ export default function Nft({
                                   <strong>
                                     {bestListing?.offerIndex ? (
                                       <Link href={`/nft-offer/${bestListing.offerIndex}`}>
-                                        {amountFormat(bestListing.amount, { short: true })}
+                                        {amountFormat(bestListing.amount)}
                                       </Link>
                                     ) : bestListing ? (
-                                      amountFormat(bestListing.amount, { short: true })
+                                      amountFormat(bestListing.amount)
                                     ) : (
                                       t('table.text.no-offers')
                                     )}

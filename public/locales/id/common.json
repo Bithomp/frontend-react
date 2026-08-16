@@ -349,10 +349,11 @@
     "status": {
       "awaiting-crawler": "Menunggu sistem pemantau untuk meng-update informasi",
       "awaiting-broker": "Menunggu {{serviceName}} menerima penawaran",
-      "failed-broker": "Gagal memberitahu {{serviceName}} tentang penawaran. Anda dapat membatalkannya."
+      "awaiting-xrp-cafe": "Menunggu bot xrp.cafe menyelesaikan transaksi...",
+      "failed-broker": "{{serviceName}} tidak menerima penawaran tepat waktu. Anda dapat membatalkannya."
     },
     "nft-offer": {
-      "counteroffer": "Anda memberikan tawaran tambahan, seharusnya langsung diterima dalam 20 detik. Jika tidak, Anda bisa membatalkannya kapan saja.",
+      "counteroffer": "Anda memberikan tawaran tambahan, seharusnya langsung diterima dalam 30 detik. Jika tidak, Anda bisa membatalkannya kapan saja.",
       "nft-price": "Harga NFT",
       "fee": "Biaya {{serviceName}} ({{feeText}})",
       "total": "Jumlah"

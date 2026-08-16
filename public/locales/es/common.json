@@ -349,10 +349,11 @@
     "status": {
       "awaiting-crawler": "Esperando a que el rastreador actualice los datos",
       "awaiting-broker": "Esperando a que {{serviceName}} acepte la oferta",
-      "failed-broker": "Fallo al notificar a {{serviceName}} con la oferta. Puedes cancelarla."
+      "awaiting-xrp-cafe": "Esperando a que el bot de xrp.cafe complete la operación...",
+      "failed-broker": "{{serviceName}} no aceptó la oferta a tiempo. Puedes cancelarla."
     },
     "nft-offer": {
-      "counteroffer": "Estás haciendo una contraoferta, la cual debería ser aceptada automáticamente en 20 segundos. Si no es aceptada, puedes cancelarla en cualquier momento.",
+      "counteroffer": "Estás haciendo una contraoferta, la cual debería ser aceptada automáticamente en 30 segundos. Si no es aceptada, puedes cancelarla en cualquier momento.",
       "nft-price": "Precio NFT",
       "fee": "{{serviceName}} comisión ({{feeText}})",
       "total": "Total"

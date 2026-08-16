@@ -65,6 +65,8 @@ import { broadcastTransaction, getNextTransactionParams } from '../utils/user'
 import { partnerMarketplaces } from '../utils/nft'
 
 const qr = '/images/qr.gif'
+const XRP_CAFE_ACCEPTANCE_POLL_INTERVAL = 2000
+const XRP_CAFE_ACCEPTANCE_TIMEOUT = 30000
 
 const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'castVoteSeat']
 const ammTxs = ['ammDeposit', 'ammWithdraw', 'ammVoteFee']
@@ -1220,6 +1222,63 @@ export default function SignForm({
           setStatus(t('signin.status.failed-broker', { serviceName: effectiveBroker }))
           delay(3000, closeSignInFormAndRefresh)
         }
+      } else if (effectiveBroker === 'xrp.cafe') {
+        setAwaiting(true)
+        setStatus(t('signin.status.awaiting-xrp-cafe'))
+        let offerIndex = null
+        const acceptanceDeadline = Date.now() + XRP_CAFE_ACCEPTANCE_TIMEOUT
+
+        while (!offerIndex && Date.now() < acceptanceDeadline) {
+          const response = await axios('xrpl/transaction/' + txHash).catch(() => null)
+          const transaction = response?.data
+          const transactionResult = transaction?.meta?.TransactionResult
+
+          if (transaction?.validated && transactionResult && transactionResult !== 'tesSUCCESS') {
+            setAwaiting(false)
+            setStatus(errorCodeDescription(transactionResult))
+            return
+          }
+
+          if (transaction?.validated) {
+            const createdOffer = transaction.meta?.AffectedNodes?.find(
+              (node) => node.CreatedNode?.LedgerEntryType === 'NFTokenOffer'
+            )
+            offerIndex = createdOffer?.CreatedNode?.LedgerIndex || null
+          }
+
+          if (!offerIndex && Date.now() < acceptanceDeadline) {
+            await new Promise((resolve) => setTimeout(resolve, XRP_CAFE_ACCEPTANCE_POLL_INTERVAL))
+          }
+        }
+
+        if (!offerIndex) {
+          setAwaiting(false)
+          setStatus(t('signin.status.failed-broker', { serviceName: effectiveBroker }))
+          setRefreshPage(Date.now())
+          return
+        }
+
+        while (Date.now() < acceptanceDeadline) {
+          const response = await axios(
+            `v2/nft/offer/${offerIndex}?offersValidate=true&timestamp=${Date.now()}`
+          ).catch(() => null)
+          const offer = response?.data
+
+          if (offer?.acceptedTxHash) {
+            transactionFetchTries = 0
+            validateTransactionOnLedger({ txid: offer.acceptedTxHash, redirectName, txType, result })
+            return
+          }
+          if (offer?.canceledAt) break
+
+          if (Date.now() < acceptanceDeadline) {
+            await new Promise((resolve) => setTimeout(resolve, XRP_CAFE_ACCEPTANCE_POLL_INTERVAL))
+          }
+        }
+
+        setAwaiting(false)
+        setStatus(t('signin.status.failed-broker', { serviceName: effectiveBroker }))
+        setRefreshPage(Date.now())
       }
       return
     }

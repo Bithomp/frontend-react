@@ -349,10 +349,11 @@
     "status": {
       "awaiting-crawler": "等待爬虫更新数据",
       "awaiting-broker": "正在等待 {{serviceName}} 接受报价",
-      "failed-broker": "无法通知 {{serviceName}} 有关优惠的信息。您可以取消它。"
+      "awaiting-xrp-cafe": "正在等待 xrp.cafe 机器人完成交易...",
+      "failed-broker": "{{serviceName}} 未及时接受报价。您可以取消该报价。"
     },
     "nft-offer": {
-      "counteroffer": "您正在提出还价，应在 20 秒内自动接受。如果不被接受，您可以随时取消。",
+      "counteroffer": "您正在提出还价，应在 30 秒内自动接受。如果不被接受，您可以随时取消。",
       "nft-price": "NFT价格",
       "fee": "{{serviceName}} 费用 ({{feeText}})",
       "total": "总计"

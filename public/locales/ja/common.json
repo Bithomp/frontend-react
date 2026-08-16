@@ -349,10 +349,11 @@
     "status": {
       "awaiting-crawler": "クローラーによるデータ更新を行なっています。",
       "awaiting-broker": "{{serviceName}}がオファーを受け入れるのを待っています。",
-      "failed-broker": "{{serviceName}}にオファーを通知できませんでした。キャンセルすることができます。"
+      "awaiting-xrp-cafe": "xrp.cafeボットが取引を完了するのを待っています...",
+      "failed-broker": "{{serviceName}}が時間内にオファーを承認しませんでした。キャンセルできます。"
     },
     "nft-offer": {
-      "counteroffer": "作成したオファーは20秒以内に自動的に成立します。成立しなかった場合は、いつでもキャンセルすることができます。",
+      "counteroffer": "作成したオファーは30秒以内に自動的に成立します。成立しなかった場合は、いつでもキャンセルすることができます。",
       "nft-price": "NFTの価格",
       "fee": "{{serviceName}}の手数料 ({{feeText}})",
       "total": "合計"

@@ -636,6 +636,8 @@ import {
   nftName,
   nftSellOfferPurchase,
   nftUrl,
+  partnerAmountAfterFee,
+  partnerFeeAmount,
   partnerMarketplaces
 } from '../../utils/nft'
 import {
@@ -11107,17 +11109,7 @@ export default function Account({
                             !isZeroAmountValue(offer.amount)
                               ? (() => {
                                   const { fee, name, feeText } = partnerMarketplace
-                                  let sellAmount
-
-                                  if (offer.amount?.value) {
-                                    sellAmount = {
-                                      value: (parseFloat(offer.amount.value) * (1 - fee)).toString(),
-                                      currency: offer.amount.currency,
-                                      issuer: offer.amount.issuer
-                                    }
-                                  } else {
-                                    sellAmount = Math.floor(parseInt(offer.amount) * (1 - fee)).toString()
-                                  }
+                                  const sellAmount = partnerAmountAfterFee(offer.amount, fee)
 
                                   return {
                                     offerAmount: offer.amount,
@@ -11133,7 +11125,7 @@ export default function Account({
                                     },
                                     broker: {
                                       name,
-                                      fee: Math.ceil(offer.amount > 0 ? offer.amount * fee : 1),
+                                      fee: partnerFeeAmount(offer.amount, fee),
                                       nftPrice: offer.amount,
                                       feeText
                                     }
