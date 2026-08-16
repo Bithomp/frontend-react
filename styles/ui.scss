@@ -6,13 +6,6 @@ html, body {
   padding: 0;
 }
 
-@media only screen and (max-width: 1050px) {
-  html,
-  body {
-    overscroll-behavior-y: none;
-  }
-}
-
 html,
 body,
 #root,

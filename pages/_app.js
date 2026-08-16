@@ -309,8 +309,53 @@ function useReferralCookie() {
   }, [router.isReady, router.events, setRef])
 }
 
+function usePreventTopOverscroll() {
+  useEffect(() => {
+    if (!window.matchMedia('(max-width: 1050px) and (pointer: coarse)').matches) return
+
+    let touchStartX = 0
+    let touchStartY = 0
+
+    const onTouchStart = (event) => {
+      const touch = event.touches[0]
+      if (!touch) return
+      touchStartX = touch.clientX
+      touchStartY = touch.clientY
+    }
+
+    const onTouchMove = (event) => {
+      const touch = event.touches[0]
+      if (!touch || window.scrollY > 0) return
+
+      const deltaX = touch.clientX - touchStartX
+      const deltaY = touch.clientY - touchStartY
+      if (deltaY <= 0 || Math.abs(deltaY) <= Math.abs(deltaX)) return
+
+      let element = event.target instanceof Element ? event.target : null
+      while (element && element !== document.body) {
+        const { overflowY } = window.getComputedStyle(element)
+        if ((overflowY === 'auto' || overflowY === 'scroll') && element.scrollHeight > element.clientHeight) {
+          if (element.scrollTop > 0) return
+          break
+        }
+        element = element.parentElement
+      }
+
+      event.preventDefault()
+    }
+
+    document.addEventListener('touchstart', onTouchStart, { passive: true })
+    document.addEventListener('touchmove', onTouchMove, { passive: false })
+    return () => {
+      document.removeEventListener('touchstart', onTouchStart)
+      document.removeEventListener('touchmove', onTouchMove)
+    }
+  }, [])
+}
+
 const MyApp = ({ Component, pageProps }) => {
   useReferralCookie()
+  usePreventTopOverscroll()
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
