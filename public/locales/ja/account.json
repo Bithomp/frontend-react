@@ -541,6 +541,7 @@
     "errors": {
       "failed-load-account-objects-assets": "アカウントオブジェクトの読み込みに失敗しました。一部の資産が表示されない可能性があります。",
       "failed-load-account-objects-sections": "アカウントオブジェクトの読み込みに失敗しました。一部のオブジェクトセクションが表示されない可能性があります。",
+      "temporarily-unavailable": "アカウントデータは一時的に利用できません。もう一度お試しください。",
       "invalid-xaddress-format": "xAddressの形式が正しくありません",
       "could-not-resolve-paystring": "payString {{account}} を解決できませんでした",
       "invalid-paystring-response": "payStringの応答が正しくありません"

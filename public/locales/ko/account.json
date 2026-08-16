@@ -541,6 +541,7 @@
     "errors": {
       "failed-load-account-objects-assets": "계정 객체를 불러오지 못했습니다. 일부 자산이 누락될 수 있습니다.",
       "failed-load-account-objects-sections": "계정 객체를 로드하지 못했습니다. 일부 객체 섹션이 누락될 수 있습니다.",
+      "temporarily-unavailable": "계정 데이터를 일시적으로 사용할 수 없습니다. 다시 시도해 주세요.",
       "invalid-xaddress-format": "잘못된 xAddress 형식입니다",
       "could-not-resolve-paystring": "payString {{account}}을(를) 확인할 수 없습니다",
       "invalid-paystring-response": "잘못된 payString 응답입니다"

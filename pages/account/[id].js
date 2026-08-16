@@ -421,6 +421,25 @@ const fetchActivatedAccountsServer = async ({ address, req, order = 'desc' }) =>
   }
 }
 
+const ACCOUNT_TRANSPORT_ERROR_PATTERN =
+  /\b(?:ETIMEDOUT|ESOCKETTIMEDOUT|ECONNRESET|ECONNREFUSED|ENOTFOUND|EAI_AGAIN)\b|\bgetaddrinfo\b|\bsocket hang up\b|\bnetwork error\b|\btimed out\b|\btimeout\b/i
+
+const accountPageErrorMessage = (error) => {
+  const responseMessage = error?.response?.data?.error || error?.response?.data?.message
+  const message = typeof error === 'string' ? error : responseMessage || error?.message
+
+  if (
+    typeof message !== 'string' ||
+    !message.trim() ||
+    ACCOUNT_TRANSPORT_ERROR_PATTERN.test(message) ||
+    /^Request failed with status code (?:408|5\d\d)$/.test(message)
+  ) {
+    return 'detail.errors.temporarily-unavailable'
+  }
+
+  return message.trim()
+}
+
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let initialData = null
@@ -457,7 +476,7 @@ export async function getServerSideProps(context) {
       url: 'v2/payId/' + account,
       headers: passHeaders(req)
     }).catch((error) => {
-      initialErrorMessage = error.message
+      initialErrorMessage = accountPageErrorMessage(error)
     })
 
     if (payStringData?.data) {
@@ -493,7 +512,7 @@ export async function getServerSideProps(context) {
           return { notFound: true }
         }
 
-        initialErrorMessage = initialData.error
+        initialErrorMessage = accountPageErrorMessage(initialData.error)
         initialData = null
       } else {
         const canonicalRedirect = canonicalAccountRedirect({
@@ -544,7 +563,7 @@ export async function getServerSideProps(context) {
         }
       }
     } catch (e) {
-      initialErrorMessage = e?.message || 'Failed to load account data'
+      initialErrorMessage = accountPageErrorMessage(e)
     }
 
     const balanceListServer = setBalancesFunction(networkInfo, initialData)
@@ -3966,6 +3985,8 @@ export default function Account({
 
   // Error state
   if (initialErrorMessage) {
+    const isTemporaryAccountError = initialErrorMessage === 'detail.errors.temporarily-unavailable'
+
     return (
       <>
         <SEO title={ta('seo.account-error')} noindex />
@@ -3979,6 +4000,13 @@ export default function Account({
           </div>
           <br />
           <br />
+          {isTemporaryAccountError && (
+            <>
+              <button type="button" className="button-action" onClick={() => router.reload()}>
+                {t('button.try-again')}
+              </button>{' '}
+            </>
+          )}
           <Link href="/" className="button-action">
             {ta('actions.go-home')}
           </Link>

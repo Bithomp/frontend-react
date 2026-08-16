@@ -543,6 +543,7 @@
     "errors": {
       "failed-load-account-objects-assets": "Не удалось загрузить объекты аккаунта. Некоторые активы могут отсутствовать.",
       "failed-load-account-objects-sections": "Не удалось загрузить объекты аккаунта. Некоторые разделы объектов могут отсутствовать.",
+      "temporarily-unavailable": "Данные аккаунта временно недоступны. Попробуйте ещё раз.",
       "invalid-xaddress-format": "Неверный формат xAddress",
       "could-not-resolve-paystring": "Не удалось найти адрес для payString {{account}}",
       "invalid-paystring-response": "Неверный ответ payString"

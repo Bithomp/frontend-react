@@ -536,6 +536,7 @@
     "errors": {
       "failed-load-account-objects-assets": "Failed to load account objects. Some assets may be missing.",
       "failed-load-account-objects-sections": "Failed to load account objects. Object sections may be missing.",
+      "temporarily-unavailable": "Account data is temporarily unavailable. Please try again.",
       "invalid-xaddress-format": "Invalid xAddress format",
       "could-not-resolve-paystring": "We could not resolve your payString {{account}}",
       "invalid-paystring-response": "Invalid payString response"

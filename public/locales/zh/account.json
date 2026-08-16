@@ -541,6 +541,7 @@
     "errors": {
       "failed-load-account-objects-assets": "账户对象加载失败。部分资产可能缺失。",
       "failed-load-account-objects-sections": "无法加载账户对象。部分对象区域可能缺失。",
+      "temporarily-unavailable": "账户数据暂时不可用。请重试。",
       "invalid-xaddress-format": "xAddress 格式无效",
       "could-not-resolve-paystring": "无法解析你的 payString {{account}}",
       "invalid-paystring-response": "payString 响应无效"

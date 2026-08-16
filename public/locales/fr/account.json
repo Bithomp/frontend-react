@@ -541,6 +541,7 @@
     "errors": {
       "failed-load-account-objects-assets": "Impossible de charger les objets du compte. Certains actifs peuvent manquer.",
       "failed-load-account-objects-sections": "Impossible de charger les objets du compte. Certaines sections d’objets peuvent manquer.",
+      "temporarily-unavailable": "Les données du compte sont temporairement indisponibles. Veuillez réessayer.",
       "invalid-xaddress-format": "Format xAddress non valide",
       "could-not-resolve-paystring": "Impossible de résoudre votre payString {{account}}",
       "invalid-paystring-response": "Réponse payString non valide"

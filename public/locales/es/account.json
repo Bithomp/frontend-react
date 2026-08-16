@@ -541,6 +541,7 @@
     "errors": {
       "failed-load-account-objects-assets": "No se pudieron cargar los objetos de la cuenta. Puede que falten algunos activos.",
       "failed-load-account-objects-sections": "No se pudieron cargar los objetos de la cuenta. Puede que falten algunas secciones de objetos.",
+      "temporarily-unavailable": "Los datos de la cuenta no están disponibles temporalmente. Inténtalo de nuevo.",
       "invalid-xaddress-format": "Formato de xAddress no válido",
       "could-not-resolve-paystring": "No pudimos resolver tu payString {{account}}",
       "invalid-paystring-response": "Respuesta de payString no válida"

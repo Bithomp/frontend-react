@@ -541,6 +541,7 @@
     "errors": {
       "failed-load-account-objects-assets": "Kontoobjekte konnten nicht geladen werden. Einige Assets fehlen möglicherweise.",
       "failed-load-account-objects-sections": "Kontoobjekte konnten nicht geladen werden. Einige Objektbereiche fehlen möglicherweise.",
+      "temporarily-unavailable": "Die Kontodaten sind vorübergehend nicht verfügbar. Bitte versuchen Sie es erneut.",
       "invalid-xaddress-format": "Ungültiges xAddress-Format",
       "could-not-resolve-paystring": "Dein payString {{account}} konnte nicht aufgelöst werden",
       "invalid-paystring-response": "Ungültige payString-Antwort"

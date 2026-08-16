@@ -541,6 +541,7 @@
     "errors": {
       "failed-load-account-objects-assets": "Gagal memuat objek akun. Beberapa aset mungkin tidak ditampilkan.",
       "failed-load-account-objects-sections": "Gagal memuat objek akun. Beberapa bagian objek mungkin tidak tersedia.",
+      "temporarily-unavailable": "Data akun untuk sementara tidak tersedia. Silakan coba lagi.",
       "invalid-xaddress-format": "Format xAddress tidak valid",
       "could-not-resolve-paystring": "Kami tidak dapat menemukan payString {{account}}",
       "invalid-paystring-response": "Respons payString tidak valid"
