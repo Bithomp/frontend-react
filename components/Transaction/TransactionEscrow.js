@@ -82,7 +82,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData>Escrow amount</TData>
           <TData className="bold">
             <span className={shouldShowReceived ? 'orange' : isEscrowFinish ? 'green' : ''}>
-              {amountFormat(outcome?.escrowChanges?.amount)}
+              {amountFormat(outcome?.escrowChanges?.amount, { tooltip: 'right', icon: true })}
             </span>
 
             {isEscrowFinish &&

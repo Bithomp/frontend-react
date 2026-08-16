@@ -313,7 +313,7 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
     let hiddenMemoPiece = null
     const hadMemoPiece = Boolean(memopiece)
 
-    const redFlags = ['airdrop', 'claim', 'reward', 'giveaway']
+    const redFlags = ['airdrop', 'claim', 'reward', 'giveaway', 'usdxrp.xyz']
     const memop = memopiece?.toString().toLowerCase() || ''
 
     if (redFlags.some((flag) => memop.includes(flag))) {
