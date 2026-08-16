@@ -1145,8 +1145,8 @@ export const niceCurrency = (currency) => {
     }
   }
   currency = currency.toString('utf8').replace(/\0/g, '') // remove padding nulls
-  if (currency.toLowerCase() === nativeCurrency.toLowerCase()) {
-    return 'Fake' + nativeCurrency
+  if (currency.toLowerCase().startsWith(nativeCurrency.toLowerCase())) {
+    return 'Fake' + currency
   }
   return currency
 }
