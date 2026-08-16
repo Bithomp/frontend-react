@@ -1236,6 +1236,7 @@ header.site-header {
     padding: 6px 22px 6px 0;
     border-bottom: 1px solid #fff;
     cursor: pointer;
+    text-decoration: none;
 
     &[data-expanded]:after,
     &[data-expanded]::before {

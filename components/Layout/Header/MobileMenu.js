@@ -109,6 +109,7 @@ export default function MobileMenu({
   const orderedWallets = [...wallets].sort((a, b) => (b?.connectedAt || 0) - (a?.connectedAt || 0))
   const activeWallet = wallets.find((w) => w?.id === account?.activeWalletId) || wallets[0] || null
   const activeWalletId = activeWallet?.id || account?.activeWalletId || null
+  const hasAccountSubmenu = !displayName || !username
   const walletNativeBalanceText = (walletAddress) => {
     const balance = walletNativeBalances?.[walletAddress]?.total
     if (!Number.isFinite(balance)) return null
@@ -234,45 +235,51 @@ export default function MobileMenu({
     </div>
   )
 
+  const accountDirectoryContent = displayName ? (
+    <>
+      <img
+        alt="avatar"
+        src={avatarSrc(address, { size: retinaImageSize(24), hashIconZoom: 12 })}
+        width="24"
+        height="24"
+        className="menu-avatar"
+      />
+      {displayName}
+    </>
+  ) : (
+    <>
+      <IoWallet style={{ marginBottom: '-2px' }} /> {t('table.address')}
+    </>
+  )
+
   return (
     <div className="mobile-menu" onClick={handleClick}>
       <div className="mobile-menu-wrap">
         <br />
         {displayName && connectedWalletsBlock}
-        <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
-          {displayName ? (
-            <>
-              <img
-                alt="avatar"
-                src={avatarSrc(address, { size: retinaImageSize(24), hashIconZoom: 12 })}
-                width="24"
-                height="24"
-                className="menu-avatar"
-              />
-              {displayName}
-            </>
-          ) : (
-            <>
-              <IoWallet style={{ marginBottom: '-2px' }} /> {t('table.address')}
-            </>
-          )}
-        </div>
-        <div className="mobile-menu__submenu">
-          {displayName ? (
-            <>
-              {!username && (
+        {hasAccountSubmenu ? (
+          <>
+            <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
+              {accountDirectoryContent}
+            </div>
+            <div className="mobile-menu__submenu">
+              {displayName ? (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                   <IoAtOutline style={itemIconStyle} />
                   {t('menu.services.username')}
                 </Link>
+              ) : (
+                <span onClick={() => setSignRequest?.({})} className="link mobile-menu-item">
+                  <FiLink style={{ marginRight: 4, height: 18, width: 18, marginLeft: -1 }} /> {t('signin.connect')}
+                </span>
               )}
-            </>
-          ) : (
-            <span onClick={() => setSignRequest?.({})} className="link mobile-menu-item">
-              <FiLink style={{ marginRight: 4, height: 18, width: 18, marginLeft: -1 }} /> {t('signin.connect')}
-            </span>
-          )}
-        </div>
+            </div>
+          </>
+        ) : (
+          <Link href={'/account/' + address} className="mobile-menu-directory" onClick={mobileMenuToggle}>
+            {accountDirectoryContent}
+          </Link>
+        )}
 
         <div className="mobile-menu-directory" data-expanded={proLoggedIn ? 'false' : 'true'}>
           <IoIosRocket /> Bithomp Pro
