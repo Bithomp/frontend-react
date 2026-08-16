@@ -24,18 +24,6 @@ header.site-header {
   padding: 0 15px;
   gap: 0 20px;
 
-  @media only screen and (max-width: 1050px) {
-    &::before {
-      content: '';
-      position: absolute;
-      right: 0;
-      bottom: 100%;
-      left: 0;
-      height: 100vh;
-      background-color: var(--background-header);
-    }
-  }
-
   .header-logo {
     margin-top: 12px;
     flex-shrink: 0;
