@@ -1,9 +1,74 @@
-.page-username {
+.content-text.page-username {
+  width: min(calc(100% - 40px), 1200px);
+  margin: 20px auto;
+
+  .username-registration-form {
+    width: min(100%, 760px);
+    margin: 28px auto 0;
+
+    > p {
+      margin: 18px 0 8px;
+    }
+
+    .input-validation,
+    .input-text {
+      width: 100%;
+    }
+
+    .checkbox {
+      display: flex;
+      width: fit-content;
+      margin-top: 14px;
+    }
+  }
+
+  .username-payment-summary {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding: 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--accent-link) 60%, var(--card-border));
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent-link) 8%, var(--card-bg));
+
+    span {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    strong {
+      color: var(--text-main);
+      font-size: 22px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+  }
+
   .payment-instructions {
     padding: 20px;
     word-break: break-word;
   }
   .payment-awaiting {
     padding: 20px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    width: min(calc(100% - 20px), 1200px);
+    margin-top: 10px;
+
+    .username-registration-form {
+      margin-top: 20px;
+    }
+
+    .username-payment-summary {
+      padding: 12px;
+
+      strong {
+        font-size: 19px;
+      }
+    }
   }
 }

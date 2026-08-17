@@ -584,6 +584,7 @@ export default function Username({
                       </p>
                     ) : (
                       <>
+                        <div className="username-registration-form">
                         {account?.address ? (
                           <>
                             <p>
@@ -647,6 +648,13 @@ export default function Username({
                         <p>{t('step0.enter-country', { ns: 'username' })}:</p>
                         <CountrySelect setCountryCode={setCountryCode} />
 
+                        {usernamePriceText && (
+                          <div className="username-payment-summary">
+                            <span>{t('step1.amount', { ns: 'username' })}</span>
+                            <strong>{usernamePriceText}</strong>
+                          </div>
+                        )}
+
                         <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms}>
                           {t('step0.agree-terms-page', { ns: 'username' })}
                         </CheckBox>
@@ -681,6 +689,7 @@ export default function Username({
                             onClick={onSubmit}
                           />
                         </p>
+                        </div>
                       </>
                     )}
                   </>
