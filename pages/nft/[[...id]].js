@@ -1982,38 +1982,6 @@ export default function Nft({
                           </div>
                         )}
 
-                        {(sameCollectionLoading || sameCollectionNfts.length > 0) && (
-                          <section className="nft-related-section">
-                            <div className="nft-related-header">
-                              <div>
-                                <h2>{t('same-collection', { ns: 'nft' })}</h2>
-                                {collectionHref && <span>{collectionLabel || t('table.collection')}</span>}
-                              </div>
-                              {collectionHref && (
-                                <Link href={collectionHref} className="nft-related-link">
-                                  <IoImagesOutline aria-hidden="true" />
-                                  <span>{t('view-all-collection', { ns: 'nft' })}</span>
-                                </Link>
-                              )}
-                            </div>
-                            {sameCollectionLoading ? (
-                              <div className="nft-related-loading">
-                                <span className="waiting" />
-                              </div>
-                            ) : (
-                              <div className="nft-related-grid">
-                                {sameCollectionNfts.map((nft) => (
-                                  <Link href={`/nft/${nft.nftokenID}`} key={nft.nftokenID} className="nft-related-card">
-                                    <NftImage nft={nft} sourceSize={240} style={{ width: '100%', marginRight: 0 }} />
-                                    <span>{nftName(nft) || shortHash(nft.nftokenID)}</span>
-                                    <small>#{nft.nftSerial ?? nft.sequence}</small>
-                                  </Link>
-                                ))}
-                              </div>
-                            )}
-                          </section>
-                        )}
-
                         <section className="column-right nft-technical-card">
                           <div className="nft-advanced-heading">
                             <h2>{t('technical-details', { ns: 'nft' })}</h2>
@@ -2164,6 +2132,38 @@ export default function Nft({
                           {xahauNetwork && data.remarks?.length > 0 && <RemarksTable remarks={data.remarks} />}
 
                         </section>
+
+                        {(sameCollectionLoading || sameCollectionNfts.length > 0) && (
+                          <section className="nft-related-section">
+                            <div className="nft-related-header">
+                              <div>
+                                <h2>{t('same-collection', { ns: 'nft' })}</h2>
+                                {collectionHref && <span>{collectionLabel || t('table.collection')}</span>}
+                              </div>
+                              {collectionHref && (
+                                <Link href={collectionHref} className="nft-related-link">
+                                  <IoImagesOutline aria-hidden="true" />
+                                  <span>{t('view-all-collection', { ns: 'nft' })}</span>
+                                </Link>
+                              )}
+                            </div>
+                            {sameCollectionLoading ? (
+                              <div className="nft-related-loading">
+                                <span className="waiting" />
+                              </div>
+                            ) : (
+                              <div className="nft-related-grid">
+                                {sameCollectionNfts.map((nft) => (
+                                  <Link href={`/nft/${nft.nftokenID}`} key={nft.nftokenID} className="nft-related-card">
+                                    <NftImage nft={nft} sourceSize={240} style={{ width: '100%', marginRight: 0 }} />
+                                    <span>{nftName(nft) || shortHash(nft.nftokenID)}</span>
+                                    <small>#{nft.nftSerial ?? nft.sequence}</small>
+                                  </Link>
+                                ))}
+                              </div>
+                            )}
+                          </section>
+                        )}
                       </>
                     )}
                   </>
