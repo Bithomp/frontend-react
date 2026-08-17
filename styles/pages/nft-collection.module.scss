@@ -538,6 +538,43 @@
     .apexcharts-canvas {
       margin-inline: auto;
     }
+
+    .apexcharts-tooltip {
+      width: min(260px, calc(100% - 16px));
+      border: 1px solid var(--card-border) !important;
+      background: var(--card-bg) !important;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2) !important;
+      white-space: normal !important;
+    }
+
+    .apexcharts-tooltip-series-group {
+      align-items: flex-start !important;
+      background: var(--card-bg) !important;
+    }
+
+    .apexcharts-tooltip-marker {
+      display: none !important;
+    }
+
+    .apexcharts-tooltip * {
+      color: var(--text-main) !important;
+    }
+
+    .apexcharts-tooltip-y-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .apexcharts-tooltip-text-y-label {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .apexcharts-tooltip-text-y-value {
+      white-space: nowrap !important;
+    }
   }
 
   .nft-collection-holder-chart-summary {

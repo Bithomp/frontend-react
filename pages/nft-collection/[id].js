@@ -510,6 +510,7 @@ export default function NftCollection({
       stroke: { width: 1, colors: ['var(--card-bg)'] },
       tooltip: {
         theme: chartTheme.tooltipTheme,
+        fixed: { enabled: true, position: 'topLeft', offsetX: 8, offsetY: 8 },
         y: { formatter: (value) => `${niceNumber(value)} NFTs` }
       },
       plotOptions: {
