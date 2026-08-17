@@ -635,6 +635,38 @@
       }
     }
 
+    .nft-product-context {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px 16px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .nft-product-issuer {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      min-width: 0;
+      color: var(--text-secondary);
+      font-size: 13px;
+
+      > span:first-child {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .no-brake {
+        min-width: 0;
+      }
+
+      .no-brake > a:last-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
     .nft-product-owner {
       display: flex;
       flex-wrap: wrap;

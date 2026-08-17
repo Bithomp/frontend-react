@@ -1602,12 +1602,20 @@ export default function Nft({
 
                           <section ref={productCardRef} className="nft-product-card">
                               <div className="nft-product-heading">
-                                {collectionHref && (
-                                  <Link href={collectionHref} className="nft-product-collection">
-                                    <IoImagesOutline aria-hidden="true" />
-                                    <span>{collectionLabel || t('view-all-collection', { ns: 'nft' })}</span>
-                                  </Link>
-                                )}
+                                <div className="nft-product-context">
+                                  {collectionHref && (
+                                    <Link href={collectionHref} className="nft-product-collection">
+                                      <IoImagesOutline aria-hidden="true" />
+                                      <span>{collectionLabel || t('view-all-collection', { ns: 'nft' })}</span>
+                                    </Link>
+                                  )}
+                                  {data.issuer && (
+                                    <div className="nft-product-issuer">
+                                      <span>{t('table.issuer')}</span>
+                                      <AddressWithIconInline data={data} name="issuer" />
+                                    </div>
+                                  )}
+                                </div>
                                 <h1>{pageTitle}</h1>
                                 {heroDescription && (
                                   <p>
