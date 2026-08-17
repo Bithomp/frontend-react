@@ -930,18 +930,18 @@
         min-height: 38px;
         margin: 0;
         padding: 7px 13px;
-        border: 1px solid var(--card-border);
+        border: 1px solid color-mix(in srgb, var(--accent-link) 55%, var(--card-border));
         border-radius: 8px;
-        background: transparent;
-        color: var(--text-main);
+        background: color-mix(in srgb, var(--accent-link) 7%, transparent);
+        color: var(--accent-link);
         font-size: 13px;
         line-height: 1.25;
         white-space: normal;
 
         &:hover {
           border-color: var(--accent-link);
-          background: color-mix(in srgb, var(--accent-link) 8%, transparent);
-          color: var(--text-main) !important;
+          background: color-mix(in srgb, var(--accent-link) 14%, transparent);
+          color: var(--accent-link) !important;
           opacity: 1;
         }
 
@@ -953,10 +953,18 @@
       }
 
       .nft-danger-action {
-        color: var(--text-main);
+        border-color: color-mix(in srgb, var(--red) 55%, var(--card-border));
+        background: color-mix(in srgb, var(--red) 7%, transparent);
+        color: var(--red);
 
         svg {
           color: var(--red);
+        }
+
+        &:hover {
+          border-color: var(--red);
+          background: color-mix(in srgb, var(--red) 14%, transparent);
+          color: var(--red) !important;
         }
       }
     }
