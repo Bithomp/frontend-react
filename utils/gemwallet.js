@@ -1,6 +1,7 @@
 import { isInstalled, getAddress, signTransaction, submitTransaction, getNetwork } from '@gemwallet/api'
 import { broadcastTransaction, getNextTransactionParams } from './user'
 import { networkId, xahauNetwork } from '.'
+import { reportErrorNotification } from './errorReporting'
 
 const useOurServer = true
 
@@ -34,6 +35,16 @@ const gemwalletSign = async ({
       })
       .catch((error) => {
         console.error(error)
+        setAwaiting(false)
+        setStatus(error?.message || 'Error signing transaction')
+        if (signRequestData?.action === 'set-avatar' && !/cancel|declin|reject/i.test(error?.message || '')) {
+          void reportErrorNotification({
+            source: 'avatar-wallet-gem',
+            error,
+            url: window.location.href,
+            userAgent: navigator.userAgent
+          })
+        }
       })
   } else {
     const wallet = 'gemwallet'

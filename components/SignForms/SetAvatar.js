@@ -3,10 +3,46 @@ import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
 import { encode, isUrlValid, webSiteName } from '../../utils'
+import { reportErrorNotification } from '../../utils/errorReporting'
 import Tabs from '../Tabs'
 import styles from '../../styles/components/setAvatar.module.scss'
 
 const AVATAR_CDN_ORIGIN = `https://cdn.${webSiteName}`
+const AVATAR_UPLOAD_CACHE_TTL = 10 * 60 * 1000
+const avatarUploadCacheKey = (address) => `avatar-upload:${address}`
+
+export const clearCachedAvatarUpload = (address) => {
+  if (!address || typeof window === 'undefined') return
+  try {
+    window.sessionStorage.removeItem(avatarUploadCacheKey(address))
+  } catch {
+    // Storage can be unavailable in privacy-restricted browsers.
+  }
+}
+
+const cacheAvatarUpload = (address, avatarUrl) => {
+  if (!address || !avatarUrl || typeof window === 'undefined') return
+  try {
+    window.sessionStorage.setItem(
+      avatarUploadCacheKey(address),
+      JSON.stringify({ avatarUrl, expiresAt: Date.now() + AVATAR_UPLOAD_CACHE_TTL })
+    )
+  } catch {
+    // The prepared request still works for the current modal session.
+  }
+}
+
+const cachedAvatarUpload = (address) => {
+  if (!address || typeof window === 'undefined') return null
+  try {
+    const cached = JSON.parse(window.sessionStorage.getItem(avatarUploadCacheKey(address)))
+    if (cached?.expiresAt > Date.now() && isUrlValid(cached.avatarUrl)) return cached.avatarUrl
+    clearCachedAvatarUpload(address)
+  } catch {
+    clearCachedAvatarUpload(address)
+  }
+  return null
+}
 
 const fileSha256 = async (file) => {
   const hash = await crypto.subtle.digest('SHA-256', await file.arrayBuffer())
@@ -25,11 +61,12 @@ export default function SetAvatar({
   const [mode, setMode] = useState('upload')
   const [file, setFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState('')
+  const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState('')
   const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      if (previewUrl?.startsWith('blob:')) URL.revokeObjectURL(previewUrl)
     }
   }, [previewUrl])
 
@@ -65,10 +102,28 @@ export default function SetAvatar({
     setAgreedToRisks(true)
   }
 
+  useEffect(() => {
+    const address = signRequest?.request?.Account
+    if (!address || signRequest?.request?.Memos?.length) return
+
+    const avatarUrl = cachedAvatarUpload(address)
+    if (!avatarUrl) return
+
+    setUploadedAvatarUrl(avatarUrl)
+    setPreviewUrl(avatarUrl)
+    prepareAvatarRequest(avatarUrl)
+    // Restore only when opening the form for another account.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signRequest?.request?.Account])
+
   const selectMode = (nextMode) => {
     setMode(nextMode)
     setStatus('')
-    setAgreedToRisks(false)
+    if (nextMode === 'upload' && uploadedAvatarUrl) {
+      prepareAvatarRequest(uploadedAvatarUrl)
+    } else {
+      setAgreedToRisks(false)
+    }
   }
 
   const onAvatarChange = (event) => {
@@ -77,7 +132,8 @@ export default function SetAvatar({
 
   const onFileChange = (event) => {
     const nextFile = event.target.files?.[0] || null
-    if (previewUrl) URL.revokeObjectURL(previewUrl)
+    if (previewUrl?.startsWith('blob:')) URL.revokeObjectURL(previewUrl)
+    if (nextFile) clearCachedAvatarUpload(signRequest?.request?.Account)
 
     if (nextFile && !nextFile.type.startsWith('image/')) {
       setFile(null)
@@ -88,6 +144,7 @@ export default function SetAvatar({
 
     setFile(nextFile)
     setPreviewUrl(nextFile ? URL.createObjectURL(nextFile) : '')
+    setUploadedAvatarUrl('')
     setStatus('')
     setAgreedToRisks(false)
     if (nextFile) uploadAvatar(nextFile)
@@ -129,8 +186,17 @@ export default function SetAvatar({
         throw new Error(uploadResult?.error || 'Invalid CDN upload response')
       }
 
+      setUploadedAvatarUrl(avatarUrl)
+      cacheAvatarUpload(address, avatarUrl)
       prepareAvatarRequest(avatarUrl)
     } catch (error) {
+      void reportErrorNotification({
+        source: 'avatar-upload',
+        error,
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        extra: { path: 'v2/avatar/upload', method: 'POST', statusCode: error?.response?.status }
+      })
       setStatus(error?.response?.data?.error || error?.message || t('signin.set-account.upload-failed'))
       setAgreedToRisks(false)
     } finally {

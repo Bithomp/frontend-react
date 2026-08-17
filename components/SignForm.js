@@ -38,13 +38,14 @@ import { crossmarkTxSend } from '../utils/crossmark'
 import { xyraSignOnly, xyraConnect } from '../utils/xyrawallet'
 import { dcentTxSend } from '../utils/dcent'
 import { setServicesTxSuccessFlash } from '../utils/servicesTxFlash'
+import { reportErrorNotification } from '../utils/errorReporting'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
 import TargetTableSelect from './UI/TargetTableSelect'
 import { submitProAddressToVerify } from '../utils/pro'
 import { setAvatar } from '../utils/blobVerifications'
-import SetAvatar from './SignForms/SetAvatar'
+import SetAvatar, { clearCachedAvatarUpload } from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
 import SetNftMinter from './SignForms/SetNftMinter'
 import ClearTokenBalance from './SignForms/ClearTokenBalance'
@@ -1159,8 +1160,17 @@ export default function SignForm({
       //add address to the list
       setAvatar({ address, blob }, (res) => {
         if (res?.error) {
+          setAwaiting(false)
+          void reportErrorNotification({
+            source: 'avatar-signing',
+            error: res.error,
+            url: window.location.href,
+            userAgent: navigator.userAgent,
+            extra: { path: `v2/avatar/${address}`, method: 'POST' }
+          })
           setStatus(t(res.error))
         } else {
+          clearCachedAvatarUpload(address)
           if (signRequestData?.redirect === 'account') {
             delay(3000, () => {
               closeSignInFormAndRefresh()

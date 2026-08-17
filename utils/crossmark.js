@@ -1,5 +1,6 @@
 import sdk from '@crossmarkio/sdk'
 import { broadcastTransaction, getNextTransactionParams } from './user'
+import { reportErrorNotification } from './errorReporting'
 
 const useOurServer = true
 
@@ -33,6 +34,15 @@ const crossmarkSign = async ({
     if (signResult?.response?.data?.txBlob) {
       afterSigning({ signRequestData, blob: signResult.response.data.txBlob, address })
     } else {
+      setAwaiting(false)
+      if (signRequestData?.action === 'set-avatar') {
+        void reportErrorNotification({
+          source: 'avatar-wallet-crossmark',
+          error: 'Crossmark did not return a signed transaction',
+          url: window.location.href,
+          userAgent: navigator.userAgent
+        })
+      }
       setStatus('Failed to sign transaction')
     }
   } else {
@@ -117,7 +127,7 @@ export const crossmarkTxSend = async ({
     if (account?.address && account?.wallet === 'crossmark') {
       // account is known
       const address = account.address
-      crossmarkSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
+      await crossmarkSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
     } else {
       //get address from crossmark
       const signInResult = await sdk.async.signInAndWait()
@@ -125,12 +135,21 @@ export const crossmarkTxSend = async ({
       if (!tx.Account) {
         tx.Account = address
       }
-      crossmarkSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
+      await crossmarkSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
     }
 
     setAwaiting(true)
   } catch (error) {
     console.error('Crossmark error:', error)
+    setAwaiting(false)
+    if (signRequest?.data?.action === 'set-avatar' && !/cancel|declin|reject/i.test(error?.message || '')) {
+      void reportErrorNotification({
+        source: 'avatar-wallet-crossmark',
+        error,
+        url: window.location.href,
+        userAgent: navigator.userAgent
+      })
+    }
     setStatus(error.message || 'Error crossmark 101')
   }
 }

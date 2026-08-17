@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { broadcastTransaction, getNextTransactionParams } from '../utils/user'
 import { useTranslation } from 'next-i18next'
 import { encode } from 'xrpl-binary-codec-prerelease'
+import { reportErrorNotification } from '../utils/errorReporting'
 
 const getSessionAccounts = (session) => {
   if (!session?.namespaces?.xrpl?.accounts) return []
@@ -198,6 +199,17 @@ function SendTx({
       */
     } catch (err) {
       console.error(err)
+      setAwaiting(false)
+      const errorMessage = getErrorMessage(err)
+      setStatus(errorMessage || t('signin.connection.walletconnect-error'))
+      if (signRequestData?.action === 'set-avatar' && !/cancel|declin|reject/i.test(errorMessage)) {
+        void reportErrorNotification({
+          source: 'avatar-wallet-walletconnect',
+          error: err,
+          url: window.location.href,
+          userAgent: navigator.userAgent
+        })
+      }
     }
   }
 
